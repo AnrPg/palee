@@ -9,6 +9,7 @@ import { ApiError } from "@/api/client";
 import {
   addSiteDomain,
   checkSiteDomain,
+  dismissSiteNotice,
   getSite,
   getSiteSummary,
   makeSiteDomainPrimary,
@@ -18,13 +19,12 @@ import {
   type AdminSite,
   type SiteDomain,
   type SiteFaqEntry,
-  type SiteSection,
 } from "@/api/box-site";
 import { useSession } from "@/components/session-provider";
 import { AdvancedDisclosure } from "@/components/settings/AdvancedSettings";
 import { inputClass, inputStyle, Pill, secondaryButtonClass, secondaryButtonStyle, StatusText } from "@/components/staff/staff-ui";
 import { Dialog } from "@/components/ui/Dialog";
-import { useDraftForm } from "@/components/ui/DraftForms";
+import { DraftFormsProvider, PageSaveBar, useDraftForm, useDraftForms } from "@/components/ui/DraftForms";
 import { FieldError } from "@/components/ui/ErrorNotice";
 import { MoreMenu } from "@/components/ui/MoreMenu";
 import { localizeError } from "@/i18n/presentation";
@@ -33,20 +33,18 @@ import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
 
 import { DnsRecords, DomainStatusLine, isSystemHost } from "./DomainParts";
 import { SiteLanguagesCard } from "./SiteLanguagesCard";
-import { CONVERSIONS_API_LABEL, DOMAIN_PLACEHOLDER, moveSection, sectionOn, TAG_FIELDS, toggleSection } from "./website-settings-model";
+import { publishedLook, type LooseSiteSettings } from "./website-draft-model";
+import { cardClass, cardStyle, LookCard, NoticeBanner, SectionsCard, SeoCard } from "./WebsiteLook";
+import { PREVIEW_KEY, PreviewSheet, PublishBar, SITE_KEY, SitePreview, useSiteDraft, useWideLayout } from "./WebsitePublish";
+import { CONVERSIONS_API_LABEL, DOMAIN_PLACEHOLDER, sectionOn, TAG_FIELDS } from "./website-settings-model";
 import { BackLink } from "@/components/ui/BackLink";
 
-const SITE_KEY = ["admin", "site"] as const;
 const SUMMARY_KEY = ["admin", "site", "summary"] as const;
 const MAX_DOMAINS = 2;
 const MAX_FAQ = 12;
 
+/** The fields that save at once with the save bar; the look and the switches are a draft to publish (ADR-530). */
 type Draft = {
-  section_order: SiteSection[];
-  hidden_sections: SiteSection[];
-  public_schedule: boolean;
-  public_wod: boolean;
-  forms_enabled: boolean;
   faq: SiteFaqEntry[];
   translation_locales: string[];
   visible_locales: string[];
@@ -59,11 +57,6 @@ type Draft = {
 
 function toDraft(settings: AdminSite["settings"]): Draft {
   return {
-    section_order: settings.section_order,
-    hidden_sections: settings.hidden_sections,
-    public_schedule: settings.public_schedule,
-    public_wod: settings.public_wod,
-    forms_enabled: settings.forms_enabled,
     faq: settings.faq,
     translation_locales: settings.translation_locales,
     visible_locales: settings.visible_locales,
@@ -78,8 +71,10 @@ function toDraft(settings: AdminSite["settings"]): Draft {
 const blank = (value: string) => (value.trim() ? value.trim() : null);
 
 /**
- * Ρυθμίσεις › Ιστοσελίδα (ANR s1 A, s2 A; ADR-352..354, ADR-388): the
- * sections with a switch each, in the owner's order; «Γλώσσες ιστοσελίδας»
+ * Ρυθμίσεις › Ιστοσελίδα (ANR s1 A, s2 A; ADR-352..354, ADR-388, ADR-530):
+ * «Εμφάνιση» (template, colours, light or dark, motion) and «Τι δείχνει η
+ * ιστοσελίδα» (a switch per section, no order) are a draft until
+ * «Δημοσίευση», with a live preview beside them; «Γλώσσες ιστοσελίδας»
  * (ADR-520) with each translation's progress and the way to «Μεταφράσεις»;
  * the domain card with its steps and records; the tags under «Προχωρημένα».
  */
@@ -97,7 +92,7 @@ export function WebsiteSettings() {
 
   return (
     <main className="min-h-screen px-4 py-8 md:px-10 md:py-10" style={{ background: "var(--bg)" }} data-testid="website-settings">
-      <div className="mx-auto flex max-w-3xl flex-col gap-5">
+      <div className="mx-auto flex max-w-3xl flex-col gap-5 min-[1100px]:max-w-[90rem]">
         <header className="flex flex-col gap-2">
           <BackLink href={adminHref("/admin/settings", slug)} className="self-start text-sm font-semibold" style={{ color: "var(--text-soft)" }}>
             {t("settings.back")}
@@ -118,14 +113,56 @@ export function WebsiteSettings() {
 
         {site.isPending ? <StatusText tone="muted">{t("settings.loading")}</StatusText> : null}
         {site.isError ? <StatusText tone="error">{localizeError(site.error, ui)}</StatusText> : null}
-        {site.data ? <SiteForm token={token} site={site.data} /> : null}
-        {site.data ? <DomainsCard token={token} domains={site.data.domains} /> : null}
+        {site.data ? <SiteEditor token={token} slug={slug ?? ""} site={site.data} /> : null}
       </div>
     </main>
   );
 }
 
-function SiteForm({ token, site }: { token: string; site: AdminSite }) {
+function SiteEditor({ token, slug, site }: { token: string; slug: string; site: AdminSite }) {
+  const queryClient = useQueryClient();
+  const settings = site.settings as LooseSiteSettings;
+  const draft = useSiteDraft(token, settings);
+  const forms = useDraftForms();
+  const wide = useWideLayout();
+  const [sheet, setSheet] = useState(false);
+  const notice = useMutation({
+    mutationFn: () => dismissSiteNotice(token),
+    onSuccess: (data) => queryClient.setQueryData<AdminSite>(SITE_KEY, (current) => (current ? { ...current, settings: data.settings } : current)),
+  });
+  const look = draft.effective;
+  const preview = <SitePreview token={token} slug={slug} look={{ template: look.template, palette: look.palette, appearance: look.appearance, calm_motion: look.calm_motion }} />;
+
+  return (
+    <div className="grid items-start gap-5 min-[1100px]:grid-cols-[minmax(0,46rem)_minmax(0,1fr)]">
+      <div className="flex min-w-0 flex-col gap-5">
+        {settings.template_notice && !notice.isPending && !notice.isSuccess ? (
+          <NoticeBanner template={publishedLook(settings).template} onClose={() => notice.mutate()} />
+        ) : null}
+        <LookCard look={look} onChange={draft.change} />
+        <SectionsCard state={look} onChange={draft.change} />
+        <SeoCard hasDomain={site.domains.some((domain) => domain.status === "active")} />
+        <DraftFormsProvider value={forms.context}>
+          <SiteForm token={token} site={site} faqOn={sectionOn(look, "faq")} />
+        </DraftFormsProvider>
+        <DomainsCard token={token} domains={site.domains} />
+        <div className="sticky z-(--z-sticky) flex flex-col gap-2" style={{ bottom: "calc(var(--bottom-float-inset) + 0.75rem)" }}>
+          <PageSaveBar bar={forms.bar} testId="website-save-bar" />
+          <PublishBar token={token} draft={draft} onPreview={wide ? undefined : () => setSheet(true)} />
+        </div>
+      </div>
+      {wide ? (
+        <aside className="sticky" style={{ top: "calc(var(--top-bar-space) + 1rem)" }}>
+          <div className={cardClass} style={cardStyle}>{preview}</div>
+        </aside>
+      ) : null}
+      {sheet && !wide ? <PreviewSheet onClose={() => setSheet(false)}>{preview}</PreviewSheet> : null}
+    </div>
+  );
+}
+
+/** FAQ, languages and tags: they save at once with the save bar, as before. */
+function SiteForm({ token, site, faqOn }: { token: string; site: AdminSite; faqOn: boolean }) {
   const t = useTranslations("BoxSite");
   const ui = useUiTranslations();
   const queryClient = useQueryClient();
@@ -136,11 +173,6 @@ function SiteForm({ token, site }: { token: string; site: AdminSite }) {
     save: async (draft) => {
       const saved = await saveSite(token, {
         lock_version: settings.lock_version,
-        section_order: draft.section_order,
-        hidden_sections: draft.hidden_sections,
-        public_schedule: draft.public_schedule,
-        public_wod: draft.public_wod,
-        forms_enabled: draft.forms_enabled,
         // The id keeps an entry's translations with it (ADR-520).
         faq: draft.faq.map((entry) => ({ ...(entry.id ? { id: entry.id } : {}), question: entry.question.trim(), answer: entry.answer.trim() })),
         translation_locales: draft.translation_locales,
@@ -153,6 +185,7 @@ function SiteForm({ token, site }: { token: string; site: AdminSite }) {
       });
       queryClient.setQueryData<AdminSite>(SITE_KEY, (current) => (current ? { ...current, settings: saved.settings, languages: saved.languages } : current));
     },
+    onSaved: () => queryClient.invalidateQueries({ queryKey: PREVIEW_KEY }),
     describeError: (error) => (error instanceof ApiError && error.status === 409 ? t("settings.stale") : localizeError(error, ui)),
   });
   const draft = form.draft;
@@ -160,55 +193,6 @@ function SiteForm({ token, site }: { token: string; site: AdminSite }) {
 
   return (
     <>
-      <section className="flex flex-col gap-3 rounded-3xl p-5" style={{ background: "var(--panel)", border: "1px solid var(--border)" }} data-testid="website-sections">
-        <h2 className="text-lg font-semibold" style={{ color: "var(--text)" }}>{t("settings.sectionsTitle")}</h2>
-        <p className="text-sm" style={{ color: "var(--muted)" }}>{t("settings.sectionsHint")}</p>
-        <ol className="flex flex-col">
-          {draft.section_order.map((key, index) => (
-            <li key={key} className="flex min-h-12 items-center gap-2 py-1" style={{ borderTop: index === 0 ? undefined : "1px solid var(--border)" }} data-testid={`website-section-${key}`}>
-              <span className="flex flex-1 flex-col">
-                <span className="text-sm font-semibold" style={{ color: "var(--text)" }}>{t(`sections.${key}`)}</span>
-                {key === "hero" ? <span className="text-xs" style={{ color: "var(--dim)" }}>{t("settings.heroAlways")}</span> : null}
-              </span>
-              {key !== "hero" ? (
-                <>
-                  <button
-                    type="button"
-                    aria-label={t("settings.moveUp", { section: t(`sections.${key}`) })}
-                    disabled={index <= 1}
-                    onClick={() => form.edit({ section_order: moveSection(draft.section_order, key, -1) })}
-                    className="grid h-9 w-9 place-items-center rounded-full disabled:opacity-30"
-                    style={{ color: "var(--text-soft)" }}
-                  >
-                    ↑
-                  </button>
-                  <button
-                    type="button"
-                    aria-label={t("settings.moveDown", { section: t(`sections.${key}`) })}
-                    disabled={index === draft.section_order.length - 1}
-                    onClick={() => form.edit({ section_order: moveSection(draft.section_order, key, 1) })}
-                    className="grid h-9 w-9 place-items-center rounded-full disabled:opacity-30"
-                    style={{ color: "var(--text-soft)" }}
-                  >
-                    ↓
-                  </button>
-                  <input
-                    type="checkbox"
-                    role="switch"
-                    aria-label={t(`sections.${key}`)}
-                    checked={sectionOn(draft, key)}
-                    disabled={form.saving}
-                    onChange={(event) => form.edit(toggleSection(draft, key, event.target.checked))}
-                    className="h-5 w-5 shrink-0"
-                    style={{ accentColor: "var(--primary)" }}
-                  />
-                </>
-              ) : null}
-            </li>
-          ))}
-        </ol>
-      </section>
-
       <SiteLanguagesCard
         languages={site.languages}
         value={{ translation_locales: draft.translation_locales, visible_locales: draft.visible_locales }}
@@ -216,7 +200,7 @@ function SiteForm({ token, site }: { token: string; site: AdminSite }) {
         disabled={form.saving}
       />
 
-      {sectionOn(draft, "faq") || draft.faq.length > 0 ? (
+      {faqOn || draft.faq.length > 0 ? (
         <section className="flex flex-col gap-3 rounded-3xl p-5" style={{ background: "var(--panel)", border: "1px solid var(--border)" }} data-testid="website-faq">
           <h2 className="text-lg font-semibold" style={{ color: "var(--text)" }}>{t("sections.faq")}</h2>
           {draft.faq.map((entry, index) => (
@@ -283,7 +267,6 @@ function SiteForm({ token, site }: { token: string; site: AdminSite }) {
           ) : null}
         </div>
       </AdvancedDisclosure>
-      {form.bar}
     </>
   );
 }
@@ -322,7 +305,7 @@ function DomainsCard({ token, domains }: { token: string; domains: SiteDomain[] 
         : null;
 
   return (
-    <section className="flex flex-col gap-4 rounded-3xl p-5" style={{ background: "var(--panel)", border: "1px solid var(--border)" }} data-testid="website-domains">
+    <section id="website-domains" className="flex scroll-mt-24 flex-col gap-4 rounded-3xl p-5" style={{ background: "var(--panel)", border: "1px solid var(--border)" }} data-testid="website-domains">
       <div className="flex flex-col gap-1">
         <h2 className="text-lg font-semibold" style={{ color: "var(--text)" }}>{t("domains.title")}</h2>
         <p className="text-sm" style={{ color: "var(--muted)" }}>{t("domains.hint")}</p>

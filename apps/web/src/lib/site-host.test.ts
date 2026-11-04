@@ -28,10 +28,26 @@ describe("box website on its own domain", () => {
     expect(siteRewritePath("/admin", "kypseli")).toBeNull();
   });
 
+  it("serves the website's pages and files under the domain's root (ADR-530)", () => {
+    expect(siteRewritePath("/schedule", "kypseli")).toBe("/b/kypseli/schedule");
+    expect(siteRewritePath("/coaches/", "kypseli")).toBe("/b/kypseli/coaches");
+    expect(siteRewritePath("/space", "kypseli")).toBe("/b/kypseli/space");
+    expect(siteRewritePath("/en/schedule", "kypseli")).toBe("/b/kypseli/en/schedule");
+    expect(siteRewritePath("/pt-pt/packages", "kypseli")).toBe("/b/kypseli/pt-pt/packages");
+    expect(siteRewritePath("/llms.txt", "kypseli")).toBe("/b/kypseli/llms.txt");
+    expect(siteRewritePath("/sitemap.xml", "kypseli")).toBe("/b/kypseli/sitemap.xml");
+    expect(siteRewritePath("/robots.txt", "kypseli")).toBe("/b/kypseli/robots.txt");
+    expect(siteRewritePath("/en/privacy", "kypseli")).toBeNull();
+    expect(siteRewritePath("/schedule/en", "kypseli")).toBeNull();
+    expect(siteRewritePath("/llmsXtxt", "kypseli")).toBeNull();
+  });
+
   it("allows the tags' origins only on website pages", () => {
     expect(isSitePath("/b/kypseli")).toBe(true);
     expect(isSitePath("/b/kypseli/en")).toBe(true);
     expect(isSitePath("/b/kypseli/fr")).toBe(true);
+    expect(isSitePath("/b/kypseli/schedule")).toBe(true);
+    expect(isSitePath("/b/kypseli/en/space")).toBe(true);
     expect(isSitePath("/b/kypseli/chat")).toBe(false);
     expect(isSitePath("/admin")).toBe(false);
   });

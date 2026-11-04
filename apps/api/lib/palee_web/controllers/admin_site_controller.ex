@@ -55,6 +55,68 @@ defmodule PaleeWeb.AdminSiteController do
          do: json(conn, settings)
   end
 
+  # ── Draft and publish (ADR-530) ─────────────────────────────────────────
+
+  operation(:publish,
+    summary: "«Δημοσίευση»: the draft (look and section switches) goes live",
+    responses: [
+      ok: {"Settings", "application/json", S.settings_only_response()},
+      conflict: {"Saved meanwhile", "application/json", %Schema{type: :object}}
+    ]
+  )
+
+  def publish(conn, _params) do
+    with {:ok, answer} <- SiteAdmin.publish(conn.assigns.tenant_context), do: json(conn, answer)
+  end
+
+  operation(:discard_draft,
+    summary: "«Απόρριψη αλλαγών»: throw the draft away; the live site stays as it is",
+    responses: [
+      ok: {"Settings", "application/json", S.settings_only_response()},
+      conflict: {"Saved meanwhile", "application/json", %Schema{type: :object}}
+    ]
+  )
+
+  def discard_draft(conn, _params) do
+    with {:ok, answer} <- SiteAdmin.discard_draft(conn.assigns.tenant_context),
+         do: json(conn, answer)
+  end
+
+  operation(:dismiss_notice,
+    summary: "Hide the notice that the site moved to the «Αρένα» template",
+    responses: [
+      ok: {"Settings", "application/json", S.settings_only_response()},
+      conflict: {"Saved meanwhile", "application/json", %Schema{type: :object}}
+    ]
+  )
+
+  def dismiss_notice(conn, _params) do
+    with {:ok, answer} <- SiteAdmin.dismiss_notice(conn.assigns.tenant_context),
+         do: json(conn, answer)
+  end
+
+  operation(:preview,
+    summary: "The website as it will look once the draft is published (public-site shape)",
+    parameters: [
+      %Parameter{
+        name: :lang,
+        in: :query,
+        required: false,
+        description:
+          "One of the site's translations (ADR-520); the box's own language when absent",
+        schema: S.translation_locale()
+      }
+    ],
+    responses: [ok: {"Site", "application/json", S.public_site()}, not_found: @error]
+  )
+
+  def preview(conn, params) do
+    language = if is_binary(params["lang"]), do: params["lang"]
+
+    with {:ok, site} <- SiteAdmin.preview(conn.assigns.tenant_context, language),
+         do: json(conn, site)
+  end
+
   operation(:summary,
     summary: "What the website brought in over the last 30 days (counts only)",
     responses: [ok: {"Summary", "application/json", S.summary_response()}]

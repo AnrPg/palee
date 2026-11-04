@@ -27,7 +27,8 @@ defmodule PaleeWeb.MyFeaturesController do
       features: %Schema{
         type: :object,
         description: "ADR-470: every feature key with whether it is on",
-        properties: Map.new(BusinessFeatures.keys(), &{String.to_atom(&1), %Schema{type: :boolean}}),
+        properties:
+          Map.new(BusinessFeatures.keys(), &{String.to_atom(&1), %Schema{type: :boolean}}),
         required: Enum.map(BusinessFeatures.keys(), &String.to_atom/1)
       }
     },

@@ -20,4 +20,10 @@ describe("useScheduleStore", () => {
     useScheduleStore.getState().shiftWindow(-1);
     expect(useScheduleStore.getState().startDate).toBe("2026-10-30");
   });
+
+  it("focusDay moves to a linked class's day, keeps the view length and drops the type filter", () => {
+    useScheduleStore.setState({ days: 7, startDate: "2026-01-05", classTypeIds: ["type-1"] });
+    useScheduleStore.getState().focusDay("2026-11-04");
+    expect(useScheduleStore.getState()).toMatchObject({ days: 7, startDate: "2026-11-04", classTypeIds: [] });
+  });
 });

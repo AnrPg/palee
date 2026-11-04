@@ -16550,6 +16550,232 @@
     "sentTitle": "¡Recibido!",
     "sentBody": "{box} te responderá pronto, normalmente el mismo día."
   },
+  "SiteTemplates": {
+    "skip": "Ir al contenido",
+    "menu": "Menú",
+    "closeMenu": "Cerrar el menú",
+    "close": "Cerrar",
+    "pagesNav": "Páginas",
+    "logoHome": "{box}, página de inicio",
+    "free": "Gratis",
+    "from": "desde {price}",
+    "pages": {
+      "home": "Inicio",
+      "schedule": "Horario",
+      "training": "Entrenamientos",
+      "packages": "Paquetes",
+      "coaches": "Coaches",
+      "space": "El espacio"
+    },
+    "cta": {
+      "trial": "Clase de prueba gratis",
+      "trialLong": "Reserva tu clase de prueba gratis",
+      "contact": "Escríbenos",
+      "call": "Llamar al {phone}",
+      "tabTrial": "Prueba",
+      "tabContact": "Mensaje",
+      "tabCall": "Llamar"
+    },
+    "next": {
+      "title": "Próxima clase",
+      "chip": "Próxima: {name} {when}",
+      "when": "{day, select, today {hoy {time}} tomorrow {mañana {time}} other {{weekday} {time}}}",
+      "inDays": "{count, plural, one {en # día} other {en # días}}"
+    },
+    "open": {
+      "open": "Abierto hasta las {time}",
+      "opens": "Abre a las {time}",
+      "closed": "Cerrado ahora",
+      "closedToday": "Cerrado hoy"
+    },
+    "per": {
+      "monthly": "al mes",
+      "quarterly": "al trimestre",
+      "semiannual": "al semestre",
+      "annual": "al año",
+      "once": "una vez"
+    },
+    "schedule": {
+      "title": "Horario de clases",
+      "sub": "Desliza para ver el día siguiente. Con «Pruébala» la clase pasa al formulario de prueba.",
+      "today": "Hoy",
+      "day": "Día",
+      "type": "Tipo de clase",
+      "panes": "Las clases del día",
+      "empty": "No hay clases este día.",
+      "emptyType": "No hay clases de este tipo este día.",
+      "minutes": "{count, plural, other {#′}}",
+      "done": "Terminada",
+      "try": "Pruébala",
+      "tryAria": "Prueba {name}, {day} {time}"
+    },
+    "map": {
+      "directions": "Cómo llegar",
+      "howToGet": "Cómo llegar hasta aquí"
+    },
+    "gallery": {
+      "title": "Fotos",
+      "open": "Abrir: {name}",
+      "photo": "Foto {index}",
+      "prev": "Foto anterior",
+      "next": "Foto siguiente",
+      "count": "{index} de {count}"
+    },
+    "programmes": {
+      "weeks": "{count, plural, one {# semana} other {# semanas}}"
+    },
+    "stats": {
+      "classes_per_week": "{count, plural, one {clase a la semana} other {clases a la semana}}",
+      "prs_this_year": "{count, plural, other {PR este año}}",
+      "years_open": "{count, plural, one {año abierto} other {años abiertos}}"
+    },
+    "reviews": {
+      "count": "{count, plural, one {# reseña} other {# reseñas}}"
+    },
+    "packages": {
+      "title": "Paquetes de suscripción",
+      "sub": "Los precios del box hoy.",
+      "stackSub": "Desliza las tarjetas o usa las flechas.",
+      "all": "Todos los paquetes de suscripción",
+      "bookTrial": "Reservar una prueba",
+      "startTrial": "Empezar con una prueba",
+      "choose": "Elegirlo",
+      "buyOnline": "Comprar online",
+      "carousel": "carrusel",
+      "stackLabel": "Paquetes de suscripción: desliza o usa las flechas",
+      "prev": "Paquete anterior",
+      "next": "Paquete siguiente",
+      "position": "{index} de {count}"
+    },
+    "form": {
+      "trialTitle": "Clase de prueba gratis",
+      "contactTitle": "Escríbenos",
+      "contactSub": "Escríbenos y {box} te responderá pronto.",
+      "choice": "Tu elección: {choice}",
+      "days": "Qué días te vienen bien (opcional)",
+      "thanks": "¡Gracias, {name}!",
+      "contactSent": "Tu mensaje se ha enviado. El box te responderá pronto.",
+      "previewNote": "Vista previa: el formulario no se ha enviado de verdad.",
+      "ok": "Vale"
+    },
+    "stories": {
+      "label": "Historia: {name}",
+      "pause": "Pausa",
+      "resume": "Seguir",
+      "prev": "Anterior",
+      "next": "Siguiente",
+      "hint": "Toca a la derecha para la siguiente, mantén pulsado para pausar, desliza hacia abajo para cerrar.",
+      "trial1": "Tu primer",
+      "trial2": "entrenamiento",
+      "trial3": "es gratis",
+      "hero1": "Entrenamiento",
+      "hero2": "para cada",
+      "hero3": "nivel",
+      "seeSpace": "Ver el espacio",
+      "fullSchedule": "Todo el horario",
+      "swipe": "Desliza para elegir",
+      "ourStory": "Nuestra historia",
+      "allReviews": "Todas las reseñas",
+      "names": {
+        "wod": "WOD",
+        "space": "El espacio",
+        "coaches": "Coaches",
+        "events": "Events",
+        "reviews": "Reseñas"
+      }
+    },
+    "footer": {
+      "contact": "Contacto"
+    },
+    "sections": {
+      "wod": "WOD del día",
+      "events": "Events",
+      "programmes": "Programas online",
+      "reviews": "Reseñas",
+      "faq": "Preguntas frecuentes",
+      "location": "Ubicación",
+      "stats": "En cifras"
+    },
+    "arena": {
+      "line1": "Hazte",
+      "line2": "más fuerte",
+      "line3": "cada día",
+      "seeSchedule": "Ver el horario",
+      "seePrices": "Ver los precios",
+      "whyEyebrow": "Por qué aquí",
+      "why1": "Nadie",
+      "why2": "entrena",
+      "why3": "solo",
+      "coaches": "Los coaches",
+      "prevCoach": "Coach anterior",
+      "nextCoach": "Coach siguiente",
+      "prices": "Precios",
+      "reviews": "Lo que dicen los miembros",
+      "findUs": "Dónde encontrarnos",
+      "questions": "Preguntas frecuentes"
+    },
+    "why": {
+      "coaches": "{count, plural, one {# coach} other {# coaches}}",
+      "classes": "{count, plural, one {# clase a la semana} other {# clases a la semana}}",
+      "progress": "Mira tu progreso",
+      "progressText": "Tus PR y entrenamientos quedan en la app del box."
+    },
+    "wod": {
+      "band": "WOD del día · {title}",
+      "play": "Reanudar el movimiento",
+      "pause": "Pausar el movimiento"
+    },
+    "video": {
+      "play": "Reproducir el vídeo",
+      "pause": "Pausar el vídeo"
+    },
+    "coaches": {
+      "sub": "Las personas que te van a entrenar."
+    },
+    "space": {
+      "sub": "Toca una foto para verla en grande."
+    },
+    "tiles": {
+      "hero1": "Entrenamiento",
+      "hero2": "en tu barrio",
+      "today": "Hoy",
+      "nextDay": "El día siguiente",
+      "whoWeAre": "Quiénes somos",
+      "team": "El equipo",
+      "inNumbers": "En cifras",
+      "moreEvents": "{count, plural, one {y # más} other {y # más}}",
+      "programmes": "{count, plural, one {# programa} other {# programas}}",
+      "moreQuestions": "{count, plural, one {y # pregunta más} other {y # preguntas más}}",
+      "askUs": "Pregúntanos"
+    },
+    "atelier": {
+      "hero1": "Fuerza",
+      "hero2": "con <it>cuidado</it>.",
+      "scroll": "Desliza",
+      "theSchedule": "El horario",
+      "philosophy": "Nuestra filosofía",
+      "chapters": "Capítulos",
+      "aDayHere": "Un día <it>aquí</it>",
+      "chapterClasses": "Las clases",
+      "classesTitle": "Cada clase, <it>con cuidado</it>.",
+      "seeWeek": "Ver la semana",
+      "chapterSpace": "El espacio",
+      "spaceTitle": "<it>Nuestro</it> espacio.",
+      "comeIn": "Entra",
+      "chapterHome": "Y desde casa",
+      "programmesTitle": "Programas de nuestros <it>coaches</it>.",
+      "seeProgrammes": "Ver los programas",
+      "people": "Las personas",
+      "onTheFloor": "En la sala <it>contigo</it>",
+      "memberships": "Membresías",
+      "simplePrices": "Precios <it>sencillos</it>",
+      "fromMembers": "De los miembros",
+      "firstHour": "Tu primera hora",
+      "closing1": "Ven a",
+      "closing2": "<it>conocernos</it>.",
+      "contact": "Contacto"
+    }
+  },
   "BoxSite": {
     "bookTrial": "Reserva una clase de prueba",
     "askSomething": "Pregunta algo",
@@ -16574,7 +16800,10 @@
       "reviews": "Reseñas",
       "faq": "Preguntas frecuentes",
       "trial_form": "Solicitud de prueba",
-      "contact_form": "Formulario de contacto"
+      "contact_form": "Formulario de contacto",
+      "photos": "Fotos",
+      "stats": "La comunidad en cifras",
+      "programmes": "Programas"
     },
     "form": {
       "trial": {
@@ -16711,16 +16940,11 @@
       "back": "Ajustes",
       "title": "Web",
       "navHint": "Secciones, idiomas, dominio y cookies de la web del box",
-      "intro": "La web del box se llena sola desde Palee. Activa o desactiva secciones y ordénalas.",
+      "intro": "La web del box se llena sola desde Palee. Elige su aspecto y sus secciones y publícala cuando esté lista.",
       "open": "Abrir la web",
       "requests": "{count, plural, one {# solicitud} other {# solicitudes}} en los últimos {days} días",
       "loading": "Cargando…",
       "stale": "Otra persona cambió estos ajustes. Recarga e inténtalo de nuevo.",
-      "sectionsTitle": "Secciones",
-      "sectionsHint": "Los visitantes ven las secciones activas en este orden.",
-      "heroAlways": "Siempre la primera",
-      "moveUp": "Subir {section}",
-      "moveDown": "Bajar {section}",
       "question": "Pregunta",
       "answer": "Respuesta",
       "required": "Rellénalo o quita la pregunta.",
@@ -16812,6 +17036,139 @@
       "left": "Quedan {left} de {total}",
       "skip": "Saltar",
       "saveNext": "Guardar y siguiente"
+    }
+  },
+  "WebsiteLook": {
+    "notice": "Tu web tiene un aspecto nuevo: {template}. Mira las otras plantillas y cámbiala cuando quieras.",
+    "noticeClose": "Cerrar aviso",
+    "lookTitle": "Aspecto",
+    "template": "Plantilla",
+    "templates": {
+      "arena": {
+        "name": "Arena",
+        "hint": "Energía, tipografía grande. CrossFit."
+      },
+      "tiles": {
+        "name": "Mosaico",
+        "hint": "Mosaicos vivos. Encaja en todo."
+      },
+      "stories": {
+        "name": "Historias",
+        "hint": "Historias, como una app. Sobre todo móvil."
+      },
+      "atelier": {
+        "name": "Atelier",
+        "hint": "Editorial y premium. Pilates, yoga."
+      }
+    },
+    "colors": "Colores",
+    "palettes": {
+      "palee": "Palee",
+      "electric": "Eléctrico",
+      "flame": "Llama",
+      "sun": "Sol",
+      "amber": "Ámbar",
+      "emerald": "Esmeralda",
+      "aegean": "Egeo",
+      "violet": "Violeta",
+      "fuchsia": "Fucsia",
+      "olive": "Oliva",
+      "navy": "Marino",
+      "mono": "Mono"
+    },
+    "contrast": "Contraste del texto {ratio}:1.",
+    "contrastAa": "Contraste del texto {ratio}:1 · AA ✓.",
+    "contrastHint": "Si un color no se lee bien, Palee usa un tono más oscuro.",
+    "appearanceTitle": "Clara u oscura",
+    "appearance": {
+      "auto": "Automático",
+      "light": "Siempre clara",
+      "dark": "Siempre oscura"
+    },
+    "appearanceHint": "«Automático» sigue el dispositivo del visitante.",
+    "motionTitle": "Movimiento",
+    "calm": "Menos movimiento",
+    "calmHint": "Quita los efectos y los movimientos automáticos para todos los visitantes. Quien lo pidió en su dispositivo ya ve menos movimiento.",
+    "sectionsTitle": "Qué muestra la web",
+    "sectionsHint": "Cada sección se llena sola desde Palee. Lo que no tiene datos se oculta, aunque esté activado. El Inicio se ve siempre.",
+    "quickAll": "Todo",
+    "quickBasic": "Solo lo básico",
+    "groups": {
+      "basics": "Básico",
+      "training": "Entrenamiento",
+      "shop": "Tienda",
+      "team": "Equipo y espacio",
+      "forms": "Formularios"
+    },
+    "new": "nuevo",
+    "sectionHints": {
+      "about": "El texto «Sobre nosotros» de la página del box.",
+      "photos": "Hasta 12 fotos y 1 vídeo de hasta 15″. Sin ellas, los «Espacios» con 🌐.",
+      "stats": "Solo totales: clases por semana, PR este año, años abiertos.",
+      "schedule": "Las clases de la semana, sin plazas ni nombres.",
+      "wod": "El WOD de hoy, cuando se publique.",
+      "events": "Los eventos del box abiertos a todos.",
+      "programmes": "Los programas que venden tus coaches.",
+      "packages": "Los bonos que vendes online.",
+      "coaches": "Los coaches del box con sus certificaciones.",
+      "location": "Dirección, mapa y horario.",
+      "reviews": "Reseñas de los miembros y tu puntuación en Google.",
+      "faq": "Hasta 12 preguntas que escribes tú.",
+      "trial_form": "Se convierte en Interesado en Leads.",
+      "contact_form": "Se convierte en Interesado en Leads."
+    },
+    "seoTitle": "Te encuentran en Google y en las respuestas de IA",
+    "seoIntro": "Palee lo hace todo solo, en cada página y en cada idioma:",
+    "seo": {
+      "google": {
+        "label": "Google (SEO):",
+        "text": "título, descripción y dirección propios en cada página, sitemap, imagen para compartir."
+      },
+      "data": {
+        "label": "Datos estructurados:",
+        "text": "el box, los bonos, las clases, los eventos y las preguntas en schema.org, para que los buscadores los lean bien."
+      },
+      "ai": {
+        "label": "Respuestas de IA (GEO):",
+        "text": "la misma dirección, teléfono y horario en todas partes, textos con fecha y un archivo llms.txt, para que ChatGPT, Gemini y Perplexity te citen bien."
+      },
+      "speed": {
+        "label": "Velocidad:",
+        "text": "las páginas abren en menos de 2,5 segundos en el móvil, algo que también cuenta para Google."
+      },
+      "reviews": {
+        "label": "Reseñas:",
+        "text": "«Escribe una reseña en Google» después de las clases te sube en las búsquedas locales."
+      }
+    },
+    "seoTip": "Para subir aún más: completa la ficha de Google del box y pon <domain>tu propio dominio</domain>.",
+    "publish": {
+      "allPublished": "Todo publicado.",
+      "pending": "Cambios sin publicar: {list}.",
+      "published": "Publicado. Los visitantes lo ven en unos segundos.",
+      "publish": "Publicar",
+      "publishing": "Publicando…",
+      "discard": "Descartar",
+      "discardTitle": "¿Descartar los cambios?",
+      "discardText": "Se perderán los cambios en {list}. La web se queda como está publicada.",
+      "keep": "Conservarlos",
+      "groups": {
+        "template": "plantilla",
+        "colors": "colores",
+        "appearance": "clara u oscura",
+        "motion": "movimiento",
+        "sections": "secciones"
+      }
+    },
+    "preview": {
+      "title": "Vista previa",
+      "hint": "Así la verán los visitantes después de «Publicar».",
+      "device": "Dispositivo",
+      "phone": "Móvil",
+      "desk": "Ordenador",
+      "open": "Vista previa",
+      "loading": "Cargando la vista previa…",
+      "unavailable": "La vista previa no está disponible ahora."
     }
   },
   "BoxReviews": {

@@ -9,10 +9,12 @@ import { APP_THEMES, cssVariablesForTheme } from "./theme";
  * Every colour comes from the theme (src/lib/theme.ts → CSS variables).
  * This guard fails on any colour literal anywhere else in the web sources,
  * so no picker, scrollbar or badge drifts off-theme (docs/brand/THEME.md).
+ * A box's website has its own palettes (ADR-530): they come from
+ * box-site/templates/palettes.ts as `--s-*` variables, the only other source.
  */
 
 const SOURCE_ROOT = join(__dirname, "..");
-const THEME_SOURCE = "lib/theme.ts";
+const THEME_SOURCES = new Set(["lib/theme.ts", "components/box-site/templates/palettes.ts"]);
 const SKIPPED_DIRECTORIES = new Set(["api/generated"]);
 const CHECKED_EXTENSIONS = [".ts", ".tsx", ".css"];
 
@@ -42,7 +44,7 @@ function sourceFiles(directory: string): string[] {
     const relativePath = relative(SOURCE_ROOT, path);
     if (statSync(path).isDirectory()) return SKIPPED_DIRECTORIES.has(relativePath) ? [] : sourceFiles(path);
     if (!CHECKED_EXTENSIONS.some((extension) => entry.endsWith(extension))) return [];
-    if (entry.includes(".test.") || relativePath === THEME_SOURCE) return [];
+    if (entry.includes(".test.") || THEME_SOURCES.has(relativePath)) return [];
     return [path];
   });
 }
@@ -78,7 +80,9 @@ describe("theme guard", () => {
   it("uses only CSS variables the theme or a stylesheet defines", () => {
     const themeVariables = new Set(Object.keys(cssVariablesForTheme(APP_THEMES.frost)));
     const files = sourceFiles(SOURCE_ROOT).map((file) => ({ file, source: readFileSync(file, "utf8") }));
-    const declared = new Set(files.flatMap(({ source }) => [...source.matchAll(/["']?(--[\w-]+)["']?\s*:/g)].map((match) => match[1]!)));
+    // The website's palette source declares its `--s-*` tokens.
+    const palettes = [...THEME_SOURCES].filter((path) => path !== "lib/theme.ts").map((path) => ({ source: readFileSync(join(SOURCE_ROOT, path), "utf8") }));
+    const declared = new Set([...files, ...palettes].flatMap(({ source }) => [...source.matchAll(/["']?(--[\w-]+)["']?\s*:/g)].map((match) => match[1]!)));
     const unknown: string[] = [];
     for (const { file, source } of files) {
       for (const match of source.matchAll(/var\((--[\w-]+[\w])(?=[,)])/g)) {

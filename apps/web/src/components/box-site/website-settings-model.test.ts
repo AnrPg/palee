@@ -2,10 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import type { SiteSection } from "@/api/box-site";
 
-import { moveSection, sectionOn, toggleSection, type SectionState } from "./website-settings-model";
+import { sectionOn, toggleSection, type SectionState } from "./website-settings-model";
 
-const ORDER: SiteSection[] = ["hero", "about", "schedule", "events", "wod", "trial_form", "contact_form"];
-const STATE: SectionState = { section_order: ORDER, hidden_sections: [], public_schedule: false, public_wod: false, forms_enabled: true };
+const STATE: SectionState = { hidden_sections: [], public_schedule: false, public_wod: false, forms_enabled: true };
 
 // ANR s1 A: one switch per section; Ωρολόγιο and WOD της ημέρας are off by default.
 describe("website sections", () => {
@@ -31,10 +30,13 @@ describe("website sections", () => {
     expect(sectionOn(again, "contact_form")).toBe(false);
   });
 
-  it("never moves or hides the hero", () => {
+  it("never hides the hero", () => {
     expect(toggleSection(STATE, "hero", false)).toEqual({});
-    expect(moveSection(ORDER, "about", -1)).toBe(ORDER);
-    expect(moveSection(ORDER, "events", -1)).toEqual(["hero", "about", "events", "schedule", "wod", "trial_form", "contact_form"]);
-    expect(moveSection(ORDER, "contact_form", 1)).toBe(ORDER);
+  });
+
+  it("treats the new sections (ADR-530) like any other switch", () => {
+    const photos = "photos" as SiteSection;
+    expect(sectionOn(STATE, photos)).toBe(true);
+    expect(toggleSection(STATE, photos, false)).toEqual({ hidden_sections: [photos] });
   });
 });

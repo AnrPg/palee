@@ -12485,6 +12485,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/site/draft": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** «Απόρριψη αλλαγών»: throw the draft away; the live site stays as it is */
+        delete: operations["PaleeWeb.AdminSiteController.discard_draft"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/site/notice": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Hide the notice that the site moved to the «Αρένα» template */
+        delete: operations["PaleeWeb.AdminSiteController.dismiss_notice"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/site/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The website as it will look once the draft is published (public-site shape) */
+        get: operations["PaleeWeb.AdminSiteController.preview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/site/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Δημοσίευση»: the draft (look and section switches) goes live */
+        post: operations["PaleeWeb.AdminSiteController.publish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/site/summary": {
         parameters: {
             query?: never;
@@ -21040,11 +21108,44 @@ export interface components {
                 /** @description The box's own language (the source) */
                 source: string;
             };
-            section_keys: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            section_keys: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
             /** SiteSettings */
             settings: {
+                /**
+                 * @description «Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»
+                 * @enum {string}
+                 */
+                appearance: "auto" | "light" | "dark";
                 banner_version: number;
+                /** @description «Λιγότερη κίνηση»: the site's motion is off */
+                calm_motion: boolean;
                 conversions_api_enabled: boolean;
+                /**
+                 * SiteDraft
+                 * @description The publishable fields waiting for «Δημοσίευση»; null when nothing waits
+                 */
+                draft: {
+                    /**
+                     * @description «Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»
+                     * @enum {string}
+                     */
+                    appearance?: "auto" | "light" | "dark";
+                    /** @description «Λιγότερη κίνηση»: the site's motion is off */
+                    calm_motion?: boolean;
+                    hidden_sections?: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                    /**
+                     * @description ADR-530 palette key
+                     * @enum {string}
+                     */
+                    palette?: "palee" | "electric" | "flame" | "sun" | "amber" | "emerald" | "aegean" | "violet" | "fuchsia" | "olive" | "navy" | "mono";
+                    public_schedule?: boolean;
+                    public_wod?: boolean;
+                    /**
+                     * @description ADR-530 template
+                     * @enum {string}
+                     */
+                    template?: "arena" | "tiles" | "stories" | "atelier";
+                } | null;
                 faq: {
                     answer: string;
                     /**
@@ -21059,13 +21160,30 @@ export interface components {
                 gtm_container_id: string | null;
                 /** @description A token is saved; the token itself is never returned */
                 has_conversions_api_token: boolean;
-                hidden_sections: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                hidden_sections: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
                 lock_version: number;
                 meta_pixel_id: string | null;
+                /**
+                 * @description ADR-530 palette key
+                 * @enum {string}
+                 */
+                palette: "palee" | "electric" | "flame" | "sun" | "amber" | "emerald" | "aegean" | "violet" | "fuchsia" | "olive" | "navy" | "mono";
                 public_schedule: boolean;
                 /** @description «WOD της ημέρας» on the site (ADR-388) */
                 public_wod: boolean;
-                section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                /**
+                 * Format: date-time
+                 * @description The last «Δημοσίευση» (ADR-530)
+                 */
+                published_at: string | null;
+                section_order: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                /**
+                 * @description ADR-530 template
+                 * @enum {string}
+                 */
+                template: "arena" | "tiles" | "stories" | "atelier";
+                /** @description The site moved to «Αρένα» (ADR-530); shown until published or dismissed */
+                template_notice: boolean;
                 /** @description Languages the box translates its texts into (ADR-520) */
                 translation_locales: string[];
                 /** @description Translations visitors can pick on the site (ADR-520) */
@@ -45361,6 +45479,13 @@ export interface components {
         PublicSiteResponse: {
             /** @description The translated «Σχετικά», null when there is none */
             about: string | null;
+            /**
+             * @description «Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»
+             * @enum {string}
+             */
+            appearance: "auto" | "light" | "dark";
+            /** @description «Λιγότερη κίνηση»: the site's motion is off */
+            calm_motion: boolean;
             canonical_url: string;
             /** @description Translated class names by the box's own name */
             class_type_names: {
@@ -45397,6 +45522,48 @@ export interface components {
             language: string;
             /** @description The site's languages: the box's own first, then its visible translations */
             languages: string[];
+            /**
+             * @description ADR-530 palette key
+             * @enum {string}
+             */
+            palette: "palee" | "electric" | "flame" | "sun" | "amber" | "emerald" | "aegean" | "violet" | "fuchsia" | "olive" | "navy" | "mono";
+            /** @description The box's public phone; null while the box has none (ADR-530) */
+            phone: string | null;
+            /**
+             * SitePhotos
+             * @description «Φωτογραφίες»: page photos then public room photos (at most 12)
+             */
+            photos: {
+                items: {
+                    /** @description Null for the page's photos; the photo's caption or room's name */
+                    caption: string | null;
+                    height: number | null;
+                    /** Format: uuid */
+                    id: string;
+                    url: string;
+                    width: number | null;
+                }[];
+                /**
+                 * SiteVideo
+                 * @description Null until boxes can add a site video
+                 */
+                video: {
+                    poster_url: string | null;
+                    url: string;
+                } | null;
+            };
+            /** @description «Προγράμματα» for sale (ADR-530 §3); empty while there is none */
+            programmes: {
+                cover_url: string | null;
+                currency: string | null;
+                /** Format: uuid */
+                id: string;
+                price_cents: number | null;
+                summary: string | null;
+                title: string;
+                url: string | null;
+                weeks: number | null;
+            }[];
             /** @description Palee's address for reporting content on the site (ADR-397, DSA Art. 16) */
             report_contact: string | null;
             /** SiteReviews */
@@ -45439,8 +45606,25 @@ export interface components {
                     }[];
                 } | null;
             };
-            sections: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            sections: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
             slug: string;
+            /**
+             * SiteStats
+             * @description «Αριθμοί κοινότητας»: aggregates only, null when the section is off; a zero or null is not shown
+             */
+            stats: {
+                /** @description Classes over the next 7 days */
+                classes_per_week: number | null;
+                /** @description PRs recorded in the box this year */
+                prs_this_year: number | null;
+                /** @description Whole years since the box joined */
+                years_open: number | null;
+            } | null;
+            /**
+             * @description ADR-530 template
+             * @enum {string}
+             */
+            template: "arena" | "tiles" | "stories" | "atelier";
             /** @description Translations of texts served by other reads, keyed kind:id:field */
             texts: {
                 [key: string]: string;
@@ -49458,6 +49642,32 @@ export interface components {
                 verified_at: string | null;
             }[];
         };
+        /**
+         * SiteDraft
+         * @description The publishable fields waiting for «Δημοσίευση»; null when nothing waits
+         */
+        SiteDraft: {
+            /**
+             * @description «Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»
+             * @enum {string}
+             */
+            appearance?: "auto" | "light" | "dark";
+            /** @description «Λιγότερη κίνηση»: the site's motion is off */
+            calm_motion?: boolean;
+            hidden_sections?: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            /**
+             * @description ADR-530 palette key
+             * @enum {string}
+             */
+            palette?: "palee" | "electric" | "flame" | "sun" | "amber" | "emerald" | "aegean" | "violet" | "fuchsia" | "olive" | "navy" | "mono";
+            public_schedule?: boolean;
+            public_wod?: boolean;
+            /**
+             * @description ADR-530 template
+             * @enum {string}
+             */
+            template?: "arena" | "tiles" | "stories" | "atelier";
+        } | null;
         /** SiteEvent */
         SiteEvent: {
             currency: string;
@@ -49594,6 +49804,51 @@ export interface components {
                 } | null;
             }[];
         } | null;
+        /** SitePhoto */
+        SitePhoto: {
+            /** @description Null for the page's photos; the photo's caption or room's name */
+            caption: string | null;
+            height: number | null;
+            /** Format: uuid */
+            id: string;
+            url: string;
+            width: number | null;
+        };
+        /**
+         * SitePhotos
+         * @description «Φωτογραφίες»: page photos then public room photos (at most 12)
+         */
+        SitePhotos: {
+            items: {
+                /** @description Null for the page's photos; the photo's caption or room's name */
+                caption: string | null;
+                height: number | null;
+                /** Format: uuid */
+                id: string;
+                url: string;
+                width: number | null;
+            }[];
+            /**
+             * SiteVideo
+             * @description Null until boxes can add a site video
+             */
+            video: {
+                poster_url: string | null;
+                url: string;
+            } | null;
+        };
+        /** SiteProgramme */
+        SiteProgramme: {
+            cover_url: string | null;
+            currency: string | null;
+            /** Format: uuid */
+            id: string;
+            price_cents: number | null;
+            summary: string | null;
+            title: string;
+            url: string | null;
+            weeks: number | null;
+        };
         /** SiteReviews */
         SiteReviews: {
             /**
@@ -49636,8 +49891,41 @@ export interface components {
         };
         /** SiteSettings */
         SiteSettings: {
+            /**
+             * @description «Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»
+             * @enum {string}
+             */
+            appearance: "auto" | "light" | "dark";
             banner_version: number;
+            /** @description «Λιγότερη κίνηση»: the site's motion is off */
+            calm_motion: boolean;
             conversions_api_enabled: boolean;
+            /**
+             * SiteDraft
+             * @description The publishable fields waiting for «Δημοσίευση»; null when nothing waits
+             */
+            draft: {
+                /**
+                 * @description «Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»
+                 * @enum {string}
+                 */
+                appearance?: "auto" | "light" | "dark";
+                /** @description «Λιγότερη κίνηση»: the site's motion is off */
+                calm_motion?: boolean;
+                hidden_sections?: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                /**
+                 * @description ADR-530 palette key
+                 * @enum {string}
+                 */
+                palette?: "palee" | "electric" | "flame" | "sun" | "amber" | "emerald" | "aegean" | "violet" | "fuchsia" | "olive" | "navy" | "mono";
+                public_schedule?: boolean;
+                public_wod?: boolean;
+                /**
+                 * @description ADR-530 template
+                 * @enum {string}
+                 */
+                template?: "arena" | "tiles" | "stories" | "atelier";
+            } | null;
             faq: {
                 answer: string;
                 /**
@@ -49652,17 +49940,120 @@ export interface components {
             gtm_container_id: string | null;
             /** @description A token is saved; the token itself is never returned */
             has_conversions_api_token: boolean;
-            hidden_sections: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            hidden_sections: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
             lock_version: number;
             meta_pixel_id: string | null;
+            /**
+             * @description ADR-530 palette key
+             * @enum {string}
+             */
+            palette: "palee" | "electric" | "flame" | "sun" | "amber" | "emerald" | "aegean" | "violet" | "fuchsia" | "olive" | "navy" | "mono";
             public_schedule: boolean;
             /** @description «WOD της ημέρας» on the site (ADR-388) */
             public_wod: boolean;
-            section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            /**
+             * Format: date-time
+             * @description The last «Δημοσίευση» (ADR-530)
+             */
+            published_at: string | null;
+            section_order: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            /**
+             * @description ADR-530 template
+             * @enum {string}
+             */
+            template: "arena" | "tiles" | "stories" | "atelier";
+            /** @description The site moved to «Αρένα» (ADR-530); shown until published or dismissed */
+            template_notice: boolean;
             /** @description Languages the box translates its texts into (ADR-520) */
             translation_locales: string[];
             /** @description Translations visitors can pick on the site (ADR-520) */
             visible_locales: string[];
+        };
+        /**
+         * SiteSettingsOnlyResponse
+         * @description ADR-530: the settings after «Δημοσίευση», a discarded draft or a hidden notice
+         */
+        SiteSettingsOnlyResponse: {
+            /** SiteSettings */
+            settings: {
+                /**
+                 * @description «Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»
+                 * @enum {string}
+                 */
+                appearance: "auto" | "light" | "dark";
+                banner_version: number;
+                /** @description «Λιγότερη κίνηση»: the site's motion is off */
+                calm_motion: boolean;
+                conversions_api_enabled: boolean;
+                /**
+                 * SiteDraft
+                 * @description The publishable fields waiting for «Δημοσίευση»; null when nothing waits
+                 */
+                draft: {
+                    /**
+                     * @description «Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»
+                     * @enum {string}
+                     */
+                    appearance?: "auto" | "light" | "dark";
+                    /** @description «Λιγότερη κίνηση»: the site's motion is off */
+                    calm_motion?: boolean;
+                    hidden_sections?: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                    /**
+                     * @description ADR-530 palette key
+                     * @enum {string}
+                     */
+                    palette?: "palee" | "electric" | "flame" | "sun" | "amber" | "emerald" | "aegean" | "violet" | "fuchsia" | "olive" | "navy" | "mono";
+                    public_schedule?: boolean;
+                    public_wod?: boolean;
+                    /**
+                     * @description ADR-530 template
+                     * @enum {string}
+                     */
+                    template?: "arena" | "tiles" | "stories" | "atelier";
+                } | null;
+                faq: {
+                    answer: string;
+                    /**
+                     * Format: uuid
+                     * @description Stable id (ADR-520); a new entry gets one when saved
+                     */
+                    id?: string;
+                    question: string;
+                }[];
+                forms_enabled: boolean;
+                ga4_measurement_id: string | null;
+                gtm_container_id: string | null;
+                /** @description A token is saved; the token itself is never returned */
+                has_conversions_api_token: boolean;
+                hidden_sections: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                lock_version: number;
+                meta_pixel_id: string | null;
+                /**
+                 * @description ADR-530 palette key
+                 * @enum {string}
+                 */
+                palette: "palee" | "electric" | "flame" | "sun" | "amber" | "emerald" | "aegean" | "violet" | "fuchsia" | "olive" | "navy" | "mono";
+                public_schedule: boolean;
+                /** @description «WOD της ημέρας» on the site (ADR-388) */
+                public_wod: boolean;
+                /**
+                 * Format: date-time
+                 * @description The last «Δημοσίευση» (ADR-530)
+                 */
+                published_at: string | null;
+                section_order: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                /**
+                 * @description ADR-530 template
+                 * @enum {string}
+                 */
+                template: "arena" | "tiles" | "stories" | "atelier";
+                /** @description The site moved to «Αρένα» (ADR-530); shown until published or dismissed */
+                template_notice: boolean;
+                /** @description Languages the box translates its texts into (ADR-520) */
+                translation_locales: string[];
+                /** @description Translations visitors can pick on the site (ADR-520) */
+                visible_locales: string[];
+            };
         };
         /** SiteSettingsResponse */
         SiteSettingsResponse: {
@@ -49689,8 +50080,41 @@ export interface components {
             };
             /** SiteSettings */
             settings: {
+                /**
+                 * @description «Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»
+                 * @enum {string}
+                 */
+                appearance: "auto" | "light" | "dark";
                 banner_version: number;
+                /** @description «Λιγότερη κίνηση»: the site's motion is off */
+                calm_motion: boolean;
                 conversions_api_enabled: boolean;
+                /**
+                 * SiteDraft
+                 * @description The publishable fields waiting for «Δημοσίευση»; null when nothing waits
+                 */
+                draft: {
+                    /**
+                     * @description «Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»
+                     * @enum {string}
+                     */
+                    appearance?: "auto" | "light" | "dark";
+                    /** @description «Λιγότερη κίνηση»: the site's motion is off */
+                    calm_motion?: boolean;
+                    hidden_sections?: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                    /**
+                     * @description ADR-530 palette key
+                     * @enum {string}
+                     */
+                    palette?: "palee" | "electric" | "flame" | "sun" | "amber" | "emerald" | "aegean" | "violet" | "fuchsia" | "olive" | "navy" | "mono";
+                    public_schedule?: boolean;
+                    public_wod?: boolean;
+                    /**
+                     * @description ADR-530 template
+                     * @enum {string}
+                     */
+                    template?: "arena" | "tiles" | "stories" | "atelier";
+                } | null;
                 faq: {
                     answer: string;
                     /**
@@ -49705,21 +50129,48 @@ export interface components {
                 gtm_container_id: string | null;
                 /** @description A token is saved; the token itself is never returned */
                 has_conversions_api_token: boolean;
-                hidden_sections: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                hidden_sections: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
                 lock_version: number;
                 meta_pixel_id: string | null;
+                /**
+                 * @description ADR-530 palette key
+                 * @enum {string}
+                 */
+                palette: "palee" | "electric" | "flame" | "sun" | "amber" | "emerald" | "aegean" | "violet" | "fuchsia" | "olive" | "navy" | "mono";
                 public_schedule: boolean;
                 /** @description «WOD της ημέρας» on the site (ADR-388) */
                 public_wod: boolean;
-                section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                /**
+                 * Format: date-time
+                 * @description The last «Δημοσίευση» (ADR-530)
+                 */
+                published_at: string | null;
+                section_order: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                /**
+                 * @description ADR-530 template
+                 * @enum {string}
+                 */
+                template: "arena" | "tiles" | "stories" | "atelier";
+                /** @description The site moved to «Αρένα» (ADR-530); shown until published or dismissed */
+                template_notice: boolean;
                 /** @description Languages the box translates its texts into (ADR-520) */
                 translation_locales: string[];
                 /** @description Translations visitors can pick on the site (ADR-520) */
                 visible_locales: string[];
             };
         };
-        /** SiteSettingsUpdate */
+        /**
+         * SiteSettingsUpdate
+         * @description ADR-530: template, palette, appearance, calm_motion, hidden_sections, public_schedule and public_wod go into the draft; the rest saves at once
+         */
         SiteSettingsUpdate: {
+            /**
+             * @description «Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»
+             * @enum {string}
+             */
+            appearance?: "auto" | "light" | "dark";
+            /** @description «Λιγότερη κίνηση»: the site's motion is off */
+            calm_motion?: boolean;
             conversions_api_enabled?: boolean;
             /** @description Meta Conversions API access token (write-only; empty removes it) */
             conversions_api_token?: string | null;
@@ -49735,17 +50186,39 @@ export interface components {
             forms_enabled?: boolean;
             ga4_measurement_id?: string | null;
             gtm_container_id?: string | null;
-            hidden_sections?: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            hidden_sections?: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
             lock_version: number;
             meta_pixel_id?: string | null;
+            /**
+             * @description ADR-530 palette key
+             * @enum {string}
+             */
+            palette?: "palee" | "electric" | "flame" | "sun" | "amber" | "emerald" | "aegean" | "violet" | "fuchsia" | "olive" | "navy" | "mono";
             public_schedule?: boolean;
             public_wod?: boolean;
-            section_order?: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            section_order?: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            /**
+             * @description ADR-530 template
+             * @enum {string}
+             */
+            template?: "arena" | "tiles" | "stories" | "atelier";
             /** @description Languages to translate into; the box's own is left out */
             translation_locales?: string[];
             /** @description Translations visitors can pick; a subset of translation_locales */
             visible_locales?: string[];
         };
+        /**
+         * SiteStats
+         * @description «Αριθμοί κοινότητας»: aggregates only, null when the section is off; a zero or null is not shown
+         */
+        SiteStats: {
+            /** @description Classes over the next 7 days */
+            classes_per_week: number | null;
+            /** @description PRs recorded in the box this year */
+            prs_this_year: number | null;
+            /** @description Whole years since the box joined */
+            years_open: number | null;
+        } | null;
         /** SiteSummaryResponse */
         SiteSummaryResponse: {
             consents: {
@@ -49886,6 +50359,14 @@ export interface components {
             }[];
             locale: string;
         };
+        /**
+         * SiteVideo
+         * @description Null until boxes can add a site video
+         */
+        SiteVideo: {
+            poster_url: string | null;
+            url: string;
+        } | null;
         /** SiteWod */
         SiteWod: {
             body: string | null;
@@ -117701,11 +118182,44 @@ export interface operations {
                             /** @description The box's own language (the source) */
                             source: string;
                         };
-                        section_keys: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                        section_keys: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
                         /** SiteSettings */
                         settings: {
+                            /**
+                             * @description «Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»
+                             * @enum {string}
+                             */
+                            appearance: "auto" | "light" | "dark";
                             banner_version: number;
+                            /** @description «Λιγότερη κίνηση»: the site's motion is off */
+                            calm_motion: boolean;
                             conversions_api_enabled: boolean;
+                            /**
+                             * SiteDraft
+                             * @description The publishable fields waiting for «Δημοσίευση»; null when nothing waits
+                             */
+                            draft: {
+                                /**
+                                 * @description «Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»
+                                 * @enum {string}
+                                 */
+                                appearance?: "auto" | "light" | "dark";
+                                /** @description «Λιγότερη κίνηση»: the site's motion is off */
+                                calm_motion?: boolean;
+                                hidden_sections?: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                                /**
+                                 * @description ADR-530 palette key
+                                 * @enum {string}
+                                 */
+                                palette?: "palee" | "electric" | "flame" | "sun" | "amber" | "emerald" | "aegean" | "violet" | "fuchsia" | "olive" | "navy" | "mono";
+                                public_schedule?: boolean;
+                                public_wod?: boolean;
+                                /**
+                                 * @description ADR-530 template
+                                 * @enum {string}
+                                 */
+                                template?: "arena" | "tiles" | "stories" | "atelier";
+                            } | null;
                             faq: {
                                 answer: string;
                                 /**
@@ -117720,13 +118234,30 @@ export interface operations {
                             gtm_container_id: string | null;
                             /** @description A token is saved; the token itself is never returned */
                             has_conversions_api_token: boolean;
-                            hidden_sections: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                            hidden_sections: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
                             lock_version: number;
                             meta_pixel_id: string | null;
+                            /**
+                             * @description ADR-530 palette key
+                             * @enum {string}
+                             */
+                            palette: "palee" | "electric" | "flame" | "sun" | "amber" | "emerald" | "aegean" | "violet" | "fuchsia" | "olive" | "navy" | "mono";
                             public_schedule: boolean;
                             /** @description «WOD της ημέρας» on the site (ADR-388) */
                             public_wod: boolean;
-                            section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                            /**
+                             * Format: date-time
+                             * @description The last «Δημοσίευση» (ADR-530)
+                             */
+                            published_at: string | null;
+                            section_order: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                            /**
+                             * @description ADR-530 template
+                             * @enum {string}
+                             */
+                            template: "arena" | "tiles" | "stories" | "atelier";
+                            /** @description The site moved to «Αρένα» (ADR-530); shown until published or dismissed */
+                            template_notice: boolean;
                             /** @description Languages the box translates its texts into (ADR-520) */
                             translation_locales: string[];
                             /** @description Translations visitors can pick on the site (ADR-520) */
@@ -117747,6 +118278,13 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /**
+                     * @description «Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»
+                     * @enum {string}
+                     */
+                    appearance?: "auto" | "light" | "dark";
+                    /** @description «Λιγότερη κίνηση»: the site's motion is off */
+                    calm_motion?: boolean;
                     conversions_api_enabled?: boolean;
                     /** @description Meta Conversions API access token (write-only; empty removes it) */
                     conversions_api_token?: string | null;
@@ -117762,12 +118300,22 @@ export interface operations {
                     forms_enabled?: boolean;
                     ga4_measurement_id?: string | null;
                     gtm_container_id?: string | null;
-                    hidden_sections?: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                    hidden_sections?: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
                     lock_version: number;
                     meta_pixel_id?: string | null;
+                    /**
+                     * @description ADR-530 palette key
+                     * @enum {string}
+                     */
+                    palette?: "palee" | "electric" | "flame" | "sun" | "amber" | "emerald" | "aegean" | "violet" | "fuchsia" | "olive" | "navy" | "mono";
                     public_schedule?: boolean;
                     public_wod?: boolean;
-                    section_order?: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                    section_order?: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                    /**
+                     * @description ADR-530 template
+                     * @enum {string}
+                     */
+                    template?: "arena" | "tiles" | "stories" | "atelier";
                     /** @description Languages to translate into; the box's own is left out */
                     translation_locales?: string[];
                     /** @description Translations visitors can pick; a subset of translation_locales */
@@ -117806,8 +118354,41 @@ export interface operations {
                         };
                         /** SiteSettings */
                         settings: {
+                            /**
+                             * @description «Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»
+                             * @enum {string}
+                             */
+                            appearance: "auto" | "light" | "dark";
                             banner_version: number;
+                            /** @description «Λιγότερη κίνηση»: the site's motion is off */
+                            calm_motion: boolean;
                             conversions_api_enabled: boolean;
+                            /**
+                             * SiteDraft
+                             * @description The publishable fields waiting for «Δημοσίευση»; null when nothing waits
+                             */
+                            draft: {
+                                /**
+                                 * @description «Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»
+                                 * @enum {string}
+                                 */
+                                appearance?: "auto" | "light" | "dark";
+                                /** @description «Λιγότερη κίνηση»: the site's motion is off */
+                                calm_motion?: boolean;
+                                hidden_sections?: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                                /**
+                                 * @description ADR-530 palette key
+                                 * @enum {string}
+                                 */
+                                palette?: "palee" | "electric" | "flame" | "sun" | "amber" | "emerald" | "aegean" | "violet" | "fuchsia" | "olive" | "navy" | "mono";
+                                public_schedule?: boolean;
+                                public_wod?: boolean;
+                                /**
+                                 * @description ADR-530 template
+                                 * @enum {string}
+                                 */
+                                template?: "arena" | "tiles" | "stories" | "atelier";
+                            } | null;
                             faq: {
                                 answer: string;
                                 /**
@@ -117822,13 +118403,30 @@ export interface operations {
                             gtm_container_id: string | null;
                             /** @description A token is saved; the token itself is never returned */
                             has_conversions_api_token: boolean;
-                            hidden_sections: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                            hidden_sections: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
                             lock_version: number;
                             meta_pixel_id: string | null;
+                            /**
+                             * @description ADR-530 palette key
+                             * @enum {string}
+                             */
+                            palette: "palee" | "electric" | "flame" | "sun" | "amber" | "emerald" | "aegean" | "violet" | "fuchsia" | "olive" | "navy" | "mono";
                             public_schedule: boolean;
                             /** @description «WOD της ημέρας» on the site (ADR-388) */
                             public_wod: boolean;
-                            section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                            /**
+                             * Format: date-time
+                             * @description The last «Δημοσίευση» (ADR-530)
+                             */
+                            published_at: string | null;
+                            section_order: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                            /**
+                             * @description ADR-530 template
+                             * @enum {string}
+                             */
+                            template: "arena" | "tiles" | "stories" | "atelier";
+                            /** @description The site moved to «Αρένα» (ADR-530); shown until published or dismissed */
+                            template_notice: boolean;
                             /** @description Languages the box translates its texts into (ADR-520) */
                             translation_locales: string[];
                             /** @description Translations visitors can pick on the site (ADR-520) */
@@ -118197,6 +118795,561 @@ export interface operations {
             };
             /** @description Error */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.discard_draft": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** SiteSettings */
+                        settings: {
+                            /**
+                             * @description «Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»
+                             * @enum {string}
+                             */
+                            appearance: "auto" | "light" | "dark";
+                            banner_version: number;
+                            /** @description «Λιγότερη κίνηση»: the site's motion is off */
+                            calm_motion: boolean;
+                            conversions_api_enabled: boolean;
+                            /**
+                             * SiteDraft
+                             * @description The publishable fields waiting for «Δημοσίευση»; null when nothing waits
+                             */
+                            draft: {
+                                /**
+                                 * @description «Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»
+                                 * @enum {string}
+                                 */
+                                appearance?: "auto" | "light" | "dark";
+                                /** @description «Λιγότερη κίνηση»: the site's motion is off */
+                                calm_motion?: boolean;
+                                hidden_sections?: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                                /**
+                                 * @description ADR-530 palette key
+                                 * @enum {string}
+                                 */
+                                palette?: "palee" | "electric" | "flame" | "sun" | "amber" | "emerald" | "aegean" | "violet" | "fuchsia" | "olive" | "navy" | "mono";
+                                public_schedule?: boolean;
+                                public_wod?: boolean;
+                                /**
+                                 * @description ADR-530 template
+                                 * @enum {string}
+                                 */
+                                template?: "arena" | "tiles" | "stories" | "atelier";
+                            } | null;
+                            faq: {
+                                answer: string;
+                                /**
+                                 * Format: uuid
+                                 * @description Stable id (ADR-520); a new entry gets one when saved
+                                 */
+                                id?: string;
+                                question: string;
+                            }[];
+                            forms_enabled: boolean;
+                            ga4_measurement_id: string | null;
+                            gtm_container_id: string | null;
+                            /** @description A token is saved; the token itself is never returned */
+                            has_conversions_api_token: boolean;
+                            hidden_sections: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                            lock_version: number;
+                            meta_pixel_id: string | null;
+                            /**
+                             * @description ADR-530 palette key
+                             * @enum {string}
+                             */
+                            palette: "palee" | "electric" | "flame" | "sun" | "amber" | "emerald" | "aegean" | "violet" | "fuchsia" | "olive" | "navy" | "mono";
+                            public_schedule: boolean;
+                            /** @description «WOD της ημέρας» on the site (ADR-388) */
+                            public_wod: boolean;
+                            /**
+                             * Format: date-time
+                             * @description The last «Δημοσίευση» (ADR-530)
+                             */
+                            published_at: string | null;
+                            section_order: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                            /**
+                             * @description ADR-530 template
+                             * @enum {string}
+                             */
+                            template: "arena" | "tiles" | "stories" | "atelier";
+                            /** @description The site moved to «Αρένα» (ADR-530); shown until published or dismissed */
+                            template_notice: boolean;
+                            /** @description Languages the box translates its texts into (ADR-520) */
+                            translation_locales: string[];
+                            /** @description Translations visitors can pick on the site (ADR-520) */
+                            visible_locales: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Saved meanwhile */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.dismiss_notice": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** SiteSettings */
+                        settings: {
+                            /**
+                             * @description «Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»
+                             * @enum {string}
+                             */
+                            appearance: "auto" | "light" | "dark";
+                            banner_version: number;
+                            /** @description «Λιγότερη κίνηση»: the site's motion is off */
+                            calm_motion: boolean;
+                            conversions_api_enabled: boolean;
+                            /**
+                             * SiteDraft
+                             * @description The publishable fields waiting for «Δημοσίευση»; null when nothing waits
+                             */
+                            draft: {
+                                /**
+                                 * @description «Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»
+                                 * @enum {string}
+                                 */
+                                appearance?: "auto" | "light" | "dark";
+                                /** @description «Λιγότερη κίνηση»: the site's motion is off */
+                                calm_motion?: boolean;
+                                hidden_sections?: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                                /**
+                                 * @description ADR-530 palette key
+                                 * @enum {string}
+                                 */
+                                palette?: "palee" | "electric" | "flame" | "sun" | "amber" | "emerald" | "aegean" | "violet" | "fuchsia" | "olive" | "navy" | "mono";
+                                public_schedule?: boolean;
+                                public_wod?: boolean;
+                                /**
+                                 * @description ADR-530 template
+                                 * @enum {string}
+                                 */
+                                template?: "arena" | "tiles" | "stories" | "atelier";
+                            } | null;
+                            faq: {
+                                answer: string;
+                                /**
+                                 * Format: uuid
+                                 * @description Stable id (ADR-520); a new entry gets one when saved
+                                 */
+                                id?: string;
+                                question: string;
+                            }[];
+                            forms_enabled: boolean;
+                            ga4_measurement_id: string | null;
+                            gtm_container_id: string | null;
+                            /** @description A token is saved; the token itself is never returned */
+                            has_conversions_api_token: boolean;
+                            hidden_sections: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                            lock_version: number;
+                            meta_pixel_id: string | null;
+                            /**
+                             * @description ADR-530 palette key
+                             * @enum {string}
+                             */
+                            palette: "palee" | "electric" | "flame" | "sun" | "amber" | "emerald" | "aegean" | "violet" | "fuchsia" | "olive" | "navy" | "mono";
+                            public_schedule: boolean;
+                            /** @description «WOD της ημέρας» on the site (ADR-388) */
+                            public_wod: boolean;
+                            /**
+                             * Format: date-time
+                             * @description The last «Δημοσίευση» (ADR-530)
+                             */
+                            published_at: string | null;
+                            section_order: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                            /**
+                             * @description ADR-530 template
+                             * @enum {string}
+                             */
+                            template: "arena" | "tiles" | "stories" | "atelier";
+                            /** @description The site moved to «Αρένα» (ADR-530); shown until published or dismissed */
+                            template_notice: boolean;
+                            /** @description Languages the box translates its texts into (ADR-520) */
+                            translation_locales: string[];
+                            /** @description Translations visitors can pick on the site (ADR-520) */
+                            visible_locales: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Saved meanwhile */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.preview": {
+        parameters: {
+            query?: {
+                /** @description One of the site's translations (ADR-520); the box's own language when absent */
+                lang?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Site */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description The translated «Σχετικά», null when there is none */
+                        about: string | null;
+                        /**
+                         * @description «Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»
+                         * @enum {string}
+                         */
+                        appearance: "auto" | "light" | "dark";
+                        /** @description «Λιγότερη κίνηση»: the site's motion is off */
+                        calm_motion: boolean;
+                        canonical_url: string;
+                        /** @description Translated class names by the box's own name */
+                        class_type_names: {
+                            [key: string]: string;
+                        };
+                        events: {
+                            currency: string;
+                            /** Format: date-time */
+                            ends_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            place_name: string | null;
+                            price_cents: number;
+                            /** Format: date-time */
+                            starts_at: string;
+                            time_zone: string | null;
+                            title: string;
+                        }[];
+                        faq: {
+                            answer: string;
+                            /**
+                             * Format: uuid
+                             * @description Stable id (ADR-520); a new entry gets one when saved
+                             */
+                            id?: string;
+                            question: string;
+                        }[];
+                        forms: {
+                            contact: boolean;
+                            kinds: ("trial" | "contact")[];
+                            trial: boolean;
+                        };
+                        /** @description The box's language (ADR-388) */
+                        language: string;
+                        /** @description The site's languages: the box's own first, then its visible translations */
+                        languages: string[];
+                        /**
+                         * @description ADR-530 palette key
+                         * @enum {string}
+                         */
+                        palette: "palee" | "electric" | "flame" | "sun" | "amber" | "emerald" | "aegean" | "violet" | "fuchsia" | "olive" | "navy" | "mono";
+                        /** @description The box's public phone; null while the box has none (ADR-530) */
+                        phone: string | null;
+                        /**
+                         * SitePhotos
+                         * @description «Φωτογραφίες»: page photos then public room photos (at most 12)
+                         */
+                        photos: {
+                            items: {
+                                /** @description Null for the page's photos; the photo's caption or room's name */
+                                caption: string | null;
+                                height: number | null;
+                                /** Format: uuid */
+                                id: string;
+                                url: string;
+                                width: number | null;
+                            }[];
+                            /**
+                             * SiteVideo
+                             * @description Null until boxes can add a site video
+                             */
+                            video: {
+                                poster_url: string | null;
+                                url: string;
+                            } | null;
+                        };
+                        /** @description «Προγράμματα» for sale (ADR-530 §3); empty while there is none */
+                        programmes: {
+                            cover_url: string | null;
+                            currency: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            price_cents: number | null;
+                            summary: string | null;
+                            title: string;
+                            url: string | null;
+                            weeks: number | null;
+                        }[];
+                        /** @description Palee's address for reporting content on the site (ADR-397, DSA Art. 16) */
+                        report_contact: string | null;
+                        /** SiteReviews */
+                        reviews: {
+                            /**
+                             * GoogleListing
+                             * @description The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms
+                             */
+                            google: {
+                                count: number | null;
+                                /** Format: date-time */
+                                fetched_at: string;
+                                maps_uri: string | null;
+                                name: string | null;
+                                rating: number | null;
+                                write_review_url: string | null;
+                            } | null;
+                            google_reviews_url: string | null;
+                            /** SitePaleeReviews */
+                            palee: {
+                                average: number | null;
+                                count: number;
+                                latest: {
+                                    /** @description First name only; null for people who hide themselves */
+                                    author_name: string | null;
+                                    body: string | null;
+                                    /** Format: date-time */
+                                    created_at: string;
+                                    /** Format: date-time */
+                                    edited_at: string | null;
+                                    /** Format: uuid */
+                                    id: string;
+                                    rating: number;
+                                    /** BoxReviewReply */
+                                    reply: {
+                                        body: string;
+                                        /** Format: date-time */
+                                        replied_at: string;
+                                    } | null;
+                                }[];
+                            } | null;
+                        };
+                        sections: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                        slug: string;
+                        /**
+                         * SiteStats
+                         * @description «Αριθμοί κοινότητας»: aggregates only, null when the section is off; a zero or null is not shown
+                         */
+                        stats: {
+                            /** @description Classes over the next 7 days */
+                            classes_per_week: number | null;
+                            /** @description PRs recorded in the box this year */
+                            prs_this_year: number | null;
+                            /** @description Whole years since the box joined */
+                            years_open: number | null;
+                        } | null;
+                        /**
+                         * @description ADR-530 template
+                         * @enum {string}
+                         */
+                        template: "arena" | "tiles" | "stories" | "atelier";
+                        /** @description Translations of texts served by other reads, keyed kind:id:field */
+                        texts: {
+                            [key: string]: string;
+                        };
+                        time_zone: string;
+                        /** @description The next 7 days' classes when the owner shows the timetable (no spots or people) */
+                        timetable: {
+                            /** Format: uuid */
+                            class_type_id: string | null;
+                            duration_minutes: number;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            location_id: string | null;
+                            name: string;
+                            /** Format: date-time */
+                            scheduled_at: string;
+                        }[];
+                        tracking: {
+                            banner_version: number;
+                            categories: ("necessary" | "analytics" | "marketing")[];
+                            consent_required: boolean;
+                            /**
+                             * SiteTags
+                             * @description Public tag ids; none loads before the visitor's consent (ADR-354)
+                             */
+                            tags: {
+                                ga4_measurement_id: string | null;
+                                gtm_container_id: string | null;
+                                meta_pixel_id: string | null;
+                            };
+                            validity_days: number;
+                        };
+                        /** @description The translation this answer is in (ADR-520), null for the box's own */
+                        translation: string | null;
+                        wod: {
+                            body: string | null;
+                            /** Format: date */
+                            date: string;
+                            /** Format: uuid */
+                            id: string;
+                            title: string;
+                            type: string | null;
+                        }[];
+                    };
+                };
+            };
+            /** @description Error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** SiteSettings */
+                        settings: {
+                            /**
+                             * @description «Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»
+                             * @enum {string}
+                             */
+                            appearance: "auto" | "light" | "dark";
+                            banner_version: number;
+                            /** @description «Λιγότερη κίνηση»: the site's motion is off */
+                            calm_motion: boolean;
+                            conversions_api_enabled: boolean;
+                            /**
+                             * SiteDraft
+                             * @description The publishable fields waiting for «Δημοσίευση»; null when nothing waits
+                             */
+                            draft: {
+                                /**
+                                 * @description «Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»
+                                 * @enum {string}
+                                 */
+                                appearance?: "auto" | "light" | "dark";
+                                /** @description «Λιγότερη κίνηση»: the site's motion is off */
+                                calm_motion?: boolean;
+                                hidden_sections?: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                                /**
+                                 * @description ADR-530 palette key
+                                 * @enum {string}
+                                 */
+                                palette?: "palee" | "electric" | "flame" | "sun" | "amber" | "emerald" | "aegean" | "violet" | "fuchsia" | "olive" | "navy" | "mono";
+                                public_schedule?: boolean;
+                                public_wod?: boolean;
+                                /**
+                                 * @description ADR-530 template
+                                 * @enum {string}
+                                 */
+                                template?: "arena" | "tiles" | "stories" | "atelier";
+                            } | null;
+                            faq: {
+                                answer: string;
+                                /**
+                                 * Format: uuid
+                                 * @description Stable id (ADR-520); a new entry gets one when saved
+                                 */
+                                id?: string;
+                                question: string;
+                            }[];
+                            forms_enabled: boolean;
+                            ga4_measurement_id: string | null;
+                            gtm_container_id: string | null;
+                            /** @description A token is saved; the token itself is never returned */
+                            has_conversions_api_token: boolean;
+                            hidden_sections: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                            lock_version: number;
+                            meta_pixel_id: string | null;
+                            /**
+                             * @description ADR-530 palette key
+                             * @enum {string}
+                             */
+                            palette: "palee" | "electric" | "flame" | "sun" | "amber" | "emerald" | "aegean" | "violet" | "fuchsia" | "olive" | "navy" | "mono";
+                            public_schedule: boolean;
+                            /** @description «WOD της ημέρας» on the site (ADR-388) */
+                            public_wod: boolean;
+                            /**
+                             * Format: date-time
+                             * @description The last «Δημοσίευση» (ADR-530)
+                             */
+                            published_at: string | null;
+                            section_order: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                            /**
+                             * @description ADR-530 template
+                             * @enum {string}
+                             */
+                            template: "arena" | "tiles" | "stories" | "atelier";
+                            /** @description The site moved to «Αρένα» (ADR-530); shown until published or dismissed */
+                            template_notice: boolean;
+                            /** @description Languages the box translates its texts into (ADR-520) */
+                            translation_locales: string[];
+                            /** @description Translations visitors can pick on the site (ADR-520) */
+                            visible_locales: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Saved meanwhile */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -160989,6 +162142,13 @@ export interface operations {
                     "application/json": {
                         /** @description The translated «Σχετικά», null when there is none */
                         about: string | null;
+                        /**
+                         * @description «Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»
+                         * @enum {string}
+                         */
+                        appearance: "auto" | "light" | "dark";
+                        /** @description «Λιγότερη κίνηση»: the site's motion is off */
+                        calm_motion: boolean;
                         canonical_url: string;
                         /** @description Translated class names by the box's own name */
                         class_type_names: {
@@ -161025,6 +162185,48 @@ export interface operations {
                         language: string;
                         /** @description The site's languages: the box's own first, then its visible translations */
                         languages: string[];
+                        /**
+                         * @description ADR-530 palette key
+                         * @enum {string}
+                         */
+                        palette: "palee" | "electric" | "flame" | "sun" | "amber" | "emerald" | "aegean" | "violet" | "fuchsia" | "olive" | "navy" | "mono";
+                        /** @description The box's public phone; null while the box has none (ADR-530) */
+                        phone: string | null;
+                        /**
+                         * SitePhotos
+                         * @description «Φωτογραφίες»: page photos then public room photos (at most 12)
+                         */
+                        photos: {
+                            items: {
+                                /** @description Null for the page's photos; the photo's caption or room's name */
+                                caption: string | null;
+                                height: number | null;
+                                /** Format: uuid */
+                                id: string;
+                                url: string;
+                                width: number | null;
+                            }[];
+                            /**
+                             * SiteVideo
+                             * @description Null until boxes can add a site video
+                             */
+                            video: {
+                                poster_url: string | null;
+                                url: string;
+                            } | null;
+                        };
+                        /** @description «Προγράμματα» for sale (ADR-530 §3); empty while there is none */
+                        programmes: {
+                            cover_url: string | null;
+                            currency: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            price_cents: number | null;
+                            summary: string | null;
+                            title: string;
+                            url: string | null;
+                            weeks: number | null;
+                        }[];
                         /** @description Palee's address for reporting content on the site (ADR-397, DSA Art. 16) */
                         report_contact: string | null;
                         /** SiteReviews */
@@ -161067,8 +162269,25 @@ export interface operations {
                                 }[];
                             } | null;
                         };
-                        sections: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                        sections: ("hero" | "about" | "photos" | "stats" | "schedule" | "events" | "wod" | "programmes" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
                         slug: string;
+                        /**
+                         * SiteStats
+                         * @description «Αριθμοί κοινότητας»: aggregates only, null when the section is off; a zero or null is not shown
+                         */
+                        stats: {
+                            /** @description Classes over the next 7 days */
+                            classes_per_week: number | null;
+                            /** @description PRs recorded in the box this year */
+                            prs_this_year: number | null;
+                            /** @description Whole years since the box joined */
+                            years_open: number | null;
+                        } | null;
+                        /**
+                         * @description ADR-530 template
+                         * @enum {string}
+                         */
+                        template: "arena" | "tiles" | "stories" | "atelier";
                         /** @description Translations of texts served by other reads, keyed kind:id:field */
                         texts: {
                             [key: string]: string;
