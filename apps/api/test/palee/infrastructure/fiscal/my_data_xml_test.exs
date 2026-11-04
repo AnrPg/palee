@@ -11,7 +11,12 @@ defmodule Palee.Infrastructure.Fiscal.MyDataXmlTest do
   alias Palee.Fiscal.Domain.MyDataInvoice
   alias Palee.Infrastructure.Fiscal.MyData.XmlCodec
 
-  @xsd Path.expand("../../../../priv/fiscal/mydata/v2.0.1/InvoicesDoc-v2.0.1.xsd", __DIR__)
+  # ADR-451: AADE's published v1.0.12 (what the API serves today) and the
+  # newer v2.0.1 drafts; every document must pass both.
+  @xsds [
+    Path.expand("../../../../priv/fiscal/mydata/v1.0.12/InvoicesDoc-v1.0.12.xsd", __DIR__),
+    Path.expand("../../../../priv/fiscal/mydata/v2.0.1/InvoicesDoc-v2.0.1.xsd", __DIR__)
+  ]
 
   @moduletag :tmp_dir
 
@@ -19,10 +24,12 @@ defmodule Palee.Infrastructure.Fiscal.MyDataXmlTest do
     path = Path.join(dir, "invoices-#{System.unique_integer([:positive])}.xml")
     File.write!(path, xml)
 
-    {output, status} =
-      System.cmd("xmllint", ["--noout", "--schema", @xsd, path], stderr_to_stdout: true)
+    for xsd <- @xsds do
+      {output, status} =
+        System.cmd("xmllint", ["--noout", "--schema", xsd, path], stderr_to_stdout: true)
 
-    assert status == 0, output
+      assert status == 0, Path.basename(xsd) <> ": " <> output
+    end
   end
 
   @tag :xmllint
@@ -139,6 +146,7 @@ defmodule Palee.Infrastructure.Fiscal.MyDataXmlTest do
 
     assert invoice == %{
              mark: "400000000000123",
+             cancelled_by_mark: nil,
              uid: "UID1",
              authentication_code: nil,
              qr_url: nil,

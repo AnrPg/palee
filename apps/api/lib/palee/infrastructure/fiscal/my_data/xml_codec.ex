@@ -106,6 +106,7 @@ defmodule Palee.Infrastructure.Fiscal.MyData.XmlCodec do
 
         %{
           mark: text(invoice, "mark"),
+          cancelled_by_mark: text(invoice, "cancelledByMark"),
           uid: text(invoice, "uid"),
           authentication_code: text(invoice, "authenticationCode"),
           qr_url: text(invoice, "qrCodeUrl") || text(invoice, "qrUrl"),

@@ -28,9 +28,12 @@ defmodule Palee.Infrastructure.Fiscal.MyDataGateway do
   }
   @max_logged_body 65_536
 
-  # AADE's validation codes for a document that is already registered
-  # (same issuer, date, branch, type, series and number). ADR-451.
-  @duplicate_codes ~w(228)
+  # AADE's validation code for a document that is already registered
+  # (same UID: issuer, date, branch, type, series and number), per the
+  # v1.0.12 API documentation: 233 "UID has already been sent". AADE lists
+  # it for providers; on the ERP channel a document with the same UID
+  # replaces the earlier one instead (error 259 names that case). ADR-451.
+  @duplicate_codes ~w(233)
   # Pages of `RequestTransmittedDocs` read while looking a document up.
   @max_lookup_pages 20
 
@@ -210,13 +213,32 @@ defmodule Palee.Infrastructure.Fiscal.MyDataGateway do
         invType: key.invoice_type
       ]
 
-      find_page(connection, base_url, params, key, nil, @max_lookup_pages)
+      case find_page(connection, base_url, params, key, nil, @max_lookup_pages, []) do
+        {:ok, []} -> :not_found
+        {:ok, found} -> {:ok, latest_registration(found)}
+        error -> error
+      end
     end
   end
 
-  defp find_page(_connection, _base_url, _params, _key, _token, 0), do: :not_found
+  # On the ERP channel a resend of the same document is registered again with a
+  # new MARK (ADR-451), so every match is collected and the latest one wins.
+  defp latest_registration(found) do
+    found
+    |> Enum.max_by(&mark_number/1)
+    |> Map.take([:mark, :uid, :authentication_code, :qr_url])
+  end
 
-  defp find_page(connection, base_url, params, key, token, pages_left) do
+  defp mark_number(%{mark: mark}) do
+    case Integer.parse(mark) do
+      {number, ""} -> number
+      _other -> 0
+    end
+  end
+
+  defp find_page(_connection, _base_url, _params, _key, _token, 0, found), do: {:ok, found}
+
+  defp find_page(connection, base_url, params, key, token, pages_left, found) do
     config = Application.get_env(:palee, :mydata, [])
 
     page_params =
@@ -242,15 +264,13 @@ defmodule Palee.Infrastructure.Fiscal.MyDataGateway do
       {:ok, %Req.Response{status: 200, body: body}} ->
         with {:ok, %{invoices: invoices, next: next}} <-
                XmlCodec.parse_transmitted(to_string(body)) do
-          case Enum.find(invoices, &same_document?(&1, key)) do
-            %{mark: mark} = found when is_binary(mark) ->
-              {:ok, Map.take(found, [:mark, :uid, :authentication_code, :qr_url])}
+          found =
+            found ++
+              Enum.filter(invoices, &(is_binary(&1[:mark]) and same_document?(&1, key)))
 
-            _missing when is_nil(next) ->
-              :not_found
-
-            _missing ->
-              find_page(connection, base_url, params, key, next, pages_left - 1)
+          case next do
+            nil -> {:ok, found}
+            next -> find_page(connection, base_url, params, key, next, pages_left - 1, found)
           end
         end
 
@@ -264,6 +284,9 @@ defmodule Palee.Infrastructure.Fiscal.MyDataGateway do
         {:error, {:network, Exception.message(exception)}}
     end
   end
+
+  # A cancelled or replaced document (`cancelledByMark`) is not the live one.
+  defp same_document?(%{cancelled_by_mark: cancelled}, _key) when is_binary(cancelled), do: false
 
   defp same_document?(invoice, key) do
     invoice.series == key.series and invoice.aa == key.aa and

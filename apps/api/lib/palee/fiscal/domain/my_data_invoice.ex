@@ -256,8 +256,9 @@ defmodule Palee.Fiscal.Domain.MyDataInvoice do
   defp correlated("11.4", %{mark: mark}) when is_binary(mark) and mark != "", do: {:ok, [mark]}
   defp correlated(_type, _original), do: {:ok, []}
 
-  defp currency("EUR"), do: []
-  defp currency(currency), do: [{"currency", currency}]
+  # ADR-451: AADE's development API refuses an 11.2 without it (error 204
+  # "Currency is mandatory for this invoice type"), so it is always sent.
+  defp currency(currency), do: [{"currency", currency || "EUR"}]
 
   defp payment(document, pos) do
     [

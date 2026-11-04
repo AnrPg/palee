@@ -31,7 +31,7 @@ defmodule Palee.Infrastructure.Fiscal.MyDataGatewayTest do
       Plug.Conn.send_resp(conn, 200, """
       <ResponseDoc>
         <response><index>2</index><statusCode>ValidationError</statusCode>
-          <errors><error><message>already sent</message><code>228</code></error></errors></response>
+          <errors><error><message>already sent</message><code>233</code></error></errors></response>
         <response><index>1</index><invoiceMark>400000000000001</invoiceMark><statusCode>Success</statusCode></response>
       </ResponseDoc>
       """)
@@ -39,7 +39,7 @@ defmodule Palee.Infrastructure.Fiscal.MyDataGatewayTest do
 
     assert {[
               {:ok, %{mark: "400000000000001"}},
-              {:error, {:duplicate, [%{code: "228"}]}},
+              {:error, {:duplicate, [%{code: "233"}]}},
               {:error, :empty_response}
             ],
             %{request_bodies: [_one, _two, _three]}} =
@@ -85,6 +85,26 @@ defmodule Palee.Infrastructure.Fiscal.MyDataGatewayTest do
                      }}
 
     assert_received {:query, %{"nextPartitionKey" => "P", "nextRowKey" => "R"}}
+  end
+
+  test "find takes the latest registration when a resend got a second MARK" do
+    Req.Test.stub(Palee.FiscalHttp, fn conn ->
+      cancelled =
+        String.replace(
+          doc("A", "7", "400000000000099"),
+          "</mark>",
+          "</mark><cancelledByMark>400000000000100</cancelledByMark>"
+        )
+
+      Plug.Conn.send_resp(
+        conn,
+        200,
+        "<RequestedDoc><invoicesDoc>#{doc("A", "7", "400000000000011")}" <>
+          "#{doc("A", "7", "400000000000012")}#{cancelled}</invoicesDoc></RequestedDoc>"
+      )
+    end)
+
+    assert {:ok, %{mark: "400000000000012"}} = MyDataGateway.find(@connection, @key)
   end
 
   test "find says not found, and passes refused credentials on" do

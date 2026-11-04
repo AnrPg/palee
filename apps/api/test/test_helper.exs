@@ -9,11 +9,10 @@ missing_tools =
   |> Enum.filter(fn {_tag, path} -> is_nil(path) end)
   |> Enum.map(&elem(&1, 0))
 
-# ADR-451: AADE's development API only with a test registration's keys.
-live_aade =
-  if Enum.all?(~w(MYDATA_DEV_USER MYDATA_DEV_KEY MYDATA_DEV_VAT), &System.get_env/1),
-    do: [],
-    else: [:aade_live]
+# ADR-451: AADE's development API is called only on request
+# (`mix test --only aade_live`, which needs MYDATA_DEV_*), never in a normal
+# run: it is slow and rate-limited (HTTP 429).
+live_aade = [:aade_live]
 
 ExUnit.start(exclude: missing_tools ++ live_aade)
 # TD-046: the RLS-enforcing role that ConnCase requests and `:rls_enforced` tests run as.

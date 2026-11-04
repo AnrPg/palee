@@ -34,9 +34,15 @@ An audit of the ADR-243 myDATA reporting (ANR asked "is it functional, robust an
      issue day and type, following the continuation token, and matching issuer ΑΦΜ,
      series, number, date and type. If AADE has the document, its MARK is taken and the
      row is accepted. Otherwise the document is sent.
-   - If AADE answers "already sent" (`MyDataGateway.duplicate_codes/0`, today `228`), the
-     result is `{:duplicate, errors}`, which triggers the same look-up. When nothing is
-     found, the rejection stands.
+   - If AADE answers "already sent" (`MyDataGateway.duplicate_codes/0`, today `233`, the
+     code the v1.0.12 documentation lists), the result is `{:duplicate, errors}`, which
+     triggers the same look-up. When nothing is found, the rejection stands.
+   - On the ERP channel, AADE does not refuse a resend. The live test (2026-11-04) showed
+     that the same document with the same UID gets a second, new MARK. Code 233 is listed
+     for providers. So the look-up before a resend is the real protection, and the
+     duplicate path is a safety net.
+   - When several listed entries match, `find/2` takes the one with the highest MARK and
+     skips cancelled ones.
 4. **Notices (Κ4).**
    - New notification type `fiscal_documents_not_reported` (migration `20270706000000`),
      built by `ConnectionNotifier.documents_not_reported/3`. It goes to the people with
@@ -51,11 +57,13 @@ An audit of the ADR-243 myDATA reporting (ANR asked "is it functional, robust an
    (`@tag :aade_live`) runs against `mydataapidev.aade.gr` and checks:
    - «Δοκιμή σύνδεσης» with the right key and with a wrong one;
    - a batch of two receipts;
-   - a resend that must come back as a duplicate in a known code;
-   - `find/2`, both found and not found.
+   - a resend, which may come back as a duplicate or with a new MARK;
+   - `find/2`, both found and not found. It retries while AADE indexes the new documents
+     and while the dev API answers 429.
 
-   It runs only when `MYDATA_DEV_USER`, `MYDATA_DEV_KEY` and `MYDATA_DEV_VAT` are set, and
-   `test_helper.exs` excludes it otherwise.
+   It runs only on request, `mix test --only aade_live`, with `MYDATA_DEV_USER`,
+   `MYDATA_DEV_KEY` and `MYDATA_DEV_VAT` set. Normal runs exclude it, because the dev API
+   is slow and rate-limited.
 
 ## Rationale
 - Looking the document up before a resend prevents the duplicate. Handling "already sent"
@@ -76,11 +84,13 @@ An audit of the ADR-243 myDATA reporting (ANR asked "is it functional, robust an
 ## Consequences
 - A recovered document has the MARK and UID that AADE lists. Its `qr_url` may be missing,
   because `RequestTransmittedDocs` may not return it.
-- The duplicate code `228` and the look-up parameters are confirmed only by the live test.
-  It has to run once with AADE test keys before the first Greek box goes live.
-- The XSDs in `priv/fiscal/mydata/v2.0.1` contain fields up to roughly AADE v1.0.10. AADE
-  has published v1.0.12, but aade.gr refused downloads from the cloud container (HTTP 403).
-  Compare the two when the files can be fetched.
+- The live test passed against `mydataapidev.aade.gr` on 2026-11-04. It confirmed the
+  look-up parameters (`mark=0`, `dateFrom`/`dateTo` as dd/MM/yyyy, `invType`) and that
+  `qrUrl` is returned. It also found a bug: AADE refuses an invoice without `currency`
+  (error 204), so `MyDataInvoice` now always writes it (EUR by default).
+- AADE's own v1.0.12 XSDs are kept in `priv/fiscal/mydata/v1.0.12`. Every generated
+  document is validated against both them and `v2.0.1`. `v2.0.1` (from npm) is a superset
+  of v1.0.12 except `otherTransportDetails`, which we do not use.
 
 ## Implementation Notes
 - `SandboxAuthorityGateway.find/2` always answers `:not_found`, because the sandbox keeps

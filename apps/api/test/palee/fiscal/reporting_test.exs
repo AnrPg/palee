@@ -453,7 +453,7 @@ defmodule Palee.Fiscal.ReportingTest do
           Plug.Conn.send_resp(conn, 200, transmitted(found, "400000000000999"))
 
         conn ->
-          Plug.Conn.send_resp(conn, 200, responses([{1, :error, "228"}]))
+          Plug.Conn.send_resp(conn, 200, responses([{1, :error, "233"}]))
       end)
 
       assert {:ok, %{accepted: 1}} = Reporting.transmit(context, :due, @now)
@@ -467,11 +467,11 @@ defmodule Palee.Fiscal.ReportingTest do
           Plug.Conn.send_resp(conn, 200, "<RequestedDoc><invoicesDoc/></RequestedDoc>")
 
         conn ->
-          Plug.Conn.send_resp(conn, 200, responses([{1, :error, "228"}]))
+          Plug.Conn.send_resp(conn, 200, responses([{1, :error, "233"}]))
       end)
 
       assert {:ok, %{rejected: 1}} = Reporting.transmit(context, :due, @now)
-      assert %{status: "rejected", last_error_code: "228"} = transmission(context, missing)
+      assert %{status: "rejected", last_error_code: "233"} = transmission(context, missing)
       assert_received {:documents_not_reported, "mydata", 1}
     end
 

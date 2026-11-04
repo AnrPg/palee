@@ -1,15 +1,15 @@
 defmodule Palee.Infrastructure.Fiscal.MyDataLiveTest do
   @moduledoc """
   ADR-451 (Κ3): the myDATA adapter against AADE's real development API
-  (`mydataapidev.aade.gr`), not a stub. Runs only when these are set (the
-  `:aade_live` tag is excluded otherwise):
+  (`mydataapidev.aade.gr`), not a stub. The `:aade_live` tag is excluded from
+  normal runs; `mix test --only aade_live` runs it and needs:
 
     * `MYDATA_DEV_USER` – the user name of the AADE test registration;
     * `MYDATA_DEV_KEY` – its «Κωδικός API» (subscription key);
     * `MYDATA_DEV_VAT` – the ΑΦΜ it was registered with (AADE accepts
       only documents of that issuer).
 
-  `mix test --only aade_live`. Every run uses a new series, so it can run
+  Every run uses a new series, so it can run
   again and again. Nothing here reaches the production API.
   """
 
@@ -75,6 +75,18 @@ defmodule Palee.Infrastructure.Fiscal.MyDataLiveTest do
     invoice
   end
 
+  defp eventually_found(connection, invoice, tries \\ 12) do
+    case MyDataGateway.find(connection, MyDataInvoice.key(invoice)) do
+      # :not_found while AADE indexes it, 429 when the dev API rate-limits us.
+      result when result in [:not_found, {:error, {:http, 429}}] and tries > 1 ->
+        Process.sleep(10_000)
+        eventually_found(connection, invoice, tries - 1)
+
+      other ->
+        other
+    end
+  end
+
   test "«Δοκιμή σύνδεσης» takes the key and refuses a wrong one", %{connection: connection} do
     assert {:ok, %{}} = MyDataGateway.check(connection)
 
@@ -82,7 +94,7 @@ defmodule Palee.Infrastructure.Fiscal.MyDataLiveTest do
              MyDataGateway.check(%{connection | subscription_key: "wrong-key"})
   end
 
-  test "a batch is registered, a resend is a duplicate and the MARK is found again", %{
+  test "a batch is registered, a resend is registered again, and the MARK is found", %{
     connection: connection,
     vat: vat
   } do
@@ -93,13 +105,21 @@ defmodule Palee.Infrastructure.Fiscal.MyDataLiveTest do
     assert {[{:ok, %{mark: mark}}, {:ok, %{mark: _other}}], _wire} =
              MyDataGateway.submit(connection, [first, second])
 
-    # The same document again: AADE must say "already sent", in the code
-    # the adapter knows (`MyDataGateway.duplicate_codes/0`).
-    assert {[{:error, {:duplicate, _errors}}], _wire} = MyDataGateway.submit(connection, [first])
+    # The same document again. On the ERP channel AADE registers it a
+    # second time, with a new MARK and the same UID (seen 2026-11-04), which
+    # is why a row whose answer was lost is looked up before it is resent.
+    # 233 ("already sent") is what AADE lists for providers.
+    second_mark =
+      case MyDataGateway.submit(connection, [first]) do
+        {[{:error, {:duplicate, _errors}}], _wire} -> mark
+        {[{:ok, %{mark: again}}], _wire} -> again
+      end
 
-    assert {:ok, %{mark: ^mark}} = MyDataGateway.find(connection, MyDataInvoice.key(first))
+    # AADE lists new documents after a short delay.
+    assert {:ok, %{mark: found, qr_url: qr_url}} = eventually_found(connection, first)
+    assert found in [mark, second_mark]
+    assert is_binary(qr_url)
 
-    assert :not_found =
-             MyDataGateway.find(connection, MyDataInvoice.key(receipt(vat, series, 99)))
+    assert :not_found = eventually_found(connection, receipt(vat, series, 99), 1)
   end
 end
