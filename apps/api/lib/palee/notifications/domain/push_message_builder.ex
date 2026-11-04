@@ -1000,6 +1000,19 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
     }
   end
 
+  # ADR-530: the migration moved the box's website to «Αρένα».
+  def build("site_template_changed", payload, localize) do
+    %{
+      title: localize.("Your website has a new look", %{}),
+      body:
+        localize.(
+          "It now uses the Arena template. See it, pick another one or publish it as it is.",
+          %{}
+        ),
+      url: payload["url"] || "/admin/settings/website"
+    }
+  end
+
   # ADR-220.
   def build("member_leaving", payload, localize) do
     bindings = %{nickname: payload["person_nickname"], date: payload["leaving_on"]}

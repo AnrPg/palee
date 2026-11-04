@@ -871,3 +871,9 @@ msgstr "Η συνδρομή %{package} λήγει σήμερα. Ανανέωσέ
 
 msgid "%{package} ended on %{date}. Renew to book classes again."
 msgstr "Η συνδρομή %{package} έληξε στις %{date}. Ανανέωσέ τη για να ξανακλείνεις τμήματα."
+
+msgid "Your website has a new look"
+msgstr "Η ιστοσελίδα σου πήρε νέα όψη"
+
+msgid "It now uses the Arena template. See it, pick another one or publish it as it is."
+msgstr "Είναι πλέον στο πρότυπο «Αρένα». Δες την, διάλεξε άλλο πρότυπο ή δημοσίευσέ την όπως είναι."

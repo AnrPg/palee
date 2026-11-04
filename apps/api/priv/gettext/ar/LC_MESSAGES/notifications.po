@@ -871,3 +871,9 @@ msgstr "ينتهي %{package} اليوم. جدّده لتواصل حجز الح�
 
 msgid "%{package} ended on %{date}. Renew to book classes again."
 msgstr "انتهى %{package} في %{date}. جدّده لتحجز الحصص من جديد."
+
+msgid "Your website has a new look"
+msgstr "لموقعك مظهر جديد"
+
+msgid "It now uses the Arena template. See it, pick another one or publish it as it is."
+msgstr "يستخدم الآن قالب Arena. شاهده أو اختر قالبًا آخر أو انشره كما هو."

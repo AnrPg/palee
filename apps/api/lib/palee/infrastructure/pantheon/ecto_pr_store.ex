@@ -165,6 +165,18 @@ defmodule Palee.Infrastructure.Pantheon.EctoPRStore do
   end
 
   @impl true
+  def count_organization_prs(organization_id, from, to) do
+    %{rows: [[count]]} =
+      Repo.query!("SELECT palee_box_pr_count($1, $2, $3)", [
+        Ecto.UUID.dump!(organization_id),
+        from,
+        to
+      ])
+
+    count || 0
+  end
+
+  @impl true
   def set_record_visibility(id, user_id, rung) do
     case Repo.get_by(PRRecord, id: id, user_id: user_id) do
       nil ->

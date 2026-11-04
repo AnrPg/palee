@@ -151,6 +151,21 @@ defmodule Palee.Application.PublicBox do
     end
   end
 
+  @doc """
+  ADR-530: the cover and photos of the page's last «Δημοσίευση» (cover
+  first), `%{id, url, width, height}` each; `[]` before the first.
+  """
+  def profile_photos(context) do
+    case Organizations.get_public_profile(context) do
+      %{published_snapshot: snapshot} when is_map(snapshot) ->
+        profile = present_profile(context, snapshot)
+        Enum.reject([profile.cover | profile.photos], &is_nil/1)
+
+      _unpublished ->
+        []
+    end
+  end
+
   defp box_followers(organization_id),
     do:
       "organization"

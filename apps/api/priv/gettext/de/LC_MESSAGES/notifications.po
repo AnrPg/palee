@@ -871,3 +871,9 @@ msgstr "%{package} endet heute. Verlängere es, um weiter Kurse zu buchen."
 
 msgid "%{package} ended on %{date}. Renew to book classes again."
 msgstr "%{package} ist am %{date} abgelaufen. Verlängere es, um wieder Kurse zu buchen."
+
+msgid "Your website has a new look"
+msgstr "Deine Website hat ein neues Aussehen"
+
+msgid "It now uses the Arena template. See it, pick another one or publish it as it is."
+msgstr "Sie nutzt jetzt die Vorlage Arena. Sieh sie dir an, wähle eine andere oder veröffentliche sie so."

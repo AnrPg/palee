@@ -60,7 +60,17 @@ defmodule PaleeWeb.BoxSiteControllerTest do
   defp visitor, do: build_conn() |> put_req_header("content-type", "application/json")
 
   test "staff set the site; visitors see only what is public", ctx do
-    assert %{"settings" => %{"lock_version" => 0, "public_schedule" => false}, "domains" => []} =
+    # ADR-530: a new box starts on «Πλακίδια» with the timetable on.
+    assert %{
+             "settings" => %{
+               "lock_version" => 0,
+               "public_schedule" => true,
+               "public_wod" => false,
+               "template" => "tiles",
+               "draft" => nil
+             },
+             "domains" => []
+           } =
              ctx |> owner_conn() |> get(ctx.admin) |> json_response(200)
 
     token = String.duplicate("t", 40)
@@ -83,6 +93,13 @@ defmodule PaleeWeb.BoxSiteControllerTest do
     assert settings["has_conversions_api_token"]
     assert settings["banner_version"] == 2
     refute Map.has_key?(settings, "conversions_api_token")
+    # The section switch waits for «Δημοσίευση».
+    assert settings["draft"] == %{"hidden_sections" => ["coaches"]}
+    assert settings["hidden_sections"] == []
+    assert "coaches" in (build_conn() |> get(ctx.public) |> json_response(200))["sections"]
+
+    assert %{"settings" => %{"draft" => nil, "hidden_sections" => ["coaches"]}} =
+             ctx |> owner_conn() |> post("#{ctx.admin}/publish") |> json_response(200)
 
     assert %{"code" => "settings_changed_meanwhile"} =
              ctx
@@ -93,7 +110,7 @@ defmodule PaleeWeb.BoxSiteControllerTest do
     site = build_conn() |> get(ctx.public) |> json_response(200)
 
     refute "coaches" in site["sections"]
-    refute "schedule" in site["sections"]
+    assert "schedule" in site["sections"]
     assert "faq" in site["sections"]
     assert [%{"question" => "Πού παρκάρω;", "answer" => "Στον δρόμο.", "id" => _id}] = site["faq"]
     assert site["tracking"]["consent_required"]
@@ -782,6 +799,9 @@ defmodule PaleeWeb.BoxSiteControllerTest do
     |> owner_conn()
     |> put(ctx.admin, %{lock_version: 0, public_wod: true})
     |> json_response(200)
+
+    refute "wod" in (build_conn() |> get(ctx.public) |> json_response(200))["sections"]
+    ctx |> owner_conn() |> post("#{ctx.admin}/publish") |> json_response(200)
 
     assert "wod" in (build_conn() |> get(ctx.public) |> json_response(200))["sections"]
   end

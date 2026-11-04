@@ -10,7 +10,11 @@ defmodule PaleeWeb.Schemas.BoxSite do
   @int %Schema{type: :integer}
   @bool %Schema{type: :boolean}
 
-  @section_keys ~w(hero about schedule events wod packages coaches location reviews faq trial_form contact_form)
+  @section_keys ~w(hero about photos stats schedule events wod programmes packages coaches location reviews faq trial_form contact_form)
+  # ADR-530: the keys only; colours live in the web.
+  @templates ~w(arena tiles stories atelier)
+  @palettes ~w(palee electric flame sun amber emerald aegean violet fuchsia olive navy mono)
+  @appearances ~w(auto light dark)
   @domain_statuses ~w(pending_dns pending_tls active broken expired)
   # ADR-398 (`BoxSite.Domain.IngressPolicy`).
   @certificate_statuses ~w(none pending issuing active failed)
@@ -43,6 +47,39 @@ defmodule PaleeWeb.Schemas.BoxSite do
   end
 
   defp faq, do: %Schema{type: :array, items: faq_entry(), maxItems: 12}
+
+  defp template, do: %Schema{type: :string, enum: @templates, description: "ADR-530 template"}
+  defp palette, do: %Schema{type: :string, enum: @palettes, description: "ADR-530 palette key"}
+
+  defp appearance,
+    do: %Schema{
+      type: :string,
+      enum: @appearances,
+      description: "«Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»"
+    }
+
+  defp calm_motion,
+    do: %Schema{type: :boolean, description: "«Λιγότερη κίνηση»: the site's motion is off"}
+
+  # ADR-530 §2: what waits for «Δημοσίευση»; only the fields that differ
+  # from the live site are present.
+  defp draft do
+    %Schema{
+      title: "SiteDraft",
+      type: :object,
+      nullable: true,
+      description: "The publishable fields waiting for «Δημοσίευση»; null when nothing waits",
+      properties: %{
+        template: template(),
+        palette: palette(),
+        appearance: appearance(),
+        calm_motion: calm_motion(),
+        hidden_sections: sections(),
+        public_schedule: @bool,
+        public_wod: @bool
+      }
+    }
+  end
 
   defp tags do
     %Schema{
@@ -82,11 +119,24 @@ defmodule PaleeWeb.Schemas.BoxSite do
           type: :boolean,
           description: "A token is saved; the token itself is never returned"
         },
+        template: template(),
+        palette: palette(),
+        appearance: appearance(),
+        calm_motion: calm_motion(),
+        draft: draft(),
+        published_at: %{@time | description: "The last «Δημοσίευση» (ADR-530)"},
+        template_notice: %Schema{
+          type: :boolean,
+          description: "The site moved to «Αρένα» (ADR-530); shown until published or dismissed"
+        },
         lock_version: @int
       },
       required: [
+        :appearance,
         :banner_version,
+        :calm_motion,
         :conversions_api_enabled,
+        :draft,
         :faq,
         :forms_enabled,
         :ga4_measurement_id,
@@ -95,9 +145,13 @@ defmodule PaleeWeb.Schemas.BoxSite do
         :hidden_sections,
         :lock_version,
         :meta_pixel_id,
+        :palette,
         :public_schedule,
         :public_wod,
+        :published_at,
         :section_order,
+        :template,
+        :template_notice,
         :translation_locales,
         :visible_locales
       ]
@@ -117,11 +171,17 @@ defmodule PaleeWeb.Schemas.BoxSite do
     %Schema{
       title: "SiteSettingsUpdate",
       type: :object,
+      description:
+        "ADR-530: template, palette, appearance, calm_motion, hidden_sections, public_schedule and public_wod go into the draft; the rest saves at once",
       properties: %{
         section_order: sections(),
         hidden_sections: sections(),
         public_schedule: @bool,
         public_wod: @bool,
+        template: template(),
+        palette: palette(),
+        appearance: appearance(),
+        calm_motion: calm_motion(),
         faq: faq(),
         translation_locales: locales("Languages to translate into; the box's own is left out"),
         visible_locales:
@@ -229,6 +289,17 @@ defmodule PaleeWeb.Schemas.BoxSite do
       type: :object,
       properties: %{settings: settings(), languages: site_languages()},
       required: [:languages, :settings]
+    }
+  end
+
+  def settings_only_response do
+    %Schema{
+      title: "SiteSettingsOnlyResponse",
+      type: :object,
+      description:
+        "ADR-530: the settings after «Δημοσίευση», a discarded draft or a hidden notice",
+      properties: %{settings: settings()},
+      required: [:settings]
     }
   end
 
@@ -522,6 +593,22 @@ defmodule PaleeWeb.Schemas.BoxSite do
           additionalProperties: %Schema{type: :string},
           description: "Translated class names by the box's own name"
         },
+        template: template(),
+        palette: palette(),
+        appearance: appearance(),
+        calm_motion: calm_motion(),
+        phone: %Schema{
+          type: :string,
+          nullable: true,
+          description: "The box's public phone; null while the box has none (ADR-530)"
+        },
+        photos: site_photos(),
+        stats: site_stats(),
+        programmes: %Schema{
+          type: :array,
+          items: site_programme(),
+          description: "«Προγράμματα» for sale (ADR-530 §3); empty while there is none"
+        },
         events: %Schema{type: :array, items: BoxReviews.site_event()},
         wod: %Schema{type: :array, items: BoxReviews.site_wod()},
         tracking: %Schema{
@@ -559,6 +646,8 @@ defmodule PaleeWeb.Schemas.BoxSite do
       },
       required: [
         :about,
+        :appearance,
+        :calm_motion,
         :canonical_url,
         :class_type_names,
         :events,
@@ -566,10 +655,16 @@ defmodule PaleeWeb.Schemas.BoxSite do
         :forms,
         :language,
         :languages,
+        :palette,
+        :phone,
+        :photos,
+        :programmes,
         :report_contact,
         :reviews,
         :sections,
         :slug,
+        :stats,
+        :template,
         :texts,
         :time_zone,
         :timetable,
@@ -577,6 +672,86 @@ defmodule PaleeWeb.Schemas.BoxSite do
         :translation,
         :wod
       ]
+    }
+  end
+
+  # ── ADR-530 sections ─────────────────────────────────────────────────────
+
+  @nullable_int %Schema{type: :integer, nullable: true}
+
+  defp site_photos do
+    %Schema{
+      title: "SitePhotos",
+      type: :object,
+      description: "«Φωτογραφίες»: page photos then public room photos (at most 12)",
+      properties: %{
+        items: %Schema{
+          type: :array,
+          maxItems: 12,
+          items: %Schema{
+            title: "SitePhoto",
+            type: :object,
+            properties: %{
+              id: @uuid,
+              url: %Schema{type: :string},
+              width: @nullable_int,
+              height: @nullable_int,
+              caption: %Schema{
+                type: :string,
+                nullable: true,
+                description: "Null for the page's photos; the photo's caption or room's name"
+              }
+            },
+            required: [:caption, :height, :id, :url, :width]
+          }
+        },
+        video: %Schema{
+          title: "SiteVideo",
+          type: :object,
+          nullable: true,
+          description: "Null until boxes can add a site video",
+          properties: %{
+            url: %Schema{type: :string},
+            poster_url: %Schema{type: :string, nullable: true}
+          },
+          required: [:poster_url, :url]
+        }
+      },
+      required: [:items, :video]
+    }
+  end
+
+  defp site_stats do
+    %Schema{
+      title: "SiteStats",
+      type: :object,
+      nullable: true,
+      description:
+        "«Αριθμοί κοινότητας»: aggregates only, null when the section is off; a zero or null is not shown",
+      properties: %{
+        classes_per_week: %{@nullable_int | description: "Classes over the next 7 days"},
+        prs_this_year: %{@nullable_int | description: "PRs recorded in the box this year"},
+        years_open: %{@nullable_int | description: "Whole years since the box joined"}
+      },
+      required: [:classes_per_week, :prs_this_year, :years_open]
+    }
+  end
+
+  defp site_programme do
+    %Schema{
+      title: "SiteProgramme",
+      type: :object,
+      properties: %{
+        id: @uuid,
+        title: %Schema{type: :string},
+        summary: @text,
+        weeks: @nullable_int,
+        price_cents: @nullable_int,
+        currency: @text,
+        cover_url: @text,
+        url: @text
+      },
+      required: [:cover_url, :currency, :id, :price_cents, :summary, :title, :url, :weeks]
     }
   end
 
