@@ -11,6 +11,20 @@ defmodule Palee.Infrastructure.Fiscal.MyDataLiveTest do
 
   `mix test --only aade_live`. Every run uses a new series, so it can run
   again and again. Nothing here reaches the production API.
+
+  What the first run against AADE showed (2026-11-04):
+
+    * retail receipts (11.x) need `<currency>`, although the XSD marks it
+      optional (error 204);
+    * the development API does NOT refuse a resend: it registers the same
+      UID under a new MARK. So a resend must never happen blindly
+      (`Fiscal.Reporting` looks a possibly-sent row up first) and the
+      "already sent" code 228 is handled but cannot be confirmed here;
+    * `RequestTransmittedDocs` takes `mark=0`, `dateFrom`/`dateTo`
+      (dd/MM/yyyy) and `invType`, and filters by them;
+    * a few calls in a row get HTTP 429 with `Retry-After` (~30 s), so
+      every call here waits and retries on 429 (`paced/1`). In the outbox
+      429 is transient and the first backoff (60 s) is longer.
   """
 
   use ExUnit.Case, async: false
@@ -21,7 +35,7 @@ defmodule Palee.Infrastructure.Fiscal.MyDataLiveTest do
   alias Palee.Infrastructure.Fiscal.MyDataGateway
 
   @moduletag :aade_live
-  @moduletag timeout: 180_000
+  @moduletag timeout: 900_000
 
   setup do
     previous = Application.get_env(:palee, :mydata)
@@ -56,6 +70,23 @@ defmodule Palee.Infrastructure.Fiscal.MyDataLiveTest do
     end
   end
 
+  # AADE's development API allows only a few calls in a row and then
+  # answers 429 with `Retry-After` of about half a minute; wait it out.
+  defp paced(call, tries \\ 4) do
+    Process.sleep(2_000)
+
+    case call.() do
+      {:error, {:http, 429}} when tries > 1 -> wait_and(call, tries)
+      {[{:error, {:http, 429}} | _], _wire} when tries > 1 -> wait_and(call, tries)
+      result -> result
+    end
+  end
+
+  defp wait_and(call, tries) do
+    Process.sleep(35_000)
+    paced(call, tries - 1)
+  end
+
   defp receipt(vat, series, sequence, extra \\ %{}) do
     document =
       document(
@@ -76,13 +107,13 @@ defmodule Palee.Infrastructure.Fiscal.MyDataLiveTest do
   end
 
   test "«Δοκιμή σύνδεσης» takes the key and refuses a wrong one", %{connection: connection} do
-    assert {:ok, %{}} = MyDataGateway.check(connection)
+    assert {:ok, %{}} = paced(fn -> MyDataGateway.check(connection) end)
 
     assert {:error, {:unauthorized, _}} =
-             MyDataGateway.check(%{connection | subscription_key: "wrong-key"})
+             paced(fn -> MyDataGateway.check(%{connection | subscription_key: "wrong-key"}) end)
   end
 
-  test "a batch is registered, a resend is a duplicate and the MARK is found again", %{
+  test "a batch is registered, a resend keeps the UID and the first MARK is found again", %{
     connection: connection,
     vat: vat
   } do
@@ -90,16 +121,26 @@ defmodule Palee.Infrastructure.Fiscal.MyDataLiveTest do
     first = receipt(vat, series, 1)
     second = receipt(vat, series, 2)
 
-    assert {[{:ok, %{mark: mark}}, {:ok, %{mark: _other}}], _wire} =
-             MyDataGateway.submit(connection, [first, second])
+    assert {[{:ok, %{mark: mark, uid: uid}}, {:ok, %{mark: other}}], _wire} =
+             paced(fn -> MyDataGateway.submit(connection, [first, second]) end)
 
-    # The same document again: AADE must say "already sent", in the code
-    # the adapter knows (`MyDataGateway.duplicate_codes/0`).
-    assert {[{:error, {:duplicate, _errors}}], _wire} = MyDataGateway.submit(connection, [first])
+    assert mark != other
 
-    assert {:ok, %{mark: ^mark}} = MyDataGateway.find(connection, MyDataInvoice.key(first))
+    # The same document again. Production should answer "already sent"
+    # (`MyDataGateway.duplicate_codes/0`); the development API registers it
+    # again under the same UID. Either way it is the same document.
+    case paced(fn -> MyDataGateway.submit(connection, [first]) end) do
+      {[{:error, {:duplicate, _errors}}], _wire} -> :ok
+      {[{:ok, %{uid: resent_uid}}], _wire} -> assert resent_uid == uid
+    end
+
+    # The look-up finds the first registration of the document.
+    assert {:ok, %{mark: ^mark, uid: ^uid, qr_url: "https://" <> _}} =
+             paced(fn -> MyDataGateway.find(connection, MyDataInvoice.key(first)) end)
 
     assert :not_found =
-             MyDataGateway.find(connection, MyDataInvoice.key(receipt(vat, series, 99)))
+             paced(fn ->
+               MyDataGateway.find(connection, MyDataInvoice.key(receipt(vat, series, 99)))
+             end)
   end
 end

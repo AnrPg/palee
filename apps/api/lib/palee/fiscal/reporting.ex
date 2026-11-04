@@ -153,12 +153,12 @@ defmodule Palee.Fiscal.Reporting do
       for {:defer, transmission} <- prepared,
           do: defer(context, transmission, :original_not_accepted, now)
 
-    # A row whose last attempt got no answer may already be at AADE.
+    # A row that may already be at AADE is looked up before it is sent.
     {found, to_send} =
       prepared
       |> Enum.filter(&match?({:send, _t, _d, _i}, &1))
       |> Enum.map(fn {:send, transmission, document, invoice} = item ->
-        if transmission.last_error_code == "transient" do
+        if possibly_sent?(transmission) do
           beat.()
 
           case gateway.find(connection, MyDataInvoice.key(invoice)) do
@@ -211,6 +211,16 @@ defmodule Palee.Fiscal.Reporting do
 
     deferred ++ finished
   end
+
+  # ADR-451: a row may already be at AADE when its last attempt got no
+  # answer ("transient"), or when an earlier claim never finished (a worker
+  # that died mid-call: the claim expired and the row was claimed again,
+  # so `attempts`, which counts only real sends, is above 1). AADE's
+  # development API does not refuse a resend; it registers the same UID
+  # under a new MARK, so "already sent" cannot be relied on to stop it.
+  defp possibly_sent?(%{last_error_code: "transient"}), do: true
+  defp possibly_sent?(%{attempts: attempts}) when is_integer(attempts), do: attempts > 1
+  defp possibly_sent?(_transmission), do: false
 
   # "Already sent" (a lost answer): take AADE's MARK; when AADE cannot show
   # it, the original rejection stands.

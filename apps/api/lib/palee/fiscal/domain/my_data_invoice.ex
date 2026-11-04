@@ -256,7 +256,10 @@ defmodule Palee.Fiscal.Domain.MyDataInvoice do
   defp correlated("11.4", %{mark: mark}) when is_binary(mark) and mark != "", do: {:ok, [mark]}
   defp correlated(_type, _original), do: {:ok, []}
 
-  defp currency("EUR"), do: []
+  # AADE's live API refuses every retail type (11.x) without a currency
+  # (error 204 "Currency is mandatory for this invoice type"), although the
+  # XSD marks it optional, so it is always sent, EUR included.
+  defp currency(nil), do: [{"currency", "EUR"}]
   defp currency(currency), do: [{"currency", currency}]
 
   defp payment(document, pos) do

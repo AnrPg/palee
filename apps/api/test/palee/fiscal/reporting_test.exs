@@ -423,6 +423,35 @@ defmodule Palee.Fiscal.ReportingTest do
                transmission(context, document)
     end
 
+    test "a row whose worker died mid-call is looked up before it is sent again", %{
+      context: context,
+      owner: owner
+    } do
+      test_pid = self()
+      connect(context, owner, "production", %{user_id: "u", subscription_key: "k"})
+      document = issue(context, owner, "dead-1")
+
+      # A worker claims the row and dies while AADE registers it: nothing
+      # is recorded, and the claim expires.
+      bypass_rls(fn ->
+        Palee.Infrastructure.Fiscal.EctoTransmissionStore.claim(context, :due, @now, 25)
+      end)
+
+      Req.Test.stub(__MODULE__, fn conn ->
+        send(test_pid, {:request, conn.method, conn.request_path})
+        Plug.Conn.send_resp(conn, 200, transmitted(document, "400000000000555"))
+      end)
+
+      stale =
+        DateTime.add(@now, Palee.Fiscal.Domain.TransmissionPolicy.claim_timeout_seconds() + 1)
+
+      assert {:ok, %{accepted: 1}} = Reporting.transmit(context, :due, stale)
+
+      assert_received {:request, "GET", "/RequestTransmittedDocs"}
+      refute_received {:request, "POST", _path}
+      assert %{status: "accepted", mark: "400000000000555"} = transmission(context, document)
+    end
+
     test "a lookup that finds nothing sends the document again", %{context: context, owner: owner} do
       connect(context, owner, "production", %{user_id: "u", subscription_key: "k"})
       document = issue(context, owner, "lost-2")

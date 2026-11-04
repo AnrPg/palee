@@ -29,11 +29,14 @@ An audit of the ADR-243 myDATA reporting (ANR asked "is it functional, robust an
    (`receive_timeout`) or one look-up through all its pages (`check_timeout ×
    max_lookup_pages`).
 3. **Lost answers (Κ1).**
-   - A row whose last attempt ended `transient` is first looked up with
+   - A row that may already be at AADE is first looked up with
      `AuthorityGateway.find/2`. For myDATA that is `GET /RequestTransmittedDocs` for the
      issue day and type, following the continuation token, and matching issuer ΑΦΜ,
      series, number, date and type. If AADE has the document, its MARK is taken and the
-     row is accepted. Otherwise the document is sent.
+     row is accepted. Otherwise the document is sent. "May already be at AADE" means its
+     last attempt ended `transient`, or an earlier claim never finished (a worker died
+     mid-call, the claim expired and the row was claimed again: `attempts` > 1, since
+     deferrals do not count as attempts).
    - If AADE answers "already sent" (`MyDataGateway.duplicate_codes/0`, today `228`), the
      result is `{:duplicate, errors}`, which triggers the same look-up. When nothing is
      found, the rejection stands.
@@ -58,9 +61,11 @@ An audit of the ADR-243 myDATA reporting (ANR asked "is it functional, robust an
    `test_helper.exs` excludes it otherwise.
 
 ## Rationale
-- Looking the document up before a resend prevents the duplicate. Handling "already sent"
-  covers a lost answer the row did not know about, such as a worker that died after AADE
-  answered.
+- Looking the document up before a resend prevents the duplicate. The live run showed that
+  AADE's development API does not refuse a resend at all: it registers the same UID again
+  under a new MARK. So the look-up, not the "already sent" answer, is what stops a second
+  registration, and it also covers a worker that died after AADE answered. Handling
+  "already sent" stays as a second line in case production enforces it.
 - Matching on the document's own keys avoids recomputing AADE's UID hash, whose exact
   input order we would otherwise have to copy.
 - A heartbeat bounds every claim by one call, whatever the batch size.
@@ -74,10 +79,21 @@ An audit of the ADR-243 myDATA reporting (ANR asked "is it functional, robust an
   AADE's exact UID formula.
 
 ## Consequences
-- A recovered document has the MARK and UID that AADE lists. Its `qr_url` may be missing,
-  because `RequestTransmittedDocs` may not return it.
-- The duplicate code `228` and the look-up parameters are confirmed only by the live test.
-  It has to run once with AADE test keys before the first Greek box goes live.
+- A recovered document has the MARK, UID and `qr_url` (`qrCodeUrl`) that AADE lists.
+
+## Live run (2026-11-04)
+The live test ran against `mydataapidev.aade.gr` with AADE test keys:
+- «Δοκιμή σύνδεσης» works; a wrong key is 401.
+- Retail receipts (11.x) were refused with error 204 "Currency is mandatory for this invoice
+  type", although the XSD marks `currency` optional. `MyDataInvoice` now always sends
+  `<currency>` (EUR included).
+- A resend of the same document is accepted with the same UID and a new MARK; the
+  development API never answered `228`. The look-up before a possible resend (above) now
+  covers the dead-worker case too. Whether production answers `228` is still unknown.
+- `RequestTransmittedDocs` with `mark=0`, `dateFrom`/`dateTo` (dd/MM/yyyy) and `invType`
+  works and filters (another type or day lists nothing); `find/2` returns the first MARK.
+- A few calls in a row get HTTP 429 with `Retry-After` of about 30 s. In the outbox this is
+  transient, and the first backoff (60 s) is longer. The live test waits it out.
 - The XSDs in `priv/fiscal/mydata/v2.0.1` contain fields up to roughly AADE v1.0.10. AADE
   has published v1.0.12, but aade.gr refused downloads from the cloud container (HTTP 403).
   Compare the two when the files can be fetched.
