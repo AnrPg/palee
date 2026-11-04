@@ -97,3 +97,13 @@ export function upcomingWindow(window: { ends_at: string }, now: Date = new Date
 export function windowReady(startsAt: string | null, endsAt: string | null) {
   return Boolean(startsAt && endsAt && new Date(endsAt).getTime() > new Date(startsAt).getTime());
 }
+
+/**
+ * The groups of Ρυθμίσεις › Χώροι: one per branch in `order` (see
+ * `groupByBranch`), or, for a box without branches, a single group with
+ * every space, whatever branch row it was saved under (ADR-470: no
+ * «Παράρτημα» where there are no branches, see `hasSeveralBranches`).
+ */
+export function spaceGroups<T extends Located>(items: T[], order: (string | null)[], branches: boolean): { locationId: string | null; items: T[] }[] {
+  return branches ? groupByBranch(items, order) : [{ locationId: null, items }];
+}

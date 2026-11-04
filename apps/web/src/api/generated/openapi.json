@@ -325484,7 +325484,7 @@
     "/api/org/{organization_slug}/me/features": {
       "get": {
         "callbacks": {},
-        "description": "ADR-470. With `location_ids` (a branch filter) a feature a branch can have on its own (promotions) counts only when it covers one of those branches.",
+        "description": "ADR-470. With `location_ids` (a branch filter) a feature a branch can have on its own (promotions, a floor plan) counts only when it covers one of those branches or the whole box.",
         "operationId": "PaleeWeb.MyFeaturesController.show",
         "parameters": [
           {

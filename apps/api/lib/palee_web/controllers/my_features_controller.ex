@@ -38,7 +38,7 @@ defmodule PaleeWeb.MyFeaturesController do
     summary: "Which optional features this business has on",
     description:
       "ADR-470. With `location_ids` (a branch filter) a feature a branch can have on its own " <>
-        "(promotions) counts only when it covers one of those branches.",
+        "(promotions, a floor plan) counts only when it covers one of those branches or the whole box.",
     parameters: [PaleeWeb.Schemas.LocationScope.filter_parameter()],
     responses: [ok: {"Features", "application/json", @features_schema}]
   )
