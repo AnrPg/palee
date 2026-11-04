@@ -95,7 +95,7 @@ defmodule PaleeWeb.BoxSiteControllerTest do
     refute "coaches" in site["sections"]
     refute "schedule" in site["sections"]
     assert "faq" in site["sections"]
-    assert site["faq"] == [%{"question" => "Πού παρκάρω;", "answer" => "Στον δρόμο."}]
+    assert [%{"question" => "Πού παρκάρω;", "answer" => "Στον δρόμο.", "id" => _id}] = site["faq"]
     assert site["tracking"]["consent_required"]
     assert site["tracking"]["tags"]["meta_pixel_id"] == "123456789"
     assert site["timetable"] == []
@@ -393,50 +393,263 @@ defmodule PaleeWeb.BoxSiteControllerTest do
     assert is_list(site["timetable"])
   end
 
-  test "ADR-388: events and WOD sections, English texts and the site's languages", ctx do
+  test "ADR-388: events and WOD sections and the site's languages", ctx do
     site = build_conn() |> get(ctx.public) |> json_response(200)
     # WOD stays off until the owner turns it on; events show when there are any.
     assert "events" in site["sections"]
     refute "wod" in site["sections"]
-    assert %{"language" => language, "languages" => languages, "time_zone" => _zone} = site
-    assert "en" in languages and language in languages
-    assert site["about_en"] == nil
+    assert %{"language" => language, "languages" => [language | _], "time_zone" => _zone} = site
+    assert site["about"] == nil and site["translation"] == nil and site["texts"] == %{}
     assert site["events"] == [] and site["wod"] == []
 
-    assert %{"errors" => _} =
-             ctx
-             |> owner_conn()
-             |> put(ctx.admin, %{lock_version: 0, about_en: String.duplicate("a", 4001)})
-             |> json_response(422)
+    ctx
+    |> owner_conn()
+    |> put(ctx.admin, %{lock_version: 0, public_wod: true})
+    |> json_response(200)
 
-    assert %{"settings" => %{"public_wod" => true, "about_en" => "We train every day."}} =
-             ctx
-             |> owner_conn()
-             |> put(ctx.admin, %{
-               lock_version: 0,
-               public_wod: true,
-               about_en: "  We train every day. ",
-               faq: [
-                 %{
-                   question: "Πού παρκάρω;",
-                   answer: "Στην πλατεία.",
-                   question_en: "Where do I park?",
-                   answer_en: "On the square."
-                 },
-                 %{question: "Χρειάζομαι εμπειρία;", answer: "Όχι.", question_en: "Experience?"}
-               ]
-             })
-             |> json_response(200)
+    assert "wod" in (build_conn() |> get(ctx.public) |> json_response(200))["sections"]
+  end
 
-    site = build_conn() |> get(ctx.public) |> json_response(200)
-    assert "wod" in site["sections"]
-    assert site["about_en"] == "We train every day."
+  describe "ADR-520: translations of the website" do
+    setup ctx do
+      greek_box(ctx.organization)
+      :ok
+    end
 
-    # The English half shows only when both are there.
-    assert [%{"question_en" => "Where do I park?", "answer_en" => "On the square."}, second] =
-             site["faq"]
+    test "the owner picks languages; the box's own and unknown ones are refused", ctx do
+      %{"languages" => languages, "settings" => settings} =
+        ctx |> owner_conn() |> get(ctx.admin) |> json_response(200)
 
-    refute Map.has_key?(second, "question_en")
+      assert languages["source"] == "el"
+      refute "el" in languages["available"]
+      assert "en" in languages["available"] and "pt-PT" in languages["available"]
+      assert settings["translation_locales"] == ["en"] and settings["visible_locales"] == ["en"]
+      assert [%{"locale" => "en", "total" => total}] = languages["progress"]
+      assert total >= 1
+
+      assert %{
+               "settings" => %{"translation_locales" => ["en", "de"], "visible_locales" => ["en"]}
+             } =
+               ctx
+               |> owner_conn()
+               |> put(ctx.admin, %{
+                 lock_version: 0,
+                 translation_locales: ["en", "el", "DE", "en"],
+                 visible_locales: ["en", "de-xx"]
+               })
+               |> json_response(422)
+               |> then(fn _refused ->
+                 ctx
+                 |> owner_conn()
+                 |> put(ctx.admin, %{
+                   lock_version: 0,
+                   translation_locales: ["en", "el", "DE", "en"],
+                   visible_locales: ["en"]
+                 })
+                 |> json_response(200)
+               end)
+
+      site = build_conn() |> get(ctx.public) |> json_response(200)
+      assert site["languages"] == ["el", "en"]
+    end
+
+    test "every text of the site, side by side, with its status", ctx do
+      %{"settings" => %{"lock_version" => lock}} =
+        ctx
+        |> owner_conn()
+        |> put(ctx.admin, %{
+          lock_version: 0,
+          faq: [%{question: "Πού παρκάρω;", answer: "Στην πλατεία."}]
+        })
+        |> json_response(200)
+
+      page =
+        ctx |> owner_conn() |> get("#{ctx.admin}/translations?locale=en") |> json_response(200)
+
+      assert page["locale"] == "en" and page["source_language"] == "el"
+      assert page["counts"] == %{"missing" => 3, "stale" => 0, "machine" => 0, "ok" => 0}
+
+      assert [about, question, answer] = page["items"]
+
+      assert %{
+               "group" => "about",
+               "kind" => "box_profile",
+               "source" => "Box",
+               "status" => "missing"
+             } = about
+
+      assert %{"group" => "faq", "field" => "question", "label" => "1"} = question
+      assert answer["source"] == "Στην πλατεία."
+
+      # A person writes two texts; an empty one is no translation.
+      page =
+        ctx
+        |> owner_conn()
+        |> put("#{ctx.admin}/translations", %{
+          locale: "en",
+          entries: [
+            %{
+              kind: "site_faq",
+              id: question["id"],
+              field: "question",
+              text: " Where do I park? "
+            },
+            %{kind: "site_faq", id: answer["id"], field: "answer", text: "On the square."},
+            %{kind: "box_profile", id: about["id"], field: "about", text: ""}
+          ]
+        })
+        |> json_response(200)
+
+      assert page["counts"]["ok"] == 2 and page["counts"]["missing"] == 1
+
+      # The box's own language and unknown texts are refused.
+      ctx
+      |> owner_conn()
+      |> get("#{ctx.admin}/translations?locale=el")
+      |> json_response(422)
+
+      ctx
+      |> owner_conn()
+      |> put("#{ctx.admin}/translations", %{
+        locale: "en",
+        entries: [%{kind: "event", id: Ecto.UUID.generate(), field: "title", text: "Hi"}]
+      })
+      |> json_response(422)
+
+      # The visitor reads the English site.
+      site = build_conn() |> get("#{ctx.public}?lang=EN") |> json_response(200)
+      assert site["translation"] == "en"
+      assert [%{"question" => "Where do I park?", "answer" => "On the square."}] = site["faq"]
+      assert site["about"] == nil
+
+      greek = build_conn() |> get(ctx.public) |> json_response(200)
+      assert [%{"question" => "Πού παρκάρω;"}] = greek["faq"]
+
+      # The owner changes the Greek answer: its translation is out of date, still shown.
+      [entry] = greek["faq"]
+
+      ctx
+      |> owner_conn()
+      |> put(ctx.admin, %{
+        lock_version: lock,
+        faq: [%{id: entry["id"], question: "Πού παρκάρω;", answer: "Στην πλατεία, δωρεάν."}]
+      })
+      |> json_response(200)
+
+      page =
+        ctx |> owner_conn() |> get("#{ctx.admin}/translations?locale=en") |> json_response(200)
+
+      assert %{"stale" => 1, "ok" => 1} = page["counts"]
+
+      assert [%{"answer" => "On the square."}] =
+               (build_conn() |> get("#{ctx.public}?lang=en") |> json_response(200))["faq"]
+
+      # «Αυτόματη μετάφραση» fills the missing and stale ones, never the person's current text.
+      page =
+        ctx
+        |> owner_conn()
+        |> post("#{ctx.admin}/translations/machine", %{locale: "en"})
+        |> json_response(200)
+
+      assert page["written"] == 2
+      assert %{"machine" => 2, "ok" => 1, "missing" => 0, "stale" => 0} = page["counts"]
+      by_field = Map.new(page["items"], &{&1["field"], &1})
+      assert by_field["question"]["text"] == "Where do I park?"
+      assert by_field["answer"]["text"] == "[EN] Στην πλατεία, δωρεάν."
+      assert by_field["about"]["origin"] == "machine"
+
+      # «Εντάξει, κράτα το».
+      page =
+        ctx
+        |> owner_conn()
+        |> post("#{ctx.admin}/translations/keep", %{
+          locale: "en",
+          keys: [by_field["answer"]["key"]]
+        })
+        |> json_response(200)
+
+      assert %{"machine" => 1, "ok" => 2} = page["counts"]
+
+      # Hidden language: the visitor gets the box's own texts.
+      ctx
+      |> owner_conn()
+      |> put(ctx.admin, %{
+        lock_version: lock + 1,
+        visible_locales: [],
+        translation_locales: ["en"]
+      })
+      |> json_response(200)
+
+      hidden = build_conn() |> get("#{ctx.public}?lang=en") |> json_response(200)
+      assert hidden["translation"] == nil and hidden["languages"] == ["el"]
+      assert [%{"answer" => "Στην πλατεία, δωρεάν."}] = hidden["faq"]
+    end
+
+    test "machine translation that is not set up says so", ctx do
+      Application.put_env(:palee, :content_sandbox_translation, :unavailable)
+      on_exit(fn -> Application.delete_env(:palee, :content_sandbox_translation) end)
+
+      %{"languages" => %{"machine_available" => false}} =
+        ctx |> owner_conn() |> get(ctx.admin) |> json_response(200)
+
+      ctx
+      |> owner_conn()
+      |> post("#{ctx.admin}/translations/machine", %{locale: "en"})
+      |> json_response(503)
+    end
+
+    test "another box never reads these translations", ctx do
+      other = admin_fixture()
+
+      {:ok, organization} =
+        Organizations.create_organization(%{name: "Other #{System.unique_integer([:positive])}"})
+
+      {:ok, _membership} =
+        Organizations.add_membership(%{
+          organization_id: organization.id,
+          user_id: other.id,
+          role: :owner,
+          status: :active,
+          joined_at: DateTime.utc_now()
+        })
+
+      greek_box(organization)
+
+      page =
+        ctx |> owner_conn() |> get("#{ctx.admin}/translations?locale=en") |> json_response(200)
+
+      [about] = page["items"]
+
+      ctx
+      |> owner_conn()
+      |> put("#{ctx.admin}/translations", %{
+        locale: "en",
+        entries: [%{kind: "box_profile", id: about["id"], field: "about", text: "Box EN"}]
+      })
+      |> json_response(200)
+
+      other_page =
+        build_conn()
+        |> put_bearer_token(other)
+        |> get("/api/org/#{organization.slug}/admin/site/translations?locale=en")
+        |> json_response(200)
+
+      assert other_page["items"] == []
+    end
+  end
+
+  defp greek_box(organization) do
+    import Ecto.Query
+
+    {1, _rows} =
+      bypass_rls(fn ->
+        Palee.Repo.update_all(
+          from(s in Palee.Organizations.OrganizationSetting,
+            where: s.organization_id == ^organization.id
+          ),
+          set: [default_locale: "el"]
+        )
+      end)
   end
 
   test "ADR-388: «Στείλε τις οδηγίες» emails the records with a status link", ctx do

@@ -519,6 +519,11 @@ defmodule PaleeWeb.FallbackController do
     invalid_review_action: {:unprocessable_entity, "Choose opened, later or dismissed"},
     settings_changed_meanwhile:
       {:conflict, "Someone saved these settings meanwhile; reload and try again"},
+    # ADR-520: translations of the website's texts.
+    unknown_translation_text:
+      {:unprocessable_entity, "This text is no longer on the website; reload the list"},
+    machine_translation_unavailable:
+      {:service_unavailable, "Automatic translation is not available right now; type it instead"},
     # ADR-386..388: in-app reviews, the Google listing, domain instructions.
     review_needs_check_in: {:forbidden, "Only people who checked in at this box can review it"},
     box_review_not_found: {:not_found, "Review not found"},

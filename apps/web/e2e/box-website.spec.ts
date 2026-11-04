@@ -4,10 +4,10 @@ import { expect, test, type Page, type Route } from "./support/test";
 
 import { stubApiPort } from "../playwright.config";
 
-// W4 box website and reviews (ADR-386/387/388): Settings › Website and
-// Settings › Reviews for staff, the public website on /b/<slug> and
-// /b/<slug>/en with its request sheet, and the member's review ask and Box
-// «Reviews». The API is stubbed; the public pages' server reads go to a stub
+// W4 box website and reviews (ADR-386/387/388/500): Settings › Website,
+// «Translations» and Settings › Reviews for staff, the public website on
+// /b/<slug> and each translation (/b/<slug>/en) with its request sheet, and
+// the member's review ask and Box «Reviews». The API is stubbed; the public pages' server reads go to a stub
 // API on `stubApiPort`.
 
 const json = (route: Route, body: unknown, status = 200) =>
@@ -68,9 +68,12 @@ const site = {
   languages: ["el", "en"],
   canonical_url: `https://palee.app/b/${slug}`,
   time_zone: "Europe/Athens",
-  about_en: "A friendly box in Kypseli.",
+  translation: null,
+  about: null,
+  texts: {},
+  class_type_names: {},
   sections: ["hero", "about", "faq", "reviews", "trial_form", "contact_form", "coaches"],
-  faq: [{ question: "Χρειάζομαι εμπειρία;", answer: "Όχι, ξεκινάμε από την αρχή.", question_en: "Do I need experience?", answer_en: "No, we start from scratch." }],
+  faq: [{ id: "faq-1", question: "Χρειάζομαι εμπειρία;", answer: "Όχι, ξεκινάμε από την αρχή." }],
   forms: { trial: true, contact: true, kinds: ["trial", "contact"] },
   reviews: { palee: { average: 4.5, count: 2, latest: memberReviews }, google, google_reviews_url: google.maps_uri },
   events: [],
@@ -85,6 +88,14 @@ const site = {
   },
 };
 
+// ADR-520: `?lang=en` answers the English translation, resolved by the API.
+const siteEn = {
+  ...site,
+  translation: "en",
+  about: "A friendly box in Kypseli.",
+  faq: [{ id: "faq-1", question: "Do I need experience?", answer: "No, we start from scratch." }],
+  class_type_names: { CrossFit: "CrossFit" },
+};
 
 let server: Server;
 
@@ -96,7 +107,7 @@ test.beforeAll(async () => {
       response.end(JSON.stringify(body));
     };
     if (url.startsWith(`/api/public/boxes/${slug}`)) return reply(200, publicBox);
-    if (url.startsWith(`/api/public/sites/${slug}`)) return reply(200, site);
+    if (url.startsWith(`/api/public/sites/${slug}`)) return reply(200, /[?&]lang=en\b/.test(url) ? siteEn : site);
     return reply(404, { error: "not_found" });
   });
   await new Promise<void>((resolve) => server.listen(stubApiPort, "127.0.0.1", resolve));
@@ -198,7 +209,7 @@ test.describe("the box's public website", () => {
     expect(body).not.toHaveProperty("visitor_id");
   });
 
-  test("/en shows the owner's English texts and marks English as current", async ({ page }) => {
+  test("/en shows the English translations and marks English as current", async ({ page }) => {
     await asVisitor(page);
     await page.goto(`/b/${slug}/en`);
 
@@ -267,7 +278,6 @@ async function asOwner(page: Page, writes: Write[], extra: (path: string, method
 }
 
 const siteSettings = {
-  about_en: null,
   banner_version: 1,
   conversions_api_enabled: false,
   faq: [],
@@ -281,14 +291,23 @@ const siteSettings = {
   public_schedule: false,
   public_wod: false,
   section_order: ["hero", "about", "schedule", "reviews", "trial_form", "contact_form", "faq"],
+  translation_locales: ["en"],
+  visible_locales: [] as string[],
+};
+
+const siteLanguages = {
+  source: "el",
+  available: ["en", "ar", "ru", "de", "es", "pt-PT", "he", "it", "bg", "nl", "fr"],
+  machine_available: true,
+  progress: [{ locale: "en", counts: { ok: 1, missing: 2, stale: 1, machine: 0 }, total: 4 }],
 };
 
 test.describe("Settings › Website", () => {
   test("switches sections and their order as a draft, and the save bar sends one PUT", async ({ page }) => {
     const writes: Write[] = [];
     await asOwner(page, writes, (path, method, body, route) => {
-      if (path === "/api/admin/site" && method === "GET") return json(route, { settings: siteSettings, domains: [] });
-      if (path === "/api/admin/site" && method === "PUT") return json(route, { settings: { ...siteSettings, ...(body as object), lock_version: 4 } });
+      if (path === "/api/admin/site" && method === "GET") return json(route, { settings: siteSettings, domains: [], languages: siteLanguages });
+      if (path === "/api/admin/site" && method === "PUT") return json(route, { settings: { ...siteSettings, ...(body as object), lock_version: 4 }, languages: siteLanguages });
       if (path === "/api/admin/site/summary") {
         return json(route, { days: 30, submissions: { total: 7, delivered: 7, failed: 0, waiting: 0 }, consents: { accept_all: 0, custom: 0, reject_all: 0, withdraw: 0 } });
       }
@@ -327,8 +346,151 @@ test.describe("Settings › Website", () => {
       hidden_sections: ["contact_form"],
       section_order: ["hero", "about", "reviews", "schedule", "trial_form", "contact_form", "faq"],
       faq: [],
-      about_en: null,
+      translation_locales: ["en"],
+      visible_locales: [],
     });
+  });
+});
+
+// ── Staff: «Website languages» and «Translations» (ADR-520) ──────────────────
+
+type Status = "ok" | "missing" | "stale" | "machine";
+type Item = { key: string; kind: string; id: string; field: string; group: string; label: string | null; source: string; text: string | null; status: Status; origin: string | null; updated_at: string | null };
+
+function translationItems(): Item[] {
+  const item = (kind: string, id: string, field: string, group: string, label: string | null, source: string, text: string | null, status: Status): Item => ({
+    key: `${kind}:${id}:${field}`, kind, id, field, group, label, source, text, status, origin: text ? "manual" : null, updated_at: null,
+  });
+  return [
+    item("box_profile", "org-1", "about", "about", null, "Ένα φιλικό box στην Κυψέλη.", "A friendly box in Kypseli.", "ok"),
+    item("site_faq", "faq-1", "question", "faq", "1", "Χρειάζομαι εμπειρία;", null, "missing"),
+    item("package", "pkg-1", "name", "packages", "Μηνιαίο", "Μηνιαίο", "Month", "stale"),
+    item("package", "pkg-1", "description", "packages", "Μηνιαίο", "Απεριόριστες προπονήσεις", null, "missing"),
+  ];
+}
+
+function translationsPage(items: Item[], written?: number) {
+  const counts = { ok: 0, missing: 0, stale: 0, machine: 0 };
+  for (const entry of items) counts[entry.status] += 1;
+  return { locale: "en", source_language: "el", machine_available: true, counts, total: items.length, items, ...(written === undefined ? {} : { written }) };
+}
+
+async function asTranslatingOwner(page: Page, writes: Write[]) {
+  const items = translationItems();
+  await asOwner(page, writes, (path, method, body, route) => {
+    if (path === "/api/admin/site" && method === "GET") return json(route, { settings: siteSettings, domains: [], languages: siteLanguages });
+    if (path === "/api/admin/site/translations" && method === "GET") return json(route, translationsPage(items));
+    if (path === "/api/admin/site/translations" && method === "PUT") {
+      for (const edit of (body as { entries: { kind: string; id: string; field: string; text: string }[] }).entries) {
+        const found = items.find((entry) => entry.key === `${edit.kind}:${edit.id}:${edit.field}`)!;
+        Object.assign(found, edit.text.trim() ? { text: edit.text, status: "ok", origin: "manual" } : { text: null, status: "missing", origin: null });
+      }
+      return json(route, translationsPage(items));
+    }
+    if (path === "/api/admin/site/translations/keep" && method === "POST") {
+      for (const key of (body as { keys: string[] }).keys) Object.assign(items.find((entry) => entry.key === key)!, { status: "ok" });
+      return json(route, translationsPage(items));
+    }
+    if (path === "/api/admin/site/translations/machine" && method === "POST") {
+      let written = 0;
+      for (const entry of items.filter((candidate) => candidate.status === "missing" || candidate.status === "stale")) {
+        Object.assign(entry, { text: `[EN] ${entry.source}`, status: "machine", origin: "machine" });
+        written += 1;
+      }
+      return json(route, translationsPage(items, written));
+    }
+    return null;
+  });
+}
+
+test.describe("Website languages and translations", () => {
+  test("the languages card adds a hidden language, shows it, and saves both lists with the save bar", async ({ page }) => {
+    const writes: Write[] = [];
+    await asTranslatingOwner(page, writes);
+    await page.goto("/admin/settings/website");
+
+    const card = page.getByTestId("website-languages");
+    await expect(card.getByTestId("website-language-source")).toContainText("Ελληνικά");
+    const english = card.getByTestId("website-language-en");
+    await expect(english).toContainText("Ready: 1/4");
+    await expect(english).toContainText("Hidden");
+    await expect(card.getByTestId("website-language-translate-en")).toHaveAttribute("href", /\/admin\/settings\/website\/translations\?lang=en$/);
+
+    await card.getByTestId("website-language-visible-en").check();
+    await card.getByTestId("website-language-add").getByRole("combobox").click();
+    await page.getByRole("option", { name: "Deutsch" }).click();
+    await card.getByRole("button", { name: "Add language" }).click();
+    await expect(card.getByTestId("website-language-de")).toContainText("Hidden");
+
+    await page.getByTestId("website-save-bar-save").click();
+    const puts = writes.filter((write) => write.path === "/api/admin/site" && write.method === "PUT");
+    expect(puts).toHaveLength(1);
+    expect(puts[0]!.body).toMatchObject({ translation_locales: ["en", "de"], visible_locales: ["en"] });
+  });
+
+  test("«Translations» lists every text side by side, saves on leaving a field and keeps a changed original", async ({ page }) => {
+    const writes: Write[] = [];
+    await asTranslatingOwner(page, writes);
+    await page.goto("/admin/settings/website/translations?lang=en");
+
+    await expect(page.getByRole("heading", { name: "Translations", level: 1 })).toBeVisible();
+    await expect(page.getByTestId("site-translations-hidden")).toBeVisible();
+    await expect(page.getByTestId("site-translations-progress")).toHaveText("Ready: 1/4");
+    // «Need you» is the default filter: the ready about text is not listed.
+    await expect(page.getByTestId("site-translations-filter-todo")).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByTestId("site-translations-group-about")).toHaveCount(0);
+    await expect(page.getByTestId("site-translations-group-faq")).toBeVisible();
+
+    const question = page.getByTestId("site-translation-site_faq:faq-1:question");
+    await expect(question).toHaveAttribute("data-status", "missing");
+    await question.getByRole("textbox").fill("Do I need experience?");
+    await question.getByRole("textbox").blur();
+    await expect(question).toHaveAttribute("data-status", "ok");
+    const saves = writes.filter((write) => write.path === "/api/admin/site/translations" && write.method === "PUT");
+    expect(saves).toEqual([{ path: "/api/admin/site/translations", method: "PUT", body: { locale: "en", entries: [{ kind: "site_faq", id: "faq-1", field: "question", text: "Do I need experience?" }] } }]);
+
+    const name = page.getByTestId("site-translation-package:pkg-1:name");
+    await expect(name).toHaveAttribute("data-status", "stale");
+    await page.getByTestId("site-translation-keep-package:pkg-1:name").click();
+    await expect(name).toHaveAttribute("data-status", "ok");
+    expect(writes.filter((write) => write.path === "/api/admin/site/translations/keep")).toEqual([
+      { path: "/api/admin/site/translations/keep", method: "POST", body: { locale: "en", keys: ["package:pkg-1:name"] } },
+    ]);
+
+    await page.getByTestId("site-translations-filter-all").click();
+    await expect(page.getByTestId("site-translations-group-about")).toBeVisible();
+  });
+
+  test("automatic translation fills only what is missing and asks the owner to check it", async ({ page }) => {
+    const writes: Write[] = [];
+    await asTranslatingOwner(page, writes);
+    await page.goto("/admin/settings/website/translations?lang=en");
+
+    await page.getByTestId("site-translations-machine").click();
+    await expect(page.getByText("Automatic translations: 3.")).toBeVisible();
+    await expect(page.getByTestId("site-translations-filter-machine")).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByTestId("site-translation-site_faq:faq-1:question")).toHaveAttribute("data-status", "machine");
+    await expect(page.getByTestId("site-translation-site_faq:faq-1:question").getByRole("textbox")).toHaveValue("[EN] Χρειάζομαι εμπειρία;");
+    expect(writes.filter((write) => write.path === "/api/admin/site/translations/machine")).toEqual([
+      { path: "/api/admin/site/translations/machine", method: "POST", body: { locale: "en" } },
+    ]);
+  });
+
+  test("«One by one» walks what is left: Enter saves, skip moves on", async ({ page }) => {
+    const writes: Write[] = [];
+    await asTranslatingOwner(page, writes);
+    await page.goto("/admin/settings/website/translations?lang=en");
+
+    await page.getByTestId("site-translations-one-by-one").click();
+    const view = page.getByTestId("site-translations-one-by-one-view");
+    await expect(view).toContainText("3 of 3 left");
+    await view.getByTestId("site-translations-one-by-one-field").fill("Do I need experience?");
+    await view.getByTestId("site-translations-one-by-one-field").press("Enter");
+    await expect(view).toContainText("2 of 3 left");
+    await view.getByRole("button", { name: "Skip" }).click();
+    await view.getByRole("button", { name: "Skip" }).click();
+    await expect(page.getByTestId("site-translations-one-by-one-done")).toBeVisible();
+    expect(writes.filter((write) => write.path === "/api/admin/site/translations" && write.method === "PUT")).toHaveLength(1);
   });
 });
 

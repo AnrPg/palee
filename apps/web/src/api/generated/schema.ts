@@ -11409,6 +11409,58 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/site/translations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** «Μεταφράσεις»: every text of the website with its translation and status */
+        get: operations["PaleeWeb.AdminSiteController.translations"];
+        /** Save translations a person wrote (an empty text removes one); live at once */
+        put: operations["PaleeWeb.AdminSiteController.save_translations"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/site/translations/keep": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Εντάξει, κράτα το»: keep machine or out-of-date translations as they are */
+        post: operations["PaleeWeb.AdminSiteController.keep_translations"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/site/translations/machine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Αυτόματη μετάφραση»: fill every missing or out-of-date text by machine */
+        post: operations["PaleeWeb.AdminSiteController.machine_translations"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/trial-policy": {
         parameters: {
             query?: never;
@@ -19228,19 +19280,40 @@ export interface components {
                 /** Format: date-time */
                 verified_at: string | null;
             }[];
+            /**
+             * SiteLanguages
+             * @description The site's own language, the ones it can add and each translation's progress
+             */
+            languages: {
+                available: string[];
+                machine_available: boolean;
+                progress: {
+                    /** SiteTranslationCounts */
+                    counts: {
+                        machine: number;
+                        missing: number;
+                        ok: number;
+                        stale: number;
+                    };
+                    locale: string;
+                    total: number;
+                }[];
+                /** @description The box's own language (the source) */
+                source: string;
+            };
             section_keys: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
             /** SiteSettings */
             settings: {
-                about_en: string | null;
                 banner_version: number;
                 conversions_api_enabled: boolean;
                 faq: {
                     answer: string;
-                    /** @description Optional English text (ADR-388) */
-                    answer_en?: string;
+                    /**
+                     * Format: uuid
+                     * @description Stable id (ADR-520); a new entry gets one when saved
+                     */
+                    id?: string;
                     question: string;
-                    /** @description Optional English text (ADR-388) */
-                    question_en?: string;
                 }[];
                 forms_enabled: boolean;
                 ga4_measurement_id: string | null;
@@ -19254,6 +19327,10 @@ export interface components {
                 /** @description «WOD της ημέρας» on the site (ADR-388) */
                 public_wod: boolean;
                 section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                /** @description Languages the box translates its texts into (ADR-520) */
+                translation_locales: string[];
+                /** @description Translations visitors can pick on the site (ADR-520) */
+                visible_locales: string[];
             };
         };
         /** AnatomyNode */
@@ -41212,8 +41289,13 @@ export interface components {
         };
         /** PublicSiteResponse */
         PublicSiteResponse: {
-            about_en: string | null;
+            /** @description The translated «Σχετικά», null when there is none */
+            about: string | null;
             canonical_url: string;
+            /** @description Translated class names by the box's own name */
+            class_type_names: {
+                [key: string]: string;
+            };
             events: {
                 currency: string;
                 /** Format: date-time */
@@ -41229,11 +41311,12 @@ export interface components {
             }[];
             faq: {
                 answer: string;
-                /** @description Optional English text (ADR-388) */
-                answer_en?: string;
+                /**
+                 * Format: uuid
+                 * @description Stable id (ADR-520); a new entry gets one when saved
+                 */
+                id?: string;
                 question: string;
-                /** @description Optional English text (ADR-388) */
-                question_en?: string;
             }[];
             forms: {
                 contact: boolean;
@@ -41242,7 +41325,7 @@ export interface components {
             };
             /** @description The box's language (ADR-388) */
             language: string;
-            /** @description The site's languages: the box's own and English */
+            /** @description The site's languages: the box's own first, then its visible translations */
             languages: string[];
             /** SiteReviews */
             reviews: {
@@ -41286,6 +41369,10 @@ export interface components {
             };
             sections: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
             slug: string;
+            /** @description Translations of texts served by other reads, keyed kind:id:field */
+            texts: {
+                [key: string]: string;
+            };
             time_zone: string;
             /** @description The next 7 days' classes when the owner shows the timetable (no spots or people) */
             timetable: {
@@ -41315,6 +41402,8 @@ export interface components {
                 };
                 validity_days: number;
             };
+            /** @description The translation this answer is in (ADR-520), null for the box's own */
+            translation: string | null;
             wod: {
                 body: string | null;
                 /** Format: date */
@@ -44365,11 +44454,12 @@ export interface components {
         /** SiteFaqEntry */
         SiteFaqEntry: {
             answer: string;
-            /** @description Optional English text (ADR-388) */
-            answer_en?: string;
+            /**
+             * Format: uuid
+             * @description Stable id (ADR-520); a new entry gets one when saved
+             */
+            id?: string;
             question: string;
-            /** @description Optional English text (ADR-388) */
-            question_en?: string;
         };
         /** SiteFormRequest */
         SiteFormRequest: {
@@ -44412,6 +44502,39 @@ export interface components {
         SiteFormResponse: {
             /** @enum {string} */
             status: "received";
+        };
+        /** SiteLanguageProgress */
+        SiteLanguageProgress: {
+            /** SiteTranslationCounts */
+            counts: {
+                machine: number;
+                missing: number;
+                ok: number;
+                stale: number;
+            };
+            locale: string;
+            total: number;
+        };
+        /**
+         * SiteLanguages
+         * @description The site's own language, the ones it can add and each translation's progress
+         */
+        SiteLanguages: {
+            available: string[];
+            machine_available: boolean;
+            progress: {
+                /** SiteTranslationCounts */
+                counts: {
+                    machine: number;
+                    missing: number;
+                    ok: number;
+                    stale: number;
+                };
+                locale: string;
+                total: number;
+            }[];
+            /** @description The box's own language (the source) */
+            source: string;
         };
         /** SiteOpsDomainsResponse */
         SiteOpsDomainsResponse: {
@@ -44492,16 +44615,16 @@ export interface components {
         };
         /** SiteSettings */
         SiteSettings: {
-            about_en: string | null;
             banner_version: number;
             conversions_api_enabled: boolean;
             faq: {
                 answer: string;
-                /** @description Optional English text (ADR-388) */
-                answer_en?: string;
+                /**
+                 * Format: uuid
+                 * @description Stable id (ADR-520); a new entry gets one when saved
+                 */
+                id?: string;
                 question: string;
-                /** @description Optional English text (ADR-388) */
-                question_en?: string;
             }[];
             forms_enabled: boolean;
             ga4_measurement_id: string | null;
@@ -44515,21 +44638,46 @@ export interface components {
             /** @description «WOD της ημέρας» on the site (ADR-388) */
             public_wod: boolean;
             section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            /** @description Languages the box translates its texts into (ADR-520) */
+            translation_locales: string[];
+            /** @description Translations visitors can pick on the site (ADR-520) */
+            visible_locales: string[];
         };
         /** SiteSettingsResponse */
         SiteSettingsResponse: {
+            /**
+             * SiteLanguages
+             * @description The site's own language, the ones it can add and each translation's progress
+             */
+            languages: {
+                available: string[];
+                machine_available: boolean;
+                progress: {
+                    /** SiteTranslationCounts */
+                    counts: {
+                        machine: number;
+                        missing: number;
+                        ok: number;
+                        stale: number;
+                    };
+                    locale: string;
+                    total: number;
+                }[];
+                /** @description The box's own language (the source) */
+                source: string;
+            };
             /** SiteSettings */
             settings: {
-                about_en: string | null;
                 banner_version: number;
                 conversions_api_enabled: boolean;
                 faq: {
                     answer: string;
-                    /** @description Optional English text (ADR-388) */
-                    answer_en?: string;
+                    /**
+                     * Format: uuid
+                     * @description Stable id (ADR-520); a new entry gets one when saved
+                     */
+                    id?: string;
                     question: string;
-                    /** @description Optional English text (ADR-388) */
-                    question_en?: string;
                 }[];
                 forms_enabled: boolean;
                 ga4_measurement_id: string | null;
@@ -44543,21 +44691,25 @@ export interface components {
                 /** @description «WOD της ημέρας» on the site (ADR-388) */
                 public_wod: boolean;
                 section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                /** @description Languages the box translates its texts into (ADR-520) */
+                translation_locales: string[];
+                /** @description Translations visitors can pick on the site (ADR-520) */
+                visible_locales: string[];
             };
         };
         /** SiteSettingsUpdate */
         SiteSettingsUpdate: {
-            about_en?: string | null;
             conversions_api_enabled?: boolean;
             /** @description Meta Conversions API access token (write-only; empty removes it) */
             conversions_api_token?: string | null;
             faq?: {
                 answer: string;
-                /** @description Optional English text (ADR-388) */
-                answer_en?: string;
+                /**
+                 * Format: uuid
+                 * @description Stable id (ADR-520); a new entry gets one when saved
+                 */
+                id?: string;
                 question: string;
-                /** @description Optional English text (ADR-388) */
-                question_en?: string;
             }[];
             forms_enabled?: boolean;
             ga4_measurement_id?: string | null;
@@ -44568,6 +44720,10 @@ export interface components {
             public_schedule?: boolean;
             public_wod?: boolean;
             section_order?: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            /** @description Languages to translate into; the box's own is left out */
+            translation_locales?: string[];
+            /** @description Translations visitors can pick; a subset of translation_locales */
+            visible_locales?: string[];
         };
         /** SiteSummaryResponse */
         SiteSummaryResponse: {
@@ -44606,6 +44762,108 @@ export interface components {
             name: string;
             /** Format: date-time */
             scheduled_at: string;
+        };
+        /** SiteTranslationCounts */
+        SiteTranslationCounts: {
+            machine: number;
+            missing: number;
+            ok: number;
+            stale: number;
+        };
+        /** SiteTranslationEdit */
+        SiteTranslationEdit: {
+            field: string;
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            kind: "box_profile" | "class_type" | "event" | "location" | "package" | "site_faq" | "space";
+            /** @description Empty or null removes the translation */
+            text: string | null;
+        };
+        /** SiteTranslationItem */
+        SiteTranslationItem: {
+            field: string;
+            /** @enum {string} */
+            group: "about" | "rooms" | "faq" | "packages" | "classes" | "events" | "locations";
+            /** Format: uuid */
+            id: string;
+            /** @description kind:id:field */
+            key: string;
+            /** @enum {string} */
+            kind: "box_profile" | "class_type" | "event" | "location" | "package" | "site_faq" | "space";
+            /** @description What the text belongs to (a package's name, an FAQ number) */
+            label: string | null;
+            /** @enum {string|null} */
+            origin: "manual" | "machine" | null;
+            /** @description The box's own text */
+            source: string;
+            /** @enum {string} */
+            status: "missing" | "stale" | "machine" | "ok";
+            /** @description The translation */
+            text: string | null;
+            /** Format: date-time */
+            updated_at: string | null;
+        };
+        /** SiteTranslationsKeep */
+        SiteTranslationsKeep: {
+            keys: string[];
+            locale: string;
+        };
+        /** SiteTranslationsMachine */
+        SiteTranslationsMachine: {
+            locale: string;
+        };
+        /** SiteTranslationsResponse */
+        SiteTranslationsResponse: {
+            /** SiteTranslationCounts */
+            counts: {
+                machine: number;
+                missing: number;
+                ok: number;
+                stale: number;
+            };
+            items: {
+                field: string;
+                /** @enum {string} */
+                group: "about" | "rooms" | "faq" | "packages" | "classes" | "events" | "locations";
+                /** Format: uuid */
+                id: string;
+                /** @description kind:id:field */
+                key: string;
+                /** @enum {string} */
+                kind: "box_profile" | "class_type" | "event" | "location" | "package" | "site_faq" | "space";
+                /** @description What the text belongs to (a package's name, an FAQ number) */
+                label: string | null;
+                /** @enum {string|null} */
+                origin: "manual" | "machine" | null;
+                /** @description The box's own text */
+                source: string;
+                /** @enum {string} */
+                status: "missing" | "stale" | "machine" | "ok";
+                /** @description The translation */
+                text: string | null;
+                /** Format: date-time */
+                updated_at: string | null;
+            }[];
+            locale: string;
+            machine_available: boolean;
+            source_language: string;
+            total: number;
+            /** @description Texts the machine wrote (machine only) */
+            written?: number;
+        };
+        /** SiteTranslationsSave */
+        SiteTranslationsSave: {
+            entries: {
+                field: string;
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                kind: "box_profile" | "class_type" | "event" | "location" | "package" | "site_faq" | "space";
+                /** @description Empty or null removes the translation */
+                text: string | null;
+            }[];
+            locale: string;
         };
         /** SiteWod */
         SiteWod: {
@@ -106366,19 +106624,40 @@ export interface operations {
                             /** Format: date-time */
                             verified_at: string | null;
                         }[];
+                        /**
+                         * SiteLanguages
+                         * @description The site's own language, the ones it can add and each translation's progress
+                         */
+                        languages: {
+                            available: string[];
+                            machine_available: boolean;
+                            progress: {
+                                /** SiteTranslationCounts */
+                                counts: {
+                                    machine: number;
+                                    missing: number;
+                                    ok: number;
+                                    stale: number;
+                                };
+                                locale: string;
+                                total: number;
+                            }[];
+                            /** @description The box's own language (the source) */
+                            source: string;
+                        };
                         section_keys: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
                         /** SiteSettings */
                         settings: {
-                            about_en: string | null;
                             banner_version: number;
                             conversions_api_enabled: boolean;
                             faq: {
                                 answer: string;
-                                /** @description Optional English text (ADR-388) */
-                                answer_en?: string;
+                                /**
+                                 * Format: uuid
+                                 * @description Stable id (ADR-520); a new entry gets one when saved
+                                 */
+                                id?: string;
                                 question: string;
-                                /** @description Optional English text (ADR-388) */
-                                question_en?: string;
                             }[];
                             forms_enabled: boolean;
                             ga4_measurement_id: string | null;
@@ -106392,6 +106671,10 @@ export interface operations {
                             /** @description «WOD της ημέρας» on the site (ADR-388) */
                             public_wod: boolean;
                             section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                            /** @description Languages the box translates its texts into (ADR-520) */
+                            translation_locales: string[];
+                            /** @description Translations visitors can pick on the site (ADR-520) */
+                            visible_locales: string[];
                         };
                     };
                 };
@@ -106408,17 +106691,17 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    about_en?: string | null;
                     conversions_api_enabled?: boolean;
                     /** @description Meta Conversions API access token (write-only; empty removes it) */
                     conversions_api_token?: string | null;
                     faq?: {
                         answer: string;
-                        /** @description Optional English text (ADR-388) */
-                        answer_en?: string;
+                        /**
+                         * Format: uuid
+                         * @description Stable id (ADR-520); a new entry gets one when saved
+                         */
+                        id?: string;
                         question: string;
-                        /** @description Optional English text (ADR-388) */
-                        question_en?: string;
                     }[];
                     forms_enabled?: boolean;
                     ga4_measurement_id?: string | null;
@@ -106429,6 +106712,10 @@ export interface operations {
                     public_schedule?: boolean;
                     public_wod?: boolean;
                     section_order?: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                    /** @description Languages to translate into; the box's own is left out */
+                    translation_locales?: string[];
+                    /** @description Translations visitors can pick; a subset of translation_locales */
+                    visible_locales?: string[];
                 };
             };
         };
@@ -106440,18 +106727,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /**
+                         * SiteLanguages
+                         * @description The site's own language, the ones it can add and each translation's progress
+                         */
+                        languages: {
+                            available: string[];
+                            machine_available: boolean;
+                            progress: {
+                                /** SiteTranslationCounts */
+                                counts: {
+                                    machine: number;
+                                    missing: number;
+                                    ok: number;
+                                    stale: number;
+                                };
+                                locale: string;
+                                total: number;
+                            }[];
+                            /** @description The box's own language (the source) */
+                            source: string;
+                        };
                         /** SiteSettings */
                         settings: {
-                            about_en: string | null;
                             banner_version: number;
                             conversions_api_enabled: boolean;
                             faq: {
                                 answer: string;
-                                /** @description Optional English text (ADR-388) */
-                                answer_en?: string;
+                                /**
+                                 * Format: uuid
+                                 * @description Stable id (ADR-520); a new entry gets one when saved
+                                 */
+                                id?: string;
                                 question: string;
-                                /** @description Optional English text (ADR-388) */
-                                question_en?: string;
                             }[];
                             forms_enabled: boolean;
                             ga4_measurement_id: string | null;
@@ -106465,6 +106773,10 @@ export interface operations {
                             /** @description «WOD της ημέρας» on the site (ADR-388) */
                             public_wod: boolean;
                             section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                            /** @description Languages the box translates its texts into (ADR-520) */
+                            translation_locales: string[];
+                            /** @description Translations visitors can pick on the site (ADR-520) */
+                            visible_locales: string[];
                         };
                     };
                 };
@@ -106828,6 +107140,309 @@ export interface operations {
                             waiting: number;
                         };
                     };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.translations": {
+        parameters: {
+            query: {
+                locale: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Translations */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** SiteTranslationCounts */
+                        counts: {
+                            machine: number;
+                            missing: number;
+                            ok: number;
+                            stale: number;
+                        };
+                        items: {
+                            field: string;
+                            /** @enum {string} */
+                            group: "about" | "rooms" | "faq" | "packages" | "classes" | "events" | "locations";
+                            /** Format: uuid */
+                            id: string;
+                            /** @description kind:id:field */
+                            key: string;
+                            /** @enum {string} */
+                            kind: "box_profile" | "class_type" | "event" | "location" | "package" | "site_faq" | "space";
+                            /** @description What the text belongs to (a package's name, an FAQ number) */
+                            label: string | null;
+                            /** @enum {string|null} */
+                            origin: "manual" | "machine" | null;
+                            /** @description The box's own text */
+                            source: string;
+                            /** @enum {string} */
+                            status: "missing" | "stale" | "machine" | "ok";
+                            /** @description The translation */
+                            text: string | null;
+                            /** Format: date-time */
+                            updated_at: string | null;
+                        }[];
+                        locale: string;
+                        machine_available: boolean;
+                        source_language: string;
+                        total: number;
+                        /** @description Texts the machine wrote (machine only) */
+                        written?: number;
+                    };
+                };
+            };
+            /** @description Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.save_translations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    entries: {
+                        field: string;
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        kind: "box_profile" | "class_type" | "event" | "location" | "package" | "site_faq" | "space";
+                        /** @description Empty or null removes the translation */
+                        text: string | null;
+                    }[];
+                    locale: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Translations */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** SiteTranslationCounts */
+                        counts: {
+                            machine: number;
+                            missing: number;
+                            ok: number;
+                            stale: number;
+                        };
+                        items: {
+                            field: string;
+                            /** @enum {string} */
+                            group: "about" | "rooms" | "faq" | "packages" | "classes" | "events" | "locations";
+                            /** Format: uuid */
+                            id: string;
+                            /** @description kind:id:field */
+                            key: string;
+                            /** @enum {string} */
+                            kind: "box_profile" | "class_type" | "event" | "location" | "package" | "site_faq" | "space";
+                            /** @description What the text belongs to (a package's name, an FAQ number) */
+                            label: string | null;
+                            /** @enum {string|null} */
+                            origin: "manual" | "machine" | null;
+                            /** @description The box's own text */
+                            source: string;
+                            /** @enum {string} */
+                            status: "missing" | "stale" | "machine" | "ok";
+                            /** @description The translation */
+                            text: string | null;
+                            /** Format: date-time */
+                            updated_at: string | null;
+                        }[];
+                        locale: string;
+                        machine_available: boolean;
+                        source_language: string;
+                        total: number;
+                        /** @description Texts the machine wrote (machine only) */
+                        written?: number;
+                    };
+                };
+            };
+            /** @description Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.keep_translations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    keys: string[];
+                    locale: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Translations */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** SiteTranslationCounts */
+                        counts: {
+                            machine: number;
+                            missing: number;
+                            ok: number;
+                            stale: number;
+                        };
+                        items: {
+                            field: string;
+                            /** @enum {string} */
+                            group: "about" | "rooms" | "faq" | "packages" | "classes" | "events" | "locations";
+                            /** Format: uuid */
+                            id: string;
+                            /** @description kind:id:field */
+                            key: string;
+                            /** @enum {string} */
+                            kind: "box_profile" | "class_type" | "event" | "location" | "package" | "site_faq" | "space";
+                            /** @description What the text belongs to (a package's name, an FAQ number) */
+                            label: string | null;
+                            /** @enum {string|null} */
+                            origin: "manual" | "machine" | null;
+                            /** @description The box's own text */
+                            source: string;
+                            /** @enum {string} */
+                            status: "missing" | "stale" | "machine" | "ok";
+                            /** @description The translation */
+                            text: string | null;
+                            /** Format: date-time */
+                            updated_at: string | null;
+                        }[];
+                        locale: string;
+                        machine_available: boolean;
+                        source_language: string;
+                        total: number;
+                        /** @description Texts the machine wrote (machine only) */
+                        written?: number;
+                    };
+                };
+            };
+            /** @description Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.machine_translations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    locale: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Translations */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** SiteTranslationCounts */
+                        counts: {
+                            machine: number;
+                            missing: number;
+                            ok: number;
+                            stale: number;
+                        };
+                        items: {
+                            field: string;
+                            /** @enum {string} */
+                            group: "about" | "rooms" | "faq" | "packages" | "classes" | "events" | "locations";
+                            /** Format: uuid */
+                            id: string;
+                            /** @description kind:id:field */
+                            key: string;
+                            /** @enum {string} */
+                            kind: "box_profile" | "class_type" | "event" | "location" | "package" | "site_faq" | "space";
+                            /** @description What the text belongs to (a package's name, an FAQ number) */
+                            label: string | null;
+                            /** @enum {string|null} */
+                            origin: "manual" | "machine" | null;
+                            /** @description The box's own text */
+                            source: string;
+                            /** @enum {string} */
+                            status: "missing" | "stale" | "machine" | "ok";
+                            /** @description The translation */
+                            text: string | null;
+                            /** Format: date-time */
+                            updated_at: string | null;
+                        }[];
+                        locale: string;
+                        machine_available: boolean;
+                        source_language: string;
+                        total: number;
+                        /** @description Texts the machine wrote (machine only) */
+                        written?: number;
+                    };
+                };
+            };
+            /** @description Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
                 };
             };
         };
@@ -146632,7 +147247,10 @@ export interface operations {
     };
     "PaleeWeb.PublicSiteController.show": {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description One of the site's translations (ADR-520); the box's own language when absent */
+                lang?: string;
+            };
             header?: never;
             path: {
                 /** @description The box's slug or one of its former slugs */
@@ -146649,8 +147267,13 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        about_en: string | null;
+                        /** @description The translated «Σχετικά», null when there is none */
+                        about: string | null;
                         canonical_url: string;
+                        /** @description Translated class names by the box's own name */
+                        class_type_names: {
+                            [key: string]: string;
+                        };
                         events: {
                             currency: string;
                             /** Format: date-time */
@@ -146666,11 +147289,12 @@ export interface operations {
                         }[];
                         faq: {
                             answer: string;
-                            /** @description Optional English text (ADR-388) */
-                            answer_en?: string;
+                            /**
+                             * Format: uuid
+                             * @description Stable id (ADR-520); a new entry gets one when saved
+                             */
+                            id?: string;
                             question: string;
-                            /** @description Optional English text (ADR-388) */
-                            question_en?: string;
                         }[];
                         forms: {
                             contact: boolean;
@@ -146679,7 +147303,7 @@ export interface operations {
                         };
                         /** @description The box's language (ADR-388) */
                         language: string;
-                        /** @description The site's languages: the box's own and English */
+                        /** @description The site's languages: the box's own first, then its visible translations */
                         languages: string[];
                         /** SiteReviews */
                         reviews: {
@@ -146723,6 +147347,10 @@ export interface operations {
                         };
                         sections: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
                         slug: string;
+                        /** @description Translations of texts served by other reads, keyed kind:id:field */
+                        texts: {
+                            [key: string]: string;
+                        };
                         time_zone: string;
                         /** @description The next 7 days' classes when the owner shows the timetable (no spots or people) */
                         timetable: {
@@ -146752,6 +147380,8 @@ export interface operations {
                             };
                             validity_days: number;
                         };
+                        /** @description The translation this answer is in (ADR-520), null for the box's own */
+                        translation: string | null;
                         wod: {
                             body: string | null;
                             /** Format: date */

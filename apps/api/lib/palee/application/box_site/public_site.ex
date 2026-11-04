@@ -10,22 +10,28 @@ defmodule Palee.Application.BoxSite.PublicSite do
 
   ADR-388 (v3.1) adds the box's events open to everyone, «WOD της ημέρας»
   (only when the owner turns it on), the in-app reviews next to the Google
-  rating (ADR-386/387), and the site's languages: the box's own plus
-  English, with the optional English texts.
+  rating (ADR-386/387), and the site's languages: the box's own plus the
+  translations the owner shows (ADR-520, before that English only).
   """
 
   alias Palee.Application.{PublicBox, PublicURL}
-  alias Palee.Application.BoxSite.SiteOutbox
+  alias Palee.Application.BoxSite.{SiteOutbox, SiteTranslations}
   alias Palee.Application.ReviewAsks.BoxReviews
-  alias Palee.{BoxSite, Community, Organizations, ReviewAsks, Workouts}
+  alias Palee.{BoxSite, Community, Organizations, ReviewAsks, Scheduling, Workouts}
   alias Palee.Scheduling.DayWorkoutStore
   alias Palee.TimeZones.ZonedTime
 
   @events_shown 6
   @wods_shown 3
 
-  @doc "The site of a published box."
-  def show(slug) do
+  @doc """
+  The site of a published box. `language` (ADR-520) picks one of the
+  site's translations: the box's texts then come translated where the
+  owner (or a machine) translated them, the box's own text otherwise;
+  `texts` holds the translations of what other reads serve (packages, rooms,
+  locations), keyed `kind:id:field`, and `class_type_names` the class names.
+  """
+  def show(slug, language \\ nil) do
     with {:ok, box, context} <- PublicBox.resolve(slug) do
       settings = BoxSite.settings(context)
       place_id = ReviewAsks.settings(context).google_place_id
@@ -42,20 +48,42 @@ defmodule Palee.Application.BoxSite.PublicSite do
 
       sections = BoxSite.visible_sections(settings.section_order, settings.hidden_sections, facts)
       zone = Organizations.organization_timezone(box.organization_id) || "Etc/UTC"
-      language = BoxReviews.box_language(box.organization_id)
+      languages = SiteTranslations.site_languages(context, settings)
+      texts = SiteTranslations.published(context, settings, language)
+      translated = canonical_language(language, tl(languages))
+      tr = fn kind, id, field, original -> Map.get(texts, "#{kind}:#{id}:#{field}", original) end
 
       {:ok,
        %{
          slug: box.slug,
          canonical_url: canonical_url(box),
          sections: sections,
-         language: language,
-         languages: Enum.uniq([language, "en"]),
+         language: hd(languages),
+         languages: languages,
+         translation: translated,
          time_zone: zone,
-         about_en: if("about" in sections, do: Map.get(settings, :about_en), else: nil),
-         events: if("events" in sections, do: events(context, box), else: []),
+         about:
+           if("about" in sections,
+             do: Map.get(texts, "box_profile:#{box.organization_id}:about"),
+             else: nil
+           ),
+         texts: texts,
+         class_type_names: class_type_names(texts, context),
+         events:
+           if("events" in sections,
+             do:
+               Enum.map(
+                 events(context, box),
+                 &%{&1 | title: tr.("event", &1.id, "title", &1.title)}
+               ),
+             else: []
+           ),
          wod: if("wod" in sections, do: wods(context, zone), else: []),
-         faq: if("faq" in sections, do: faq, else: []),
+         faq:
+           if("faq" in sections,
+             do: Enum.map(faq, &translated_faq(&1, tr)),
+             else: []
+           ),
          forms: %{
            trial: "trial_form" in sections,
            contact: "contact_form" in sections,
@@ -73,7 +101,11 @@ defmodule Palee.Application.BoxSite.PublicSite do
            categories: BoxSite.consent_categories(),
            validity_days: BoxSite.consent_validity_days()
          },
-         timetable: if("schedule" in sections, do: timetable(slug), else: [])
+         timetable:
+           if("schedule" in sections,
+             do: Enum.map(timetable(slug), &translated_slot(&1, tr)),
+             else: []
+           )
        }}
     end
   end
@@ -149,6 +181,39 @@ defmodule Palee.Application.BoxSite.PublicSite do
         []
     end
   end
+
+  # ADR-520: the FAQ and timetable in the visitor's language.
+  defp translated_faq(entry, tr) do
+    id = entry["id"]
+
+    %{
+      "id" => id,
+      "question" => tr.("site_faq", id, "question", entry["question"]),
+      "answer" => tr.("site_faq", id, "answer", entry["answer"])
+    }
+  end
+
+  defp translated_slot(%{class_type_id: nil} = slot, _tr), do: slot
+
+  defp translated_slot(%{class_type_id: id} = slot, tr),
+    do: %{slot | name: tr.("class_type", id, "name", slot.name)}
+
+  defp class_type_names(texts, _context) when texts == %{}, do: %{}
+
+  defp class_type_names(texts, context) do
+    context
+    |> Scheduling.list_class_types()
+    |> Enum.flat_map(fn class_type ->
+      case Map.get(texts, "class_type:#{class_type.id}:name") do
+        nil -> []
+        name -> [{class_type.name, name}]
+      end
+    end)
+    |> Map.new()
+  end
+
+  defp canonical_language(language, languages),
+    do: Enum.find(languages, &(String.downcase(&1) == String.downcase(language || "")))
 
   defp canonical_url(box) do
     case BoxSite.primary_host(box.organization_id) do

@@ -28,6 +28,11 @@ export type BoxReviews = components["schemas"]["BoxReviewsResponse"];
 export type MyBoxReviews = components["schemas"]["MyBoxReviewsResponse"];
 export type GooglePlaceMatch = components["schemas"]["GooglePlaceMatch"];
 export type SiteDomainStatus = components["schemas"]["SiteDomainStatusResponse"];
+export type SiteLanguages = components["schemas"]["SiteLanguages"];
+export type SiteTranslations = components["schemas"]["SiteTranslationsResponse"];
+export type SiteTranslationItem = components["schemas"]["SiteTranslationItem"];
+export type SiteTranslationStatus = SiteTranslationItem["status"];
+export type SiteTranslationEdit = components["schemas"]["SiteTranslationEdit"];
 
 const SITE = "/admin/site";
 const REVIEWS = "/admin/review-asks";
@@ -35,8 +40,9 @@ const publicSite = (slug: string) => `/public/sites/${encodeURIComponent(slug)}`
 
 // ── Visitors (no account) ──────────────────────────────────────────────────
 
-export function fetchPublicSite(slug: string) {
-  return apiRequest<PublicSite>(publicSite(slug));
+/** ADR-520: `lang` picks one of the site's translations. */
+export function fetchPublicSite(slug: string, lang?: string | null) {
+  return apiRequest<PublicSite>(`${publicSite(slug)}${lang ? `?lang=${encodeURIComponent(lang)}` : ""}`);
 }
 
 export function sendSiteForm(slug: string, kind: "trial" | "contact", form: SiteFormRequest) {
@@ -58,8 +64,31 @@ export function getSite(token: string) {
   return apiRequest<AdminSite>(SITE, { token });
 }
 
-export async function saveSite(token: string, update: SiteSettingsUpdate) {
-  return (await apiRequest<{ settings: SiteSettings }>(SITE, { method: "PUT", token, body: update })).settings;
+export function saveSite(token: string, update: SiteSettingsUpdate) {
+  return apiRequest<{ settings: SiteSettings; languages: SiteLanguages }>(SITE, { method: "PUT", token, body: update });
+}
+
+// ── Translations (ADR-520) ──────────────────────────────────────────────────
+
+export const siteTranslationsKey = (locale: string) => ["admin", "site", "translations", locale] as const;
+
+export function fetchSiteTranslations(token: string, locale: string) {
+  return apiRequest<SiteTranslations>(`${SITE}/translations?locale=${encodeURIComponent(locale)}`, { token });
+}
+
+/** A person's texts; an empty text removes the translation. */
+export function saveSiteTranslations(token: string, locale: string, entries: SiteTranslationEdit[]) {
+  return apiRequest<SiteTranslations>(`${SITE}/translations`, { method: "PUT", token, body: { locale, entries } });
+}
+
+/** «Εντάξει, κράτα το»: keep machine or out-of-date texts as they are. */
+export function keepSiteTranslations(token: string, locale: string, keys: string[]) {
+  return apiRequest<SiteTranslations>(`${SITE}/translations/keep`, { method: "POST", token, body: { locale, keys } });
+}
+
+/** «Αυτόματη μετάφραση»: a machine fills what is missing or out of date. */
+export function machineTranslateSite(token: string, locale: string) {
+  return apiRequest<SiteTranslations>(`${SITE}/translations/machine`, { method: "POST", token, body: { locale } });
 }
 
 export function getSiteSummary(token: string) {

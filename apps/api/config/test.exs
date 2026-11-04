@@ -149,3 +149,8 @@ config :palee, :status_http, req_options: [plug: {Req.Test, Palee.StatusHttp}]
 
 # ADR-366: no model calls for status page translations outside production.
 config :palee, :status_translator, Palee.Infrastructure.Status.SandboxTranslator
+
+# ADR-520: no model calls for website translations outside production.
+config :palee,
+       :content_machine_translator,
+       Palee.Infrastructure.ContentTranslations.SandboxMachineTranslator

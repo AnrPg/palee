@@ -32,6 +32,7 @@ import { useUiTranslations } from "@/i18n/ui";
 import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
 
 import { DnsRecords, DomainStatusLine } from "./DomainParts";
+import { SiteLanguagesCard } from "./SiteLanguagesCard";
 import { CONVERSIONS_API_LABEL, DOMAIN_PLACEHOLDER, moveSection, sectionOn, TAG_FIELDS, toggleSection } from "./website-settings-model";
 import { BackLink } from "@/components/ui/BackLink";
 
@@ -47,7 +48,8 @@ type Draft = {
   public_wod: boolean;
   forms_enabled: boolean;
   faq: SiteFaqEntry[];
-  about_en: string;
+  translation_locales: string[];
+  visible_locales: string[];
   ga4_measurement_id: string;
   gtm_container_id: string;
   meta_pixel_id: string;
@@ -63,7 +65,8 @@ function toDraft(settings: AdminSite["settings"]): Draft {
     public_wod: settings.public_wod,
     forms_enabled: settings.forms_enabled,
     faq: settings.faq,
-    about_en: settings.about_en ?? "",
+    translation_locales: settings.translation_locales,
+    visible_locales: settings.visible_locales,
     ga4_measurement_id: settings.ga4_measurement_id ?? "",
     gtm_container_id: settings.gtm_container_id ?? "",
     meta_pixel_id: settings.meta_pixel_id ?? "",
@@ -76,8 +79,9 @@ const blank = (value: string) => (value.trim() ? value.trim() : null);
 
 /**
  * Ρυθμίσεις › Ιστοσελίδα (ANR s1 A, s2 A; ADR-352..354, ADR-388): the
- * sections with a switch each, in the owner's order; the domain card with
- * its steps and records; the tags and the English texts under «Προχωρημένα».
+ * sections with a switch each, in the owner's order; «Γλώσσες ιστοσελίδας»
+ * (ADR-520) with each translation's progress and the way to «Μεταφράσεις»;
+ * the domain card with its steps and records; the tags under «Προχωρημένα».
  */
 export function WebsiteSettings() {
   const t = useTranslations("BoxSite");
@@ -137,20 +141,17 @@ function SiteForm({ token, site }: { token: string; site: AdminSite }) {
         public_schedule: draft.public_schedule,
         public_wod: draft.public_wod,
         forms_enabled: draft.forms_enabled,
-        faq: draft.faq.map((entry) => ({
-          question: entry.question.trim(),
-          answer: entry.answer.trim(),
-          ...(entry.question_en?.trim() ? { question_en: entry.question_en.trim() } : {}),
-          ...(entry.answer_en?.trim() ? { answer_en: entry.answer_en.trim() } : {}),
-        })),
-        about_en: blank(draft.about_en),
+        // The id keeps an entry's translations with it (ADR-520).
+        faq: draft.faq.map((entry) => ({ ...(entry.id ? { id: entry.id } : {}), question: entry.question.trim(), answer: entry.answer.trim() })),
+        translation_locales: draft.translation_locales,
+        visible_locales: draft.visible_locales,
         ga4_measurement_id: blank(draft.ga4_measurement_id),
         gtm_container_id: blank(draft.gtm_container_id),
         meta_pixel_id: blank(draft.meta_pixel_id),
         conversions_api_enabled: draft.conversions_api_enabled,
         ...(draft.conversions_api_token.trim() ? { conversions_api_token: draft.conversions_api_token.trim() } : {}),
       });
-      queryClient.setQueryData<AdminSite>(SITE_KEY, (current) => (current ? { ...current, settings: saved } : current));
+      queryClient.setQueryData<AdminSite>(SITE_KEY, (current) => (current ? { ...current, settings: saved.settings, languages: saved.languages } : current));
     },
     describeError: (error) => (error instanceof ApiError && error.status === 409 ? t("settings.stale") : localizeError(error, ui)),
   });
@@ -208,6 +209,13 @@ function SiteForm({ token, site }: { token: string; site: AdminSite }) {
         </ol>
       </section>
 
+      <SiteLanguagesCard
+        languages={site.languages}
+        value={{ translation_locales: draft.translation_locales, visible_locales: draft.visible_locales }}
+        onChange={(next) => form.edit(next)}
+        disabled={form.saving}
+      />
+
       {sectionOn(draft, "faq") || draft.faq.length > 0 ? (
         <section className="flex flex-col gap-3 rounded-3xl p-5" style={{ background: "var(--panel)", border: "1px solid var(--border)" }} data-testid="website-faq">
           <h2 className="text-lg font-semibold" style={{ color: "var(--text)" }}>{t("sections.faq")}</h2>
@@ -252,36 +260,6 @@ function SiteForm({ token, site }: { token: string; site: AdminSite }) {
       ) : null}
 
       <AdvancedDisclosure testId="website-advanced">
-        <div className="flex flex-col gap-2">
-          <h3 className="text-sm font-bold" style={{ color: "var(--text)" }}>{t("settings.englishTitle")}</h3>
-          <p className="text-xs" style={{ color: "var(--muted)" }}>{t("settings.englishHint")}</p>
-          <label className="flex flex-col gap-1">
-            <span className="text-xs font-semibold" style={{ color: "var(--dim)" }}>{t("settings.aboutEn")}</span>
-            <textarea value={draft.about_en} maxLength={4000} rows={4} onChange={(event) => form.edit({ about_en: event.target.value })} className={inputClass} style={inputStyle} data-testid="website-about-en" />
-          </label>
-          {draft.faq.map((entry, index) => (
-            <div key={index} className="grid gap-1 sm:grid-cols-2">
-              <input
-                value={entry.question_en ?? ""}
-                maxLength={200}
-                placeholder={entry.question || t("settings.question")}
-                aria-label={t("settings.questionEn", { number: index + 1 })}
-                onChange={(event) => form.edit({ faq: draft.faq.map((item, i) => (i === index ? { ...item, question_en: event.target.value } : item)) })}
-                className={inputClass}
-                style={inputStyle}
-              />
-              <input
-                value={entry.answer_en ?? ""}
-                maxLength={1000}
-                placeholder={entry.answer || t("settings.answer")}
-                aria-label={t("settings.answerEn", { number: index + 1 })}
-                onChange={(event) => form.edit({ faq: draft.faq.map((item, i) => (i === index ? { ...item, answer_en: event.target.value } : item)) })}
-                className={inputClass}
-                style={inputStyle}
-              />
-            </div>
-          ))}
-        </div>
         <div className="flex flex-col gap-2">
           <h3 className="text-sm font-bold" style={{ color: "var(--text)" }}>{t("settings.tagsTitle")}</h3>
           <p className="text-xs" style={{ color: "var(--muted)" }}>{t("settings.tagsHint")}</p>

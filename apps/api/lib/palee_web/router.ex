@@ -1467,6 +1467,11 @@ defmodule PaleeWeb.Router do
     put("/site/domains/:id/primary", AdminSiteController, :make_primary)
     delete("/site/domains/:id", AdminSiteController, :remove_domain)
     post("/site/domains/:id/instructions", AdminSiteController, :send_instructions)
+    # ADR-520: translations of the website's texts.
+    get("/site/translations", AdminSiteController, :translations)
+    put("/site/translations", AdminSiteController, :save_translations)
+    post("/site/translations/keep", AdminSiteController, :keep_translations)
+    post("/site/translations/machine", AdminSiteController, :machine_translations)
     # ADR-355: Google review asks.
     get("/review-asks/settings", AdminReviewAsksController, :show)
     put("/review-asks/settings", AdminReviewAsksController, :update)
