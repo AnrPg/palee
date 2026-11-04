@@ -1,28 +1,27 @@
 "use client";
 
-
-
-
-
-
-
-import {useUiLocale} from "@/i18n/use-ui-locale";
-import {useUiTranslations} from "@/i18n/ui";
-import { localizeError } from "@/i18n/presentation";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
-import { fetchAdminAnalyticsSummary } from "@/api/analytics";
-import { useSession } from "@/components/session-provider";
-import { SemanticLabel } from "@/components/semantic-label";
-import { HelpTooltip } from "@/components/HelpTooltip";
+import { fetchStaffAnalyticsSummary } from "@/api/analytics";
+import { BranchSplits, type BranchSplit } from "@/components/admin/BranchFilter";
 import { ExecutionKpiDashboard } from "@/components/admin/ExecutionKpiDashboard";
-import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
+import { AnalyticsFilterBar } from "@/components/admin/analytics/AnalyticsFilterBar";
+import { KpiSections, PlainTile, WidgetCard } from "@/components/admin/analytics/KpiWidgets";
+import { useAnalyticsDirectory } from "@/components/admin/analytics/use-analytics-directory";
+import { useAnalyticsFilter } from "@/components/admin/analytics/use-analytics-filter";
 import { PageHeader, pageHeaderActionClass } from "@/components/PageHeader";
-import { BranchFilterControl, BranchSplits, useBranchFilter, type BranchSplit } from "@/components/admin/BranchFilter";
-import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { SemanticLabel } from "@/components/semantic-label";
+import { useSession } from "@/components/session-provider";
 import { BackLink } from "@/components/ui/BackLink";
+import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { localizeError } from "@/i18n/presentation";
+import { useUiTranslations } from "@/i18n/ui";
+import { useUiLocale } from "@/i18n/use-ui-locale";
+import type { AnalyticsDimension } from "@/lib/analytics-filter";
+import { readKpi } from "@/lib/analytics-kpi";
+import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
 
 function asRecord(value: unknown): Record<string, unknown> {
   return value && typeof value === "object" ? (value as Record<string, unknown>) : {};
@@ -56,60 +55,21 @@ function entries(record: Record<string, unknown>) {
     .sort((left, right) => Number(right[1]) - Number(left[1]));
 }
 
-function KpiCard({
-  label,
-  value,
-  helper,
-  insight,
-  href,
-}: {
-  label: string;
-  value: string;
-  helper?: string;
-  insight?: string;
-  href?: string;
-}) {
-  const content = (
-    <>
-      <div className="flex items-center gap-2">
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--muted)]">{label}</p>
-        {insight || helper ? <HelpTooltip label={label}>{insight ?? helper}</HelpTooltip> : null}
-      </div>
-      <p className="mt-3 text-3xl font-black">{value}</p>
-      {helper ? <p className="mt-2 text-xs leading-5 text-[var(--muted)]">{helper}</p> : null}
-    </>
-  );
-
-  return href ? (
-    <Link href={href} className="rounded-[1.5rem] border border-[color:var(--border)] bg-[var(--panel)] p-5 transition-transform hover:-translate-y-0.5">
-      {content}
-    </Link>
-  ) : (
-    <div className="rounded-[1.5rem] border border-[color:var(--border)] bg-[var(--panel)] p-5">
-      {content}
-    </div>
-  );
-}
-
-function BreakdownList({ title, rows, insight }: { title: string; rows: [string, unknown][]; insight?: string }) {
+function BreakdownList({ title, rows, helpPath }: { title: string; rows: [string, unknown][]; helpPath: string }) {
   const uiLocale = useUiLocale();
   const i18n = useUiTranslations();
   const numericRows = rows.filter(([, value]) => typeof value === "number") as [string, number][];
   const max = Math.max(...numericRows.map(([, value]) => value), 1);
 
   return (
-    <article className="rounded-[1.6rem] border border-[color:var(--border)] bg-[var(--panel)] p-6">
-      <div className="flex items-center gap-2">
-        <h2 className="text-xl font-black">{title}</h2>
-        {insight ? <HelpTooltip label={title}>{insight}</HelpTooltip> : null}
-      </div>
+    <WidgetCard label={title} helpPath={helpPath}>
       {numericRows.length > 0 ? (
-        <div className="mt-5 space-y-4">
+        <div className="space-y-4">
           {numericRows.map(([label, value]) => (
             <div key={label}>
-              <div className="flex items-center justify-between gap-3 text-sm">
-                <span className="capitalize text-[var(--text-soft)]"><SemanticLabel value={label} /></span>
-                <span className="font-bold text-[var(--text)]">{formatCount(uiLocale, value)}</span>
+              <div className="flex min-w-0 items-center justify-between gap-3 text-sm">
+                <span className="min-w-0 truncate capitalize text-[var(--text-soft)]"><SemanticLabel value={label} /></span>
+                <span className="shrink-0 font-bold text-[var(--text)]">{formatCount(uiLocale, value)}</span>
               </div>
               <div className="mt-2 h-2 rounded-full bg-[var(--panel-muted)]">
                 <div
@@ -121,9 +81,9 @@ function BreakdownList({ title, rows, insight }: { title: string; rows: [string,
           ))}
         </div>
       ) : (
-        <p className="mt-4 text-sm text-[var(--muted)]">{i18n("noCapturedFactsInThisReportingWindowdc344c7")}</p>
+        <p className="text-sm text-[var(--muted)]">{i18n("noCapturedFactsInThisReportingWindowdc344c7")}</p>
       )}
-    </article>
+    </WidgetCard>
   );
 }
 
@@ -143,26 +103,30 @@ function eventMixGroups(value: unknown): EventMixGroup[] {
 }
 
 // ADR-462 §6: the event mix grouped by category, with translated labels.
-function EventMixList({ title, groups, insight }: { title: string; groups: EventMixGroup[]; insight?: string }) {
+// Its figure is the metric `engagement.event_mix` (own infobox and reset).
+function EventMixList({ groups, since }: { groups: EventMixGroup[]; since: string | null }) {
   const uiLocale = useUiLocale();
   const i18n = useUiTranslations();
   const t = useTranslations("AnalyticsEvents");
+  const staffT = useTranslations("StaffAnalytics");
   const max = Math.max(...groups.map((group) => group.total), 1);
   const label = (key: string, raw: string) => (t.has(key) ? t(key) : <SemanticLabel value={raw} />);
 
   return (
-    <article className="rounded-[1.6rem] border border-[color:var(--border)] bg-[var(--panel)] p-6">
-      <div className="flex items-center gap-2">
-        <h2 className="text-xl font-black">{title}</h2>
-        {insight ? <HelpTooltip label={title}>{insight}</HelpTooltip> : null}
-      </div>
+    <WidgetCard
+      label={staffT("metrics.engagement.event_mix.label")}
+      since={since}
+      helpPath="metrics.engagement.event_mix"
+      metricKey="engagement.event_mix"
+      testId="kpi-engagement.event_mix"
+    >
       {groups.length > 0 ? (
-        <div className="mt-5 space-y-5">
+        <div className="space-y-5">
           {groups.map((group) => (
             <div key={group.category}>
-              <div className="flex items-center justify-between gap-3 text-sm">
-                <span className="font-bold text-[var(--text)]">{label(`categories.${group.category}`, group.category)}</span>
-                <span className="font-bold text-[var(--text)]">{formatCount(uiLocale, group.total)}</span>
+              <div className="flex min-w-0 items-center justify-between gap-3 text-sm">
+                <span className="min-w-0 truncate font-bold text-[var(--text)]">{label(`categories.${group.category}`, group.category)}</span>
+                <span className="shrink-0 font-bold text-[var(--text)]">{formatCount(uiLocale, group.total)}</span>
               </div>
               <div className="mt-2 h-2 rounded-full bg-[var(--panel-muted)]">
                 <div
@@ -172,9 +136,9 @@ function EventMixList({ title, groups, insight }: { title: string; groups: Event
               </div>
               <ul className="mt-2 space-y-1">
                 {group.events.map((event) => (
-                  <li key={event.name} className="flex items-center justify-between gap-3 text-xs text-[var(--text-soft)]">
-                    <span>{label(`events.${event.name}`, event.name)}</span>
-                    <span>{formatCount(uiLocale, event.count)}</span>
+                  <li key={event.name} className="flex min-w-0 items-center justify-between gap-3 text-xs text-[var(--text-soft)]">
+                    <span className="min-w-0 truncate">{label(`events.${event.name}`, event.name)}</span>
+                    <span className="shrink-0">{formatCount(uiLocale, event.count)}</span>
                   </li>
                 ))}
               </ul>
@@ -182,56 +146,58 @@ function EventMixList({ title, groups, insight }: { title: string; groups: Event
           ))}
         </div>
       ) : (
-        <p className="mt-4 text-sm text-[var(--muted)]">{i18n("noCapturedFactsInThisReportingWindowdc344c7")}</p>
+        <p className="text-sm text-[var(--muted)]">{i18n("noCapturedFactsInThisReportingWindowdc344c7")}</p>
       )}
-    </article>
+    </WidgetCard>
   );
 }
 
-type AnalyticsSection = "overview" | "training" | "coaching" | "engagement" | "health";
+export type AnalyticsSection = "overview" | "training" | "coaching" | "engagement" | "health";
+
+/** The filter groups that narrow each page's figures (ADR-462 §1). */
+export const SECTION_DIMENSIONS: Record<AnalyticsSection, readonly AnalyticsDimension[]> = {
+  overview: ["location_ids", "package_ids", "tenure_bands", "age_bands", "genders"],
+  training: ["location_ids", "class_type_ids", "levels", "coach_ids", "time_of_day", "package_ids", "tenure_bands", "age_bands", "genders"],
+  coaching: ["location_ids", "class_type_ids", "levels", "coach_ids", "time_of_day", "age_bands", "genders"],
+  engagement: ["location_ids", "package_ids", "tenure_bands", "age_bands", "genders"],
+  health: ["location_ids", "class_type_ids", "levels", "coach_ids", "time_of_day", "age_bands", "genders"],
+};
+
+/** The metric keys each page shows; the overview also has the opt-in demographics. */
+const SECTION_PREFIXES: Record<AnalyticsSection, readonly string[]> = {
+  overview: ["overview.", "demographics."],
+  training: ["training."],
+  coaching: ["coaching."],
+  engagement: ["engagement."],
+  health: ["health."],
+};
+
+/** Keys a page draws in a widget of its own. */
+const OWN_WIDGET = ["training.execution_kpis", "engagement.event_mix"];
 
 export function AdminAnalytics({ section = "overview" }: { section?: AnalyticsSection }) {
   const uiLocale = useUiLocale();
   const i18n = useUiTranslations();
+  const t = useTranslations("StaffAnalytics");
   const branchT = useTranslations("BranchScope");
-  const SECTION_COPY: Record<AnalyticsSection, { eyebrow: string; title: string; body: string }> = {
-    overview: {
-      eyebrow: i18n("analyticsMarketinga05588a"),
-      title: i18n("overview0efc2e6"),
-      body: i18n("crossDomainSignalsFromPersistedFactsEmptyValues1643637"),
-    },
-    training: {
-      eyebrow: i18n("trainingAnalytics2c25dde"),
-      title: i18n("trainingPerformancea32baa9"),
-      body: i18n("attendanceCompletionsWorkoutTypeAndTeamWorkoutTrendscbfd912"),
-    },
-    coaching: {
-      eyebrow: i18n("coachingAnalyticsb6ddda1"),
-      title: i18n("athleteActivityAndFollowUp5a9fe9c"),
-      body: i18n("coachingActivityAdherenceSignalsAssignmentCompletionReviewsAnd09689b3"),
-    },
-    engagement: {
-      eyebrow: i18n("userEngagement72f61cf"),
-      title: i18n("interactionSignalsff55586"),
-      body: i18n("reviewsCommunicationNotificationDeliveryClicksAndOtherInteraction6acad47"),
-    },
-    health: {
-      eyebrow: i18n("healthIncidentsb8da1fe"),
-      title: i18n("injuryAndLimitationSignalsfc3b586"),
-      body: i18n("aggregateInjuryLimitationSeverityActiveReportsAndUnresolvedc765d16"),
-    },
+  const SECTION_TITLE: Record<AnalyticsSection, string> = {
+    overview: i18n("overview0efc2e6"),
+    training: i18n("trainingPerformancea32baa9"),
+    coaching: i18n("athleteActivityAndFollowUp5a9fe9c"),
+    engagement: i18n("interactionSignalsff55586"),
+    health: i18n("injuryAndLimitationSignalsfc3b586"),
   };
   const { tokens } = useSession();
   const organizationSlug = useOrganizationSlug();
+  const directory = useAnalyticsDirectory();
 
-  // ADR-186 §7: every figure on the page follows the branch filter.
-  const branchFilter = useBranchFilter(`analytics-${section}`);
-  const locationIds = branchFilter.param;
+  // ADR-462: one period and one filter for the whole page, kept in the URL.
+  const analyticsFilter = useAnalyticsFilter();
 
   const summaryQuery = useQuery({
-    queryKey: ["admin", "analytics", "summary", locationIds ?? "all"],
+    queryKey: ["admin", "analytics", "summary", analyticsFilter.queryKey],
     enabled: Boolean(tokens?.access_token),
-    queryFn: async () => fetchAdminAnalyticsSummary(tokens!.access_token, 30, locationIds),
+    queryFn: async () => fetchStaffAnalyticsSummary(tokens!.access_token, analyticsFilter.apiQuery),
   });
 
   const payload = asRecord(summaryQuery.data);
@@ -254,22 +220,39 @@ export function AdminAnalytics({ section = "overview" }: { section?: AnalyticsSe
   const communication = asRecord(analytics.communication);
   const notificationClicks = asRecord(analytics.notification_clicks);
   const reviewByRating = asRecord(feedback.by_rating);
-  const copy = SECTION_COPY[section];
+  const eventMix = readKpi(summaryQuery.data, "engagement.event_mix");
+  const count = (value: number) => formatCount(uiLocale, value);
 
   return (
-    <main className="min-h-screen bg-[var(--bg)] px-6 py-10 text-[var(--text)] md:px-10">
-      <div className="mx-auto max-w-6xl space-y-8">
+    <main className="min-h-screen bg-[var(--bg)] px-4 py-8 text-[var(--text)] sm:px-6 md:px-10 md:py-10">
+      <div className="mx-auto max-w-6xl space-y-6">
         <PageHeader
-          title={copy.title}
+          title={SECTION_TITLE[section]}
           actions={
-            <>
-              <BranchFilterControl filter={branchFilter} />
-              <BackLink href={adminHref("/admin/metrics", organizationSlug)} className={pageHeaderActionClass} style={{ background: "var(--panel)", border: "1px solid var(--border)", color: "var(--text-soft)" }}>
-                {i18n("analyticsMarketing0ecf7f0")}
-              </BackLink>
-            </>
+            <BackLink href={adminHref("/admin/metrics", organizationSlug)} className={pageHeaderActionClass} style={{ background: "var(--panel)", border: "1px solid var(--border)", color: "var(--text-soft)" }}>
+              {i18n("analyticsMarketing0ecf7f0")}
+            </BackLink>
           }
         />
+
+        <AnalyticsFilterBar
+          filter={analyticsFilter.filter}
+          onChange={analyticsFilter.setFilter}
+          dimensions={SECTION_DIMENSIONS[section]}
+          days={analyticsFilter.days}
+          today={analyticsFilter.today}
+          page={section}
+        />
+
+        {summaryQuery.error instanceof Error ? (
+          <ErrorNotice>
+            {localizeError(summaryQuery.error, i18n)}
+          </ErrorNotice>
+        ) : null}
+
+        {summaryQuery.isLoading ? <p className="text-sm text-[var(--muted)]">{t("kpi.loading")}</p> : null}
+
+        <KpiSections payload={summaryQuery.data} prefixes={SECTION_PREFIXES[section]} exclude={OWN_WIDGET} directory={directory} />
 
         <BranchSplits
           rows={payload.branches as BranchSplit[] | undefined}
@@ -281,136 +264,122 @@ export function AdminAnalytics({ section = "overview" }: { section?: AnalyticsSe
           ]}
         />
 
-        {summaryQuery.error instanceof Error ? (
-          <ErrorNotice>
-            {localizeError(summaryQuery.error, i18n)}
-          </ErrorNotice>
-        ) : null}
-
-        {section === "overview" ? <section className="grid gap-4 md:grid-cols-4">
-          <KpiCard
+        {section === "overview" ? <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <PlainTile
             label={i18n("paidRevenue64c34e5")}
             value={formatMoney(uiLocale, metricNumber(financeTotals, "paid_revenue_cents"))}
-            helper={i18n("activeMembershipCount", { count: metricNumber(dashboardFinance, "active_memberships") })}
+            detail={i18n("activeMembershipCount", { count: metricNumber(dashboardFinance, "active_memberships") })}
+            helpPath="widgets.overview.paid_revenue"
             href={adminHref("/admin/metrics/finance", organizationSlug)}
           />
-          <KpiCard label={i18n("reviewsb83c4cd")} value={formatCount(uiLocale, metricNumber(feedback, "total"))} insight={copy.body} href={adminHref("/admin/reviews", organizationSlug)} />
-          <KpiCard
+          <PlainTile label={i18n("reviewsb83c4cd")} value={count(metricNumber(feedback, "total"))} helpPath="widgets.overview.reviews" href={adminHref("/admin/reviews", organizationSlug)} />
+          <PlainTile
             label={i18n("activeInjuriesdaecfa6")}
-            value={formatCount(uiLocale, metricNumber(wellbeing, "active_count"))}
-            helper={i18n("totalReportCount", { count: metricNumber(wellbeing, "total") })}
-            insight={copy.body}
+            value={count(metricNumber(wellbeing, "active_count"))}
+            detail={i18n("totalReportCount", { count: metricNumber(wellbeing, "total") })}
+            helpPath="widgets.overview.active_injuries"
             href={adminHref("/admin/metrics/health", organizationSlug)}
           />
-          <KpiCard
+          <PlainTile
             label={i18n("notificationClicks02c5775")}
-            value={formatCount(uiLocale, metricNumber(notificationClicks, "total"))}
-            helper={i18n("trackedEventCount", { count: metricNumber(events, "total") })}
-            insight={copy.body}
+            value={count(metricNumber(notificationClicks, "total"))}
+            detail={i18n("trackedEventCount", { count: metricNumber(events, "total") })}
+            helpPath="widgets.overview.notification_clicks"
             href={adminHref("/admin/metrics/engagement", organizationSlug)}
           />
         </section> : null}
 
-        {section === "training" ? <ExecutionKpiDashboard /> : null}
+        {section === "training" ? (
+          <ExecutionKpiDashboard
+            payload={summaryQuery.data}
+            loading={summaryQuery.isLoading}
+            since={readKpi(summaryQuery.data, "training.execution_kpis").since}
+          />
+        ) : null}
 
-        {section === "training" ? <section id="training-analytics" className="scroll-mt-20 rounded-[1.6rem] border border-[color:var(--border)] bg-[var(--panel)] p-6">
+        {section === "training" ? <section id="training-analytics" className="scroll-mt-20 space-y-4">
           <h2 className="text-xl font-black">{i18n("teamWorkoutBreakdownLast30Days86ec3d2")}</h2>
-          <div className="mt-4 grid gap-4 md:grid-cols-3">
-            <KpiCard label={i18n("teamCompletions2a732d2")} value={formatCount(uiLocale, metricNumber(teamWorkoutsAggregate, "team_count"))} insight={copy.body} />
-            <KpiCard
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+            <PlainTile label={i18n("teamCompletions2a732d2")} value={count(metricNumber(teamWorkoutsAggregate, "team_count"))} helpPath="widgets.training.team_completions" />
+            <PlainTile
               label={i18n("individualCompletions70ee9b2")}
-              value={formatCount(uiLocale, metricNumber(teamWorkoutsAggregate, "individual_count"))}
-              insight={copy.body}
+              value={count(metricNumber(teamWorkoutsAggregate, "individual_count"))}
+              helpPath="widgets.training.individual_completions"
             />
-            <KpiCard label={i18n("totalCompletionsfa16f4c")} value={formatCount(uiLocale, metricNumber(teamWorkoutsAggregate, "total_count"))} insight={copy.body} />
+            <PlainTile label={i18n("totalCompletionsfa16f4c")} value={count(metricNumber(teamWorkoutsAggregate, "total_count"))} helpPath="widgets.training.total_completions" />
           </div>
           {Object.keys(teamWorkoutsByUser).length > 0 ? (
-            <div className="mt-6 overflow-hidden rounded-2xl border border-[color:var(--border)]">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-[var(--muted)]">{i18n("perUser3fcfda7")}</p>
-              <table className="w-full text-start text-sm">
+            <div className="overflow-hidden rounded-2xl border border-[color:var(--border)] bg-[var(--panel)]">
+              <p className="px-3 pt-3 text-xs font-bold uppercase tracking-[0.16em] text-[var(--muted)]">{i18n("perUser3fcfda7")}</p>
+              <table className="w-full table-fixed text-start text-sm">
                 <tbody>
-                  {entries(teamWorkoutsByUser).slice(0, 8).map(([userId, count]) => (
+                  {entries(teamWorkoutsByUser).slice(0, 8).map(([userId, value]) => (
                     <tr key={userId} className="border-t border-[color:var(--border)]">
-                      <td className="p-3 font-mono text-xs text-[var(--muted)]">{userId}</td>
-                      <td className="p-3 text-end font-bold">{formatCount(uiLocale, Number(count))}</td>
+                      <td className="truncate p-3 font-mono text-xs text-[var(--muted)]">{directory.staffName.get(userId) ?? userId}</td>
+                      <td className="w-20 p-3 text-end font-bold">{count(Number(value))}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
           ) : null}
-          <div className="mt-6">
-            <BreakdownList title={i18n("attendanceb689313")} rows={entries(asRecord(attendance.by_status))} insight={copy.body} />
-          </div>
+          <BreakdownList title={i18n("attendanceb689313")} rows={entries(asRecord(attendance.by_status))} helpPath="widgets.training.attendance_status" />
         </section> : null}
 
         {section === "engagement" ? <section id="user-engagement" className="scroll-mt-20 grid gap-4 lg:grid-cols-2">
-          <div className="lg:col-span-2">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--primary)]">{i18n("userEngagement72f61cf")}</p>
-            <h2 className="mt-2 text-xl font-black">{i18n("interactionAndCommunicationSignals18b657a")}</h2>
-          </div>
-          <EventMixList title={i18n("eventMix09a541e")} groups={eventMixGroups(events.by_category)} insight={copy.body} />
-          <BreakdownList title={i18n("pushDelivery52c03a7")} rows={entries(asRecord(pushDispatch.by_status))} insight={copy.body} />
-          <BreakdownList title={i18n("communicationade0d50")} rows={entries(asRecord(communication.by_direction))} insight={copy.body} />
-          <BreakdownList title={i18n("reviewRatingsd575ce1")} rows={entries(reviewByRating)} insight={copy.body} />
+          <EventMixList groups={eventMixGroups(events.by_category)} since={eventMix.since} />
+          <BreakdownList title={i18n("pushDelivery52c03a7")} rows={entries(asRecord(pushDispatch.by_status))} helpPath="widgets.engagement.push_delivery" />
+          <BreakdownList title={i18n("communicationade0d50")} rows={entries(asRecord(communication.by_direction))} helpPath="widgets.engagement.communication" />
+          <BreakdownList title={i18n("reviewRatingsd575ce1")} rows={entries(reviewByRating)} helpPath="widgets.engagement.review_ratings" />
         </section> : null}
 
-        {section === "coaching" ? <section id="coaching-analytics" className="scroll-mt-20 rounded-[1.6rem] border border-[color:var(--border)] bg-[var(--panel)] p-6">
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--primary)]">{i18n("coachingAnalyticsb6ddda1")}</p>
-              <h2 className="mt-2 text-xl font-black">{i18n("athleteActivityAndFollowUp5a9fe9c")}</h2>
-            </div>
+        {section === "coaching" ? <section id="coaching-analytics" className="scroll-mt-20 space-y-4">
+          <div className="flex justify-end">
             <Link className="text-sm font-bold text-[var(--primary)]" href={adminHref("/admin/coaching-assignments", organizationSlug)}>
               {i18n("openPersonalCoachingf4be893")}
             </Link>
           </div>
-          <div className="mt-5 grid gap-4 md:grid-cols-3">
-            <KpiCard label={i18n("activeAthletes78e231e")} value={formatCount(uiLocale, metricNumber(coaching, "active_athletes"))} insight={copy.body} />
-            <KpiCard label={i18n("capturedEvents2551a14")} value={formatCount(uiLocale, metricNumber(dashboardCoaching, "event_count"))} insight={copy.body} />
-            <KpiCard label={i18n("reviewsb83c4cd")} value={formatCount(uiLocale, metricNumber(dashboardCoaching, "review_count"))} insight={copy.body} />
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+            <PlainTile label={i18n("activeAthletes78e231e")} value={count(metricNumber(coaching, "active_athletes"))} helpPath="widgets.coaching.active_athletes" />
+            <PlainTile label={i18n("capturedEvents2551a14")} value={count(metricNumber(dashboardCoaching, "event_count"))} helpPath="widgets.coaching.captured_events" />
+            <PlainTile label={i18n("reviewsb83c4cd")} value={count(metricNumber(dashboardCoaching, "review_count"))} helpPath="widgets.coaching.reviews" />
           </div>
         </section> : null}
 
-        {section === "health" ? <section id="health-incidents" className="scroll-mt-20 rounded-[1.6rem] border border-[color:var(--border)] bg-[var(--panel)] p-6">
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--primary)]">{i18n("healthIncidentsb8da1fe")}</p>
-              <h2 className="mt-2 text-xl font-black">{i18n("injuryAndLimitationSignalsfc3b586")}</h2>
-            </div>
+        {section === "health" ? <section id="health-incidents" className="scroll-mt-20 space-y-4">
+          <div className="flex justify-end">
             <Link className="text-sm font-bold text-[var(--primary)]" href={adminHref("/admin/wellbeing", organizationSlug)}>
               {i18n("openIncidentRecords7447df1")}
             </Link>
           </div>
-          <div className="mt-5 grid gap-4 md:grid-cols-3">
-            <KpiCard label={i18n("activeInjuriesdaecfa6")} value={formatCount(uiLocale, metricNumber(wellbeing, "active_count"))} insight={copy.body} />
-            <KpiCard label={i18n("totalReports5654449")} value={formatCount(uiLocale, metricNumber(wellbeing, "total"))} insight={copy.body} />
-            <KpiCard label={i18n("recentInjuryFlags0692c0a")} value={formatCount(uiLocale, metricNumber(dashboardCoaching, "injury_count"))} insight={copy.body} />
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+            <PlainTile label={i18n("activeInjuriesdaecfa6")} value={count(metricNumber(wellbeing, "active_count"))} helpPath="widgets.health.active_injuries" />
+            <PlainTile label={i18n("totalReports5654449")} value={count(metricNumber(wellbeing, "total"))} helpPath="widgets.health.total_reports" />
+            <PlainTile label={i18n("recentInjuryFlags0692c0a")} value={count(metricNumber(dashboardCoaching, "injury_count"))} helpPath="widgets.health.recent_injury_flags" />
           </div>
         </section> : null}
 
         {section === "overview" ? <section className="grid gap-4 lg:grid-cols-2">
-          <article className="rounded-[1.6rem] border border-[color:var(--border)] bg-[var(--panel)] p-6">
-            <h2 className="text-xl font-black">{i18n("operationalStatus1fdea4e")}</h2>
-            <dl className="mt-5 space-y-4 text-sm">
+          <WidgetCard label={i18n("operationalStatus1fdea4e")} helpPath="widgets.overview.operational_status">
+            <dl className="space-y-4 text-sm">
               <div className="flex justify-between gap-4">
                 <dt className="text-[var(--muted)]">{i18n("financeAggregated28a516")}</dt>
                 <dd className="font-bold capitalize"><SemanticLabel value={metricText(dashboardFinance, "aggregate_status")} /></dd>
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-[var(--muted)]">{i18n("lowRatingReviews928d645")}</dt>
-                <dd className="font-bold">{formatCount(uiLocale, metricNumber(crossContext, "low_rating_count"))}</dd>
+                <dd className="font-bold">{count(metricNumber(crossContext, "low_rating_count"))}</dd>
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-[var(--muted)]">{i18n("expiringMemberships522e6a4")}</dt>
-                <dd className="font-bold">{formatCount(uiLocale, metricNumber(dashboardFinance, "expiring_memberships"))}</dd>
+                <dd className="font-bold">{count(metricNumber(dashboardFinance, "expiring_memberships"))}</dd>
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-[var(--muted)]">{i18n("coachingActiveAthletese8bc87a")}</dt>
-                <dd className="font-bold">{formatCount(uiLocale, metricNumber(coaching, "active_athletes"))}</dd>
+                <dd className="font-bold">{count(metricNumber(coaching, "active_athletes"))}</dd>
               </div>
             </dl>
-          </article>
+          </WidgetCard>
         </section> : null}
       </div>
     </main>

@@ -1,11 +1,12 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { SemanticLabel } from "@/components/semantic-label";
 import { useUiLocale } from "@/i18n/use-ui-locale";
-import { DELTA_COLOR, deltaTone, rowNumber, type Kpi, type KpiRow, type KpiUnit } from "@/lib/analytics-kpi";
+import { DELTA_COLOR, deltaTone, kpiKeys, readKpi, rowNumber, type Kpi, type KpiRow, type KpiUnit } from "@/lib/analytics-kpi";
 import { useOrganizationTimeZone } from "@/lib/organization-slug";
 import { dateKeyInZone } from "@/lib/zoned-time";
 
@@ -151,11 +152,34 @@ export function KpiTile({ kpi }: { kpi: Kpi }) {
 }
 
 /** A plain tile for a figure outside the metric registry (it has no delta and no reset). */
-export function PlainTile({ label, value, detail, helpPath, content }: { label: string; value: string; detail?: string; helpPath?: string; content?: HelpContent }) {
+export function PlainTile({
+  label,
+  value,
+  detail,
+  helpPath,
+  content,
+  href,
+}: {
+  label: string;
+  value: string;
+  detail?: string;
+  helpPath?: string;
+  content?: HelpContent;
+  /** Where the figure is worked on; the value links there. */
+  href?: string;
+}) {
   return (
     <article className="min-w-0 rounded-2xl p-4" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
       <WidgetLabel label={label} since={null} help={<MetricHelp label={label} path={helpPath} content={content} />} />
-      <p className="mt-2 text-2xl font-black tabular-nums" style={{ color: "var(--text)" }}>{value}</p>
+      <p className="mt-2 text-2xl font-black tabular-nums" style={{ color: "var(--text)" }}>
+        {href ? (
+          <Link href={href} className="underline-offset-4 hover:underline">
+            {value}
+          </Link>
+        ) : (
+          value
+        )}
+      </p>
       {detail ? <p className="mt-1 text-xs" style={{ color: "var(--muted)" }}>{detail}</p> : null}
     </article>
   );
@@ -384,5 +408,68 @@ export function BreakdownCard({ kpi, directory, headline = false, chart = "bars"
         <BarList rows={rows} />
       )}
     </WidgetCard>
+  );
+}
+
+const COLUMN_CHARTS = new Set(["training.attendance_by_hour", "training.attendance_by_weekday"]);
+/** Breakdowns whose value is a figure of its own (an average), shown above the rows. */
+const HEADLINE = new Set(["coaching.athletes_per_coach", "coaching.review_rating_per_coach"]);
+/** The calm default (ANR 2026-11-04): this many key tiles first, the rest below. */
+export const KEY_TILES = 6;
+
+/**
+ * Every KPI of the payload whose key starts with one of `prefixes`: the
+ * first figures as tiles, then the remaining tiles and the breakdowns.
+ * `exclude` leaves out the keys a page shows in its own widget.
+ */
+export function KpiSections({
+  payload,
+  prefixes,
+  exclude = [],
+  directory,
+}: {
+  payload: unknown;
+  prefixes: readonly string[];
+  exclude?: readonly string[];
+  directory: AnalyticsDirectory;
+}) {
+  const kpis = kpiKeys(payload)
+    .filter((key) => prefixes.some((prefix) => key.startsWith(prefix)) && !exclude.includes(key))
+    .map((key) => readKpi(payload, key));
+  const tiles = kpis.filter((kpi) => kpi.unit !== "rows");
+  const breakdowns = kpis.filter((kpi) => kpi.unit === "rows");
+  const first = tiles.slice(0, KEY_TILES);
+  const rest = tiles.slice(KEY_TILES);
+
+  return (
+    <>
+      {first.length > 0 ? (
+        <section className="grid grid-cols-2 gap-3 lg:grid-cols-3" data-testid="kpi-key-tiles">
+          {first.map((kpi) => (
+            <KpiTile key={kpi.key} kpi={kpi} />
+          ))}
+        </section>
+      ) : null}
+      {rest.length > 0 || breakdowns.length > 0 ? (
+        <section className="grid gap-4 lg:grid-cols-2">
+          {rest.length > 0 ? (
+            <div className="grid grid-cols-2 gap-3 lg:col-span-2 lg:grid-cols-3">
+              {rest.map((kpi) => (
+                <KpiTile key={kpi.key} kpi={kpi} />
+              ))}
+            </div>
+          ) : null}
+          {breakdowns.map((kpi) => (
+            <BreakdownCard
+              key={kpi.key}
+              kpi={kpi}
+              directory={directory}
+              headline={HEADLINE.has(kpi.key)}
+              chart={COLUMN_CHARTS.has(kpi.key) ? "columns" : "bars"}
+            />
+          ))}
+        </section>
+      ) : null}
+    </>
   );
 }

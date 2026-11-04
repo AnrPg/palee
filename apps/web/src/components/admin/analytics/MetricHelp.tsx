@@ -79,7 +79,7 @@ export function MetricHelp({
     <>
       <HelpPopover
         label={t("help.open", { label })}
-        helpKey={path ?? metricKey ?? label}
+        helpKey={helpText(help) || path || label}
         footer={
           canReset
             ? (close) => (
