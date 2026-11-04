@@ -9,7 +9,7 @@ missing_tools =
   |> Enum.filter(fn {_tag, path} -> is_nil(path) end)
   |> Enum.map(&elem(&1, 0))
 
-# ADR-451: AADE's development API is called only on request
+# ADR-452: AADE's development API is called only on request
 # (`mix test --only aade_live`, which needs MYDATA_DEV_*), never in a normal
 # run: it is slow and rate-limited (HTTP 429).
 live_aade = [:aade_live]

@@ -5,6 +5,8 @@ import type {
   AroundSearchResponse,
   AroundViewport,
 } from "@/api/around";
+// Relative, not "@/": next.config.ts loads this file through member-routes.
+import { CLASS_LEVELS } from "../../lib/class-levels";
 
 // Γύρω μου (ADR-154, vision §7.2): the pure parts of the screen. The filter
 // mirrors the API's AroundFilter v1 so saved filters, the last-used filter and
@@ -14,7 +16,7 @@ export type AroundFilter = AroundNormalizedFilter;
 export type When = NonNullable<AroundFilter["when"]>;
 export type DayTime = AroundFilter["times"][number];
 export type Cost = AroundFilter["cost"][number];
-export type Level = AroundFilter["levels"][number];
+export type Level = (typeof LEVELS)[number];
 
 export const DEFAULT_RADIUS_KM = 3;
 export const MIN_RADIUS_KM = 0.5;
@@ -25,8 +27,11 @@ export const KIND_ORDER: AroundKind[] = ["events", "boxes", "clubs", "posts"];
 export const WHENS: When[] = ["today", "tomorrow", "weekend", "week"];
 export const DAY_TIMES: DayTime[] = ["morning", "midday", "evening"];
 export const COSTS: Cost[] = ["free", "trial"];
-/** «Επίπεδο»: a class level of the box (class_types.level; ADR-197). */
-export const LEVELS = ["beginner", "all_levels", "advanced"] as const;
+/**
+ * «Επίπεδο»: a level a class type of the box suits (class_types.levels; ADR-197,
+ * ADR-490). Saved filters may still hold the retired `all_levels`; it is dropped.
+ */
+export const LEVELS = CLASS_LEVELS;
 /** «Έως €15», the price shortcut chip. */
 export const PRICE_CAP_CENTS = 1500;
 /** The price slider (cents): its top end means «no maximum». */

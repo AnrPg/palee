@@ -379,6 +379,8 @@ defmodule PaleeWeb.RouteCapabilities do
     {W.AdminCoachPayController, :calculate} => [:manage_billing],
     {W.AdminCoachPayController, :add_adjustment} => [:manage_billing],
     {W.AdminCoachPayController, :delete_adjustment} => [:manage_billing],
+    {W.AdminCoachPayController, :restore_item} => [:manage_billing],
+    {W.AdminCoachPayController, :people} => [:view_finance_reports, :manage_billing],
     {W.AdminCoachPayController, :approve} => [:manage_billing],
     {W.AdminCoachPayController, :reopen} => [:manage_billing],
     {W.AdminCoachPayController, :export} => [:view_finance_reports, :manage_billing],

@@ -21,7 +21,7 @@ const fieldStyle = { background: "var(--panel-raised)", border: "1px solid var(-
 /**
  * The gym's AI settings (ADR-174): scaling suggestions off by default, the
  * gym's own key (write-only, shown as «•••• last4») and
- * this month's usage. One switch, one key field: no other controls.
+ * this month's usage of that key (suggestions and voice drafts). One switch, one key field: no other controls.
  */
 // ADR-175: voice logging has its own switch next to scaling, same key.
 function VoiceLogSwitch({
@@ -90,7 +90,7 @@ export function AiScalingSettings({ token }: { token: string }) {
   }
 
   const data = settings.data;
-  const usage = data.usage ?? { suggestions: 0, cost_usd: 0 };
+  const usage = data.usage ?? { suggestions: 0, voice_drafts: 0, cost_usd: 0 };
   const enabled = data.scaling_enabled === true;
   const status = data.key_status ?? "unknown";
 
@@ -125,6 +125,7 @@ export function AiScalingSettings({ token }: { token: string }) {
         <label className="text-sm font-semibold" htmlFor="ai-api-key" style={{ color: "var(--text)" }}>
           {t("settings.key")}
         </label>
+        <p className="text-xs" style={{ color: "var(--dim)" }}>{t("settings.keyHint")}</p>
         <p className="text-xs" style={{ color: "var(--dim)" }}>
           {data.key_configured
             ? t(status === "rejected" ? "settings.keyRejected" : "settings.keySet", { last4: data.key_last4 ?? "" })
@@ -165,7 +166,11 @@ export function AiScalingSettings({ token }: { token: string }) {
 
       {/* ADR-255: the model is no owner's choice any more ("remove"); the default model is used. */}
       <p className="text-xs" style={{ color: "var(--dim)" }} data-testid="ai-usage">
-        {t("settings.usage", { count: usage.suggestions, cost: (usage.cost_usd ?? 0).toFixed(2) })}
+        {t("settings.usage", {
+          count: usage.suggestions ?? 0,
+          voice: usage.voice_drafts ?? 0,
+          cost: (usage.cost_usd ?? 0).toFixed(2),
+        })}
       </p>
       <p className="text-xs" style={{ color: "var(--dim)" }}>{t("settings.privacy")}</p>
 

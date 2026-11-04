@@ -303,7 +303,7 @@ defmodule Palee.Fiscal.ReportingTest do
     assert context |> Reporting.transmissions_for([other.id]) == %{}
   end
 
-  # ── ADR-451 ─────────────────────────────────────────────────────────────
+  # ── ADR-452 ─────────────────────────────────────────────────────────────
 
   defmodule Notifier do
     @moduledoc false
@@ -350,7 +350,7 @@ defmodule Palee.Fiscal.ReportingTest do
       "<invoiceType>11.2</invoiceType></invoiceHeader></invoice></invoicesDoc></RequestedDoc>"
   end
 
-  describe "ADR-451" do
+  describe "ADR-452" do
     setup :use_notifier
 
     test "due documents go to AADE in one InvoicesDoc, each with its own result", %{
@@ -517,7 +517,7 @@ defmodule Palee.Fiscal.ReportingTest do
     end
   end
 
-  test "the cron sweep hands each box to its own run (ADR-451)", %{context: context, owner: owner} do
+  test "the cron sweep hands each box to its own run (ADR-452)", %{context: context, owner: owner} do
     # Background jobs are off in tests, so each box's run happens inline.
     connect(context, owner, "sandbox")
     document = issue(context, owner, "k-cron", %{}, DateTime.utc_now())

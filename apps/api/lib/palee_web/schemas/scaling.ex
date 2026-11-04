@@ -174,9 +174,16 @@ defmodule PaleeWeb.Schemas.Scaling do
           properties: %{
             since: %Schema{type: :string, format: :"date-time"},
             suggestions: %Schema{type: :integer},
-            cost_usd: %Schema{type: :number}
+            voice_drafts: %Schema{
+              type: :integer,
+              description: "Voice drafts written with the gym's key this month"
+            },
+            cost_usd: %Schema{
+              type: :number,
+              description: "What the gym's key paid this month: suggestions plus voice drafts"
+            }
           },
-          required: [:since, :suggestions, :cost_usd]
+          required: [:since, :suggestions, :voice_drafts, :cost_usd]
         }
       },
       required: [

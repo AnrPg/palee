@@ -11,7 +11,7 @@ defmodule Palee.Infrastructure.Fiscal.MyDataXmlTest do
   alias Palee.Fiscal.Domain.MyDataInvoice
   alias Palee.Infrastructure.Fiscal.MyData.XmlCodec
 
-  # ADR-451: AADE's published v1.0.12 (what the API serves today) and the
+  # ADR-452: AADE's published v1.0.12 (what the API serves today) and the
   # newer v2.0.1 drafts; every document must pass both.
   @xsds [
     Path.expand("../../../../priv/fiscal/mydata/v1.0.12/InvoicesDoc-v1.0.12.xsd", __DIR__),
@@ -126,7 +126,7 @@ defmodule Palee.Infrastructure.Fiscal.MyDataXmlTest do
     assert [%{code: "101", message: "Το ΑΦΜ δεν είναι έγκυρο"}, %{code: "102"}] = failure.errors
   end
 
-  test "reads transmitted documents and the next page token (ADR-451)" do
+  test "reads transmitted documents and the next page token (ADR-452)" do
     body = """
     <?xml version="1.0" encoding="utf-8"?>
     <RequestedDoc xmlns="http://www.aade.gr/myDATA/invoice/v1.0">

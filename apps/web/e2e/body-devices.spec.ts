@@ -464,11 +464,14 @@ test.describe("body and devices", () => {
 
     await page.goto("/me");
     const line = page.getByTestId("my-ranks-open");
-    await expect(line).toContainText("White · towards Blue: 1 of 2 skills");
+    await expect(line).toContainText("White");
+    await expect(line).toContainText("towards Blue: 1 of 2 skills");
     await line.click();
     await expect(page).toHaveURL(/\/me\/ranks$/);
     const card = page.getByTestId("next-rank-card");
     await expect(card).toContainText("Still to learn");
+    // One requirement per line (days, classes, skills), never joined with «·».
+    await expect(page.getByTestId("next-rank-counts").getByRole("listitem")).toHaveCount(3);
     await expect(card).toContainText("Triangle");
     await card.getByText("Note").click();
     await expect(card).toContainText("Knees tight");

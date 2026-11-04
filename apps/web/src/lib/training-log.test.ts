@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { TrainingLogEntry } from "@/api/training-log";
 import {
+  availableSourceTypes,
   buildCreatePayload,
   buildUpdatePayload,
   commentDraftFromForm,
@@ -173,4 +174,24 @@ it("sorts entries newest first without mutating the input", () => {
 
   expect(sortEntriesNewestFirst(input).map((item) => item.id)).toEqual(["newer", "older"]);
   expect(input[0].id).toBe("older");
+});
+
+describe("availableSourceTypes (ADR-451)", () => {
+  const empty = { classes: [], assignments: [], library_workouts: [] };
+
+  it("keeps the API's choice in display order and always keeps freeform", () => {
+    expect(
+      availableSourceTypes({ ...empty, available_sources: ["library_workout", "class"] as never }),
+    ).toEqual(["class", "library_workout", "freeform"]);
+    expect(availableSourceTypes({ ...empty, available_sources: [] })).toEqual(["freeform"]);
+  });
+
+  it("falls back to the non-empty lists when the answer has no available_sources", () => {
+    expect(availableSourceTypes({ ...empty, assignments: [{} as never] })).toEqual([
+      "assigned_workout",
+      "freeform",
+    ]);
+    expect(availableSourceTypes(undefined)).toEqual(["freeform"]);
+    expect(availableSourceTypes({} as never)).toEqual(["freeform"]);
+  });
 });

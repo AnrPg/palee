@@ -85,7 +85,7 @@ defmodule Palee.Infrastructure.Fiscal.MyData.XmlCodec do
   def parse_response(_body), do: {:error, :invalid_response}
 
   @doc """
-  ADR-451: the invoices of a `RequestedDoc` (`GET /RequestTransmittedDocs`)
+  ADR-452: the invoices of a `RequestedDoc` (`GET /RequestTransmittedDocs`)
   with the keys that identify a document, and the continuation token of the
   next page: `{:ok, %{invoices: [%{mark, uid, authentication_code, qr_url,
   issuer_vat, series, aa, issue_date, invoice_type}], next: nil |

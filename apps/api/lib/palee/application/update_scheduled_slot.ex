@@ -6,6 +6,7 @@ defmodule Palee.Application.UpdateScheduledSlot do
   """
 
   alias Palee.Application.{
+    ApprovePendingOnAutoApprove,
     ClassLocation,
     ClassSpace,
     ClassWorkoutFiling,
@@ -124,6 +125,9 @@ defmodule Palee.Application.UpdateScheduledSlot do
 
   defp after_update(context, slot, before) do
     broadcast_slot_updated(slot)
+    # Automatic confirmation answers the requests still waiting, before the
+    # waitlist, since they asked first.
+    ApprovePendingOnAutoApprove.call(context, slot)
     # A larger capacity may admit waitlisted members (ADR-097).
     PromoteClassWaitlist.call(context, slot.id)
     announce_move(context, slot, Map.get(before, slot.id))

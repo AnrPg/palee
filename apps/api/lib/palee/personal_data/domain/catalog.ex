@@ -240,6 +240,8 @@ defmodule Palee.PersonalData.Domain.Catalog do
       tenant("payments", "finance_refund_receipts", @me),
       # ADR-291: packages the person asked to pay for at the desk.
       tenant("payments", "finance_package_requests", @me),
+      # ADR-450: the contact a box keeps while a deleted profile still owes it.
+      tenant("payments", "finance_debtor_contacts", @me),
       tenant("payments", "payment_intents", @me,
         drop: ~w(redirect_url return_url provider_ref claimed_at)
       ),
@@ -261,6 +263,8 @@ defmodule Palee.PersonalData.Domain.Catalog do
         {:in, "statement_id", "coach_pay_statements", "id", {:eq, "coach_user_id"}},
         drop: ~w(source_id)
       ),
+      # ADR-510: recurring allowances taken off the person for a period.
+      tenant("payments", "coach_pay_item_skips", {:eq, "user_id"}),
 
       # -- fiscal documents addressed to the person ------------------------------
       tenant("fiscal_documents", "fiscal_documents", fiscal_documents(),

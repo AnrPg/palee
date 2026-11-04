@@ -17,7 +17,7 @@ defmodule Palee.Infrastructure.Fiscal.SandboxAuthorityGateway do
   @impl true
   def check(_connection), do: {:ok, %{}}
 
-  @doc "ADR-451: the sandbox keeps nothing, so a lost answer is never found."
+  @doc "ADR-452: the sandbox keeps nothing, so a lost answer is never found."
   @impl true
   def find(_connection, _key), do: :not_found
 

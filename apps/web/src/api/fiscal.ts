@@ -44,7 +44,7 @@ const SAVE_PATHS: Record<ConnectionKind, string> = {
 export type FiscalTransmissionList =
   operations["PaleeWeb.AdminFiscalReportingController.transmissions"]["responses"][200]["content"]["application/json"];
 
-/** ADR-451: how many reports to the tax authority are in each state (one row is enough for the counts). */
+/** ADR-452: how many reports to the tax authority are in each state (one row is enough for the counts). */
 export function fetchFiscalTransmissionCounts(token: string) {
   return apiRequest<FiscalTransmissionList>("/admin/fiscal/transmissions?limit=1", { token });
 }

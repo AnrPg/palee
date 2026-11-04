@@ -37,6 +37,8 @@ defmodule Palee.Setup.Domain.SettingsCatalog do
     {"finance.package_modules", :derive, ["group_classes", "online_coaching"], true},
     {"finance.subscription_grace_days", :advanced, 3, true},
     {"finance.subscription_expiry_reminder_days", :advanced, 5, true},
+    {"finance.subscription_end_day_reminder", :advanced, true, false},
+    {"finance.subscription_day_after_reminder", :advanced, true, false},
     {"finance.payment_reminder_interval_days", :advanced, 7, true},
     {"finance.entitlement_enforcement_mode", :remove, "observe", false},
     {"finance.entitlement_timezone", :derive, "Europe/Athens", false},
@@ -88,8 +90,8 @@ defmodule Palee.Setup.Domain.SettingsCatalog do
     {"referrals.approval", :advanced, "manual", false},
     # J. Per class type
     {"class_type.name", :basic, nil, false},
-    {"class_type.kind", :basic, "class", false},
-    {"class_type.level", :advanced, "all_levels", false},
+    {"class_type.kind", :advanced, "class", false},
+    {"class_type.levels", :advanced, [], false},
     {"class_type.audiences", :advanced, [], false},
     {"class_type.credit_cost", :advanced, 1, false},
     # L. Legal identity and payments

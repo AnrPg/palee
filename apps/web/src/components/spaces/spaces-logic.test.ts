@@ -1,18 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { dueStatus, orderDue, parseTimes, placementSummary, progress, shortTime } from "./cleaning-today";
-import {
-  groupByBranch,
-  labelPosition,
-  normalizedPoint,
-  rectangleFromDrag,
-  spacesForBranches,
-  spacesOnPlan,
-  svgPoints,
-  upcomingWindow,
-  validArea,
-  windowReady,
-} from "./floor-plan";
+import { groupByBranch, labelPosition, normalizedPoint, rectangleFromDrag, spaceGroups, spacesForBranches, spacesOnPlan, svgPoints, upcomingWindow, validArea, windowReady } from "./floor-plan";
 
 describe("floor plan geometry (ADR-202)", () => {
   it("normalizes a pointer over the plan and clamps it to the image", () => {
@@ -123,5 +112,16 @@ describe("the cleaning list of today (ADR-202)", () => {
     expect(placementSummary(6, [{ quantity: 4 }])).toEqual({ placed: 4, unassigned: 2, fits: true });
     expect(placementSummary(1, [{ quantity: 2 }])).toEqual({ placed: 2, unassigned: 0, fits: false });
     expect(placementSummary(3, [{ quantity: Number.NaN }])).toEqual({ placed: 0, unassigned: 3, fits: true });
+  });
+});
+
+describe("only what the box has (ADR-470)", () => {
+  it("a box without branches shows every space in one group", () => {
+    const spaces = [
+      { id: "a", location_id: "only" },
+      { id: "b", location_id: null },
+    ];
+    expect(spaceGroups(spaces, ["only", null], false)).toEqual([{ locationId: null, items: spaces }]);
+    expect(spaceGroups(spaces, ["only", null], true).map((group) => group.locationId)).toEqual(["only", null]);
   });
 });

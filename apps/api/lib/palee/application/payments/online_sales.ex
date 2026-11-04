@@ -29,7 +29,7 @@ defmodule Palee.Application.Payments.OnlineSales do
     with {:ok, _box, context} <- PublicBox.resolve(slug) do
       {:ok,
        %{
-         packages: context |> sold_online() |> Enum.map(&public_package/1),
+         packages: context |> listed_packages() |> Enum.map(&public_package/1),
          online_payments: Payments.available?(context, "packages"),
          provider: Payments.provider(context),
          withdrawal_days: if(withdrawal_applies?(context), do: Withdrawal.days())
@@ -37,7 +37,8 @@ defmodule Palee.Application.Payments.OnlineSales do
     end
   end
 
-  defp sold_online(context) do
+  @doc "The packages a box lists for sale online (also the translatable ones, ADR-520)."
+  def listed_packages(context) do
     offer = Payments.package_offer(context)
 
     context

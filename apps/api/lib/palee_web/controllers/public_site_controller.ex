@@ -31,12 +31,24 @@ defmodule PaleeWeb.PublicSiteController do
 
   operation(:show,
     summary: "A published box's website: sections, FAQ, forms, tags and timetable",
-    parameters: [@slug],
+    parameters: [
+      @slug,
+      %Parameter{
+        name: :lang,
+        in: :query,
+        required: false,
+        description:
+          "One of the site's translations (ADR-520); the box's own language when absent",
+        schema: S.translation_locale()
+      }
+    ],
     responses: [ok: {"Site", "application/json", S.public_site()}, not_found: @not_found]
   )
 
-  def show(conn, %{"slug" => slug}) do
-    with {:ok, site} <- PublicSite.show(slug), do: json(conn, site)
+  def show(conn, %{"slug" => slug} = params) do
+    language = if is_binary(params["lang"]), do: params["lang"]
+
+    with {:ok, site} <- PublicSite.show(slug, language), do: json(conn, site)
   end
 
   operation(:domain_status,

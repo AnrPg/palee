@@ -1053,7 +1053,7 @@ defmodule Palee.Notifications do
         url: field(payload, :url)
       })
 
-  # ADR-451: documents that did not reach the tax authority (refused or out
+  # ADR-452: documents that did not reach the tax authority (refused or out
   # of attempts); to the staff who manage billing, once a day at most.
   def process_event("fiscal_documents_not_reported", payload),
     do:
@@ -1658,7 +1658,8 @@ defmodule Palee.Notifications do
         :grace_days,
         :grace_until,
         :reason,
-        :cancelled_bookings
+        :cancelled_bookings,
+        :followup
       ])
       |> Map.merge(%{
         url: "/me/payments",
@@ -1699,7 +1700,17 @@ defmodule Palee.Notifications do
   defp dedupe_key(:access_ended, payload),
     do: "access_ended:#{field(payload, :membership_id)}:#{Date.utc_today()}"
 
-  defp dedupe_key(type, payload), do: "#{type}:#{field(payload, :subscription_id)}"
+  # ADR-500: the end-day and follow-up reminders are further steps of the same
+  # subscription's schedule, so each gets its own key (a follow-up one per day).
+  defp dedupe_key(type, payload) do
+    base = "#{type}:#{field(payload, :subscription_id)}"
+
+    case field(payload, :notice) do
+      :end_day -> base <> ":end_day"
+      :renewal_followup -> base <> ":followup:#{Date.utc_today()}"
+      _first -> base
+    end
+  end
 
   @doc """
   Removes the staff's `booking_pending` notifications for a booking that is no

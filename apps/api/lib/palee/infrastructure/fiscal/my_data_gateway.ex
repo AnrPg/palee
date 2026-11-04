@@ -9,7 +9,7 @@ defmodule Palee.Infrastructure.Fiscal.MyDataGateway do
   other adapters (`req_options`).
 
   Results (see `Fiscal.Ports.AuthorityGateway`), one per invoice of the
-  `InvoicesDoc` (ADR-451: several per call, matched by `index`): a
+  `InvoicesDoc` (ADR-452: several per call, matched by `index`): a
   `Success` response with an `invoiceMark` is accepted;
   `ValidationError`/`XMLSyntaxError` are rejections, except AADE's
   "already sent" codes, which are `{:duplicate, errors}` so the caller can
@@ -32,7 +32,7 @@ defmodule Palee.Infrastructure.Fiscal.MyDataGateway do
   # (same UID: issuer, date, branch, type, series and number), per the
   # v1.0.12 API documentation: 233 "UID has already been sent". AADE lists
   # it for providers; on the ERP channel a document with the same UID
-  # replaces the earlier one instead (error 259 names that case). ADR-451.
+  # replaces the earlier one instead (error 259 names that case). ADR-452.
   @duplicate_codes ~w(233)
   # Pages of `RequestTransmittedDocs` read while looking a document up.
   @max_lookup_pages 20
@@ -194,7 +194,7 @@ defmodule Palee.Infrastructure.Fiscal.MyDataGateway do
   defp entry_result(%{status: other, errors: errors}), do: {:error, {:technical, other, errors}}
 
   @doc """
-  ADR-451: the receipt of a document AADE already has, found by its keys
+  ADR-452: the receipt of a document AADE already has, found by its keys
   (`issuer_vat`, `series`, `aa`, `issue_date`, `invoice_type`) among the
   documents the connection's user transmitted that day
   (`GET /RequestTransmittedDocs`). `{:ok, receipt}`, `:not_found`, or the
@@ -222,7 +222,7 @@ defmodule Palee.Infrastructure.Fiscal.MyDataGateway do
   end
 
   # On the ERP channel a resend of the same document is registered again with a
-  # new MARK (ADR-451), so every match is collected and the first registration
+  # new MARK (ADR-452), so every match is collected and the first registration
   # (the lowest MARK) wins, whatever order the pages come in.
   defp first_registration(found) do
     found

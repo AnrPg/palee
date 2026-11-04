@@ -623,6 +623,8 @@ function financeFormFromSettings(s: FinanceSettings) {
   return {
     paymentReminderIntervalDays: String(s.payment_reminder_interval_days),
     expiryReminderDays: String(s.subscription_expiry_reminder_days ?? 5),
+    endDayReminder: s.subscription_end_day_reminder ?? true,
+    dayAfterReminder: s.subscription_day_after_reminder ?? true,
     graceDays: String(s.subscription_grace_days ?? 3),
     documentMode: s.document_mode,
     packageModules: [...(s.package_modules ?? DEFAULT_PACKAGE_MODULES)].sort(),
@@ -670,6 +672,26 @@ function DaysField({
   );
 }
 
+// ADR-500: the day-of and day-after steps of the reminder schedule.
+function ReminderToggle({
+  id,
+  label,
+  checked,
+  onChange,
+}: {
+  id: string;
+  label: string;
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+}) {
+  return (
+    <label htmlFor={id} className="flex cursor-pointer items-center gap-3 text-sm" style={{ color: "var(--text)" }}>
+      <input id={id} type="checkbox" checked={checked} onChange={(event) => onChange(event.target.checked)} />
+      <span>{label}</span>
+    </label>
+  );
+}
+
 export function FinanceSection({ token, part = "basic" }: { token: string; part?: Part }) {
   const i18n = useUiTranslations();
   const queryClient = useQueryClient();
@@ -677,6 +699,8 @@ export function FinanceSection({ token, part = "basic" }: { token: string; part?
   const [form, setForm] = useState({
     paymentReminderIntervalDays: "7",
     expiryReminderDays: "5",
+    endDayReminder: true,
+    dayAfterReminder: true,
     graceDays: "3",
     documentMode: "invoice" as "invoice" | "receipt",
     packageModules: DEFAULT_PACKAGE_MODULES,
@@ -701,6 +725,8 @@ export function FinanceSection({ token, part = "basic" }: { token: string; part?
         finance: {
           payment_reminder_interval_days: Number(form.paymentReminderIntervalDays),
           subscription_expiry_reminder_days: Number(form.expiryReminderDays),
+          subscription_end_day_reminder: form.endDayReminder,
+          subscription_day_after_reminder: form.dayAfterReminder,
           subscription_grace_days: Number(form.graceDays),
           document_mode: form.documentMode,
           package_modules: form.packageModules,
@@ -723,10 +749,12 @@ export function FinanceSection({ token, part = "basic" }: { token: string; part?
     (form.paymentReminderIntervalDays !== serverDays ||
       form.documentMode !== serverMode ||
       form.expiryReminderDays !== (serverForm?.expiryReminderDays ?? "5") ||
+      form.endDayReminder !== (serverForm?.endDayReminder ?? true) ||
+      form.dayAfterReminder !== (serverForm?.dayAfterReminder ?? true) ||
       form.graceDays !== (serverForm?.graceDays ?? "3") ||
       form.packageModules.join(",") !== serverModules);
 
-  const anyField = ["finance.payment_reminder_interval_days", "finance.subscription_expiry_reminder_days", "finance.subscription_grace_days", "finance.document_mode", "finance.package_modules"].some(show);
+  const anyField = ["finance.payment_reminder_interval_days", "finance.subscription_expiry_reminder_days", "finance.subscription_end_day_reminder", "finance.subscription_day_after_reminder", "finance.subscription_grace_days", "finance.document_mode", "finance.package_modules"].some(show);
 
   return (
     <div className="space-y-5">
@@ -766,6 +794,22 @@ export function FinanceSection({ token, part = "basic" }: { token: string; part?
         min={0}
         value={form.expiryReminderDays}
         onChange={(value) => setForm((current) => ({ ...current, expiryReminderDays: value }))}
+      />
+      ) : null}
+      {show("finance.subscription_end_day_reminder") ? (
+      <ReminderToggle
+        id="end-day-reminder"
+        label={i18n("subscriptionEndDayReminder")}
+        checked={form.endDayReminder}
+        onChange={(checked) => setForm((current) => ({ ...current, endDayReminder: checked }))}
+      />
+      ) : null}
+      {show("finance.subscription_day_after_reminder") ? (
+      <ReminderToggle
+        id="day-after-reminder"
+        label={i18n("subscriptionDayAfterReminder")}
+        checked={form.dayAfterReminder}
+        onChange={(checked) => setForm((current) => ({ ...current, dayAfterReminder: checked }))}
       />
       ) : null}
       {show("finance.subscription_grace_days") ? (
@@ -861,7 +905,7 @@ export function FinanceSection({ token, part = "basic" }: { token: string; part?
         success={saveMutation.isSuccess}
         error={saveMutation.error}
         onSave={() => saveMutation.mutate()}
-        onReset={() => setForm(serverForm ?? { paymentReminderIntervalDays: serverDays, expiryReminderDays: "5", graceDays: "3", documentMode: serverMode, packageModules: serverModules.split(",") })}
+        onReset={() => setForm(serverForm ?? { paymentReminderIntervalDays: serverDays, expiryReminderDays: "5", endDayReminder: true, dayAfterReminder: true, graceDays: "3", documentMode: serverMode, packageModules: serverModules.split(",") })}
       />
       ) : null}
 

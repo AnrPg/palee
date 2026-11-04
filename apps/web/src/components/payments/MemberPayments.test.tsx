@@ -16,6 +16,7 @@ import {
   setCardAutopay,
   withdrawPurchase,
 } from "@/api/my-payments";
+import { fetchBusinessFeatures } from "@/api/business-features";
 import { openCheckout } from "@/lib/platform/checkout";
 
 import { PaymentFocusCard, SavedCardsCard } from "./MemberPayments";
@@ -24,6 +25,14 @@ import { nextOpenInvoice, PayOpenInvoice } from "./PayOpenInvoice";
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn(), replace: vi.fn() }) }));
 vi.mock("@/components/session-provider", () => ({
   useSession: () => ({ tokens: { access_token: "access" }, status: "authenticated" }),
+}));
+vi.mock("@/api/business-features", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/api/business-features")>()),
+  fetchBusinessFeatures: vi.fn(),
+}));
+vi.mock("@/lib/organization-slug", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/organization-slug")>()),
+  useOrganizationSlug: () => "box-k",
 }));
 vi.mock("@/lib/platform/checkout", () => ({ openCheckout: vi.fn().mockResolvedValue(undefined) }));
 vi.mock("@/api/my-payments", async (importOriginal) => ({
@@ -135,6 +144,7 @@ describe("Εγώ › Πληρωμές ?payment= (ADR-260 failed charges, ADR-248
 
 describe("saved cards and autopay (ADR-247)", () => {
   it("turns autopay on and removes a card after asking", async () => {
+    vi.mocked(fetchBusinessFeatures).mockResolvedValue({ card_autopay: true } as never);
     vi.mocked(fetchSavedCards).mockResolvedValue({
       payment_methods: [
         { id: "card-1", provider: "viva", brand: "visa", last4: "4421", exp_month: 8, exp_year: 2028, status: "active", autopay: false, max_amount_cents: 7500, currency: "EUR" },
@@ -149,12 +159,27 @@ describe("saved cards and autopay (ADR-247)", () => {
     expect(screen.queryByText(/••0000/)).toBeNull();
     expect(screen.getByText("Λήγει 08/28")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("switch"));
+    fireEvent.click(await screen.findByRole("switch"));
     await waitFor(() => expect(setCardAutopay).toHaveBeenCalledWith("access", "box-k", "card-1", true));
 
     fireEvent.click(screen.getByTestId("pay-card-remove-card-1"));
     fireEvent.click(await screen.findByTestId("pay-card-remove-confirm"));
     await waitFor(() => expect(removeSavedCard).toHaveBeenCalledWith("access", "box-k", "card-1"));
+  });
+
+  it("offers no automatic charges when the box does not charge saved cards (ADR-470)", async () => {
+    vi.mocked(fetchBusinessFeatures).mockResolvedValue({ card_autopay: false } as never);
+    vi.mocked(fetchSavedCards).mockResolvedValue({
+      payment_methods: [
+        { id: "card-1", provider: "viva", brand: "visa", last4: "4421", status: "active", autopay: false, max_amount_cents: 7500, currency: "EUR" },
+      ],
+    } as never);
+
+    wrap(<SavedCardsCard slug="box-k" />);
+    expect(await screen.findByText("Visa ••4421")).toBeInTheDocument();
+    await waitFor(() => expect(fetchBusinessFeatures).toHaveBeenCalledWith("access", "box-k", undefined));
+    expect(screen.queryByRole("switch")).toBeNull();
+    expect(screen.getByTestId("pay-card-remove-card-1")).toBeInTheDocument();
   });
 
   it("is hidden without cards", async () => {

@@ -7,13 +7,13 @@ defmodule Palee.Fiscal.Ports.AuthorityGateway do
   `connection` is the organization's authority connection with its
   decrypted credentials (`%{environment, user_id, subscription_key}`).
   `invoices` are element trees of `Fiscal.Domain.MyDataInvoice.build/2`,
-  sent together (ADR-451); the results come back in the same order.
+  sent together (ADR-452); the results come back in the same order.
 
   Errors:
     * `{:rejected, [%{code, message}]}` – the authority refused the content;
     * `{:duplicate, [%{code, message}]}` – the authority already has this
       document (a lost answer to an earlier attempt): look it up with
-      `find/2` (ADR-451);
+      `find/2` (ADR-452);
     * `{:unauthorized, reason}` – the credentials were refused;
     * anything else is transient (network, timeout, 5xx, technical error).
 
@@ -56,7 +56,7 @@ defmodule Palee.Fiscal.Ports.AuthorityGateway do
   @callback submit(connection(), invoices :: [list()]) :: {[result()], wire()}
 
   @doc """
-  ADR-451: the receipt of a document the authority already registered,
+  ADR-452: the receipt of a document the authority already registered,
   found by its keys. `:not_found` when it has none; errors as `check/1`.
   Used before resending after an attempt whose answer was lost, and when
   the authority answers "duplicate".

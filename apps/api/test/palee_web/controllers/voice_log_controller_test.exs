@@ -155,6 +155,16 @@ defmodule Palee.Web.VoiceLogControllerTest do
              ctx.as.(ctx.athlete) |> get(ctx.voice) |> json_response(200)
 
     assert %{key_status: "valid"} = AiUsage.get_settings(ctx.owner_context)
+
+    # The settings' usage line counts what the gym's key paid for: the
+    # Claude draft (1000 in × $2/M + 200 out × $10/M = $0.004), never the
+    # transcription, which runs on the platform's key.
+    assert %{"ai_settings" => %{"usage" => usage}} =
+             ctx.as.(ctx.owner) |> get("#{ctx.admin}/ai-settings") |> json_response(200)
+
+    assert usage["voice_drafts"] == 1
+    assert usage["suggestions"] == 0
+    assert_in_delta usage["cost_usd"], 0.004, 1.0e-9
   end
 
   test "a failed parse keeps the transcript as the note; a rejected key is recorded", ctx do

@@ -9,7 +9,8 @@ defmodule Palee.BoxSite.Domain.SiteSettingsPolicy do
   @max_faq 12
   @max_question 200
   @max_answer 1_000
-  @max_about_en 4_000
+  @max_locales 11
+  @locale_format ~r/^[a-z]{2}(-[A-Z]{2})?$/
   @tag_formats %{
     meta_pixel_id: ~r/^[0-9]{5,20}$/,
     ga4_measurement_id: ~r/^G-[A-Z0-9]{4,16}$/,
@@ -26,8 +27,9 @@ defmodule Palee.BoxSite.Domain.SiteSettingsPolicy do
       hidden_sections: [],
       public_schedule: false,
       public_wod: false,
-      about_en: nil,
       faq: [],
+      translation_locales: ["en"],
+      visible_locales: ["en"],
       forms_enabled: true,
       meta_pixel_id: nil,
       ga4_measurement_id: nil,
@@ -51,7 +53,7 @@ defmodule Palee.BoxSite.Domain.SiteSettingsPolicy do
       |> sections(current, params)
       |> boolean(params, "public_schedule", :public_schedule)
       |> boolean(params, "public_wod", :public_wod)
-      |> about_en(params)
+      |> languages(params)
       |> boolean(params, "forms_enabled", :forms_enabled)
       |> boolean(params, "conversions_api_enabled", :conversions_api_enabled)
       |> faq(params)
@@ -110,16 +112,13 @@ defmodule Palee.BoxSite.Domain.SiteSettingsPolicy do
 
     with {:ok, question} <- text(entry["question"], @max_question, :required),
          {:ok, answer} <- text(entry["answer"], @max_answer, :required),
-         {:ok, question_en} <- text(entry["question_en"], @max_question, :optional),
-         {:ok, answer_en} <- text(entry["answer_en"], @max_answer, :optional) do
-      # ADR-388: the English text is optional and shown on `/en` only when
-      # both halves are there.
-      english =
-        if question_en && answer_en,
-          do: %{"question_en" => question_en, "answer_en" => answer_en},
-          else: %{}
-
-      Map.merge(%{"question" => question, "answer" => answer}, english)
+         {:ok, id} <- faq_id(entry["id"]) do
+      # ADR-520: a stable id per entry (given by `BoxSite` when new), so its
+      # translations follow it when the owner reorders the list.
+      Map.merge(
+        %{"question" => question, "answer" => answer},
+        if(id, do: %{"id" => id}, else: %{})
+      )
     else
       _invalid -> nil
     end
@@ -127,13 +126,21 @@ defmodule Palee.BoxSite.Domain.SiteSettingsPolicy do
 
   defp faq_entry(_entry), do: nil
 
-  defp text(nil, _max, :optional), do: {:ok, nil}
+  defp faq_id(nil), do: {:ok, nil}
 
-  defp text(value, max, need) when is_binary(value) do
+  defp faq_id(value) when is_binary(value) do
+    case Ecto.UUID.cast(value) do
+      {:ok, id} -> {:ok, id}
+      :error -> :error
+    end
+  end
+
+  defp faq_id(_value), do: :error
+
+  defp text(value, max, _need) when is_binary(value) do
     value = String.trim(value)
 
     cond do
-      value == "" and need == :optional -> {:ok, nil}
       value == "" -> :error
       String.length(value) > max -> :error
       true -> {:ok, value}
@@ -142,19 +149,39 @@ defmodule Palee.BoxSite.Domain.SiteSettingsPolicy do
 
   defp text(_value, _max, _need), do: :error
 
-  # ADR-388: the optional English text of the box's «Σχετικά» for `/en`.
-  defp about_en({changes, errors}, params) do
-    case Map.fetch(params, "about_en") do
-      :error ->
+  # ADR-520: the languages the owner translates into and the ones visitors
+  # can pick. `Application.BoxSite.SiteAdmin` cleans them against the app's
+  # languages and the box's own first; here only their shape is checked.
+  defp languages({changes, errors}, params) do
+    translated = Map.get(params, "translation_locales", :keep)
+    visible = Map.get(params, "visible_locales", :keep)
+
+    case {translated, visible} do
+      {:keep, :keep} ->
         {changes, errors}
 
-      {:ok, value} ->
-        case text(value, @max_about_en, :optional) do
-          {:ok, about} -> {Map.put(changes, :about_en, about), errors}
-          :error -> {changes, Map.put(errors, :about_en, "invalid")}
+      {translated, visible} when is_list(translated) and is_list(visible) ->
+        cond do
+          not locales?(translated) ->
+            {changes, Map.put(errors, :translation_locales, "invalid")}
+
+          not locales?(visible) or Enum.any?(visible, &(&1 not in translated)) ->
+            {changes, Map.put(errors, :visible_locales, "invalid")}
+
+          true ->
+            {Map.merge(changes, %{translation_locales: translated, visible_locales: visible}),
+             errors}
         end
+
+      _partial ->
+        {changes, Map.put(errors, :translation_locales, "invalid")}
     end
   end
+
+  defp locales?(list),
+    do:
+      length(list) <= @max_locales and
+        Enum.all?(list, &(is_binary(&1) and Regex.match?(@locale_format, &1)))
 
   defp tags(acc, params) do
     Enum.reduce(@tag_formats, acc, fn {field, format}, {changes, errors} ->

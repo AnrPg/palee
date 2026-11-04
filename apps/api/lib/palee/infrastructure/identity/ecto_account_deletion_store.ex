@@ -5,6 +5,7 @@ defmodule Palee.Infrastructure.Identity.EctoAccountDeletionStore do
   import Ecto.Query
 
   alias Palee.Identity.{AccountDeletion, Login, PasswordHasher, User}
+  alias Palee.Infrastructure.Tenancy.RepoContext
   alias Palee.Repo
 
   # What an anonymised profile shows wherever a business record still names
@@ -104,6 +105,20 @@ defmodule Palee.Infrastructure.Identity.EctoAccountDeletionStore do
   end
 
   @impl true
+  def deleting_profile_memberships(user_id) do
+    Repo.query!(
+      "SELECT organization_id, membership_id FROM palee_deleting_profile_memberships($1)",
+      [Ecto.UUID.dump!(user_id)]
+    ).rows
+    |> Enum.map(fn [organization_id, membership_id] ->
+      %{
+        organization_id: Ecto.UUID.load!(organization_id),
+        membership_id: Ecto.UUID.load!(membership_id)
+      }
+    end)
+  end
+
+  @impl true
   def anonymize_profile(user_id) do
     Repo.transaction(fn ->
       case User |> where([u], u.id == ^user_id) |> lock("FOR UPDATE") |> Repo.one() do
@@ -147,17 +162,32 @@ defmodule Palee.Infrastructure.Identity.EctoAccountDeletionStore do
     :ok
   end
 
-  # ADR-375/376: a watch's heart rate, paired watches and own foods are the
-  # person's own and leave with the account even when the profile is kept
-  # anonymised (a deleted user row takes them by cascade).
-  @own_device_rows ~w(execution_heart_rate_batches watch_offers watch_links custom_foods)
+  # Rows only their owner may touch (forced owner RLS): the deletion worker
+  # runs without a session scope, so these deletes run in the person's own
+  # scope, or under the runtime role they would delete nothing.
+  #   * ADR-395: a kept (anonymised) profile keeps no body weight or birth year;
+  #   * ADR-394: it leaves every Palee-wide board;
+  #   * ADR-375/376: a watch's heart rate, paired watches and own foods are the
+  #     person's own and leave with the account even when the profile is kept
+  #     anonymised (a deleted user row takes them by cascade).
+  @owner_rows ~w(fitness_profile_settings palee_leaderboard_consents
+                 execution_heart_rate_batches watch_offers watch_links custom_foods)
 
-  defp delete_own_device_rows(user_id) do
+  defp delete_owner_rows(user_id) do
     id = Ecto.UUID.dump!(user_id)
 
-    for table <- @own_device_rows,
-        do: Repo.query!("DELETE FROM #{table} WHERE user_id = $1", [id])
+    :ok =
+      RepoContext.run(%{user_id: user_id}, fn ->
+        Enum.each(@owner_rows, &Repo.query!("DELETE FROM #{&1} WHERE user_id = $1", [id]))
+      end)
+  end
 
+  # ADR-395: what each box's coach chose the person's fitness card shows.
+  # Those rows are in the boxes' scopes, which the sweep cannot enter, so a
+  # definer function deletes them, and only for a profile whose deletion is
+  # scheduled.
+  defp delete_fitness_overrides(user_id) do
+    Repo.query!("SELECT palee_forget_fitness_overrides($1)", [Ecto.UUID.dump!(user_id)])
     :ok
   end
 
@@ -180,7 +210,6 @@ defmodule Palee.Infrastructure.Identity.EctoAccountDeletionStore do
     |> Repo.delete_all()
 
     delete_partner_rows(user.id)
-    delete_own_device_rows(user.id)
 
     # ADR-397: the person's reports on box reviews (a tenant table, so
     # through its SECURITY DEFINER function).
@@ -192,15 +221,8 @@ defmodule Palee.Infrastructure.Identity.EctoAccountDeletionStore do
       Ecto.UUID.dump!(user.id)
     ])
 
-    # ADR-395: a kept (anonymised) profile keeps no body weight or birth year.
-    Repo.query!("DELETE FROM fitness_profile_settings WHERE user_id = $1", [
-      Ecto.UUID.dump!(user.id)
-    ])
-
-    # ADR-394: a kept (anonymised) profile leaves every Palee-wide board.
-    Repo.query!("DELETE FROM palee_leaderboard_consents WHERE user_id = $1", [
-      Ecto.UUID.dump!(user.id)
-    ])
+    delete_owner_rows(user.id)
+    delete_fitness_overrides(user.id)
 
     user
     |> Ecto.Changeset.change(

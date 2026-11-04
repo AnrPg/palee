@@ -19,7 +19,7 @@ defmodule PaleeWeb.AdminClassTypeController do
   plug OpenApiSpex.Plug.CastAndValidate,
        [json_render_error_v2: true] when action in [:create, :update, :delete]
 
-  @levels ~w(beginner all_levels advanced)
+  @levels Palee.Scheduling.class_levels()
   @audiences ~w(women_only teens kids over_40 seniors prenatal_postnatal adaptive)
 
   @class_type_schema %Schema{
@@ -31,7 +31,7 @@ defmodule PaleeWeb.AdminClassTypeController do
       sort_order: %Schema{type: :integer},
       credit_cost: %Schema{type: :integer, minimum: 1, maximum: 10},
       kind: %Schema{type: :string, enum: ["class", "event"]},
-      level: %Schema{type: :string, enum: @levels},
+      levels: %Schema{type: :array, items: %Schema{type: :string, enum: @levels}},
       audiences: %Schema{type: :array, items: %Schema{type: :string, enum: @audiences}},
       archived_at: %Schema{type: :string, format: :"date-time", nullable: true},
       inserted_at: %Schema{type: :string, format: :"date-time"},
@@ -45,7 +45,7 @@ defmodule PaleeWeb.AdminClassTypeController do
       :sort_order,
       :credit_cost,
       :kind,
-      :level,
+      :levels,
       :audiences,
       :archived_at
     ]
@@ -67,10 +67,12 @@ defmodule PaleeWeb.AdminClassTypeController do
         enum: ["class", "event"],
         description: "Events draw on event visits instead of class visits (ADR-097)"
       },
-      level: %Schema{
-        type: :string,
-        enum: @levels,
-        description: "Who the class suits, for the schedule's level filter"
+      levels: %Schema{
+        type: :array,
+        uniqueItems: true,
+        items: %Schema{type: :string, enum: @levels},
+        description:
+          "Levels the class suits, for the schedule's level filter; empty means all levels (ADR-490)"
       },
       audiences: %Schema{
         type: :array,

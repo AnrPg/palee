@@ -178,10 +178,14 @@ defmodule PaleeWeb.Schemas.Social do
           properties: %{
             id: @uuid,
             name: %Schema{type: :string},
-            level: %Schema{type: :string, nullable: true},
+            levels: %Schema{
+              type: :array,
+              items: %Schema{type: :string, enum: Palee.Scheduling.class_levels()},
+              description: "Levels the class suits; empty means all levels (ADR-490)"
+            },
             audiences: @strings
           },
-          required: [:id, :name, :audiences]
+          required: [:audiences, :id, :levels, :name]
         }
       },
       required: [:id, :name, :scheduled_at]

@@ -19,6 +19,7 @@ import {
 import { Switch } from "@/components/body/BodyPreferenceSettings";
 import { formatDate } from "@/components/finance/MembershipEntitlement";
 import { HubCard } from "@/components/member-app/HubParts";
+import { useBusinessFeatures } from "@/lib/use-business-features";
 import { useSession } from "@/components/session-provider";
 import { Dialog, DialogButton } from "@/components/ui/Dialog";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
@@ -199,6 +200,7 @@ export function SavedCardsCard({ slug }: { slug: string }) {
 }
 
 function CardRow({ slug, card }: { slug: string; card: SavedCard }) {
+  const features = useBusinessFeatures({ slug });
   const t = useTranslations("Pay");
   const token = useSession().tokens?.access_token ?? null;
   const queryClient = useQueryClient();
@@ -235,6 +237,8 @@ function CardRow({ slug, card }: { slug: string; card: SavedCard }) {
           {t("removeCard")}
         </button>
       </div>
+      {/* ADR-470: automatic charges only when the box charges saved cards (or this card is still set to). */}
+      {features.on("card_autopay") || card.autopay ? (
       <Switch
         checked={card.autopay}
         disabled={autopay.isPending || !token}
@@ -242,6 +246,7 @@ function CardRow({ slug, card }: { slug: string; card: SavedCard }) {
         hint={card.autopay ? t("autopayOn") : t("autopayOff")}
         onChange={(next) => autopay.mutate(next)}
       />
+      ) : null}
       {autopay.isError ? <ErrorNotice variant="field">{payError(autopay.error)}</ErrorNotice> : null}
       {confirm ? (
         <Dialog

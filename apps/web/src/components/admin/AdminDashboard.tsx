@@ -50,6 +50,7 @@ import {
 import { clockFormat } from "@/lib/clock";
 import { earliestDateKey, formatDateKey } from "@/lib/local-date";
 import { financeQueueHref } from "@/components/admin/finance/finance-queues";
+import { useBusinessFeatures } from "@/lib/use-business-features";
 
 type AlertCategory = "finance" | "coaching" | "training";
 type AlertMessageKey =
@@ -279,6 +280,7 @@ export function AdminDashboard({
     .filter((shortcut) => shortcut.show && !topBarHrefs.has(shortcut.href))
     .slice(0, 3);
   const canFinanceReports = has("view_finance_reports");
+  const features = useBusinessFeatures();
   const canBusinessAnalytics = fullAnalytics;
   const canChallenges = has("manage_challenges");
   const canClasses = has("run_classes", "manage_schedule", "manage_coaching");
@@ -306,7 +308,7 @@ export function AdminDashboard({
     queryFn: () => fetchFinanceQueues(token!, { expires_within_days: "30" }),
   });
 
-  // ADR-451: documents the tax authority refused or that ran out of attempts.
+  // ADR-452: documents the tax authority refused or that ran out of attempts.
   const transmissionsQuery = useQuery({
     queryKey: ["admin", "dashboard", "fiscal-transmissions"],
     enabled: enabled && canFinanceReports,
@@ -406,7 +408,8 @@ export function AdminDashboard({
   ];
 
   const operationalKpis: Array<[string, string, boolean, string, boolean]> = [
-    [i18n("pendingApprovals6ac383a"), String(adminMetrics?.pending_referral_approvals ?? 0), Number(adminMetrics?.pending_referral_approvals ?? 0) > 0, "/admin/finance?tab=referrals", canFinanceReports],
+    // ADR-470: referral approvals only with a referral programme, or while some still wait.
+    [i18n("pendingApprovals6ac383a"), String(adminMetrics?.pending_referral_approvals ?? 0), Number(adminMetrics?.pending_referral_approvals ?? 0) > 0, "/admin/finance?tab=referrals", canFinanceReports && features.shows("referrals", Number(adminMetrics?.pending_referral_approvals ?? 0))],
     [i18n("totalOutstandingefd930a"), money(uiLocale, adminMetrics?.total_outstanding_cents ?? 0), Number(adminMetrics?.total_outstanding_cents ?? 0) > 0, "/admin/finance", canFinanceReports],
     [i18n("members1cb449c"), String(adminMetrics?.member_count ?? 0), false, "/admin/users", has("view_directory", "view_billing_contacts")],
   ];
@@ -783,7 +786,7 @@ export function AdminDashboard({
   );
 }
 
-/** ADR-451: reports that need someone (refused, or out of attempts); malformed answers count none. */
+/** ADR-452: reports that need someone (refused, or out of attempts); malformed answers count none. */
 export function notReportedCount(list: { counts?: Record<string, number> } | undefined): number {
   const counts = list && typeof list.counts === "object" && list.counts ? list.counts : {};
   return (Number(counts.rejected) || 0) + (Number(counts.failed) || 0);

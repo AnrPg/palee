@@ -63,6 +63,12 @@ export function FitnessWhySteps({ reading }: { reading: FitnessReason }) {
 
       <Step title={t("fitnessStepScale")}>
         <Scale points={reading.points} anchors={reading.anchors} label={anchorLabel} />
+        {/* The drawn scale is hidden from assistive technology; its anchors are read out here. */}
+        <ul className="sr-only" data-testid="fitness-scale-anchors">
+          {reading.anchors.map((anchor) => (
+            <li key={anchor.points}>{`${anchorLabel(anchor.value)}: ${t("fitnessStepPoints", { points: anchor.points })}`}</li>
+          ))}
+        </ul>
         <span className="block">{t("fitnessStepPoints", { points })}</span>
       </Step>
 

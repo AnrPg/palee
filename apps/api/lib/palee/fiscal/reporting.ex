@@ -77,7 +77,7 @@ defmodule Palee.Fiscal.Reporting do
   Sends what is due (or only `id`): `{:ok, %{accepted, rejected, failed,
   deferred, retrying}}` (counts). Safe to run from several workers at once.
 
-  ADR-451: the claimed documents go to AADE in one `InvoicesDoc`, so a
+  ADR-452: the claimed documents go to AADE in one `InvoicesDoc`, so a
   claim never outlives `TransmissionPolicy.claim_timeout_seconds/0`
   (guarded by a test). A document whose last attempt ended without an
   answer is first looked up at AADE, and an "already sent" answer is
@@ -146,7 +146,7 @@ defmodule Palee.Fiscal.Reporting do
     started = System.monotonic_time(:millisecond)
     gateway = gateway(connection.environment)
     claimed = for {:send, transmission, _d, _i} <- prepared, do: transmission.id
-    # Each call to the authority starts with a fresh claim (ADR-451).
+    # Each call to the authority starts with a fresh claim (ADR-452).
     beat = fn -> TransmissionStore.touch_claims(context, claimed, latest(now)) end
 
     deferred =
@@ -212,7 +212,7 @@ defmodule Palee.Fiscal.Reporting do
     deferred ++ finished
   end
 
-  # ADR-451: a row may already be at AADE when its last attempt got no
+  # ADR-452: a row may already be at AADE when its last attempt got no
   # answer ("transient"), or when an earlier claim never finished (a worker
   # that died mid-call: the claim expired and the row was claimed again,
   # so `attempts`, which counts only real sends, is above 1). AADE's
@@ -291,7 +291,7 @@ defmodule Palee.Fiscal.Reporting do
     end
   end
 
-  # ADR-451 (Κ4): documents that will not reach AADE without someone's help.
+  # ADR-452 (Κ4): documents that will not reach AADE without someone's help.
   defp notify_problems(context, outcomes) do
     count = Enum.count(outcomes, &(&1 in [:rejected, :failed]))
     if count > 0, do: Connections.documents_not_reported(context, @authority, count)
