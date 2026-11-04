@@ -17,6 +17,10 @@ export type FinanceSettings = {
   payment_reminder_interval_days: number;
   /** Days before a subscription ends to remind the client (0 = off). */
   subscription_expiry_reminder_days: number;
+  /** ADR-500: also remind on the day it ends (default on). */
+  subscription_end_day_reminder?: boolean;
+  /** ADR-500: also remind on the day after; then every `payment_reminder_interval_days`. */
+  subscription_day_after_reminder?: boolean;
   /** Slack days after a subscription ends / invoice falls overdue before access is lost. */
   subscription_grace_days: number;
   document_mode: "invoice" | "receipt";
@@ -94,7 +98,7 @@ export type GamificationUpdate = Partial<
   Pick<GamificationSettings, "streak_shields" | "streak_shield_reset_day" | "leaderboard_enabled">
 >;
 
-export type FinanceUpdate = Partial<Pick<FinanceSettings, "payment_reminder_interval_days" | "subscription_expiry_reminder_days" | "subscription_grace_days" | "document_mode" | "package_modules">>;
+export type FinanceUpdate = Partial<Pick<FinanceSettings, "payment_reminder_interval_days" | "subscription_expiry_reminder_days" | "subscription_end_day_reminder" | "subscription_day_after_reminder" | "subscription_grace_days" | "document_mode" | "package_modules">>;
 
 export type AdminSettingsUpdate = {
   provider?: { kind: ProviderKind };

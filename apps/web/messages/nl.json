@@ -9,10 +9,10 @@
     "capacityLabel": "Plaatsen in elke nieuwe les",
     "capacityHelp": "Hoeveel mensen een nieuwe les kunnen boeken. Je kunt het per les aanpassen.",
     "autoApproveLabel": "Boekingen automatisch bevestigen",
-    "autoApproveHelp": "Aan: een boeking is meteen bevestigd. Uit: elke boeking is een aanvraag die iemand van het team moet goedkeuren.",
+    "autoApproveHelp": "Aan: een boeking is meteen bevestigd, zonder wachten. Uit: elke boeking is een aanvraag die iemand van het team goedkeurt, en jij bepaalt hoe lang die op een antwoord wacht.",
     "approvalWaitLabel": "Tijd om een boekingsaanvraag te beantwoorden",
-    "approvalWaitHelp": "Alleen voor lessen zonder automatische bevestiging. Antwoordt niemand van het team binnen deze tijd, dan wordt de aanvraag geannuleerd, gaat het bezoek terug naar het lid en gaat de plaats naar de volgende op de wachtlijst. Een aanvraag wacht nooit langer dan de start van de les. Dit is niet wanneer boekingen openen: dat is ‘Boekingen openen’.",
-    "approvalWaitClassHelp": "Keurt niemand de aanvraag binnen deze tijd goed, dan wordt hij automatisch geannuleerd. Geldt alleen zonder automatische bevestiging.",
+    "approvalWaitHelp": "Antwoordt niemand van het team binnen deze tijd, dan wordt de aanvraag geannuleerd, gaat het bezoek terug naar het lid en gaat de plaats naar de volgende op de wachtlijst. ‘Geen limiet’: de aanvraag wacht tot de start van de les op een antwoord. Dit is niet wanneer boekingen openen: dat is ‘Boekingen openen’.",
+    "approvalWaitClassHelp": "Keurt niemand van het team de aanvraag binnen deze tijd goed, dan wordt hij automatisch geannuleerd en gaat de plaats naar de volgende op de wachtlijst. ‘Geen limiet’: de aanvraag wacht tot de start van de les op een antwoord.",
     "approvalWaitNoLimit": "Geen limiet (tot de start)",
     "bookingWindowLabel": "Boekingen openen (dagen voor de les)",
     "bookingWindowHelp": "Het vroegst dat een lid kan boeken: zoveel dagen voor de les. Boekingen blijven open tot de start. Met ‘Geen limiet’ is een les te boeken zodra hij op het rooster staat. Een abonnementspakket kan een eigen waarde hebben.",
@@ -214,7 +214,6 @@
     "scheduledAt": "Gepland om",
     "capacity": "Capaciteit",
     "timeoutMinutes": "Time-out minuten",
-    "autoApproveBookingsForThisSlot": "Boekingen voor deze les automatisch goedkeuren",
     "deleteSlot": "Les verwijderen",
     "saveChanges": "Wijzigingen opslaan",
     "createSlot": "Les aanmaken",
@@ -779,7 +778,7 @@
     "displayLabeld747868": "Etiket weergeven",
     "addLeveld2d215f": "+ Niveau toevoegen",
     "reminderIntervalDaysee3ba34": "Herinneringsinterval (dagen)",
-    "howOftenInDaysAMemberWithAn710fa76": "Hoe vaak (in dagen) een lid met een openstaand saldo een betalingsherinnering ontvangt. De herinnering wordt herhaald totdat het saldo volledig is vereffend.",
+    "howOftenInDaysAMemberWithAn710fa76": "Daarna: om de hoeveel dagen de herinnering terugkomt, tot het lid verlengt of vertrekt. Wie geld schuldig is, krijgt in hetzelfde ritme een betalingsherinnering tot het saldo is betaald.",
     "applicationSettingsIntroduction8f2e9b7": "introductie van applicatie-instellingen",
     "appConfigurations1e15749": "App-configuraties.",
     "globalSettingsForAppearanceEngagementRulesAndWorkout915168c": "Algemene instellingen voor uiterlijk, betrokkenheidsregels en definities van trainingsniveaus. Wijzigingen zijn onmiddellijk van toepassing in de hele app.",
@@ -2655,7 +2654,6 @@
     "featureOptionalClassSettings": "Optionele lesinstellingen",
     "featureCapacity": "Capaciteit",
     "featureTimeoutMinutes": "Time-out minuten",
-    "featureAutoApprove": "Automatisch goedkeuren",
     "featureCreating": "Creëren…",
     "featureReceipt": "Ontvangst",
     "featureReceiptDocumentTitle": "Ontvangstbewijs {reference}",
@@ -4897,7 +4895,12 @@
     "pkgFieldBookingDailyLimitSuffix": "{count, plural, one {les per dag} other {lessen per dag}}",
     "pkgFieldBookingOpenBookingsLimit": "Openstaande boekingen",
     "pkgFieldBookingOpenBookingsLimitHint": "Hoeveel komende lessen een lid tegelijk geboekt mag hebben.",
-    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {komende les} other {komende lessen}}"
+    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {komende les} other {komende lessen}}",
+    "subscriptionEndsTodayTitle": "Je abonnement eindigt vandaag",
+    "subscriptionEndsTodayBody": "{package} eindigt vandaag. Verleng het om lessen te blijven boeken.",
+    "subscriptionEndedRenewBody": "{package} is geëindigd op {date}. Verleng het om weer lessen te boeken.",
+    "subscriptionEndDayReminder": "Herinnering op de dag dat het eindigt",
+    "subscriptionDayAfterReminder": "Herinnering de dag na het einde"
   },
   "PrSharing": {
     "gymLabel": "Waar heb je dit PR neergezet?",
@@ -9871,8 +9874,9 @@
       "title": "AI-assistent",
       "description": "De WOD-assistent, plus scalingvoorstellen en spraakinvoer met je eigen sleutel. Een coach keurt elk voorstel goed.",
       "enable": "Scalingvoorstellen",
-      "enableHint": "Standaard uit. Vereist een API-sleutel.",
-      "key": "API-sleutel (Anthropic)",
+      "enableHint": "Voor een sporter met een blessure die de gym vastlegde, stelt AI voor hoe de training aangepast wordt: minder gewicht, minder herhalingen of een andere oefening. Een coach keurt elk voorstel goed voordat de sporter het ziet. Hiervoor is AI nodig, omdat elke combinatie van training en blessure anders is en vaste regels die niet dekken.",
+      "key": "Claude-sleutel (Anthropic)",
+      "keyHint": "Scalingvoorstellen en inspreken hebben hem nodig. Het gebruik wordt op je eigen Anthropic-account gefactureerd.",
       "keySet": "Er is een sleutel ingesteld die eindigt op {last4}.",
       "keyRejected": "De aanbieder heeft de sleutel die eindigt op {last4} geweigerd. Voer een nieuwe sleutel in.",
       "keyMissing": "Geen sleutel ingesteld.",
@@ -9881,8 +9885,8 @@
       "removeKey": "Sleutel verwijderen",
       "model": "Model (optioneel)",
       "saveModel": "Model opslaan",
-      "usage": "Deze maand · voorstellen: {count} · kosten: ${cost}",
-      "privacy": "Alleen de training en de door de gym vastgelegde blessures worden verstuurd, zonder namen. De sleutel wordt nooit meer getoond."
+      "usage": "Deze maand · {count, plural, one {# voorstel} other {# voorstellen}} · {voice, plural, one {# spraakconcept} other {# spraakconcepten}} · kosten: ${cost}",
+      "privacy": "Er worden geen namen verstuurd. Voorstellen sturen de training en de door de gym vastgelegde blessures. Inspreken stuurt alleen de tekst van wat het lid zei. De sleutel wordt nooit meer getoond."
     },
     "queue": {
       "eyebrow": "Mijn klanten",
@@ -9946,7 +9950,7 @@
     },
     "settings": {
       "enable": "Inspreken",
-      "enableHint": "Leden spreken hun training in en controleren een concept voor het opslaan. Audio wordt niet bewaard."
+      "enableHint": "Leden zeggen in eigen woorden wat ze deden en AI maakt er oefeningen, sets, herhalingen en gewichten van. Het lid controleert het concept voor het opslaan. Hiervoor is AI nodig om vrije spraak te begrijpen, zoals „drie sets van tien met 60”. Audio wordt niet bewaard."
     }
   },
   "Pickers": {
@@ -13440,7 +13444,9 @@
         "community_partners_enabled": "Trainingspartners",
         "trials_enabled": "Proeflessen",
         "trials_seats_per_class": "Proefplaatsen per les",
-        "trials_approval": "Goedkeuring van proeflessen"
+        "trials_approval": "Goedkeuring van proeflessen",
+        "finance_subscription_end_day_reminder": "Herinnering op de dag dat het eindigt",
+        "finance_subscription_day_after_reminder": "Herinnering de dag na het einde"
       }
     }
   },

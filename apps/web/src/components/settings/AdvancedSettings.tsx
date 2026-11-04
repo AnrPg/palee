@@ -53,6 +53,8 @@ export const DEFAULT_VERDICTS: Record<string, SettingVerdict> = {
   "finance.package_modules": "derive",
   "finance.subscription_grace_days": "advanced",
   "finance.subscription_expiry_reminder_days": "advanced",
+  "finance.subscription_end_day_reminder": "advanced",
+  "finance.subscription_day_after_reminder": "advanced",
   "finance.payment_reminder_interval_days": "advanced",
   "finance.entitlement_enforcement_mode": "remove",
   "finance.entitlement_timezone": "derive",

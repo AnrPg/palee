@@ -28,6 +28,8 @@ defmodule Palee.Finance.MembershipPackageSubscription do
     field :corporate_enrolled_via, :string
     field :expiry_reminder_sent_at, :utc_datetime_usec
     field :grace_notice_sent_at, :utc_datetime_usec
+    field :end_day_notice_sent_at, :utc_datetime_usec
+    field :renewal_followup_sent_at, :utc_datetime_usec
     # ADR-220: the member's choice; the package only says whether it may renew.
     field :auto_renew, :boolean, default: true
     field :renewal_changed_at, :utc_datetime_usec
@@ -60,6 +62,8 @@ defmodule Palee.Finance.MembershipPackageSubscription do
       :corporate_enrolled_via,
       :expiry_reminder_sent_at,
       :grace_notice_sent_at,
+      :end_day_notice_sent_at,
+      :renewal_followup_sent_at,
       :charges_from
     ])
     |> validate_required([
@@ -92,7 +96,9 @@ defmodule Palee.Finance.MembershipPackageSubscription do
       :ends_on,
       :ends_on_from_renewal_stop,
       :expiry_reminder_sent_at,
-      :grace_notice_sent_at
+      :grace_notice_sent_at,
+      :end_day_notice_sent_at,
+      :renewal_followup_sent_at
     ])
     |> validate_required([:auto_renew, :renewal_changed_at, :renewal_changed_by])
     |> validate_inclusion(:renewal_changed_by, ["member", "staff"])
