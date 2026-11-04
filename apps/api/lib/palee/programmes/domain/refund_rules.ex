@@ -93,7 +93,7 @@ defmodule Palee.Programmes.Domain.RefundRules do
   end
 
   defp seller(%{refund_policy: "pro_rata"} = purchase, today) do
-    if Date.compare(today, purchase.ends_on) != :gt,
+    if Date.compare(today, planned_end(purchase)) != :gt,
       do: {"pro_rata", unused_cents(purchase, today)},
       else: nil
   end
@@ -102,13 +102,17 @@ defmodule Palee.Programmes.Domain.RefundRules do
 
   @doc """
   The price less the part already provided: the days from the start up to
-  (not including) `today`, over all the programme's days.
+  (not including) `today`, over all the programme's days. ADR-540: days the
+  buyer moved later never stretch this; it counts on the planned period
+  (`planned_ends_on`, the `ends_on` it was sold with).
   """
-  def unused_cents(%{price_cents: price, starts_on: starts, ends_on: ends}, %Date{} = today) do
-    total = Date.diff(ends, starts) + 1
+  def unused_cents(%{price_cents: price, starts_on: starts} = purchase, %Date{} = today) do
+    total = Date.diff(planned_end(purchase), starts) + 1
     used = Date.diff(today, starts) |> max(0) |> min(total)
     max(price - round(price * used / total), 0)
   end
+
+  defp planned_end(purchase), do: Map.get(purchase, :planned_ends_on) || purchase.ends_on
 
   @doc """
   Whether a staff refund of `amount_cents` fits what is left of the price.

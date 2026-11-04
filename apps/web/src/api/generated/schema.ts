@@ -11210,6 +11210,43 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/programme-covers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Reserve a cover photo (programme_cover) and get a presigned upload for it
+         * @description Upload the original photo and the cover rendered from it (16:9) the same way, then set them on the programme.
+         */
+        post: operations["PaleeWeb.AdminProgrammeController.cover_upload"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/programme-covers/{id}/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Verify an uploaded cover photo (type, size, no metadata) and mark it ready */
+        post: operations["PaleeWeb.AdminProgrammeController.complete_cover"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/programme-purchases/{id}/refund": {
         parameters: {
             query?: never;
@@ -11301,6 +11338,27 @@ export interface paths {
         /** Stop selling a programme (buyers keep it) */
         post: operations["PaleeWeb.AdminProgrammeController.archive"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/programmes/{id}/cover": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set the programme's cover: the rendered 16:9 image, its original and the edit
+         * @description Editing again starts from the original with the stored edit. The replaced uploads are deleted.
+         */
+        put: operations["PaleeWeb.AdminProgrammeController.set_cover"];
+        post?: never;
+        /** Remove the cover: the page shows the theme colour strip again */
+        delete: operations["PaleeWeb.AdminProgrammeController.remove_cover"];
         options?: never;
         head?: never;
         patch?: never;
@@ -15457,6 +15515,60 @@ export interface paths {
         get: operations["PaleeWeb.MyProgrammeController.show"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/programme-purchases/{id}/days": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A programme you bought as its days: done, skipped, behind, today, upcoming, rest */
+        get: operations["PaleeWeb.MyProgrammeController.days"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/programme-purchases/{id}/days/do-today": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * «Κάν' τη σήμερα»: a behind day moves to today and the days after it follow
+         * @description Done and skipped days keep their dates; the end moves with the last day, never past latest_end (409 programme_schedule_limit: skip instead).
+         */
+        post: operations["PaleeWeb.MyProgrammeController.do_today"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/programme-purchases/{id}/days/skip": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Παράλειψη»: let a behind day go; nothing moves */
+        post: operations["PaleeWeb.MyProgrammeController.skip_day"];
         delete?: never;
         options?: never;
         head?: never;
@@ -26318,6 +26430,10 @@ export interface components {
                 [key: string]: unknown;
             };
             programmes: {
+                /** @description The author's public name; null once the account is deleted */
+                coach_name?: string | null;
+                /** @description ADR-541: null shows the theme strip */
+                cover_url?: string | null;
                 currency: string;
                 description?: string | null;
                 equipment?: string[];
@@ -26345,6 +26461,10 @@ export interface components {
                 }[];
                 level: string;
                 listing?: string;
+                /** @description ADR-542: «κύριος εξοπλισμός»: the author's added keys, then the derived ones kept */
+                main_equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                /** @description ADR-542: «περίπου ανά προπόνηση», rounded to 5; null unless every WOD has a duration */
+                minutes_per_session?: number | null;
                 preview?: {
                     day: number;
                     summary?: string | null;
@@ -26368,6 +26488,20 @@ export interface components {
                 title: string;
                 version_number?: number | null;
                 week_outline?: {
+                    /** @description The week's seven days (weekday 0 is the weekday of the start date) */
+                    days: {
+                        /** @description Day 0 is the start date */
+                        day: number;
+                        /** @description Approximate minutes (rounded to 5); null when a WOD has no duration */
+                        minutes: number | null;
+                        /** @description One of the free preview days */
+                        preview: boolean;
+                        /** @description No WOD that day */
+                        rest: boolean;
+                        weekday: number;
+                        /** @description The WOD's workout type (ADR-275 key); null when not set or a rest day */
+                        workout_type: string | null;
+                    }[];
                     sessions: number;
                     week: number;
                 }[];
@@ -26408,7 +26542,7 @@ export interface components {
                 /** @description A tiny blurred WebP data URI to show while the image loads */
                 placeholder?: string | null;
                 /** @enum {string} */
-                purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "shop_product_photo" | "space_photo";
+                purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "programme_cover" | "shop_product_photo" | "space_photo";
                 rejection_reason?: string | null;
                 /**
                  * @description Post uploads: pending (not uploaded yet) → processing → ready | rejected (see rejection_reason)
@@ -26442,7 +26576,7 @@ export interface components {
                 /** @description A tiny blurred WebP data URI to show while the image loads */
                 placeholder?: string | null;
                 /** @enum {string} */
-                purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "shop_product_photo" | "space_photo";
+                purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "programme_cover" | "shop_product_photo" | "space_photo";
                 rejection_reason?: string | null;
                 /**
                  * @description Post uploads: pending (not uploaded yet) → processing → ready | rejected (see rejection_reason)
@@ -26512,7 +26646,7 @@ export interface components {
                     /** @description A tiny blurred WebP data URI to show while the image loads */
                     placeholder?: string | null;
                     /** @enum {string} */
-                    purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "shop_product_photo" | "space_photo";
+                    purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "programme_cover" | "shop_product_photo" | "space_photo";
                     rejection_reason?: string | null;
                     /**
                      * @description Post uploads: pending (not uploaded yet) → processing → ready | rejected (see rejection_reason)
@@ -26546,7 +26680,7 @@ export interface components {
                     /** @description A tiny blurred WebP data URI to show while the image loads */
                     placeholder?: string | null;
                     /** @enum {string} */
-                    purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "shop_product_photo" | "space_photo";
+                    purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "programme_cover" | "shop_product_photo" | "space_photo";
                     rejection_reason?: string | null;
                     /**
                      * @description Post uploads: pending (not uploaded yet) → processing → ready | rejected (see rejection_reason)
@@ -35028,6 +35162,12 @@ export interface components {
             /** Format: uuid */
             organization_id: string | null;
         };
+        /**
+         * EquipmentKey
+         * @description ADR-542: an equipment key (labels: web messages `Equipment.<key>`)
+         * @enum {string}
+         */
+        EquipmentKey: "none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller";
         /** ExecutionInteractionBatch */
         ExecutionInteractionBatch: {
             events: {
@@ -37763,12 +37903,17 @@ export interface components {
         };
         /** MarketplaceProgramme */
         MarketplaceProgramme: {
+            cover_url?: string | null;
             currency: string;
             equipment?: string[];
             goal?: string;
             /** Format: uuid */
             id: string;
             level?: string;
+            /** @description ADR-542: «κύριος εξοπλισμός»: the author's added keys, then the derived ones kept */
+            main_equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+            /** @description ADR-542: «περίπου ανά προπόνηση», rounded to 5; null unless every WOD has a duration */
+            minutes_per_session?: number | null;
             /** Format: uuid */
             organization_id?: string;
             organization_name: string;
@@ -37789,12 +37934,17 @@ export interface components {
             limit: number;
             offset: number;
             programmes: {
+                cover_url?: string | null;
                 currency: string;
                 equipment?: string[];
                 goal?: string;
                 /** Format: uuid */
                 id: string;
                 level?: string;
+                /** @description ADR-542: «κύριος εξοπλισμός»: the author's added keys, then the derived ones kept */
+                main_equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                /** @description ADR-542: «περίπου ανά προπόνηση», rounded to 5; null unless every WOD has a duration */
+                minutes_per_session?: number | null;
                 /** Format: uuid */
                 organization_id?: string;
                 organization_name: string;
@@ -37826,7 +37976,7 @@ export interface components {
             /** @description A tiny blurred WebP data URI to show while the image loads */
             placeholder?: string | null;
             /** @enum {string} */
-            purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "shop_product_photo" | "space_photo";
+            purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "programme_cover" | "shop_product_photo" | "space_photo";
             rejection_reason?: string | null;
             /**
              * @description Post uploads: pending (not uploaded yet) → processing → ready | rejected (see rejection_reason)
@@ -37870,7 +38020,7 @@ export interface components {
                 /** @description A tiny blurred WebP data URI to show while the image loads */
                 placeholder?: string | null;
                 /** @enum {string} */
-                purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "shop_product_photo" | "space_photo";
+                purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "programme_cover" | "shop_product_photo" | "space_photo";
                 rejection_reason?: string | null;
                 /**
                  * @description Post uploads: pending (not uploaded yet) → processing → ready | rejected (see rejection_reason)
@@ -43761,6 +43911,20 @@ export interface components {
             /** @description Your uploads (POST /api/me/media/uploads), in order: up to ten photos or one video. They may still be processing. */
             media_ids?: string[];
         };
+        /**
+         * ProgrammeBehindDay
+         * @description «Έμεινε πίσω»: the earliest behind day, or null
+         */
+        ProgrammeBehindDay: {
+            /** @description False when moving would end the programme after latest_end */
+            can_do_today: boolean;
+            can_skip: boolean;
+            /** Format: date */
+            date: string;
+            day: number;
+            week: number;
+            weekday: number;
+        } | null;
         /** ProgrammeBuyInput */
         ProgrammeBuyInput: {
             idempotency_key: string;
@@ -43783,12 +43947,140 @@ export interface components {
             /** Format: uuid */
             purchase_id: string;
         };
+        /** ProgrammeBuyerDay */
+        ProgrammeBuyerDay: {
+            /** Format: date */
+            date: string;
+            /** @description 0-based day of the programme */
+            day: number;
+            /** @enum {string} */
+            status: "done" | "skipped" | "behind" | "today" | "upcoming" | "rest";
+            week: number;
+            /** @description 0..6 within its week */
+            weekday: number;
+            workouts: {
+                /**
+                 * Format: uuid
+                 * @description The buyer's assigned workout (open it to start); null if none
+                 */
+                assigned_workout_id: string | null;
+                done: boolean;
+                summary: string | null;
+                title: string | null;
+                /** Format: uuid */
+                workout_id: string;
+            }[];
+        };
+        /** ProgrammeBuyerDayWorkout */
+        ProgrammeBuyerDayWorkout: {
+            /**
+             * Format: uuid
+             * @description The buyer's assigned workout (open it to start); null if none
+             */
+            assigned_workout_id: string | null;
+            done: boolean;
+            summary: string | null;
+            title: string | null;
+            /** Format: uuid */
+            workout_id: string;
+        };
+        /** ProgrammeCover */
+        ProgrammeCover: {
+            /** @enum {string} */
+            aspect: "16:9";
+            edit: {
+                brightness?: number;
+                /** ProgrammeCoverCrop */
+                crop?: {
+                    height: number;
+                    width: number;
+                    x: number;
+                    y: number;
+                };
+                /** @enum {integer} */
+                rotation?: 0 | 90 | 180 | 270;
+                zoom?: number;
+            } | null;
+            /** Format: uuid */
+            media_id: string;
+            /** Format: uuid */
+            original_media_id: string;
+            original_url: string | null;
+            url: string | null;
+        };
+        /** ProgrammeCoverCrop */
+        ProgrammeCoverCrop: {
+            height: number;
+            width: number;
+            x: number;
+            y: number;
+        };
+        /**
+         * ProgrammeCoverEdit
+         * @description ADR-541: how the cover was made from the original; the crop is in fractions of the original after rotation and has the cover's 16:9 aspect
+         */
+        ProgrammeCoverEdit: {
+            brightness?: number;
+            /** ProgrammeCoverCrop */
+            crop?: {
+                height: number;
+                width: number;
+                x: number;
+                y: number;
+            };
+            /** @enum {integer} */
+            rotation?: 0 | 90 | 180 | 270;
+            zoom?: number;
+        };
+        /** ProgrammeCoverInput */
+        ProgrammeCoverInput: {
+            /**
+             * ProgrammeCoverEdit
+             * @description ADR-541: how the cover was made from the original; the crop is in fractions of the original after rotation and has the cover's 16:9 aspect
+             */
+            edit?: {
+                brightness?: number;
+                /** ProgrammeCoverCrop */
+                crop?: {
+                    height: number;
+                    width: number;
+                    x: number;
+                    y: number;
+                };
+                /** @enum {integer} */
+                rotation?: 0 | 90 | 180 | 270;
+                zoom?: number;
+            };
+            /**
+             * Format: uuid
+             * @description The rendered cover (a ready programme_cover upload)
+             */
+            media_id: string;
+            /**
+             * Format: uuid
+             * @description The photo it was made from (default: the same upload)
+             */
+            original_media_id?: string;
+        };
+        /** ProgrammeDayActionInput */
+        ProgrammeDayActionInput: {
+            day: number;
+        };
         /** ProgrammeDayInput */
         ProgrammeDayInput: {
             /** @description Day 0 is the start date */
             day: number;
             /** Format: uuid */
             workout_id: string;
+        };
+        /**
+         * ProgrammeDerivedFacts
+         * @description ADR-542: what the draft's WODs give, before the author's choice
+         */
+        ProgrammeDerivedFacts: {
+            /** @description Most used first, at most 5 */
+            equipment: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+            minutes_per_session: number | null;
         };
         /** ProgrammeError */
         ProgrammeError: {
@@ -43807,7 +44099,10 @@ export interface components {
                 workout_id: string;
             }[];
             draft_weeks?: number;
-            equipment?: string[];
+            /** @description ADR-542: equipment keys the author adds to the derived «κύριος εξοπλισμός» (shown first) */
+            equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+            /** @description ADR-542: derived equipment keys the author takes away */
+            equipment_removed?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
             /** @enum {string} */
             goal?: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
             /** @enum {string} */
@@ -43824,6 +44119,42 @@ export interface components {
             sessions_per_week?: number | null;
             summary?: string | null;
             title?: string;
+        };
+        /**
+         * ProgrammeOutlineDay
+         * @description A day of the programme as the public page shows it: never the WOD itself (preview days show theirs in `preview`)
+         */
+        ProgrammeOutlineDay: {
+            /** @description Day 0 is the start date */
+            day: number;
+            /** @description Approximate minutes (rounded to 5); null when a WOD has no duration */
+            minutes: number | null;
+            /** @description One of the free preview days */
+            preview: boolean;
+            /** @description No WOD that day */
+            rest: boolean;
+            weekday: number;
+            /** @description The WOD's workout type (ADR-275 key); null when not set or a rest day */
+            workout_type: string | null;
+        };
+        /** ProgrammeOutlineWeek */
+        ProgrammeOutlineWeek: {
+            /** @description The week's seven days (weekday 0 is the weekday of the start date) */
+            days: {
+                /** @description Day 0 is the start date */
+                day: number;
+                /** @description Approximate minutes (rounded to 5); null when a WOD has no duration */
+                minutes: number | null;
+                /** @description One of the free preview days */
+                preview: boolean;
+                /** @description No WOD that day */
+                rest: boolean;
+                weekday: number;
+                /** @description The WOD's workout type (ADR-275 key); null when not set or a rest day */
+                workout_type: string | null;
+            }[];
+            sessions: number;
+            week: number;
         };
         /** ProgrammePreviewDay */
         ProgrammePreviewDay: {
@@ -43924,6 +44255,84 @@ export interface components {
             /** Format: uuid */
             workout_id: string;
         };
+        /**
+         * ProgrammePurchaseDays
+         * @description ADR-540: a bought programme as a sequence of days; a training day not done by its date is behind until the buyer does it today or skips it
+         */
+        ProgrammePurchaseDays: {
+            /**
+             * ProgrammeBehindDay
+             * @description «Έμεινε πίσω»: the earliest behind day, or null
+             */
+            behind: {
+                /** @description False when moving would end the programme after latest_end */
+                can_do_today: boolean;
+                can_skip: boolean;
+                /** Format: date */
+                date: string;
+                day: number;
+                week: number;
+                weekday: number;
+            } | null;
+            days: {
+                /** Format: date */
+                date: string;
+                /** @description 0-based day of the programme */
+                day: number;
+                /** @enum {string} */
+                status: "done" | "skipped" | "behind" | "today" | "upcoming" | "rest";
+                week: number;
+                /** @description 0..6 within its week */
+                weekday: number;
+                workouts: {
+                    /**
+                     * Format: uuid
+                     * @description The buyer's assigned workout (open it to start); null if none
+                     */
+                    assigned_workout_id: string | null;
+                    done: boolean;
+                    summary: string | null;
+                    title: string | null;
+                    /** Format: uuid */
+                    workout_id: string;
+                }[];
+            }[];
+            /**
+             * Format: date
+             * @description Follows the moved days
+             */
+            ends_on: string;
+            /**
+             * Format: date
+             * @description The cap: moves never end it later
+             */
+            latest_end: string;
+            /**
+             * Format: date
+             * @description The end it was sold with (refunds count on it)
+             */
+            planned_ends_on: string;
+            /** ProgrammePurchaseProgress */
+            progress: {
+                behind: number;
+                done: number;
+                /** @description Not done and not skipped */
+                remaining: number;
+                skipped: number;
+                /** @description Training days */
+                total: number;
+            };
+            /** Format: uuid */
+            purchase_id: string;
+            /** Format: date */
+            starts_on: string;
+            /**
+             * Format: date
+             * @description The seller's today
+             */
+            today: string;
+            weeks: number;
+        };
         /** ProgrammePurchaseList */
         ProgrammePurchaseList: {
             purchases: {
@@ -44002,6 +44411,16 @@ export interface components {
                 weeks?: number;
                 withdrawal_deadline?: string | null;
             }[];
+        };
+        /** ProgrammePurchaseProgress */
+        ProgrammePurchaseProgress: {
+            behind: number;
+            done: number;
+            /** @description Not done and not skipped */
+            remaining: number;
+            skipped: number;
+            /** @description Training days */
+            total: number;
         };
         /** ProgrammePurchaseResponse */
         ProgrammePurchaseResponse: {
@@ -44087,6 +44506,17 @@ export interface components {
         ProgrammeRating: {
             average: number | null;
             count: number;
+        };
+        /**
+         * ProgrammeReadinessItem
+         * @description ADR-544: what the draft lacks («Λείπουν N πράγματα»); blocking items stop «Δημοσίευση»
+         */
+        ProgrammeReadinessItem: {
+            blocking: boolean;
+            /** @enum {string} */
+            key: "title" | "price" | "days" | "empty_weeks" | "summary";
+            /** @description empty_weeks: the weeks (1-based) without a WOD */
+            weeks: number[];
         };
         /** ProgrammeRefundInput */
         ProgrammeRefundInput: {
@@ -44279,6 +44709,10 @@ export interface components {
             owned?: string | null;
             /** PublicProgramme */
             programme: {
+                /** @description The author's public name; null once the account is deleted */
+                coach_name?: string | null;
+                /** @description ADR-541: null shows the theme strip */
+                cover_url?: string | null;
                 currency: string;
                 description?: string | null;
                 equipment?: string[];
@@ -44306,6 +44740,10 @@ export interface components {
                 }[];
                 level: string;
                 listing?: string;
+                /** @description ADR-542: «κύριος εξοπλισμός»: the author's added keys, then the derived ones kept */
+                main_equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                /** @description ADR-542: «περίπου ανά προπόνηση», rounded to 5; null unless every WOD has a duration */
+                minutes_per_session?: number | null;
                 preview?: {
                     day: number;
                     summary?: string | null;
@@ -44329,6 +44767,20 @@ export interface components {
                 title: string;
                 version_number?: number | null;
                 week_outline?: {
+                    /** @description The week's seven days (weekday 0 is the weekday of the start date) */
+                    days: {
+                        /** @description Day 0 is the start date */
+                        day: number;
+                        /** @description Approximate minutes (rounded to 5); null when a WOD has no duration */
+                        minutes: number | null;
+                        /** @description One of the free preview days */
+                        preview: boolean;
+                        /** @description No WOD that day */
+                        rest: boolean;
+                        weekday: number;
+                        /** @description The WOD's workout type (ADR-275 key); null when not set or a rest day */
+                        workout_type: string | null;
+                    }[];
                     sessions: number;
                     week: number;
                 }[];
@@ -45356,6 +45808,10 @@ export interface components {
         };
         /** PublicProgramme */
         PublicProgramme: {
+            /** @description The author's public name; null once the account is deleted */
+            coach_name?: string | null;
+            /** @description ADR-541: null shows the theme strip */
+            cover_url?: string | null;
             currency: string;
             description?: string | null;
             equipment?: string[];
@@ -45383,6 +45839,10 @@ export interface components {
             }[];
             level: string;
             listing?: string;
+            /** @description ADR-542: «κύριος εξοπλισμός»: the author's added keys, then the derived ones kept */
+            main_equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+            /** @description ADR-542: «περίπου ανά προπόνηση», rounded to 5; null unless every WOD has a duration */
+            minutes_per_session?: number | null;
             preview?: {
                 day: number;
                 summary?: string | null;
@@ -45406,6 +45866,20 @@ export interface components {
             title: string;
             version_number?: number | null;
             week_outline?: {
+                /** @description The week's seven days (weekday 0 is the weekday of the start date) */
+                days: {
+                    /** @description Day 0 is the start date */
+                    day: number;
+                    /** @description Approximate minutes (rounded to 5); null when a WOD has no duration */
+                    minutes: number | null;
+                    /** @description One of the free preview days */
+                    preview: boolean;
+                    /** @description No WOD that day */
+                    rest: boolean;
+                    weekday: number;
+                    /** @description The WOD's workout type (ADR-275 key); null when not set or a rest day */
+                    workout_type: string | null;
+                }[];
                 sessions: number;
                 week: number;
             }[];
@@ -45419,6 +45893,10 @@ export interface components {
             };
             /** PublicProgramme */
             programme: {
+                /** @description The author's public name; null once the account is deleted */
+                coach_name?: string | null;
+                /** @description ADR-541: null shows the theme strip */
+                cover_url?: string | null;
                 currency: string;
                 description?: string | null;
                 equipment?: string[];
@@ -45446,6 +45924,10 @@ export interface components {
                 }[];
                 level: string;
                 listing?: string;
+                /** @description ADR-542: «κύριος εξοπλισμός»: the author's added keys, then the derived ones kept */
+                main_equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                /** @description ADR-542: «περίπου ανά προπόνηση», rounded to 5; null unless every WOD has a duration */
+                minutes_per_session?: number | null;
                 preview?: {
                     day: number;
                     summary?: string | null;
@@ -45469,6 +45951,20 @@ export interface components {
                 title: string;
                 version_number?: number | null;
                 week_outline?: {
+                    /** @description The week's seven days (weekday 0 is the weekday of the start date) */
+                    days: {
+                        /** @description Day 0 is the start date */
+                        day: number;
+                        /** @description Approximate minutes (rounded to 5); null when a WOD has no duration */
+                        minutes: number | null;
+                        /** @description One of the free preview days */
+                        preview: boolean;
+                        /** @description No WOD that day */
+                        rest: boolean;
+                        weekday: number;
+                        /** @description The WOD's workout type (ADR-275 key); null when not set or a rest day */
+                        workout_type: string | null;
+                    }[];
                     sessions: number;
                     week: number;
                 }[];
@@ -45558,12 +46054,18 @@ export interface components {
                 currency: string | null;
                 /** Format: uuid */
                 id: string;
+                level: string | null;
                 price_cents: number | null;
+                rating_average: number | null;
+                rating_count: number;
+                sessions_per_week: number | null;
                 summary: string | null;
                 title: string;
                 url: string | null;
                 weeks: number | null;
             }[];
+            /** @description How many programmes the box sells (ADR-543), for «Όλα τα προγράμματα (N)» */
+            programmes_total: number;
             /** @description Palee's address for reporting content on the site (ADR-397, DSA Art. 16) */
             report_contact: string | null;
             /** SiteReviews */
@@ -49843,7 +50345,11 @@ export interface components {
             currency: string | null;
             /** Format: uuid */
             id: string;
+            level: string | null;
             price_cents: number | null;
+            rating_average: number | null;
+            rating_count: number;
+            sessions_per_week: number | null;
             summary: string | null;
             title: string;
             url: string | null;
@@ -52331,6 +52837,31 @@ export interface components {
             archived_at?: string | null;
             /** Format: uuid */
             author_id?: string | null;
+            cover?: {
+                /** @enum {string} */
+                aspect: "16:9";
+                edit: {
+                    brightness?: number;
+                    /** ProgrammeCoverCrop */
+                    crop?: {
+                        height: number;
+                        width: number;
+                        x: number;
+                        y: number;
+                    };
+                    /** @enum {integer} */
+                    rotation?: 0 | 90 | 180 | 270;
+                    zoom?: number;
+                } | null;
+                /** Format: uuid */
+                media_id: string;
+                /** Format: uuid */
+                original_media_id: string;
+                original_url: string | null;
+                url: string | null;
+            } | null;
+            /** @description ADR-541: the cover; null: the theme strip */
+            cover_url?: string | null;
             /** @enum {string} */
             currency: "EUR" | "GBP" | "USD" | "CHF";
             /** Format: uuid */
@@ -52343,7 +52874,19 @@ export interface components {
                 workout_id: string;
             }[];
             draft_weeks: number;
-            equipment?: string[];
+            /** @description ADR-542: equipment keys the author adds to the derived «κύριος εξοπλισμός» (shown first) */
+            equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+            /** @description ADR-542: derived equipment keys the author takes away */
+            equipment_removed?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+            /**
+             * ProgrammeDerivedFacts
+             * @description ADR-542: what the draft's WODs give, before the author's choice
+             */
+            facts?: {
+                /** @description Most used first, at most 5 */
+                equipment: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                minutes_per_session: number | null;
+            };
             /** @enum {string} */
             goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
             /** Format: uuid */
@@ -52355,11 +52898,22 @@ export interface components {
              * @enum {string}
              */
             listing: "box" | "marketplace";
+            /** @description ADR-542: «κύριος εξοπλισμός»: the author's added keys, then the derived ones kept */
+            main_equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+            /** @description ADR-542: «περίπου ανά προπόνηση», rounded to 5; null unless every WOD has a duration */
+            minutes_per_session?: number | null;
             online_payments?: boolean;
             preview_days: number;
             price_cents: number;
             /** Format: date-time */
             published_at?: string | null;
+            readiness: {
+                blocking: boolean;
+                /** @enum {string} */
+                key: "title" | "price" | "days" | "empty_weeks" | "summary";
+                /** @description empty_weeks: the weeks (1-based) without a WOD */
+                weeks: number[];
+            }[];
             /** @enum {string} */
             refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
             /** ProgrammeRating */
@@ -52434,6 +52988,31 @@ export interface components {
                 archived_at?: string | null;
                 /** Format: uuid */
                 author_id?: string | null;
+                cover?: {
+                    /** @enum {string} */
+                    aspect: "16:9";
+                    edit: {
+                        brightness?: number;
+                        /** ProgrammeCoverCrop */
+                        crop?: {
+                            height: number;
+                            width: number;
+                            x: number;
+                            y: number;
+                        };
+                        /** @enum {integer} */
+                        rotation?: 0 | 90 | 180 | 270;
+                        zoom?: number;
+                    } | null;
+                    /** Format: uuid */
+                    media_id: string;
+                    /** Format: uuid */
+                    original_media_id: string;
+                    original_url: string | null;
+                    url: string | null;
+                } | null;
+                /** @description ADR-541: the cover; null: the theme strip */
+                cover_url?: string | null;
                 /** @enum {string} */
                 currency: "EUR" | "GBP" | "USD" | "CHF";
                 /** Format: uuid */
@@ -52446,7 +53025,19 @@ export interface components {
                     workout_id: string;
                 }[];
                 draft_weeks: number;
-                equipment?: string[];
+                /** @description ADR-542: equipment keys the author adds to the derived «κύριος εξοπλισμός» (shown first) */
+                equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                /** @description ADR-542: derived equipment keys the author takes away */
+                equipment_removed?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                /**
+                 * ProgrammeDerivedFacts
+                 * @description ADR-542: what the draft's WODs give, before the author's choice
+                 */
+                facts?: {
+                    /** @description Most used first, at most 5 */
+                    equipment: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                    minutes_per_session: number | null;
+                };
                 /** @enum {string} */
                 goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
                 /** Format: uuid */
@@ -52458,11 +53049,22 @@ export interface components {
                  * @enum {string}
                  */
                 listing: "box" | "marketplace";
+                /** @description ADR-542: «κύριος εξοπλισμός»: the author's added keys, then the derived ones kept */
+                main_equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                /** @description ADR-542: «περίπου ανά προπόνηση», rounded to 5; null unless every WOD has a duration */
+                minutes_per_session?: number | null;
                 online_payments?: boolean;
                 preview_days: number;
                 price_cents: number;
                 /** Format: date-time */
                 published_at?: string | null;
+                readiness: {
+                    blocking: boolean;
+                    /** @enum {string} */
+                    key: "title" | "price" | "days" | "empty_weeks" | "summary";
+                    /** @description empty_weeks: the weeks (1-based) without a WOD */
+                    weeks: number[];
+                }[];
                 /** @enum {string} */
                 refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
                 /** ProgrammeRating */
@@ -52539,6 +53141,31 @@ export interface components {
                 archived_at?: string | null;
                 /** Format: uuid */
                 author_id?: string | null;
+                cover?: {
+                    /** @enum {string} */
+                    aspect: "16:9";
+                    edit: {
+                        brightness?: number;
+                        /** ProgrammeCoverCrop */
+                        crop?: {
+                            height: number;
+                            width: number;
+                            x: number;
+                            y: number;
+                        };
+                        /** @enum {integer} */
+                        rotation?: 0 | 90 | 180 | 270;
+                        zoom?: number;
+                    } | null;
+                    /** Format: uuid */
+                    media_id: string;
+                    /** Format: uuid */
+                    original_media_id: string;
+                    original_url: string | null;
+                    url: string | null;
+                } | null;
+                /** @description ADR-541: the cover; null: the theme strip */
+                cover_url?: string | null;
                 /** @enum {string} */
                 currency: "EUR" | "GBP" | "USD" | "CHF";
                 /** Format: uuid */
@@ -52551,7 +53178,19 @@ export interface components {
                     workout_id: string;
                 }[];
                 draft_weeks: number;
-                equipment?: string[];
+                /** @description ADR-542: equipment keys the author adds to the derived «κύριος εξοπλισμός» (shown first) */
+                equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                /** @description ADR-542: derived equipment keys the author takes away */
+                equipment_removed?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                /**
+                 * ProgrammeDerivedFacts
+                 * @description ADR-542: what the draft's WODs give, before the author's choice
+                 */
+                facts?: {
+                    /** @description Most used first, at most 5 */
+                    equipment: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                    minutes_per_session: number | null;
+                };
                 /** @enum {string} */
                 goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
                 /** Format: uuid */
@@ -52563,11 +53202,22 @@ export interface components {
                  * @enum {string}
                  */
                 listing: "box" | "marketplace";
+                /** @description ADR-542: «κύριος εξοπλισμός»: the author's added keys, then the derived ones kept */
+                main_equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                /** @description ADR-542: «περίπου ανά προπόνηση», rounded to 5; null unless every WOD has a duration */
+                minutes_per_session?: number | null;
                 online_payments?: boolean;
                 preview_days: number;
                 price_cents: number;
                 /** Format: date-time */
                 published_at?: string | null;
+                readiness: {
+                    blocking: boolean;
+                    /** @enum {string} */
+                    key: "title" | "price" | "days" | "empty_weeks" | "summary";
+                    /** @description empty_weeks: the weeks (1-based) without a WOD */
+                    weeks: number[];
+                }[];
                 /** @enum {string} */
                 refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
                 /** ProgrammeRating */
@@ -56010,6 +56660,8 @@ export interface components {
             /** WorkoutDslVocabulary */
             vocabulary: {
                 content_markers: string[];
+                /** @description ADR-542: the equipment vocabulary, in display order */
+                equipment_keys: string[];
                 exercise_catalog: {
                     aliases: string[];
                     capabilities: string[];
@@ -56017,6 +56669,10 @@ export interface components {
                     id: string;
                     label: string;
                 }[];
+                /** @description ADR-542: catalogue exercise id => the equipment keys it needs (`none`: nothing); an exercise missing here has unknown equipment */
+                exercise_equipment: {
+                    [key: string]: string[];
+                };
                 exercise_parameters: string[];
                 format_aliases: {
                     [key: string]: unknown;
@@ -56058,6 +56714,8 @@ export interface components {
             /** WorkoutDslVocabulary */
             vocabulary: {
                 content_markers: string[];
+                /** @description ADR-542: the equipment vocabulary, in display order */
+                equipment_keys: string[];
                 exercise_catalog: {
                     aliases: string[];
                     capabilities: string[];
@@ -56065,6 +56723,10 @@ export interface components {
                     id: string;
                     label: string;
                 }[];
+                /** @description ADR-542: catalogue exercise id => the equipment keys it needs (`none`: nothing); an exercise missing here has unknown equipment */
+                exercise_equipment: {
+                    [key: string]: string[];
+                };
                 exercise_parameters: string[];
                 format_aliases: {
                     [key: string]: unknown;
@@ -56120,6 +56782,8 @@ export interface components {
         /** WorkoutDslVocabulary */
         WorkoutDslVocabulary: {
             content_markers: string[];
+            /** @description ADR-542: the equipment vocabulary, in display order */
+            equipment_keys: string[];
             exercise_catalog: {
                 aliases: string[];
                 capabilities: string[];
@@ -56127,6 +56791,10 @@ export interface components {
                 id: string;
                 label: string;
             }[];
+            /** @description ADR-542: catalogue exercise id => the equipment keys it needs (`none`: nothing); an exercise missing here has unknown equipment */
+            exercise_equipment: {
+                [key: string]: string[];
+            };
             exercise_parameters: string[];
             format_aliases: {
                 [key: string]: unknown;
@@ -76136,7 +76804,7 @@ export interface operations {
                             /** @description A tiny blurred WebP data URI to show while the image loads */
                             placeholder?: string | null;
                             /** @enum {string} */
-                            purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "shop_product_photo" | "space_photo";
+                            purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "programme_cover" | "shop_product_photo" | "space_photo";
                             rejection_reason?: string | null;
                             /**
                              * @description Post uploads: pending (not uploaded yet) → processing → ready | rejected (see rejection_reason)
@@ -76215,7 +76883,7 @@ export interface operations {
                             /** @description A tiny blurred WebP data URI to show while the image loads */
                             placeholder?: string | null;
                             /** @enum {string} */
-                            purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "shop_product_photo" | "space_photo";
+                            purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "programme_cover" | "shop_product_photo" | "space_photo";
                             rejection_reason?: string | null;
                             /**
                              * @description Post uploads: pending (not uploaded yet) → processing → ready | rejected (see rejection_reason)
@@ -76298,7 +76966,7 @@ export interface operations {
                             /** @description A tiny blurred WebP data URI to show while the image loads */
                             placeholder?: string | null;
                             /** @enum {string} */
-                            purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "shop_product_photo" | "space_photo";
+                            purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "programme_cover" | "shop_product_photo" | "space_photo";
                             rejection_reason?: string | null;
                             /**
                              * @description Post uploads: pending (not uploaded yet) → processing → ready | rejected (see rejection_reason)
@@ -111096,6 +111764,169 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminProgrammeController.cover_upload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    byte_size: number;
+                    /**
+                     * @description Images are re-encoded in the browser (drops EXIF/GPS) before upload.
+                     * @enum {string}
+                     */
+                    content_type: "image/jpeg" | "image/webp";
+                };
+            };
+        };
+        responses: {
+            /** @description Upload */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        expires_in: number;
+                        max_bytes: number;
+                        /** Format: uuid */
+                        media_id: string;
+                        required_headers: {
+                            [key: string]: string;
+                        };
+                        upload_url: string;
+                    };
+                };
+            };
+            /** @description No such programme, purchase or review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description The programme can't take this step now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid programme */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminProgrammeController.complete_cover": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Media */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Media */
+                        media: {
+                            alt_text?: string | null;
+                            content_type: string;
+                            duration_ms?: number | null;
+                            feed_url?: string | null;
+                            full_url?: string | null;
+                            height: number | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind?: "image" | "video";
+                            /** @description A tiny blurred WebP data URI to show while the image loads */
+                            placeholder?: string | null;
+                            /** @enum {string} */
+                            purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "programme_cover" | "shop_product_photo" | "space_photo";
+                            rejection_reason?: string | null;
+                            /**
+                             * @description Post uploads: pending (not uploaded yet) → processing → ready | rejected (see rejection_reason)
+                             * @enum {string}
+                             */
+                            status: "pending" | "processing" | "ready" | "rejected";
+                            thumb_url?: string | null;
+                            /** @description Stable for public media; presigned and short-lived for private media. A processed upload: its full rendition. */
+                            url: string | null;
+                            video_url?: string | null;
+                            width: number | null;
+                        };
+                    };
+                };
+            };
+            /** @description No such programme, purchase or review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description The programme can't take this step now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid programme */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminProgrammeController.refund": {
         parameters: {
             query?: never;
@@ -111354,6 +112185,31 @@ export interface operations {
                             archived_at?: string | null;
                             /** Format: uuid */
                             author_id?: string | null;
+                            cover?: {
+                                /** @enum {string} */
+                                aspect: "16:9";
+                                edit: {
+                                    brightness?: number;
+                                    /** ProgrammeCoverCrop */
+                                    crop?: {
+                                        height: number;
+                                        width: number;
+                                        x: number;
+                                        y: number;
+                                    };
+                                    /** @enum {integer} */
+                                    rotation?: 0 | 90 | 180 | 270;
+                                    zoom?: number;
+                                } | null;
+                                /** Format: uuid */
+                                media_id: string;
+                                /** Format: uuid */
+                                original_media_id: string;
+                                original_url: string | null;
+                                url: string | null;
+                            } | null;
+                            /** @description ADR-541: the cover; null: the theme strip */
+                            cover_url?: string | null;
                             /** @enum {string} */
                             currency: "EUR" | "GBP" | "USD" | "CHF";
                             /** Format: uuid */
@@ -111366,7 +112222,19 @@ export interface operations {
                                 workout_id: string;
                             }[];
                             draft_weeks: number;
-                            equipment?: string[];
+                            /** @description ADR-542: equipment keys the author adds to the derived «κύριος εξοπλισμός» (shown first) */
+                            equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /** @description ADR-542: derived equipment keys the author takes away */
+                            equipment_removed?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /**
+                             * ProgrammeDerivedFacts
+                             * @description ADR-542: what the draft's WODs give, before the author's choice
+                             */
+                            facts?: {
+                                /** @description Most used first, at most 5 */
+                                equipment: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                                minutes_per_session: number | null;
+                            };
                             /** @enum {string} */
                             goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
                             /** Format: uuid */
@@ -111378,11 +112246,22 @@ export interface operations {
                              * @enum {string}
                              */
                             listing: "box" | "marketplace";
+                            /** @description ADR-542: «κύριος εξοπλισμός»: the author's added keys, then the derived ones kept */
+                            main_equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /** @description ADR-542: «περίπου ανά προπόνηση», rounded to 5; null unless every WOD has a duration */
+                            minutes_per_session?: number | null;
                             online_payments?: boolean;
                             preview_days: number;
                             price_cents: number;
                             /** Format: date-time */
                             published_at?: string | null;
+                            readiness: {
+                                blocking: boolean;
+                                /** @enum {string} */
+                                key: "title" | "price" | "days" | "empty_weeks" | "summary";
+                                /** @description empty_weeks: the weeks (1-based) without a WOD */
+                                weeks: number[];
+                            }[];
                             /** @enum {string} */
                             refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
                             /** ProgrammeRating */
@@ -111475,7 +112354,10 @@ export interface operations {
                         workout_id: string;
                     }[];
                     draft_weeks?: number;
-                    equipment?: string[];
+                    /** @description ADR-542: equipment keys the author adds to the derived «κύριος εξοπλισμός» (shown first) */
+                    equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                    /** @description ADR-542: derived equipment keys the author takes away */
+                    equipment_removed?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
                     /** @enum {string} */
                     goal?: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
                     /** @enum {string} */
@@ -111509,6 +112391,31 @@ export interface operations {
                             archived_at?: string | null;
                             /** Format: uuid */
                             author_id?: string | null;
+                            cover?: {
+                                /** @enum {string} */
+                                aspect: "16:9";
+                                edit: {
+                                    brightness?: number;
+                                    /** ProgrammeCoverCrop */
+                                    crop?: {
+                                        height: number;
+                                        width: number;
+                                        x: number;
+                                        y: number;
+                                    };
+                                    /** @enum {integer} */
+                                    rotation?: 0 | 90 | 180 | 270;
+                                    zoom?: number;
+                                } | null;
+                                /** Format: uuid */
+                                media_id: string;
+                                /** Format: uuid */
+                                original_media_id: string;
+                                original_url: string | null;
+                                url: string | null;
+                            } | null;
+                            /** @description ADR-541: the cover; null: the theme strip */
+                            cover_url?: string | null;
                             /** @enum {string} */
                             currency: "EUR" | "GBP" | "USD" | "CHF";
                             /** Format: uuid */
@@ -111521,7 +112428,19 @@ export interface operations {
                                 workout_id: string;
                             }[];
                             draft_weeks: number;
-                            equipment?: string[];
+                            /** @description ADR-542: equipment keys the author adds to the derived «κύριος εξοπλισμός» (shown first) */
+                            equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /** @description ADR-542: derived equipment keys the author takes away */
+                            equipment_removed?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /**
+                             * ProgrammeDerivedFacts
+                             * @description ADR-542: what the draft's WODs give, before the author's choice
+                             */
+                            facts?: {
+                                /** @description Most used first, at most 5 */
+                                equipment: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                                minutes_per_session: number | null;
+                            };
                             /** @enum {string} */
                             goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
                             /** Format: uuid */
@@ -111533,11 +112452,22 @@ export interface operations {
                              * @enum {string}
                              */
                             listing: "box" | "marketplace";
+                            /** @description ADR-542: «κύριος εξοπλισμός»: the author's added keys, then the derived ones kept */
+                            main_equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /** @description ADR-542: «περίπου ανά προπόνηση», rounded to 5; null unless every WOD has a duration */
+                            minutes_per_session?: number | null;
                             online_payments?: boolean;
                             preview_days: number;
                             price_cents: number;
                             /** Format: date-time */
                             published_at?: string | null;
+                            readiness: {
+                                blocking: boolean;
+                                /** @enum {string} */
+                                key: "title" | "price" | "days" | "empty_weeks" | "summary";
+                                /** @description empty_weeks: the weeks (1-based) without a WOD */
+                                weeks: number[];
+                            }[];
                             /** @enum {string} */
                             refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
                             /** ProgrammeRating */
@@ -111670,6 +112600,31 @@ export interface operations {
                             archived_at?: string | null;
                             /** Format: uuid */
                             author_id?: string | null;
+                            cover?: {
+                                /** @enum {string} */
+                                aspect: "16:9";
+                                edit: {
+                                    brightness?: number;
+                                    /** ProgrammeCoverCrop */
+                                    crop?: {
+                                        height: number;
+                                        width: number;
+                                        x: number;
+                                        y: number;
+                                    };
+                                    /** @enum {integer} */
+                                    rotation?: 0 | 90 | 180 | 270;
+                                    zoom?: number;
+                                } | null;
+                                /** Format: uuid */
+                                media_id: string;
+                                /** Format: uuid */
+                                original_media_id: string;
+                                original_url: string | null;
+                                url: string | null;
+                            } | null;
+                            /** @description ADR-541: the cover; null: the theme strip */
+                            cover_url?: string | null;
                             /** @enum {string} */
                             currency: "EUR" | "GBP" | "USD" | "CHF";
                             /** Format: uuid */
@@ -111682,7 +112637,19 @@ export interface operations {
                                 workout_id: string;
                             }[];
                             draft_weeks: number;
-                            equipment?: string[];
+                            /** @description ADR-542: equipment keys the author adds to the derived «κύριος εξοπλισμός» (shown first) */
+                            equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /** @description ADR-542: derived equipment keys the author takes away */
+                            equipment_removed?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /**
+                             * ProgrammeDerivedFacts
+                             * @description ADR-542: what the draft's WODs give, before the author's choice
+                             */
+                            facts?: {
+                                /** @description Most used first, at most 5 */
+                                equipment: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                                minutes_per_session: number | null;
+                            };
                             /** @enum {string} */
                             goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
                             /** Format: uuid */
@@ -111694,11 +112661,22 @@ export interface operations {
                              * @enum {string}
                              */
                             listing: "box" | "marketplace";
+                            /** @description ADR-542: «κύριος εξοπλισμός»: the author's added keys, then the derived ones kept */
+                            main_equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /** @description ADR-542: «περίπου ανά προπόνηση», rounded to 5; null unless every WOD has a duration */
+                            minutes_per_session?: number | null;
                             online_payments?: boolean;
                             preview_days: number;
                             price_cents: number;
                             /** Format: date-time */
                             published_at?: string | null;
+                            readiness: {
+                                blocking: boolean;
+                                /** @enum {string} */
+                                key: "title" | "price" | "days" | "empty_weeks" | "summary";
+                                /** @description empty_weeks: the weeks (1-based) without a WOD */
+                                weeks: number[];
+                            }[];
                             /** @enum {string} */
                             refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
                             /** ProgrammeRating */
@@ -111829,7 +112807,10 @@ export interface operations {
                         workout_id: string;
                     }[];
                     draft_weeks?: number;
-                    equipment?: string[];
+                    /** @description ADR-542: equipment keys the author adds to the derived «κύριος εξοπλισμός» (shown first) */
+                    equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                    /** @description ADR-542: derived equipment keys the author takes away */
+                    equipment_removed?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
                     /** @enum {string} */
                     goal?: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
                     /** @enum {string} */
@@ -111863,6 +112844,31 @@ export interface operations {
                             archived_at?: string | null;
                             /** Format: uuid */
                             author_id?: string | null;
+                            cover?: {
+                                /** @enum {string} */
+                                aspect: "16:9";
+                                edit: {
+                                    brightness?: number;
+                                    /** ProgrammeCoverCrop */
+                                    crop?: {
+                                        height: number;
+                                        width: number;
+                                        x: number;
+                                        y: number;
+                                    };
+                                    /** @enum {integer} */
+                                    rotation?: 0 | 90 | 180 | 270;
+                                    zoom?: number;
+                                } | null;
+                                /** Format: uuid */
+                                media_id: string;
+                                /** Format: uuid */
+                                original_media_id: string;
+                                original_url: string | null;
+                                url: string | null;
+                            } | null;
+                            /** @description ADR-541: the cover; null: the theme strip */
+                            cover_url?: string | null;
                             /** @enum {string} */
                             currency: "EUR" | "GBP" | "USD" | "CHF";
                             /** Format: uuid */
@@ -111875,7 +112881,19 @@ export interface operations {
                                 workout_id: string;
                             }[];
                             draft_weeks: number;
-                            equipment?: string[];
+                            /** @description ADR-542: equipment keys the author adds to the derived «κύριος εξοπλισμός» (shown first) */
+                            equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /** @description ADR-542: derived equipment keys the author takes away */
+                            equipment_removed?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /**
+                             * ProgrammeDerivedFacts
+                             * @description ADR-542: what the draft's WODs give, before the author's choice
+                             */
+                            facts?: {
+                                /** @description Most used first, at most 5 */
+                                equipment: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                                minutes_per_session: number | null;
+                            };
                             /** @enum {string} */
                             goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
                             /** Format: uuid */
@@ -111887,11 +112905,22 @@ export interface operations {
                              * @enum {string}
                              */
                             listing: "box" | "marketplace";
+                            /** @description ADR-542: «κύριος εξοπλισμός»: the author's added keys, then the derived ones kept */
+                            main_equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /** @description ADR-542: «περίπου ανά προπόνηση», rounded to 5; null unless every WOD has a duration */
+                            minutes_per_session?: number | null;
                             online_payments?: boolean;
                             preview_days: number;
                             price_cents: number;
                             /** Format: date-time */
                             published_at?: string | null;
+                            readiness: {
+                                blocking: boolean;
+                                /** @enum {string} */
+                                key: "title" | "price" | "days" | "empty_weeks" | "summary";
+                                /** @description empty_weeks: the weeks (1-based) without a WOD */
+                                weeks: number[];
+                            }[];
                             /** @enum {string} */
                             refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
                             /** ProgrammeRating */
@@ -112024,6 +113053,31 @@ export interface operations {
                             archived_at?: string | null;
                             /** Format: uuid */
                             author_id?: string | null;
+                            cover?: {
+                                /** @enum {string} */
+                                aspect: "16:9";
+                                edit: {
+                                    brightness?: number;
+                                    /** ProgrammeCoverCrop */
+                                    crop?: {
+                                        height: number;
+                                        width: number;
+                                        x: number;
+                                        y: number;
+                                    };
+                                    /** @enum {integer} */
+                                    rotation?: 0 | 90 | 180 | 270;
+                                    zoom?: number;
+                                } | null;
+                                /** Format: uuid */
+                                media_id: string;
+                                /** Format: uuid */
+                                original_media_id: string;
+                                original_url: string | null;
+                                url: string | null;
+                            } | null;
+                            /** @description ADR-541: the cover; null: the theme strip */
+                            cover_url?: string | null;
                             /** @enum {string} */
                             currency: "EUR" | "GBP" | "USD" | "CHF";
                             /** Format: uuid */
@@ -112036,7 +113090,19 @@ export interface operations {
                                 workout_id: string;
                             }[];
                             draft_weeks: number;
-                            equipment?: string[];
+                            /** @description ADR-542: equipment keys the author adds to the derived «κύριος εξοπλισμός» (shown first) */
+                            equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /** @description ADR-542: derived equipment keys the author takes away */
+                            equipment_removed?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /**
+                             * ProgrammeDerivedFacts
+                             * @description ADR-542: what the draft's WODs give, before the author's choice
+                             */
+                            facts?: {
+                                /** @description Most used first, at most 5 */
+                                equipment: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                                minutes_per_session: number | null;
+                            };
                             /** @enum {string} */
                             goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
                             /** Format: uuid */
@@ -112048,11 +113114,472 @@ export interface operations {
                              * @enum {string}
                              */
                             listing: "box" | "marketplace";
+                            /** @description ADR-542: «κύριος εξοπλισμός»: the author's added keys, then the derived ones kept */
+                            main_equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /** @description ADR-542: «περίπου ανά προπόνηση», rounded to 5; null unless every WOD has a duration */
+                            minutes_per_session?: number | null;
                             online_payments?: boolean;
                             preview_days: number;
                             price_cents: number;
                             /** Format: date-time */
                             published_at?: string | null;
+                            readiness: {
+                                blocking: boolean;
+                                /** @enum {string} */
+                                key: "title" | "price" | "days" | "empty_weeks" | "summary";
+                                /** @description empty_weeks: the weeks (1-based) without a WOD */
+                                weeks: number[];
+                            }[];
+                            /** @enum {string} */
+                            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                            /** ProgrammeRating */
+                            reviews?: {
+                                average: number | null;
+                                count: number;
+                            };
+                            sales?: {
+                                active: number;
+                                buyers: number;
+                                currency?: string | null;
+                                gross_cents?: number | null;
+                                refunded_cents?: number | null;
+                            };
+                            sessions_per_week?: number | null;
+                            /** @enum {string} */
+                            status: "draft" | "published" | "archived";
+                            summary?: string | null;
+                            title: string;
+                            /** ProgrammeVersion */
+                            version?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            };
+                            versions?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            }[];
+                        };
+                    };
+                };
+            };
+            /** @description No such programme, purchase or review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description The programme can't take this step now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid programme */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminProgrammeController.set_cover": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * ProgrammeCoverEdit
+                     * @description ADR-541: how the cover was made from the original; the crop is in fractions of the original after rotation and has the cover's 16:9 aspect
+                     */
+                    edit?: {
+                        brightness?: number;
+                        /** ProgrammeCoverCrop */
+                        crop?: {
+                            height: number;
+                            width: number;
+                            x: number;
+                            y: number;
+                        };
+                        /** @enum {integer} */
+                        rotation?: 0 | 90 | 180 | 270;
+                        zoom?: number;
+                    };
+                    /**
+                     * Format: uuid
+                     * @description The rendered cover (a ready programme_cover upload)
+                     */
+                    media_id: string;
+                    /**
+                     * Format: uuid
+                     * @description The photo it was made from (default: the same upload)
+                     */
+                    original_media_id?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Programme */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** StaffProgramme */
+                        programme: {
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            /** Format: uuid */
+                            author_id?: string | null;
+                            cover?: {
+                                /** @enum {string} */
+                                aspect: "16:9";
+                                edit: {
+                                    brightness?: number;
+                                    /** ProgrammeCoverCrop */
+                                    crop?: {
+                                        height: number;
+                                        width: number;
+                                        x: number;
+                                        y: number;
+                                    };
+                                    /** @enum {integer} */
+                                    rotation?: 0 | 90 | 180 | 270;
+                                    zoom?: number;
+                                } | null;
+                                /** Format: uuid */
+                                media_id: string;
+                                /** Format: uuid */
+                                original_media_id: string;
+                                original_url: string | null;
+                                url: string | null;
+                            } | null;
+                            /** @description ADR-541: the cover; null: the theme strip */
+                            cover_url?: string | null;
+                            /** @enum {string} */
+                            currency: "EUR" | "GBP" | "USD" | "CHF";
+                            /** Format: uuid */
+                            current_version_id?: string | null;
+                            description?: string | null;
+                            draft_days: {
+                                /** @description Day 0 is the start date */
+                                day: number;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                            draft_weeks: number;
+                            /** @description ADR-542: equipment keys the author adds to the derived «κύριος εξοπλισμός» (shown first) */
+                            equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /** @description ADR-542: derived equipment keys the author takes away */
+                            equipment_removed?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /**
+                             * ProgrammeDerivedFacts
+                             * @description ADR-542: what the draft's WODs give, before the author's choice
+                             */
+                            facts?: {
+                                /** @description Most used first, at most 5 */
+                                equipment: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                                minutes_per_session: number | null;
+                            };
+                            /** @enum {string} */
+                            goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            level: "all" | "beginner" | "intermediate" | "advanced";
+                            /**
+                             * @description box: the box's own page; marketplace: also the cross-business catalogue
+                             * @enum {string}
+                             */
+                            listing: "box" | "marketplace";
+                            /** @description ADR-542: «κύριος εξοπλισμός»: the author's added keys, then the derived ones kept */
+                            main_equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /** @description ADR-542: «περίπου ανά προπόνηση», rounded to 5; null unless every WOD has a duration */
+                            minutes_per_session?: number | null;
+                            online_payments?: boolean;
+                            preview_days: number;
+                            price_cents: number;
+                            /** Format: date-time */
+                            published_at?: string | null;
+                            readiness: {
+                                blocking: boolean;
+                                /** @enum {string} */
+                                key: "title" | "price" | "days" | "empty_weeks" | "summary";
+                                /** @description empty_weeks: the weeks (1-based) without a WOD */
+                                weeks: number[];
+                            }[];
+                            /** @enum {string} */
+                            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                            /** ProgrammeRating */
+                            reviews?: {
+                                average: number | null;
+                                count: number;
+                            };
+                            sales?: {
+                                active: number;
+                                buyers: number;
+                                currency?: string | null;
+                                gross_cents?: number | null;
+                                refunded_cents?: number | null;
+                            };
+                            sessions_per_week?: number | null;
+                            /** @enum {string} */
+                            status: "draft" | "published" | "archived";
+                            summary?: string | null;
+                            title: string;
+                            /** ProgrammeVersion */
+                            version?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            };
+                            versions?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            }[];
+                        };
+                    };
+                };
+            };
+            /** @description No such programme, purchase or review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description The programme can't take this step now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid programme */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminProgrammeController.remove_cover": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Programme */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** StaffProgramme */
+                        programme: {
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            /** Format: uuid */
+                            author_id?: string | null;
+                            cover?: {
+                                /** @enum {string} */
+                                aspect: "16:9";
+                                edit: {
+                                    brightness?: number;
+                                    /** ProgrammeCoverCrop */
+                                    crop?: {
+                                        height: number;
+                                        width: number;
+                                        x: number;
+                                        y: number;
+                                    };
+                                    /** @enum {integer} */
+                                    rotation?: 0 | 90 | 180 | 270;
+                                    zoom?: number;
+                                } | null;
+                                /** Format: uuid */
+                                media_id: string;
+                                /** Format: uuid */
+                                original_media_id: string;
+                                original_url: string | null;
+                                url: string | null;
+                            } | null;
+                            /** @description ADR-541: the cover; null: the theme strip */
+                            cover_url?: string | null;
+                            /** @enum {string} */
+                            currency: "EUR" | "GBP" | "USD" | "CHF";
+                            /** Format: uuid */
+                            current_version_id?: string | null;
+                            description?: string | null;
+                            draft_days: {
+                                /** @description Day 0 is the start date */
+                                day: number;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                            draft_weeks: number;
+                            /** @description ADR-542: equipment keys the author adds to the derived «κύριος εξοπλισμός» (shown first) */
+                            equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /** @description ADR-542: derived equipment keys the author takes away */
+                            equipment_removed?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /**
+                             * ProgrammeDerivedFacts
+                             * @description ADR-542: what the draft's WODs give, before the author's choice
+                             */
+                            facts?: {
+                                /** @description Most used first, at most 5 */
+                                equipment: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                                minutes_per_session: number | null;
+                            };
+                            /** @enum {string} */
+                            goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            level: "all" | "beginner" | "intermediate" | "advanced";
+                            /**
+                             * @description box: the box's own page; marketplace: also the cross-business catalogue
+                             * @enum {string}
+                             */
+                            listing: "box" | "marketplace";
+                            /** @description ADR-542: «κύριος εξοπλισμός»: the author's added keys, then the derived ones kept */
+                            main_equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /** @description ADR-542: «περίπου ανά προπόνηση», rounded to 5; null unless every WOD has a duration */
+                            minutes_per_session?: number | null;
+                            online_payments?: boolean;
+                            preview_days: number;
+                            price_cents: number;
+                            /** Format: date-time */
+                            published_at?: string | null;
+                            readiness: {
+                                blocking: boolean;
+                                /** @enum {string} */
+                                key: "title" | "price" | "days" | "empty_weeks" | "summary";
+                                /** @description empty_weeks: the weeks (1-based) without a WOD */
+                                weeks: number[];
+                            }[];
                             /** @enum {string} */
                             refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
                             /** ProgrammeRating */
@@ -112191,6 +113718,31 @@ export interface operations {
                             archived_at?: string | null;
                             /** Format: uuid */
                             author_id?: string | null;
+                            cover?: {
+                                /** @enum {string} */
+                                aspect: "16:9";
+                                edit: {
+                                    brightness?: number;
+                                    /** ProgrammeCoverCrop */
+                                    crop?: {
+                                        height: number;
+                                        width: number;
+                                        x: number;
+                                        y: number;
+                                    };
+                                    /** @enum {integer} */
+                                    rotation?: 0 | 90 | 180 | 270;
+                                    zoom?: number;
+                                } | null;
+                                /** Format: uuid */
+                                media_id: string;
+                                /** Format: uuid */
+                                original_media_id: string;
+                                original_url: string | null;
+                                url: string | null;
+                            } | null;
+                            /** @description ADR-541: the cover; null: the theme strip */
+                            cover_url?: string | null;
                             /** @enum {string} */
                             currency: "EUR" | "GBP" | "USD" | "CHF";
                             /** Format: uuid */
@@ -112203,7 +113755,19 @@ export interface operations {
                                 workout_id: string;
                             }[];
                             draft_weeks: number;
-                            equipment?: string[];
+                            /** @description ADR-542: equipment keys the author adds to the derived «κύριος εξοπλισμός» (shown first) */
+                            equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /** @description ADR-542: derived equipment keys the author takes away */
+                            equipment_removed?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /**
+                             * ProgrammeDerivedFacts
+                             * @description ADR-542: what the draft's WODs give, before the author's choice
+                             */
+                            facts?: {
+                                /** @description Most used first, at most 5 */
+                                equipment: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                                minutes_per_session: number | null;
+                            };
                             /** @enum {string} */
                             goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
                             /** Format: uuid */
@@ -112215,11 +113779,22 @@ export interface operations {
                              * @enum {string}
                              */
                             listing: "box" | "marketplace";
+                            /** @description ADR-542: «κύριος εξοπλισμός»: the author's added keys, then the derived ones kept */
+                            main_equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /** @description ADR-542: «περίπου ανά προπόνηση», rounded to 5; null unless every WOD has a duration */
+                            minutes_per_session?: number | null;
                             online_payments?: boolean;
                             preview_days: number;
                             price_cents: number;
                             /** Format: date-time */
                             published_at?: string | null;
+                            readiness: {
+                                blocking: boolean;
+                                /** @enum {string} */
+                                key: "title" | "price" | "days" | "empty_weeks" | "summary";
+                                /** @description empty_weeks: the weeks (1-based) without a WOD */
+                                weeks: number[];
+                            }[];
                             /** @enum {string} */
                             refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
                             /** ProgrammeRating */
@@ -112487,6 +114062,31 @@ export interface operations {
                             archived_at?: string | null;
                             /** Format: uuid */
                             author_id?: string | null;
+                            cover?: {
+                                /** @enum {string} */
+                                aspect: "16:9";
+                                edit: {
+                                    brightness?: number;
+                                    /** ProgrammeCoverCrop */
+                                    crop?: {
+                                        height: number;
+                                        width: number;
+                                        x: number;
+                                        y: number;
+                                    };
+                                    /** @enum {integer} */
+                                    rotation?: 0 | 90 | 180 | 270;
+                                    zoom?: number;
+                                } | null;
+                                /** Format: uuid */
+                                media_id: string;
+                                /** Format: uuid */
+                                original_media_id: string;
+                                original_url: string | null;
+                                url: string | null;
+                            } | null;
+                            /** @description ADR-541: the cover; null: the theme strip */
+                            cover_url?: string | null;
                             /** @enum {string} */
                             currency: "EUR" | "GBP" | "USD" | "CHF";
                             /** Format: uuid */
@@ -112499,7 +114099,19 @@ export interface operations {
                                 workout_id: string;
                             }[];
                             draft_weeks: number;
-                            equipment?: string[];
+                            /** @description ADR-542: equipment keys the author adds to the derived «κύριος εξοπλισμός» (shown first) */
+                            equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /** @description ADR-542: derived equipment keys the author takes away */
+                            equipment_removed?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /**
+                             * ProgrammeDerivedFacts
+                             * @description ADR-542: what the draft's WODs give, before the author's choice
+                             */
+                            facts?: {
+                                /** @description Most used first, at most 5 */
+                                equipment: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                                minutes_per_session: number | null;
+                            };
                             /** @enum {string} */
                             goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
                             /** Format: uuid */
@@ -112511,11 +114123,22 @@ export interface operations {
                              * @enum {string}
                              */
                             listing: "box" | "marketplace";
+                            /** @description ADR-542: «κύριος εξοπλισμός»: the author's added keys, then the derived ones kept */
+                            main_equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /** @description ADR-542: «περίπου ανά προπόνηση», rounded to 5; null unless every WOD has a duration */
+                            minutes_per_session?: number | null;
                             online_payments?: boolean;
                             preview_days: number;
                             price_cents: number;
                             /** Format: date-time */
                             published_at?: string | null;
+                            readiness: {
+                                blocking: boolean;
+                                /** @enum {string} */
+                                key: "title" | "price" | "days" | "empty_weeks" | "summary";
+                                /** @description empty_weeks: the weeks (1-based) without a WOD */
+                                weeks: number[];
+                            }[];
                             /** @enum {string} */
                             refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
                             /** ProgrammeRating */
@@ -112752,7 +114375,7 @@ export interface operations {
                                 /** @description A tiny blurred WebP data URI to show while the image loads */
                                 placeholder?: string | null;
                                 /** @enum {string} */
-                                purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "shop_product_photo" | "space_photo";
+                                purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "programme_cover" | "shop_product_photo" | "space_photo";
                                 rejection_reason?: string | null;
                                 /**
                                  * @description Post uploads: pending (not uploaded yet) → processing → ready | rejected (see rejection_reason)
@@ -112786,7 +114409,7 @@ export interface operations {
                                 /** @description A tiny blurred WebP data URI to show while the image loads */
                                 placeholder?: string | null;
                                 /** @enum {string} */
-                                purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "shop_product_photo" | "space_photo";
+                                purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "programme_cover" | "shop_product_photo" | "space_photo";
                                 rejection_reason?: string | null;
                                 /**
                                  * @description Post uploads: pending (not uploaded yet) → processing → ready | rejected (see rejection_reason)
@@ -112882,7 +114505,7 @@ export interface operations {
                                 /** @description A tiny blurred WebP data URI to show while the image loads */
                                 placeholder?: string | null;
                                 /** @enum {string} */
-                                purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "shop_product_photo" | "space_photo";
+                                purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "programme_cover" | "shop_product_photo" | "space_photo";
                                 rejection_reason?: string | null;
                                 /**
                                  * @description Post uploads: pending (not uploaded yet) → processing → ready | rejected (see rejection_reason)
@@ -112916,7 +114539,7 @@ export interface operations {
                                 /** @description A tiny blurred WebP data URI to show while the image loads */
                                 placeholder?: string | null;
                                 /** @enum {string} */
-                                purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "shop_product_photo" | "space_photo";
+                                purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "programme_cover" | "shop_product_photo" | "space_photo";
                                 rejection_reason?: string | null;
                                 /**
                                  * @description Post uploads: pending (not uploaded yet) → processing → ready | rejected (see rejection_reason)
@@ -113034,7 +114657,7 @@ export interface operations {
                             /** @description A tiny blurred WebP data URI to show while the image loads */
                             placeholder?: string | null;
                             /** @enum {string} */
-                            purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "shop_product_photo" | "space_photo";
+                            purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "programme_cover" | "shop_product_photo" | "space_photo";
                             rejection_reason?: string | null;
                             /**
                              * @description Post uploads: pending (not uploaded yet) → processing → ready | rejected (see rejection_reason)
@@ -113109,7 +114732,7 @@ export interface operations {
                                 /** @description A tiny blurred WebP data URI to show while the image loads */
                                 placeholder?: string | null;
                                 /** @enum {string} */
-                                purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "shop_product_photo" | "space_photo";
+                                purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "programme_cover" | "shop_product_photo" | "space_photo";
                                 rejection_reason?: string | null;
                                 /**
                                  * @description Post uploads: pending (not uploaded yet) → processing → ready | rejected (see rejection_reason)
@@ -113143,7 +114766,7 @@ export interface operations {
                                 /** @description A tiny blurred WebP data URI to show while the image loads */
                                 placeholder?: string | null;
                                 /** @enum {string} */
-                                purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "shop_product_photo" | "space_photo";
+                                purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "programme_cover" | "shop_product_photo" | "space_photo";
                                 rejection_reason?: string | null;
                                 /**
                                  * @description Post uploads: pending (not uploaded yet) → processing → ready | rejected (see rejection_reason)
@@ -113288,7 +114911,7 @@ export interface operations {
                                 /** @description A tiny blurred WebP data URI to show while the image loads */
                                 placeholder?: string | null;
                                 /** @enum {string} */
-                                purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "shop_product_photo" | "space_photo";
+                                purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "programme_cover" | "shop_product_photo" | "space_photo";
                                 rejection_reason?: string | null;
                                 /**
                                  * @description Post uploads: pending (not uploaded yet) → processing → ready | rejected (see rejection_reason)
@@ -113322,7 +114945,7 @@ export interface operations {
                                 /** @description A tiny blurred WebP data URI to show while the image loads */
                                 placeholder?: string | null;
                                 /** @enum {string} */
-                                purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "shop_product_photo" | "space_photo";
+                                purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "programme_cover" | "shop_product_photo" | "space_photo";
                                 rejection_reason?: string | null;
                                 /**
                                  * @description Post uploads: pending (not uploaded yet) → processing → ready | rejected (see rejection_reason)
@@ -119124,12 +120747,18 @@ export interface operations {
                             currency: string | null;
                             /** Format: uuid */
                             id: string;
+                            level: string | null;
                             price_cents: number | null;
+                            rating_average: number | null;
+                            rating_count: number;
+                            sessions_per_week: number | null;
                             summary: string | null;
                             title: string;
                             url: string | null;
                             weeks: number | null;
                         }[];
+                        /** @description How many programmes the box sells (ADR-543), for «Όλα τα προγράμματα (N)» */
+                        programmes_total: number;
                         /** @description Palee's address for reporting content on the site (ADR-397, DSA Art. 16) */
                         report_contact: string | null;
                         /** SiteReviews */
@@ -122764,6 +124393,8 @@ export interface operations {
                         /** WorkoutDslVocabulary */
                         vocabulary: {
                             content_markers: string[];
+                            /** @description ADR-542: the equipment vocabulary, in display order */
+                            equipment_keys: string[];
                             exercise_catalog: {
                                 aliases: string[];
                                 capabilities: string[];
@@ -122771,6 +124402,10 @@ export interface operations {
                                 id: string;
                                 label: string;
                             }[];
+                            /** @description ADR-542: catalogue exercise id => the equipment keys it needs (`none`: nothing); an exercise missing here has unknown equipment */
+                            exercise_equipment: {
+                                [key: string]: string[];
+                            };
                             exercise_parameters: string[];
                             format_aliases: {
                                 [key: string]: unknown;
@@ -122832,6 +124467,8 @@ export interface operations {
                         /** WorkoutDslVocabulary */
                         vocabulary: {
                             content_markers: string[];
+                            /** @description ADR-542: the equipment vocabulary, in display order */
+                            equipment_keys: string[];
                             exercise_catalog: {
                                 aliases: string[];
                                 capabilities: string[];
@@ -122839,6 +124476,10 @@ export interface operations {
                                 id: string;
                                 label: string;
                             }[];
+                            /** @description ADR-542: catalogue exercise id => the equipment keys it needs (`none`: nothing); an exercise missing here has unknown equipment */
+                            exercise_equipment: {
+                                [key: string]: string[];
+                            };
                             exercise_parameters: string[];
                             format_aliases: {
                                 [key: string]: unknown;
@@ -136455,6 +138096,411 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.MyProgrammeController.days": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Days */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * ProgrammeBehindDay
+                         * @description «Έμεινε πίσω»: the earliest behind day, or null
+                         */
+                        behind: {
+                            /** @description False when moving would end the programme after latest_end */
+                            can_do_today: boolean;
+                            can_skip: boolean;
+                            /** Format: date */
+                            date: string;
+                            day: number;
+                            week: number;
+                            weekday: number;
+                        } | null;
+                        days: {
+                            /** Format: date */
+                            date: string;
+                            /** @description 0-based day of the programme */
+                            day: number;
+                            /** @enum {string} */
+                            status: "done" | "skipped" | "behind" | "today" | "upcoming" | "rest";
+                            week: number;
+                            /** @description 0..6 within its week */
+                            weekday: number;
+                            workouts: {
+                                /**
+                                 * Format: uuid
+                                 * @description The buyer's assigned workout (open it to start); null if none
+                                 */
+                                assigned_workout_id: string | null;
+                                done: boolean;
+                                summary: string | null;
+                                title: string | null;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                        }[];
+                        /**
+                         * Format: date
+                         * @description Follows the moved days
+                         */
+                        ends_on: string;
+                        /**
+                         * Format: date
+                         * @description The cap: moves never end it later
+                         */
+                        latest_end: string;
+                        /**
+                         * Format: date
+                         * @description The end it was sold with (refunds count on it)
+                         */
+                        planned_ends_on: string;
+                        /** ProgrammePurchaseProgress */
+                        progress: {
+                            behind: number;
+                            done: number;
+                            /** @description Not done and not skipped */
+                            remaining: number;
+                            skipped: number;
+                            /** @description Training days */
+                            total: number;
+                        };
+                        /** Format: uuid */
+                        purchase_id: string;
+                        /** Format: date */
+                        starts_on: string;
+                        /**
+                         * Format: date
+                         * @description The seller's today
+                         */
+                        today: string;
+                        weeks: number;
+                    };
+                };
+            };
+            /** @description No such programme or purchase */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Not possible now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid request */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyProgrammeController.do_today": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    day: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Days */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * ProgrammeBehindDay
+                         * @description «Έμεινε πίσω»: the earliest behind day, or null
+                         */
+                        behind: {
+                            /** @description False when moving would end the programme after latest_end */
+                            can_do_today: boolean;
+                            can_skip: boolean;
+                            /** Format: date */
+                            date: string;
+                            day: number;
+                            week: number;
+                            weekday: number;
+                        } | null;
+                        days: {
+                            /** Format: date */
+                            date: string;
+                            /** @description 0-based day of the programme */
+                            day: number;
+                            /** @enum {string} */
+                            status: "done" | "skipped" | "behind" | "today" | "upcoming" | "rest";
+                            week: number;
+                            /** @description 0..6 within its week */
+                            weekday: number;
+                            workouts: {
+                                /**
+                                 * Format: uuid
+                                 * @description The buyer's assigned workout (open it to start); null if none
+                                 */
+                                assigned_workout_id: string | null;
+                                done: boolean;
+                                summary: string | null;
+                                title: string | null;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                        }[];
+                        /**
+                         * Format: date
+                         * @description Follows the moved days
+                         */
+                        ends_on: string;
+                        /**
+                         * Format: date
+                         * @description The cap: moves never end it later
+                         */
+                        latest_end: string;
+                        /**
+                         * Format: date
+                         * @description The end it was sold with (refunds count on it)
+                         */
+                        planned_ends_on: string;
+                        /** ProgrammePurchaseProgress */
+                        progress: {
+                            behind: number;
+                            done: number;
+                            /** @description Not done and not skipped */
+                            remaining: number;
+                            skipped: number;
+                            /** @description Training days */
+                            total: number;
+                        };
+                        /** Format: uuid */
+                        purchase_id: string;
+                        /** Format: date */
+                        starts_on: string;
+                        /**
+                         * Format: date
+                         * @description The seller's today
+                         */
+                        today: string;
+                        weeks: number;
+                    };
+                };
+            };
+            /** @description No such programme or purchase */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Not possible now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid request */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyProgrammeController.skip_day": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    day: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Days */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * ProgrammeBehindDay
+                         * @description «Έμεινε πίσω»: the earliest behind day, or null
+                         */
+                        behind: {
+                            /** @description False when moving would end the programme after latest_end */
+                            can_do_today: boolean;
+                            can_skip: boolean;
+                            /** Format: date */
+                            date: string;
+                            day: number;
+                            week: number;
+                            weekday: number;
+                        } | null;
+                        days: {
+                            /** Format: date */
+                            date: string;
+                            /** @description 0-based day of the programme */
+                            day: number;
+                            /** @enum {string} */
+                            status: "done" | "skipped" | "behind" | "today" | "upcoming" | "rest";
+                            week: number;
+                            /** @description 0..6 within its week */
+                            weekday: number;
+                            workouts: {
+                                /**
+                                 * Format: uuid
+                                 * @description The buyer's assigned workout (open it to start); null if none
+                                 */
+                                assigned_workout_id: string | null;
+                                done: boolean;
+                                summary: string | null;
+                                title: string | null;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                        }[];
+                        /**
+                         * Format: date
+                         * @description Follows the moved days
+                         */
+                        ends_on: string;
+                        /**
+                         * Format: date
+                         * @description The cap: moves never end it later
+                         */
+                        latest_end: string;
+                        /**
+                         * Format: date
+                         * @description The end it was sold with (refunds count on it)
+                         */
+                        planned_ends_on: string;
+                        /** ProgrammePurchaseProgress */
+                        progress: {
+                            behind: number;
+                            done: number;
+                            /** @description Not done and not skipped */
+                            remaining: number;
+                            skipped: number;
+                            /** @description Training days */
+                            total: number;
+                        };
+                        /** Format: uuid */
+                        purchase_id: string;
+                        /** Format: date */
+                        starts_on: string;
+                        /**
+                         * Format: date
+                         * @description The seller's today
+                         */
+                        today: string;
+                        weeks: number;
+                    };
+                };
+            };
+            /** @description No such programme or purchase */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Not possible now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid request */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.MyProgrammeController.review": {
         parameters: {
             query?: never;
@@ -136793,6 +138839,10 @@ export interface operations {
                         owned?: string | null;
                         /** PublicProgramme */
                         programme: {
+                            /** @description The author's public name; null once the account is deleted */
+                            coach_name?: string | null;
+                            /** @description ADR-541: null shows the theme strip */
+                            cover_url?: string | null;
                             currency: string;
                             description?: string | null;
                             equipment?: string[];
@@ -136820,6 +138870,10 @@ export interface operations {
                             }[];
                             level: string;
                             listing?: string;
+                            /** @description ADR-542: «κύριος εξοπλισμός»: the author's added keys, then the derived ones kept */
+                            main_equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /** @description ADR-542: «περίπου ανά προπόνηση», rounded to 5; null unless every WOD has a duration */
+                            minutes_per_session?: number | null;
                             preview?: {
                                 day: number;
                                 summary?: string | null;
@@ -136843,6 +138897,20 @@ export interface operations {
                             title: string;
                             version_number?: number | null;
                             week_outline?: {
+                                /** @description The week's seven days (weekday 0 is the weekday of the start date) */
+                                days: {
+                                    /** @description Day 0 is the start date */
+                                    day: number;
+                                    /** @description Approximate minutes (rounded to 5); null when a WOD has no duration */
+                                    minutes: number | null;
+                                    /** @description One of the free preview days */
+                                    preview: boolean;
+                                    /** @description No WOD that day */
+                                    rest: boolean;
+                                    weekday: number;
+                                    /** @description The WOD's workout type (ADR-275 key); null when not set or a rest day */
+                                    workout_type: string | null;
+                                }[];
                                 sessions: number;
                                 week: number;
                             }[];
@@ -141593,7 +143661,7 @@ export interface operations {
                             /** @description A tiny blurred WebP data URI to show while the image loads */
                             placeholder?: string | null;
                             /** @enum {string} */
-                            purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "shop_product_photo" | "space_photo";
+                            purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "programme_cover" | "shop_product_photo" | "space_photo";
                             rejection_reason?: string | null;
                             /**
                              * @description Post uploads: pending (not uploaded yet) → processing → ready | rejected (see rejection_reason)
@@ -144073,7 +146141,7 @@ export interface operations {
                             /** @description A tiny blurred WebP data URI to show while the image loads */
                             placeholder?: string | null;
                             /** @enum {string} */
-                            purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "shop_product_photo" | "space_photo";
+                            purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "programme_cover" | "shop_product_photo" | "space_photo";
                             rejection_reason?: string | null;
                             /**
                              * @description Post uploads: pending (not uploaded yet) → processing → ready | rejected (see rejection_reason)
@@ -144360,7 +146428,7 @@ export interface operations {
                             /** @description A tiny blurred WebP data URI to show while the image loads */
                             placeholder?: string | null;
                             /** @enum {string} */
-                            purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "shop_product_photo" | "space_photo";
+                            purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "programme_cover" | "shop_product_photo" | "space_photo";
                             rejection_reason?: string | null;
                             /**
                              * @description Post uploads: pending (not uploaded yet) → processing → ready | rejected (see rejection_reason)
@@ -147577,7 +149645,7 @@ export interface operations {
                             /** @description A tiny blurred WebP data URI to show while the image loads */
                             placeholder?: string | null;
                             /** @enum {string} */
-                            purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "shop_product_photo" | "space_photo";
+                            purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "programme_cover" | "shop_product_photo" | "space_photo";
                             rejection_reason?: string | null;
                             /**
                              * @description Post uploads: pending (not uploaded yet) → processing → ready | rejected (see rejection_reason)
@@ -149451,7 +151519,7 @@ export interface operations {
                             /** @description A tiny blurred WebP data URI to show while the image loads */
                             placeholder?: string | null;
                             /** @enum {string} */
-                            purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "shop_product_photo" | "space_photo";
+                            purpose: "body_photo" | "box_photo" | "cleaning_photo" | "floor_plan" | "machine_photo" | "meal_photo" | "post_photo" | "post_video" | "programme_cover" | "shop_product_photo" | "space_photo";
                             rejection_reason?: string | null;
                             /**
                              * @description Post uploads: pending (not uploaded yet) → processing → ready | rejected (see rejection_reason)
@@ -161422,6 +163490,10 @@ export interface operations {
                             [key: string]: unknown;
                         };
                         programmes: {
+                            /** @description The author's public name; null once the account is deleted */
+                            coach_name?: string | null;
+                            /** @description ADR-541: null shows the theme strip */
+                            cover_url?: string | null;
                             currency: string;
                             description?: string | null;
                             equipment?: string[];
@@ -161449,6 +163521,10 @@ export interface operations {
                             }[];
                             level: string;
                             listing?: string;
+                            /** @description ADR-542: «κύριος εξοπλισμός»: the author's added keys, then the derived ones kept */
+                            main_equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /** @description ADR-542: «περίπου ανά προπόνηση», rounded to 5; null unless every WOD has a duration */
+                            minutes_per_session?: number | null;
                             preview?: {
                                 day: number;
                                 summary?: string | null;
@@ -161472,6 +163548,20 @@ export interface operations {
                             title: string;
                             version_number?: number | null;
                             week_outline?: {
+                                /** @description The week's seven days (weekday 0 is the weekday of the start date) */
+                                days: {
+                                    /** @description Day 0 is the start date */
+                                    day: number;
+                                    /** @description Approximate minutes (rounded to 5); null when a WOD has no duration */
+                                    minutes: number | null;
+                                    /** @description One of the free preview days */
+                                    preview: boolean;
+                                    /** @description No WOD that day */
+                                    rest: boolean;
+                                    weekday: number;
+                                    /** @description The WOD's workout type (ADR-275 key); null when not set or a rest day */
+                                    workout_type: string | null;
+                                }[];
                                 sessions: number;
                                 week: number;
                             }[];
@@ -161519,6 +163609,10 @@ export interface operations {
                         };
                         /** PublicProgramme */
                         programme: {
+                            /** @description The author's public name; null once the account is deleted */
+                            coach_name?: string | null;
+                            /** @description ADR-541: null shows the theme strip */
+                            cover_url?: string | null;
                             currency: string;
                             description?: string | null;
                             equipment?: string[];
@@ -161546,6 +163640,10 @@ export interface operations {
                             }[];
                             level: string;
                             listing?: string;
+                            /** @description ADR-542: «κύριος εξοπλισμός»: the author's added keys, then the derived ones kept */
+                            main_equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /** @description ADR-542: «περίπου ανά προπόνηση», rounded to 5; null unless every WOD has a duration */
+                            minutes_per_session?: number | null;
                             preview?: {
                                 day: number;
                                 summary?: string | null;
@@ -161569,6 +163667,20 @@ export interface operations {
                             title: string;
                             version_number?: number | null;
                             week_outline?: {
+                                /** @description The week's seven days (weekday 0 is the weekday of the start date) */
+                                days: {
+                                    /** @description Day 0 is the start date */
+                                    day: number;
+                                    /** @description Approximate minutes (rounded to 5); null when a WOD has no duration */
+                                    minutes: number | null;
+                                    /** @description One of the free preview days */
+                                    preview: boolean;
+                                    /** @description No WOD that day */
+                                    rest: boolean;
+                                    weekday: number;
+                                    /** @description The WOD's workout type (ADR-275 key); null when not set or a rest day */
+                                    workout_type: string | null;
+                                }[];
                                 sessions: number;
                                 week: number;
                             }[];
@@ -161896,12 +164008,17 @@ export interface operations {
                         limit: number;
                         offset: number;
                         programmes: {
+                            cover_url?: string | null;
                             currency: string;
                             equipment?: string[];
                             goal?: string;
                             /** Format: uuid */
                             id: string;
                             level?: string;
+                            /** @description ADR-542: «κύριος εξοπλισμός»: the author's added keys, then the derived ones kept */
+                            main_equipment?: ("none" | "barbell" | "dumbbell" | "kettlebell" | "bench" | "box" | "pull_up_bar" | "rings" | "dip_bars" | "climbing_rope" | "ghd" | "jump_rope" | "wall_ball" | "sled" | "rower" | "bike" | "air_bike" | "ski_erg" | "pool" | "band" | "foam_roller")[];
+                            /** @description ADR-542: «περίπου ανά προπόνηση», rounded to 5; null unless every WOD has a duration */
+                            minutes_per_session?: number | null;
                             /** Format: uuid */
                             organization_id?: string;
                             organization_name: string;
@@ -162221,12 +164338,18 @@ export interface operations {
                             currency: string | null;
                             /** Format: uuid */
                             id: string;
+                            level: string | null;
                             price_cents: number | null;
+                            rating_average: number | null;
+                            rating_count: number;
+                            sessions_per_week: number | null;
                             summary: string | null;
                             title: string;
                             url: string | null;
                             weeks: number | null;
                         }[];
+                        /** @description How many programmes the box sells (ADR-543), for «Όλα τα προγράμματα (N)» */
+                        programmes_total: number;
                         /** @description Palee's address for reporting content on the site (ADR-397, DSA Art. 16) */
                         report_contact: string | null;
                         /** SiteReviews */

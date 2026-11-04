@@ -391,7 +391,12 @@ defmodule PaleeWeb.ProgrammesControllerTest do
     assert %{completed: 0, cancelled: 0} = Sweep.sweep(ctx.context, now)
 
     yesterday = Date.add(Organizations.local_today(ctx.organization.id, now), -1)
-    set_purchase(ctx, purchase_id, ends_on: yesterday, starts_on: Date.add(yesterday, -13))
+
+    set_purchase(ctx, purchase_id,
+      ends_on: yesterday,
+      planned_ends_on: yesterday,
+      starts_on: Date.add(yesterday, -13)
+    )
 
     assert %{completed: 1} = Sweep.sweep(ctx.context, now)
     assert purchase_status(ctx, purchase_id) == "completed"

@@ -49,7 +49,7 @@ export type SitePhoto = { id: string; url: string; width: number | null; height:
 export type SitePhotos = { items: SitePhoto[]; video: { url: string; poster_url: string | null } | null };
 /** Aggregates only; a null or zero number is not shown. */
 export type SiteStats = { classes_per_week: number | null; prs_this_year: number | null; years_open: number | null };
-export type SiteProgramme = { id: string; title: string; summary: string | null; weeks: number | null; price_cents: number | null; currency: string | null; cover_url: string | null; url: string | null };
+export type SiteProgramme = { id: string; title: string; summary: string | null; weeks: number | null; price_cents: number | null; currency: string | null; cover_url: string | null; url: string | null; sessions_per_week: number | null; level: string | null; rating_average: number | null; rating_count: number };
 export type PublicSiteV2 = PublicSite & SiteLook & { photos: SitePhotos; stats: SiteStats | null; programmes: SiteProgramme[]; phone?: string | null };
 /** The fields that go live only with «Δημοσίευση». */
 export type SiteDraft = Partial<SiteLook & Pick<SiteSettings, "hidden_sections" | "public_schedule" | "public_wod">>;

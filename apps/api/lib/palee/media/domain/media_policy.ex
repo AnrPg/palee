@@ -47,6 +47,18 @@ defmodule Palee.Media.Domain.MediaPolicy do
       types: @client_image_types,
       max_bytes: 8 * @mb
     },
+    # ADR-541: a programme's cover (the rendered cover and its original),
+    # public like product photos: the programme page and the box website
+    # show it to visitors.
+    "programme_cover" => %{
+      scope: :tenant,
+      bucket: :media_public,
+      folder: "media/public/programmes",
+      kind: "image",
+      processing: :inspect,
+      types: @client_image_types,
+      max_bytes: 8 * @mb
+    },
     # ADR-202: a branch's floor plan, drawn on by staff. Re-encoded in the
     # browser and inspected like box photos, but private: only staff of the
     # gym see it, through signed URLs.

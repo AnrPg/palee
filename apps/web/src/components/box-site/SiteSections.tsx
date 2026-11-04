@@ -16,6 +16,7 @@ import { FRESHNESS } from "@/lib/query-policy";
 import { formatCents } from "@/lib/solo-coach";
 
 import { useSiteConsent } from "./SiteConsent";
+import { SiteProgrammesSection } from "./SiteProgrammes";
 
 const ABOUT_PARTS: Partial<Record<SiteSection, AboutPart>> = { about: "about", coaches: "coaches", location: "location" };
 
@@ -57,6 +58,8 @@ export function SiteSections({
         return <WodSection key={key} site={site} />;
       case "packages":
         return <PackagesSection key={key} site={site} basePath={basePath} />;
+      case "programmes":
+        return <SiteProgrammesSection key={key} site={site} />;
       case "reviews":
         return <ReviewsSection key={key} site={site} boxName={page.box.name} />;
       case "faq":

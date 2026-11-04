@@ -785,6 +785,10 @@ defmodule PaleeWeb.Router do
     get("/programme-purchases/:id", MyProgrammeController, :show)
     post("/programme-purchases/:id/withdraw", MyProgrammeController, :withdraw)
     post("/programme-purchases/:id/review", MyProgrammeController, :review)
+    # ADR-540: «Η μέρα μου» and «Έμεινε πίσω».
+    get("/programme-purchases/:id/days", MyProgrammeController, :days)
+    post("/programme-purchases/:id/days/do-today", MyProgrammeController, :do_today)
+    post("/programme-purchases/:id/days/skip", MyProgrammeController, :skip_day)
     post("/shop/orders/:id/pay-online", MyPaymentsController, :pay_shop_order)
     # ADR-252: Box › Documents (sign, certificates, health certificate).
     get("/documents", MyDocumentsController, :index)
@@ -1507,6 +1511,11 @@ defmodule PaleeWeb.Router do
     get("/programmes/:id/reviews", AdminProgrammeController, :reviews)
     post("/programme-purchases/:id/refund", AdminProgrammeController, :refund)
     post("/programme-reviews/:id/moderate", AdminProgrammeController, :moderate_review)
+    # ADR-541: the cover photo (upload, then set with its edit).
+    post("/programme-covers", AdminProgrammeController, :cover_upload)
+    post("/programme-covers/:id/complete", AdminProgrammeController, :complete_cover)
+    put("/programmes/:id/cover", AdminProgrammeController, :set_cover)
+    delete("/programmes/:id/cover", AdminProgrammeController, :remove_cover)
     # ADR-191: partner perks.
     get("/perks", AdminPerkController, :index)
     post("/perks", AdminPerkController, :create)

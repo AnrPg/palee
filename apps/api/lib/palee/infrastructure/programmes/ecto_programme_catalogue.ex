@@ -10,7 +10,8 @@ defmodule Palee.Infrastructure.Programmes.EctoProgrammeCatalogue do
 
   @columns ~w(id organization_id organization_slug organization_name title summary level goal
               equipment sessions_per_week price_cents currency weeks version_number
-              rating_average rating_count published_at)a
+              rating_average rating_count published_at equipment_removed facts
+              cover_object_key)a
 
   @impl true
   def search(filters) do

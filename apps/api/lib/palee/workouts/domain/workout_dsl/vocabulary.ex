@@ -421,6 +421,9 @@ defmodule Palee.Workouts.Domain.WorkoutDsl.Vocabulary do
         Map.new(@section_formats, fn format ->
           {format, suggestions(:section, format)}
         end),
+      # ADR-542: what each catalogue exercise needs (unknown ones are absent).
+      equipment_keys: Palee.Workouts.Domain.ExerciseEquipment.keys(),
+      exercise_equipment: Palee.Workouts.Domain.ExerciseEquipment.export(),
       exercise_catalog: ExerciseCatalog.export()
     }
   end

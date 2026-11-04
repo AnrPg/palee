@@ -155,7 +155,8 @@ defmodule Palee.Application.Programmes.Buying do
         Enum.map(version.days, fn row ->
           %{
             day: row["day"],
-            date: Date.add(purchase.starts_on, row["day"]),
+            # ADR-540: the buyer's moved date when they caught up on it.
+            date: Programmes.purchase_day_date(purchase, row["day"]),
             workout_id: row["workout_id"],
             title: row["title"],
             summary: row["summary"]

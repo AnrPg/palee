@@ -16,9 +16,13 @@ defmodule Palee.Programmes do
   """
 
   alias Palee.Programmes.Domain.{
+    ProgrammeCover,
+    ProgrammeFacts,
     ProgrammePolicy,
+    ProgrammeReadiness,
     ProgrammeSchedule,
     PurchaseLifecycle,
+    PurchaseSchedule,
     RefundRules,
     ReviewPolicy,
     TenantDataPolicy
@@ -26,7 +30,10 @@ defmodule Palee.Programmes do
 
   alias Palee.Programmes.ProgrammeStore
 
+  defdelegate transaction(context, fun), to: ProgrammeStore
   defdelegate create_programme(context, attrs), to: ProgrammeStore
+  defdelegate set_cover(context, programme, changes), to: ProgrammeStore
+  defdelegate cover_in_use?(context, media_ids, except_id), to: ProgrammeStore
   defdelegate update_programme(context, programme, attrs), to: ProgrammeStore
   defdelegate get_programme(context, id), to: ProgrammeStore
   defdelegate list_programmes(context, filters \\ %{}), to: ProgrammeStore
@@ -44,6 +51,8 @@ defmodule Palee.Programmes do
   defdelegate record_deliveries(context, purchase_id, user_id, rows), to: ProgrammeStore
   defdelegate deliveries(context, purchase_id, from \\ nil), to: ProgrammeStore
   defdelegate delete_deliveries(context, purchase_id, from), to: ProgrammeStore
+  defdelegate move_deliveries(context, purchase_id, moves), to: ProgrammeStore
+  defdelegate update_schedule(context, purchase_id, decide), to: ProgrammeStore
   defdelegate get_review(context, id), to: ProgrammeStore
   defdelegate review_for_purchase(context, purchase_id), to: ProgrammeStore
   defdelegate list_reviews(context, programme_id, filters \\ %{}), to: ProgrammeStore
@@ -125,6 +134,30 @@ defmodule Palee.Programmes do
   defdelegate check_staff_refund(purchase, amount_cents), to: RefundRules, as: :check_staff_amount
   defdelegate schedule(days, starts_on, from), to: ProgrammeSchedule, as: :dates
   defdelegate hide_reasons(), to: ReviewPolicy
+
+  # ADR-540: the buyer's days.
+  defdelegate purchase_days(version, purchase, done, today), to: PurchaseSchedule, as: :days
+  defdelegate purchase_day_date(purchase, day), to: PurchaseSchedule, as: :date_of
+  defdelegate purchase_progress(days), to: PurchaseSchedule, as: :progress
+  defdelegate next_behind(days), to: PurchaseSchedule
+  defdelegate latest_end(purchase, weeks), to: PurchaseSchedule
+  defdelegate do_today(days, purchase, day, today), to: PurchaseSchedule
+  defdelegate can_do_today?(days, purchase, day, today), to: PurchaseSchedule
+  defdelegate skip_day(days, purchase, day), to: PurchaseSchedule, as: :skip
+  defdelegate day_statuses(), to: PurchaseSchedule, as: :statuses
+
+  # ADR-541: the cover.
+  defdelegate normalize_cover_edit(edit), to: ProgrammeCover, as: :normalize_edit
+  defdelegate check_cover_size(rendered, original, edit), to: ProgrammeCover, as: :check_size
+  defdelegate cover_aspect(), to: ProgrammeCover, as: :aspect
+
+  # ADR-542: equipment and minutes per session.
+  defdelegate derive_facts(days, workouts, order), to: ProgrammeFacts, as: :derive
+  defdelegate effective_equipment(derived, added, removed), to: ProgrammeFacts
+  defdelegate check_equipment(added, removed, vocabulary), to: ProgrammeFacts, as: :check_lists
+
+  # ADR-544: what the draft still lacks.
+  defdelegate readiness(programme), to: ProgrammeReadiness, as: :check
 
   # Tenant data lifecycle (ADR-117).
   def tenant_data_policy, do: TenantDataPolicy.policy()

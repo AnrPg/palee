@@ -3,8 +3,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { useId, useState } from "react";
+import { useId, useMemo, useState } from "react";
 
+import { doProgrammeDayToday, fetchProgrammeDays, programmeDaysKey, skipProgrammeDay } from "@/api/programme-days";
 import {
   fetchMyProgramme,
   fetchMyProgrammes,
@@ -21,9 +22,12 @@ import { BackLink } from "@/components/ui/BackLink";
 import { Dialog } from "@/components/ui/Dialog";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { useOrganizationSlug, useOrganizationTimeZone } from "@/lib/organization-slug";
+import { FRESHNESS } from "@/lib/query-policy";
 import { dateKeyInZone } from "@/lib/zoned-time";
 
+import { readDays } from "./programme-day-model";
 import { programmeDayOf, programmeProgress, utcDay } from "./programme-grid";
+import { ProgrammeDayBoard } from "./ProgrammeDayBoard";
 import { programmeMoney, useProgrammeError } from "./programme-ui";
 
 function useToday() {
@@ -82,7 +86,10 @@ export function MyProgrammesCard() {
   );
 }
 
-/** «Λεπτομέρειες» (s6, B as the details page): the dated WODs, «Υπαναχώρηση» with its amount first, the review. */
+/**
+ * A bought programme (board 3κ/3μ A): «Η μέρα μου» with the days left
+ * behind (ADR-540), then the review and «Υπαναχώρηση» with its amount first.
+ */
 export function MyProgrammePage({ id }: { id: string }) {
   const t = useTranslations("Programmes");
   const locale = useLocale();
@@ -102,35 +109,25 @@ export function MyProgrammePage({ id }: { id: string }) {
   if (!purchase.data) return <Page>{back}<ErrorNotice>{purchase.error ? programmeError(purchase.error) : t("notFound")}</ErrorNotice></Page>;
 
   const data = purchase.data;
-  const progress = programmeProgress(data.starts_on, data.ends_on, today);
-  const date = (iso: string) =>
-    new Intl.DateTimeFormat(locale, { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" }).format(utcDay(iso));
-  const upcoming = (data.days ?? []).filter((day) => day.date >= today).slice(0, 14);
+  const dated = typeof data.starts_on === "string" && typeof data.ends_on === "string";
+  const progress = dated ? programmeProgress(data.starts_on, data.ends_on, today) : null;
+  const state = typeof data.status === "string" && PURCHASE_STATES.has(data.status) ? t(`purchaseState.${data.status}`) : null;
 
   return (
     <Page>
       {back}
       <header>
-        <h1 className="text-2xl font-extrabold" style={{ color: "var(--text)" }}>{data.title ?? t("title")}</h1>
+        <h1 className="text-2xl font-extrabold lg:text-3xl" style={{ color: "var(--text)" }}>{data.title ?? t("title")}</h1>
         <p className="text-sm" style={{ color: "var(--muted)" }}>
-          {[t(`purchaseState.${data.status}`), t("daysProgress", { done: progress.done, total: progress.total }), data.version_number ? t("versionShort", { number: data.version_number }) : null]
-            .filter(Boolean)
-            .join(" · ")}
+          {[state, data.version_number ? t("versionShort", { number: data.version_number }) : null].filter(Boolean).join(" · ")}
         </p>
       </header>
 
-      <section className="rounded-3xl p-4" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
-        <h2 className="text-base font-bold" style={{ color: "var(--text)" }}>{t("nextWods")}</h2>
-        {upcoming.length === 0 ? <p className="mt-2 text-sm" style={{ color: "var(--dim)" }}>{t("noNextWods")}</p> : null}
-        <ul className="mt-2 flex flex-col divide-y" style={{ borderColor: "var(--border)" }}>
-          {upcoming.map((day) => (
-            <li key={`${day.date}-${day.workout_id}`} className="flex items-center gap-3 py-2" style={{ borderColor: "var(--border)" }}>
-              <span className="w-24 shrink-0 text-xs" style={{ color: "var(--dim)" }}>{date(day.date)}</span>
-              <span className="min-w-0 flex-1 truncate text-sm font-semibold" style={{ color: "var(--text)" }}>{day.title ?? t("unknownWod")}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
+      {DAY_PURCHASE_STATES.has(data.status) && slug ? (
+        <PurchaseDays slug={slug} token={token!} purchaseId={id} />
+      ) : progress ? (
+        <p className="text-sm" style={{ color: "var(--muted)" }}>{t("daysProgress", { done: progress.done, total: progress.total })}</p>
+      ) : null}
 
       {data.starts_on <= today && (data.status === "active" || data.status === "completed") && slug ? (
         <ReviewCard purchase={data} slug={slug} token={token!} />
@@ -161,7 +158,48 @@ export function MyProgrammePage({ id }: { id: string }) {
 }
 
 function Page({ children }: { children: React.ReactNode }) {
-  return <main className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-4 pb-10 pt-4" data-testid="my-programme">{children}</main>;
+  return <main className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-4 pb-10 pt-4 lg:max-w-6xl lg:px-6" data-testid="my-programme">{children}</main>;
+}
+
+const PURCHASE_STATES = new Set(["pending_payment", "waiting", "active", "completed", "withdrawn", "refunded", "cancelled"]);
+
+/** The purchases that have days to show (ADR-540). */
+const DAY_PURCHASE_STATES = new Set(["waiting", "active", "completed"]);
+
+/** The days of a purchase with «Κάν' τη σήμερα» and «Παράλειψη»; both refresh the days and the box's day. */
+function PurchaseDays({ slug, token, purchaseId }: { slug: string; token: string; purchaseId: string }) {
+  const t = useTranslations("Programmes");
+  const queryClient = useQueryClient();
+  const programmeError = useProgrammeError();
+  const days = useQuery({
+    queryKey: programmeDaysKey(slug, purchaseId),
+    queryFn: () => fetchProgrammeDays(token, slug, purchaseId),
+    staleTime: FRESHNESS.live,
+  });
+  const act = useMutation({
+    mutationFn: ({ action, day }: { action: "today" | "skip"; day: number }) =>
+      action === "today" ? doProgrammeDayToday(token, slug, purchaseId, day) : skipProgrammeDay(token, slug, purchaseId, day),
+    onSuccess: async (data) => {
+      queryClient.setQueryData(programmeDaysKey(slug, purchaseId), data);
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: programmeDaysKey(slug, purchaseId) }),
+        queryClient.invalidateQueries({ queryKey: myProgrammesKey(slug) }),
+        queryClient.invalidateQueries({ queryKey: ["box", "assignments"] }),
+      ]);
+    },
+  });
+  const view = useMemo(() => readDays(days.data), [days.data]);
+
+  if (days.isPending) return <p className="text-sm" style={{ color: "var(--dim)" }}>{t("loading")}</p>;
+  if (days.isError) return <ErrorNotice>{programmeError(days.error)}</ErrorNotice>;
+  return (
+    <ProgrammeDayBoard
+      view={view}
+      pending={act.isPending}
+      error={act.isError ? programmeError(act.error) : null}
+      onAction={(action, day) => act.mutate({ action, day })}
+    />
+  );
 }
 
 function WithdrawDialog({ purchase, slug, token, onClose }: { purchase: ProgrammePurchase; slug: string; token: string; onClose: () => void }) {

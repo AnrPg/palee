@@ -609,6 +609,10 @@ defmodule PaleeWeb.Schemas.BoxSite do
           items: site_programme(),
           description: "«Προγράμματα» for sale (ADR-530 §3); empty while there is none"
         },
+        programmes_total: %{
+          @int
+          | description: "How many programmes the box sells (ADR-543), for «Όλα τα προγράμματα (N)»"
+        },
         events: %Schema{type: :array, items: BoxReviews.site_event()},
         wod: %Schema{type: :array, items: BoxReviews.site_wod()},
         tracking: %Schema{
@@ -659,6 +663,7 @@ defmodule PaleeWeb.Schemas.BoxSite do
         :phone,
         :photos,
         :programmes,
+        :programmes_total,
         :report_contact,
         :reviews,
         :sections,
@@ -749,9 +754,26 @@ defmodule PaleeWeb.Schemas.BoxSite do
         price_cents: @nullable_int,
         currency: @text,
         cover_url: @text,
+        sessions_per_week: @nullable_int,
+        level: @text,
+        rating_average: %Schema{type: :number, nullable: true},
+        rating_count: @int,
         url: @text
       },
-      required: [:cover_url, :currency, :id, :price_cents, :summary, :title, :url, :weeks]
+      required: [
+        :cover_url,
+        :currency,
+        :id,
+        :level,
+        :price_cents,
+        :rating_average,
+        :rating_count,
+        :sessions_per_week,
+        :summary,
+        :title,
+        :url,
+        :weeks
+      ]
     }
   end
 

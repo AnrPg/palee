@@ -13,10 +13,18 @@ defmodule Palee.Programmes.Ports.ProgrammeStore do
   @type id :: Ecto.UUID.t()
   @type decide :: (map() -> {:ok, map()} | {:error, term()})
 
+  @doc "Runs `fun` (`{:ok, value} | {:error, reason}`) in one transaction."
+  @callback transaction(context(), (-> {:ok, term()} | {:error, term()})) ::
+              {:ok, term()} | {:error, term()}
+
   # Programmes
   @callback create_programme(context(), map()) :: {:ok, map()} | {:error, term()}
   @callback update_programme(context(), map(), map()) :: {:ok, map()} | {:error, term()}
   @callback set_state(context(), map(), map()) :: {:ok, map()} | {:error, term()}
+  @doc "ADR-541: sets or clears the cover fields."
+  @callback set_cover(context(), map(), map()) :: {:ok, map()} | {:error, term()}
+  @doc "ADR-541: whether a programme other than `except_id` shows one of `media_ids`."
+  @callback cover_in_use?(context(), [id()], id()) :: boolean()
   @callback get_programme(context(), id()) :: map() | nil
   @callback list_programmes(context(), map()) :: [map()]
   @doc "Inserts the next version and points the programme at it, in one transaction."
@@ -33,6 +41,8 @@ defmodule Palee.Programmes.Ports.ProgrammeStore do
   @callback open_purchase(context(), id(), id()) :: map() | nil
   @callback set_purchase_intent(context(), id(), id()) :: {:ok, map()} | {:error, term()}
   @callback update_purchase(context(), id(), decide()) :: {:ok, map()} | {:error, term()}
+  @doc "ADR-540: like `update_purchase/3` for the buyer's moves and skips."
+  @callback update_schedule(context(), id(), decide()) :: {:ok, map()} | {:error, term()}
   @callback list_purchases(context(), map()) :: [map()]
   @doc "Active purchases whose last day is before `today`."
   @callback due_completions(context(), Date.t()) :: [map()]
@@ -42,6 +52,8 @@ defmodule Palee.Programmes.Ports.ProgrammeStore do
   @callback record_deliveries(context(), id(), id(), [map()]) :: :ok
   @callback deliveries(context(), id(), Date.t() | nil) :: [map()]
   @callback delete_deliveries(context(), id(), Date.t()) :: non_neg_integer()
+  @doc "ADR-540: moves delivery rows (`[{delivery_id, date}]`) of a purchase."
+  @callback move_deliveries(context(), id(), [{id(), Date.t()}]) :: :ok
 
   # Reviews
   @callback save_review(context(), map(), map()) :: {:ok, map()} | {:error, term()}

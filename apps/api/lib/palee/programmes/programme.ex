@@ -14,8 +14,9 @@ defmodule Palee.Programmes.Programme do
 
   @type t :: %__MODULE__{}
 
-  @editable ~w(title summary description level goal equipment sessions_per_week price_cents
-               currency listing preview_days refund_policy draft_weeks draft_days)a
+  @editable ~w(title summary description level goal equipment equipment_removed
+               sessions_per_week price_cents currency listing preview_days refund_policy
+               draft_weeks draft_days)a
 
   schema "programmes" do
     field :organization_id, :binary_id, read_after_writes: true
@@ -25,7 +26,10 @@ defmodule Palee.Programmes.Programme do
     field :description, :string
     field :level, :string, default: "all"
     field :goal, :string, default: "general"
+    # ADR-542: the equipment keys the author added, and the derived ones
+    # the author removed.
     field :equipment, {:array, :string}, default: []
+    field :equipment_removed, {:array, :string}, default: []
     field :sessions_per_week, :integer
     field :price_cents, :integer, default: 0
     field :currency, :string, default: "EUR"
@@ -39,6 +43,10 @@ defmodule Palee.Programmes.Programme do
     field :published_at, :utc_datetime_usec
     field :archived_at, :utc_datetime_usec
     field :updated_by_id, :binary_id
+    # ADR-541: the rendered cover, the photo it was made from and the edit.
+    field :cover_media_id, :binary_id
+    field :cover_original_media_id, :binary_id
+    field :cover_edit, :map
 
     timestamps(type: :utc_datetime_usec)
   end
@@ -56,6 +64,13 @@ defmodule Palee.Programmes.Programme do
     programme
     |> cast(attrs, [:updated_by_id | @editable])
     |> validate()
+  end
+
+  @doc "ADR-541: sets or removes the cover (already checked by the use case)."
+  def cover_changeset(programme, changes) do
+    programme
+    |> cast(changes, [:cover_media_id, :cover_original_media_id, :cover_edit, :updated_by_id])
+    |> check_constraint(:cover_media_id, name: :programmes_cover_check)
   end
 
   @doc "Lifecycle and version changes the domain already allowed."
@@ -95,6 +110,7 @@ defmodule Palee.Programmes.Programme do
     )
     |> validate_number(:sessions_per_week, greater_than_or_equal_to: 1, less_than_or_equal_to: 14)
     |> validate_length(:equipment, max: 30)
+    |> validate_length(:equipment_removed, max: 30)
     |> validate_number(:draft_weeks,
       greater_than_or_equal_to: 1,
       less_than_or_equal_to: ProgrammePolicy.max_weeks()

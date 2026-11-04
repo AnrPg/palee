@@ -52,6 +52,17 @@ defmodule PaleeWeb.Schemas.Programmes do
     }
   end
 
+  defp equipment_key,
+    do: %Schema{
+      title: "EquipmentKey",
+      type: :string,
+      enum: Palee.Workouts.equipment_keys(),
+      description: "ADR-542: an equipment key (labels: web messages `Equipment.<key>`)"
+    }
+
+  defp equipment_list(description),
+    do: %Schema{type: :array, items: equipment_key(), description: description}
+
   def programme_input(required \\ []) do
     %Schema{
       title: "ProgrammeInput",
@@ -62,7 +73,20 @@ defmodule PaleeWeb.Schemas.Programmes do
         description: %Schema{type: :string, maxLength: 10_000, nullable: true},
         level: %Schema{type: :string, enum: Programmes.levels()},
         goal: %Schema{type: :string, enum: Programmes.goals()},
-        equipment: %Schema{type: :array, items: %Schema{type: :string}, maxItems: 30},
+        equipment: %Schema{
+          type: :array,
+          items: equipment_key(),
+          maxItems: 10,
+          description:
+            "ADR-542: equipment keys the author adds to the derived «κύριος εξοπλισμός» " <>
+              "(shown first)"
+        },
+        equipment_removed: %Schema{
+          type: :array,
+          items: equipment_key(),
+          maxItems: 30,
+          description: "ADR-542: derived equipment keys the author takes away"
+        },
         sessions_per_week: %Schema{type: :integer, minimum: 1, maximum: 14, nullable: true},
         price_cents: %Schema{type: :integer, minimum: 0, maximum: 10_000_000},
         currency: %Schema{type: :string, enum: ~w(EUR GBP USD CHF)},
@@ -152,9 +176,115 @@ defmodule PaleeWeb.Schemas.Programmes do
           reviews: rating(),
           versions: %Schema{type: :array, items: version()},
           version: version(),
-          online_payments: %Schema{type: :boolean}
+          online_payments: %Schema{type: :boolean},
+          readiness: %Schema{type: :array, items: readiness_item()},
+          cover_url: %{@maybe_string | description: "ADR-541: the cover; null: the theme strip"},
+          cover: %Schema{allOf: [cover()], nullable: true},
+          facts: %Schema{
+            title: "ProgrammeDerivedFacts",
+            type: :object,
+            description: "ADR-542: what the draft's WODs give, before the author's choice",
+            properties: %{
+              equipment: equipment_list("Most used first, at most 5"),
+              minutes_per_session: @maybe_int
+            },
+            required: [:equipment, :minutes_per_session]
+          },
+          main_equipment: main_equipment(),
+          minutes_per_session: minutes_per_session()
         }),
-      required: @staff_required
+      required: @staff_required ++ [:readiness]
+    }
+  end
+
+  defp main_equipment,
+    do:
+      equipment_list(
+        "ADR-542: «κύριος εξοπλισμός»: the author's added keys, then the derived ones kept"
+      )
+
+  defp minutes_per_session,
+    do: %Schema{
+      type: :integer,
+      nullable: true,
+      description:
+        "ADR-542: «περίπου ανά προπόνηση», rounded to 5; null unless every WOD has a duration"
+    }
+
+  defp readiness_item do
+    %Schema{
+      title: "ProgrammeReadinessItem",
+      type: :object,
+      description:
+        "ADR-544: what the draft lacks («Λείπουν N πράγματα»); blocking items stop «Δημοσίευση»",
+      properties: %{
+        key: %Schema{type: :string, enum: ~w(title price days empty_weeks summary)},
+        blocking: %Schema{type: :boolean},
+        weeks: %Schema{
+          type: :array,
+          items: @int,
+          description: "empty_weeks: the weeks (1-based) without a WOD"
+        }
+      },
+      required: [:blocking, :key, :weeks]
+    }
+  end
+
+  defp cover_edit do
+    %Schema{
+      title: "ProgrammeCoverEdit",
+      type: :object,
+      description:
+        "ADR-541: how the cover was made from the original; the crop is in fractions of the " <>
+          "original after rotation and has the cover's 16:9 aspect",
+      properties: %{
+        rotation: %Schema{type: :integer, enum: [0, 90, 180, 270]},
+        zoom: %Schema{type: :number, minimum: 1, maximum: 4},
+        brightness: %Schema{type: :number, minimum: 0.5, maximum: 1.5},
+        crop: %Schema{
+          title: "ProgrammeCoverCrop",
+          type: :object,
+          properties: %{
+            x: %Schema{type: :number, minimum: 0, maximum: 1},
+            y: %Schema{type: :number, minimum: 0, maximum: 1},
+            width: %Schema{type: :number, minimum: 0, maximum: 1},
+            height: %Schema{type: :number, minimum: 0, maximum: 1}
+          },
+          required: [:height, :width, :x, :y]
+        }
+      }
+    }
+  end
+
+  def cover do
+    %Schema{
+      title: "ProgrammeCover",
+      type: :object,
+      properties: %{
+        media_id: @uuid,
+        url: @maybe_string,
+        original_media_id: @uuid,
+        original_url: @maybe_string,
+        edit: %Schema{allOf: [cover_edit()], nullable: true},
+        aspect: %Schema{type: :string, enum: ["16:9"]}
+      },
+      required: [:aspect, :edit, :media_id, :original_media_id, :original_url, :url]
+    }
+  end
+
+  def cover_input do
+    %Schema{
+      title: "ProgrammeCoverInput",
+      type: :object,
+      properties: %{
+        media_id: %{@uuid | description: "The rendered cover (a ready programme_cover upload)"},
+        original_media_id: %{
+          @uuid
+          | description: "The photo it was made from (default: the same upload)"
+        },
+        edit: cover_edit()
+      },
+      required: [:media_id]
     }
   end
 
@@ -269,6 +399,111 @@ defmodule PaleeWeb.Schemas.Programmes do
       type: :object,
       properties: %{purchase: purchase()},
       required: [:purchase]
+    }
+
+  # ── The buyer's days (ADR-540) ──────────────────────────────────────────
+
+  defp buyer_day do
+    %Schema{
+      title: "ProgrammeBuyerDay",
+      type: :object,
+      properties: %{
+        day: %Schema{type: :integer, description: "0-based day of the programme"},
+        week: @int,
+        weekday: %Schema{type: :integer, description: "0..6 within its week"},
+        date: @date,
+        status: %Schema{type: :string, enum: Programmes.day_statuses()},
+        workouts: %Schema{
+          type: :array,
+          items: %Schema{
+            title: "ProgrammeBuyerDayWorkout",
+            type: :object,
+            properties: %{
+              workout_id: @uuid,
+              title: @maybe_string,
+              summary: @maybe_string,
+              assigned_workout_id: %{
+                @maybe_uuid
+                | description: "The buyer's assigned workout (open it to start); null if none"
+              },
+              done: %Schema{type: :boolean}
+            },
+            required: [:assigned_workout_id, :done, :summary, :title, :workout_id]
+          }
+        }
+      },
+      required: [:date, :day, :status, :week, :weekday, :workouts]
+    }
+  end
+
+  def purchase_days_response do
+    %Schema{
+      title: "ProgrammePurchaseDays",
+      type: :object,
+      description:
+        "ADR-540: a bought programme as a sequence of days; a training day not done by its " <>
+          "date is behind until the buyer does it today or skips it",
+      properties: %{
+        purchase_id: @uuid,
+        today: %{@date | description: "The seller's today"},
+        starts_on: @date,
+        ends_on: %{@date | description: "Follows the moved days"},
+        planned_ends_on: %{@date | description: "The end it was sold with (refunds count on it)"},
+        latest_end: %{@date | description: "The cap: moves never end it later"},
+        weeks: @int,
+        progress: %Schema{
+          title: "ProgrammePurchaseProgress",
+          type: :object,
+          properties: %{
+            total: %Schema{type: :integer, description: "Training days"},
+            done: @int,
+            skipped: @int,
+            behind: @int,
+            remaining: %Schema{type: :integer, description: "Not done and not skipped"}
+          },
+          required: [:behind, :done, :remaining, :skipped, :total]
+        },
+        behind: %Schema{
+          title: "ProgrammeBehindDay",
+          type: :object,
+          nullable: true,
+          description: "«Έμεινε πίσω»: the earliest behind day, or null",
+          properties: %{
+            day: @int,
+            week: @int,
+            weekday: @int,
+            date: @date,
+            can_do_today: %Schema{
+              type: :boolean,
+              description: "False when moving would end the programme after latest_end"
+            },
+            can_skip: %Schema{type: :boolean}
+          },
+          required: [:can_do_today, :can_skip, :date, :day, :week, :weekday]
+        },
+        days: %Schema{type: :array, items: buyer_day()}
+      },
+      required: [
+        :behind,
+        :days,
+        :ends_on,
+        :latest_end,
+        :planned_ends_on,
+        :progress,
+        :purchase_id,
+        :starts_on,
+        :today,
+        :weeks
+      ]
+    }
+  end
+
+  def day_action_input,
+    do: %Schema{
+      title: "ProgrammeDayActionInput",
+      type: :object,
+      properties: %{day: %Schema{type: :integer, minimum: 0, maximum: 363}},
+      required: [:day]
     }
 
   def refund_input,
@@ -402,14 +637,55 @@ defmodule PaleeWeb.Schemas.Programmes do
         week_outline: %Schema{
           type: :array,
           items: %Schema{
+            title: "ProgrammeOutlineWeek",
             type: :object,
-            properties: %{week: @int, sessions: @int},
-            required: [:sessions, :week]
+            properties: %{
+              week: @int,
+              sessions: @int,
+              days: %Schema{
+                type: :array,
+                description: "The week's seven days (weekday 0 is the weekday of the start date)",
+                items: outline_day()
+              }
+            },
+            required: [:days, :sessions, :week]
           }
         },
-        latest_reviews: %Schema{type: :array, items: review()}
+        coach_name: %{
+          @maybe_string
+          | description: "The author's public name; null once the account is deleted"
+        },
+        latest_reviews: %Schema{type: :array, items: review()},
+        cover_url: %{@maybe_string | description: "ADR-541: null shows the theme strip"},
+        main_equipment: main_equipment(),
+        minutes_per_session: minutes_per_session()
       },
       required: [:currency, :goal, :id, :level, :price_cents, :title]
+    }
+  end
+
+  defp outline_day do
+    %Schema{
+      title: "ProgrammeOutlineDay",
+      type: :object,
+      description:
+        "A day of the programme as the public page shows it: never the WOD itself " <>
+          "(preview days show theirs in `preview`)",
+      properties: %{
+        day: %Schema{type: :integer, description: "Day 0 is the start date"},
+        weekday: %Schema{type: :integer, minimum: 0, maximum: 6},
+        rest: %Schema{type: :boolean, description: "No WOD that day"},
+        workout_type: %{
+          @maybe_string
+          | description: "The WOD's workout type (ADR-275 key); null when not set or a rest day"
+        },
+        minutes: %{
+          @maybe_int
+          | description: "Approximate minutes (rounded to 5); null when a WOD has no duration"
+        },
+        preview: %Schema{type: :boolean, description: "One of the free preview days"}
+      },
+      required: [:day, :weekday, :rest, :workout_type, :minutes, :preview]
     }
   end
 
@@ -500,7 +776,10 @@ defmodule PaleeWeb.Schemas.Programmes do
         version_number: @int,
         rating_average: %Schema{type: :number, nullable: true},
         rating_count: @int,
-        published_at: @maybe_datetime
+        published_at: @maybe_datetime,
+        cover_url: @maybe_string,
+        main_equipment: main_equipment(),
+        minutes_per_session: minutes_per_session()
       },
       required: [
         :currency,

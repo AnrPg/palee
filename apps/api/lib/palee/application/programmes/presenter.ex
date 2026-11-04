@@ -10,10 +10,18 @@ defmodule Palee.Application.Programmes.Presenter do
 
   @staff_fields @public_fields ++
                   ~w(status draft_weeks draft_days current_version_id archived_at author_id
-                     inserted_at updated_at)a
+                     inserted_at updated_at equipment_removed)a
 
-  def staff(programme, extra \\ %{}),
-    do: programme |> Map.take(@staff_fields) |> Map.merge(extra)
+  @doc """
+  The staff view: with `readiness` (ADR-544, what the draft still lacks)
+  always; `extra` adds the cover, facts, sales…
+  """
+  def staff(programme, extra \\ %{}) do
+    programme
+    |> Map.take(@staff_fields)
+    |> Map.put(:readiness, Palee.Programmes.readiness(programme))
+    |> Map.merge(extra)
+  end
 
   def public(programme, version, extra \\ %{}) do
     programme

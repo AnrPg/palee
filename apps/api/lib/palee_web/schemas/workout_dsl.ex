@@ -160,6 +160,18 @@ defmodule PaleeWeb.Schemas.WorkoutDsl do
         section_parameters: %Schema{
           type: :object,
           additionalProperties: string_array()
+        },
+        equipment_keys: %Schema{
+          type: :array,
+          items: %Schema{type: :string},
+          description: "ADR-542: the equipment vocabulary, in display order"
+        },
+        exercise_equipment: %Schema{
+          type: :object,
+          additionalProperties: string_array(),
+          description:
+            "ADR-542: catalogue exercise id => the equipment keys it needs (`none`: nothing); " <>
+              "an exercise missing here has unknown equipment"
         }
       },
       required: [
@@ -174,7 +186,9 @@ defmodule PaleeWeb.Schemas.WorkoutDsl do
         :header_parameters,
         :content_markers,
         :section_parameters,
-        :exercise_catalog
+        :exercise_catalog,
+        :equipment_keys,
+        :exercise_equipment
       ],
       additionalProperties: false
     }

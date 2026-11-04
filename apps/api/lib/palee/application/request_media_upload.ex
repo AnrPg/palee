@@ -81,6 +81,13 @@ defmodule Palee.Application.RequestMediaUpload do
       else: {:error, :forbidden}
   end
 
+  # ADR-541: programme covers, by whoever writes programmes.
+  defp authorize(context, "programme_cover") do
+    if Organizations.can?(context, :manage_workouts),
+      do: :ok,
+      else: {:error, :forbidden}
+  end
+
   # ADR-202: floor plans, by staff who manage the gym's spaces.
   defp authorize(context, "floor_plan") do
     if Organizations.can?(context, :manage_spaces),

@@ -114,6 +114,8 @@ defmodule Palee.Application.BoxSite.PublicSite do
       photos: %{items: if("photos" in sections, do: photos, else: []), video: nil},
       stats: if("stats" in sections, do: stats, else: nil),
       programmes: if("programmes" in sections, do: programmes, else: []),
+      programmes_total:
+        if("programmes" in sections, do: SiteProgrammes.total(context), else: 0),
       events:
         if("events" in sections,
           do:

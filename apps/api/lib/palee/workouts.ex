@@ -196,6 +196,9 @@ defmodule Palee.Workouts do
     as: :for_scale
 
   def supported_workout_types, do: WorkoutType.values()
+
+  @doc "The workout kinds (ADR-275), as strings."
+  def workout_type_keys, do: WorkoutType.keys()
   def authoring_modes, do: Palee.Workouts.MasterWorkout.authoring_modes()
   def parse_dsl(source), do: WorkoutDsl.parse(source)
   def normalize_timer_config(config), do: TimerConfig.normalize(config)
@@ -375,6 +378,33 @@ defmodule Palee.Workouts do
 
   defp section_value(section, key),
     do: Map.get(section, key) || Map.get(section, Atom.to_string(key))
+
+  # ADR-542: the equipment vocabulary of the canonical exercise catalogue.
+  defdelegate equipment_keys(), to: Palee.Workouts.Domain.ExerciseEquipment, as: :keys
+  defdelegate equipment_key?(key), to: Palee.Workouts.Domain.ExerciseEquipment, as: :key?
+  defdelegate sort_equipment(keys), to: Palee.Workouts.Domain.ExerciseEquipment, as: :sort
+
+  @doc """
+  ADR-542: the equipment one WOD needs, from its exercises (catalogue refs,
+  else names read leniently): `%{equipment: [key], unknown: count}`, where
+  `unknown` counts the exercises whose equipment is not known. `none` is
+  dropped once another key is there. Names are matched leniently by
+  `ExerciseDescriptors` (ADR-163), so the editor's free names count too.
+  """
+  def workout_equipment(workout) do
+    results =
+      workout
+      |> ExerciseDescriptors.weighted_from_workout()
+      |> Enum.map(&Palee.Workouts.Domain.ExerciseEquipment.for_exercise(&1[:exercise_ref]))
+
+    keys = results |> Enum.filter(&is_list/1) |> List.flatten() |> Enum.uniq()
+    keys = if keys == ["none"], do: keys, else: List.delete(keys, "none")
+
+    %{
+      equipment: Palee.Workouts.Domain.ExerciseEquipment.sort(keys),
+      unknown: Enum.count(results, &(&1 == :unknown))
+    }
+  end
 
   def tenant_data_policy, do: Palee.Workouts.Domain.TenantDataPolicy.policy()
 

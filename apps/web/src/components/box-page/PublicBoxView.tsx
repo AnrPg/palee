@@ -10,6 +10,7 @@ import type { PublicSite } from "@/api/box-site";
 import type { PublicBoxPage } from "@/api/social";
 import { SiteConsentProvider } from "@/components/box-site/SiteConsent";
 import { SiteLanguageSwitch } from "@/components/box-site/SiteLanguageSwitch";
+import { SiteProgrammesNavLink } from "@/components/box-site/SiteProgrammes";
 import { SiteRequestSheet } from "@/components/box-site/SiteRequestSheet";
 import { SiteSections } from "@/components/box-site/SiteSections";
 import { useMyClubs } from "@/components/community/use-community";
@@ -188,6 +189,11 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
             <h1 className="mt-2 text-2xl font-extrabold lg:text-3xl" style={{ color: "var(--text)" }}>{page.box.name}</h1>
             {line ? <p className="text-sm" style={{ color: "var(--text-soft)" }}>{line}</p> : null}
           </div>
+          {standalone || tab === "about" ? (
+            <div className="lg:ms-auto lg:pb-1">
+              <SiteProgrammesNavLink site={site} />
+            </div>
+          ) : null}
         </div>
       </header>
 

@@ -559,7 +559,21 @@ defmodule PaleeWeb.FallbackController do
     review_too_early: {:conflict, "You can review a programme once it has started"},
     review_not_allowed: {:conflict, "Only buyers can review a programme"},
     invalid_review: {:unprocessable_entity, "Give 1 to 5 stars and at most 1000 characters"},
-    invalid_hide_reason: {:unprocessable_entity, "Choose abuse, personal data, off topic or spam"}
+    invalid_hide_reason:
+      {:unprocessable_entity, "Choose abuse, personal data, off topic or spam"},
+    # ADR-540: the buyer's days.
+    programme_purchase_not_active: {:conflict, "This programme is no longer running"},
+    programme_day_not_found: {:not_found, "This programme has no training on that day"},
+    programme_day_not_behind:
+      {:conflict, "Only a day that was left behind can be moved or skipped"},
+    programme_schedule_limit:
+      {:conflict, "Moving this day would make the programme run too long; skip it instead"},
+    # ADR-541/542: cover and equipment.
+    invalid_cover_edit:
+      {:unprocessable_entity, "Rotate by 90°, zoom 1 to 4, brightness 0.5 to 1.5, crop inside"},
+    invalid_cover_size:
+      {:unprocessable_entity, "The cover must be a 16:9 image at least 320 pixels wide"},
+    invalid_equipment: {:unprocessable_entity, "Choose equipment from the list (at most 10)"}
   }
 
   def call(conn, {:error, reason}) when is_map_key(@programme_errors, reason) do
