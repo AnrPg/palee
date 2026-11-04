@@ -9,17 +9,46 @@
  * scheduled), skips saves of content the server already has, and stops
  * saving once the draft really changed somewhere else, until the coach
  * chooses which version to keep.
+ *
+ * Nothing the coach did is dropped by accident: an editor that goes away
+ * (another tab, another page) sends what is still waiting instead of
+ * discarding it (`retire`), and with a backup store every change not yet
+ * accepted by the server is also kept on the device, with the revision it is
+ * based on, so a closed tab, a crash or a lost connection is recovered the
+ * next time the draft opens (see `useDraftSaver`).
  */
 
 export type DraftSaveStatus = "idle" | "saving" | "saved" | "error" | "conflict";
 
 export type DraftSaveResult = { dsl_source_revision?: number | null };
 
+/**
+ * Changes the server has not accepted yet. Each payload is the whole draft,
+ * so it may be saved over any revision it was written on top of:
+ * `revisions` holds the one the editor showed and, while a save of an older
+ * copy was still running, the revision that save would have produced.
+ */
+export type DraftBackup<P = unknown> = { revisions: number[]; payload: P; savedAt: number };
+
+/** Whether `backup` was written on top of the revision the server holds now. */
+export function backupFits(backup: DraftBackup | null, serverRevision: number) {
+  return Boolean(backup && backup.revisions.includes(serverRevision));
+}
+
+/** Where unsaved changes are kept on the device, one entry per draft. */
+export type DraftBackupStore = {
+  read: (key: string) => DraftBackup | null;
+  write: (key: string, backup: DraftBackup) => void;
+  remove: (key: string) => void;
+};
+
 export type DraftSaverOptions = {
   /** Whether an error means the draft changed somewhere else. */
   isConflict: (error: unknown) => boolean;
   onStatus?: (status: DraftSaveStatus) => void;
   delayMs?: number;
+  /** Keeps unsaved changes on the device until the server has them. */
+  backup?: DraftBackupStore;
 };
 
 export type DraftSaverTarget<P extends object> = {
@@ -27,6 +56,8 @@ export type DraftSaverTarget<P extends object> = {
   send: (payload: P & { expected_source_revision: number }) => Promise<DraftSaveResult>;
   /** Called after each save the server accepted. */
   onSaved?: (revision: number) => void;
+  /** The draft's key in the backup store (its id); none keeps no backup. */
+  backupKey?: string | null;
 };
 
 export const DRAFT_AUTOSAVE_DELAY_MS = 1_000;
@@ -46,6 +77,8 @@ export class DraftSaver<P extends object> {
   private timer: ReturnType<typeof setTimeout> | null = null;
   /** The newest content not sent yet (scheduled, or refused by a conflict). */
   private pending: P | null = null;
+  /** The content of the save running now, until the server answers. */
+  private inFlight: P | null = null;
   /** The content the server has, as sent; equal content is not sent again. */
   private savedKey: string | null = null;
   private conflicted = false;
@@ -61,11 +94,16 @@ export class DraftSaver<P extends object> {
     this.target = target;
   }
 
-  /** Arms the saver with the revision the editor loaded. */
+  /**
+   * Arms the saver with the revision the editor loaded. A backup of this
+   * draft stays until a save replaces it (`useDraftSaver` recovers it before
+   * the editor starts).
+   */
   start(revision: number) {
     this.cancelTimer();
     this.revision = revision;
     this.pending = null;
+    this.inFlight = null;
     this.savedKey = null;
     this.conflicted = false;
     this.failures = 0;
@@ -88,6 +126,7 @@ export class DraftSaver<P extends object> {
   schedule(payload: P) {
     if (!this.started || this.closed) return;
     this.pending = payload;
+    this.syncBackup();
     if (this.conflicted) return;
     this.arm(this.options.delayMs ?? DRAFT_AUTOSAVE_DELAY_MS);
   }
@@ -139,11 +178,37 @@ export class DraftSaver<P extends object> {
     this.closed = false;
   }
 
-  /** Stops saving (the editor published or is going away). */
+  /** Whether something is waiting to be sent (or is being sent). */
+  get hasUnsaved() {
+    return this.pending !== null || this.inFlight !== null;
+  }
+
+  /**
+   * Stops saving and drops what was waiting. Only for an explicit save that
+   * already holds everything (publish, a mode switch); an editor that goes
+   * away calls `retire`.
+   */
   close() {
     this.closed = true;
     this.cancelTimer();
     this.pending = null;
+    this.syncBackup();
+  }
+
+  /**
+   * The editor is going away (another tab, another page): what is still
+   * waiting is sent now instead of being dropped, and the saver stops after
+   * it. Resolves once that save is answered; a failed one stays in the
+   * backup for the next time the draft opens.
+   */
+  retire(): Promise<void> {
+    this.closed = true;
+    this.cancelTimer();
+    if (!this.started || this.conflicted || this.pending === null) return this.queue.then(() => undefined);
+    return this.flush().then(
+      () => undefined,
+      () => undefined,
+    );
   }
 
   private enqueue<T>(task: () => Promise<T>): Promise<T> {
@@ -159,9 +224,14 @@ export class DraftSaver<P extends object> {
       throw new DraftConflictError();
     }
     const key = JSON.stringify(payload);
-    if (key === this.savedKey) return;
+    if (key === this.savedKey) {
+      this.syncBackup();
+      return;
+    }
 
     const expected = this.requireRevision();
+    this.inFlight = payload;
+    this.syncBackup();
     this.options.onStatus?.("saving");
     try {
       if (!this.target) throw new Error("The draft saver has nowhere to save.");
@@ -170,6 +240,8 @@ export class DraftSaver<P extends object> {
       this.revision = next;
       this.savedKey = key;
       this.failures = 0;
+      this.inFlight = null;
+      this.syncBackup();
       if (!this.closed) {
         this.options.onStatus?.("saved");
         this.target?.onSaved?.(next);
@@ -177,6 +249,8 @@ export class DraftSaver<P extends object> {
     } catch (error) {
       // Keep the content so a retry (or "keep my version") sends it.
       this.pending ??= payload;
+      this.inFlight = null;
+      this.syncBackup();
       if (this.options.isConflict(error)) {
         this.conflicted = true;
         this.cancelTimer();
@@ -191,6 +265,22 @@ export class DraftSaver<P extends object> {
         this.failures += 1;
       }
       throw error;
+    }
+  }
+
+  /** Mirrors what the server does not have yet into the backup store. */
+  private syncBackup() {
+    const store = this.options.backup;
+    const key = this.target?.backupKey;
+    if (!store || !key) return;
+    const unsaved = this.pending ?? this.inFlight;
+    if (unsaved !== null && this.revision !== null && !this.conflicted) {
+      // A save running now may land before the page goes: the newer content
+      // then sits on top of the revision that save produced.
+      const revisions = this.pending !== null && this.inFlight !== null ? [this.revision, this.revision + 1] : [this.revision];
+      store.write(key, { revisions, payload: unsaved, savedAt: Date.now() });
+    } else if (!this.conflicted) {
+      store.remove(key);
     }
   }
 

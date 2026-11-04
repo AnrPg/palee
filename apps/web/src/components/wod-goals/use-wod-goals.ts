@@ -2,6 +2,8 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+import { ApiError } from "@/api/client";
+
 import {
   adminWorkoutGoalsKey,
   fetchAdminWorkoutGoals,
@@ -43,6 +45,10 @@ export function useSaveAdminWorkoutGoals(workoutId: string | null) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (body: SaveWorkoutGoalsRequest) => saveAdminWorkoutGoals(token!, workoutId!, body),
+    // A lost connection or a server hiccup must not lose the coach's goals
+    // (the panel may already be closed); goals the API refuses are not retried.
+    retry: (failures, error) => failures < 4 && !(error instanceof ApiError && error.status >= 400 && error.status < 500),
+    retryDelay: (failures) => Math.min(1_000 * 2 ** failures, 15_000),
     onSuccess: (data) => {
       if (!workoutId) return;
       queryClient.setQueryData<StaffWorkoutGoalsResponse>(adminWorkoutGoalsKey(workoutId), data);

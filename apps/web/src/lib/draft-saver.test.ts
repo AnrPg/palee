@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { DraftConflictError, DraftSaver, type DraftSaveStatus } from "./draft-saver";
+import { backupFits, DraftConflictError, DraftSaver, type DraftBackup, type DraftBackupStore, type DraftSaveStatus } from "./draft-saver";
 
 type Payload = { title: string };
 
@@ -25,14 +25,25 @@ function fakeServer({ latencyMs = 0 } = {}) {
   return { state, send };
 }
 
-function makeSaver(server: ReturnType<typeof fakeServer>) {
+function memoryBackup() {
+  const entries = new Map<string, DraftBackup>();
+  const store: DraftBackupStore = {
+    read: (key) => entries.get(key) ?? null,
+    write: (key, backup) => void entries.set(key, structuredClone(backup)),
+    remove: (key) => void entries.delete(key),
+  };
+  return { entries, store };
+}
+
+function makeSaver(server: ReturnType<typeof fakeServer>, backup?: DraftBackupStore) {
   const statuses: DraftSaveStatus[] = [];
   const saved: number[] = [];
   const saver = new DraftSaver<Payload>({
     isConflict: (error) => error instanceof StaleRevision,
     onStatus: (status) => statuses.push(status),
+    backup,
   });
-  saver.setTarget({ send: server.send, onSaved: (revision) => saved.push(revision) });
+  saver.setTarget({ send: server.send, onSaved: (revision) => saved.push(revision), backupKey: backup ? "draft-1" : null });
   return { saver, statuses, saved };
 }
 
@@ -178,5 +189,89 @@ describe("DraftSaver", () => {
     saver.schedule({ title: "Fran 2" });
     await vi.runAllTimersAsync();
     expect(server.state.saves).toEqual([]);
+  });
+
+  it("sends what is still waiting when the editor goes away, then stops", async () => {
+    const server = fakeServer();
+    const { saver, statuses } = makeSaver(server);
+    saver.start(3);
+    saver.schedule({ title: "Fran" });
+    await saver.retire();
+    expect(server.state.saves).toEqual([{ title: "Fran", expected_source_revision: 3 }]);
+    // The editor is gone: no status for it and nothing more is sent.
+    expect(statuses).not.toContain("saved");
+    saver.schedule({ title: "Fran 2" });
+    await vi.runAllTimersAsync();
+    expect(server.state.saves).toHaveLength(1);
+  });
+
+  it("goes away quietly when nothing is waiting or the draft is in conflict", async () => {
+    const server = fakeServer();
+    const { saver } = makeSaver(server);
+    await saver.retire();
+    saver.reopen();
+    saver.start(2);
+    saver.schedule({ title: "Mine" });
+    await vi.runAllTimersAsync();
+    expect(saver.hasConflict).toBe(true);
+    await saver.retire();
+    expect(server.state.saves).toEqual([]);
+  });
+
+  it("keeps unsaved changes in the backup until the server has them", async () => {
+    const server = fakeServer({ latencyMs: 100 });
+    const { entries, store } = memoryBackup();
+    const { saver } = makeSaver(server, store);
+    saver.start(3);
+    saver.schedule({ title: "F" });
+    expect(entries.get("draft-1")).toMatchObject({ revisions: [3], payload: { title: "F" } });
+
+    // Sent, not answered yet: still kept.
+    await vi.advanceTimersByTimeAsync(1_000);
+    expect(server.state.inFlight).toBe(1);
+    expect(entries.get("draft-1")).toMatchObject({ revisions: [3], payload: { title: "F" } });
+
+    // Typed on while it runs: the newer text fits either revision.
+    saver.schedule({ title: "Fran" });
+    expect(entries.get("draft-1")).toMatchObject({ revisions: [3, 4], payload: { title: "Fran" } });
+
+    await vi.runAllTimersAsync();
+    expect(server.state.saves.map((save) => save.title)).toEqual(["F", "Fran"]);
+    expect(entries.has("draft-1")).toBe(false);
+  });
+
+  it("keeps a failed save in the backup, also after the editor goes away", async () => {
+    const { entries, store } = memoryBackup();
+    const send = vi.fn(async () => {
+      throw new Error("offline");
+    });
+    const saver = new DraftSaver<Payload>({ isConflict: () => false, backup: store });
+    saver.setTarget({ send, backupKey: "draft-1" });
+    saver.start(3);
+    saver.schedule({ title: "Fran" });
+    await saver.retire();
+    expect(send).toHaveBeenCalledTimes(1);
+    expect(entries.get("draft-1")).toMatchObject({ revisions: [3], payload: { title: "Fran" } });
+    // Closed: no more retries from a gone editor.
+    await vi.runAllTimersAsync();
+    expect(send).toHaveBeenCalledTimes(1);
+  });
+
+  it("clears the backup once an explicit save holds everything", async () => {
+    const server = fakeServer();
+    const { entries, store } = memoryBackup();
+    const { saver } = makeSaver(server, store);
+    saver.start(3);
+    saver.schedule({ title: "Fran" });
+    await saver.saveNow({ title: "Fran published" }, async () => saver.close());
+    expect(entries.has("draft-1")).toBe(false);
+  });
+
+  it("tells whether a backup was written on top of the server's revision", () => {
+    const backup: DraftBackup = { revisions: [3, 4], payload: {}, savedAt: 0 };
+    expect(backupFits(backup, 3)).toBe(true);
+    expect(backupFits(backup, 4)).toBe(true);
+    expect(backupFits(backup, 5)).toBe(false);
+    expect(backupFits(null, 3)).toBe(false);
   });
 });

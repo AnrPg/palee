@@ -71,7 +71,7 @@ export function StructuredPlanWorkoutEditor({ draftId, folderId = null, onDraftR
   const [loaded, setLoaded] = useState(false);
   const [loadFailed, setLoadFailed] = useState(false);
   const [draftSaves, setDraftSaves] = useState(0);
-  const { saver, status: draftSaveStatus } = useDraftSaver<PlanDraftPayload | ReturnType<typeof freeTextPayload>>({
+  const { saver, status: draftSaveStatus, loadDraft } = useDraftSaver<PlanDraftPayload | ReturnType<typeof freeTextPayload>>({
     accessToken,
     draftId,
     onSaved: () => setDraftSaves((count) => count + 1),
@@ -135,13 +135,14 @@ export function StructuredPlanWorkoutEditor({ draftId, folderId = null, onDraftR
     if (!accessToken || !draftId || loadedDraftRef.current === draftId) return;
     loadedDraftRef.current = draftId;
     setLoaded(false);
-    fetchAdminWorkout(accessToken, draftId)
+    // Changes this browser still holds for the draft are saved first.
+    loadDraft(() => fetchAdminWorkout(accessToken, draftId), (workout) => workout.dsl_source_revision)
       .then(applyWorkout)
       .catch(() => {
         loadedDraftRef.current = null;
         setLoadFailed(true);
       });
-  }, [accessToken, applyWorkout, draftId]);
+  }, [accessToken, applyWorkout, draftId, loadDraft]);
 
   // Autosave: every change to the plan (and the workout type), one request at a time.
   useEffect(() => {

@@ -67,6 +67,10 @@ export function WorkoutAuthoringModes({ embedded = false, initialDraftId = null,
     enabled: !SHOW_AUTHORING_MODE_SWITCHER && Boolean(draftId && tokens?.access_token),
     queryFn: () => fetchAdminWorkout(tokens!.access_token, draftId!),
     staleTime: Infinity,
+    // Read afresh every time the editor opens: a draft switched to another
+    // mode on the last visit must not open in the editor it had before
+    // (whose first save would write the old content over the new).
+    gcTime: 0,
   });
   // ADR-180: the gym may switch the WOD assistant off; then every workout is
   // written in text sections. With it on, the coach can still switch it off
