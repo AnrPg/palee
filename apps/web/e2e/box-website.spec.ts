@@ -72,8 +72,17 @@ const site = {
   about: null,
   texts: {},
   class_type_names: {},
-  sections: ["hero", "about", "faq", "reviews", "trial_form", "contact_form", "coaches"],
+  sections: ["hero", "about", "programmes", "faq", "reviews", "trial_form", "contact_form", "coaches"],
   faq: [{ id: "faq-1", question: "Χρειάζομαι εμπειρία;", answer: "Όχι, ξεκινάμε από την αρχή." }],
+  // ADR-543: the first three programmes on sale and how many there are.
+  programmes: {
+    items: [
+      { id: "prog-1", title: "Strength in 6 weeks", goal: "strength", level: "intermediate", weeks: 6, sessions_per_week: 4, price_cents: 3900, currency: "EUR", cover_url: null, reviews: { average: 4.8, count: 23 } },
+      { id: "prog-2", title: "Engine in 4 weeks", goal: "endurance", level: "all", weeks: 4, sessions_per_week: 3, price_cents: 2500, currency: "EUR", cover_url: null, reviews: { average: 4.6, count: 9 } },
+      { id: "prog-3", title: "Running 10K", goal: "endurance", level: "beginner", weeks: 8, sessions_per_week: 3, price_cents: 2900, currency: "EUR", cover_url: null, reviews: { average: null, count: 0 } },
+    ],
+    total: 5,
+  },
   forms: { trial: true, contact: true, kinds: ["trial", "contact"] },
   reviews: { palee: { average: 4.5, count: 2, latest: memberReviews }, google, google_reviews_url: google.maps_uri },
   report_contact: "moderation@palee.app",
@@ -173,6 +182,24 @@ test.describe("the box's public website", () => {
     // The footer names Palee's moderation address for reports on content (ADR-397).
     await expect(page.getByTestId("site-report-contact")).toHaveAttribute("href", "mailto:moderation@palee.app");
     await expect(page.getByTestId("site-report-contact")).toContainText("moderation@palee.app");
+  });
+
+  test("shows the box's training programmes as cards, «All training programmes (5)» and the menu link on a large screen", async ({ page }) => {
+    await asVisitor(page);
+    await page.goto(`/b/${slug}`);
+
+    const programmes = page.getByTestId("site-programmes");
+    await expect(programmes).toContainText("Programmes for wherever you are");
+    await expect(programmes.locator("[data-testid^='site-programme-prog-']")).toHaveCount(3);
+    const first = page.getByTestId("site-programme-prog-1");
+    await expect(first).toContainText("6 wks · 4 a week · Intermediate · ★ 4.8 (23)");
+    await expect(first.getByRole("link", { name: "See it" })).toHaveAttribute("href", `/b/${slug}/programmes/prog-1`);
+    await expect(page.getByTestId("site-programme-prog-3")).toContainText("New");
+    await expect(page.getByTestId("site-programmes-all")).toHaveText("All training programmes (5)");
+    await expect(page.getByTestId("site-programmes-all")).toHaveAttribute("href", `/b/${slug}/programmes`);
+
+    const wide = (page.viewportSize()?.width ?? 0) >= 1024;
+    await expect(page.getByTestId("site-nav-programmes")).toBeVisible({ visible: wide });
   });
 
   test("the trial request sheet sends the form with an event_id and the privacy yes", async ({ page }) => {
