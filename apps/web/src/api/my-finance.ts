@@ -28,6 +28,10 @@ export type EffectiveEntitlement = {
   source?: string | null;
   /** Last day of access during the grace slack after a subscription ended or an invoice fell overdue. */
   grace_until?: string | null;
+  /** ADR-551: false once access has closed, so the app hides the gym's workouts. */
+  workouts_open?: boolean;
+  /** ADR-551: the first day of a package bought ahead, while none runs today. */
+  upcoming_starts_on?: string | null;
   enforcement_mode: string;
   plan: null | {
     entitlement_version: number;

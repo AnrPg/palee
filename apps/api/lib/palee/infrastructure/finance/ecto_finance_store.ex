@@ -3483,6 +3483,21 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
     |> Repo.one()
   end
 
+  defp upcoming_subscription_starts_on(membership_id, shared_ids, today) do
+    MembershipPackageSubscription
+    |> where(
+      [subscription],
+      subscription.membership_id == ^membership_id or subscription.id in ^shared_ids
+    )
+    |> where(
+      [subscription],
+      subscription.status in ^InvoiceLifecycle.active_subscription_statuses()
+    )
+    |> where([subscription], subscription.starts_on > ^today)
+    |> select([subscription], min(subscription.starts_on))
+    |> Repo.one()
+  end
+
   defp lapsed_subscription_ends_on(membership_id, today, grace_days) do
     case lapsed_subscription(membership_id, today, grace_days) do
       %MembershipPackageSubscription{ends_on: ends_on} -> ends_on
@@ -5156,6 +5171,13 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
       |> where([subscription], is_nil(subscription.ends_on) or subscription.ends_on >= ^today)
       |> Repo.exists?()
 
+    # ADR-551: a package bought ahead (a season, a start next Monday) keeps
+    # the programme readable before its first day.
+    upcoming_starts_on =
+      if active_subscription?,
+        do: nil,
+        else: upcoming_subscription_starts_on(membership.id, shared_ids, today)
+
     grace_days = subscription_grace_days()
 
     lapsed_subscription_ends_on =
@@ -5181,6 +5203,7 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
       source: derived.source,
       expires_on: derived.expires_on,
       grace_until: derived.grace_until,
+      upcoming_starts_on: upcoming_starts_on,
       open_invoice_count: open_invoice_count,
       overdue_invoice_count: overdue_invoice_count,
       credit_balance_cents: credit_balance(membership.id),

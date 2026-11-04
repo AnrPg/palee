@@ -1,9 +1,11 @@
 defmodule Palee.Application.GetAssignedWorkoutWeek do
-  alias Palee.Application.{CoveringBranches, Seasons}
+  alias Palee.Application.{AuthorizeWodAccess, CoveringBranches, Seasons}
   alias Palee.{Identity, Workouts}
 
   def call(context, user, params) do
-    with {:ok, start_date} <- parse_start_date(params) do
+    # ADR-551: a member whose access has closed gets no programme.
+    with :ok <- AuthorizeWodAccess.call(context, user.id),
+         {:ok, start_date} <- parse_start_date(params) do
       end_date = Date.add(start_date, 6)
 
       assignments =

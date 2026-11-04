@@ -24,6 +24,8 @@ import {
 } from "@dnd-kit/core";
 
 import { ApiError } from "@/api/client";
+import { BackLink } from "@/components/ui/BackLink";
+import { isWorkoutsClosedError } from "@/components/client/entitlement";
 import { fetchTimerSequence, startExecution, type SectionScore } from "@/api/executions";
 import {
   deleteAssignedWorkout,
@@ -394,6 +396,8 @@ export function AssignedWorkoutsConsole({
   const [launchingId, setLaunchingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // ADR-551: the server refuses the programme once the member's access has closed.
+  const [accessClosed, setAccessClosed] = useState<"blocked" | "ended" | null>(null);
   const [activeAssignment, setActiveAssignment] = useState<AssignedWorkoutRecord | null>(null);
   const [editWorkoutTarget, setEditWorkoutTarget] = useState<AssignedWorkoutRecord | null>(null);
   const [filterAthleteIds, setFilterAthleteIds] = useState<string[]>([]);
@@ -483,6 +487,11 @@ export function AssignedWorkoutsConsole({
         requestError.status === 401
       ) {
         signOut();
+        return;
+      }
+
+      if (isWorkoutsClosedError(requestError)) {
+        setAccessClosed((requestError as ApiError).payload?.code === "finance_entitlement_blocked" ? "blocked" : "ended");
         return;
       }
 
@@ -1380,6 +1389,22 @@ export function AssignedWorkoutsConsole({
           );
         })}
       </section>
+    );
+  }
+
+  if (accessClosed) {
+    return (
+      <main className="min-h-screen px-4 py-8 md:px-8 md:py-12" style={{ background: "var(--bg)" }}>
+        <div className="mx-auto flex max-w-xl flex-col gap-4">
+          <PageHeader title={pageTitle ?? i18n("myWorkouts89fd2fd")} />
+          <ErrorNotice className="font-semibold">
+            {accessClosed === "blocked" ? i18n("workoutsClosedBlocked") : i18n("workoutsClosedEnded")}
+          </ErrorNotice>
+          <BackLink href="/box" className="self-start text-sm font-semibold" style={{ color: "var(--primary-strong)" }}>
+            {i18n("workoutsClosedToBox")}
+          </BackLink>
+        </div>
+      </main>
     );
   }
 

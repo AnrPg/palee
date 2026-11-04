@@ -14,6 +14,9 @@ defmodule PaleeWeb.WorkoutLeaderboardController do
 
   action_fallback PaleeWeb.FallbackController
 
+  # ADR-551: no workout content once the member's access has closed.
+  plug PaleeWeb.Plugs.RequireWodAccess when action in [:show]
+
   tags(["Leaderboards"])
   security([%{"bearerAuth" => []}])
 

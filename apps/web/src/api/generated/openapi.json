@@ -358451,6 +358451,16 @@
               }
             },
             "description": "Assigned workouts"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "ADR-551: the member's access has closed (finance_entitlement_blocked | finance_entitlement_inactive)"
           }
         },
         "security": [
@@ -359094,6 +359104,10 @@
                           },
                           "space_unavailable": {
                             "description": "Staff only: the space was made unavailable for this class's time after it was planned.",
+                            "type": "boolean"
+                          },
+                          "wod_locked": {
+                            "description": "ADR-551: the member's access has closed, so the class comes without its WOD.",
                             "type": "boolean"
                           },
                           "workout": {

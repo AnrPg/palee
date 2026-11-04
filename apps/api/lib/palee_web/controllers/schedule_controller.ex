@@ -158,6 +158,11 @@ defmodule PaleeWeb.ScheduleController do
                      description:
                        "ADR-230: day = inherited from the day's WOD, class = set on the class."
                    },
+                   wod_locked: %Schema{
+                     type: :boolean,
+                     description:
+                       "ADR-551: the member's access has closed, so the class comes without its WOD."
+                   },
                    space_id: %Schema{type: :string, format: :uuid, nullable: true},
                    space: %Schema{
                      type: :object,

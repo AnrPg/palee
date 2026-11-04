@@ -142766,6 +142766,15 @@ export interface operations {
                     };
                 };
             };
+            /** @description ADR-551: the member's access has closed (finance_entitlement_blocked | finance_entitlement_inactive) */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
         };
     };
     "PaleeWeb.MyWorkoutController.open": {
@@ -143068,6 +143077,8 @@ export interface operations {
                             space_overlap?: boolean;
                             /** @description Staff only: the space was made unavailable for this class's time after it was planned. */
                             space_unavailable?: boolean;
+                            /** @description ADR-551: the member's access has closed, so the class comes without its WOD. */
+                            wod_locked?: boolean;
                             workout?: ({
                                 /** @description What the workout trains, read from its movements. */
                                 focus?: ("strength" | "endurance" | "gymnastics" | "olympic_lifting" | "mobility" | "legs" | "core" | "upper_body")[];

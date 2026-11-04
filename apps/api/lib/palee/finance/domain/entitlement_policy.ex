@@ -54,6 +54,23 @@ defmodule Palee.Finance.Domain.EntitlementPolicy do
     end
   end
 
+  @doc """
+  ADR-551: whether a customer's membership access is open at all, whatever
+  the package holds and whatever the tenant's rollout mode. Access closes
+  only on a definite answer (`blocked` after the overdue grace, or
+  `inactive`: ended, expired, paused, cancelled, no package); no finance
+  profile, `active`, `grace` and a package that starts later keep it open.
+  """
+  def access_open(%{status: "blocked"}), do: {:error, :finance_entitlement_blocked}
+
+  # A package bought ahead keeps access open before its first day.
+  def access_open(%{status: "inactive", source: "no_active_package", upcoming_starts_on: %Date{}}),
+    do: :ok
+
+  def access_open(%{status: "inactive"}), do: {:error, :finance_entitlement_inactive}
+
+  def access_open(_entitlement), do: :ok
+
   defp authorize_customer(nil, _request, opts) do
     case Keyword.get(opts, :mode, :observe) do
       :observe -> {:ok, %{observed?: true, reason: :finance_profile_missing}}

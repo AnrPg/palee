@@ -7,7 +7,7 @@ defmodule Palee.Application.ProviderTodayItems do
 
   @behaviour Palee.Application.Ports.ProviderToday
 
-  alias Palee.Application.{GetWodTodayCard, MyProviders}
+  alias Palee.Application.{AuthorizeWodAccess, GetWodTodayCard, MyProviders}
   alias Palee.{Appointments, Scheduling, Workouts}
 
   @impl true
@@ -42,21 +42,29 @@ defmodule Palee.Application.ProviderTodayItems do
         }
       end)
 
-    programme =
-      tenant
-      |> Workouts.list_assigned_workouts_for_athlete(user_id, date, date)
-      |> Enum.reject(&(&1[:my_athlete_status] in ["rejected", "archived"]))
-      |> Enum.map(fn assignment ->
-        %{
-          kind: "program",
-          id: assignment.id,
-          at: nil,
-          title: assignment.workout && assignment.workout.title,
-          status: assignment[:execution_status] || assignment[:my_athlete_status]
-        }
-      end)
+    {:ok, classes ++ appointments ++ workouts(tenant, user_id, date, timezone, classes)}
+  end
 
-    {:ok, classes ++ appointments ++ programme ++ wod(tenant, date, timezone, classes)}
+  # ADR-551: the programme and the box's WOD only while access is open.
+  defp workouts(tenant, user_id, date, timezone, classes) do
+    if AuthorizeWodAccess.allowed?(tenant, user_id),
+      do: programme(tenant, user_id, date) ++ wod(tenant, date, timezone, classes),
+      else: []
+  end
+
+  defp programme(tenant, user_id, date) do
+    tenant
+    |> Workouts.list_assigned_workouts_for_athlete(user_id, date, date)
+    |> Enum.reject(&(&1[:my_athlete_status] in ["rejected", "archived"]))
+    |> Enum.map(fn assignment ->
+      %{
+        kind: "program",
+        id: assignment.id,
+        at: nil,
+        title: assignment.workout && assignment.workout.title,
+        status: assignment[:execution_status] || assignment[:my_athlete_status]
+      }
+    end)
   end
 
   # The box's WOD, unless a booked class already shows it.

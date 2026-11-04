@@ -46,7 +46,10 @@ defmodule PaleeWeb.MyWorkoutController do
              }
            },
            required: [:start_date, :end_date, :assignments]
-         }}
+         }},
+      forbidden:
+        {"ADR-551: the member's access has closed (finance_entitlement_blocked | finance_entitlement_inactive)",
+         "application/json", %Schema{type: :object}}
     ]
   )
 

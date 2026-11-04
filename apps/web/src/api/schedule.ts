@@ -154,6 +154,8 @@ export type ScheduleSlot = {
   workout_status?: ClassWorkoutStatus;
   /** ADR-230: "day" = inherited from the day's WOD, "class" = set on the class. */
   workout_source?: "day" | "class" | null;
+  /** ADR-551: the member's access has closed, so the class comes without its WOD. */
+  wod_locked?: boolean;
   /** ADR-230: the day WOD the class's WOD comes from. */
   day_workout_id?: string | null;
   class_series_id?: string | null;

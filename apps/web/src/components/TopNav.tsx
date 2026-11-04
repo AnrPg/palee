@@ -37,7 +37,7 @@ import { MemberTopBar } from "@/components/nav/MemberTopBar";
 import { NavIcon } from "@/components/nav/NavIcons";
 import { openNotifications } from "@/components/notifications/NotificationBell";
 import { SemanticLabel } from "@/components/semantic-label";
-import { entitledFeatures } from "@/components/client/entitlement";
+import { entitledFeatures, workoutsClosed } from "@/components/client/entitlement";
 import { useClientEntitlement } from "@/components/client/use-client-entitlement";
 import { OrganizationSelector } from "@/components/organization-selector";
 import { Popover } from "@/components/ui/Popover";
@@ -162,6 +162,7 @@ export function TopNav() {
     staffItems,
     features,
     journalSections: bodySettingsQuery.data?.settings?.journal_sections ?? null,
+    workoutsOpen: !workoutsClosed(entitlement),
   });
 
   const brandName = tenantBrandName(memberships, selectedOrganizationSlug) ?? i18n("brandName");

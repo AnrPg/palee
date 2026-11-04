@@ -66,3 +66,22 @@ describe("client entitlement gating", () => {
     expect(allowanceRemaining(value, "pt_sessions")).toBeNull();
   });
 });
+
+describe("ADR-551 workouts access", () => {
+  it("hides workouts only on the server's explicit answer", async () => {
+    const { workoutsClosed } = await import("./entitlement");
+    expect(workoutsClosed(null)).toBe(false);
+    expect(workoutsClosed({ status: "active" } as never)).toBe(false);
+    expect(workoutsClosed({ status: "inactive", workouts_open: true } as never)).toBe(false);
+    expect(workoutsClosed({ status: "blocked", workouts_open: false } as never)).toBe(true);
+  });
+
+  it("reads the 403 codes of a closed access, not any 403", async () => {
+    const { isWorkoutsClosedError } = await import("./entitlement");
+    const { ApiError } = await import("@/api/client");
+    expect(isWorkoutsClosedError(new ApiError(403, "x", { code: "finance_entitlement_blocked" }))).toBe(true);
+    expect(isWorkoutsClosedError(new ApiError(403, "x", { code: "finance_entitlement_inactive" }))).toBe(true);
+    expect(isWorkoutsClosedError(new ApiError(403, "x", { code: "forbidden" }))).toBe(false);
+    expect(isWorkoutsClosedError(new Error("x"))).toBe(false);
+  });
+});

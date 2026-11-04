@@ -14,7 +14,7 @@ defmodule PaleeWeb.MyFinanceController do
   alias PaleeWeb.Controllers.ReceiptDocumentResponse
   alias PaleeWeb.Schemas.FinanceAccounting
   alias Palee.Finance
-  alias Palee.Application.DocumentStorage
+  alias Palee.Application.{AuthorizeWodAccess, DocumentStorage}
   alias OpenApiSpex.Schema
 
   action_fallback PaleeWeb.FallbackController
@@ -65,10 +65,21 @@ defmodule PaleeWeb.MyFinanceController do
     user = GuardianPlug.current_resource(conn)
 
     with {:ok, context} <- tenant_context(conn) do
-      entitlement = Finance.get_effective_entitlement(context, user.id)
+      entitlement =
+        context
+        |> Finance.get_effective_entitlement(user.id)
+        |> put_workouts_open()
+
       json(conn, %{entitlement: entitlement})
     end
   end
+
+  # ADR-551: whether the gym's workouts are readable, so the app hides what
+  # the server would refuse (one rule, `AuthorizeWodAccess`).
+  defp put_workouts_open(nil), do: nil
+
+  defp put_workouts_open(entitlement),
+    do: Map.put(entitlement, :workouts_open, AuthorizeWodAccess.open?(entitlement))
 
   operation(:invoice_download_url,
     summary: "Get a presigned download URL for one of the current member's invoices",

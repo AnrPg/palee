@@ -142,6 +142,14 @@ describe("sectionGroupFor", () => {
     // ADR-164: the anatomy atlas lives under Πρόοδος.
     expect(journal?.tabs.find((tab) => tab.id === "progress")?.match).toContain("/journal/atlas");
     expect(sectionGroupFor("/box", { surface: "member", staffItems: [], features: ["videos"] })).toBeNull();
+    // ADR-551: no «Τα workouts μου» once the member's access has closed.
+    expect(
+      sectionGroupFor("/box/schedule", { surface: "member", staffItems: [], features: [], workoutsOpen: false })?.tabs.map((tab) => tab.id),
+    ).toEqual(["boxToday", "classes"]);
+    // Box pages that are not a tab (Check-in, Κατάστημα, Έγγραφα) get no strip, and never a lit «Σήμερα».
+    for (const path of ["/box/check-in", "/box/shop", "/box/documents", "/box/programmes/p1"]) {
+      expect(sectionGroupFor(path, { surface: "member", staffItems: [], features: ["videos"] })).toBeNull();
+    }
     const entitled = sectionGroupFor("/journal", { surface: "athlete", staffItems: [], features: ["progress", "coaching"] });
     expect(entitled?.tabs.map((tab) => tab.id)).toContain("progress");
   });

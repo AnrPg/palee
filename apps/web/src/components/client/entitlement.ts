@@ -48,6 +48,24 @@ export function entitledFeatures(entitlement: EffectiveEntitlement | null | unde
   );
 }
 
+/**
+ * ADR-551: the server's answer on whether the gym's workouts are readable.
+ * Unknown (loading, no answer, no finance) counts as open: the server
+ * enforces it anyway, so the app never hides workouts on a guess.
+ */
+export function workoutsClosed(entitlement: EffectiveEntitlement | null | undefined): boolean {
+  return entitlement?.workouts_open === false;
+}
+
+/** ADR-551: the 403 codes a workout read answers once access has closed. */
+export function isWorkoutsClosedError(error: unknown): boolean {
+  return (
+    error instanceof ApiError &&
+    error.status === 403 &&
+    ["finance_entitlement_blocked", "finance_entitlement_inactive"].includes(String(error.payload?.code ?? ""))
+  );
+}
+
 /** A 403 from a capability-gated endpoint means "not in your package". */
 export function isNotEntitledError(error: unknown): boolean {
   return error instanceof ApiError && error.status === 403;

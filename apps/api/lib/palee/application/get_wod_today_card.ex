@@ -9,7 +9,7 @@ defmodule Palee.Application.GetWodTodayCard do
   """
 
   alias Palee.{Execution, Identity, Scheduling, Workouts}
-  alias Palee.Application.{ClubScope, WorkoutDayLeaderboard}
+  alias Palee.Application.{AuthorizeWodAccess, ClubScope, WorkoutDayLeaderboard}
 
   def call(%{organization_id: _organization_id, user_id: user_id} = context, params) do
     with {:ok, timezone} <- timezone(param(params, :timezone)),
@@ -19,7 +19,10 @@ defmodule Palee.Application.GetWodTodayCard do
       wod_channel = Enum.find(club.channels, &(&1.kind == "wod"))
       slots = context |> Scheduling.get_calendar_week(%{start_at: from, end_at: to}) |> slots()
 
-      case first_workout(slots) do
+      # ADR-551: no WOD for a member whose access has closed.
+      workout_id = if AuthorizeWodAccess.allowed?(context, user_id), do: first_workout(slots)
+
+      case workout_id do
         nil ->
           {:ok, empty(date, wod_channel)}
 

@@ -1,6 +1,6 @@
 defmodule Palee.Application.GetScheduleCalendar do
   alias Palee.{Community, Facility, Finance, Identity, Organizations, Scheduling, Workouts}
-  alias Palee.Application.{BookingTerms, ClassSpace, DayWorkouts}
+  alias Palee.Application.{AuthorizeWodAccess, BookingTerms, ClassSpace, DayWorkouts}
   alias Palee.Scheduling.Domain.BookingPolicy
   alias Palee.TimeZones.ZonedTime
 
@@ -26,6 +26,7 @@ defmodule Palee.Application.GetScheduleCalendar do
         |> put_package_coverage(context, actor)
         |> put_cancel_free_until(context, actor)
         |> put_friends_going(context, actor)
+        |> lock_workouts(context, actor)
 
       class_types = schedule_class_types(context, slots)
       start_date = ZonedTime.local_date(start_at, zone)
@@ -321,6 +322,19 @@ defmodule Palee.Application.GetScheduleCalendar do
   end
 
   defp admin_role?(context, _actor), do: context.role in [:owner, :admin, :coach]
+
+  # ADR-551: a member whose access has closed still sees when classes run,
+  # but not their WODs (`wod_locked`), neither the class's nor their own version.
+  defp lock_workouts(slots, context, actor) do
+    locked? =
+      not admin_role?(context, actor) and not AuthorizeWodAccess.allowed?(context, actor.id)
+
+    Enum.map(slots, fn slot ->
+      if locked?,
+        do: Map.merge(slot, %{workout: nil, my_version: nil, wod_locked: true}),
+        else: Map.put(slot, :wod_locked, false)
+    end)
+  end
 
   defp preview_workout(nil), do: nil
 

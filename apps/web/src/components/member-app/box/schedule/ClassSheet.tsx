@@ -406,7 +406,8 @@ export function ClassSheet({
             ) : null}
             {slot.workout ? <WodOutline workout={slot.workout} /> : (
               <p className="mt-2 text-sm" style={{ color: "var(--dim)" }}>
-                {t("wodNotPosted")}
+                {/* ADR-551: the server keeps the WOD while the member's access is closed. */}
+                {slot.wod_locked ? t("wodLocked") : t("wodNotPosted")}
               </p>
             )}
             {slot.workout ? <WodGoalsStrip workoutId={slot.workout.id} className="mt-3" /> : null}
