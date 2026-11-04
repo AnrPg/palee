@@ -1,5 +1,8 @@
 import { loadWebsite, siteRootUrl } from "@/components/box-site/templates/site-server";
 
+// Reads the box from the API on each request; never prerendered at build time (the API is not there).
+export const dynamic = "force-dynamic";
+
 type Context = { params: Promise<{ slug: string }> };
 
 /**
