@@ -3524,8 +3524,6 @@
     "admCheckInAllowanceExhausted": "Este socio ha usado todas sus visitas de open gym de este periodo. Puedes darle visitas extra desde su perfil.",
     "admCheckInFrozen": "El paquete de suscripción de este socio está congelado hoy. Cancela la congelación en su perfil para hacer su check-in.",
     "admCheckInLocationNotIncluded": "El paquete de suscripción de este socio no incluye esta sede.",
-    "admClassTypeEvent": "Evento",
-    "admClassTypeRulesHint": "Visitas por reserva: cuántas visitas del paquete de suscripción consume una reserva. Marca las sesiones especiales como eventos para que usen las visitas de eventos del paquete de suscripción.",
     "admVisitsPerBooking": "Visitas por reserva",
     "admDecrease": "Disminuir",
     "admIncrease": "Aumentar",
@@ -6129,6 +6127,7 @@
     "package": "Paquete de suscripción",
     "chipLevel": "Nivel",
     "level_beginner": "Principiantes",
+    "level_intermediate": "Intermedios",
     "level_all_levels": "Todos los niveles",
     "level_advanced": "Avanzados",
     "coach": "Coach",
@@ -17560,5 +17559,32 @@
     "errorDimensions": "La imagen es demasiado grande: como máximo {width}×{height} píxeles.",
     "errorSave": "La firma no se guardó. Inténtalo de nuevo.",
     "errorRemove": "La firma no se quitó. Inténtalo de nuevo."
+  },
+  "ExplainedSetting": {
+    "about": "¿Qué es «{name}»?"
+  },
+  "ClassTypeOptions": {
+    "eventLabel": "Evento",
+    "whatHeading": "Qué hace:",
+    "membersHeading": "Qué ven los socios:",
+    "whenHeading": "Cuándo cambiarlo:",
+    "levelNoneChosen": "Todos los niveles",
+    "audienceNoneChosen": "Todos",
+    "event_tip": "Las reservas gastan las visitas de eventos del paquete, no las de clases.",
+    "event_what": "Una reserva en una clase de este tipo descuenta visitas de eventos del paquete de suscripción del socio. Sus visitas de clases no se tocan.",
+    "event_members": "Solo reservan los socios cuyo paquete incluye eventos. En el horario la clase lleva la etiqueta «Evento» y el filtro «Eventos» la encuentra.",
+    "event_when": "Para lo que no es el entrenamiento diario: seminario, taller, jornada de puertas abiertas o competición interna. Si toda suscripción debe cubrir la clase, déjala como clase normal.",
+    "visits_tip": "Cuántas visitas del paquete gasta una reserva. Normalmente 1.",
+    "visits_what": "Cada reserva descuenta tantas visitas del paquete del socio, de 1 a 10. Así una clase más larga o más cara cuesta más sin un paquete aparte.",
+    "visits_members": "Antes de reservar, los socios ven cuántas visitas gasta la clase. Con un paquete de 8 visitas y una clase de 2, caben 4 reservas.",
+    "visits_when": "Para clases que te cuestan más: grupos reducidos, sesiones de 90 minutos, material especial o un coach invitado. Las clases normales se quedan en 1.",
+    "level_tip": "Para qué niveles es la clase. Sin selección, para todos.",
+    "level_what": "Elige uno o varios: Principiantes, Intermedios, Avanzados. Sin selección la clase es para todos los niveles. Informa; nunca impide una reserva.",
+    "level_members": "El nivel aparece en los detalles de la clase. Quien filtra el horario, la página del box o «Cerca de mí» por «Principiantes» encuentra las clases para principiantes y las de todos los niveles.",
+    "level_when": "Marca las clases que un recién llegado no debería elegir por azar (halterofilia solo para Avanzados) y las que son la mejor primera visita (Foundations para Principiantes). Una clase escalada para todos se queda sin selección.",
+    "audience_tip": "Para qué grupos está pensada la clase. Sin selección, para todos.",
+    "audience_what": "Elige los grupos para los que está hecha la clase, por ejemplo «Adolescentes». Sin selección es para todos. También informa; nunca impide una reserva.",
+    "audience_members": "Los grupos aparecen en los detalles de la clase, y los socios filtran con ellos el horario y la página del box.",
+    "audience_when": "Cuando la clase está diseñada para personas concretas: solo mujeres, niños, mayores de 40. Las clases abiertas se quedan sin selección, para que nadie piense que no son para él."
   }
 }

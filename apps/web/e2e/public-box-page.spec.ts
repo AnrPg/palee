@@ -137,7 +137,7 @@ async function signedIn(page: Page, { member = false } = {}) {
             spots_remaining: 4,
             location_id: "loc-1",
             coach: { id: "coach-1", nickname: "Stelios", avatar_url: null },
-            class_type: { id: "type-1", name: "CrossFit", level: "all_levels", audiences: [] },
+            class_type: { id: "type-1", name: "CrossFit", levels: ["intermediate", "advanced"], audiences: [] },
           },
           {
             id: "slot-2",
@@ -148,7 +148,7 @@ async function signedIn(page: Page, { member = false } = {}) {
             spots_remaining: 0,
             location_id: "loc-1",
             coach: null,
-            class_type: { id: "type-2", name: "Yoga", level: "beginner", audiences: ["over_40"] },
+            class_type: { id: "type-2", name: "Yoga", levels: ["beginner"], audiences: ["over_40"] },
           },
         ],
       }),
