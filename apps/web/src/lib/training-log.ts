@@ -4,6 +4,7 @@ import type {
   TrainingLogEntry,
   TrainingLogScoreableSection,
   TrainingLogSourceType,
+  TrainingLogSources,
   UpdateTrainingLogRequest,
 } from "@/api/training-log";
 import { newCommentId, type JournalCommentDraft } from "@/api/journal-comments";
@@ -268,4 +269,25 @@ export function sortEntriesNewestFirst(entries: TrainingLogEntry[]): TrainingLog
     (left, right) =>
       new Date(right.performed_at_utc).getTime() - new Date(left.performed_at_utc).getTime(),
   );
+}
+
+const SOURCE_ORDER: TrainingLogSourceType[] = ["class", "assigned_workout", "library_workout", "freeform"];
+
+/**
+ * The «Καταγραφή προπόνησης» chips this person gets (ADR-451). The API
+ * decides from role and package; this only keeps known types in display
+ * order and always keeps «Ελεύθερη». An older or partial answer without
+ * `available_sources` falls back to the lists that hold something.
+ */
+export function availableSourceTypes(
+  sources: Partial<TrainingLogSources> | null | undefined,
+): TrainingLogSourceType[] {
+  const named = Array.isArray(sources?.available_sources) ? sources.available_sources : null;
+  const listed: Record<TrainingLogSourceType, boolean> = {
+    class: (sources?.classes?.length ?? 0) > 0,
+    assigned_workout: (sources?.assignments?.length ?? 0) > 0,
+    library_workout: (sources?.library_workouts?.length ?? 0) > 0,
+    freeform: true,
+  };
+  return SOURCE_ORDER.filter((type) => type === "freeform" || (named ? named.includes(type) : listed[type]));
 }

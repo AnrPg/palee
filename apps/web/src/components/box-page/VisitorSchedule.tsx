@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 
-import { CLASS_LEVELS } from "@/api/schedule";
+import { CLASS_LEVELS, classLevelsOf, suitsLevels } from "@/api/schedule";
 import { fetchBoxSchedule, type PublicBoxPage, type PublicBoxSchedule } from "@/api/social";
 import { WeekStrip, weekStart } from "@/components/member-app/box/schedule/WeekStrip";
 import { TrialSheet } from "@/components/trials/TrialSheet";
@@ -62,11 +62,15 @@ export function VisitorSchedule({ page, token, member }: { page: PublicBoxPage; 
     [slots],
   );
   const audiences = useMemo(() => [...new Set(slots.flatMap((slot) => slot.class_type?.audiences ?? []))], [slots]);
-  const levels = CLASS_LEVELS.filter((value) => slots.some((slot) => slot.class_type?.level === value));
+  // ADR-490: a class type suits several levels; one with none suits all of them. Offer the
+  // levels some class suits (same rule as the filter), and only when a class narrows them.
+  const levels = slots.some((slot) => (slot.class_type?.levels?.length ?? 0) > 0)
+    ? CLASS_LEVELS.filter((value) => slots.some((slot) => slot.class_type && suitsLevels(slot.class_type.levels, [value])))
+    : [];
   const day = slots
     .filter((slot) => dateKeyInZone(slot.scheduled_at, zone) === selectedDate)
     .filter((slot) => !type || slot.class_type?.id === type)
-    .filter((slot) => !level || slot.class_type?.level === level)
+    .filter((slot) => !level || suitsLevels(slot.class_type?.levels, [level]))
     .filter((slot) => !audience || (slot.class_type?.audiences ?? []).includes(audience))
     .filter((slot) => !trialOnly || takesTrials(slot))
     .sort((a, b) => a.scheduled_at.localeCompare(b.scheduled_at));
@@ -279,10 +283,15 @@ function VisitorClassSheet({
   const start = new Date(slot.scheduled_at);
   const when = formatInZone(start, zone, locale, { weekday: "long", day: "numeric", month: "long" });
   const clock = zonedText(start, zone, locale, "time");
-  const level = slot.class_type?.level;
+  const levels = slot.class_type ? classLevelsOf(slot.class_type.levels) : null;
   const facts = [
     slot.coach?.nickname ? [tSchedule("coach"), slot.coach.nickname] : null,
-    level ? [tSchedule("chipLevel"), tSchedule(`level_${level}` as never)] : null,
+    levels
+      ? [
+          tSchedule("chipLevel"),
+          levels.length === 0 ? tSchedule("level_all_levels") : levels.map((value) => tSchedule(`level_${value}`)).join(", "),
+        ]
+      : null,
     slot.class_type && slot.class_type.audiences.length > 0
       ? [tSchedule("audience"), slot.class_type.audiences.map((value) => audienceLabel(tSchedule, value)).join(", ")]
       : null,

@@ -8,7 +8,7 @@ defmodule Palee.Setup.Domain.Recipe do
     * `provider_kind` – how members see the business (ADR-162);
     * `settings` – `%{catalog key => value}`; only keys the
       `SettingsCatalog` marks `recipe: true`;
-    * `class_types` – `%{slug, names, kind, level, audiences, credit_cost}`,
+    * `class_types` – `%{slug, names, kind, levels, audiences, credit_cost}`,
       created when no class type with the slug exists;
     * `packages` – subscription packages `%{code, names, package_type,
       billing_period, base_price_cents, fields}`, created when no package

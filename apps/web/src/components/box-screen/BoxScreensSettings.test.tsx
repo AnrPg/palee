@@ -29,9 +29,12 @@ vi.mock("@/api/box-screens", async (original) => ({
   pinBoxScreen: (...args: unknown[]) => api.pinBoxScreen(...args),
   unpinBoxScreen: (...args: unknown[]) => api.unpinBoxScreen(...args),
 }));
-vi.mock("@/api/facility", () => ({
-  listAdminLocations: async () => [{ id: "kyp", name: "Kypseli", address: null, archived_at: null }],
-}));
+const TWO_BRANCHES = [
+  { id: "kyp", name: "Kypseli", address: null, archived_at: null },
+  { id: "pat", name: "Patisia", address: null, archived_at: null },
+];
+const locations = vi.hoisted(() => ({ listAdminLocations: vi.fn() }));
+vi.mock("@/api/facility", () => ({ listAdminLocations: (...args: unknown[]) => locations.listAdminLocations(...args) }));
 vi.mock("@/api/schedule", () => ({
   fetchSchedule: async () => ({ slots: [{ id: "c18", name: "CrossFit", scheduled_at: "2026-10-29T18:00:00Z", location_id: "kyp", cancelled_at: null }] }),
 }));
@@ -73,7 +76,10 @@ function wrap(ui: ReactNode) {
 const list = (screens: BoxScreen[]) => ({ screens, max_screens: 20, override_views: ["wod", "timer", "leaderboard", "bookings", "class"] });
 
 describe("Settings › Box screens", () => {
-  beforeEach(() => Object.values(api).forEach((fn) => fn.mockReset()));
+  beforeEach(() => {
+    Object.values(api).forEach((fn) => fn.mockReset());
+    locations.listAdminLocations.mockResolvedValue(TWO_BRANCHES);
+  });
 
   it("lists each screen with its branch, whether it is connected and what it shows", async () => {
     api.listBoxScreens.mockResolvedValue(
@@ -137,10 +143,21 @@ describe("Settings › Box screens", () => {
     fireEvent.click(await screen.findByTestId("box-screen-add"));
     const dialog = await screen.findByTestId("box-screen-add-dialog");
     fireEvent.change(within(dialog).getByTestId("box-screen-name"), { target: { value: "Room 1" } });
+    fireEvent.click(within(dialog).getByLabelText("Kypseli"));
     fireEvent.click(within(dialog).getByTestId("box-screen-create"));
 
     await waitFor(() => expect(api.createBoxScreen).toHaveBeenCalledWith("staff", { name: "Room 1", location_id: "kyp" }));
     expect(await screen.findByTestId("box-screen-code")).toHaveTextContent("ACEF-3467");
+  });
+
+  it("asks no «where» when the box has one branch (ADR-470)", async () => {
+    locations.listAdminLocations.mockResolvedValue([{ id: "kyp", name: "Kypseli", address: null, archived_at: null }]);
+    api.listBoxScreens.mockResolvedValue(list([]));
+    wrap(<BoxScreensSettings />);
+
+    fireEvent.click(await screen.findByTestId("box-screen-add"));
+    const dialog = await screen.findByTestId("box-screen-add-dialog");
+    expect(within(dialog).queryByText(en.BoxScreens.where)).toBeNull();
   });
 
   it("explains a refused name under the field", async () => {

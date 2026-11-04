@@ -45,9 +45,9 @@ function localDate(days = 0) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 }
 
-const crossfit = { id: "ct-1", name: "CrossFit", kind: "class", level: "all_levels", audiences: [] };
-const oly = { id: "ct-2", name: "Olympic lifting", kind: "class", level: "advanced", audiences: [] };
-const openGym = { id: "ct-3", name: "Open gym", kind: "event", level: "all_levels", audiences: [] };
+const crossfit = { id: "ct-1", name: "CrossFit", kind: "class", levels: ["beginner", "intermediate"], audiences: [] };
+const oly = { id: "ct-2", name: "Olympic lifting", kind: "class", levels: ["advanced"], audiences: [] };
+const openGym = { id: "ct-3", name: "Open gym", kind: "event", levels: [] as string[], audiences: [] };
 
 function slot(id: string, type: typeof crossfit, hour: number, extra: Record<string, unknown> = {}) {
   return {
@@ -227,7 +227,8 @@ test.describe("member schedule", () => {
     await expect(dialog.getByText("Εστίαση προπόνησης")).toBeVisible();
     await shot(page, "filters");
     await dialog.getByRole("button", { name: "Προχωρημένοι" }).click();
-    await dialog.getByRole("button", { name: /Δείξε 1/ }).click();
+    // ADR-490: Olympic lifting (advanced) and Open gym (all levels) suit «Προχωρημένοι»; CrossFit does not.
+    await dialog.getByRole("button", { name: /Δείξε 2/ }).click();
     await expect(page.getByRole("main").getByText("CrossFit")).toHaveCount(0);
   });
 

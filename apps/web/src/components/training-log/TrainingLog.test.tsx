@@ -103,6 +103,7 @@ describe("training log card and dialog", () => {
     vi.clearAllMocks();
     vi.mocked(listTrainingLogEntries).mockResolvedValue([loggedEntry]);
     vi.mocked(fetchTrainingLogSources).mockResolvedValue({
+      available_sources: ["class", "freeform"],
       classes: [],
       assignments: [],
       library_workouts: [],
@@ -144,6 +145,37 @@ describe("training log card and dialog", () => {
       duration_seconds: 1800,
     });
     expect(payload.idempotency_key).toMatch(/^log-/);
+  });
+
+  it("shows only the chips the API allows (ADR-451)", async () => {
+    vi.mocked(fetchTrainingLogSources).mockResolvedValue({
+      available_sources: ["assigned_workout", "freeform"],
+      classes: [],
+      assignments: [],
+      library_workouts: [],
+    });
+    renderSection();
+
+    fireEvent.click(await screen.findByText("trainingLogLogWorkout"));
+    expect(await screen.findByText("trainingLogNoAssignments")).toBeInTheDocument();
+    const tabs = screen.getAllByRole("tab").map((tab) => tab.textContent);
+    expect(tabs).toEqual(["trainingLogSourceAssigned", "trainingLogSourceFreeform"]);
+    expect(screen.queryByRole("tab", { name: "trainingLogSourceClass" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("tab", { name: "trainingLogSourceLibrary" })).not.toBeInTheDocument();
+  });
+
+  it("goes straight to freeform without chips when nothing else is available", async () => {
+    vi.mocked(fetchTrainingLogSources).mockResolvedValue({
+      available_sources: ["freeform"],
+      classes: [],
+      assignments: [],
+      library_workouts: [],
+    });
+    renderSection();
+
+    fireEvent.click(await screen.findByText("trainingLogLogWorkout"));
+    expect(await screen.findByText("trainingLogStartFreeform")).toBeInTheDocument();
+    expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
   });
 
   it("voids an entry with an optional reason", async () => {

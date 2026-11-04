@@ -387,6 +387,121 @@ defmodule Palee.Application.TrainingLogEntryTest do
     end
   end
 
+  describe "available sources (ADR-451)" do
+    defp library_params(workout) do
+      %{
+        "source_type" => "library_workout",
+        "source_reference_id" => workout.id,
+        "performed_at" => yesterday_iso(),
+        "idempotency_key" => key()
+      }
+    end
+
+    test "a box member without a coach gets classes, the library and freeform; no assignments" do
+      owner = TestFixtures.admin_fixture()
+      {organization, owner_context} = organization_fixture(owner)
+      {member, context} = member_context(organization)
+      _workout = workout_fixture(owner_context, owner)
+
+      assert {:ok,
+              %{available_sources: ["class", "library_workout", "freeform"], assignments: []}} =
+               ListTrainingLogSources.call(context, member)
+    end
+
+    test "the library chip needs a published workout" do
+      owner = TestFixtures.admin_fixture()
+      {organization, _owner_context} = organization_fixture(owner)
+      {member, context} = member_context(organization)
+
+      assert {:ok, %{available_sources: ["class", "freeform"], library_workouts: []}} =
+               ListTrainingLogSources.call(context, member)
+    end
+
+    test "an enforced package decides: programming without the library" do
+      owner = TestFixtures.admin_fixture()
+      {organization, owner_context} = organization_fixture(owner)
+      {member, context} = member_context(organization)
+      workout = workout_fixture(owner_context, owner)
+
+      {:ok, _settings} =
+        Palee.Finance.update_finance_settings(owner_context, %{
+          entitlement_enforcement_mode: "enforce_all"
+        })
+
+      TestFixtures.programming_grant_fixture(owner_context, member, :online_programming)
+
+      assert {:ok,
+              %{
+                available_sources: ["class", "assigned_workout", "freeform"],
+                library_workouts: []
+              }} = ListTrainingLogSources.call(context, member)
+
+      assert {:error, :training_log_source_forbidden} =
+               LogTrainingEntry.call(context, member, library_params(workout))
+    end
+
+    test "an enforced box without a package leaves only freeform" do
+      owner = TestFixtures.admin_fixture()
+      {organization, owner_context} = organization_fixture(owner)
+      {member, context} = member_context(organization)
+      _workout = workout_fixture(owner_context, owner)
+
+      {:ok, _settings} =
+        Palee.Finance.update_finance_settings(owner_context, %{
+          entitlement_enforcement_mode: "enforce_all"
+        })
+
+      assert {:ok, %{available_sources: ["freeform"]}} =
+               ListTrainingLogSources.call(context, member)
+    end
+
+    test "a solo coach's client never sees «Τμήμα» from the package" do
+      owner = TestFixtures.admin_fixture()
+      {organization, owner_context} = organization_fixture(owner)
+      :ok = Organizations.put_provider_kind(owner_context, "coach")
+      {member, context} = member_context(organization)
+      TestFixtures.programming_grant_fixture(owner_context, member, :online_programming)
+
+      assert {:ok, %{available_sources: ["assigned_workout", "freeform"]}} =
+               ListTrainingLogSources.call(context, member)
+    end
+
+    test "a booked class stays loggable without a class package" do
+      owner = TestFixtures.admin_fixture()
+      {organization, owner_context} = organization_fixture(owner)
+      :ok = Organizations.put_provider_kind(owner_context, "coach")
+      {member, context} = member_context(organization)
+      workout = workout_fixture(owner_context, owner)
+      {slot, _booking} = past_class_fixture(context, workout, member)
+      slot_id = slot.id
+
+      assert {:ok, %{available_sources: ["class" | _], classes: [%{id: ^slot_id}]}} =
+               ListTrainingLogSources.call(context, member)
+    end
+
+    test "staff log the library by role and get no class chip without a booking" do
+      owner = TestFixtures.admin_fixture()
+      {_organization, owner_context} = organization_fixture(owner)
+      workout = workout_fixture(owner_context, owner)
+
+      assert {:ok, %{available_sources: ["library_workout", "freeform"]}} =
+               ListTrainingLogSources.call(owner_context, owner)
+
+      assert {:ok, _entry, :created} =
+               LogTrainingEntry.call(owner_context, owner, library_params(workout))
+    end
+
+    test "an athlete with no coach, no assignment and no library grant gets only freeform" do
+      owner = TestFixtures.admin_fixture()
+      {organization, owner_context} = organization_fixture(owner)
+      {athlete, context} = member_context(organization, :athlete)
+      _workout = workout_fixture(owner_context, owner)
+
+      assert {:ok, %{available_sources: ["freeform"]}} =
+               ListTrainingLogSources.call(context, athlete)
+    end
+  end
+
   describe "editing" do
     test "owners edit details with optimistic concurrency; voided entries are frozen" do
       owner = TestFixtures.admin_fixture()

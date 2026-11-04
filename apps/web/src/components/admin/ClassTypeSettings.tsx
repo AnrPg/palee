@@ -15,16 +15,17 @@ import {
   CLASS_AUDIENCES,
   CLASS_LEVELS,
   archiveClassType,
+  classLevelsOf,
   createClassType,
   listAdminClassTypes,
   updateClassType,
-  type ClassLevel,
   type ClassTypePayload,
   type ClassTypeRecord,
 } from "@/api/schedule";
 import { Dialog } from "@/components/ui/Dialog";
 import { Select } from "@/components/ui/Select";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { ExplainedSetting } from "@/components/settings/ExplainedSetting";
 
 type ArchiveMapping = {
   source: ClassTypeRecord;
@@ -138,8 +139,6 @@ export function ClassTypeSettings({ token }: { token: string }) {
 
       {query.isLoading ? <p className="text-sm" style={{ color: "var(--dim)" }}>{i18n("loadingClassTypesacb2cdf")}</p> : null}
 
-      {activeTypes.length > 0 ? <p className="text-xs leading-5" style={{ color: "var(--dim)" }}>{i18n("admClassTypeRulesHint")}</p> : null}
-
       <div className="space-y-2">
         {activeTypes.map((type) => (
           <div
@@ -157,7 +156,10 @@ export function ClassTypeSettings({ token }: { token: string }) {
               />
             ) : (
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold" style={{ color: "var(--text)" }}>{type.name}</p>
+                <p className="flex min-w-0 items-center gap-2">
+                  <span className="truncate text-sm font-semibold" style={{ color: "var(--text)" }}>{type.name}</span>
+                  {type.kind === "event" ? <EventBadge /> : null}
+                </p>
                 <ClassTypeRules
                   type={type}
                   disabled={ruleMutation.isPending}
@@ -282,7 +284,27 @@ export function ClassTypeSettings({ token }: { token: string }) {
   );
 }
 
-type ClassTypeRulePatch = Pick<ClassTypePayload, "credit_cost" | "kind" | "level" | "audiences">;
+type ClassTypeRulePatch = Pick<ClassTypePayload, "credit_cost" | "kind" | "levels" | "audiences">;
+
+/** «Εκδήλωση» next to the name, so the choice stays visible while «Προχωρημένα» is closed. */
+function EventBadge() {
+  const t = useTranslations("ClassTypeOptions");
+  return (
+    <span
+      className="rounded-full px-2 py-0.5 text-[11px] font-semibold"
+      style={{ background: "color-mix(in srgb, var(--primary) 14%, transparent)", color: "var(--primary-strong)" }}
+    >
+      {t("eventLabel")}
+    </span>
+  );
+}
+
+function chipStyle(on: boolean) {
+  return {
+    background: on ? "color-mix(in srgb, var(--primary) 18%, transparent)" : "var(--border)",
+    color: on ? "var(--primary-strong)" : "var(--text-soft)",
+  };
+}
 
 function ClassTypeRules({
   type,
@@ -295,108 +317,128 @@ function ClassTypeRules({
 }) {
   const i18n = useUiTranslations();
   const t = useTranslations("BoxSchedule");
-  const cost = type.credit_cost ?? 1;
-  const audiences = type.audiences ?? [];
+  const o = useTranslations("ClassTypeOptions");
   const adv = useTranslations("AdvancedSettings");
+  const cost = type.credit_cost ?? 1;
+  const levels = classLevelsOf(type.levels);
+  const audiences = type.audiences ?? [];
   const [open, setOpen] = useState(false);
   const stepStyle = { background: "var(--border)", color: "var(--text-soft)" };
+  // Every option explains itself the same way: what it does, what members see, when to change it.
+  const parts = (key: "event" | "visits" | "level" | "audience") => [
+    { heading: o("whatHeading"), text: o(`${key}_what`) },
+    { heading: o("membersHeading"), text: o(`${key}_members`) },
+    { heading: o("whenHeading"), text: o(`${key}_when`) },
+  ];
 
   return (
-    <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs" style={{ color: "var(--muted)" }}>
-      <label className="flex items-center gap-2">
-        <input
-          checked={type.kind === "event"}
-          disabled={disabled}
-          onChange={(event) => onChange({ kind: event.target.checked ? "event" : "class" })}
-          type="checkbox"
-        />
-        {i18n("admClassTypeEvent")}
-      </label>
-      {/* ADR-255: visits per booking, level and audience have a good default, so they sit under «Προχωρημένα». */}
+    <div className="mt-2 flex flex-col gap-3 text-xs" style={{ color: "var(--muted)" }}>
+      {/* ADR-255, ADR-490: event, visits per booking, level and audience have a good default, so all sit under «Προχωρημένα». */}
       <button
         type="button"
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
-        className="font-semibold"
+        className="self-start font-semibold"
         style={{ color: "var(--primary-strong)" }}
       >
         {adv("title")} {open ? "▴" : "▾"}
       </button>
       {open ? (
-      <>
-      <span className="flex items-center gap-2">
-        {i18n("admVisitsPerBooking")}
-        <button
-          aria-label={i18n("admDecrease")}
-          className="h-6 w-6 rounded-full font-semibold disabled:opacity-40"
-          disabled={disabled || cost <= 1}
-          onClick={() => onChange({ credit_cost: cost - 1 })}
-          style={stepStyle}
-          type="button"
-        >
-          −
-        </button>
-        <span className="w-4 text-center font-semibold tabular-nums" style={{ color: "var(--text)" }}>{cost}</span>
-        <button
-          aria-label={i18n("admIncrease")}
-          className="h-6 w-6 rounded-full font-semibold disabled:opacity-40"
-          disabled={disabled || cost >= 10}
-          onClick={() => onChange({ credit_cost: cost + 1 })}
-          style={stepStyle}
-          type="button"
-        >
-          +
-        </button>
-      </span>
-      {/* Plan §5a decision 2: members filter Πρόγραμμα by these two tags. */}
-      <label className="flex items-center gap-2">
-        {t("chipLevel")}
-        <Select
-          value={type.level ?? "all_levels"}
-          disabled={disabled}
-          onValueChange={(value) => onChange({ level: value as ClassLevel })}
-          className="rounded-lg px-2 py-1 text-xs font-semibold"
-          style={{ background: "var(--bg)", border: "1px solid var(--border)", color: "var(--text)" }}
-        >
-          {CLASS_LEVELS.map((level) => (
-            <option key={level} value={level}>
-              {t(`level_${level}`)}
-            </option>
-          ))}
-        </Select>
-      </label>
-      <span className="flex flex-wrap items-center gap-1.5" role="group" aria-label={t("audience")}>
-        {t("audience")}
-        {audiences.length === 0 ? (
-          <span className="font-semibold" style={{ color: "var(--text)" }}>
-            {t("audienceEveryone")}
-          </span>
-        ) : null}
-        {CLASS_AUDIENCES.map((audience) => {
-          const on = audiences.includes(audience);
-          return (
-            <button
-              key={audience}
-              type="button"
-              aria-pressed={on}
+        <div className="flex flex-col gap-4 rounded-xl p-3" style={{ background: "var(--bg)", border: "1px solid var(--border)" }}>
+          <ExplainedSetting label={o("eventLabel")} tip={o("event_tip")} parts={parts("event")}>
+            <input
+              aria-label={o("eventLabel")}
+              checked={type.kind === "event"}
+              className="h-4 w-4"
               disabled={disabled}
-              onClick={() =>
-                onChange({
-                  audiences: on ? audiences.filter((value) => value !== audience) : [...audiences, audience],
-                })
-              }
-              className="rounded-full px-2.5 py-0.5 font-semibold disabled:opacity-50"
-              style={{
-                background: on ? "color-mix(in srgb, var(--primary) 18%, transparent)" : "var(--border)",
-                color: on ? "var(--primary-strong)" : "var(--text-soft)",
-              }}
-            >
-              {t(`audience_${audience}`)}
-            </button>
-          );
-        })}
-      </span>
-      </>
+              onChange={(event) => onChange({ kind: event.target.checked ? "event" : "class" })}
+              type="checkbox"
+            />
+          </ExplainedSetting>
+
+          <ExplainedSetting label={i18n("admVisitsPerBooking")} tip={o("visits_tip")} parts={parts("visits")}>
+            <span className="flex items-center gap-2">
+              <button
+                aria-label={i18n("admDecrease")}
+                className="h-6 w-6 rounded-full font-semibold disabled:opacity-40"
+                disabled={disabled || cost <= 1}
+                onClick={() => onChange({ credit_cost: cost - 1 })}
+                style={stepStyle}
+                type="button"
+              >
+                −
+              </button>
+              <span className="w-4 text-center font-semibold tabular-nums" style={{ color: "var(--text)" }}>{cost}</span>
+              <button
+                aria-label={i18n("admIncrease")}
+                className="h-6 w-6 rounded-full font-semibold disabled:opacity-40"
+                disabled={disabled || cost >= 10}
+                onClick={() => onChange({ credit_cost: cost + 1 })}
+                style={stepStyle}
+                type="button"
+              >
+                +
+              </button>
+            </span>
+          </ExplainedSetting>
+
+          {/* Plan §5a decision 2: members filter Πρόγραμμα by these two tags. ADR-490: several levels; none = all. */}
+          <ExplainedSetting label={t("chipLevel")} tip={o("level_tip")} parts={parts("level")} stacked>
+            <span className="flex flex-wrap items-center gap-1.5" role="group" aria-label={t("chipLevel")}>
+              {CLASS_LEVELS.map((level) => {
+                const on = levels.includes(level);
+                return (
+                  <button
+                    key={level}
+                    type="button"
+                    aria-pressed={on}
+                    disabled={disabled}
+                    onClick={() => onChange({ levels: on ? levels.filter((value) => value !== level) : [...levels, level] })}
+                    className="rounded-full px-2.5 py-0.5 font-semibold disabled:opacity-50"
+                    style={chipStyle(on)}
+                  >
+                    {t(`level_${level}`)}
+                  </button>
+                );
+              })}
+              {levels.length === 0 ? (
+                <span className="font-semibold" style={{ color: "var(--text)" }}>
+                  {o("levelNoneChosen")}
+                </span>
+              ) : null}
+            </span>
+          </ExplainedSetting>
+
+          <ExplainedSetting label={t("audience")} tip={o("audience_tip")} parts={parts("audience")} stacked>
+            <span className="flex flex-wrap items-center gap-1.5" role="group" aria-label={t("audience")}>
+              {CLASS_AUDIENCES.map((audience) => {
+                const on = audiences.includes(audience);
+                return (
+                  <button
+                    key={audience}
+                    type="button"
+                    aria-pressed={on}
+                    disabled={disabled}
+                    onClick={() =>
+                      onChange({
+                        audiences: on ? audiences.filter((value) => value !== audience) : [...audiences, audience],
+                      })
+                    }
+                    className="rounded-full px-2.5 py-0.5 font-semibold disabled:opacity-50"
+                    style={chipStyle(on)}
+                  >
+                    {t(`audience_${audience}`)}
+                  </button>
+                );
+              })}
+              {audiences.length === 0 ? (
+                <span className="font-semibold" style={{ color: "var(--text)" }}>
+                  {o("audienceNoneChosen")}
+                </span>
+              ) : null}
+            </span>
+          </ExplainedSetting>
+        </div>
       ) : null}
     </div>
   );

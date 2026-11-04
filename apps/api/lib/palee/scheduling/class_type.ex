@@ -5,7 +5,9 @@ defmodule Palee.Scheduling.ClassType do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
 
-  @levels ~w(beginner all_levels advanced)
+  # ADR-490: the levels a class type can suit, in their display order. A class
+  # type keeps a subset; an empty list means «Όλα τα επίπεδα».
+  @levels ~w(beginner intermediate advanced)
   @audiences ~w(women_only teens kids over_40 seniors prenatal_postnatal adaptive)
 
   def levels, do: @levels
@@ -18,8 +20,9 @@ defmodule Palee.Scheduling.ClassType do
     field :archived_at, :utc_datetime
     field :credit_cost, :integer, default: 1
     field :kind, :string, default: "class"
-    # Phase 2 schedule filters; no audiences means open to everyone.
-    field :level, :string, default: "all_levels"
+    # Phase 2 schedule filters; no levels means every level (ADR-490) and no
+    # audiences means open to everyone. The old single `level` column is unused.
+    field :levels, {:array, :string}, default: []
     field :audiences, {:array, :string}, default: []
 
     timestamps(type: :utc_datetime)
@@ -34,7 +37,7 @@ defmodule Palee.Scheduling.ClassType do
       :sort_order,
       :credit_cost,
       :kind,
-      :level,
+      :levels,
       :audiences
     ])
     |> validate_required([:organization_id, :name, :slug, :sort_order])
@@ -47,7 +50,7 @@ defmodule Palee.Scheduling.ClassType do
 
   def update_changeset(class_type, params) do
     class_type
-    |> cast(params, [:name, :sort_order, :credit_cost, :kind, :level, :audiences])
+    |> cast(params, [:name, :sort_order, :credit_cost, :kind, :levels, :audiences])
     |> validate_required([:name, :sort_order])
     |> validate_phase_b()
     |> validate_length(:name, min: 2, max: 80)
@@ -59,9 +62,17 @@ defmodule Palee.Scheduling.ClassType do
     changeset
     |> validate_number(:credit_cost, greater_than_or_equal_to: 1, less_than_or_equal_to: 10)
     |> validate_inclusion(:kind, ["class", "event"])
-    |> validate_inclusion(:level, @levels)
+    |> update_change(:levels, &canonical_levels/1)
+    |> validate_subset(:levels, @levels)
     |> update_change(:audiences, &Enum.uniq/1)
     |> validate_subset(:audiences, @audiences)
+  end
+
+  # One order everywhere, so equal choices compare equal; unknown values stay
+  # for validate_subset to refuse.
+  defp canonical_levels(levels) do
+    levels = Enum.uniq(levels)
+    Enum.filter(@levels, &(&1 in levels)) ++ Enum.reject(levels, &(&1 in @levels))
   end
 
   def archive_changeset(class_type, archived_at) do
