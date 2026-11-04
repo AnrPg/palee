@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 import { SegmentPicker } from "@/components/filters/SegmentPicker";
@@ -22,11 +23,14 @@ type View = "rules" | "periods" | "items";
 export function CoachPayTab() {
   const t = useTranslations("CoachPay");
   const { membership } = useSelectedMembershipRole();
-  const [view, setView] = useState<View>("rules");
+  // `?pay_view=periods` opens a view directly (the catalogue's «Περίοδοι» link from Settings).
+  const requested = useSearchParams().get("pay_view");
+  const [view, setView] = useState<View>(requested === "periods" || requested === "items" ? requested : "rules");
   const canBill = can(membership, "manage_billing");
   return (
     <div className="space-y-4" data-testid="coach-pay-tab">
       <SegmentPicker
+        level="sub"
         ariaLabel={t("title")}
         value={view}
         onChange={setView}
@@ -38,7 +42,9 @@ export function CoachPayTab() {
       />
       {view === "rules" ? <PayRulesView canEdit={canBill} /> : null}
       {view === "periods" ? <PayPeriodsView canEdit={canBill} /> : null}
-      {view === "items" ? <PayItemsCatalog canEdit={can(membership, "manage_settings")} /> : null}
+      {view === "items" ? (
+        <PayItemsCatalog canEdit={can(membership, "manage_settings")} canAddOneOff={canBill} onOpenPeriods={() => setView("periods")} />
+      ) : null}
     </div>
   );
 }

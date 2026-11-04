@@ -1,9 +1,12 @@
+import { chooseOption } from "./support/select";
 import { expect, test, type Page, type Route } from "./support/test";
 
 // Coach pay (ADR-341/382, W1 mockup): s4 A the rules per person in
 // Οικονομικά › Αμοιβές coaches, s5 A a period with one primary button per
 // status and statements that open into lines (net lines marked «Καθαρά»),
-// and s6 A «Οι αμοιβές μου» for the coach. The API is stubbed; anything not
+// and s6 A «Οι αμοιβές μου» for the coach. ADR-510 (ANR 2026-11-04): the
+// catalogue's «Κάθε περίοδο · Μία φορά» forms, automatic allowances that can
+// be taken off one person for one period, and the Ink sub-level dropdown. The API is stubbed; anything not
 // stubbed answers `{}`.
 
 const json = (route: Route, body: unknown, status = 200) =>
@@ -130,8 +133,43 @@ const OVERTIME_ITEM = {
   archived_at: null,
 };
 
-async function stubAccountant(page: Page, writes: Write[], items: unknown[] = []) {
-  let current = period("draft");
+const PEOPLE = [
+  { user_id: "nikos", name: "Νίκος Α.", pay_roles: ["coach"] },
+  { user_id: "anna", name: "Άννα Π.", pay_roles: ["coach"] },
+];
+
+const TRAVEL_ITEM = {
+  id: "item-travel",
+  kind: "allowance",
+  name: "Μετακίνηση",
+  amount_cents: 2000,
+  unit: "per_period",
+  frequency: "period",
+  roles: ["coach"],
+  weekly_threshold: null,
+  currency: "EUR",
+  amount_basis: "net",
+  archived_at: null,
+};
+
+const SKIP = { id: "skip-1", user_id: "nikos", pay_item_id: "item-travel", name: "Μετακίνηση", created_by_id: "acc-1", inserted_at: "2026-11-01T08:00:00Z" };
+
+/** The statement once the recurring allowance reached Νίκος by itself. */
+const WITH_TRAVEL = {
+  ...STATEMENT,
+  net_cents: 5000,
+  groups: [
+    ...STATEMENT.groups,
+    { key: "pay_item:item-travel:allowance:net", kind: "allowance", rule_id: null, pay_item_id: "item-travel", amount_basis: "net", terms: { frequency: "period" }, line_count: 1, quantity: 1, unit_cents: 2000, amount_cents: 2000 },
+  ],
+  lines: [...STATEMENT.lines, line({ id: "line-travel", kind: "allowance", pay_item_id: "item-travel", amount_basis: "net", amount_cents: 2000, unit_cents: 2000, source_type: "pay_item" })],
+};
+
+// The owner manages settings too, so the catalogue offers both workflows.
+const OWNER_MEMBERSHIP = membership("owner", { ...ACCOUNTANT_MEMBERSHIP.capabilities, manage_settings: true });
+
+async function stubAccountant(page: Page, writes: Write[], items: unknown[] = [], first: ReturnType<typeof period> = period("draft"), member = ACCOUNTANT_MEMBERSHIP) {
+  let current = first;
   await page.context().addCookies([{ name: "palee_locale", value: "el", url: "http://127.0.0.1" }]);
   await page.route("**/api/**", async (route) => {
     const path = tenantless(new URL(route.request().url()).pathname);
@@ -140,7 +178,7 @@ async function stubAccountant(page: Page, writes: Write[], items: unknown[] = []
     if (method !== "GET") writes.push({ method, path, body });
     if (path === "/api/auth/refresh") return json(route, { access_token: tokenFor(ACCOUNTANT.id), refresh_token: "refresh" });
     if (path === "/api/auth/me") return json(route, ACCOUNTANT);
-    if (path === "/api/memberships") return json(route, [ACCOUNTANT_MEMBERSHIP]);
+    if (path === "/api/memberships") return json(route, [member]);
     if (path.startsWith("/api/notifications")) return json(route, { notifications: [], unread_count: 0 });
     if (path === "/api/staff/members") return json(route, { staff: STAFF });
     if (path === "/api/admin/finance/queues") return json(route, { queues: {} });
@@ -148,7 +186,18 @@ async function stubAccountant(page: Page, writes: Write[], items: unknown[] = []
     if (path.startsWith("/api/admin/finance/members")) return json(route, { members: [], meta: {} });
     if (path === "/api/admin/coach-pay/rules" && method === "POST") return json(route, { rule: { ...RULE, id: "rule-2", coach_user_id: "anna", ...(body as object) } }, 201);
     if (path === "/api/admin/coach-pay/rules") return json(route, { rules: [RULE] });
+    if (path === "/api/admin/coach-pay/people") return json(route, { people: PEOPLE });
+    if (path === "/api/admin/coach-pay/items" && method === "POST") return json(route, { item: { id: "item-new", currency: "EUR", archived_at: null, ...(body as object) } }, 201);
     if (path === "/api/admin/coach-pay/items") return json(route, { items });
+    if (path === "/api/admin/coach-pay/periods/per-10/adjustments" && method === "POST") return json(route, { period: current });
+    if (path.startsWith("/api/admin/coach-pay/periods/per-10/adjustments/") && method === "DELETE") {
+      current = { ...current, statements: [{ ...STATEMENT, groups: STATEMENT.groups, lines: STATEMENT.lines }], item_skips: [SKIP] } as typeof current;
+      return json(route, { period: current });
+    }
+    if (path === "/api/admin/coach-pay/periods/per-10/skips/skip-1" && method === "DELETE") {
+      current = first;
+      return json(route, { period: current });
+    }
     if (path === "/api/admin/coach-pay/periods/per-10/pay-items") return json(route, { period: current });
     if (path === "/api/admin/coach-pay/periods") return json(route, { periods: [current] });
     if (path === "/api/admin/coach-pay/periods/per-10/approve") {
@@ -249,6 +298,86 @@ test("one-off overtime: hours × the overtime rate, with a reason", async ({ pag
   await expect
     .poll(() => writes.find((write) => write.path === "/api/admin/coach-pay/periods/per-10/pay-items")?.body)
     .toEqual({ user_id: "nikos", pay_item_id: "item-ot", minutes: 150, note: "Αγώνας του box", amount_basis: "gross" });
+});
+
+test("the catalogue explains both workflows and a recurring allowance has its own frequency", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  const writes: Write[] = [];
+  await stubAccountant(page, writes, [OVERTIME_ITEM], period("draft"), OWNER_MEMBERSHIP);
+  await page.goto("/admin/finance?tab=pay&pay_view=items");
+
+  const info = page.getByTestId("pay-items-info");
+  await expect(info).toContainText("Κάθε περίοδο");
+  await expect(info).toContainText("Μία φορά");
+  await expect(info).toContainText("Τι είναι η «περίοδος»;");
+  await expect(page.getByTestId("pay-item").filter({ hasText: "Υπερωρία τμημάτων" })).toContainText("πάνω από 30 ώρες την εβδομάδα");
+
+  await page.getByTestId("pay-add-item-allowance").click();
+  const dialog = page.getByTestId("pay-item-dialog");
+  await expect(dialog.getByTestId("pay-item-mode").locator('[data-mode="recurring"]')).toHaveAttribute("aria-checked", "true");
+  await expect(dialog.getByTestId("pay-item-explain")).toContainText("Μπαίνει μόνο του σε κάθε υπολογισμό");
+  await dialog.getByLabel("Όνομα").fill("Μετακίνηση");
+  await dialog.getByLabel("Ποσό", { exact: true }).fill("80");
+  await dialog.getByTestId("pay-item-frequency").getByRole("radio", { name: "Την εβδομάδα" }).click();
+  await page.getByTestId("pay-item-save").click();
+  await expect
+    .poll(() => writes.find((write) => write.method === "POST" && write.path === "/api/admin/coach-pay/items")?.body)
+    .toMatchObject({ kind: "allowance", name: "Μετακίνηση", amount_cents: 8000, unit: "per_period", frequency: "weekly", roles: ["coach"] });
+});
+
+test("one time from the catalogue: «Άλλο ποσό» pays one person without creating an allowance", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  const writes: Write[] = [];
+  await stubAccountant(page, writes, [OVERTIME_ITEM], period("draft"), OWNER_MEMBERSHIP);
+  await page.goto("/admin/finance?tab=pay&pay_view=items");
+
+  await page.getByTestId("pay-add-item-allowance").click();
+  const dialog = page.getByTestId("pay-item-dialog");
+  await dialog.getByTestId("pay-item-mode").locator('[data-mode="oneOff"]').click();
+  await chooseOption(page, dialog.getByTestId("pay-oneoff-person"), "anna");
+  await expect(dialog.getByTestId("pay-oneoff-period")).toHaveAttribute("data-value", "per-10");
+  // Άννα has no saved per-time allowance, so the form starts on «Άλλο ποσό».
+  await expect(dialog.getByTestId("pay-oneoff-item")).toHaveAttribute("data-value", "other");
+  await dialog.getByTestId("pay-oneoff-amount").fill("25");
+  await dialog.getByTestId("pay-oneoff-note").fill("Βοήθεια στο σεμινάριο");
+  await page.getByTestId("pay-item-save").click();
+  await expect
+    .poll(() => writes.find((write) => write.path === "/api/admin/coach-pay/periods/per-10/adjustments")?.body)
+    .toEqual({ coach_user_id: "anna", kind: "ad_hoc", amount_cents: 2500, note: "Βοήθεια στο σεμινάριο" });
+  expect(writes.some((write) => write.method === "POST" && write.path === "/api/admin/coach-pay/items")).toBe(false);
+  await expect(page.getByTestId("pay-item-added")).toContainText("Άννα Π.");
+});
+
+test("a recurring allowance is taken off one person for this period and put back", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  const writes: Write[] = [];
+  await stubAccountant(page, writes, [TRAVEL_ITEM], period("draft", [WITH_TRAVEL]));
+  await page.goto("/admin/finance?tab=pay&pay_view=periods");
+  await page.getByTestId("pay-period-row").first().click();
+  const detail = page.getByTestId("pay-period");
+  await detail.getByTestId("pay-statement-toggle").click();
+  const lines = detail.getByTestId("pay-statement-lines");
+  await expect(lines).toContainText("Επίδομα: 1 × 20,00");
+
+  await lines.getByRole("button", { name: "Ενέργειες γραμμής" }).last().click();
+  await page.getByRole("menuitem", { name: "Όχι σε αυτή την περίοδο" }).click();
+  await expect(lines.getByTestId("pay-skipped-item")).toContainText("Μετακίνηση: όχι σε αυτή την περίοδο");
+  expect(writes.map((write) => `${write.method} ${write.path}`)).toContain("DELETE /api/admin/coach-pay/periods/per-10/adjustments/line-travel");
+
+  await lines.getByTestId("pay-restore-item").click();
+  await expect(lines.getByTestId("pay-skipped-item")).toHaveCount(0);
+  expect(writes.map((write) => `${write.method} ${write.path}`)).toContain("DELETE /api/admin/coach-pay/periods/per-10/skips/skip-1");
+});
+
+test("on a phone the nested switch is an Ink dropdown, unlike the tabs above it", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const writes: Write[] = [];
+  await stubAccountant(page, writes);
+  await page.goto("/admin/finance?tab=pay");
+  const sub = page.getByTestId("coach-pay-tab").locator('[data-segment-dropdown="sub"]');
+  await expect(sub).toBeVisible();
+  await expect(sub).toHaveAttribute("style", /background: var\(--text\)/);
+  await expect(page.locator('[data-segment-dropdown="page"]').first()).toHaveAttribute("style", /background: var\(--primary\)/);
 });
 
 test("the coach sees «Οι αμοιβές μου»: the last period with its lines, then earlier ones", async ({ page }) => {

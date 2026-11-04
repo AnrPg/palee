@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useId, useState } from "react";
 
 import { ApiError } from "@/api/client";
-import { addPayAdjustment, addPayItemLine, coachPayKeys, fetchPayItems, reopenPayPeriod, type PayPeriod } from "@/api/coach-pay";
+import { addPayAdjustment, addPayItemLine, coachPayKeys, fetchPayItems, fetchPayPeople, reopenPayPeriod, type PayPeriod } from "@/api/coach-pay";
 import { useSession } from "@/components/session-provider";
 import { Dialog, DialogButton } from "@/components/ui/Dialog";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
@@ -48,8 +48,11 @@ export function PayLineDialog({ period, userId, name, onClose }: { period: PayPe
   const [advanced, setAdvanced] = useState(false);
 
   const itemsQuery = useQuery({ queryKey: coachPayKeys.items, enabled: Boolean(token), queryFn: () => fetchPayItems(token) });
-  const allowances = addableItems(itemsQuery.data?.items ?? []);
-  const overtimes = overtimeItems(itemsQuery.data?.items ?? []);
+  const peopleQuery = useQuery({ queryKey: coachPayKeys.people, enabled: Boolean(token), queryFn: () => fetchPayPeople(token) });
+  // ADR-510: only what applies to the person's roles (the API refuses the rest).
+  const roles = peopleQuery.data ? (peopleQuery.data.people.find((person) => person.user_id === userId)?.pay_roles ?? []) : null;
+  const allowances = addableItems(itemsQuery.data?.items ?? [], roles);
+  const overtimes = overtimeItems(itemsQuery.data?.items ?? [], roles);
   const choices = draft.kind === "overtime" ? overtimes : allowances;
   const item = choices.find((candidate) => candidate.id === draft.itemId) ?? null;
 
