@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-quer
 import { NextIntlClientProvider } from "next-intl";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { ACCOUNT_PROGRESS_KEY } from "@/api/account-training";
 import en from "../../../../messages/en.json";
 
 import { baselineOf, MetricTitleAside } from "./MetricInfo";
@@ -31,7 +32,7 @@ function renderWith(node: React.ReactNode) {
 /** A stand-in Πρόοδος card: it reads `/me/progress` and shows its weekly «?». */
 function WeeklyCard() {
   const query = useQuery({
-    queryKey: ["account", "progress"],
+    queryKey: [...ACCOUNT_PROGRESS_KEY],
     queryFn: () => apiRequest("/me/progress") as Promise<{ metric_baselines?: Record<string, string> }>,
   });
   if (!query.data) return null;
@@ -58,7 +59,9 @@ const reset = {
 };
 
 describe("member reset of a Πρόοδος stat (ADR-462 §5)", () => {
-  beforeEach(() => apiRequest.mockReset());
+  beforeEach(() => {
+    apiRequest.mockReset();
+  });
 
   it("explains the widget, asks first, POSTs the reset and shows «since» after the refetch", async () => {
     let baselines: Record<string, string> | undefined;
@@ -95,7 +98,7 @@ describe("member reset of a Πρόοδος stat (ADR-462 §5)", () => {
       ),
     );
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
-    expect(await within(card).findByTestId("metric-since")).toHaveTextContent("from Nov 4");
+    expect(await within(card).findByTestId("metric-since")).toHaveTextContent("since Nov 4");
   });
 
   it("cancelling the confirm sends nothing", async () => {
@@ -135,7 +138,9 @@ describe("member reset of a Πρόοδος stat (ADR-462 §5)", () => {
 });
 
 describe("Ιστορικό μηδενισμών (ADR-462 §5)", () => {
-  beforeEach(() => apiRequest.mockReset());
+  beforeEach(() => {
+    apiRequest.mockReset();
+  });
 
   const history = (active: boolean) => ({
     entries: [
