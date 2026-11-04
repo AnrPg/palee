@@ -4820,6 +4820,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/notifications/delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Delete the notifications picked, or every one a filter matches
+         * @description ADR-460: «Διαγραφή ειδοποιήσεων» in Ρυθμίσεις. Not undoable.
+         */
+        post: operations["PaleeWeb.NotificationController.bulk_delete"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/notifications/native-push-tokens": {
         parameters: {
             query?: never;
@@ -4983,6 +5003,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/notifications/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete a notification for the current user
+         * @description ADR-460: soft delete; no client shows it again. «Αναίρεση» may restore it for `restorable_for_seconds`.
+         */
+        delete: operations["PaleeWeb.NotificationController.delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/notifications/{id}/click": {
         parameters: {
             query?: never;
@@ -5011,6 +5051,26 @@ export interface paths {
         put?: never;
         /** Mark a single notification as read for the current user */
         post: operations["PaleeWeb.NotificationController.mark_read"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/{id}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Restore a notification the current user deleted moments ago
+         * @description ADR-460: only within the restore window; afterwards 410.
+         */
+        post: operations["PaleeWeb.NotificationController.restore"];
         delete?: never;
         options?: never;
         head?: never;
@@ -36109,6 +36169,59 @@ export interface components {
              */
             remote: "ok" | "unavailable" | "skipped";
         };
+        /**
+         * NotificationBulkDelete
+         * @description Either `ids` (the notifications picked) or `filter` (every notification it matches, as the list shows them), never both. Not undoable.
+         */
+        NotificationBulkDelete: {
+            /**
+             * NotificationFilter
+             * @description Which notifications a bulk delete covers; an empty filter covers all.
+             */
+            filter?: {
+                /**
+                 * @description Only notifications of this category (ADR-199).
+                 * @enum {string}
+                 */
+                category?: "bookings" | "messages" | "community" | "coach" | "partners" | "journal" | "staff" | "account";
+                /** @description Only notifications received more than this many days ago. */
+                older_than_days?: number;
+                /**
+                 * @description `read`: only notifications already read. Default `all`.
+                 * @enum {string}
+                 */
+                state?: "all" | "read";
+            };
+            ids?: string[];
+        };
+        /** NotificationDeleted */
+        NotificationDeleted: {
+            deleted: boolean;
+            /** @description How long «Αναίρεση» may still restore it. */
+            restorable_for_seconds: number;
+        };
+        /** NotificationDeletedCount */
+        NotificationDeletedCount: {
+            deleted_count: number;
+        };
+        /**
+         * NotificationFilter
+         * @description Which notifications a bulk delete covers; an empty filter covers all.
+         */
+        NotificationFilter: {
+            /**
+             * @description Only notifications of this category (ADR-199).
+             * @enum {string}
+             */
+            category?: "bookings" | "messages" | "community" | "coach" | "partners" | "journal" | "staff" | "account";
+            /** @description Only notifications received more than this many days ago. */
+            older_than_days?: number;
+            /**
+             * @description `read`: only notifications already read. Default `all`.
+             * @enum {string}
+             */
+            state?: "all" | "read";
+        };
         /** NotificationPreference */
         NotificationPreference: {
             /**
@@ -36161,6 +36274,10 @@ export interface components {
             email?: boolean;
             in_app?: boolean;
             push?: boolean;
+        };
+        /** NotificationRestored */
+        NotificationRestored: {
+            restored: boolean;
         };
         /** NutritionPlan */
         NutritionPlan: {
@@ -73846,6 +73963,11 @@ export interface operations {
             query?: {
                 limit?: number;
                 cursor?: string;
+                state?: "all" | "read";
+                older_than_days?: number;
+                category?: "bookings" | "messages" | "community" | "coach" | "partners" | "journal" | "staff" | "account";
+                /** @description Also answer `matching_count`: how many notifications match the filter. */
+                include_count?: boolean;
             };
             header?: never;
             path?: never;
@@ -73860,6 +73982,8 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description With include_count: how many notifications match the filter. */
+                        matching_count?: number | null;
                         next_cursor: string | null;
                         notifications: {
                             /** Format: uuid */
@@ -73878,6 +74002,64 @@ export interface operations {
                             user_id: string;
                         }[];
                         unread_count: number;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.NotificationController.bulk_delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * NotificationFilter
+                     * @description Which notifications a bulk delete covers; an empty filter covers all.
+                     */
+                    filter?: {
+                        /**
+                         * @description Only notifications of this category (ADR-199).
+                         * @enum {string}
+                         */
+                        category?: "bookings" | "messages" | "community" | "coach" | "partners" | "journal" | "staff" | "account";
+                        /** @description Only notifications received more than this many days ago. */
+                        older_than_days?: number;
+                        /**
+                         * @description `read`: only notifications already read. Default `all`.
+                         * @enum {string}
+                         */
+                        state?: "all" | "read";
+                    };
+                    ids?: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description Deleted count */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        deleted_count: number;
+                    };
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code?: string;
+                        error: string;
                     };
                 };
             };
@@ -74292,6 +74474,45 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.NotificationController.delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Notification ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Delete result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        deleted: boolean;
+                        /** @description How long «Αναίρεση» may still restore it. */
+                        restorable_for_seconds: number;
+                    };
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code?: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.NotificationController.mark_clicked": {
         parameters: {
             query?: never;
@@ -74357,6 +74578,43 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.NotificationController.restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Notification ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Restore result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        restored: boolean;
+                    };
+                };
+            };
+            /** @description No longer restorable */
+            410: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code?: string;
                         error: string;
                     };
                 };

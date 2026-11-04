@@ -12,16 +12,29 @@ import {useUiLocale} from "@/i18n/use-ui-locale";
 import {useUiTranslations} from "@/i18n/ui";
 import { loggedWodChangedText } from "@/lib/training-floor";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type PointerEvent as ReactPointerEvent,
+  type RefObject,
+  type SyntheticEvent,
+} from "react";
 import { useRouter } from "next/navigation";
 import { emailKeyNotificationText } from "@/components/email/email-key-notifications";
 import { useTranslations } from "next-intl";
 
 import {
+  deleteNotification,
   fetchNotifications,
   fetchUnreadNotificationCount,
   markNotificationClicked,
+  markNotificationRead,
   markAllNotificationsRead,
+  restoreNotification,
   type NotificationsResponse,
   type NotificationRecord,
 } from "@/api/notifications";
@@ -50,6 +63,7 @@ import { NavIcon } from "@/components/nav/NavIcons";
 import { Dialog } from "@/components/ui/Dialog";
 import { clockFormat } from "@/lib/clock";
 import { boxInboxNotificationText } from "@/components/chat/inbox/box-inbox-notices";
+import { HoverHint } from "@/components/HelpTooltip";
 
 function formatTimestamp(uiLocale: string, isoString: string) {
   return clockFormat(uiLocale, {
@@ -60,17 +74,11 @@ function formatTimestamp(uiLocale: string, isoString: string) {
   }).format(new Date(isoString));
 }
 
-function NotificationCard({
-  notification,
-  targetUrl,
-  onClick,
-  origin,
-}: {
-  notification: NotificationRecord;
-  targetUrl: string | null;
-  onClick: () => void;
-  origin: NotificationOrigin | null;
-}) {
+/**
+ * The title and body of a notification as the bell shows them; shared with
+ * «Διαγραφή ειδοποιήσεων» in Ρυθμίσεις (ADR-460).
+ */
+export function useNotificationText() {
   const uiLocale = useUiLocale();
   const i18n = useUiTranslations();
   const tTrials = useTranslations("Trials");
@@ -680,17 +688,161 @@ function NotificationCard({
         return i18n("notificationc18f8f2");
     }
   }
+  return { title: titleFromPayload, body: notificationBody };
+}
+
+/** ADR-460: how far a swipe to the left slides the card to show its two buttons. */
+export const SWIPE_REVEAL_PX = 96;
+const SWIPE_SLOP_PX = 8;
+
+function isCoarsePointer() {
+  return typeof window !== "undefined" && typeof window.matchMedia === "function" && window.matchMedia("(pointer: coarse)").matches;
+}
+
+/**
+ * ADR-460 (option B): on touch, swiping the card left reveals the buttons
+ * behind it; swiping right, tapping the card or tapping elsewhere closes
+ * them. Only a reveal: nothing is deleted or hidden by the swipe itself.
+ */
+function useSwipeReveal(wrapperRef: RefObject<HTMLDivElement | null>) {
+  const [offset, setOffset] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const drag = useRef<{ x: number; y: number; base: number; moved: boolean } | null>(null);
+  const swallowClick = useRef(false);
+  const revealed = offset === -SWIPE_REVEAL_PX && !dragging;
+
+  const settle = useCallback((open: boolean) => {
+    setDragging(false);
+    setOffset(open ? -SWIPE_REVEAL_PX : 0);
+  }, []);
+
+  useEffect(() => {
+    if (!revealed) return;
+    const closeOutside = (event: PointerEvent) => {
+      if (wrapperRef.current && event.target instanceof Node && !wrapperRef.current.contains(event.target)) settle(false);
+    };
+    document.addEventListener("pointerdown", closeOutside);
+    return () => document.removeEventListener("pointerdown", closeOutside);
+  }, [revealed, settle, wrapperRef]);
+
+  const handlers = {
+    onPointerDown(event: ReactPointerEvent) {
+      if (event.pointerType !== "touch") return;
+      drag.current = { x: event.clientX, y: event.clientY, base: revealed ? -SWIPE_REVEAL_PX : 0, moved: false };
+    },
+    onPointerMove(event: ReactPointerEvent) {
+      const current = drag.current;
+      if (!current) return;
+      const dx = event.clientX - current.x;
+      const dy = event.clientY - current.y;
+      if (!current.moved) {
+        if (Math.abs(dx) < SWIPE_SLOP_PX) return;
+        // A vertical move is the list scrolling, not a swipe.
+        if (Math.abs(dy) > Math.abs(dx)) {
+          drag.current = null;
+          return;
+        }
+        current.moved = true;
+        setDragging(true);
+      }
+      setOffset(Math.max(-SWIPE_REVEAL_PX, Math.min(0, current.base + dx)));
+    },
+    onPointerUp(event: ReactPointerEvent) {
+      const current = drag.current;
+      drag.current = null;
+      if (!current) return;
+      if (!current.moved) {
+        // A tap on a card whose buttons are showing only closes them.
+        if (current.base !== 0) {
+          swallowClick.current = true;
+          settle(false);
+        }
+        return;
+      }
+      swallowClick.current = true;
+      const final = Math.max(-SWIPE_REVEAL_PX, Math.min(0, current.base + event.clientX - current.x));
+      settle(final < -SWIPE_REVEAL_PX / 2);
+    },
+    onPointerCancel() {
+      const current = drag.current;
+      drag.current = null;
+      if (current) settle(current.base !== 0);
+    },
+  };
+
+  /** True once for the click that ends a swipe (or closes the buttons). */
+  function consumeClick() {
+    const swallowed = swallowClick.current;
+    swallowClick.current = false;
+    return swallowed;
+  }
+
+  return { offset, dragging, revealed, handlers, consumeClick, reveal: () => settle(true) };
+}
+
+export function NotificationCard({
+  notification,
+  targetUrl,
+  onClick,
+  origin,
+  onDelete,
+  onHide,
+}: {
+  notification: NotificationRecord;
+  targetUrl: string | null;
+  onClick: () => void;
+  origin: NotificationOrigin | null;
+  /** ADR-460: the trash button; the drawer offers «Αναίρεση» for a moment. */
+  onDelete: () => void;
+  /** ADR-460: the closed eye: marks it read, so it moves to «Διαβασμένες». */
+  onHide: () => void;
+}) {
+  const uiLocale = useUiLocale();
+  const i18n = useUiTranslations();
+  const t = useTranslations("NotificationActions");
+  const { title: titleFromPayload, body: notificationBody } = useNotificationText();
   const clickable = Boolean(targetUrl);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const swipe = useSwipeReveal(wrapperRef);
 
   return (
+    // ADR-460 (option B): the buttons take no space. With a mouse they show
+    // over the card's corner on hover and on keyboard focus inside it; on
+    // touch they sit behind the card and a swipe to the left reveals them.
+    <div
+      ref={wrapperRef}
+      className="group/card relative isolate rounded-[1.4rem] pointer-coarse:overflow-hidden"
+      data-revealed={swipe.revealed ? "true" : "false"}
+      data-testid="notification-card"
+    >
+    <NotificationActions
+      read={Boolean(notification.read_at)}
+      onDelete={onDelete}
+      onHide={onHide}
+      onFocusWithin={() => {
+        if (isCoarsePointer()) swipe.reveal();
+      }}
+      labels={{ delete: t("delete"), hide: t("hide"), hidden: t("alreadyHidden") }}
+    />
     <article
       key={notification.id}
-      className="rounded-[1.4rem] p-4"
-      onClick={clickable ? onClick : undefined}
+      className={`relative z-0 rounded-[1.4rem] p-4 ${swipe.dragging ? "" : "motion-safe:transition-transform motion-safe:duration-200"}`}
+      onClick={(event) => {
+        if (swipe.consumeClick()) {
+          event.preventDefault();
+          return;
+        }
+        if (clickable) onClick();
+      }}
+      {...swipe.handlers}
       role={clickable ? "button" : undefined}
       style={{
+        transform: swipe.offset ? `translateX(${swipe.offset}px)` : undefined,
+        // Vertical scrolling stays with the browser; horizontal moves are the swipe.
+        touchAction: "pan-y",
         border: notification.read_at ? "1px solid var(--border)" : "1px solid color-mix(in srgb, var(--primary) 30%, transparent)",
-        background: notification.read_at ? "var(--panel-muted)" : "color-mix(in srgb, var(--primary) 6%, transparent)",
+        // Opaque, so the buttons behind it (touch, ADR-460) never show through.
+        background: `linear-gradient(${notification.read_at ? "var(--panel-muted)" : "color-mix(in srgb, var(--primary) 6%, transparent)"} 0 0), var(--panel)`,
         cursor: clickable ? "pointer" : "default",
         // Anything raised outside the active organization gets a colour spine
         // in that gym's own brand colour, so repeat senders stay recognisable.
@@ -711,7 +863,7 @@ function NotificationCard({
       }
     >
       <div className="flex items-start justify-between gap-3">
-        <div>
+        <div className="min-w-0">
           {origin ? (
             <span
               className="mb-2 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold"
@@ -759,6 +911,96 @@ function NotificationCard({
         {formatTimestamp(uiLocale, notification.inserted_at)}
       </p>
     </article>
+    </div>
+  );
+}
+
+const actionButtonClass =
+  "inline-flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-[var(--panel-raised)]";
+
+function TrashIcon() {
+  return (
+    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 7h16" />
+      <path d="M10 11v6M14 11v6" />
+      <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+      <path d="M9 7V4h6v3" />
+    </svg>
+  );
+}
+
+function EyeClosedIcon() {
+  return (
+    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 10c2.5 3 5.5 4.5 9 4.5s6.5-1.5 9-4.5" />
+      <path d="M12 14.5V18M7 13.2l-1.6 3M17 13.2l1.6 3M3.8 11l-1.8 2M20.2 11l1.8 2" />
+    </svg>
+  );
+}
+
+/**
+ * ADR-460: delete (trash) then hide (closed eye). A sibling of the card, so
+ * they never open the notification itself. Fine pointers: an overlay on the
+ * card's top end corner, shown on hover and focus-within. Coarse pointers:
+ * behind the card, at its end, uncovered by the swipe.
+ */
+function NotificationActions({
+  read,
+  onDelete,
+  onHide,
+  onFocusWithin,
+  labels,
+}: {
+  read: boolean;
+  onDelete: () => void;
+  onHide: () => void;
+  onFocusWithin: () => void;
+  labels: { delete: string; hide: string; hidden: string };
+}) {
+  const stop = (event: SyntheticEvent) => event.stopPropagation();
+
+  return (
+    <div
+      className="absolute end-2 top-2 z-10 flex items-center gap-1 rounded-full p-0.5 shadow-md motion-safe:transition-opacity opacity-0 pointer-events-none group-hover/card:opacity-100 group-hover/card:pointer-events-auto group-focus-within/card:opacity-100 group-focus-within/card:pointer-events-auto pointer-coarse:inset-y-0 pointer-coarse:end-auto pointer-coarse:right-0 pointer-coarse:top-0 pointer-coarse:z-0 pointer-coarse:rounded-none pointer-coarse:px-2 pointer-coarse:opacity-100 pointer-coarse:pointer-events-auto pointer-coarse:shadow-none"
+      style={{ background: "var(--panel-raised)", border: "1px solid var(--border)" }}
+      onFocus={onFocusWithin}
+      data-testid="notification-actions"
+    >
+      <HoverHint hint={labels.delete} align="end">
+        <button
+          type="button"
+          aria-label={labels.delete}
+          className={`hit-area ${actionButtonClass}`}
+          style={{ color: "var(--muted)" }}
+          onClick={(event) => {
+            stop(event);
+            onDelete();
+          }}
+          onKeyDown={stop}
+          data-testid="notification-delete"
+        >
+          <TrashIcon />
+        </button>
+      </HoverHint>
+      <HoverHint hint={read ? labels.hidden : labels.hide} align="end">
+        <button
+          type="button"
+          aria-label={read ? labels.hidden : labels.hide}
+          className={`hit-area ${actionButtonClass} aria-disabled:cursor-default aria-disabled:opacity-40`}
+          style={{ color: "var(--muted)" }}
+          onClick={(event) => {
+            stop(event);
+            if (!read) onHide();
+          }}
+          onKeyDown={stop}
+          // Not `disabled`: a disabled button may let the click reach the card.
+          aria-disabled={read || undefined}
+          data-testid="notification-hide"
+        >
+          <EyeClosedIcon />
+        </button>
+      </HoverHint>
+    </div>
   );
 }
 
@@ -798,6 +1040,40 @@ const FILTER_TYPES: Record<FilterTab, string[] | null> = {
 };
 
 const OPEN_EVENT = "palee:open-notifications";
+
+/** ADR-460: how long «Αναίρεση» stays offered after a delete. */
+export const UNDO_DELETE_MS = 6000;
+
+type InboxCache = { pages: NotificationsResponse[]; pageParams: unknown[] };
+
+/** The inbox pages with one notification changed or (with `null`) removed. */
+function updateInboxCache(
+  current: InboxCache | undefined,
+  notificationId: string,
+  change: (notification: NotificationRecord) => NotificationRecord | null,
+): InboxCache | undefined {
+  if (!current) return current;
+
+  return {
+    ...current,
+    pages: current.pages.map((page) => {
+      const target = page.notifications.find((notification) => notification.id === notificationId);
+      if (!target) return page;
+
+      const next = change(target);
+      const wasUnread = !target.read_at;
+      const isUnread = next ? !next.read_at : false;
+
+      return {
+        ...page,
+        notifications: next
+          ? page.notifications.map((notification) => (notification.id === notificationId ? next : notification))
+          : page.notifications.filter((notification) => notification.id !== notificationId),
+        unread_count: wasUnread && !isUnread ? Math.max(0, page.unread_count - 1) : page.unread_count,
+      };
+    }),
+  };
+}
 
 /** Opens the inbox from elsewhere, e.g. the avatar menu on phones (ADR-103). */
 export function openNotifications() {
@@ -872,6 +1148,7 @@ export function NotificationBell({
   hideTrigger?: boolean;
 } = {}) {
   const i18n = useUiTranslations();
+  const tActions = useTranslations("NotificationActions");
   const FILTER_TABS: { key: FilterTab; label: string }[] = [
     { key: "all", label: i18n("all6a72085") },
     { key: "workouts", label: i18n("workoutsccb58b2") },
@@ -992,6 +1269,85 @@ export function NotificationBell({
     },
   });
 
+  // ADR-460: the trash button deletes at once (the server keeps a short
+  // restore window); «Αναίρεση» is offered for UNDO_DELETE_MS.
+  const inboxKey = useMemo(() => ["notifications", currentUser?.id] as const, [currentUser?.id]);
+  const [undoable, setUndoable] = useState<{ id: string; pending: Promise<unknown> } | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const undoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearUndo = useCallback(() => {
+    if (undoTimer.current) clearTimeout(undoTimer.current);
+    undoTimer.current = null;
+    setUndoable(null);
+  }, []);
+
+  useEffect(() => () => {
+    if (undoTimer.current) clearTimeout(undoTimer.current);
+  }, []);
+
+  function handleDelete(notification: NotificationRecord) {
+    if (!tokens?.access_token) return;
+    const token = tokens.access_token;
+    setActionError(null);
+    queryClient.setQueryData<InboxCache>(inboxKey, (current) => updateInboxCache(current, notification.id, () => null));
+
+    const pending = deleteNotification(token, notification.id).then(
+      () => queryClient.invalidateQueries({ queryKey: inboxKey }),
+      async (error: unknown) => {
+        setUndoable((current) => (current?.id === notification.id ? null : current));
+        setActionError(tActions("deleteFailed"));
+        await queryClient.invalidateQueries({ queryKey: inboxKey });
+        throw error;
+      },
+    );
+    // A failed delete is reported above; nothing else waits on it.
+    pending.catch(() => undefined);
+
+    if (undoTimer.current) clearTimeout(undoTimer.current);
+    setUndoable({ id: notification.id, pending });
+    undoTimer.current = setTimeout(() => {
+      undoTimer.current = null;
+      setUndoable(null);
+    }, UNDO_DELETE_MS);
+  }
+
+  async function handleUndo() {
+    if (!undoable || !tokens?.access_token) return;
+    const { id, pending } = undoable;
+    clearUndo();
+
+    try {
+      // A restore sent before the delete arrived would find nothing deleted.
+      await pending;
+      await restoreNotification(tokens.access_token, id);
+    } catch {
+      setActionError(tActions("undoFailed"));
+    }
+    await queryClient.invalidateQueries({ queryKey: inboxKey });
+  }
+
+  async function handleHide(notification: NotificationRecord) {
+    if (!tokens?.access_token || notification.read_at) return;
+    setActionError(null);
+    queryClient.setQueryData<InboxCache>(inboxKey, (current) =>
+      updateInboxCache(current, notification.id, (entry) => ({ ...entry, read_at: new Date().toISOString() })),
+    );
+
+    try {
+      await markNotificationRead(tokens.access_token, notification.id);
+    } catch {
+      setActionError(tActions("hideFailed"));
+    }
+    await queryClient.invalidateQueries({ queryKey: inboxKey });
+  }
+
+  function closePanel() {
+    clearUndo();
+    setActionError(null);
+    setOpen(false);
+  }
+
   useEffect(() => {
     if (status !== "authenticated" || !tokens?.access_token || !currentUser?.id) return;
 
@@ -1058,7 +1414,7 @@ export function NotificationBell({
       }
     }
 
-    setOpen(false);
+    closePanel();
     // Next's navigation does not fire `hashchange`, so a link to a section of
     // the page already open (e.g. /me/settings#security) moves to that hash.
     const [path, hash] = url.split("#");
@@ -1095,7 +1451,7 @@ export function NotificationBell({
 
       {open ? (
         <Dialog
-          onClose={() => setOpen(false)}
+          onClose={closePanel}
           bare
           variant="drawer"
           size="md"
@@ -1111,14 +1467,14 @@ export function NotificationBell({
               <button
                 className="rounded-full px-3 py-2 text-sm font-semibold transition-colors"
                 style={{ background: "var(--border)", color: "var(--text-soft)" }}
-                onClick={() => setOpen(false)}
+                onClick={closePanel}
                 type="button"
               >
                 {i18n("closebbfa773")}
               </button>
             </div>
 
-            <FollowRequestsRow onNavigate={() => setOpen(false)} />
+            <FollowRequestsRow onNavigate={closePanel} />
 
             <SegmentPicker
               className="mt-5"
@@ -1194,6 +1550,8 @@ export function NotificationBell({
                           targetUrl={notificationTargetUrl(notification, currentUser?.role)}
                           onClick={() => handleNotificationClick(notification)}
                           origin={originFor(notification)}
+                          onDelete={() => handleDelete(notification)}
+                          onHide={() => void handleHide(notification)}
                         />
                       ))}
                     </div>
@@ -1225,6 +1583,8 @@ export function NotificationBell({
                           targetUrl={notificationTargetUrl(notification, currentUser?.role)}
                           onClick={() => handleNotificationClick(notification)}
                           origin={originFor(notification)}
+                          onDelete={() => handleDelete(notification)}
+                          onHide={() => void handleHide(notification)}
                         />
                       ))}
                     </div>
@@ -1244,6 +1604,39 @@ export function NotificationBell({
                 </button>
               ) : null}
             </div>
+
+            {undoable || actionError ? (
+              <div
+                role="status"
+                aria-live="polite"
+                className="sticky bottom-0 mt-6 flex items-center justify-between gap-3 rounded-[1.2rem] px-4 py-3 text-sm shadow-xl"
+                style={{ background: "var(--panel-raised)", border: "1px solid var(--border-strong)", color: "var(--text)" }}
+                data-testid="notification-undo-toast"
+              >
+                <span style={actionError && !undoable ? { color: "var(--danger)" } : undefined}>
+                  {undoable ? tActions("deleted") : actionError}
+                </span>
+                {undoable ? (
+                  <button
+                    type="button"
+                    className="shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold"
+                    style={{ background: "var(--border)", color: "var(--text-soft)" }}
+                    onClick={() => void handleUndo()}
+                  >
+                    {tActions("undo")}
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold"
+                    style={{ background: "var(--border)", color: "var(--text-soft)" }}
+                    onClick={() => setActionError(null)}
+                  >
+                    {tActions("dismiss")}
+                  </button>
+                )}
+              </div>
+            ) : null}
         </Dialog>
       ) : null}
     </>

@@ -56057,6 +56057,124 @@
         "title": "NeighbourhoodsResponse",
         "type": "object"
       },
+      "NotificationBulkDelete": {
+        "description": "Either `ids` (the notifications picked) or `filter` (every notification it matches, as the list shows them), never both. Not undoable.",
+        "properties": {
+          "filter": {
+            "additionalProperties": false,
+            "description": "Which notifications a bulk delete covers; an empty filter covers all.",
+            "properties": {
+              "category": {
+                "description": "Only notifications of this category (ADR-199).",
+                "enum": [
+                  "bookings",
+                  "messages",
+                  "community",
+                  "coach",
+                  "partners",
+                  "journal",
+                  "staff",
+                  "account"
+                ],
+                "type": "string"
+              },
+              "older_than_days": {
+                "description": "Only notifications received more than this many days ago.",
+                "maximum": 3650,
+                "minimum": 1,
+                "type": "integer"
+              },
+              "state": {
+                "description": "`read`: only notifications already read. Default `all`.",
+                "enum": [
+                  "all",
+                  "read"
+                ],
+                "type": "string"
+              }
+            },
+            "title": "NotificationFilter",
+            "type": "object"
+          },
+          "ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 200,
+            "minItems": 1,
+            "type": "array"
+          }
+        },
+        "title": "NotificationBulkDelete",
+        "type": "object"
+      },
+      "NotificationDeleted": {
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          },
+          "restorable_for_seconds": {
+            "description": "How long «Αναίρεση» may still restore it.",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "deleted",
+          "restorable_for_seconds"
+        ],
+        "title": "NotificationDeleted",
+        "type": "object"
+      },
+      "NotificationDeletedCount": {
+        "properties": {
+          "deleted_count": {
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "deleted_count"
+        ],
+        "title": "NotificationDeletedCount",
+        "type": "object"
+      },
+      "NotificationFilter": {
+        "additionalProperties": false,
+        "description": "Which notifications a bulk delete covers; an empty filter covers all.",
+        "properties": {
+          "category": {
+            "description": "Only notifications of this category (ADR-199).",
+            "enum": [
+              "bookings",
+              "messages",
+              "community",
+              "coach",
+              "partners",
+              "journal",
+              "staff",
+              "account"
+            ],
+            "type": "string"
+          },
+          "older_than_days": {
+            "description": "Only notifications received more than this many days ago.",
+            "maximum": 3650,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "state": {
+            "description": "`read`: only notifications already read. Default `all`.",
+            "enum": [
+              "all",
+              "read"
+            ],
+            "type": "string"
+          }
+        },
+        "title": "NotificationFilter",
+        "type": "object"
+      },
       "NotificationPreference": {
         "properties": {
           "audience": {
@@ -56189,6 +56307,18 @@
           }
         },
         "title": "NotificationPreferenceUpdate",
+        "type": "object"
+      },
+      "NotificationRestored": {
+        "properties": {
+          "restored": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "restored"
+        ],
+        "title": "NotificationRestored",
         "type": "object"
       },
       "NutritionPlan": {
@@ -165815,6 +165945,58 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "required": false,
+            "schema": {
+              "description": "`read`: only notifications already read. Default `all`.",
+              "enum": [
+                "all",
+                "read"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "older_than_days",
+            "required": false,
+            "schema": {
+              "description": "Only notifications received more than this many days ago.",
+              "maximum": 3650,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "category",
+            "required": false,
+            "schema": {
+              "description": "Only notifications of this category (ADR-199).",
+              "enum": [
+                "bookings",
+                "messages",
+                "community",
+                "coach",
+                "partners",
+                "journal",
+                "staff",
+                "account"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "Also answer `matching_count`: how many notifications match the filter.",
+            "in": "query",
+            "name": "include_count",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
@@ -165823,6 +166005,11 @@
               "application/json": {
                 "schema": {
                   "properties": {
+                    "matching_count": {
+                      "description": "With include_count: how many notifications match the filter.",
+                      "nullable": true,
+                      "type": "integer"
+                    },
                     "next_cursor": {
                       "nullable": true,
                       "type": "string"
@@ -165893,6 +166080,125 @@
           }
         ],
         "summary": "List notifications for the current user",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/api/notifications/delete": {
+      "post": {
+        "callbacks": {},
+        "description": "ADR-460: «Διαγραφή ειδοποιήσεων» in Ρυθμίσεις. Not undoable.",
+        "operationId": "PaleeWeb.NotificationController.bulk_delete",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "Either `ids` (the notifications picked) or `filter` (every notification it matches, as the list shows them), never both. Not undoable.",
+                "properties": {
+                  "filter": {
+                    "additionalProperties": false,
+                    "description": "Which notifications a bulk delete covers; an empty filter covers all.",
+                    "properties": {
+                      "category": {
+                        "description": "Only notifications of this category (ADR-199).",
+                        "enum": [
+                          "bookings",
+                          "messages",
+                          "community",
+                          "coach",
+                          "partners",
+                          "journal",
+                          "staff",
+                          "account"
+                        ],
+                        "type": "string"
+                      },
+                      "older_than_days": {
+                        "description": "Only notifications received more than this many days ago.",
+                        "maximum": 3650,
+                        "minimum": 1,
+                        "type": "integer"
+                      },
+                      "state": {
+                        "description": "`read`: only notifications already read. Default `all`.",
+                        "enum": [
+                          "all",
+                          "read"
+                        ],
+                        "type": "string"
+                      }
+                    },
+                    "title": "NotificationFilter",
+                    "type": "object"
+                  },
+                  "ids": {
+                    "items": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "maxItems": 200,
+                    "minItems": 1,
+                    "type": "array"
+                  }
+                },
+                "title": "NotificationBulkDelete",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "deleted_count": {
+                      "minimum": 0,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "deleted_count"
+                  ],
+                  "title": "NotificationDeletedCount",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Deleted count"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Delete the notifications picked, or every one a filter matches",
         "tags": [
           "Notifications"
         ]
@@ -166853,6 +167159,81 @@
         ]
       }
     },
+    "/api/notifications/{id}": {
+      "delete": {
+        "callbacks": {},
+        "description": "ADR-460: soft delete; no client shows it again. «Αναίρεση» may restore it for `restorable_for_seconds`.",
+        "operationId": "PaleeWeb.NotificationController.delete",
+        "parameters": [
+          {
+            "description": "Notification ID",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "deleted": {
+                      "type": "boolean"
+                    },
+                    "restorable_for_seconds": {
+                      "description": "How long «Αναίρεση» may still restore it.",
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "deleted",
+                    "restorable_for_seconds"
+                  ],
+                  "title": "NotificationDeleted",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Delete result"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Delete a notification for the current user",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
     "/api/notifications/{id}/click": {
       "post": {
         "callbacks": {},
@@ -166984,6 +167365,76 @@
           }
         ],
         "summary": "Mark a single notification as read for the current user",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/api/notifications/{id}/restore": {
+      "post": {
+        "callbacks": {},
+        "description": "ADR-460: only within the restore window; afterwards 410.",
+        "operationId": "PaleeWeb.NotificationController.restore",
+        "parameters": [
+          {
+            "description": "Notification ID",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "restored": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "restored"
+                  ],
+                  "title": "NotificationRestored",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Restore result"
+          },
+          "410": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No longer restorable"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Restore a notification the current user deleted moments ago",
         "tags": [
           "Notifications"
         ]
