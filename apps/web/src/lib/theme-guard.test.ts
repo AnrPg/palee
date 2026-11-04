@@ -13,6 +13,8 @@ import { APP_THEMES, cssVariablesForTheme } from "./theme";
 
 const SOURCE_ROOT = join(__dirname, "..");
 const THEME_SOURCE = "lib/theme.ts";
+// ADR-530: the 12 palettes of a box's website are the website's data, not the app's theme.
+const SITE_PALETTES = "components/box-site/templates/palettes.ts";
 const SKIPPED_DIRECTORIES = new Set(["api/generated"]);
 const CHECKED_EXTENSIONS = [".ts", ".tsx", ".css"];
 
@@ -42,7 +44,7 @@ function sourceFiles(directory: string): string[] {
     const relativePath = relative(SOURCE_ROOT, path);
     if (statSync(path).isDirectory()) return SKIPPED_DIRECTORIES.has(relativePath) ? [] : sourceFiles(path);
     if (!CHECKED_EXTENSIONS.some((extension) => entry.endsWith(extension))) return [];
-    if (entry.includes(".test.") || relativePath === THEME_SOURCE) return [];
+    if (entry.includes(".test.") || relativePath === THEME_SOURCE || relativePath === SITE_PALETTES) return [];
     return [path];
   });
 }

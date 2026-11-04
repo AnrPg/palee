@@ -24,7 +24,7 @@ export const SECTION_GROUPS: { key: "basics" | "training" | "shop" | "team" | "f
   { key: "team", sections: ["coaches", "location", "reviews", "faq"] },
   { key: "forms", sections: ["trial_form", "contact_form"] },
 ];
-export const NEW_SECTIONS = ["photos", "stats", "programmes"] as SiteSection[];
+export const NEW_SECTIONS = ["photos", "stats", "programmes"] as unknown as SiteSection[];
 /** «Μόνο τα βασικά». */
 export const BASIC_SECTIONS = ["about", "packages", "location", "trial_form"] as SiteSection[];
 
