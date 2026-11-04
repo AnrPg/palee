@@ -711,6 +711,8 @@ config :palee,
        Palee.Infrastructure.Finance.EctoFinanceAccountingStore
 
 config :palee, :workout_store, Palee.Infrastructure.Workouts.EctoWorkoutStore
+# ADR-461: approved additions to the exercise catalog, candidates, audit trail.
+config :palee, :exercise_catalog_store, Palee.Infrastructure.Workouts.EctoExerciseCatalogStore
 # ADR-357: WODs as they were when assigned or performed.
 config :palee, :workout_snapshot_store, Palee.Infrastructure.Workouts.EctoWorkoutSnapshotStore
 
@@ -843,6 +845,11 @@ config :palee, :landing_cache, Palee.Infrastructure.Cache.LandingCache
 config :palee,
        :pr_search_index,
        Palee.Infrastructure.Search.MeilisearchPRIndex
+
+# ADR-461: exercise-name suggestions (Meilisearch, Postgres when it is down).
+config :palee,
+       :exercise_name_index,
+       Palee.Infrastructure.Search.MeilisearchExerciseNameIndex
 
 config :palee,
        :signed_token,

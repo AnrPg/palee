@@ -10,11 +10,13 @@ defmodule PaleeWeb.MeController do
     ResolvePlatformContext,
     ResolveTenantContext,
     SearchUsers,
+    SetTrainsWithPalee,
     UpdateAvatar,
     UpdateProfile
   }
 
   alias OpenApiSpex.{MediaType, Parameter, RequestBody, Schema}
+  alias PaleeWeb.Schemas.AthleteUse
 
   action_fallback PaleeWeb.FallbackController
 
@@ -23,7 +25,13 @@ defmodule PaleeWeb.MeController do
 
   plug OpenApiSpex.Plug.CastAndValidate,
        [json_render_error_v2: true]
-       when action in [:update_profile, :avatar_upload_url, :update_avatar, :update_time_zone]
+       when action in [
+              :update_profile,
+              :avatar_upload_url,
+              :update_avatar,
+              :update_time_zone,
+              :update_trains_with_palee
+            ]
 
   operation(:complete_tour,
     summary: "Record that the current account finished a product tour",
@@ -86,6 +94,26 @@ defmodule PaleeWeb.MeController do
 
     with {:ok, zone} <- ReportTimeZone.call(user, Map.get(conn.body_params, :time_zone)) do
       json(conn, %{time_zone: zone})
+    end
+  end
+
+  operation(:update_trains_with_palee,
+    summary: "Say whether you also train with Palee (ADR-463)",
+    description:
+      "Staff answer it in the first run and in Settings. false hides the prompts aimed at athletes; null (never asked) reads as true.",
+    request_body: AthleteUse.body(),
+    responses: [
+      ok: {"Stored answer", "application/json", AthleteUse.response()},
+      unprocessable_entity: {"Validation errors", "application/json", %Schema{type: :object}}
+    ]
+  )
+
+  def update_trains_with_palee(conn, _params) do
+    user = Guardian.Plug.current_resource(conn)
+
+    with {:ok, trains?} <-
+           SetTrainsWithPalee.call(user, Map.get(conn.body_params, :trains_with_palee)) do
+      json(conn, %{trains_with_palee: trains?})
     end
   end
 

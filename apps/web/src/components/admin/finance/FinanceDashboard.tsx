@@ -1,10 +1,5 @@
 "use client";
 
-
-
-
-
-
 import {useUiLocale} from "@/i18n/use-ui-locale";
 import {useUiTranslations} from "@/i18n/ui";
 import Link from "next/link";
@@ -19,7 +14,13 @@ import {
   YAxis,
 } from "recharts";
 
-import { fetchFinanceQueues, fetchFinanceSummary, type FinanceRecord } from "@/api/finance";
+import { fetchFinanceAnalyticsSummary, fetchFinanceQueues, fetchFinanceSummary, type FinanceRecord } from "@/api/finance";
+import { AnalyticsFilterBar } from "@/components/admin/analytics/AnalyticsFilterBar";
+import { KpiSections } from "@/components/admin/analytics/KpiWidgets";
+import { MetricHelp } from "@/components/admin/analytics/MetricHelp";
+import { useAnalyticsDirectory } from "@/components/admin/analytics/use-analytics-directory";
+import { useAnalyticsFilter } from "@/components/admin/analytics/use-analytics-filter";
+import type { AnalyticsDimension } from "@/lib/analytics-filter";
 import { SemanticLabel } from "@/components/semantic-label";
 import { useSession } from "@/components/session-provider";
 import { useBusinessFeatures } from "@/lib/use-business-features";
@@ -28,6 +29,9 @@ import { PageHeader, pageHeaderActionClass } from "@/components/PageHeader";
 import { BranchFilterControl, BranchSplits, useBranchFilter, type BranchSplit } from "@/components/admin/BranchFilter";
 import { RevenueStreamsCard } from "@/components/admin/finance/RevenueStreamsCard";
 import { BackLink } from "@/components/ui/BackLink";
+
+/** The filter groups of «Στατιστικά › Οικονομικά» (ADR-462 §1). */
+export const FINANCE_DIMENSIONS: readonly AnalyticsDimension[] = ["location_ids", "package_ids", "tenure_bands", "age_bands", "genders"];
 
 function money(uiLocale: string, cents: unknown) {
   const amount = typeof cents === "number" ? cents : Number(cents ?? 0);
@@ -62,15 +66,22 @@ export function FinanceDashboard({ analyticsMode = false }: { analyticsMode?: bo
   const organizationSlug = useOrganizationSlug();
   const token = tokens?.access_token;
   const enabled = Boolean(token);
-  // ADR-186 §7: every figure and list below follows the branch filter.
+  // ADR-186 §7: every figure and list below follows the branch filter. In
+  // «Στατιστικά» (ADR-462) the page filter replaces it: period, branches and
+  // the other groups, kept in the URL.
   const branchFilter = useBranchFilter(analyticsMode ? "finance-analytics" : "finance-dashboard");
-  const locationIds = branchFilter.param;
+  const analyticsFilter = useAnalyticsFilter();
+  const directory = useAnalyticsDirectory();
+  const filterLocations = analyticsFilter.filter.location_ids.length > 0 ? analyticsFilter.filter.location_ids.join(",") : undefined;
+  const locationIds = analyticsMode ? filterLocations : branchFilter.param;
   const features = useBusinessFeatures({ locationIds });
 
   const summaryQuery = useQuery({
-    queryKey: ["admin", "finance", "summary", locationIds ?? "all"],
+    queryKey: analyticsMode
+      ? ["admin", "finance", "summary", "analytics", analyticsFilter.queryKey]
+      : ["admin", "finance", "summary", locationIds ?? "all"],
     enabled,
-    queryFn: () => fetchFinanceSummary(token!, locationIds),
+    queryFn: () => (analyticsMode ? fetchFinanceAnalyticsSummary(token!, analyticsFilter.apiQuery) : fetchFinanceSummary(token!, locationIds)),
   });
 
   const queuesQuery = useQuery({
@@ -84,21 +95,24 @@ export function FinanceDashboard({ analyticsMode = false }: { analyticsMode?: bo
   const monthlyRevenue = (summaryQuery.data?.monthly_revenue ?? []) as FinanceRecord[];
   const queues = (queuesQuery.data?.queues ?? {}) as Record<string, FinanceRecord[]>;
 
-  const kpis: Array<[string, string, string]> = [
-    [i18n("activeMemberships0d117fb"), String(totals.active_memberships ?? 0), adminHref("/admin/finance", organizationSlug)],
-    [i18n("expiring30Daysbfdf986"), String(totals.expiring_memberships ?? 0), adminHref("/admin/finance?tab=queues", organizationSlug)],
-    [i18n("revenueMtd3ffc292"), money(uiLocale, totals.paid_revenue_cents), adminHref("/admin/metrics/finance", organizationSlug)],
-    [i18n("creditBalance471f025"), money(uiLocale, totals.credit_balance_cents), adminHref("/admin/finance", organizationSlug)],
-    [i18n("pendingInvoices12d9ca8"), money(uiLocale, totals.outstanding_invoice_balance_cents), adminHref("/admin/finance?tab=queues", organizationSlug)],
-    [i18n("overdueInvoices747a2d8"), money(uiLocale, totals.overdue_invoice_balance_cents), adminHref("/admin/finance?tab=queues", organizationSlug)],
-    [i18n("renewalRatef4370c2"), percent(totals.renewal_conversion_percent), adminHref("/admin/metrics/finance", organizationSlug)],
-    [i18n("invoiceCreditOffsets9fc1210"), money(uiLocale, totals.invoice_credit_offset_cents), adminHref("/admin/metrics/finance", organizationSlug)],
+  // [label, value, link, help path (Στατιστικά only)]
+  const kpis: Array<[string, string, string, string]> = [
+    [i18n("activeMemberships0d117fb"), String(totals.active_memberships ?? 0), adminHref("/admin/finance", organizationSlug), "active_memberships"],
+    [i18n("expiring30Daysbfdf986"), String(totals.expiring_memberships ?? 0), adminHref("/admin/finance?tab=queues", organizationSlug), "expiring"],
+    [analyticsMode ? i18n("paidRevenue64c34e5") : i18n("revenueMtd3ffc292"), money(uiLocale, totals.paid_revenue_cents), adminHref("/admin/metrics/finance", organizationSlug), "revenue"],
+    [i18n("creditBalance471f025"), money(uiLocale, totals.credit_balance_cents), adminHref("/admin/finance", organizationSlug), "credit_balance"],
+    [i18n("pendingInvoices12d9ca8"), money(uiLocale, totals.outstanding_invoice_balance_cents), adminHref("/admin/finance?tab=queues", organizationSlug), "pending_invoices"],
+    [i18n("overdueInvoices747a2d8"), money(uiLocale, totals.overdue_invoice_balance_cents), adminHref("/admin/finance?tab=queues", organizationSlug), "overdue_invoices"],
+    [i18n("renewalRatef4370c2"), percent(totals.renewal_conversion_percent), adminHref("/admin/metrics/finance", organizationSlug), "renewal_rate"],
+    [i18n("invoiceCreditOffsets9fc1210"), money(uiLocale, totals.invoice_credit_offset_cents), adminHref("/admin/metrics/finance", organizationSlug), "credit_offsets"],
   ];
+  const widgetHelp = (name: string, label: string) =>
+    analyticsMode ? <MetricHelp label={label} path={`widgets.finance.${name}`} /> : null;
 
   const loading = summaryQuery.isLoading;
 
   return (
-    <main className="min-h-screen px-6 py-10 md:px-10 md:py-14" style={{ background: "var(--bg)" }}>
+    <main className="min-h-screen px-4 py-8 sm:px-6 md:px-10 md:py-14" style={{ background: "var(--bg)" }}>
       <div className="mx-auto max-w-6xl space-y-8">
 
         {/* Hero */}
@@ -106,7 +120,7 @@ export function FinanceDashboard({ analyticsMode = false }: { analyticsMode?: bo
           title={analyticsMode ? i18n("financeAnalytics107dfa1") : i18n("membershipRevenueOverview8e92aee")}
           actions={
             <>
-              <BranchFilterControl filter={branchFilter} />
+              {analyticsMode ? null : <BranchFilterControl filter={branchFilter} />}
               <Link href={adminHref("/admin/finance", organizationSlug)} className={pageHeaderActionClass} style={{ background: "var(--text)", color: "var(--bg)" }}>
                 {i18n("openFinanceOperationscffd9ab")}
               </Link>
@@ -117,16 +131,42 @@ export function FinanceDashboard({ analyticsMode = false }: { analyticsMode?: bo
           }
         />
 
+        {analyticsMode ? (
+          <>
+            <AnalyticsFilterBar
+              filter={analyticsFilter.filter}
+              onChange={analyticsFilter.setFilter}
+              dimensions={FINANCE_DIMENSIONS}
+              days={analyticsFilter.days}
+              today={analyticsFilter.today}
+              page="finance"
+            />
+            <KpiSections payload={summaryQuery.data} prefixes={["finance."]} directory={directory} />
+          </>
+        ) : null}
+
         {/* KPIs */}
-        <section className="grid gap-4 md:grid-cols-4">
-          {kpis.map(([label, value, href]) => (
-            <Link key={label} href={href} className="rounded-[1.9rem] p-5 transition-transform hover:-translate-y-0.5" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
-              <p className="text-xs font-semibold uppercase tracking-[0.22em]" style={{ color: "var(--dim)" }}>{label}</p>
-              <p className="mt-3 text-2xl font-semibold tracking-tight" style={{ color: "var(--text)" }}>
-                {loading ? "…" : value}
-              </p>
-            </Link>
-          ))}
+        <section className={analyticsMode ? "grid grid-cols-2 gap-3 md:grid-cols-4" : "grid gap-4 md:grid-cols-4"}>
+          {kpis.map(([label, value, href, help]) =>
+            analyticsMode ? (
+              <article key={label} className="min-w-0 rounded-2xl p-4" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
+                <div className="flex min-w-0 items-center gap-1.5">
+                  <p className="min-w-0 truncate text-xs font-bold uppercase tracking-[0.14em]" style={{ color: "var(--muted)" }} title={label}>{label}</p>
+                  {widgetHelp(help, label)}
+                </div>
+                <p className="mt-2 text-2xl font-black tabular-nums" style={{ color: "var(--text)" }}>
+                  <Link href={href} className="underline-offset-4 hover:underline">{loading ? "…" : value}</Link>
+                </p>
+              </article>
+            ) : (
+              <Link key={label} href={href} className="rounded-[1.9rem] p-5 transition-transform hover:-translate-y-0.5" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em]" style={{ color: "var(--dim)" }}>{label}</p>
+                <p className="mt-3 text-2xl font-semibold tracking-tight" style={{ color: "var(--text)" }}>
+                  {loading ? "…" : value}
+                </p>
+              </Link>
+            ),
+          )}
         </section>
 
         <BranchSplits
@@ -138,12 +178,15 @@ export function FinanceDashboard({ analyticsMode = false }: { analyticsMode?: bo
           ]}
         />
 
-        <RevenueStreamsCard summary={summaryQuery.data} locationIds={locationIds} />
+        <RevenueStreamsCard summary={summaryQuery.data} locationIds={locationIds} helpPath={analyticsMode ? "widgets.finance.revenue_streams" : undefined} />
 
         {/* Chart */}
         <section className="rounded-[2.2rem] p-6" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
           <p className="text-sm font-semibold uppercase tracking-[0.24em]" style={{ color: "var(--dim)" }}>{i18n("monthlyRevenue93e061c")}</p>
-          <h2 className="mt-2 text-xl font-semibold tracking-tight" style={{ color: "var(--text)" }}>{i18n("paidVsPending81799fc")}</h2>
+          <div className="mt-2 flex min-w-0 items-center gap-2">
+            <h2 className="min-w-0 text-xl font-semibold tracking-tight" style={{ color: "var(--text)" }}>{i18n("paidVsPending81799fc")}</h2>
+            {widgetHelp("monthly_revenue", i18n("paidVsPending81799fc"))}
+          </div>
           <div className="mt-6 h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={monthlyRevenue}>
@@ -177,6 +220,7 @@ export function FinanceDashboard({ analyticsMode = false }: { analyticsMode?: bo
         <section className="grid gap-6 md:grid-cols-2">
           <QueuePanel
             title={i18n("expiringSoon50b61e0")}
+            help={widgetHelp("expiring_soon", i18n("expiringSoon50b61e0"))}
             href={adminHref("/admin/finance?tab=queues", organizationSlug)}
             rows={queues.expiring_memberships ?? []}
             renderRow={(row) => (
@@ -188,6 +232,7 @@ export function FinanceDashboard({ analyticsMode = false }: { analyticsMode?: bo
           />
           <QueuePanel
             title={i18n("overdueInvoices739b616")}
+            help={widgetHelp("overdue_list", i18n("overdueInvoices739b616"))}
             href={adminHref("/admin/finance?tab=queues", organizationSlug)}
             rows={queues.overdue_invoices ?? []}
             renderRow={(row) => (
@@ -201,6 +246,7 @@ export function FinanceDashboard({ analyticsMode = false }: { analyticsMode?: bo
           />
           <QueuePanel
             title={i18n("pendingPayments9126c11")}
+            help={widgetHelp("pending_payments", i18n("pendingPayments9126c11"))}
             href={adminHref("/admin/finance?tab=queues", organizationSlug)}
             rows={queues.pending_payments ?? []}
             renderRow={(row) => (
@@ -214,7 +260,8 @@ export function FinanceDashboard({ analyticsMode = false }: { analyticsMode?: bo
           {features.shows("referrals", (queues.pending_referral_rewards ?? []).length) ? (
           <QueuePanel
             title={i18n("pendingRewardse6d6885")}
-            href={adminHref("/admin/finance?tab=referrals", organizationSlug)}
+            help={widgetHelp("pending_rewards", i18n("pendingRewardse6d6885"))}
+            href={adminHref("/admin/marketing/referrals", organizationSlug)}
             rows={queues.pending_referral_rewards ?? []}
             renderRow={(row) => (
               <>
@@ -233,11 +280,13 @@ export function FinanceDashboard({ analyticsMode = false }: { analyticsMode?: bo
 
 function QueuePanel({
   title,
+  help,
   href,
   rows,
   renderRow,
 }: {
   title: string;
+  help?: React.ReactNode;
   href: string;
   rows: FinanceRecord[];
   renderRow: (row: FinanceRecord) => React.ReactNode;
@@ -249,7 +298,10 @@ function QueuePanel({
         className="sticky top-0 z-10 flex items-center justify-between gap-4 px-5 py-4"
         style={{ background: "var(--panel)", borderBottom: "1px solid var(--border)" }}
       >
-        <p className="text-sm font-semibold uppercase tracking-[0.22em]" style={{ color: "var(--dim)" }}>{title}</p>
+        <div className="flex min-w-0 items-center gap-2">
+          <p className="min-w-0 truncate text-sm font-semibold uppercase tracking-[0.22em]" style={{ color: "var(--dim)" }}>{title}</p>
+          {help}
+        </div>
         <Link
           href={href}
           className="text-xs font-semibold"

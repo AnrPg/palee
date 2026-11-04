@@ -29,6 +29,8 @@ defmodule Palee.Identity.User do
     field :completed_tours, {:array, :string}, default: []
     # ADR-179: the zone the person's device last reported; nil until it does.
     field :time_zone, :string
+    # ADR-463: staff say whether they also train; nil = never asked (trains).
+    field :trains_with_palee, :boolean
     # ADR-184: the demo business a mock person belongs to (nil for everyone
     # real). Set once by the members seeder; the database refuses a change.
     field :demo_organization_id, :binary_id
@@ -102,6 +104,13 @@ defmodule Palee.Identity.User do
         do: [],
         else: [time_zone: "is not a known time zone"]
     end)
+  end
+
+  @doc "ADR-463: whether the person also trains with Palee."
+  def trains_with_palee_changeset(user, trains?) do
+    user
+    |> cast(%{trains_with_palee: trains?}, [:trains_with_palee])
+    |> validate_required([:trains_with_palee])
   end
 
   def avatar_changeset(user, params) do

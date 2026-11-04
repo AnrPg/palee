@@ -152,6 +152,7 @@ defmodule Palee.Identity do
   defdelegate update_profile(user_id, params), to: UserStore
   defdelegate update_avatar(user_id, avatar_url), to: UserStore
   defdelegate update_time_zone(user_id, time_zone), to: UserStore
+  defdelegate update_trains_with_palee(user_id, trains?), to: UserStore
 
   @doc """
   ADR-179: the clock a person's own days follow (streaks, progress, "today"

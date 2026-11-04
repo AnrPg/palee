@@ -515,6 +515,14 @@
             "additionalProperties": true,
             "type": "object"
           },
+          "metric_baselines": {
+            "additionalProperties": {
+              "format": "date-time",
+              "type": "string"
+            },
+            "description": "ADR-462: metric key → the active reset baseline (counted only after it)",
+            "type": "object"
+          },
           "pr_timeline": {
             "items": {
               "additionalProperties": true,
@@ -760,6 +768,14 @@
               },
               "filter": {
                 "additionalProperties": true,
+                "type": "object"
+              },
+              "metric_baselines": {
+                "additionalProperties": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "description": "ADR-462: metric key → the active reset baseline (counted only after it)",
                 "type": "object"
               },
               "pr_timeline": {
@@ -1139,6 +1155,362 @@
           "active_filter_count"
         ],
         "title": "AccountVault",
+        "type": "object"
+      },
+      "AdminAnalyticsResetHistory": {
+        "properties": {
+          "entries": {
+            "items": {
+              "properties": {
+                "active": {
+                  "type": "boolean"
+                },
+                "before": {
+                  "additionalProperties": true,
+                  "description": "Box history: the metric over the days before the reset (`from`, `to`, `value`, `rows`)",
+                  "nullable": true,
+                  "type": "object"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "metric_key": {
+                  "type": "string"
+                },
+                "reset_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "reset_by": {
+                  "format": "uuid",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "scope": {
+                  "enum": [
+                    "organization",
+                    "member"
+                  ],
+                  "type": "string"
+                },
+                "undone_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "undone_by": {
+                  "format": "uuid",
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "active",
+                "id",
+                "metric_key",
+                "reset_at",
+                "reset_by",
+                "scope",
+                "undone_at",
+                "undone_by"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "page": {
+            "type": "integer"
+          },
+          "per_page": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "entries",
+          "page",
+          "per_page",
+          "total"
+        ],
+        "title": "AdminAnalyticsResetHistory",
+        "type": "object"
+      },
+      "AdminAnalyticsSummary": {
+        "additionalProperties": true,
+        "properties": {
+          "filter": {
+            "properties": {
+              "age_bands": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "class_type_ids": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "coach_ids": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "days": {
+                "type": "integer"
+              },
+              "from": {
+                "format": "date",
+                "type": "string"
+              },
+              "genders": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "levels": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "location_ids": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "package_families": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "package_ids": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "previous_from": {
+                "format": "date",
+                "type": "string"
+              },
+              "previous_to": {
+                "format": "date",
+                "type": "string"
+              },
+              "tenure_bands": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "time_of_day": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "to": {
+                "format": "date",
+                "type": "string"
+              },
+              "v": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "age_bands",
+              "class_type_ids",
+              "coach_ids",
+              "days",
+              "from",
+              "genders",
+              "levels",
+              "location_ids",
+              "package_families",
+              "package_ids",
+              "previous_from",
+              "previous_to",
+              "tenure_bands",
+              "time_of_day",
+              "to",
+              "v"
+            ],
+            "title": "AnalyticsFilter",
+            "type": "object"
+          },
+          "kpis": {
+            "additionalProperties": {
+              "properties": {
+                "delta": {
+                  "nullable": true,
+                  "type": "number"
+                },
+                "key": {
+                  "type": "string"
+                },
+                "kind": {
+                  "enum": [
+                    "flow",
+                    "snapshot",
+                    "breakdown"
+                  ],
+                  "type": "string"
+                },
+                "previous": {
+                  "description": "The previous equal-length period",
+                  "nullable": true,
+                  "type": "number"
+                },
+                "previous_rows": {
+                  "items": {
+                    "additionalProperties": true,
+                    "description": "A breakdown row by `key`; under an age or gender selection a row of fewer than 5 people is only `{key, suppressed: true}`",
+                    "properties": {
+                      "key": {
+                        "nullable": true,
+                        "oneOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "integer"
+                          }
+                        ]
+                      },
+                      "suppressed": {
+                        "type": "boolean"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "previous_suppressed": {
+                  "type": "boolean"
+                },
+                "rows": {
+                  "items": {
+                    "additionalProperties": true,
+                    "description": "A breakdown row by `key`; under an age or gender selection a row of fewer than 5 people is only `{key, suppressed: true}`",
+                    "properties": {
+                      "key": {
+                        "nullable": true,
+                        "oneOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "integer"
+                          }
+                        ]
+                      },
+                      "suppressed": {
+                        "type": "boolean"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "since": {
+                  "description": "The active reset baseline: only data after it counts",
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "suppressed": {
+                  "description": "k-anonymity: fewer than 5 people; no number is returned",
+                  "type": "boolean"
+                },
+                "unit": {
+                  "enum": [
+                    "count",
+                    "percent",
+                    "ratio",
+                    "cents",
+                    "days",
+                    "per_1000",
+                    "rows"
+                  ],
+                  "type": "string"
+                },
+                "value": {
+                  "description": "Nil when not computable or suppressed",
+                  "nullable": true,
+                  "type": "number"
+                }
+              },
+              "required": [
+                "delta",
+                "key",
+                "kind",
+                "previous",
+                "previous_rows",
+                "previous_suppressed",
+                "rows",
+                "since",
+                "suppressed",
+                "unit",
+                "value"
+              ],
+              "title": "AnalyticsKpi",
+              "type": "object"
+            },
+            "description": "ADR-462: every KPI by its registry key",
+            "type": "object"
+          },
+          "period": {
+            "properties": {
+              "days": {
+                "type": "integer"
+              },
+              "from": {
+                "format": "date",
+                "type": "string"
+              },
+              "previous_from": {
+                "format": "date",
+                "type": "string"
+              },
+              "previous_to": {
+                "format": "date",
+                "type": "string"
+              },
+              "time_zone": {
+                "type": "string"
+              },
+              "to": {
+                "format": "date",
+                "type": "string"
+              }
+            },
+            "required": [
+              "days",
+              "from",
+              "previous_from",
+              "previous_to",
+              "time_zone",
+              "to"
+            ],
+            "title": "AnalyticsPeriod",
+            "type": "object"
+          }
+        },
+        "required": [
+          "filter",
+          "kpis",
+          "period"
+        ],
+        "title": "AdminAnalyticsSummary",
         "type": "object"
       },
       "AdminOnboardingChecklist": {
@@ -1733,6 +2105,370 @@
           "settings"
         ],
         "title": "AdminSiteResponse",
+        "type": "object"
+      },
+      "AnalyticsFilter": {
+        "properties": {
+          "age_bands": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "class_type_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "coach_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "days": {
+            "type": "integer"
+          },
+          "from": {
+            "format": "date",
+            "type": "string"
+          },
+          "genders": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "levels": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "location_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "package_families": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "package_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "previous_from": {
+            "format": "date",
+            "type": "string"
+          },
+          "previous_to": {
+            "format": "date",
+            "type": "string"
+          },
+          "tenure_bands": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "time_of_day": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "to": {
+            "format": "date",
+            "type": "string"
+          },
+          "v": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "age_bands",
+          "class_type_ids",
+          "coach_ids",
+          "days",
+          "from",
+          "genders",
+          "levels",
+          "location_ids",
+          "package_families",
+          "package_ids",
+          "previous_from",
+          "previous_to",
+          "tenure_bands",
+          "time_of_day",
+          "to",
+          "v"
+        ],
+        "title": "AnalyticsFilter",
+        "type": "object"
+      },
+      "AnalyticsKpi": {
+        "properties": {
+          "delta": {
+            "nullable": true,
+            "type": "number"
+          },
+          "key": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "flow",
+              "snapshot",
+              "breakdown"
+            ],
+            "type": "string"
+          },
+          "previous": {
+            "description": "The previous equal-length period",
+            "nullable": true,
+            "type": "number"
+          },
+          "previous_rows": {
+            "items": {
+              "additionalProperties": true,
+              "description": "A breakdown row by `key`; under an age or gender selection a row of fewer than 5 people is only `{key, suppressed: true}`",
+              "properties": {
+                "key": {
+                  "nullable": true,
+                  "oneOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "integer"
+                    }
+                  ]
+                },
+                "suppressed": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "previous_suppressed": {
+            "type": "boolean"
+          },
+          "rows": {
+            "items": {
+              "additionalProperties": true,
+              "description": "A breakdown row by `key`; under an age or gender selection a row of fewer than 5 people is only `{key, suppressed: true}`",
+              "properties": {
+                "key": {
+                  "nullable": true,
+                  "oneOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "integer"
+                    }
+                  ]
+                },
+                "suppressed": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "since": {
+            "description": "The active reset baseline: only data after it counts",
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "suppressed": {
+            "description": "k-anonymity: fewer than 5 people; no number is returned",
+            "type": "boolean"
+          },
+          "unit": {
+            "enum": [
+              "count",
+              "percent",
+              "ratio",
+              "cents",
+              "days",
+              "per_1000",
+              "rows"
+            ],
+            "type": "string"
+          },
+          "value": {
+            "description": "Nil when not computable or suppressed",
+            "nullable": true,
+            "type": "number"
+          }
+        },
+        "required": [
+          "delta",
+          "key",
+          "kind",
+          "previous",
+          "previous_rows",
+          "previous_suppressed",
+          "rows",
+          "since",
+          "suppressed",
+          "unit",
+          "value"
+        ],
+        "title": "AnalyticsKpi",
+        "type": "object"
+      },
+      "AnalyticsMetricReset": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "metric_key": {
+            "type": "string"
+          },
+          "reset_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "reset_by": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "scope": {
+            "enum": [
+              "organization",
+              "member"
+            ],
+            "type": "string"
+          },
+          "undone_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "undone_by": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "metric_key",
+          "reset_at",
+          "reset_by",
+          "scope",
+          "undone_at",
+          "undone_by"
+        ],
+        "title": "AnalyticsMetricReset",
+        "type": "object"
+      },
+      "AnalyticsMetricResetResponse": {
+        "properties": {
+          "reset": {
+            "properties": {
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "metric_key": {
+                "type": "string"
+              },
+              "reset_at": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "reset_by": {
+                "format": "uuid",
+                "nullable": true,
+                "type": "string"
+              },
+              "scope": {
+                "enum": [
+                  "organization",
+                  "member"
+                ],
+                "type": "string"
+              },
+              "undone_at": {
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+              },
+              "undone_by": {
+                "format": "uuid",
+                "nullable": true,
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "metric_key",
+              "reset_at",
+              "reset_by",
+              "scope",
+              "undone_at",
+              "undone_by"
+            ],
+            "title": "AnalyticsMetricReset",
+            "type": "object"
+          }
+        },
+        "required": [
+          "reset"
+        ],
+        "title": "AnalyticsMetricResetResponse",
+        "type": "object"
+      },
+      "AnalyticsPeriod": {
+        "properties": {
+          "days": {
+            "type": "integer"
+          },
+          "from": {
+            "format": "date",
+            "type": "string"
+          },
+          "previous_from": {
+            "format": "date",
+            "type": "string"
+          },
+          "previous_to": {
+            "format": "date",
+            "type": "string"
+          },
+          "time_zone": {
+            "type": "string"
+          },
+          "to": {
+            "format": "date",
+            "type": "string"
+          }
+        },
+        "required": [
+          "days",
+          "from",
+          "previous_from",
+          "previous_to",
+          "time_zone",
+          "to"
+        ],
+        "title": "AnalyticsPeriod",
         "type": "object"
       },
       "AnatomyNode": {
@@ -46405,6 +47141,443 @@
         "title": "ExecutionResponse",
         "type": "object"
       },
+      "ExerciseCatalogAudit": {
+        "properties": {
+          "events": {
+            "items": {
+              "properties": {
+                "action": {
+                  "enum": [
+                    "approve_entry",
+                    "approve_alias",
+                    "reject"
+                  ],
+                  "type": "string"
+                },
+                "actor_user_id": {
+                  "format": "uuid",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "candidate_id": {
+                  "format": "uuid",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "catalog_slug": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "metadata": {
+                  "type": "object"
+                }
+              },
+              "required": [
+                "id",
+                "action",
+                "at"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "events"
+        ],
+        "title": "ExerciseCatalogAudit",
+        "type": "object"
+      },
+      "ExerciseNameCandidate": {
+        "properties": {
+          "catalog_slug": {
+            "nullable": true,
+            "type": "string"
+          },
+          "decided_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "first_seen_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "last_seen_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "owners_count": {
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "approved",
+              "rejected"
+            ],
+            "type": "string"
+          },
+          "uses_count": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "uses_count",
+          "owners_count",
+          "status",
+          "catalog_slug"
+        ],
+        "title": "ExerciseNameCandidate",
+        "type": "object"
+      },
+      "ExerciseNameCandidateDecided": {
+        "properties": {
+          "candidate": {
+            "properties": {
+              "catalog_slug": {
+                "nullable": true,
+                "type": "string"
+              },
+              "decided_at": {
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+              },
+              "first_seen_at": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "last_seen_at": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "owners_count": {
+                "type": "integer"
+              },
+              "status": {
+                "enum": [
+                  "pending",
+                  "approved",
+                  "rejected"
+                ],
+                "type": "string"
+              },
+              "uses_count": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "uses_count",
+              "owners_count",
+              "status",
+              "catalog_slug"
+            ],
+            "title": "ExerciseNameCandidate",
+            "type": "object"
+          }
+        },
+        "required": [
+          "candidate"
+        ],
+        "title": "ExerciseNameCandidateDecided",
+        "type": "object"
+      },
+      "ExerciseNameCandidateDecision": {
+        "properties": {
+          "catalog_slug": {
+            "description": "For an alias: the entry it joins",
+            "type": "string"
+          },
+          "category": {
+            "enum": [
+              "strength",
+              "bodyweight",
+              "cardio",
+              "mobility",
+              "skill"
+            ],
+            "type": "string"
+          },
+          "decision": {
+            "enum": [
+              "entry",
+              "alias",
+              "reject"
+            ],
+            "type": "string"
+          },
+          "label": {
+            "description": "Defaults to the typed name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "decision"
+        ],
+        "title": "ExerciseNameCandidateDecision",
+        "type": "object"
+      },
+      "ExerciseNameCandidateQueue": {
+        "properties": {
+          "candidates": {
+            "items": {
+              "properties": {
+                "catalog_slug": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "decided_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "first_seen_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "last_seen_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "owners_count": {
+                  "type": "integer"
+                },
+                "status": {
+                  "enum": [
+                    "pending",
+                    "approved",
+                    "rejected"
+                  ],
+                  "type": "string"
+                },
+                "uses_count": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "uses_count",
+                "owners_count",
+                "status",
+                "catalog_slug"
+              ],
+              "title": "ExerciseNameCandidate",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "catalog": {
+            "description": "The catalog entries an alias can join",
+            "items": {
+              "properties": {
+                "catalog_slug": {
+                  "type": "string"
+                },
+                "category": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "catalog_slug",
+                "name",
+                "category"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "candidates",
+          "catalog"
+        ],
+        "title": "ExerciseNameCandidateQueue",
+        "type": "object"
+      },
+      "ExerciseSuggestion": {
+        "properties": {
+          "catalog_slug": {
+            "description": "The Palee catalog entry the name links to, if any",
+            "nullable": true,
+            "type": "string"
+          },
+          "hint": {
+            "description": "For a palee item, the catalog category (strength, bodyweight, cardio, mobility, skill)",
+            "nullable": true,
+            "type": "string"
+          },
+          "name": {
+            "description": "The name to put in the field",
+            "type": "string"
+          },
+          "uses_count": {
+            "description": "How often the person (mine) or the box (box) used the name; 0 for palee",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "catalog_slug",
+          "hint",
+          "uses_count"
+        ],
+        "title": "ExerciseSuggestion",
+        "type": "object"
+      },
+      "ExerciseSuggestionGroup": {
+        "properties": {
+          "items": {
+            "items": {
+              "properties": {
+                "catalog_slug": {
+                  "description": "The Palee catalog entry the name links to, if any",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "hint": {
+                  "description": "For a palee item, the catalog category (strength, bodyweight, cardio, mobility, skill)",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "name": {
+                  "description": "The name to put in the field",
+                  "type": "string"
+                },
+                "uses_count": {
+                  "description": "How often the person (mine) or the box (box) used the name; 0 for palee",
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "name",
+                "catalog_slug",
+                "hint",
+                "uses_count"
+              ],
+              "title": "ExerciseSuggestion",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "source": {
+            "enum": [
+              "mine",
+              "box",
+              "palee"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "source",
+          "items"
+        ],
+        "title": "ExerciseSuggestionGroup",
+        "type": "object"
+      },
+      "ExerciseSuggestionsResponse": {
+        "description": "Groups in order mine, box, palee; a name appears once; empty groups are left out",
+        "properties": {
+          "groups": {
+            "items": {
+              "properties": {
+                "items": {
+                  "items": {
+                    "properties": {
+                      "catalog_slug": {
+                        "description": "The Palee catalog entry the name links to, if any",
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "hint": {
+                        "description": "For a palee item, the catalog category (strength, bodyweight, cardio, mobility, skill)",
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "name": {
+                        "description": "The name to put in the field",
+                        "type": "string"
+                      },
+                      "uses_count": {
+                        "description": "How often the person (mine) or the box (box) used the name; 0 for palee",
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "catalog_slug",
+                      "hint",
+                      "uses_count"
+                    ],
+                    "title": "ExerciseSuggestion",
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "source": {
+                  "enum": [
+                    "mine",
+                    "box",
+                    "palee"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "source",
+                "items"
+              ],
+              "title": "ExerciseSuggestionGroup",
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "groups"
+        ],
+        "title": "ExerciseSuggestionsResponse",
+        "type": "object"
+      },
       "FacilityCheckIn": {
         "properties": {
           "already_checked_in": {
@@ -57467,6 +58640,87 @@
         "title": "MyInsights",
         "type": "object"
       },
+      "MyProgressResetHistory": {
+        "properties": {
+          "entries": {
+            "items": {
+              "properties": {
+                "active": {
+                  "type": "boolean"
+                },
+                "before": {
+                  "additionalProperties": true,
+                  "description": "Box history: the metric over the days before the reset (`from`, `to`, `value`, `rows`)",
+                  "nullable": true,
+                  "type": "object"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "metric_key": {
+                  "type": "string"
+                },
+                "reset_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "reset_by": {
+                  "format": "uuid",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "scope": {
+                  "enum": [
+                    "organization",
+                    "member"
+                  ],
+                  "type": "string"
+                },
+                "undone_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "undone_by": {
+                  "format": "uuid",
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "active",
+                "id",
+                "metric_key",
+                "reset_at",
+                "reset_by",
+                "scope",
+                "undone_at",
+                "undone_by"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "page": {
+            "type": "integer"
+          },
+          "per_page": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "entries",
+          "page",
+          "per_page",
+          "total"
+        ],
+        "title": "MyProgressResetHistory",
+        "type": "object"
+      },
       "MyProviders": {
         "properties": {
           "former": {
@@ -57994,6 +59248,14 @@
               "weeks"
             ],
             "title": "DepthLoad",
+            "type": "object"
+          },
+          "metric_baselines": {
+            "additionalProperties": {
+              "format": "date-time",
+              "type": "string"
+            },
+            "description": "ADR-462: metric key → the active reset baseline (counted only after it)",
             "type": "object"
           },
           "qualities": {
@@ -59290,6 +60552,124 @@
         "title": "NeighbourhoodsResponse",
         "type": "object"
       },
+      "NotificationBulkDelete": {
+        "description": "Either `ids` (the notifications picked) or `filter` (every notification it matches, as the list shows them), never both. Not undoable.",
+        "properties": {
+          "filter": {
+            "additionalProperties": false,
+            "description": "Which notifications a bulk delete covers; an empty filter covers all.",
+            "properties": {
+              "category": {
+                "description": "Only notifications of this category (ADR-199).",
+                "enum": [
+                  "bookings",
+                  "messages",
+                  "community",
+                  "coach",
+                  "partners",
+                  "journal",
+                  "staff",
+                  "account"
+                ],
+                "type": "string"
+              },
+              "older_than_days": {
+                "description": "Only notifications received more than this many days ago.",
+                "maximum": 3650,
+                "minimum": 1,
+                "type": "integer"
+              },
+              "state": {
+                "description": "`read`: only notifications already read. Default `all`.",
+                "enum": [
+                  "all",
+                  "read"
+                ],
+                "type": "string"
+              }
+            },
+            "title": "NotificationFilter",
+            "type": "object"
+          },
+          "ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 200,
+            "minItems": 1,
+            "type": "array"
+          }
+        },
+        "title": "NotificationBulkDelete",
+        "type": "object"
+      },
+      "NotificationDeleted": {
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          },
+          "restorable_for_seconds": {
+            "description": "How long «Αναίρεση» may still restore it.",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "deleted",
+          "restorable_for_seconds"
+        ],
+        "title": "NotificationDeleted",
+        "type": "object"
+      },
+      "NotificationDeletedCount": {
+        "properties": {
+          "deleted_count": {
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "deleted_count"
+        ],
+        "title": "NotificationDeletedCount",
+        "type": "object"
+      },
+      "NotificationFilter": {
+        "additionalProperties": false,
+        "description": "Which notifications a bulk delete covers; an empty filter covers all.",
+        "properties": {
+          "category": {
+            "description": "Only notifications of this category (ADR-199).",
+            "enum": [
+              "bookings",
+              "messages",
+              "community",
+              "coach",
+              "partners",
+              "journal",
+              "staff",
+              "account"
+            ],
+            "type": "string"
+          },
+          "older_than_days": {
+            "description": "Only notifications received more than this many days ago.",
+            "maximum": 3650,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "state": {
+            "description": "`read`: only notifications already read. Default `all`.",
+            "enum": [
+              "all",
+              "read"
+            ],
+            "type": "string"
+          }
+        },
+        "title": "NotificationFilter",
+        "type": "object"
+      },
       "NotificationPreference": {
         "properties": {
           "audience": {
@@ -59422,6 +60802,18 @@
           }
         },
         "title": "NotificationPreferenceUpdate",
+        "type": "object"
+      },
+      "NotificationRestored": {
+        "properties": {
+          "restored": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "restored"
+        ],
+        "title": "NotificationRestored",
         "type": "object"
       },
       "NutritionPlan": {
@@ -109666,6 +111058,30 @@
         "title": "TrainingLogVoidRequest",
         "type": "object"
       },
+      "TrainsWithPaleeResponse": {
+        "properties": {
+          "trains_with_palee": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "trains_with_palee"
+        ],
+        "title": "TrainsWithPaleeResponse",
+        "type": "object"
+      },
+      "TrainsWithPaleeUpdate": {
+        "properties": {
+          "trains_with_palee": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "trains_with_palee"
+        ],
+        "title": "TrainsWithPaleeUpdate",
+        "type": "object"
+      },
       "TrialAsk": {
         "properties": {
           "client_operation_id": {
@@ -121739,6 +123155,11 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "trains_with_palee": {
+                              "description": "ADR-463: staff's answer to «do you train with Palee too?»; null = never asked, read as true",
+                              "nullable": true,
+                              "type": "boolean"
+                            },
                             "vendor": {
                               "type": "boolean"
                             }
@@ -123311,6 +124732,11 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "trains_with_palee": {
+                          "description": "ADR-463: staff's answer to «do you train with Palee too?»; null = never asked, read as true",
+                          "nullable": true,
+                          "type": "boolean"
+                        },
                         "vendor": {
                           "type": "boolean"
                         }
@@ -123526,6 +124952,11 @@
                       "description": "ADR-179: the zone this account's device last reported",
                       "nullable": true,
                       "type": "string"
+                    },
+                    "trains_with_palee": {
+                      "description": "ADR-463: staff's answer to «do you train with Palee too?»; null = never asked, read as true",
+                      "nullable": true,
+                      "type": "boolean"
                     },
                     "vendor": {
                       "type": "boolean"
@@ -124246,6 +125677,11 @@
                           "description": "ADR-179: the zone this account's device last reported",
                           "nullable": true,
                           "type": "string"
+                        },
+                        "trains_with_palee": {
+                          "description": "ADR-463: staff's answer to «do you train with Palee too?»; null = never asked, read as true",
+                          "nullable": true,
+                          "type": "boolean"
                         },
                         "vendor": {
                           "type": "boolean"
@@ -160109,6 +161545,126 @@
         ]
       }
     },
+    "/api/me/exercise-suggestions": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.ExerciseSuggestionsController.index",
+        "parameters": [
+          {
+            "description": "What the person typed so far (up to 80 characters are used)",
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The box whose WOD names to include; ignored unless the person belongs to it",
+            "in": "query",
+            "name": "organization_id",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Suggestions per group, 1 to 10 (default 5)",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "maximum": 10,
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Groups in order mine, box, palee; a name appears once; empty groups are left out",
+                  "properties": {
+                    "groups": {
+                      "items": {
+                        "properties": {
+                          "items": {
+                            "items": {
+                              "properties": {
+                                "catalog_slug": {
+                                  "description": "The Palee catalog entry the name links to, if any",
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "hint": {
+                                  "description": "For a palee item, the catalog category (strength, bodyweight, cardio, mobility, skill)",
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "name": {
+                                  "description": "The name to put in the field",
+                                  "type": "string"
+                                },
+                                "uses_count": {
+                                  "description": "How often the person (mine) or the box (box) used the name; 0 for palee",
+                                  "type": "integer"
+                                }
+                              },
+                              "required": [
+                                "name",
+                                "catalog_slug",
+                                "hint",
+                                "uses_count"
+                              ],
+                              "title": "ExerciseSuggestion",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "source": {
+                            "enum": [
+                              "mine",
+                              "box",
+                              "palee"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "source",
+                          "items"
+                        ],
+                        "title": "ExerciseSuggestionGroup",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "groups"
+                  ],
+                  "title": "ExerciseSuggestionsResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Exercise suggestions"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Exercise-name suggestions: your own, your box's, Palee's",
+        "tags": [
+          "Exercises"
+        ]
+      }
+    },
     "/api/me/feed": {
       "get": {
         "callbacks": {},
@@ -175053,6 +176609,14 @@
                           "additionalProperties": true,
                           "type": "object"
                         },
+                        "metric_baselines": {
+                          "additionalProperties": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "description": "ADR-462: metric key → the active reset baseline (counted only after it)",
+                          "type": "object"
+                        },
                         "pr_timeline": {
                           "items": {
                             "additionalProperties": true,
@@ -175530,6 +177094,14 @@
                       "title": "DepthLoad",
                       "type": "object"
                     },
+                    "metric_baselines": {
+                      "additionalProperties": {
+                        "format": "date-time",
+                        "type": "string"
+                      },
+                      "description": "ADR-462: metric key → the active reset baseline (counted only after it)",
+                      "type": "object"
+                    },
                     "qualities": {
                       "properties": {
                         "felt_entries": {
@@ -175628,6 +177200,337 @@
         "summary": "Your muscle coverage, qualities radar and training load across every provider",
         "tags": [
           "Progress"
+        ]
+      }
+    },
+    "/api/me/progress/metrics/{metric_key}/reset": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.ProgressMetricResetController.reset",
+        "parameters": [
+          {
+            "description": "A metric key of the registry, e.g. training.class_fill_rate",
+            "in": "path",
+            "name": "metric_key",
+            "required": true,
+            "schema": {
+              "maxLength": 80,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reset": {
+                      "properties": {
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "metric_key": {
+                          "type": "string"
+                        },
+                        "reset_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "reset_by": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "scope": {
+                          "enum": [
+                            "organization",
+                            "member"
+                          ],
+                          "type": "string"
+                        },
+                        "undone_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "undone_by": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "metric_key",
+                        "reset_at",
+                        "reset_by",
+                        "scope",
+                        "undone_at",
+                        "undone_by"
+                      ],
+                      "title": "AnalyticsMetricReset",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "reset"
+                  ],
+                  "title": "AnalyticsMetricResetResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Reset"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Reset one of my Πρόοδος stats: count only from now on (ADR-462)",
+        "tags": [
+          "Training Log"
+        ]
+      }
+    },
+    "/api/me/progress/resets": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.ProgressMetricResetController.index",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "per_page",
+            "required": false,
+            "schema": {
+              "maximum": 50,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "metric_key",
+            "required": false,
+            "schema": {
+              "maxLength": 80,
+              "type": "string"
+            }
+          },
+          {
+            "description": "Box history: the days before each reset its `before` values cover",
+            "in": "query",
+            "name": "days",
+            "required": false,
+            "schema": {
+              "maximum": 365,
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "entries": {
+                      "items": {
+                        "properties": {
+                          "active": {
+                            "type": "boolean"
+                          },
+                          "before": {
+                            "additionalProperties": true,
+                            "description": "Box history: the metric over the days before the reset (`from`, `to`, `value`, `rows`)",
+                            "nullable": true,
+                            "type": "object"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "metric_key": {
+                            "type": "string"
+                          },
+                          "reset_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "reset_by": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "scope": {
+                            "enum": [
+                              "organization",
+                              "member"
+                            ],
+                            "type": "string"
+                          },
+                          "undone_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "undone_by": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "active",
+                          "id",
+                          "metric_key",
+                          "reset_at",
+                          "reset_by",
+                          "scope",
+                          "undone_at",
+                          "undone_by"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "per_page": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "entries",
+                    "page",
+                    "per_page",
+                    "total"
+                  ],
+                  "title": "MyProgressResetHistory",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Reset history"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "My Πρόοδος reset history (ADR-462)",
+        "tags": [
+          "Training Log"
+        ]
+      }
+    },
+    "/api/me/progress/resets/{id}/undo": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.ProgressMetricResetController.undo",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reset": {
+                      "properties": {
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "metric_key": {
+                          "type": "string"
+                        },
+                        "reset_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "reset_by": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "scope": {
+                          "enum": [
+                            "organization",
+                            "member"
+                          ],
+                          "type": "string"
+                        },
+                        "undone_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "undone_by": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "metric_key",
+                        "reset_at",
+                        "reset_by",
+                        "scope",
+                        "undone_at",
+                        "undone_by"
+                      ],
+                      "title": "AnalyticsMetricReset",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "reset"
+                  ],
+                  "title": "AnalyticsMetricResetResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Reset"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Undo one of my Πρόοδος resets (ADR-462)",
+        "tags": [
+          "Training Log"
         ]
       }
     },
@@ -178247,6 +180150,73 @@
           }
         ],
         "summary": "Record that the current account finished a product tour",
+        "tags": [
+          "Me"
+        ]
+      }
+    },
+    "/api/me/trains-with-palee": {
+      "put": {
+        "callbacks": {},
+        "description": "Staff answer it in the first run and in Settings. false hides the prompts aimed at athletes; null (never asked) reads as true.",
+        "operationId": "PaleeWeb.MeController.update_trains_with_palee",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "trains_with_palee": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "trains_with_palee"
+                ],
+                "title": "TrainsWithPaleeUpdate",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "trains_with_palee": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "trains_with_palee"
+                  ],
+                  "title": "TrainsWithPaleeResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Stored answer"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Validation errors"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Say whether you also train with Palee (ADR-463)",
         "tags": [
           "Me"
         ]
@@ -183513,6 +185483,58 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "required": false,
+            "schema": {
+              "description": "`read`: only notifications already read. Default `all`.",
+              "enum": [
+                "all",
+                "read"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "older_than_days",
+            "required": false,
+            "schema": {
+              "description": "Only notifications received more than this many days ago.",
+              "maximum": 3650,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "category",
+            "required": false,
+            "schema": {
+              "description": "Only notifications of this category (ADR-199).",
+              "enum": [
+                "bookings",
+                "messages",
+                "community",
+                "coach",
+                "partners",
+                "journal",
+                "staff",
+                "account"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "Also answer `matching_count`: how many notifications match the filter.",
+            "in": "query",
+            "name": "include_count",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
@@ -183521,6 +185543,11 @@
               "application/json": {
                 "schema": {
                   "properties": {
+                    "matching_count": {
+                      "description": "With include_count: how many notifications match the filter.",
+                      "nullable": true,
+                      "type": "integer"
+                    },
                     "next_cursor": {
                       "nullable": true,
                       "type": "string"
@@ -183591,6 +185618,125 @@
           }
         ],
         "summary": "List notifications for the current user",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/api/notifications/delete": {
+      "post": {
+        "callbacks": {},
+        "description": "ADR-460: «Διαγραφή ειδοποιήσεων» in Ρυθμίσεις. Not undoable.",
+        "operationId": "PaleeWeb.NotificationController.bulk_delete",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "Either `ids` (the notifications picked) or `filter` (every notification it matches, as the list shows them), never both. Not undoable.",
+                "properties": {
+                  "filter": {
+                    "additionalProperties": false,
+                    "description": "Which notifications a bulk delete covers; an empty filter covers all.",
+                    "properties": {
+                      "category": {
+                        "description": "Only notifications of this category (ADR-199).",
+                        "enum": [
+                          "bookings",
+                          "messages",
+                          "community",
+                          "coach",
+                          "partners",
+                          "journal",
+                          "staff",
+                          "account"
+                        ],
+                        "type": "string"
+                      },
+                      "older_than_days": {
+                        "description": "Only notifications received more than this many days ago.",
+                        "maximum": 3650,
+                        "minimum": 1,
+                        "type": "integer"
+                      },
+                      "state": {
+                        "description": "`read`: only notifications already read. Default `all`.",
+                        "enum": [
+                          "all",
+                          "read"
+                        ],
+                        "type": "string"
+                      }
+                    },
+                    "title": "NotificationFilter",
+                    "type": "object"
+                  },
+                  "ids": {
+                    "items": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "maxItems": 200,
+                    "minItems": 1,
+                    "type": "array"
+                  }
+                },
+                "title": "NotificationBulkDelete",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "deleted_count": {
+                      "minimum": 0,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "deleted_count"
+                  ],
+                  "title": "NotificationDeletedCount",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Deleted count"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Delete the notifications picked, or every one a filter matches",
         "tags": [
           "Notifications"
         ]
@@ -184551,6 +186697,81 @@
         ]
       }
     },
+    "/api/notifications/{id}": {
+      "delete": {
+        "callbacks": {},
+        "description": "ADR-460: soft delete; no client shows it again. «Αναίρεση» may restore it for `restorable_for_seconds`.",
+        "operationId": "PaleeWeb.NotificationController.delete",
+        "parameters": [
+          {
+            "description": "Notification ID",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "deleted": {
+                      "type": "boolean"
+                    },
+                    "restorable_for_seconds": {
+                      "description": "How long «Αναίρεση» may still restore it.",
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "deleted",
+                    "restorable_for_seconds"
+                  ],
+                  "title": "NotificationDeleted",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Delete result"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Delete a notification for the current user",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
     "/api/notifications/{id}/click": {
       "post": {
         "callbacks": {},
@@ -184682,6 +186903,76 @@
           }
         ],
         "summary": "Mark a single notification as read for the current user",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/api/notifications/{id}/restore": {
+      "post": {
+        "callbacks": {},
+        "description": "ADR-460: only within the restore window; afterwards 410.",
+        "operationId": "PaleeWeb.NotificationController.restore",
+        "parameters": [
+          {
+            "description": "Notification ID",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "restored": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "restored"
+                  ],
+                  "title": "NotificationRestored",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Restore result"
+          },
+          "410": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No longer restorable"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Restore a notification the current user deleted moments ago",
         "tags": [
           "Notifications"
         ]
@@ -185132,12 +187423,374 @@
         ]
       }
     },
+    "/api/org/{organization_slug}/admin/analytics/metrics/{metric_key}/reset": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminAnalyticsController.reset_metric",
+        "parameters": [
+          {
+            "description": "A metric key of the registry, e.g. training.class_fill_rate",
+            "in": "path",
+            "name": "metric_key",
+            "required": true,
+            "schema": {
+              "maxLength": 80,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reset": {
+                      "properties": {
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "metric_key": {
+                          "type": "string"
+                        },
+                        "reset_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "reset_by": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "scope": {
+                          "enum": [
+                            "organization",
+                            "member"
+                          ],
+                          "type": "string"
+                        },
+                        "undone_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "undone_by": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "metric_key",
+                        "reset_at",
+                        "reset_by",
+                        "scope",
+                        "undone_at",
+                        "undone_by"
+                      ],
+                      "title": "AnalyticsMetricReset",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "reset"
+                  ],
+                  "title": "AnalyticsMetricResetResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Reset"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Reset one box metric: count only data from now on (owner and admins, ADR-462)",
+        "tags": [
+          "Admin Analytics"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/analytics/resets": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminAnalyticsController.resets",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "per_page",
+            "required": false,
+            "schema": {
+              "maximum": 50,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "metric_key",
+            "required": false,
+            "schema": {
+              "maxLength": 80,
+              "type": "string"
+            }
+          },
+          {
+            "description": "Box history: the days before each reset its `before` values cover",
+            "in": "query",
+            "name": "days",
+            "required": false,
+            "schema": {
+              "maximum": 365,
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "entries": {
+                      "items": {
+                        "properties": {
+                          "active": {
+                            "type": "boolean"
+                          },
+                          "before": {
+                            "additionalProperties": true,
+                            "description": "Box history: the metric over the days before the reset (`from`, `to`, `value`, `rows`)",
+                            "nullable": true,
+                            "type": "object"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "metric_key": {
+                            "type": "string"
+                          },
+                          "reset_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "reset_by": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "scope": {
+                            "enum": [
+                              "organization",
+                              "member"
+                            ],
+                            "type": "string"
+                          },
+                          "undone_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "undone_by": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "active",
+                          "id",
+                          "metric_key",
+                          "reset_at",
+                          "reset_by",
+                          "scope",
+                          "undone_at",
+                          "undone_by"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "per_page": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "entries",
+                    "page",
+                    "per_page",
+                    "total"
+                  ],
+                  "title": "AdminAnalyticsResetHistory",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Reset history"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The box's metric reset history, with each metric before its reset (ADR-462)",
+        "tags": [
+          "Admin Analytics"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/analytics/resets/{id}/undo": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminAnalyticsController.undo_reset",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reset": {
+                      "properties": {
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "metric_key": {
+                          "type": "string"
+                        },
+                        "reset_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "reset_by": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "scope": {
+                          "enum": [
+                            "organization",
+                            "member"
+                          ],
+                          "type": "string"
+                        },
+                        "undone_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "undone_by": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "metric_key",
+                        "reset_at",
+                        "reset_by",
+                        "scope",
+                        "undone_at",
+                        "undone_by"
+                      ],
+                      "title": "AnalyticsMetricReset",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "reset"
+                  ],
+                  "title": "AnalyticsMetricResetResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Reset"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Undo a box metric reset (owner and admins, ADR-462)",
+        "tags": [
+          "Admin Analytics"
+        ]
+      }
+    },
     "/api/org/{organization_slug}/admin/analytics/summary": {
       "get": {
         "callbacks": {},
         "operationId": "PaleeWeb.AdminAnalyticsController.summary",
         "parameters": [
           {
+            "description": "ADR-186: comma-separated branch ids to filter by",
+            "in": "query",
+            "name": "location_ids",
+            "required": false,
+            "schema": {
+              "maxLength": 7400,
+              "type": "string"
+            }
+          },
+          {
+            "description": "First gym-local day of the period (included)",
+            "in": "query",
+            "name": "from",
+            "required": false,
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Last gym-local day of the period (included; default today)",
+            "in": "query",
+            "name": "to",
+            "required": false,
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Without from: the period's length in days, ending at `to` (default 30)",
             "in": "query",
             "name": "days",
             "required": false,
@@ -185148,9 +187801,89 @@
             }
           },
           {
-            "description": "ADR-186: comma-separated branch ids to filter by",
+            "description": "Comma-separated class type ids",
             "in": "query",
-            "name": "location_ids",
+            "name": "class_type_ids",
+            "required": false,
+            "schema": {
+              "maxLength": 7400,
+              "type": "string"
+            }
+          },
+          {
+            "description": "Comma-separated class levels: beginner, all_levels, advanced",
+            "in": "query",
+            "name": "levels",
+            "required": false,
+            "schema": {
+              "maxLength": 7400,
+              "type": "string"
+            }
+          },
+          {
+            "description": "Comma-separated coach user ids",
+            "in": "query",
+            "name": "coach_ids",
+            "required": false,
+            "schema": {
+              "maxLength": 7400,
+              "type": "string"
+            }
+          },
+          {
+            "description": "Gym-local start: morning, midday, afternoon, evening",
+            "in": "query",
+            "name": "time_of_day",
+            "required": false,
+            "schema": {
+              "maxLength": 7400,
+              "type": "string"
+            }
+          },
+          {
+            "description": "Comma-separated package families",
+            "in": "query",
+            "name": "package_families",
+            "required": false,
+            "schema": {
+              "maxLength": 7400,
+              "type": "string"
+            }
+          },
+          {
+            "description": "Comma-separated package ids",
+            "in": "query",
+            "name": "package_ids",
+            "required": false,
+            "schema": {
+              "maxLength": 7400,
+              "type": "string"
+            }
+          },
+          {
+            "description": "Time since joining: lt_3m, 3_12m, gt_12m",
+            "in": "query",
+            "name": "tenure_bands",
+            "required": false,
+            "schema": {
+              "maxLength": 7400,
+              "type": "string"
+            }
+          },
+          {
+            "description": "Opt-in age bands (k-anonymous): under_18, 18_34, 35_44, 45_54, 55_64, 65_plus, unknown",
+            "in": "query",
+            "name": "age_bands",
+            "required": false,
+            "schema": {
+              "maxLength": 7400,
+              "type": "string"
+            }
+          },
+          {
+            "description": "Opt-in gender (k-anonymous): women, men, unknown",
+            "in": "query",
+            "name": "genders",
             "required": false,
             "schema": {
               "maxLength": 7400,
@@ -185164,6 +187897,277 @@
               "application/json": {
                 "schema": {
                   "additionalProperties": true,
+                  "properties": {
+                    "filter": {
+                      "properties": {
+                        "age_bands": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "class_type_ids": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "coach_ids": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "days": {
+                          "type": "integer"
+                        },
+                        "from": {
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "genders": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "levels": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "location_ids": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "package_families": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "package_ids": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "previous_from": {
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "previous_to": {
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "tenure_bands": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "time_of_day": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "to": {
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "v": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "age_bands",
+                        "class_type_ids",
+                        "coach_ids",
+                        "days",
+                        "from",
+                        "genders",
+                        "levels",
+                        "location_ids",
+                        "package_families",
+                        "package_ids",
+                        "previous_from",
+                        "previous_to",
+                        "tenure_bands",
+                        "time_of_day",
+                        "to",
+                        "v"
+                      ],
+                      "title": "AnalyticsFilter",
+                      "type": "object"
+                    },
+                    "kpis": {
+                      "additionalProperties": {
+                        "properties": {
+                          "delta": {
+                            "nullable": true,
+                            "type": "number"
+                          },
+                          "key": {
+                            "type": "string"
+                          },
+                          "kind": {
+                            "enum": [
+                              "flow",
+                              "snapshot",
+                              "breakdown"
+                            ],
+                            "type": "string"
+                          },
+                          "previous": {
+                            "description": "The previous equal-length period",
+                            "nullable": true,
+                            "type": "number"
+                          },
+                          "previous_rows": {
+                            "items": {
+                              "additionalProperties": true,
+                              "description": "A breakdown row by `key`; under an age or gender selection a row of fewer than 5 people is only `{key, suppressed: true}`",
+                              "properties": {
+                                "key": {
+                                  "nullable": true,
+                                  "oneOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "integer"
+                                    }
+                                  ]
+                                },
+                                "suppressed": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "previous_suppressed": {
+                            "type": "boolean"
+                          },
+                          "rows": {
+                            "items": {
+                              "additionalProperties": true,
+                              "description": "A breakdown row by `key`; under an age or gender selection a row of fewer than 5 people is only `{key, suppressed: true}`",
+                              "properties": {
+                                "key": {
+                                  "nullable": true,
+                                  "oneOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "integer"
+                                    }
+                                  ]
+                                },
+                                "suppressed": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "since": {
+                            "description": "The active reset baseline: only data after it counts",
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "suppressed": {
+                            "description": "k-anonymity: fewer than 5 people; no number is returned",
+                            "type": "boolean"
+                          },
+                          "unit": {
+                            "enum": [
+                              "count",
+                              "percent",
+                              "ratio",
+                              "cents",
+                              "days",
+                              "per_1000",
+                              "rows"
+                            ],
+                            "type": "string"
+                          },
+                          "value": {
+                            "description": "Nil when not computable or suppressed",
+                            "nullable": true,
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "delta",
+                          "key",
+                          "kind",
+                          "previous",
+                          "previous_rows",
+                          "previous_suppressed",
+                          "rows",
+                          "since",
+                          "suppressed",
+                          "unit",
+                          "value"
+                        ],
+                        "title": "AnalyticsKpi",
+                        "type": "object"
+                      },
+                      "description": "ADR-462: every KPI by its registry key",
+                      "type": "object"
+                    },
+                    "period": {
+                      "properties": {
+                        "days": {
+                          "type": "integer"
+                        },
+                        "from": {
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "previous_from": {
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "previous_to": {
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "time_zone": {
+                          "type": "string"
+                        },
+                        "to": {
+                          "format": "date",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "days",
+                        "from",
+                        "previous_from",
+                        "previous_to",
+                        "time_zone",
+                        "to"
+                      ],
+                      "title": "AnalyticsPeriod",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "filter",
+                    "kpis",
+                    "period"
+                  ],
+                  "title": "AdminAnalyticsSummary",
                   "type": "object"
                 }
               }
@@ -185176,7 +188180,7 @@
             "bearerAuth": []
           }
         ],
-        "summary": "Fetch Phase 8 analytics summary from persisted facts and aggregates",
+        "summary": "Στατιστικά: KPIs of a period with the previous one, filtered (ADR-462)",
         "tags": [
           "Admin Analytics"
         ]
@@ -395558,6 +398562,392 @@
         ]
       }
     },
+    "/api/platform/exercise-candidates": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformExerciseCatalogController.index",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "enum": [
+                "pending",
+                "approved",
+                "rejected"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "Only names at least this many people or boxes typed (default 2)",
+            "in": "query",
+            "name": "min_owners",
+            "required": false,
+            "schema": {
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "candidates": {
+                      "items": {
+                        "properties": {
+                          "catalog_slug": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "decided_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "first_seen_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "last_seen_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "owners_count": {
+                            "type": "integer"
+                          },
+                          "status": {
+                            "enum": [
+                              "pending",
+                              "approved",
+                              "rejected"
+                            ],
+                            "type": "string"
+                          },
+                          "uses_count": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "uses_count",
+                          "owners_count",
+                          "status",
+                          "catalog_slug"
+                        ],
+                        "title": "ExerciseNameCandidate",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "catalog": {
+                      "description": "The catalog entries an alias can join",
+                      "items": {
+                        "properties": {
+                          "catalog_slug": {
+                            "type": "string"
+                          },
+                          "category": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "catalog_slug",
+                          "name",
+                          "category"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "candidates",
+                    "catalog"
+                  ],
+                  "title": "ExerciseNameCandidateQueue",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Candidates"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Exercise names waiting for the catalog (vendors)",
+        "tags": [
+          "Platform exercise catalog"
+        ]
+      }
+    },
+    "/api/platform/exercise-candidates/{id}/decision": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformExerciseCatalogController.decide",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "catalog_slug": {
+                    "description": "For an alias: the entry it joins",
+                    "type": "string"
+                  },
+                  "category": {
+                    "enum": [
+                      "strength",
+                      "bodyweight",
+                      "cardio",
+                      "mobility",
+                      "skill"
+                    ],
+                    "type": "string"
+                  },
+                  "decision": {
+                    "enum": [
+                      "entry",
+                      "alias",
+                      "reject"
+                    ],
+                    "type": "string"
+                  },
+                  "label": {
+                    "description": "Defaults to the typed name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "decision"
+                ],
+                "title": "ExerciseNameCandidateDecision",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "candidate": {
+                      "properties": {
+                        "catalog_slug": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "decided_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "first_seen_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "last_seen_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "owners_count": {
+                          "type": "integer"
+                        },
+                        "status": {
+                          "enum": [
+                            "pending",
+                            "approved",
+                            "rejected"
+                          ],
+                          "type": "string"
+                        },
+                        "uses_count": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "uses_count",
+                        "owners_count",
+                        "status",
+                        "catalog_slug"
+                      ],
+                      "title": "ExerciseNameCandidate",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "candidate"
+                  ],
+                  "title": "ExerciseNameCandidateDecided",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Decided"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Error"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Error"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Approve a name as a new entry or an alias, or reject it (vendors)",
+        "tags": [
+          "Platform exercise catalog"
+        ]
+      }
+    },
+    "/api/platform/exercise-catalog-audit": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformExerciseCatalogController.audit",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "events": {
+                      "items": {
+                        "properties": {
+                          "action": {
+                            "enum": [
+                              "approve_entry",
+                              "approve_alias",
+                              "reject"
+                            ],
+                            "type": "string"
+                          },
+                          "actor_user_id": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "candidate_id": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "catalog_slug": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "metadata": {
+                            "type": "object"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "action",
+                          "at"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "events"
+                  ],
+                  "title": "ExerciseCatalogAudit",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Audit"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The latest exercise catalog decisions (vendors)",
+        "tags": [
+          "Platform exercise catalog"
+        ]
+      }
+    },
     "/api/platform/food-misses": {
       "get": {
         "callbacks": {},
@@ -407640,6 +411030,12 @@
                   "current_score": {
                     "type": "number"
                   },
+                  "exercise_ref": {
+                    "description": "Palee catalog slug of a picked suggestion (ADR-461); the name stays as typed",
+                    "maxLength": 120,
+                    "nullable": true,
+                    "type": "string"
+                  },
                   "higher_is_better": {
                     "type": "boolean"
                   },
@@ -407962,6 +411358,12 @@
                   "current_score": {
                     "type": "number"
                   },
+                  "exercise_ref": {
+                    "description": "Palee catalog slug of a picked suggestion (ADR-461); the name stays as typed",
+                    "maxLength": 120,
+                    "nullable": true,
+                    "type": "string"
+                  },
                   "higher_is_better": {
                     "type": "boolean"
                   },
@@ -408068,6 +411470,12 @@
                   },
                   "current_score": {
                     "type": "number"
+                  },
+                  "exercise_ref": {
+                    "description": "Palee catalog slug of a picked suggestion (ADR-461); the name stays as typed",
+                    "maxLength": 120,
+                    "nullable": true,
+                    "type": "string"
                   },
                   "higher_is_better": {
                     "type": "boolean"

@@ -10,7 +10,7 @@ import {useUiTranslations} from "@/i18n/ui";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { fetchFinanceQueues, fetchFinanceSummary, fetchPackageCatalog, type FinanceRecord } from "@/api/finance";
@@ -20,9 +20,7 @@ import { CorporateTab } from "@/components/admin/finance/tabs/CorporateTab";
 import { FiscalDocumentsTab } from "@/components/fiscal/FiscalDocumentsTab";
 import { MembersTab } from "@/components/admin/finance/tabs/MembersTab";
 import { PackagesTab } from "@/components/admin/finance/tabs/PackagesTab";
-import { PromotionsTab } from "@/components/admin/finance/tabs/PromotionsTab";
 import { QueuesTab } from "@/components/admin/finance/tabs/QueuesTab";
-import { ReferralsTab } from "@/components/admin/finance/tabs/ReferralsTab";
 import { SeasonsTab } from "@/components/admin/finance/tabs/SeasonsTab";
 import { useSession } from "@/components/session-provider";
 import { CoachPayTab, useSeesCoachPay } from "@/components/admin/coach-pay/CoachPayTab";
@@ -30,11 +28,12 @@ import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
 import { PageHeader, pageHeaderActionClass } from "@/components/PageHeader";
 import { BranchFilterControl, BranchFilterNote, useBranchFilter } from "@/components/admin/BranchFilter";
 import { SegmentPicker } from "@/components/filters/SegmentPicker";
-import { GuideButton } from "@/components/guides/GuideButton";
+import { MovedToMarketing } from "@/components/admin/marketing/MovedToMarketing";
+import { MARKETING_ROUTES, movedAdminTarget } from "@/lib/marketing-routes";
 import { financeQueueHref } from "@/components/admin/finance/finance-queues";
 import { earliestDateKey, formatDateKey } from "@/lib/local-date";
 
-type Tab = "members" | "packages" | "seasons" | "promotions" | "referrals" | "documents" | "queues" | "accounting" | "corporate" | "pay";
+type Tab = "members" | "packages" | "seasons" | "offers" | "documents" | "queues" | "accounting" | "corporate" | "pay";
 
 export function FinanceOperations() {
   const uiLocale = useUiLocale();
@@ -64,8 +63,9 @@ export function FinanceOperations() {
     { id: "packages", label: i18n("packages0a99901") },
     // ADR-167: seasons are sold next to packages.
     { id: "seasons", label: seasonsT("tab") },
-    { id: "promotions", label: i18n("promotions086e09b") },
-    { id: "referrals", label: i18n("referrals2b0e3a3") },
+    // ANR 2026-11-04: promotions, partner perks and referrals live in
+    // Μάρκετινγκ; «Προσφορές» here only points there.
+    { id: "offers", label: i18n("promotions086e09b") },
     // Mockup s2 (ADR-241): receipts, invoices and credit notes.
     { id: "documents", label: documentsT("tab") },
     { id: "queues", label: i18n("queues83dbc32") },
@@ -75,18 +75,21 @@ export function FinanceOperations() {
     ...(corporateEnabled ? [{ id: "corporate" as const, label: i18n("stfTabCorporate") }] : []),
   ];
   const requestedTab = searchParams.get("tab");
+  // An old `?tab=promotions|referrals` link the proxy did not see (client navigation).
+  const movedTo = movedAdminTarget("/admin/finance", searchParams);
+  useEffect(() => {
+    if (movedTo) router.replace(adminHref(movedTo, organizationSlug));
+  }, [movedTo, organizationSlug, router]);
   const activeTab: Tab = TABS.some(({ id }) => id === requestedTab) ? (requestedTab as Tab) : "members";
 
   // ADR-186 §7: the attention figures and every tab follow the branch filter.
   const branchFilter = useBranchFilter("finance-operations");
   const locationIds = branchFilter.param;
   // How the filter applies to the open tab; seasons and corporate clients are business-wide (§8).
-  const filterNotes: Record<Tab, string> = {
+  const filterNotes: Partial<Record<Tab, string>> = {
     members: branchT("filterNoteMembers"),
     packages: branchT("filterNoteCovering"),
-    promotions: branchT("filterNoteCovering"),
     queues: branchT("filterNoteMembers"),
-    referrals: branchT("filterNoteReferrals"),
     accounting: branchT("filterNoteAccounting"),
     seasons: branchT("filterNoteBusinessWide"),
     documents: branchT("filterNoteBusinessWide"),
@@ -125,7 +128,7 @@ export function FinanceOperations() {
     {
       label: i18n("referralRewards22d6a91"),
       count: (queues.pending_referral_rewards ?? []).length,
-      href: adminHref("/admin/finance?tab=referrals", organizationSlug),
+      href: adminHref(MARKETING_ROUTES.referrals, organizationSlug),
     },
   ].filter((item) => item.count > 0);
 
@@ -147,7 +150,6 @@ export function FinanceOperations() {
           actions={
             <>
               <BranchFilterControl filter={branchFilter} />
-              <GuideButton guide="finance_offers" />
               <Link href={adminHref("/admin/metrics/finance", organizationSlug)} className={pageHeaderActionClass} style={{ background: "var(--panel)", border: "1px solid var(--border)", color: "var(--text-soft)" }}>
                 {i18n("financeAnalytics271fe3b")}
               </Link>
@@ -200,14 +202,13 @@ export function FinanceOperations() {
           options={TABS.map(({ id, label }) => ({ value: id, label }))}
         />
 
-        {locationIds ? <BranchFilterNote>{filterNotes[activeTab]}</BranchFilterNote> : null}
+        {locationIds && filterNotes[activeTab] ? <BranchFilterNote>{filterNotes[activeTab]}</BranchFilterNote> : null}
 
         {/* Active tab */}
         {activeTab === "members" && <MembersTab locationIds={locationIds} />}
         {activeTab === "packages" && <PackagesTab locationIds={locationIds} />}
         {activeTab === "seasons" && <SeasonsTab />}
-        {activeTab === "promotions" && <PromotionsTab locationIds={locationIds} />}
-        {activeTab === "referrals" && <ReferralsTab locationIds={locationIds} />}
+        {activeTab === "offers" && <MovedToMarketing />}
         {activeTab === "documents" && <FiscalDocumentsTab />}
         {activeTab === "queues" && <QueuesTab locationIds={locationIds} />}
         {activeTab === "accounting" && <AccountingTab locationIds={locationIds} />}

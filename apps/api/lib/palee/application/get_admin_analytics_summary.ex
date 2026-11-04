@@ -1,6 +1,20 @@
 defmodule Palee.Application.GetAdminAnalyticsSummary do
+  @moduledoc """
+  `GET /admin/analytics/summary`: Στατιστικά (overview, training, coaching,
+  engagement, health).
+
+  ADR-462: the period is `from`/`to` (gym-local dates; `days` still works)
+  and the filters of `AnalyticsFilter`. `kpis` holds every staff KPI by its
+  registry key, for the period and the previous one of equal length, each
+  counting only data after its active reset baseline (`since`). `period`
+  and `filter` echo what was applied. The older blocks (`analytics`,
+  `finance`, …) keep their shape, now over the same period and people.
+  """
+
   alias Palee.Application.BranchReport
   alias Palee.{Analytics, Coaching, Execution, Feedback, Finance, Wellbeing}
+
+  @sections ~w(overview training coaching engagement health)a
 
   # TD-092: every summary reads tenant facts, so the whole dashboard is built
   # in the gym's scope. Unscoped, each read was empty under the production
@@ -10,25 +24,95 @@ defmodule Palee.Application.GetAdminAnalyticsSummary do
   # facts by their branch, the rest by the people whose home branch it is.
   def call(context, params) do
     params = Map.new(params || %{}, fn {key, value} -> {to_string(key), value} end)
-    report = BranchReport.resolve(context, params)
-    scoped = BranchReport.scope_params(params, report)
+    {zone, today} = Analytics.gym_clock(context)
 
-    with {:ok, payload} <-
-           Analytics.with_tenant_context(context, fn -> build(context, scoped, report) end) do
-      {:ok,
-       payload
-       |> Map.put(:branch_filter, BranchReport.filter_payload(report))
-       |> Map.put(:branches, branches(context, report, params))}
+    with {:ok, filter} <- Analytics.parse_analytics_filter(params, today) do
+      report = BranchReport.resolve(context, params)
+      filter = Analytics.analytics_filter_locations(filter, report.filter)
+      windows = Analytics.kpi_windows(filter, zone)
+      people = people(context, filter, report)
+
+      scoped =
+        params
+        |> BranchReport.scope_params(report)
+        |> Map.merge(period_params(filter, windows))
+        |> put_people(people)
+
+      with {:ok, payload} <-
+             Analytics.with_tenant_context(context, fn ->
+               build(context, scoped, report, windows, people)
+             end) do
+        baselines = Analytics.metric_baselines(context, :organization)
+        keys = Enum.flat_map(@sections, &Analytics.section_metric_keys/1)
+
+        {:ok,
+         payload
+         |> Map.put(
+           :kpis,
+           Analytics.kpi_report(context, filter, keys, baselines, report.user_ids)
+         )
+         |> Map.put(:period, period(filter, zone))
+         |> Map.put(:filter, Analytics.analytics_filter_params(filter))
+         |> Map.update!(
+           :execution,
+           &Map.put(&1, :since_baseline, iso(baselines["training.execution_kpis"]))
+         )
+         |> Map.put(:branch_filter, BranchReport.filter_payload(report))
+         |> Map.put(:branches, branches(context, report, scoped, windows))}
+      end
     end
   end
 
-  defp build(context, params, report) do
+  @doc false
+  def period(filter, zone) do
+    params = Analytics.analytics_filter_params(filter)
+
+    %{
+      from: params.from,
+      to: params.to,
+      days: params.days,
+      previous_from: params.previous_from,
+      previous_to: params.previous_to,
+      time_zone: zone
+    }
+  end
+
+  # The people the person filters (package, tenure, age, gender) keep, as
+  # user ids for the older per-person summaries; nil when none applies.
+  defp people(context, filter, report) do
+    if Analytics.analytics_people_filtered?(filter) do
+      Analytics.filter_people(context, filter, report.user_ids)
+    else
+      report.user_ids
+    end
+  end
+
+  defp put_people(params, nil), do: params
+  defp put_people(params, users), do: Map.put(params, "user_ids", users)
+
+  defp period_params(filter, %{current: {since, until}}) do
+    %{
+      "since" => since,
+      "until" => until,
+      "days" => filter.days,
+      "finance_since" => filter.from,
+      "finance_until" => filter.to
+    }
+  end
+
+  defp build(context, params, report, windows, people) do
     analytics = Analytics.analytics_summary(params)
-    finance = Finance.financial_summary(params)
-    coaching = Coaching.get_aggregates(context, report.user_ids)
+    finance = Finance.financial_summary(finance_params(params))
+    coaching = Coaching.get_aggregates(context, people || report.user_ids)
     feedback = Feedback.review_summary(params)
     wellbeing = Wellbeing.injury_summary(params)
-    execution = Execution.execution_kpis(since(params), report.user_ids)
+    {since, until} = windows.current
+    {previous_since, previous_until} = windows.previous
+
+    execution =
+      since
+      |> Execution.execution_kpis(people, until)
+      |> Map.put(:previous, Execution.execution_kpis(previous_since, people, previous_until))
 
     {:ok,
      %{
@@ -42,14 +126,23 @@ defmodule Palee.Application.GetAdminAnalyticsSummary do
      }}
   end
 
+  defp finance_params(params) do
+    params
+    |> Map.put("since", params["finance_since"])
+    |> Map.put("until", params["finance_until"])
+  end
+
   # Headline figures per branch: its people, their payments and reviews, and
   # the check-ins and attended classes at the branch in the window.
-  defp branches(context, report, params) do
-    activity = BranchReport.activity_by_branch(context, since(params))
+  defp branches(context, report, params, %{current: {since, _until}}) do
+    activity = BranchReport.activity_by_branch(context, since)
 
     BranchReport.splits(context, report, fn users, location_id ->
       finance =
-        Finance.financial_summary(context, BranchReport.split_params(params, users, location_id)).totals
+        Finance.financial_summary(
+          context,
+          params |> finance_params() |> BranchReport.split_params(users, location_id)
+        ).totals
 
       visits = Map.get(activity, location_id, %{check_ins: 0, attended: 0})
 
@@ -63,26 +156,8 @@ defmodule Palee.Application.GetAdminAnalyticsSummary do
     end)
   end
 
-  @default_days 30
-
-  # Same window the other summaries use (`days`, default 30).
-  defp since(params) do
-    days =
-      case params[:days] || params["days"] do
-        days when is_integer(days) and days > 0 -> days
-        days when is_binary(days) -> parse_days(days)
-        _ -> @default_days
-      end
-
-    DateTime.add(DateTime.utc_now(), -days * 86_400, :second)
-  end
-
-  defp parse_days(value) do
-    case Integer.parse(value) do
-      {days, ""} when days > 0 -> days
-      _ -> @default_days
-    end
-  end
+  defp iso(nil), do: nil
+  defp iso(%DateTime{} = at), do: DateTime.to_iso8601(at)
 
   defp dashboard_view(analytics, finance, coaching, feedback, wellbeing) do
     %{

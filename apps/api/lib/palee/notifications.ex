@@ -3,17 +3,21 @@ defmodule Palee.Notifications do
 
   alias Palee.{Identity, Organizations}
   alias Palee.Notifications.Commands.DeleteNativePushToken
+  alias Palee.Notifications.Commands.DeleteNotification
+  alias Palee.Notifications.Commands.DeleteNotifications
   alias Palee.Notifications.Commands.DeletePushSubscription
   alias Palee.Notifications.Commands.DispatchNotification
   alias Palee.Notifications.Commands.EnqueueNotificationEvent
   alias Palee.Notifications.Commands.MarkAllRead
   alias Palee.Notifications.Commands.MarkNotificationRead
   alias Palee.Notifications.Commands.ReplacePushKeys
+  alias Palee.Notifications.Commands.RestoreNotification
   alias Palee.Notifications.Commands.SaveNativePushToken
   alias Palee.Notifications.Commands.SavePushContact
   alias Palee.Notifications.Commands.SavePushSubscription
   alias Palee.Notifications.Domain.NotificationCategories
   alias Palee.Notifications.Domain.NotificationDedupe
+  alias Palee.Notifications.Domain.NotificationFilter
   alias Palee.Notifications.NativePush
   alias Palee.Notifications.NativePushTokenStore
   alias Palee.Notifications.PushConfig
@@ -66,7 +70,8 @@ defmodule Palee.Notifications do
          %{
            notifications: page.notifications,
            unread_count: GetUnreadCount.call(user_id),
-           next_cursor: page.next_cursor
+           next_cursor: page.next_cursor,
+           matching_count: page.matching_count
          }}
       end
     end)
@@ -105,6 +110,53 @@ defmodule Palee.Notifications do
         {:error, :not_found}
     end
   end
+
+  @doc """
+  ADR-460: the person deletes one of their notifications (soft delete: no
+  client shows it again). Answers `{:error, :not_found}` for a notification
+  that is not theirs.
+  """
+  def delete_notification(user_id, notification_id) do
+    user_id
+    |> in_user_context(fn -> DeleteNotification.call(user_id, notification_id) end)
+    |> changed_or_not_found(user_id)
+  end
+
+  @doc "ADR-460: «Αναίρεση» of a delete, within the restore window only."
+  def restore_notification(user_id, notification_id) do
+    user_id
+    |> in_user_context(fn -> RestoreNotification.call(user_id, notification_id) end)
+    |> case do
+      true ->
+        broadcast_notification_changed(user_id)
+        :ok
+
+      false ->
+        {:error, :notification_not_restorable}
+    end
+  end
+
+  @doc "ADR-460: delete the ids given or every notification a filter matches."
+  def delete_notifications(user_id, body) do
+    case in_user_context(user_id, fn -> DeleteNotifications.call(user_id, body) end) do
+      {:ok, count} = ok ->
+        if count > 0, do: broadcast_notification_changed(user_id)
+        ok
+
+      {:error, _reason} = error ->
+        error
+    end
+  end
+
+  defp in_user_context(user_id, fun),
+    do: NotificationStore.with_user_context(%{user_id: user_id}, fun)
+
+  defp changed_or_not_found(true, user_id) do
+    broadcast_notification_changed(user_id)
+    :ok
+  end
+
+  defp changed_or_not_found(false, _user_id), do: {:error, :not_found}
 
   def get_notification_organization_id(user_id, notification_id),
     do: NotificationStore.get_notification_organization_id(user_id, notification_id)
@@ -195,6 +247,12 @@ defmodule Palee.Notifications do
   end
 
   def notification_categories, do: NotificationCategories.category_ids()
+
+  @doc "ADR-460: the most ids one bulk delete may name."
+  def bulk_delete_max_ids, do: NotificationFilter.max_ids()
+
+  @doc "ADR-460: seconds after a delete during which «Αναίρεση» may restore it."
+  def restore_window_seconds, do: NotificationFilter.restore_window_seconds()
 
   @doc """
   ADR-392: whether the person wants `category` on `channel`, e.g. the
@@ -1610,7 +1668,7 @@ defmodule Palee.Notifications do
       case type do
         "referral_progress" -> {"#{attribution_id}:#{field(payload, :stage)}", mine}
         "referral_reward" -> {"#{attribution_id}:#{field(payload, :reward_status)}", mine}
-        "referral_review" -> {attribution_id, "/admin/finance?tab=referrals"}
+        "referral_review" -> {attribution_id, "/admin/marketing/referrals"}
       end
 
     %{

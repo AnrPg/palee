@@ -60,7 +60,8 @@ defmodule PaleeWeb.AuthController do
       completed_tours: %Schema{
         type: :array,
         items: %Schema{type: :string, enum: Palee.Identity.tour_audiences()}
-      }
+      },
+      trains_with_palee: PaleeWeb.Schemas.AthleteUse.trains_with_palee()
     },
     required: [
       :completed_tours,
@@ -754,6 +755,7 @@ defmodule PaleeWeb.AuthController do
       preferred_locale: user.preferred_locale,
       preferred_theme_slug: Map.get(user, :preferred_theme_slug),
       time_zone: Map.get(user, :time_zone),
+      trains_with_palee: Map.get(user, :trains_with_palee),
       completed_tours: Map.get(user, :completed_tours) || []
     }
   end

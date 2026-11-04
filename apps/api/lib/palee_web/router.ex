@@ -1389,6 +1389,10 @@ defmodule PaleeWeb.Router do
     get("/users/:id/membership-status", AdminUserController, :membership_status)
     get("/search", AdminSearchController, :index)
     get("/analytics/summary", AdminAnalyticsController, :summary)
+    # ADR-462: per-metric resets (baselines, never deletions).
+    post("/analytics/metrics/:metric_key/reset", AdminAnalyticsController, :reset_metric)
+    post("/analytics/resets/:id/undo", AdminAnalyticsController, :undo_reset)
+    get("/analytics/resets", AdminAnalyticsController, :resets)
     get("/athletes", AdminUserController, :index_athletes)
     # ADR-377: belts and levels per discipline.
     get("/rank-ladders", AdminRankLaddersController, :index)
@@ -2378,6 +2382,21 @@ defmodule PaleeWeb.Router do
     get("/partner-suggestion-stats", PartnerSuggestionsController, :stats)
   end
 
+  # ADR-461: typed exercise names into the catalog, by the Palee team only.
+  scope "/api/platform", PaleeWeb do
+    pipe_through([
+      :api,
+      :authenticated,
+      :authenticated_rate_limited,
+      :vendor,
+      :platform_write_rate_limited
+    ])
+
+    get("/exercise-candidates", PlatformExerciseCatalogController, :index)
+    post("/exercise-candidates/:id/decision", PlatformExerciseCatalogController, :decide)
+    get("/exercise-catalog-audit", PlatformExerciseCatalogController, :audit)
+  end
+
   scope "/api/me", PaleeWeb do
     pipe_through([
       :api,
@@ -2395,6 +2414,8 @@ defmodule PaleeWeb.Router do
     delete("/email-change", EmailChangeController, :delete)
     post("/tours/:audience/complete", MeController, :complete_tour)
     put("/time-zone", MeController, :update_time_zone)
+    # ADR-463: staff say whether they also train with Palee.
+    put("/trains-with-palee", MeController, :update_trains_with_palee)
     post("/avatar/upload-url", MeController, :avatar_upload_url)
     patch("/avatar", MeController, :update_avatar)
     get("/search/users", MeController, :search_users)
@@ -2418,6 +2439,10 @@ defmodule PaleeWeb.Router do
     post("/notifications/read-all", NotificationController, :mark_all_read)
     post("/notifications/:id/read", NotificationController, :mark_read)
     post("/notifications/:id/click", NotificationController, :mark_clicked)
+
+    # ADR-460: delete for the person (soft), «Αναίρεση», and bulk from Ρυθμίσεις.
+    post("/notifications/delete", NotificationController, :bulk_delete)
+    post("/notifications/:id/restore", NotificationController, :restore)
     get("/notifications/push-config", NotificationController, :push_config)
     post("/notifications/push-subscriptions", NotificationController, :create_push_subscription)
 
@@ -2428,6 +2453,8 @@ defmodule PaleeWeb.Router do
     )
 
     delete("/notifications/push-subscriptions", NotificationController, :delete_push_subscription)
+    # ADR-460: after every literal /notifications/<name> DELETE route.
+    delete("/notifications/:id", NotificationController, :delete)
     # ADR-199: per-category notification choices (Εγώ › Ρυθμίσεις).
     get("/notifications/preferences", NotificationPreferenceController, :index)
     put("/notifications/preferences/:category", NotificationPreferenceController, :update)
@@ -2457,6 +2484,8 @@ defmodule PaleeWeb.Router do
     post("/wellbeing/check-ins", CheckInController, :create)
     delete("/wellbeing/check-ins/:id", CheckInController, :delete)
     # ADR-183: «Τι κάνεις», asked by the first-run.
+    # ADR-461: exercise names are free text with suggestions.
+    get("/me/exercise-suggestions", ExerciseSuggestionsController, :index)
     get("/me/interests", MyInterestsController, :show)
     put("/me/interests", MyInterestsController, :update)
     get("/me/wellness", WellnessController, :show)
@@ -2500,6 +2529,10 @@ defmodule PaleeWeb.Router do
     get("/me/progress", AccountTrainingController, :progress)
     # ADR-165: coverage summary, qualities radar and training load.
     get("/me/progress/depth", TrainingDepthController, :show)
+    # ADR-462 §5: a member resets their own Πρόοδος stats.
+    post("/me/progress/metrics/:metric_key/reset", ProgressMetricResetController, :reset)
+    post("/me/progress/resets/:id/undo", ProgressMetricResetController, :undo)
+    get("/me/progress/resets", ProgressMetricResetController, :index)
     # ADR-358 (CP-D6): fitness score per domain and what to work on.
     get("/me/fitness-profile", FitnessProfileController, :show)
     # ADR-395: the card's own settings (body weight, birth year, what it shows).

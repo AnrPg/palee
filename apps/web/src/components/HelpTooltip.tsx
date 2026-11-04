@@ -1,6 +1,77 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useRef, useState, type ReactNode } from "react";
+
+import { Popover } from "@/components/ui/Popover";
+
+const HELP_BUTTON_CLASS = "inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold";
+const HELP_BUTTON_STYLE = {
+  background: "color-mix(in srgb, var(--primary) 12%, transparent)",
+  border: "1px solid color-mix(in srgb, var(--primary) 28%, transparent)",
+  color: "var(--primary)",
+};
+
+/**
+ * The «?» of a widget whose infobox holds more than a sentence, or an action
+ * (ADR-462: a metric's reset sits in its infobox footer). A tap opens it on
+ * the popover layer, so it never takes space or moves anything on the page.
+ * `footer` gets `close`, to close the box before opening a dialog.
+ */
+export function HelpPopover({
+  label,
+  children,
+  footer,
+  helpKey,
+}: {
+  label: string;
+  children: ReactNode;
+  footer?: (close: () => void) => ReactNode;
+  /** Names the help text, so a page can check that no two widgets share one. */
+  helpKey?: string;
+}) {
+  const id = useId();
+  const anchorRef = useRef<HTMLButtonElement>(null);
+  const [open, setOpen] = useState(false);
+  const close = () => setOpen(false);
+  const footerContent = footer?.(close);
+
+  return (
+    <>
+      <button
+        ref={anchorRef}
+        type="button"
+        aria-label={label}
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        aria-controls={open ? id : undefined}
+        data-help-key={helpKey}
+        onClick={() => setOpen((current) => !current)}
+        className={HELP_BUTTON_CLASS}
+        style={HELP_BUTTON_STYLE}
+      >
+        ?
+      </button>
+      <Popover
+        anchorRef={anchorRef}
+        open={open}
+        onClose={close}
+        role="dialog"
+        id={id}
+        ariaLabel={label}
+        width={300}
+        className="rounded-xl text-start text-xs font-normal normal-case leading-5 tracking-normal shadow-xl"
+        style={{ background: "var(--panel-raised)", border: "1px solid var(--border-strong)", color: "var(--text-soft)" }}
+      >
+        <div className="px-3 py-2.5">{children}</div>
+        {footerContent ? (
+          <div className="flex justify-end px-3 py-2" style={{ borderTop: "1px solid var(--border)" }}>
+            {footerContent}
+          </div>
+        ) : null}
+      </Popover>
+    </>
+  );
+}
 
 export function HelpTooltip({ label, children }: { label: string; children: React.ReactNode }) {
   const id = useId();

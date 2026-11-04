@@ -1,5 +1,11 @@
 defmodule Palee.Application.EditPR do
-  alias Palee.Application.{InvalidateLandingPages, JournalComments, PRSearchIndex}
+  alias Palee.Application.{
+    ExerciseNameIndex,
+    InvalidateLandingPages,
+    JournalComments,
+    PRSearchIndex
+  }
+
   alias Palee.Pantheon
   alias Palee.Pantheon.Domain.PRResultMetrics
 
@@ -27,6 +33,7 @@ defmodule Palee.Application.EditPR do
         with {:ok, normalized_params} <- normalize_params(params),
              {:ok, edited_pr} <- Pantheon.edit_record(id, normalized_params) do
           :ok = PRSearchIndex.enqueue_upsert(edited_pr)
+          :ok = remember_name(edited_pr)
           InvalidateLandingPages.for_users([user_id])
           {:ok, edited_pr}
         end
@@ -48,4 +55,13 @@ defmodule Palee.Application.EditPR do
       {:ok, params}
     end
   end
+
+  # ADR-461: the PR's name joins the owner's exercise-name suggestions.
+  defp remember_name(pr),
+    do:
+      ExerciseNameIndex.remember_for_user(
+        pr.user_id,
+        [%{name: pr.name, catalog_slug: Map.get(pr, :exercise_ref)}],
+        false
+      )
 end

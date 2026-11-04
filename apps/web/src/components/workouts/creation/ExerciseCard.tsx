@@ -14,6 +14,7 @@ import type { ScaleLevel } from "@/api/workouts";
 import { useWorkoutCreationStore } from "@/stores/workout-creation";
 import { concreteSetPrescriptions, FORMAT_EXERCISE_CONTEXT, type DraftExercise, type DraftSection, type LoadMode, type PrescriptionUnit } from "@/types/workout";
 
+import { ExerciseNameInput } from "@/components/exercises/ExerciseNameInput";
 import { AdvancedSettingsPanel } from "./AdvancedSettingsPanel";
 import { NumberStepper } from "./NumberStepper";
 import { UnitCycler } from "./UnitCycler";
@@ -431,14 +432,15 @@ export function ExerciseCard({ exercise, section, scaleLevels, sectionOptions, s
 
           {renderIntervalBadge()}
 
-          <input
-            type="text"
+          <ExerciseNameInput
             value={exercise.name}
-            onChange={(event) => update({ name: event.target.value })}
+            onValueChange={(name, exerciseRef) => update({ name, exerciseRef })}
             onClick={(event) => event.stopPropagation()}
             placeholder={i18n("exerciseName9a5c1af")}
+            aria-label={i18n("exerciseName9a5c1af")}
+            maxLength={120}
             className="min-w-0 flex-[1_1_9rem] bg-transparent text-base font-bold outline-none"
-            style={{ color: "var(--text)" }}
+            inputStyle={{ color: "var(--text)" }}
           />
 
           {ctx.showSets && !grouped && detailsOpen ? (

@@ -197,6 +197,9 @@ defmodule PaleeWeb.RouteCapabilities do
     {W.AdminCommunityController, :club} => [:moderate_community],
     {W.AdminCommunityController, :update_club} => [:manage_community],
     {W.AdminCommunityController, :archive_club} => [:manage_community],
+    # ADR-462: a box metric reset (and its undo) is the owner's and admins'.
+    {W.AdminAnalyticsController, :reset_metric} => [:reset_analytics],
+    {W.AdminAnalyticsController, :undo_reset} => [:reset_analytics],
     {W.AdminCommunityController, :answer_club_request} => [:moderate_community],
     {W.AdminCommunityController, :remove_club_member} => [:moderate_community],
 

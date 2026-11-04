@@ -1,5 +1,11 @@
 defmodule Palee.Application.UpdatePR do
-  alias Palee.Application.{InvalidateLandingPages, JournalComments, PRSearchIndex}
+  alias Palee.Application.{
+    ExerciseNameIndex,
+    InvalidateLandingPages,
+    JournalComments,
+    PRSearchIndex
+  }
+
   alias Palee.{Gamification, Pantheon}
   alias Palee.Pantheon.Domain.PRResultMetrics
 
@@ -31,6 +37,7 @@ defmodule Palee.Application.UpdatePR do
           end
 
           :ok = PRSearchIndex.enqueue_upsert(updated_pr)
+          :ok = remember_name(updated_pr)
           InvalidateLandingPages.for_users([user_id])
           {:ok, updated_pr}
         end
@@ -63,4 +70,13 @@ defmodule Palee.Application.UpdatePR do
       {:ok, params}
     end
   end
+
+  # ADR-461: the PR's name joins the owner's exercise-name suggestions.
+  defp remember_name(pr),
+    do:
+      ExerciseNameIndex.remember_for_user(
+        pr.user_id,
+        [%{name: pr.name, catalog_slug: Map.get(pr, :exercise_ref)}],
+        false
+      )
 end

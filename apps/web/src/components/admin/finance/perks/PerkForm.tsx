@@ -54,7 +54,7 @@ type SetDraft = <K extends keyof PerkDraft>(key: K, value: PerkDraft[K]) => void
 type Problem = (key: PerkDraftProblem) => string | null;
 
 /**
- * Create or edit a partner perk (Οικονομικά › Προσφορές › Συνεργατών,
+ * Create or edit a partner perk (Μάρκετινγκ › Προσφορές συνεργατών,
  * ADR-191). Up front only what every perk needs: the partner, the benefit,
  * how the store redeems it, and when it holds. Everything else (limits,
  * weekly windows, who, where, terms) sits in collapsed «Περισσότεροι όροι»
@@ -105,7 +105,7 @@ export function PerkForm({ perk, onClose }: { perk: StaffPerk | null; onClose: (
 
   return (
     <SidePanel
-      guide="finance.perk.form"
+      guide="marketing.perk.form"
       title={perk ? perk.partner_name : t("newTitle")}
       subtitle={t("eyebrow")}
       onClose={onClose}
@@ -145,7 +145,7 @@ export function PerkForm({ perk, onClose }: { perk: StaffPerk | null; onClose: (
     >
       {perk && perk.claims_count > 0 ? <p className="rounded-2xl px-4 py-3 text-xs" style={{ background: "var(--panel-muted)", color: "var(--text-soft)" }}>{t("versionNote")}</p> : null}
 
-      <Card title={t("partner")} guide="finance.perk.partner">
+      <Card title={t("partner")} guide="marketing.perk.partner">
         <Field label={t("partnerName")} error={problem("partnerName")}>
           <input className={inputClass} style={inputStyle} value={draft.partner_name} onChange={(event) => set("partner_name", event.target.value)} maxLength={120} />
         </Field>
@@ -155,7 +155,7 @@ export function PerkForm({ perk, onClose }: { perk: StaffPerk | null; onClose: (
         </Field>
       </Card>
 
-      <Card title={t("benefit")} guide="finance.perk.benefit">
+      <Card title={t("benefit")} guide="marketing.perk.benefit">
         <SegmentPicker
           ariaLabel={t("benefitType")}
           semantics="radiogroup"
@@ -167,7 +167,7 @@ export function PerkForm({ perk, onClose }: { perk: StaffPerk | null; onClose: (
         <BenefitFields draft={draft} set={set} problem={problem} />
       </Card>
 
-      <Card title={t("method")} guide="finance.perk.method">
+      <Card title={t("method")} guide="marketing.perk.method">
         <div role="radiogroup" aria-label={t("method")} className="grid grid-cols-1 gap-2">
           {METHODS.map((method) => (
             <button
@@ -204,7 +204,7 @@ export function PerkForm({ perk, onClose }: { perk: StaffPerk | null; onClose: (
         ) : null}
       </Card>
 
-      <Card title={t("validity")} guide="finance.perk.rules">
+      <Card title={t("validity")} guide="marketing.perk.rules">
         <div className="grid gap-3 sm:grid-cols-2">
           <Field label={t("validFrom")}>
             <DateInput className={inputClass} style={inputStyle} value={draft.valid_from ?? ""} onValueChange={(value) => set("valid_from", value || null)} placeholder={t("fromNow")} />

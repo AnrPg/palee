@@ -164,7 +164,7 @@ export const FEATURE_SECTIONS: FeatureSection[] = [
     summaryKey: "financeSummary",
     details: [
       "Package catalog, member packages and entitlements, seasons (for example 12-week race prep) with their own club channel",
-      "Promotions, member billing, invoices and refund receipts",
+      "Member billing, invoices and refund receipts",
       "Corporate clients and corporate invoices",
       "Reconciliation records and accounting exports with a checksummed manifest",
     ],
@@ -178,6 +178,7 @@ export const FEATURE_SECTIONS: FeatureSection[] = [
       "Public gym page: about, photos, disciplines, coaches, locations, hours, read-only schedule, events and public posts",
       "Owner-controlled trial policy and slots, trial requests queue and conversion tracking; the check-in door offers a trial to non-members",
       "Member referrals with a personal link and QR, automatic attribution (sign-up, trial, paid) and rewards approved by the owner",
+      "One Marketing tab for seasonal challenges, the box's own promotions and coupons, partner perks and referrals, each with its live figure",
       "No credits, no discount marketplace: the owner sets prices and the client relationship stays with the gym",
     ],
   },

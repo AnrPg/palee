@@ -3,6 +3,7 @@ defmodule Palee.Application.PublishWorkout do
 
   alias Palee.Application.{
     BroadcastUserSync,
+    ExerciseNameIndex,
     LoggedWorkoutChangeNotice,
     SuggestWorkoutIcon,
     TenantStaffRecipients,
@@ -26,6 +27,8 @@ defmodule Palee.Application.PublishWorkout do
          :ok <- apply_substitution(context, substitute_for, workout.id) do
       Workouts.delete_superseded_drafts(context, id, workout.created_by_id)
       SuggestWorkoutIcon.enqueue(context, workout.id)
+      # ADR-461: the WOD's exercise names join the box's suggestions.
+      :ok = remember_names(context, workout)
       # ADR-393: the people who already performed it, once per save; they
       # hear it from that notice, not a second time below.
       performed = performed_notice(substitute_for, context, workout.id)
@@ -63,6 +66,13 @@ defmodule Palee.Application.PublishWorkout do
   end
 
   def call(_context, _id, _params), do: {:error, :organization_context_required}
+
+  defp remember_names(%{organization_id: organization_id}, workout),
+    do:
+      ExerciseNameIndex.remember_for_organization(
+        organization_id,
+        Workouts.exercise_name_rows(workout)
+      )
 
   # A substitution publishes a new WOD for one assignment or class: nobody
   # performed that one yet, and the old WOD keeps its content.

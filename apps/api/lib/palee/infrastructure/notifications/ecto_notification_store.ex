@@ -45,6 +45,7 @@ defmodule Palee.Infrastructure.Notifications.EctoNotificationStore do
     Notification
     |> scoped_to_user()
     |> where([notification], notification.user_id == ^user_id)
+    |> not_deleted()
     |> order_by([notification], desc: notification.inserted_at)
     |> Repo.all()
     |> Enum.map(&normalize_notification/1)
@@ -56,13 +57,9 @@ defmodule Palee.Infrastructure.Notifications.EctoNotificationStore do
     cursor = Keyword.get(opts, :cursor)
 
     notifications =
-      Notification
-      |> scoped_to_user()
-      |> where([notification], notification.user_id == ^user_id)
-      |> where(
-        [notification],
-        fragment("? <> ALL(?)", notification.type, ^VisibleTypes.hidden_inbox_types())
-      )
+      user_id
+      |> live_inbox()
+      |> apply_filter(Keyword.get(opts, :filter))
       |> maybe_apply_cursor(cursor)
       |> order_by([notification], desc: notification.inserted_at, desc: notification.id)
       |> limit(^limit_plus_one(limit))
@@ -79,32 +76,81 @@ defmodule Palee.Infrastructure.Notifications.EctoNotificationStore do
 
   @impl true
   def count_unread_inbox(user_id) do
-    Notification
-    |> scoped_to_user()
-    |> where(
-      [notification],
-      notification.user_id == ^user_id and is_nil(notification.read_at) and
-        fragment("? <> ALL(?)", notification.type, ^VisibleTypes.hidden_inbox_types())
-    )
+    user_id
+    |> live_inbox()
+    |> where([notification], is_nil(notification.read_at))
+    |> Repo.aggregate(:count)
+  end
+
+  @impl true
+  def count_inbox(user_id, filter) do
+    user_id
+    |> live_inbox()
+    |> apply_filter(filter)
     |> Repo.aggregate(:count)
   end
 
   @impl true
   def mark_all_read(user_id) do
-    Notification
-    |> scoped_to_user()
-    |> where(
-      [notification],
-      notification.user_id == ^user_id and is_nil(notification.read_at) and
-        fragment("? <> ALL(?)", notification.type, ^VisibleTypes.hidden_inbox_types())
-    )
+    user_id
+    |> live_inbox()
+    |> where([notification], is_nil(notification.read_at))
     |> Repo.update_all(set: [read_at: current_timestamp()])
     |> elem(0)
   end
 
+  # ADR-460: a retried delete of a row already deleted still answers true,
+  # without moving its `deleted_at` (and so its restore window).
+  @impl true
+  def soft_delete(user_id, notification_id, at) do
+    {count, _rows} =
+      user_id
+      |> live_inbox()
+      |> where([notification], notification.id == ^notification_id)
+      |> Repo.update_all(set: [deleted_at: at])
+
+    count == 1 or deleted?(user_id, notification_id)
+  end
+
+  @impl true
+  def soft_delete_ids(user_id, ids, at) do
+    user_id
+    |> live_inbox()
+    |> where([notification], notification.id in ^ids)
+    |> Repo.update_all(set: [deleted_at: at])
+    |> elem(0)
+  end
+
+  @impl true
+  def soft_delete_matching(user_id, filter, at) do
+    user_id
+    |> live_inbox()
+    |> apply_filter(filter)
+    |> Repo.update_all(set: [deleted_at: at])
+    |> elem(0)
+  end
+
+  @impl true
+  def restore(user_id, notification_id, deleted_since) do
+    {count, _rows} =
+      Notification
+      |> scoped_to_user()
+      |> where(
+        [notification],
+        notification.user_id == ^user_id and notification.id == ^notification_id and
+          notification.deleted_at >= ^deleted_since
+      )
+      |> Repo.update_all(set: [deleted_at: nil])
+
+    count == 1
+  end
+
   @impl true
   def mark_read(user_id, notification_id) do
-    case Notification |> scoped_to_user() |> Repo.get_by(id: notification_id, user_id: user_id) do
+    case Notification
+         |> scoped_to_user()
+         |> not_deleted()
+         |> Repo.get_by(id: notification_id, user_id: user_id) do
       nil ->
         false
 
@@ -127,6 +173,7 @@ defmodule Palee.Infrastructure.Notifications.EctoNotificationStore do
     Notification
     |> scoped_to_user()
     |> where([n], n.user_id == ^user_id and n.id == ^notification_id)
+    |> not_deleted()
     |> select([n], n.organization_id)
     |> Repo.one()
   end
@@ -156,6 +203,54 @@ defmodule Palee.Infrastructure.Notifications.EctoNotificationStore do
 
     :ok
   end
+
+  # ADR-460: what any client may see of a person's inbox: their own rows,
+  # not deleted, not the delivery records other screens show (VisibleTypes).
+  defp live_inbox(user_id) do
+    Notification
+    |> scoped_to_user()
+    |> where([notification], notification.user_id == ^user_id)
+    |> not_deleted()
+    |> where(
+      [notification],
+      fragment("? <> ALL(?)", notification.type, ^VisibleTypes.hidden_inbox_types())
+    )
+  end
+
+  defp not_deleted(query), do: where(query, [notification], is_nil(notification.deleted_at))
+
+  defp deleted?(user_id, notification_id) do
+    Notification
+    |> scoped_to_user()
+    |> where(
+      [n],
+      n.user_id == ^user_id and n.id == ^notification_id and not is_nil(n.deleted_at)
+    )
+    |> Repo.exists?()
+  end
+
+  # A `Domain.NotificationFilter` (ADR-460); nil is no filter.
+  defp apply_filter(query, nil), do: query
+
+  defp apply_filter(query, filter) do
+    query
+    |> filter_read(filter.read_only)
+    |> filter_inserted_before(filter.inserted_before)
+    |> filter_types(filter.types)
+  end
+
+  defp filter_read(query, true), do: where(query, [n], not is_nil(n.read_at))
+  defp filter_read(query, _all), do: query
+
+  defp filter_inserted_before(query, nil), do: query
+
+  defp filter_inserted_before(query, %NaiveDateTime{} = before),
+    do: where(query, [n], n.inserted_at < ^before)
+
+  defp filter_types(query, nil), do: query
+
+  defp filter_types(query, types) when is_list(types),
+    do: where(query, [n], fragment("? = ANY(?)", n.type, ^types))
 
   defp maybe_apply_cursor(query, nil), do: query
 

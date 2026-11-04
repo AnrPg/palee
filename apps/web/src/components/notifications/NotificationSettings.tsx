@@ -15,6 +15,7 @@ import {
 } from "@/api/notifications";
 import { CollapsibleSection } from "@/components/profile/CollapsibleSection";
 import { applyChange, emailSwitch } from "@/components/notifications/notification-preferences";
+import { NotificationCleanup } from "@/components/notifications/NotificationCleanup";
 import { PushDeviceCard } from "@/components/notifications/PushDeviceCard";
 import { useSession } from "@/components/session-provider";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
@@ -31,7 +32,8 @@ const COLUMN = "flex w-16 shrink-0 justify-center";
  * Εγώ › Ρυθμίσεις › Ειδοποιήσεις (ADR-199): push on this device, then one row
  * per category with a switch per channel. Account and payments are locked on;
  * the box-staff row shows only to staff. Per-club levels stay in Τα box και
- * τα clubs μου, linked from the clubs row.
+ * τα clubs μου, linked from the clubs row. Last, «Διαγραφή ειδοποιήσεων»
+ * (ADR-460).
  */
 export function NotificationSettings() {
   const t = useTranslations("NotificationSettings");
@@ -120,6 +122,9 @@ export function NotificationSettings() {
         {save.isError ? (
           <ErrorNotice>{t("saveError")}</ErrorNotice>
         ) : null}
+
+        {/* ADR-460: «Διαγραφή ειδοποιήσεων». */}
+        {preferences.data ? <NotificationCleanup categories={rows.map((row) => row.category)} /> : null}
       </div>
     </CollapsibleSection>
   );

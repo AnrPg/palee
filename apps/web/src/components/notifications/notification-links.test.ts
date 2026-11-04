@@ -238,7 +238,7 @@ describe("notificationTargetUrl after the member-app move", () => {
       notificationTargetUrl({ type: "referral_progress", payload: { url: "/me/referrals?tab=invites&box=kypseli" } }, "member"),
     ).toBe("/me/referrals?tab=invites&box=kypseli");
     expect(notificationTargetUrl({ type: "referral_reward", payload: {} }, "member")).toBe("/me/referrals?tab=invites");
-    expect(notificationTargetUrl({ type: "referral_review", payload: {} }, "admin")).toBe("/admin/finance?tab=referrals");
+    expect(notificationTargetUrl({ type: "referral_review", payload: {} }, "admin")).toBe("/admin/marketing/referrals");
   });
 
   it("opens the organiser console on a co-host request or answer (ADR-185)", () => {

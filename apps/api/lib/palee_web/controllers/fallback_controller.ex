@@ -38,7 +38,9 @@ defmodule PaleeWeb.FallbackController do
     invalid_push_contact:
       {:unprocessable_entity, "Enter an email address or a web address that starts with https://"},
     push_managed_by_server:
-      {:conflict, "The server's WEB_PUSH_* settings are in use; change them in gitops"}
+      {:conflict, "The server's WEB_PUSH_* settings are in use; change them in gitops"},
+    # ADR-460: «Αναίρεση» came after the restore window, or for a row not deleted.
+    notification_not_restorable: {:gone, "This notification can no longer be restored"}
   }
 
   # ADR-203: what `Palee.Email.enqueue/4` refuses. `:not_live` answers as
@@ -64,6 +66,13 @@ defmodule PaleeWeb.FallbackController do
     already_scheduled: {:conflict, "A deletion is already scheduled"},
     invalid_deletion_link: {:unprocessable_entity, "This link is not valid or was already used"},
     expired_deletion_link: {:gone, "This link has expired"}
+  }
+
+  # ADR-462: metric resets.
+  @metric_reset_errors %{
+    unknown_metric: {:not_found, "There is no such metric"},
+    metric_not_resettable: {:unprocessable_entity, "This figure is a state and cannot be reset"},
+    already_undone: {:conflict, "This reset was already undone"}
   }
 
   # ADR-202: spaces, floor plans, the cleaning schedule and machine placement.
@@ -168,6 +177,14 @@ defmodule PaleeWeb.FallbackController do
 
   def call(conn, {:error, reason}) when is_map_key(@space_errors, reason) do
     {status, message} = Map.fetch!(@space_errors, reason)
+
+    conn
+    |> put_status(status)
+    |> json(%{code: to_string(reason), error: message})
+  end
+
+  def call(conn, {:error, reason}) when is_map_key(@metric_reset_errors, reason) do
+    {status, message} = Map.fetch!(@metric_reset_errors, reason)
 
     conn
     |> put_status(status)
@@ -3414,6 +3431,8 @@ defmodule PaleeWeb.FallbackController do
     no_day_workout: {:conflict, "No day WOD covers this class"},
     day_class_started: {:conflict, "This class has started; its WOD stays as it was"},
     invalid_time_zone: {:unprocessable_entity, "Choose a known time zone"},
+    # ADR-463: "do you train with Palee too?" is yes or no.
+    invalid_trains_with_palee: {:unprocessable_entity, "Answer yes or no"},
     time_zone_required: {:unprocessable_entity, "The gym's time zone must be set"},
     invalid_guest_name: {:unprocessable_entity, "Enter the guest's name"},
     guest_already_booked: {:conflict, "A guest is already booked for this class"},
@@ -3501,6 +3520,15 @@ defmodule PaleeWeb.FallbackController do
     owner_required: {:forbidden, "Only gym owners can create gyms"},
     # ADR-170: platform plans and the solo-coach tier.
     vendor_required: {:forbidden, "Only the platform team can do this"},
+    # ADR-461: the Palee team's exercise catalog review.
+    invalid_exercise_catalog_decision:
+      {:unprocessable_entity, "Decision must be entry, alias or reject"},
+    exercise_candidate_already_decided: {:conflict, "This name was already decided"},
+    invalid_exercise_label: {:unprocessable_entity, "Give the exercise a name"},
+    invalid_exercise_category: {:unprocessable_entity, "Choose the exercise's category"},
+    exercise_catalog_slug_taken: {:conflict, "An exercise with this name already exists"},
+    exercise_already_in_catalog: {:conflict, "The catalog already has this name"},
+    unknown_exercise_catalog_slug: {:unprocessable_entity, "Choose an exercise of the catalog"},
     coach_practice_exists: {:conflict, "You already run a practice as an independent coach"},
     plan_limit_reached:
       {:conflict, "Your plan has no free staff seat; ask us about a bigger plan"},

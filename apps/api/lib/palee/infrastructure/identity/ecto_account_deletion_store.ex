@@ -232,6 +232,7 @@ defmodule Palee.Infrastructure.Identity.EctoAccountDeletionStore do
       handle_changed_at: nil,
       avatar_url: nil,
       time_zone: nil,
+      trains_with_palee: nil,
       preferred_theme_slug: nil,
       completed_tours: [],
       login_id: tombstone.id,

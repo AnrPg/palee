@@ -326,7 +326,8 @@ defmodule PaleeWeb.Schemas.CrossProvider do
               "or more (ADR-285)."
         },
         filter: %Schema{type: :object, additionalProperties: true},
-        active_filter_count: %Schema{type: :integer}
+        active_filter_count: %Schema{type: :integer},
+        metric_baselines: PaleeWeb.Schemas.AnalyticsMetrics.baselines_schema()
       }
     }
   end

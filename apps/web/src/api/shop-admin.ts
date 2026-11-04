@@ -207,7 +207,7 @@ export type PromoteInput = {
   target: PromoteTarget;
   channel_id?: string | null;
   body: string;
-  /** An optional code for this product only (Οικονομικά › Προσφορές). */
+  /** An optional code for this product only (Μάρκετινγκ › Προσφορές του box). */
   promotion_code?: { code: string; discount_percent: number; ends_at?: string | null } | null;
 };
 

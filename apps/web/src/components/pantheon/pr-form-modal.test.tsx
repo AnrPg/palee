@@ -30,6 +30,8 @@ vi.mock("@/hooks/useJournalCommentWriter", () => ({
 
 vi.mock("@/components/session-provider", () => ({
   useSession: () => ({ tokens: { access_token: "access-token" } }),
+  // The exercise-name field asks for suggestions (ADR-461); none in these tests.
+  useOptionalSession: () => null,
 }));
 
 vi.mock("@/i18n/ui", () => ({

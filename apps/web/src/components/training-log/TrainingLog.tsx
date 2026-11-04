@@ -12,6 +12,7 @@ import {
   type TrainingLogSourceType,
 } from "@/api/training-log";
 import { localizeError } from "@/i18n/presentation";
+import { ExerciseNameInput } from "@/components/exercises/ExerciseNameInput";
 import { CommentList } from "@/components/journal/CommentList";
 import { useJournalCommentWriter } from "@/hooks/useJournalCommentWriter";
 import { useOutboxCommand } from "@/hooks/useOutboxCommand";
@@ -545,15 +546,17 @@ function EntryForm({
         <legend className={labelClass} style={{ color: "var(--dim)" }}>{i18n("trainingLogFormExercises")}</legend>
         {form.exercises.map((row, index) => (
           <div key={index} className="grid grid-cols-6 gap-2 rounded-2xl p-3" style={{ border: "1px solid var(--border)" }}>
-            <input
-              aria-label={i18n("trainingLogFormExerciseName")}
-              placeholder={i18n("trainingLogFormExerciseName")}
-              className={`${inputClass} col-span-6`}
-              style={inputStyle}
-              value={row.name}
-              maxLength={120}
-              onChange={(event) => updateRow(index, { name: event.target.value })}
-            />
+            <div className="col-span-6">
+              <ExerciseNameInput
+                aria-label={i18n("trainingLogFormExerciseName")}
+                placeholder={i18n("trainingLogFormExerciseName")}
+                className={`${inputClass} w-full`}
+                inputStyle={inputStyle}
+                value={row.name}
+                maxLength={120}
+                onValueChange={(name, exerciseRef) => updateRow(index, { name, exerciseRef })}
+              />
+            </div>
             <input
               aria-label={i18n("trainingLogFormSets")}
               placeholder={i18n("trainingLogFormSets")}

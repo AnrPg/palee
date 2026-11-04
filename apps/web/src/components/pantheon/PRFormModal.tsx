@@ -29,6 +29,7 @@ import {
 } from "@/components/pantheon/PRGymField";
 import { newCommentId, type JournalComment } from "@/api/journal-comments";
 import { CommentList } from "@/components/journal/CommentList";
+import { ExerciseNameInput } from "@/components/exercises/ExerciseNameInput";
 import { useSession } from "@/components/session-provider";
 import { useJournalCommentWriter } from "@/hooks/useJournalCommentWriter";
 import { removeComment, sortComments } from "@/lib/journal-comments";
@@ -171,6 +172,7 @@ export function PRFormModal({
   const titleId = useId();
 
   const [name, setName] = useState(pr?.name ?? "");
+  const [exerciseRef, setExerciseRef] = useState<string | null>(pr?.exercise_ref ?? null);
   const [score, setScore] = useState(pr ? String(pr.current_score) : "");
   const [unit, setUnit] = useState<PRUnit>(pr?.unit ?? "kg");
   const [timeFields, setTimeFields] = useState<TimeFields>(() =>
@@ -201,6 +203,7 @@ export function PRFormModal({
         unit === "mins_secs" ? timeFieldsToSeconds(timeFields) : parseFloat(score);
       const params = {
         name: name.trim(),
+        exercise_ref: exerciseRef,
         current_score,
         unit,
         higher_is_better: higherIsBetter,
@@ -300,12 +303,17 @@ export function PRFormModal({
             <label className="block text-xs font-semibold uppercase tracking-[0.18em]" style={{ color: "var(--muted)" }}>
               {i18n("exerciseName9a5c1af")}
             </label>
-            <input
+            <ExerciseNameInput
               className="w-full rounded-xl px-4 py-2.5 text-sm outline-none"
-              style={{ background: "var(--panel-muted)", border: "1px solid var(--border)", color: "var(--text)" }}
+              inputStyle={{ background: "var(--panel-muted)", border: "1px solid var(--border)", color: "var(--text)" }}
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onValueChange={(typed, slug) => {
+                setName(typed);
+                setExerciseRef(slug);
+              }}
               placeholder={i18n("eGBackSquat1rm675304b")}
+              aria-label={i18n("exerciseName9a5c1af")}
+              maxLength={120}
               required
               autoFocus
             />

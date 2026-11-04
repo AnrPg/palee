@@ -58,10 +58,10 @@ defmodule Palee.Execution do
     to: TrainingLogStore,
     as: :move_entries
 
-  @doc "Execution KPI report for the current organization since `since`."
-  def execution_kpis(%DateTime{} = since, user_ids \\ nil) do
+  @doc "Execution KPI report for the current organization from `since` (until `until`, ADR-462)."
+  def execution_kpis(%DateTime{} = since, user_ids \\ nil, until \\ nil) do
     since
-    |> ExecutionStore.list_executions_for_kpis(user_ids)
+    |> ExecutionStore.list_executions_for_kpis(user_ids, until)
     |> ExecutionKpis.summarize()
     |> Map.put(:since, since)
   end
