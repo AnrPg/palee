@@ -215,24 +215,25 @@ defmodule Palee.Infrastructure.Fiscal.MyDataGateway do
 
       case find_page(connection, base_url, params, key, nil, @max_lookup_pages, []) do
         {:ok, []} -> :not_found
-        {:ok, found} -> {:ok, latest_registration(found)}
+        {:ok, found} -> {:ok, first_registration(found)}
         error -> error
       end
     end
   end
 
   # On the ERP channel a resend of the same document is registered again with a
-  # new MARK (ADR-451), so every match is collected and the latest one wins.
-  defp latest_registration(found) do
+  # new MARK (ADR-451), so every match is collected and the first registration
+  # (the lowest MARK) wins, whatever order the pages come in.
+  defp first_registration(found) do
     found
-    |> Enum.max_by(&mark_number/1)
+    |> Enum.min_by(&mark_number/1)
     |> Map.take([:mark, :uid, :authentication_code, :qr_url])
   end
 
   defp mark_number(%{mark: mark}) do
     case Integer.parse(mark) do
       {number, ""} -> number
-      _other -> 0
+      _other -> :infinity
     end
   end
 

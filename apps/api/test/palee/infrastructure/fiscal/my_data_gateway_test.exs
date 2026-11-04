@@ -87,7 +87,7 @@ defmodule Palee.Infrastructure.Fiscal.MyDataGatewayTest do
     assert_received {:query, %{"nextPartitionKey" => "P", "nextRowKey" => "R"}}
   end
 
-  test "find takes the latest registration when a resend got a second MARK" do
+  test "find takes the first registration when a resend got a second MARK" do
     Req.Test.stub(Palee.FiscalHttp, fn conn ->
       cancelled =
         String.replace(
@@ -99,12 +99,12 @@ defmodule Palee.Infrastructure.Fiscal.MyDataGatewayTest do
       Plug.Conn.send_resp(
         conn,
         200,
-        "<RequestedDoc><invoicesDoc>#{doc("A", "7", "400000000000011")}" <>
-          "#{doc("A", "7", "400000000000012")}#{cancelled}</invoicesDoc></RequestedDoc>"
+        "<RequestedDoc><invoicesDoc>#{doc("A", "7", "400000000000012")}" <>
+          "#{doc("A", "7", "400000000000011")}#{cancelled}</invoicesDoc></RequestedDoc>"
       )
     end)
 
-    assert {:ok, %{mark: "400000000000012"}} = MyDataGateway.find(@connection, @key)
+    assert {:ok, %{mark: "400000000000011"}} = MyDataGateway.find(@connection, @key)
   end
 
   test "find says not found, and passes refused credentials on" do
