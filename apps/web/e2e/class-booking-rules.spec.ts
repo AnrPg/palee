@@ -164,4 +164,28 @@ test.describe("Schedule › how long a request waits", () => {
 
     await expect.poll(() => sent && "booking_timeout_minutes" in sent ? sent.booking_timeout_minutes : "unsent").toBeNull();
   });
+  test("the class editor hides the wait while bookings are confirmed automatically", async ({ page }) => {
+    await signIn(page, "owner", OWNER);
+    await withSchedule(page, { ...morningClass, auto_approve: true });
+    let sent: Record<string, unknown> | null = null;
+    await page.route("**/api/org/box1/admin/schedule/slots/slot-1", (route) => {
+      sent = bodyOf(route.request());
+      return route.fulfill(json({ slot: { ...morningClass, booking_timeout_minutes: 90 }, updated_count: 1 }));
+    });
+
+    await page.goto("/admin/schedule");
+    await page.getByRole("button", { name: /CrossFit/ }).first().click();
+    await page.getByRole("button", { name: "Edit class" }).click();
+    const dialog = page.getByRole("dialog", { name: "Edit scheduled class" });
+    await expect(dialog.getByTestId("slot-auto-approve")).toBeChecked();
+    await expect(dialog.getByTestId("slot-approval-wait")).toHaveCount(0);
+
+    await dialog.getByTestId("slot-auto-approve").uncheck();
+    await expect(dialog.getByTestId("slot-approval-wait-hours")).toHaveValue("1");
+    await expect(dialog.getByTestId("slot-approval-wait-minutes")).toHaveValue("30");
+    await dialog.getByRole("button", { name: "Save changes" }).click();
+
+    await expect.poll(() => sent?.auto_approve ?? "unsent").toBe(false);
+    await expect.poll(() => sent?.booking_timeout_minutes).toBe(90);
+  });
 });
