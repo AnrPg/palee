@@ -127,6 +127,67 @@ function BreakdownList({ title, rows, insight }: { title: string; rows: [string,
   );
 }
 
+type EventMixGroup = { category: string; total: number; events: { name: string; count: number }[] };
+
+function eventMixGroups(value: unknown): EventMixGroup[] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((item) => {
+    const group = asRecord(item);
+    if (typeof group.category !== "string" || typeof group.total !== "number") return [];
+    const events = (Array.isArray(group.events) ? group.events : []).flatMap((event) => {
+      const row = asRecord(event);
+      return typeof row.name === "string" && typeof row.count === "number" ? [{ name: row.name, count: row.count }] : [];
+    });
+    return [{ category: group.category, total: group.total, events }];
+  });
+}
+
+// ADR-462 §6: the event mix grouped by category, with translated labels.
+function EventMixList({ title, groups, insight }: { title: string; groups: EventMixGroup[]; insight?: string }) {
+  const uiLocale = useUiLocale();
+  const i18n = useUiTranslations();
+  const t = useTranslations("AnalyticsEvents");
+  const max = Math.max(...groups.map((group) => group.total), 1);
+  const label = (key: string, raw: string) => (t.has(key) ? t(key) : <SemanticLabel value={raw} />);
+
+  return (
+    <article className="rounded-[1.6rem] border border-[color:var(--border)] bg-[var(--panel)] p-6">
+      <div className="flex items-center gap-2">
+        <h2 className="text-xl font-black">{title}</h2>
+        {insight ? <HelpTooltip label={title}>{insight}</HelpTooltip> : null}
+      </div>
+      {groups.length > 0 ? (
+        <div className="mt-5 space-y-5">
+          {groups.map((group) => (
+            <div key={group.category}>
+              <div className="flex items-center justify-between gap-3 text-sm">
+                <span className="font-bold text-[var(--text)]">{label(`categories.${group.category}`, group.category)}</span>
+                <span className="font-bold text-[var(--text)]">{formatCount(uiLocale, group.total)}</span>
+              </div>
+              <div className="mt-2 h-2 rounded-full bg-[var(--panel-muted)]">
+                <div
+                  className="h-2 rounded-full bg-[var(--success)]"
+                  style={{ width: (Math.max((group.total / max) * 100, group.total > 0 ? 8 : 0)) + "%" }}
+                />
+              </div>
+              <ul className="mt-2 space-y-1">
+                {group.events.map((event) => (
+                  <li key={event.name} className="flex items-center justify-between gap-3 text-xs text-[var(--text-soft)]">
+                    <span>{label(`events.${event.name}`, event.name)}</span>
+                    <span>{formatCount(uiLocale, event.count)}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="mt-4 text-sm text-[var(--muted)]">{i18n("noCapturedFactsInThisReportingWindowdc344c7")}</p>
+      )}
+    </article>
+  );
+}
+
 type AnalyticsSection = "overview" | "training" | "coaching" | "engagement" | "health";
 
 export function AdminAnalytics({ section = "overview" }: { section?: AnalyticsSection }) {
@@ -288,7 +349,7 @@ export function AdminAnalytics({ section = "overview" }: { section?: AnalyticsSe
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--primary)]">{i18n("userEngagement72f61cf")}</p>
             <h2 className="mt-2 text-xl font-black">{i18n("interactionAndCommunicationSignals18b657a")}</h2>
           </div>
-          <BreakdownList title={i18n("eventMix09a541e")} rows={entries(asRecord(events.by_name))} insight={copy.body} />
+          <EventMixList title={i18n("eventMix09a541e")} groups={eventMixGroups(events.by_category)} insight={copy.body} />
           <BreakdownList title={i18n("pushDelivery52c03a7")} rows={entries(asRecord(pushDispatch.by_status))} insight={copy.body} />
           <BreakdownList title={i18n("communicationade0d50")} rows={entries(asRecord(communication.by_direction))} insight={copy.body} />
           <BreakdownList title={i18n("reviewRatingsd575ce1")} rows={entries(reviewByRating)} insight={copy.body} />
