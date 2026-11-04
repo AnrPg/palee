@@ -85,3 +85,32 @@ https://claude.ai/artifact/JhRJ8ZwAiHzBaj8jSzof16 (round 2). ANR's answers
   switch template at any time.
 - The order arrows leave the settings page.
 - Template changes are reviewed in a preview before they go live.
+
+## Implementation notes (API, 2026-11-04)
+- Migration `20271101000000_box_site_templates` adds the columns, a check
+  constraint on the keys and `template_notice_sent_at`. It moves every
+  existing row to `arena` with `template_notice`. A box that published its
+  public page but never saved website settings gets a row too (`arena`,
+  notice, timetable off, as it was). New rows default to `tiles` with
+  `public_schedule` on; a box with no row reads the same defaults.
+- `SiteSettingsPolicy` validates the keys. Publishable edits are merged into
+  `draft` (string keys), keeping only the values that differ from the live
+  columns. A draft equal to the live site is stored as null. Hidden sections
+  compare as a set. `POST /admin/site/publish` without a draft still stamps
+  `published_at` and clears the notice.
+- `GET /admin/site/preview` builds the public-site shape for the staff
+  member's own organization with the draft applied. It works before the
+  public page is published: the box is found by its organization, not by
+  `PublicBox.resolve/1`.
+- Sections `photos`, `stats` and `programmes` exist, and a section with no
+  data hides, as before. `photos` lists the page cover and photos, then the
+  public room photos, 12 at most. `stats` has classes over the next 7 days,
+  the PRs recorded in the box this calendar year (`palee_box_pr_count`, a
+  SECURITY DEFINER count of records and history rows with the box's
+  provenance) and whole years since the organization was created.
+  `programmes` is empty (`SiteProgrammes`, TD-530).
+- `photos.video` and `phone` are always null for now (TD-530).
+- The notice: `template_notice` drives the banner. `BoxSiteJob`'s cron also
+  sends one `site_template_changed` notification to staff with
+  `manage_settings`. The box is claimed first, through
+  `template_notice_sent_at`. Demo businesses are never listed.
