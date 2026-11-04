@@ -57,7 +57,14 @@ const addDays = addDaysToKey;
  * Box › Πρόγραμμα for members (plan §5a): location in the title, the filter
  * chip row, the week strip and one day of classes.
  */
-export function MemberSchedule({ initialOpenSlotId = null }: { initialOpenSlotId?: string | null }) {
+export function MemberSchedule({
+  initialOpenSlotId = null,
+  initialOpenDay = null,
+}: {
+  initialOpenSlotId?: string | null;
+  /** The gym day of `initialOpenSlotId` (YYYY-MM-DD): the schedule opens on it. */
+  initialOpenDay?: string | null;
+}) {
   const t = useTranslations("BoxSchedule");
   const i18n = useUiTranslations();
   const locale = useLocale();
@@ -72,7 +79,7 @@ export function MemberSchedule({ initialOpenSlotId = null }: { initialOpenSlotId
   const prefs = useSchedulePreferences(token, organizationId);
   const submitCommand = useOutboxCommand();
 
-  const [selectedDate, setSelectedDate] = useState(() => dateKeyInZone(new Date(), gymZone));
+  const [selectedDate, setSelectedDate] = useState(() => initialOpenDay ?? dateKeyInZone(new Date(), gymZone));
   const [view, setView] = useState<ScheduleView>("day");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [openSlotId, setOpenSlotId] = useState<string | null>(initialOpenSlotId);

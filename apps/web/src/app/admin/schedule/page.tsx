@@ -1,6 +1,7 @@
 
 import { AuthGuard } from "@/components/auth-guard";
 import { ScheduleConsole } from "@/components/schedule/ScheduleConsole";
+import { scheduleDeepLink } from "@/components/schedule/deep-link";
 
 export const dynamic = "force-dynamic";
 
@@ -9,13 +10,11 @@ export default async function AdminSchedulePage({
 }: {
   searchParams: Promise<Record<string, string>>;
 }) {
-  
-  const params = await searchParams;
-  const initialOpenSlotId = params.open_slot ?? null;
+  const link = scheduleDeepLink(await searchParams);
 
   return (
     <AuthGuard roles={["admin"]}>
-      <ScheduleConsole initialOpenSlotId={initialOpenSlotId} />
+      <ScheduleConsole initialOpenSlotId={link.slotId} initialOpenDay={link.day} />
     </AuthGuard>
   );
 }
