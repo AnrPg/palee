@@ -162,6 +162,10 @@ config :palee, :start_oban, true
 # ADR-123: a started execution not completed within this many hours is recorded
 # as workout_execution_abandoned by ExecutionAbandonmentSweepJob.
 config :palee, :execution_abandonment_hours, 6
+# ADR-549 Παραίτηση: a time-set section whose clock ran on for more than this
+# many times the athlete's own median time between work taps, after the last
+# tap, counts as given up (idle). nil records the facts without that verdict.
+config :palee, :retirement_idle_factor, 3
 config :palee, :redis_url, System.get_env("REDIS_URL", "redis://localhost:6379")
 config :palee, :readiness_checker, Palee.Infrastructure.Readiness.Live
 

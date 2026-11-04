@@ -3,7 +3,8 @@ defmodule Palee.Execution.Commands.CompleteExecution do
     DurationAdjustments,
     ExecutionKpis,
     ProgressSnapshotter,
-    ProgressValidator
+    ProgressValidator,
+    Retirement
   }
 
   alias Palee.Execution.ExecutionStore
@@ -76,6 +77,10 @@ defmodule Palee.Execution.Commands.CompleteExecution do
                 Map.get(params, :segments, Map.get(params, "segments", [])),
                 current_segment_index,
                 total_elapsed_ms
+              )
+              |> Retirement.merge_activity(
+                incoming_activity(params),
+                Map.get(params, :segments, Map.get(params, "segments", []))
               ),
             duration_adjustments:
               DurationAdjustments.normalize(
@@ -87,6 +92,9 @@ defmodule Palee.Execution.Commands.CompleteExecution do
             # caller; the store writes them next to the completion.
             plan_sets: Keyword.get(opts, :plan_sets, [])
           }
+
+          completed_params =
+            put_retirement(completed_params, segments, Keyword.get(opts, :retirement_idle_factor))
 
           persist_completion(execution_id, completed_params, opts)
         end
@@ -163,6 +171,33 @@ defmodule Palee.Execution.Commands.CompleteExecution do
       end)
     else
       {:error, :bad_request}
+    end
+  end
+
+  # ADR-549: the device's work taps per time-set section (`kpi_counters.activity`).
+  defp incoming_activity(params) do
+    case params[:kpi_counters] || params["kpi_counters"] do
+      %{} = counters -> counters[:activity] || counters["activity"]
+      _none -> nil
+    end
+  end
+
+  # ADR-549: whether the athlete gave up a time-set section, stored with the
+  # execution's KPI counters so every reader takes the same verdict.
+  defp put_retirement(params, segments, idle_factor) do
+    counters = params.kpi_counters || %{}
+
+    case Retirement.assess(
+           segments,
+           %{
+             section_elapsed_ms: params.section_elapsed_ms,
+             activity: counters["activity"],
+             duration_adjustments: params.duration_adjustments
+           },
+           idle_factor
+         ) do
+      nil -> %{params | kpi_counters: Map.delete(counters, "retirement")}
+      facts -> %{params | kpi_counters: Map.put(counters, "retirement", facts)}
     end
   end
 end

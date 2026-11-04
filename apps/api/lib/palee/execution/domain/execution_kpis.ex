@@ -25,8 +25,13 @@ defmodule Palee.Execution.Domain.ExecutionKpis do
   Free-text workouts have no sequence; they report the format `free_text`.
   """
 
+  alias Palee.Execution.Domain.Retirement
+
   @counter_keys ~w(skips countdown_skips countdown_segments pauses paused_ms finish_wizard_opens)
   @max_counter 1_000_000_000
+  # Kept as stored: written by the server (`put_position/4`) or merged on their
+  # own rules (`Retirement.merge_activity/3`, ADR-549).
+  @server_keys ~w(position formats activity retirement)
 
   @doc "Merges client counters into the stored ones, dropping unknown or invalid keys."
   def merge_counters(existing, incoming, started_at_utc \\ nil)
@@ -38,7 +43,7 @@ defmodule Palee.Execution.Domain.ExecutionKpis do
     counters =
       Enum.reduce(
         @counter_keys,
-        Map.take(existing, @counter_keys ++ ["position", "formats"]),
+        Map.take(existing, @counter_keys ++ @server_keys),
         fn key, acc ->
           case counter(incoming[key]) do
             nil -> acc
@@ -116,6 +121,7 @@ defmodule Palee.Execution.Domain.ExecutionKpis do
       completion_rate: ratio(length(completed), started),
       abandon_points: abandon_points(open),
       abandon_by_format: abandon_by_format(open),
+      retirement: retirement(completed),
       by_format: rates_by(rows, & &1.formats),
       by_source: rates_by(rows, &[&1.source]),
       structured: %{
@@ -154,6 +160,7 @@ defmodule Palee.Execution.Domain.ExecutionKpis do
       counters: counters,
       position: position,
       formats: List.wrap(counters["formats"] || position["format"] || "unknown"),
+      retirement: retirement_sections(counters["retirement"]),
       adjusted?: (field(execution, :duration_adjustments) || %{}) != %{},
       elapsed_ms: field(execution, :total_elapsed_ms) || 0,
       date: date(field(execution, :started_at_utc))
@@ -172,6 +179,54 @@ defmodule Palee.Execution.Domain.ExecutionKpis do
       %{format: format, section_name: name, segment_index: index, count: count}
     end)
   end
+
+  # ADR-549: completed executions that gave up a time-set section. Each
+  # time-set section counts once, under its own format.
+  defp retirement(completed) do
+    sections = Enum.flat_map(completed, & &1.retirement)
+    verdicts = Enum.frequencies_by(sections, & &1["verdict"])
+    count = fn verdict -> Map.get(verdicts, verdict, 0) end
+    retired = Enum.filter(sections, &Retirement.retired?(&1["verdict"]))
+
+    %{
+      time_set_sections: length(sections),
+      stopped_early: count.("stopped_early"),
+      idle: count.("idle"),
+      shortened: count.("shortened"),
+      unknown: count.("unknown"),
+      full: count.("full"),
+      retired_rate: ratio(length(retired), length(sections)),
+      median_stopped_early_ms:
+        sections
+        |> Enum.filter(&(&1["verdict"] == "stopped_early"))
+        |> Enum.map(& &1["stopped_early_ms"])
+        |> median(),
+      median_idle_tail_ms:
+        sections
+        |> Enum.filter(&(&1["verdict"] == "idle"))
+        |> Enum.map(& &1["idle_tail_ms"])
+        |> median(),
+      by_format:
+        sections
+        |> Enum.group_by(&(&1["format"] || "unknown"))
+        |> Enum.map(fn {format, rows} ->
+          given_up = Enum.count(rows, &Retirement.retired?(&1["verdict"]))
+
+          %{
+            format: format,
+            time_set_sections: length(rows),
+            retired: given_up,
+            retired_rate: ratio(given_up, length(rows))
+          }
+        end)
+        |> Enum.sort_by(&{-&1.time_set_sections, &1.format})
+    }
+  end
+
+  defp retirement_sections(%{"sections" => sections}) when is_list(sections),
+    do: Enum.filter(sections, &is_map/1)
+
+  defp retirement_sections(_facts), do: []
 
   defp abandon_by_format(open) do
     total = length(open)

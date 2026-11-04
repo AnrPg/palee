@@ -60,6 +60,8 @@ import {
   stepsForWindow,
   targetRepsForRound,
 } from "./progress";
+import { useExecutionInteractions } from "@/hooks/useExecutionInteractions";
+import { positionMetadata } from "@/lib/execution-position";
 import { ReadyScreen } from "./ReadyScreen";
 import { ScoreModal } from "./ScoreModal";
 import { CastView } from "./CastView";
@@ -236,6 +238,10 @@ export function ExecutionMode() {
     [i18n],
   );
   const { sync, isSyncing } = useExecutionSync(tokens?.access_token, executionId, onSyncProblem);
+  // ADR-123 / ADR-549: interaction signals, and `timer_closed` when the athlete leaves mid-workout.
+  const track = useExecutionInteractions(executionId, tokens?.access_token);
+  const position = () => positionMetadata(useExecutionStore.getState());
+  const elapsedNow = () => Math.max(0, Math.round(useExecutionStore.getState().currentElapsedMs()));
 
   const currentSegment = segments[currentSegmentIndex] ?? null;
   const isLastSegment = currentSegmentIndex === segments.length - 1;
@@ -309,6 +315,7 @@ export function ExecutionMode() {
   function userPause() {
     if (useExecutionStore.getState().status !== "active") return;
     useExecutionStore.getState().recordPauseKpi();
+    track("pause", { ...position(), elapsed_ms: elapsedNow() });
     pauseNow();
   }
 
@@ -319,6 +326,8 @@ export function ExecutionMode() {
       const store = useExecutionStore.getState();
       store.countKpi("skips");
       if (currentSegment.kind === "countdown") store.countKpi("countdown_skips");
+      const elapsed = elapsedNow();
+      track("segment_skipped", { ...position(), elapsed_ms: elapsed, remaining_ms: Math.max(0, Math.round(limit - elapsed)) });
     }
     endCurrentSegment();
   }
@@ -334,6 +343,7 @@ export function ExecutionMode() {
     // Freeze the clock while the athlete reviews, so backing out of the review
     // returns to a paused workout instead of one that kept running underneath.
     useExecutionStore.getState().countKpi("finish_wizard_opens");
+    track("finish_wizard_opened", { segment_index: useExecutionStore.getState().currentSegmentIndex });
     pauseNow();
     setShowScoreModal(false);
     setPendingFinish({ scores: finalSectionScores });
@@ -406,6 +416,7 @@ export function ExecutionMode() {
       });
       hydrateFromExecution(execution);
       completeExecution();
+      track("finish_wizard_saved", { scored_section_count: editedScores.length });
       setPendingFinish(null);
     } catch {
       setFeedback(i18n("workoutCompletionCouldNotBeSavedTryAgaindce610c"));
@@ -557,6 +568,7 @@ export function ExecutionMode() {
   function handleResume() {
     primeCueAudio();
     useExecutionStore.getState().recordResumeKpi();
+    track("resume", position());
     commit(() => startResumeCountdown(Date.now() + RESUME_COUNTDOWN_MS));
   }
 
@@ -590,6 +602,8 @@ export function ExecutionMode() {
 
     incrementSegmentCycle(key);
     const store = useExecutionStore.getState();
+    store.recordWorkTap();
+    track("round_incremented", { ...position(), round_count: store.segmentCycleCounts[key] ?? 0 });
     store.setCheckedExerciseIds(store.checkedExerciseIds.filter((id) => !stepIds.includes(id)));
 
     const completed = useExecutionStore.getState().segmentCycleCounts[key] ?? 0;
@@ -615,6 +629,8 @@ export function ExecutionMode() {
     else setUndo(null);
 
     setCheckedExerciseIds(next);
+    // A check that finishes a round is counted once, as the round (completeRound).
+    if (!wasChecked && !(finishesSegment && repeatable)) useExecutionStore.getState().recordWorkTap();
 
     const rest = wasChecked || finishesSegment ? null : setRestSeconds(currentSegment, stepId);
     if (rest !== null) {
@@ -643,6 +659,10 @@ export function ExecutionMode() {
     if (!currentSegment) return;
     setUndo(null);
     commit(() => decrementSegmentCycle(currentSegment.segment_key));
+    track("round_decremented", {
+      ...position(),
+      round_count: useExecutionStore.getState().segmentCycleCounts[currentSegment.segment_key] ?? 0,
+    });
   }
 
   function handleAddRoundWhilePaused() {
@@ -654,6 +674,7 @@ export function ExecutionMode() {
   /** Coach changed the plan: lengthen or shorten the running clock. */
   function handleAdjustTime(deltaSeconds: number) {
     commit(() => adjustSegmentDuration(currentSegmentIndex, deltaSeconds));
+    track("time_adjusted", { ...position(), delta_seconds: Math.max(-3600, Math.min(3600, Math.round(deltaSeconds))) });
   }
 
   // ── Lock screen / system media controls ────────────────────────────────────

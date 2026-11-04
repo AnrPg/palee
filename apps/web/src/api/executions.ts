@@ -153,7 +153,35 @@ export type KpiCounters = {
   paused_ms?: number;
   finish_wizard_opens?: number;
   first_started_at_ms?: number;
+  /**
+   * ADR-549 (Παραίτηση): per section, the active section times (ms) of the
+   * athlete's work taps (a round, a checked exercise, a finished plan step).
+   * The server keeps the time-set sections only; taps only accumulate.
+   */
+  activity?: Record<string, number[]>;
 };
+
+/** Most work taps kept per section (the server's limit). */
+export const MAX_WORK_TAPS_PER_SECTION = 300;
+
+/** The KPI counters a plan run sends at completion: its work taps by section (ADR-549). */
+export function planKpiCounters(workTaps: Record<string, number[]>): KpiCounters {
+  return Object.entries(workTaps).reduce<KpiCounters>(
+    (counters, [sectionId, taps]) => taps.reduce((acc, ms) => addWorkTap(acc, sectionId, ms), counters),
+    {},
+  );
+}
+
+/** Adds one work tap at `ms` of a section's active time to the counters' activity. */
+export function addWorkTap(counters: KpiCounters, sectionId: string, ms: number): KpiCounters {
+  const at = Math.max(0, Math.round(ms));
+  const taps = counters.activity?.[sectionId] ?? [];
+  if (taps.length >= MAX_WORK_TAPS_PER_SECTION || taps.includes(at)) return counters;
+  return {
+    ...counters,
+    activity: { ...counters.activity, [sectionId]: [...taps, at].sort((a, b) => a - b) },
+  };
+}
 
 export async function startExecution(
   token: string,

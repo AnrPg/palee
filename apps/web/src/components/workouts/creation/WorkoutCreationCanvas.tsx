@@ -171,6 +171,7 @@ export function WorkoutCreationCanvas({ embedded = false, initialDraftId = null,
   const setDraftRevision = useWorkoutCreationStore((state) => state.setDraftRevision);
   const title = useWorkoutCreationStore((state) => state.title);
   const type = useWorkoutCreationStore((state) => state.type);
+  const isTeamWorkout = useWorkoutCreationStore((state) => state.isTeamWorkout);
   const sections = useWorkoutCreationStore((state) => state.sections);
   const toApiPayload = useWorkoutCreationStore((state) => state.toApiPayload);
   const reorderSections = useWorkoutCreationStore((state) => state.reorderSections);
@@ -252,6 +253,8 @@ export function WorkoutCreationCanvas({ embedded = false, initialDraftId = null,
   }, []);
 
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /** The autosave still waiting for its delay, if any. */
+  const waitingSaveRef = useRef<(() => Promise<void>) | null>(null);
 
   // When navigating to a different draft, reset the store so the load effect can run.
   useEffect(() => {
@@ -390,10 +393,12 @@ export function WorkoutCreationCanvas({ embedded = false, initialDraftId = null,
 
     setSaveStatus("saving");
 
-    saveTimerRef.current = setTimeout(async () => {
+    const accessToken = tokens.access_token;
+    const save = async () => {
+      waitingSaveRef.current = null;
       try {
         const draft = await updateDraftWorkout(
-          tokens.access_token,
+          accessToken,
           draftId,
           toApiPayload(),
           { editorSessionId: editorSessionIdRef.current },
@@ -405,12 +410,35 @@ export function WorkoutCreationCanvas({ embedded = false, initialDraftId = null,
       } catch {
         setSaveStatus("error");
       }
-    }, AUTOSAVE_DELAY_MS);
+    };
+    waitingSaveRef.current = save;
+    saveTimerRef.current = setTimeout(() => void save(), AUTOSAVE_DELAY_MS);
 
     return () => {
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     };
-  }, [draftId, sections, setDraftRevision, setSaveStatus, title, toApiPayload, tokens?.access_token, type]);
+  }, [draftId, isTeamWorkout, sections, setDraftRevision, setSaveStatus, title, toApiPayload, tokens?.access_token, type]);
+
+  // Leaving the editor or hiding the page sends the change still waiting
+  // for the autosave delay instead of dropping it.
+  useEffect(() => {
+    const saveWaiting = () => {
+      const save = waitingSaveRef.current;
+      if (!save) return;
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+      void save();
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") saveWaiting();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("pagehide", saveWaiting);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("pagehide", saveWaiting);
+      saveWaiting();
+    };
+  }, []);
 
   function handleDragStart({ active, activatorEvent }: DragStartEvent) {
     const dragType = active.data.current?.type as "section" | "exercise" | undefined;

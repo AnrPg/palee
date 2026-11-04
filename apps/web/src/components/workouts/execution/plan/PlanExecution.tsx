@@ -52,7 +52,13 @@ export type PlanRunSnapshot = {
   startedAt: number | null;
 };
 
-export type PlanRunResult = { score: SectionScore | null; elapsedMs: number; actuals: PlanSetActual[] };
+export type PlanRunResult = {
+  score: SectionScore | null;
+  elapsedMs: number;
+  actuals: PlanSetActual[];
+  /** ADR-549: clock ms of every work step marked done. */
+  workTaps: number[];
+};
 
 type Props = {
   section: PlanSection;
@@ -264,7 +270,7 @@ export function PlanExecution({
 
   function complete(score: SectionScore | null) {
     setScoreOpen(false);
-    onComplete({ score, elapsedMs: state.finishedAtMs ?? state.elapsedMs, actuals: planActuals(seq, state, logs, sectionId, { oneRepMaxKg }) });
+    onComplete({ score, elapsedMs: state.finishedAtMs ?? state.elapsedMs, actuals: planActuals(seq, state, logs, sectionId, { oneRepMaxKg }), workTaps: state.workTaps ?? [] });
   }
 
   // ── clock ──────────────────────────────────────────────────────────────

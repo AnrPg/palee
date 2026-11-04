@@ -41,11 +41,13 @@ export function sendExecutionInteractions(
   token: string | null | undefined,
   executionId: string,
   events: ExecutionInteractionEvent[],
+  options: { keepalive?: boolean } = {},
 ) {
   return apiRequest<ExecutionInteractionResult>(`/executions/${executionId}/interactions`, {
     method: "POST",
     token: token ?? undefined,
     body: { events },
+    ...(options.keepalive ? { keepalive: true } : {}),
   });
 }
 
@@ -65,6 +67,11 @@ export type ExecutionAnalyticsOptions = {
 export type ExecutionAnalytics = {
   track: (kind: ExecutionInteractionKind, metadata?: ExecutionInteractionMetadata) => void;
   flush: () => Promise<void>;
+  /**
+   * Sends what is queued in one last request that outlives the page (the tab
+   * is closing); fire and forget, never throws.
+   */
+  flushOnExit: () => void;
   dispose: () => Promise<void>;
   /** Number of events waiting to be sent. */
   pending: () => number;
@@ -143,6 +150,19 @@ export function createExecutionAnalytics(options: ExecutionAnalyticsOptions): Ex
     return inFlight;
   }
 
+  function flushOnExit() {
+    try {
+      const batch = queue.slice(-EXECUTION_INTERACTION_MAX_BATCH);
+      if (batch.length === 0) return;
+      queue = [];
+      void Promise.resolve(send(options.getToken(), options.executionId, batch, { keepalive: true })).catch(
+        () => undefined,
+      );
+    } catch {
+      // Analytics must never interrupt a workout.
+    }
+  }
+
   async function dispose() {
     if (timer) clearInterval(timer);
     timer = null;
@@ -150,5 +170,5 @@ export function createExecutionAnalytics(options: ExecutionAnalyticsOptions): Ex
     disposed = true;
   }
 
-  return { track, flush, dispose, pending: () => queue.length };
+  return { track, flush, flushOnExit, dispose, pending: () => queue.length };
 }

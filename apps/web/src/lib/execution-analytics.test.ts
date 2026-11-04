@@ -22,6 +22,20 @@ function setup(send = vi.fn().mockResolvedValue({ accepted: 1, duplicates: 0 }))
 }
 
 describe("createExecutionAnalytics", () => {
+  it("sends what is queued in one request that outlives the page on exit (ADR-549)", () => {
+    const { analytics, send } = setup();
+
+    analytics.track("timer_closed", { segment_index: 1, elapsed_ms: 1_000 });
+    analytics.flushOnExit();
+    analytics.flushOnExit();
+
+    expect(send).toHaveBeenCalledTimes(1);
+    const [, , events, options] = send.mock.calls[0] as [string, string, ExecutionInteractionEvent[], { keepalive: boolean }];
+    expect(events.map((event) => event.kind)).toEqual(["timer_closed"]);
+    expect(options).toEqual({ keepalive: true });
+    expect(analytics.pending()).toBe(0);
+  });
+
   it("batches tracked interactions with client ids, timestamps and typed metadata", async () => {
     const { analytics, send } = setup();
 

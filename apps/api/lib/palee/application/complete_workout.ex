@@ -33,7 +33,9 @@ defmodule Palee.Application.CompleteWorkout do
              Map.put(params, :segments, segments),
              [
                {:text_section_scores, text_scores},
-               {:plan_sets, plan_sets} | completion_options(execution_id)
+               {:plan_sets, plan_sets},
+               {:retirement_idle_factor, retirement_idle_factor()}
+               | completion_options(execution_id)
              ]
            ),
          :ok <- process_inline_if_needed(execution) do
@@ -48,6 +50,7 @@ defmodule Palee.Application.CompleteWorkout do
           |> Execution.completion_analytics_facts(segments)
           |> Map.merge(InjuryWarningEvaluation.completion_facts(execution, workout))
           |> Map.merge(plan_completion_facts(execution, workout))
+          |> Map.merge(Execution.retirement_analytics_facts(execution))
       })
 
       {:ok, execution}
@@ -182,6 +185,16 @@ defmodule Palee.Application.CompleteWorkout do
   end
 
   def publish_result(_result, _at), do: :ok
+
+  # ADR-549: how many times the athlete's own median time between work taps
+  # the clock may run on after the last tap before the section counts as
+  # given up; nil records the facts without that verdict.
+  defp retirement_idle_factor do
+    case Application.get_env(:palee, :retirement_idle_factor) do
+      factor when is_number(factor) and factor > 0 -> factor
+      _unset -> nil
+    end
+  end
 
   defp completion_options(execution_id) do
     if Application.get_env(:palee, :start_oban, true) do

@@ -108,7 +108,7 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
   const [loaded, setLoaded] = useState(false);
   /** Counts draft autosaves; the goals panel re-reads its suggestion on each. */
   const [draftSaves, setDraftSaves] = useState(0);
-  const { saver, status: draftSaveStatus } = useDraftSaver<FreeTextDraftPayload>({
+  const { saver, status: draftSaveStatus, loadDraft } = useDraftSaver<FreeTextDraftPayload>({
     accessToken,
     draftId,
     onSaved: () => setDraftSaves((count) => count + 1),
@@ -213,13 +213,14 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
 
     loadedDraftRef.current = draftId;
     setLoaded(false);
-    fetchAdminWorkout(accessToken, draftId)
+    // Changes this browser still holds for the draft are saved first.
+    loadDraft(() => fetchAdminWorkout(accessToken, draftId), (workout) => workout.dsl_source_revision)
       .then(applyWorkout)
       .catch(() => {
         loadedDraftRef.current = null;
         setLoadFailed(true);
       });
-  }, [accessToken, applyWorkout, draftId, editor]);
+  }, [accessToken, applyWorkout, draftId, loadDraft, editor]);
 
   /** What the server should hold for the text and settings on screen now. */
   const draftPayload = useCallback(

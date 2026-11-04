@@ -105,7 +105,7 @@ export function QuickTextWorkoutEditor({
   /** The draft could not be created or loaded. */
   const [loadFailed, setLoadFailed] = useState(false);
   const [sourceRevision, setSourceRevision] = useState(0);
-  const { saver, status: draftSaveStatus } = useDraftSaver<Record<string, unknown>>({
+  const { saver, status: draftSaveStatus, loadDraft } = useDraftSaver<Record<string, unknown>>({
     accessToken,
     draftId,
     onSaved: setSourceRevision,
@@ -280,14 +280,16 @@ export function QuickTextWorkoutEditor({
 
     setAuthoringReady(false);
     loadedDraftRef.current = draftId;
-    fetchWorkoutDslAuthoring(tokens.access_token, draftId)
+    const token = tokens.access_token;
+    // Changes this browser still holds for the draft are saved first.
+    loadDraft(() => fetchWorkoutDslAuthoring(token, draftId), (authoring) => authoring.source_revision)
       .then(applyAuthoring)
       .catch(() => {
         loadedDraftRef.current = null;
         setAuthoringReady(false);
         setLoadFailed(true);
       });
-  }, [applyAuthoring, draftId, editor, tokens?.access_token]);
+  }, [applyAuthoring, draftId, editor, loadDraft, tokens?.access_token]);
 
   useEffect(() => {
     if (!tokens?.access_token || !source.trim()) return;

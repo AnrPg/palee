@@ -84,7 +84,7 @@ export function SectionedWorkoutEditor({ draftId, folderId = null, onDraftReady,
   /** The draft could not be created or loaded. */
   const [loadFailed, setLoadFailed] = useState(false);
   const [draftSaves, setDraftSaves] = useState(0);
-  const { saver, status: draftSaveStatus } = useDraftSaver<SectionedDraftPayload>({
+  const { saver, status: draftSaveStatus, loadDraft } = useDraftSaver<SectionedDraftPayload>({
     accessToken,
     draftId,
     onSaved: () => setDraftSaves((count) => count + 1),
@@ -132,13 +132,14 @@ export function SectionedWorkoutEditor({ draftId, folderId = null, onDraftReady,
   useEffect(() => {
     if (!accessToken || !draftId || loadedDraftRef.current === draftId) return;
     loadedDraftRef.current = draftId;
-    fetchAdminWorkout(accessToken, draftId)
+    // Changes this browser still holds for the draft are saved first.
+    loadDraft(() => fetchAdminWorkout(accessToken, draftId), (workout) => workout.dsl_source_revision)
       .then(applyWorkout)
       .catch(() => {
         loadedDraftRef.current = null;
         setLoadFailed(true);
       });
-  }, [accessToken, applyWorkout, draftId]);
+  }, [accessToken, applyWorkout, draftId, loadDraft]);
 
   const buildPayload = useCallback(() => sectionedPayload(title, type, sections, metadataRef.current), [sections, title, type]);
 

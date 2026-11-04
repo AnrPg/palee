@@ -35174,7 +35174,7 @@ export interface components {
                 /** Format: uuid */
                 client_event_id: string;
                 /** @enum {string} */
-                kind: "cast_mode_toggled" | "check_off_undone" | "cues_toggled" | "finish_wizard_abandoned" | "finish_wizard_opened" | "finish_wizard_saved" | "first_segment_started" | "pause" | "ready_screen_shown" | "resume" | "round_decremented" | "round_incremented" | "rounds_adjusted" | "segment_restarted" | "segment_skipped" | "time_adjusted" | "workout_launched";
+                kind: "cast_mode_toggled" | "check_off_undone" | "cues_toggled" | "finish_wizard_abandoned" | "finish_wizard_opened" | "finish_wizard_saved" | "first_segment_started" | "pause" | "ready_screen_shown" | "resume" | "round_decremented" | "round_incremented" | "rounds_adjusted" | "segment_restarted" | "segment_skipped" | "time_adjusted" | "timer_closed" | "workout_launched";
                 /** @description Typed facts allowed for the interaction kind (see ADR-123). No free text; keys not allowed for the kind reject the batch. */
                 metadata?: {
                     countdown_seconds?: number;
@@ -35211,7 +35211,7 @@ export interface components {
             /** Format: uuid */
             client_event_id: string;
             /** @enum {string} */
-            kind: "cast_mode_toggled" | "check_off_undone" | "cues_toggled" | "finish_wizard_abandoned" | "finish_wizard_opened" | "finish_wizard_saved" | "first_segment_started" | "pause" | "ready_screen_shown" | "resume" | "round_decremented" | "round_incremented" | "rounds_adjusted" | "segment_restarted" | "segment_skipped" | "time_adjusted" | "workout_launched";
+            kind: "cast_mode_toggled" | "check_off_undone" | "cues_toggled" | "finish_wizard_abandoned" | "finish_wizard_opened" | "finish_wizard_saved" | "first_segment_started" | "pause" | "ready_screen_shown" | "resume" | "round_decremented" | "round_incremented" | "rounds_adjusted" | "segment_restarted" | "segment_skipped" | "time_adjusted" | "timer_closed" | "workout_launched";
             /** @description Typed facts allowed for the interaction kind (see ADR-123). No free text; keys not allowed for the kind reject the batch. */
             metadata?: {
                 countdown_seconds?: number;
@@ -63001,8 +63001,13 @@ export interface operations {
                     duration_adjustments?: {
                         [key: string]: number;
                     };
-                    /** @description Device-observed execution KPIs (skips, countdown_skips, countdown_segments, pauses, paused_ms, finish_wizard_opens, first_started_at_ms). Counters never decrease. */
+                    /** @description Device-observed execution KPIs (skips, countdown_skips, countdown_segments, pauses, paused_ms, finish_wizard_opens, first_started_at_ms). Counters never decrease. `activity` (ADR-549): per time-set section, the active section times (ms) of the athlete's work taps; taps only accumulate. */
                     kpi_counters?: {
+                        /** @description Section id => active section times (ms) of work taps, ascending. */
+                        activity?: {
+                            [key: string]: number[];
+                        };
+                    } & {
                         [key: string]: number;
                     };
                     /** @description ADR-270: structured_plan workouts: one record per set / round done, prescribed next to actual */
@@ -63265,7 +63270,7 @@ export interface operations {
                         /** Format: uuid */
                         client_event_id: string;
                         /** @enum {string} */
-                        kind: "cast_mode_toggled" | "check_off_undone" | "cues_toggled" | "finish_wizard_abandoned" | "finish_wizard_opened" | "finish_wizard_saved" | "first_segment_started" | "pause" | "ready_screen_shown" | "resume" | "round_decremented" | "round_incremented" | "rounds_adjusted" | "segment_restarted" | "segment_skipped" | "time_adjusted" | "workout_launched";
+                        kind: "cast_mode_toggled" | "check_off_undone" | "cues_toggled" | "finish_wizard_abandoned" | "finish_wizard_opened" | "finish_wizard_saved" | "first_segment_started" | "pause" | "ready_screen_shown" | "resume" | "round_decremented" | "round_incremented" | "rounds_adjusted" | "segment_restarted" | "segment_skipped" | "time_adjusted" | "timer_closed" | "workout_launched";
                         /** @description Typed facts allowed for the interaction kind (see ADR-123). No free text; keys not allowed for the kind reject the batch. */
                         metadata?: {
                             countdown_seconds?: number;
@@ -63434,8 +63439,13 @@ export interface operations {
                         [key: string]: number;
                     };
                     expected_version: number;
-                    /** @description Device-observed execution KPIs (skips, countdown_skips, countdown_segments, pauses, paused_ms, finish_wizard_opens, first_started_at_ms). Counters never decrease. */
+                    /** @description Device-observed execution KPIs (skips, countdown_skips, countdown_segments, pauses, paused_ms, finish_wizard_opens, first_started_at_ms). Counters never decrease. `activity` (ADR-549): per time-set section, the active section times (ms) of the athlete's work taps; taps only accumulate. */
                     kpi_counters?: {
+                        /** @description Section id => active section times (ms) of work taps, ascending. */
+                        activity?: {
+                            [key: string]: number[];
+                        };
+                    } & {
                         [key: string]: number;
                     };
                     /** Format: uuid */

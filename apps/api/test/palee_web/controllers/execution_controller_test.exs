@@ -577,6 +577,85 @@ defmodule PaleeWeb.ExecutionControllerTest do
       refute Map.has_key?(updated["duration_adjustments"], "segment:7")
     end
 
+    test "ADR-549: work taps accumulate and completion stores the Παραίτηση verdict", %{
+      conn: conn
+    } do
+      admin = create_admin!("execution_retire_admin")
+      athlete_conn = authenticate_as_member(conn, "execution_retire_athlete")
+
+      {:ok, workout} =
+        Workouts.create_workout(legacy_context!(admin), admin, %{
+          title: "Retirement AMRAP",
+          type: "crossfit",
+          sections: [
+            %{
+              name: "AMRAP 10",
+              order: 1,
+              scoreable: false,
+              timer_config: %{type: "amrap", duration_seconds: 600},
+              exercises: [%{name: "Burpee", order: 1, prescription_value: 10}]
+            }
+          ]
+        })
+
+      section_id = workout.sections |> hd() |> Map.fetch!(:id)
+
+      execution =
+        athlete_conn
+        |> post("/api/executions", %{master_workout_id: workout.id, source: "self_selected"})
+        |> json_response(201)
+        |> Map.fetch!("execution")
+
+      progressed =
+        athlete_conn
+        |> recycle()
+        |> patch("/api/executions/#{execution["id"]}/progress", %{
+          expected_version: execution["lock_version"],
+          operation_id: Ecto.UUID.generate(),
+          checked_exercise_ids: [],
+          current_segment_index: 0,
+          status: "paused",
+          paused_elapsed_ms: 130_000,
+          total_elapsed_ms: 130_000,
+          section_elapsed_ms: %{},
+          segment_cycle_counts: %{},
+          kpi_counters: %{pauses: 1, activity: %{section_id => [60_000, 120_000], "ghost" => [1]}}
+        })
+        |> json_response(200)
+        |> Map.fetch!("execution")
+
+      assert progressed["kpi_counters"]["activity"] == %{section_id => [60_000, 120_000]}
+      assert progressed["kpi_counters"]["pauses"] == 1
+
+      completed =
+        athlete_conn
+        |> recycle()
+        |> patch("/api/executions/#{execution["id"]}/complete", %{
+          checked_exercise_ids: [],
+          total_elapsed_ms: 240_000,
+          section_elapsed_ms: %{section_id => 240_000},
+          segment_cycle_counts: %{},
+          kpi_counters: %{activity: %{section_id => [180_000]}}
+        })
+        |> json_response(200)
+        |> Map.fetch!("execution")
+
+      assert %{
+               "verdict" => "stopped_early",
+               "sections" => [
+                 %{
+                   "section_id" => ^section_id,
+                   "format" => "amrap",
+                   "planned_ms" => 600_000,
+                   "ran_ms" => 240_000,
+                   "stopped_early_ms" => 360_000,
+                   "taps" => 3,
+                   "median_tap_gap_ms" => 60_000
+                 }
+               ]
+             } = completed["kpi_counters"]["retirement"]
+    end
+
     test "completion persists measured fallback scores when none are submitted manually", %{
       conn: conn
     } do

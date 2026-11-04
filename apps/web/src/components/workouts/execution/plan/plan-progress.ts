@@ -14,6 +14,8 @@ export type PlanProgress = {
   scores: SectionScore[];
   elapsed: Record<string, number>;
   actuals: Record<string, PlanSetActual[]>;
+  /** ADR-549: clock ms of the work steps marked done, by finished section. */
+  workTaps: Record<string, number[]>;
   /** The running section's own state. */
   current: PlanRunSnapshot | null;
   /** Every section is done and the finish wizard is open. */
@@ -33,6 +35,7 @@ export function readPlanProgress(executionId: string): PlanProgress | null {
       scores: parsed.scores ?? [],
       elapsed: parsed.elapsed ?? {},
       actuals: parsed.actuals ?? {},
+      workTaps: parsed.workTaps ?? {},
       current: parsed.current ?? null,
       finishing: Boolean(parsed.finishing),
     };

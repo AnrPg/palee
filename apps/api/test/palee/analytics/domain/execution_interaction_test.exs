@@ -26,6 +26,22 @@ defmodule Palee.Analytics.Domain.ExecutionInteractionTest do
     end
   end
 
+  test "ADR-549: timer_closed carries the position, segment time and clock left" do
+    closed =
+      event(%{
+        "kind" => "timer_closed",
+        "metadata" => %{
+          "segment_index" => 2,
+          "format" => "amrap",
+          "elapsed_ms" => 240_000,
+          "remaining_ms" => 360_000
+        }
+      })
+
+    assert {:ok, [%{kind: "timer_closed", metadata: %{"remaining_ms" => 360_000}}]} =
+             ExecutionInteraction.validate_batch([closed], @now)
+  end
+
   test "a valid batch normalizes events and collapses in-batch duplicates" do
     first = event()
     id = first["client_event_id"]

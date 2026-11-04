@@ -144,6 +144,8 @@ describe("PlanExecution", () => {
         expect.objectContaining({ row_id: expect.any(String), exercise_name: "Thruster", prescribed_reps: 21, actual_reps: 18, prescribed_load_kg: 43, actual_load_kg: 43, logged: true }),
         expect.objectContaining({ exercise_name: "Pull-up", prescribed_reps: 21, actual_reps: 21, logged: false }),
       ],
+      // ADR-549: the clock times of the steps marked done
+      workTaps: [40_000, 75_000],
     });
   });
 

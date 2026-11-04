@@ -71,14 +71,30 @@ function GoalsPanel({ workoutId, refreshKey, timeDomainSeconds = null }: { worko
   useEffect(() => {
     latest.current = { draft: state.draft, revision: state.revision, mutate: save.mutateAsync, pending };
   });
-  // Leaving (ribbon collapsed, editor closed) saves what the debounce still holds.
-  useEffect(
-    () => () => {
-      const { draft, mutate, pending: unsaved } = latest.current;
-      if (unsaved) void mutate(savePayload(draft)).catch(() => undefined);
-    },
-    [],
-  );
+  // Leaving (another tab, editor closed) or hiding the page (tab switched,
+  // app in the background, tab closed) saves what the debounce still holds.
+  useEffect(() => {
+    let sentRevision = -1;
+    const saveWaiting = () => {
+      const { draft, revision, mutate, pending: unsaved } = latest.current;
+      if (!unsaved || sentRevision === revision) return;
+      sentRevision = revision;
+      void mutate(savePayload(draft)).then(
+        () => dispatch({ type: "savedRevision", revision }),
+        () => undefined,
+      );
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") saveWaiting();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("pagehide", saveWaiting);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("pagehide", saveWaiting);
+      saveWaiting();
+    };
+  }, []);
   useEffect(() => {
     if (!pending) return;
     const timer = window.setTimeout(() => {
