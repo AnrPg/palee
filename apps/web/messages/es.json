@@ -16453,6 +16453,7 @@
       "events": "Eventos",
       "wod": "WOD del día",
       "packages": "Bonos",
+      "programmes": "Programas de entrenamiento",
       "coaches": "Coaches",
       "location": "Ubicación",
       "reviews": "Reseñas",
@@ -16696,6 +16697,13 @@
       "left": "Quedan {left} de {total}",
       "skip": "Saltar",
       "saveNext": "Guardar y siguiente"
+    },
+    "programmesSection": {
+      "eyebrow": "Programas para donde estés",
+      "title": "Entrena con nuestros coaches, también desde casa",
+      "all": "{count, plural, one {Todos los programas de entrenamiento (#)} other {Todos los programas de entrenamiento (#)}}",
+      "nav": "Programas de entrenamiento",
+      "settingsHint": "Se muestra cuando tienes un programa de entrenamiento a la venta."
     }
   },
   "BoxReviews": {
@@ -17020,6 +17028,83 @@
       "review_not_allowed": "Solo los compradores pueden escribir una reseña.",
       "invalid_review": "Da de 1 a 5 estrellas y 1000 caracteres como máximo.",
       "online_payments_unavailable": "Este box aún no acepta pagos online."
+    },
+    "buyer2": {
+      "factWeeks": "{count, plural, one {semana} other {semanas}}",
+      "factPerWeek": "{count, plural, one {sesión por semana} other {sesiones por semana}}",
+      "factMinutes": "aprox. por sesión",
+      "factEquipment": "material principal",
+      "minutes": "{minutes}′",
+      "reviewsCount": "{count, plural, one {# reseña} other {# reseñas}}",
+      "previewFree": "{count, plural, one {Ver gratis el primer día} other {Ver gratis los # primeros días}}",
+      "reviews": "Reseñas",
+      "weeksTitle": "Las semanas",
+      "week": "Semana {week}",
+      "weekRange": "Semanas {from}–{to}",
+      "freeCount": "{count, plural, one {# gratis} other {# gratis}}",
+      "free": "Gratis",
+      "locked": "{count, plural, one {# WOD bloqueado} other {# WOD bloqueados}}",
+      "lockedEach": "~{minutes}′ cada uno",
+      "lockedHint": "Se desbloquean al comprar",
+      "faqTitle": "Preguntas frecuentes",
+      "faqStartQ": "¿Cuándo empiezo?",
+      "faqStartA": "Eliges el día de inicio al comprarlo, desde hoy hasta 60 días después.",
+      "faqMissQ": "¿Y si me salto un día?",
+      "faqMissA": "El día te espera: hazlo cuando puedas o sáltalo. Ninguna sesión se pierde sin que lo elijas.",
+      "faqRefundQ": "Reembolso",
+      "faqRefund": {
+        "before_start": "Recuperas el precio completo hasta el día de inicio.",
+        "withdrawal_only": "Dentro del plazo de desistimiento, el precio sin los días ya entregados.",
+        "pro_rata": "Cuando lo dejes, recuperas los días que aún no han llegado."
+      },
+      "refundShort": {
+        "before_start": "Reembolso hasta el inicio",
+        "withdrawal_only": "Reembolso en el plazo de desistimiento",
+        "pro_rata": "Reembolso por los días que faltan"
+      },
+      "buy": "Comprar",
+      "perkStart": "Eliges el día de inicio",
+      "perkDaily": "Cada día el WOD en la app",
+      "perkLog": "Registro e historial",
+      "perWeekShort": "{count, plural, one {# por sem.} other {# por sem.}}",
+      "see": "Verlo",
+      "boxEmpty": "Este box aún no tiene programas de entrenamiento a la venta.",
+      "weekOf": "Semana {week} de {weeks}",
+      "doneOf": "{done} / {total, plural, one {# sesión} other {# sesiones}}",
+      "behindTitle": "El día {day} se quedó atrás ({weekday})",
+      "behindTitleShort": "El día {day} se quedó atrás",
+      "behindText": "Hazlo hoy o pasa al siguiente.",
+      "behindNoRoom": "No se puede mover más. Puedes saltarlo.",
+      "doToday": "Hacerlo hoy",
+      "skip": "Saltar",
+      "daysAria": "Los días de la semana",
+      "prevWeek": "Semana anterior",
+      "nextWeek": "Semana siguiente",
+      "status": {
+        "done": "Hecho",
+        "skipped": "Saltado",
+        "behind": "Atrasado",
+        "today": "Hoy",
+        "upcoming": "Próximo",
+        "rest": "Descanso"
+      },
+      "pill": {
+        "done": "hecho",
+        "skipped": "saltado",
+        "behind": "atrasado",
+        "today": "hoy"
+      },
+      "weekDay": "Sem. {week} · Día {day}",
+      "start": "Empezar",
+      "seeLog": "Ver el registro",
+      "thisWeek": "Esta semana",
+      "noDays": "Este programa de entrenamiento aún no tiene días.",
+      "errors": {
+        "programme_day_not_behind": "Este día ya no está atrasado. Vuelve a mirar la página.",
+        "programme_day_not_found": "Este día no forma parte del programa de entrenamiento.",
+        "programme_schedule_limit": "No se puede mover más: el programa de entrenamiento terminaría demasiado tarde. Puedes saltarlo.",
+        "programme_purchase_not_active": "Este programa de entrenamiento ya no está activo."
+      }
     }
   },
   "BodyDevices": {

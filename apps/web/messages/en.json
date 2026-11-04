@@ -16453,6 +16453,7 @@
       "events": "Events",
       "wod": "WOD of the day",
       "packages": "Packages",
+      "programmes": "Training programmes",
       "coaches": "Coaches",
       "location": "Location",
       "reviews": "Reviews",
@@ -16696,6 +16697,13 @@
       "left": "{left} of {total} left",
       "skip": "Skip",
       "saveNext": "Save and next"
+    },
+    "programmesSection": {
+      "eyebrow": "Programmes for wherever you are",
+      "title": "Train with our coaches, at home too",
+      "all": "{count, plural, one {All training programmes (#)} other {All training programmes (#)}}",
+      "nav": "Training programmes",
+      "settingsHint": "Shown when you have a training programme on sale."
     }
   },
   "BoxReviews": {
@@ -17020,7 +17028,84 @@
       "invalid_review": "Give 1 to 5 stars and at most 1000 characters.",
       "online_payments_unavailable": "This box does not take online payments yet."
     },
-    "newBadge": "New"
+    "newBadge": "New",
+    "buyer2": {
+      "factWeeks": "{count, plural, one {week} other {weeks}}",
+      "factPerWeek": "{count, plural, one {session a week} other {sessions a week}}",
+      "factMinutes": "about per session",
+      "factEquipment": "main equipment",
+      "minutes": "{minutes}′",
+      "reviewsCount": "{count, plural, one {# review} other {# reviews}}",
+      "previewFree": "{count, plural, one {See the first day free} other {See the first # days free}}",
+      "reviews": "Reviews",
+      "weeksTitle": "The weeks",
+      "week": "Week {week}",
+      "weekRange": "Weeks {from}–{to}",
+      "freeCount": "{count, plural, one {# free} other {# free}}",
+      "free": "Free",
+      "locked": "{count, plural, one {# locked WOD} other {# locked WODs}}",
+      "lockedEach": "~{minutes}′ each",
+      "lockedHint": "Unlocked when you buy",
+      "faqTitle": "FAQ",
+      "faqStartQ": "When do I start?",
+      "faqStartA": "You pick a start day when you buy it, from today up to 60 days ahead.",
+      "faqMissQ": "What if I miss a day?",
+      "faqMissA": "The day waits for you: do it on any day you can, or skip it. No session is lost unless you choose so.",
+      "faqRefundQ": "Refunds",
+      "faqRefund": {
+        "before_start": "You get the whole price back until the start day.",
+        "withdrawal_only": "Within the withdrawal period, the price minus the days already delivered.",
+        "pro_rata": "Whenever you leave, you get back the days still to come."
+      },
+      "refundShort": {
+        "before_start": "Refund until the start",
+        "withdrawal_only": "Refund within the withdrawal period",
+        "pro_rata": "Refund for the days left"
+      },
+      "buy": "Buy",
+      "perkStart": "You pick the start day",
+      "perkDaily": "Every day's WOD in the app",
+      "perkLog": "Logging and history",
+      "perWeekShort": "{count, plural, one {# a week} other {# a week}}",
+      "see": "See it",
+      "boxEmpty": "This box has no training programmes on sale yet.",
+      "weekOf": "Week {week} of {weeks}",
+      "doneOf": "{done} / {total, plural, one {# session} other {# sessions}}",
+      "behindTitle": "Day {day} fell behind ({weekday})",
+      "behindTitleShort": "Day {day} fell behind",
+      "behindText": "Do it today or move on to the next one.",
+      "behindNoRoom": "It can't be moved any further. You can skip it.",
+      "doToday": "Do it today",
+      "skip": "Skip",
+      "daysAria": "The days of the week",
+      "prevWeek": "Previous week",
+      "nextWeek": "Next week",
+      "status": {
+        "done": "Done",
+        "skipped": "Skipped",
+        "behind": "Behind",
+        "today": "Today",
+        "upcoming": "Coming up",
+        "rest": "Rest"
+      },
+      "pill": {
+        "done": "done",
+        "skipped": "skipped",
+        "behind": "behind",
+        "today": "today"
+      },
+      "weekDay": "Wk {week} · Day {day}",
+      "start": "Start",
+      "seeLog": "See the log",
+      "thisWeek": "This week",
+      "noDays": "This training programme has no days yet.",
+      "errors": {
+        "programme_day_not_behind": "This day is no longer behind. Look at the page again.",
+        "programme_day_not_found": "This day isn't part of the training programme.",
+        "programme_schedule_limit": "It can't move any further: the training programme would end too late. You can skip it.",
+        "programme_purchase_not_active": "This training programme is no longer active."
+      }
+    }
   },
   "BodyDevices": {
     "advanced": "Advanced",

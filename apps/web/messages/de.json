@@ -16453,6 +16453,7 @@
       "events": "Events",
       "wod": "WOD des Tages",
       "packages": "Pakete",
+      "programmes": "Trainingsprogramme",
       "coaches": "Coaches",
       "location": "Standort",
       "reviews": "Bewertungen",
@@ -16696,6 +16697,13 @@
       "left": "Noch {left} von {total}",
       "skip": "Überspringen",
       "saveNext": "Speichern und weiter"
+    },
+    "programmesSection": {
+      "eyebrow": "Programme für überall",
+      "title": "Trainiere mit unseren Coaches, auch zu Hause",
+      "all": "{count, plural, one {Alle Trainingsprogramme (#)} other {Alle Trainingsprogramme (#)}}",
+      "nav": "Trainingsprogramme",
+      "settingsHint": "Wird angezeigt, wenn du ein Trainingsprogramm im Verkauf hast."
     }
   },
   "BoxReviews": {
@@ -17020,6 +17028,83 @@
       "review_not_allowed": "Nur Käufer können ein Programm bewerten.",
       "invalid_review": "Gib 1 bis 5 Sterne und höchstens 1000 Zeichen.",
       "online_payments_unavailable": "Diese Box nimmt noch keine Online-Zahlungen an."
+    },
+    "buyer2": {
+      "factWeeks": "{count, plural, one {Woche} other {Wochen}}",
+      "factPerWeek": "{count, plural, one {Einheit pro Woche} other {Einheiten pro Woche}}",
+      "factMinutes": "etwa pro Einheit",
+      "factEquipment": "Hauptausrüstung",
+      "minutes": "{minutes}′",
+      "reviewsCount": "{count, plural, one {# Bewertung} other {# Bewertungen}}",
+      "previewFree": "{count, plural, one {Ersten Tag gratis ansehen} other {Erste # Tage gratis ansehen}}",
+      "reviews": "Bewertungen",
+      "weeksTitle": "Die Wochen",
+      "week": "Woche {week}",
+      "weekRange": "Wochen {from}–{to}",
+      "freeCount": "{count, plural, one {# gratis} other {# gratis}}",
+      "free": "Gratis",
+      "locked": "{count, plural, one {# gesperrtes WOD} other {# gesperrte WODs}}",
+      "lockedEach": "je ~{minutes}′",
+      "lockedHint": "Nach dem Kauf freigeschaltet",
+      "faqTitle": "Häufige Fragen",
+      "faqStartQ": "Wann fange ich an?",
+      "faqStartA": "Du wählst beim Kauf einen Starttag, von heute bis 60 Tage im Voraus.",
+      "faqMissQ": "Und wenn ich einen Tag verpasse?",
+      "faqMissA": "Der Tag wartet auf dich: Mach ihn an einem Tag, der dir passt, oder überspring ihn. Keine Einheit geht verloren, ohne dass du es wählst.",
+      "faqRefundQ": "Rückerstattung",
+      "faqRefund": {
+        "before_start": "Bis zum Starttag bekommst du den ganzen Preis zurück.",
+        "withdrawal_only": "Innerhalb der Widerrufsfrist der Preis ohne die bereits gelieferten Tage.",
+        "pro_rata": "Wann immer du aufhörst, bekommst du die noch kommenden Tage zurück."
+      },
+      "refundShort": {
+        "before_start": "Rückerstattung bis zum Start",
+        "withdrawal_only": "Rückerstattung in der Widerrufsfrist",
+        "pro_rata": "Rückerstattung für die übrigen Tage"
+      },
+      "buy": "Kaufen",
+      "perkStart": "Du wählst den Starttag",
+      "perkDaily": "Jeden Tag das WOD in der App",
+      "perkLog": "Eintragen und Verlauf",
+      "perWeekShort": "{count, plural, one {# pro Woche} other {# pro Woche}}",
+      "see": "Ansehen",
+      "boxEmpty": "Diese Box hat noch keine Trainingsprogramme im Verkauf.",
+      "weekOf": "Woche {week} von {weeks}",
+      "doneOf": "{done} / {total, plural, one {# Einheit} other {# Einheiten}}",
+      "behindTitle": "Tag {day} ist liegen geblieben ({weekday})",
+      "behindTitleShort": "Tag {day} ist liegen geblieben",
+      "behindText": "Mach ihn heute oder geh zum nächsten weiter.",
+      "behindNoRoom": "Er lässt sich nicht weiter verschieben. Du kannst ihn überspringen.",
+      "doToday": "Heute machen",
+      "skip": "Überspringen",
+      "daysAria": "Die Tage der Woche",
+      "prevWeek": "Vorige Woche",
+      "nextWeek": "Nächste Woche",
+      "status": {
+        "done": "Erledigt",
+        "skipped": "Übersprungen",
+        "behind": "Liegen geblieben",
+        "today": "Heute",
+        "upcoming": "Als Nächstes",
+        "rest": "Ruhetag"
+      },
+      "pill": {
+        "done": "erledigt",
+        "skipped": "übersprungen",
+        "behind": "offen",
+        "today": "heute"
+      },
+      "weekDay": "Wo. {week} · Tag {day}",
+      "start": "Starten",
+      "seeLog": "Eintrag ansehen",
+      "thisWeek": "Diese Woche",
+      "noDays": "Dieses Trainingsprogramm hat noch keine Tage.",
+      "errors": {
+        "programme_day_not_behind": "Dieser Tag ist nicht mehr offen. Sieh dir die Seite noch einmal an.",
+        "programme_day_not_found": "Diesen Tag gibt es im Trainingsprogramm nicht.",
+        "programme_schedule_limit": "Weiter verschieben geht nicht: Das Trainingsprogramm würde zu spät enden. Du kannst ihn überspringen.",
+        "programme_purchase_not_active": "Dieses Trainingsprogramm ist nicht mehr aktiv."
+      }
     }
   },
   "BodyDevices": {
