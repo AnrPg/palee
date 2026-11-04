@@ -33941,10 +33941,13 @@ export interface components {
             scaling_enabled: boolean;
             /** GymAiUsage */
             usage: {
+                /** @description What the gym's key paid this month: suggestions plus voice drafts */
                 cost_usd: number;
                 /** Format: date-time */
                 since: string;
                 suggestions: number;
+                /** @description Voice drafts written with the gym's key this month */
+                voice_drafts: number;
             };
             voice_enabled: boolean;
         };
@@ -33963,10 +33966,13 @@ export interface components {
                 scaling_enabled: boolean;
                 /** GymAiUsage */
                 usage: {
+                    /** @description What the gym's key paid this month: suggestions plus voice drafts */
                     cost_usd: number;
                     /** Format: date-time */
                     since: string;
                     suggestions: number;
+                    /** @description Voice drafts written with the gym's key this month */
+                    voice_drafts: number;
                 };
                 voice_enabled: boolean;
             };
@@ -33981,10 +33987,13 @@ export interface components {
         };
         /** GymAiUsage */
         GymAiUsage: {
+            /** @description What the gym's key paid this month: suggestions plus voice drafts */
             cost_usd: number;
             /** Format: date-time */
             since: string;
             suggestions: number;
+            /** @description Voice drafts written with the gym's key this month */
+            voice_drafts: number;
         };
         /** HealthConsents */
         HealthConsents: {
@@ -74392,10 +74401,13 @@ export interface operations {
                             scaling_enabled: boolean;
                             /** GymAiUsage */
                             usage: {
+                                /** @description What the gym's key paid this month: suggestions plus voice drafts */
                                 cost_usd: number;
                                 /** Format: date-time */
                                 since: string;
                                 suggestions: number;
+                                /** @description Voice drafts written with the gym's key this month */
+                                voice_drafts: number;
                             };
                             voice_enabled: boolean;
                         };
@@ -74443,10 +74455,13 @@ export interface operations {
                             scaling_enabled: boolean;
                             /** GymAiUsage */
                             usage: {
+                                /** @description What the gym's key paid this month: suggestions plus voice drafts */
                                 cost_usd: number;
                                 /** Format: date-time */
                                 since: string;
                                 suggestions: number;
+                                /** @description Voice drafts written with the gym's key this month */
+                                voice_drafts: number;
                             };
                             voice_enabled: boolean;
                         };

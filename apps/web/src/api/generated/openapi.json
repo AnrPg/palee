@@ -48758,6 +48758,7 @@
           "usage": {
             "properties": {
               "cost_usd": {
+                "description": "What the gym's key paid this month: suggestions plus voice drafts",
                 "type": "number"
               },
               "since": {
@@ -48766,11 +48767,16 @@
               },
               "suggestions": {
                 "type": "integer"
+              },
+              "voice_drafts": {
+                "description": "Voice drafts written with the gym's key this month",
+                "type": "integer"
               }
             },
             "required": [
               "since",
               "suggestions",
+              "voice_drafts",
               "cost_usd"
             ],
             "title": "GymAiUsage",
@@ -48829,6 +48835,7 @@
               "usage": {
                 "properties": {
                   "cost_usd": {
+                    "description": "What the gym's key paid this month: suggestions plus voice drafts",
                     "type": "number"
                   },
                   "since": {
@@ -48837,11 +48844,16 @@
                   },
                   "suggestions": {
                     "type": "integer"
+                  },
+                  "voice_drafts": {
+                    "description": "Voice drafts written with the gym's key this month",
+                    "type": "integer"
                   }
                 },
                 "required": [
                   "since",
                   "suggestions",
+                  "voice_drafts",
                   "cost_usd"
                 ],
                 "title": "GymAiUsage",
@@ -48899,6 +48911,7 @@
       "GymAiUsage": {
         "properties": {
           "cost_usd": {
+            "description": "What the gym's key paid this month: suggestions plus voice drafts",
             "type": "number"
           },
           "since": {
@@ -48907,11 +48920,16 @@
           },
           "suggestions": {
             "type": "integer"
+          },
+          "voice_drafts": {
+            "description": "Voice drafts written with the gym's key this month",
+            "type": "integer"
           }
         },
         "required": [
           "since",
           "suggestions",
+          "voice_drafts",
           "cost_usd"
         ],
         "title": "GymAiUsage",
@@ -167036,6 +167054,7 @@
                         "usage": {
                           "properties": {
                             "cost_usd": {
+                              "description": "What the gym's key paid this month: suggestions plus voice drafts",
                               "type": "number"
                             },
                             "since": {
@@ -167044,11 +167063,16 @@
                             },
                             "suggestions": {
                               "type": "integer"
+                            },
+                            "voice_drafts": {
+                              "description": "Voice drafts written with the gym's key this month",
+                              "type": "integer"
                             }
                           },
                           "required": [
                             "since",
                             "suggestions",
+                            "voice_drafts",
                             "cost_usd"
                           ],
                           "title": "GymAiUsage",
@@ -167171,6 +167195,7 @@
                         "usage": {
                           "properties": {
                             "cost_usd": {
+                              "description": "What the gym's key paid this month: suggestions plus voice drafts",
                               "type": "number"
                             },
                             "since": {
@@ -167179,11 +167204,16 @@
                             },
                             "suggestions": {
                               "type": "integer"
+                            },
+                            "voice_drafts": {
+                              "description": "Voice drafts written with the gym's key this month",
+                              "type": "integer"
                             }
                           },
                           "required": [
                             "since",
                             "suggestions",
+                            "voice_drafts",
                             "cost_usd"
                           ],
                           "title": "GymAiUsage",

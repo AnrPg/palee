@@ -9874,8 +9874,9 @@
       "title": "AI-assistent",
       "description": "De WOD-assistent, plus scalingvoorstellen en spraakinvoer met je eigen sleutel. Een coach keurt elk voorstel goed.",
       "enable": "Scalingvoorstellen",
-      "enableHint": "Standaard uit. Vereist een API-sleutel.",
-      "key": "API-sleutel (Anthropic)",
+      "enableHint": "Voor een sporter met een blessure die de gym vastlegde, stelt AI voor hoe de training aangepast wordt: minder gewicht, minder herhalingen of een andere oefening. Een coach keurt elk voorstel goed voordat de sporter het ziet. Hiervoor is AI nodig, omdat elke combinatie van training en blessure anders is en vaste regels die niet dekken.",
+      "key": "Claude-sleutel (Anthropic)",
+      "keyHint": "Scalingvoorstellen en inspreken hebben hem nodig. Het gebruik wordt op je eigen Anthropic-account gefactureerd.",
       "keySet": "Er is een sleutel ingesteld die eindigt op {last4}.",
       "keyRejected": "De aanbieder heeft de sleutel die eindigt op {last4} geweigerd. Voer een nieuwe sleutel in.",
       "keyMissing": "Geen sleutel ingesteld.",
@@ -9884,8 +9885,8 @@
       "removeKey": "Sleutel verwijderen",
       "model": "Model (optioneel)",
       "saveModel": "Model opslaan",
-      "usage": "Deze maand · voorstellen: {count} · kosten: ${cost}",
-      "privacy": "Alleen de training en de door de gym vastgelegde blessures worden verstuurd, zonder namen. De sleutel wordt nooit meer getoond."
+      "usage": "Deze maand · {count, plural, one {# voorstel} other {# voorstellen}} · {voice, plural, one {# spraakconcept} other {# spraakconcepten}} · kosten: ${cost}",
+      "privacy": "Er worden geen namen verstuurd. Voorstellen sturen de training en de door de gym vastgelegde blessures. Inspreken stuurt alleen de tekst van wat het lid zei. De sleutel wordt nooit meer getoond."
     },
     "queue": {
       "eyebrow": "Mijn klanten",
@@ -9949,7 +9950,7 @@
     },
     "settings": {
       "enable": "Inspreken",
-      "enableHint": "Leden spreken hun training in en controleren een concept voor het opslaan. Audio wordt niet bewaard."
+      "enableHint": "Leden zeggen in eigen woorden wat ze deden en AI maakt er oefeningen, sets, herhalingen en gewichten van. Het lid controleert het concept voor het opslaan. Hiervoor is AI nodig om vrije spraak te begrijpen, zoals „drie sets van tien met 60”. Audio wordt niet bewaard."
     }
   },
   "Pickers": {
