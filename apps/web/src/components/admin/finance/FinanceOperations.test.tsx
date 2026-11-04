@@ -9,6 +9,7 @@ import type { FacilityLocation } from "@/api/facility";
 // ADR-186 §7: every tab of the finance operations page follows the page branch filter.
 
 const state = vi.hoisted(() => ({ tab: "members", param: undefined as string | undefined }));
+const router = vi.hoisted(() => ({ replace: vi.fn(), push: vi.fn() }));
 const received = vi.hoisted(() => [] as Array<{ tab: string; props: Record<string, unknown> }>);
 const api = vi.hoisted(() => ({
   fetchFinanceSummary: vi.fn(async () => ({ totals: {} })),
@@ -18,7 +19,7 @@ const api = vi.hoisted(() => ({
 }));
 
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ replace: vi.fn(), push: vi.fn() }),
+  useRouter: () => router,
   useSearchParams: () => new URLSearchParams({ tab: state.tab }),
   usePathname: () => "/admin/finance",
 }));
@@ -57,8 +58,6 @@ function stub(tab: string) {
 
 vi.mock("@/components/admin/finance/tabs/MembersTab", () => ({ MembersTab: stub("members") }));
 vi.mock("@/components/admin/finance/tabs/SeasonsTab", () => ({ SeasonsTab: stub("seasons") }));
-vi.mock("@/components/admin/finance/tabs/PromotionsTab", () => ({ PromotionsTab: stub("promotions") }));
-vi.mock("@/components/admin/finance/tabs/ReferralsTab", () => ({ ReferralsTab: stub("referrals") }));
 vi.mock("@/components/admin/finance/tabs/QueuesTab", () => ({ QueuesTab: stub("queues") }));
 vi.mock("@/components/admin/finance/tabs/AccountingTab", () => ({ AccountingTab: stub("accounting") }));
 vi.mock("@/components/admin/finance/tabs/CorporateTab", () => ({ CorporateTab: stub("corporate") }));
@@ -89,12 +88,10 @@ function wrap(ui: React.ReactNode) {
   );
 }
 
-const FILTERED = ["members", "packages", "promotions", "referrals", "queues", "accounting"];
+const FILTERED = ["members", "packages", "queues", "accounting"];
 const NOTES: Record<string, string> = {
   members: en.BranchScope.filterNoteMembers,
   packages: en.BranchScope.filterNoteCovering,
-  promotions: en.BranchScope.filterNoteCovering,
-  referrals: en.BranchScope.filterNoteReferrals,
   queues: en.BranchScope.filterNoteMembers,
   accounting: en.BranchScope.filterNoteAccounting,
   seasons: en.BranchScope.filterNoteBusinessWide,
@@ -105,6 +102,7 @@ describe("FinanceOperations and the page branch filter", () => {
   beforeEach(() => {
     received.length = 0;
     state.param = undefined;
+    router.replace.mockClear();
     Object.values(api).forEach((mock) => mock.mockClear());
   });
 
@@ -151,6 +149,36 @@ describe("FinanceOperations and the page branch filter", () => {
     expect(api.fetchFinancePackages).toHaveBeenCalledWith("token", "k");
     expect(screen.getByText("Κηφισιά")).toBeInTheDocument();
     expect(screen.getByText(en.BranchScope.allBranches)).toBeInTheDocument();
+  });
+});
+
+describe("FinanceOperations › Προσφορές (moved to Μάρκετινγκ, ANR 2026-11-04)", () => {
+  beforeEach(() => {
+    router.replace.mockClear();
+  });
+
+  it("keeps the tab as one line with a way to each moved area, and no copy of the pages", async () => {
+    state.tab = "offers";
+    state.param = "k";
+    wrap(<FinanceOperations />);
+
+    const line = await screen.findByTestId("offers-moved");
+    expect(line).toHaveTextContent(en.MarketingHub.movedLine);
+    const links = screen.getAllByRole("link").map((link) => link.getAttribute("href"));
+    expect(links).toEqual(expect.arrayContaining(["/admin/marketing/promotions", "/admin/marketing/perks", "/admin/marketing/referrals"]));
+    expect(screen.queryByRole("note")).toBeNull();
+    expect(router.replace).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ["promotions", "/admin/marketing/promotions"],
+    ["referrals", "/admin/marketing/referrals"],
+  ])("sends an old ?tab=%s link to its new home", async (tab, target) => {
+    state.tab = tab;
+    wrap(<FinanceOperations />);
+
+    await screen.findByTestId("tab-members");
+    expect(router.replace).toHaveBeenCalledWith(target);
   });
 });
 

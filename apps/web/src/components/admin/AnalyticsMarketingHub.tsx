@@ -10,7 +10,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { SegmentPicker } from "@/components/filters/SegmentPicker";
 import { useSession } from "@/components/session-provider";
 import { AutomationsTab } from "@/components/admin/analytics/AutomationsTab";
-import { MarketingLinks } from "@/components/admin/analytics/MarketingLinks";
+import { MarketingTab } from "@/components/admin/analytics/MarketingTab";
 import { SmsCostTab } from "@/components/channels/SmsCostTab";
 
 export type AnalyticsTab = "overview" | "marketing" | "automations" | "sms";
@@ -23,7 +23,8 @@ export function analyticsTabFrom(value: string | null): AnalyticsTab {
 /**
  * Στατιστικά & Μάρκετινγκ (W3 navigation, ANR 2026-11-02): four tabs,
  * Επισκόπηση · Μάρκετινγκ · Αυτοματισμοί · Μηνύματα SMS, kept in `?tab=`.
- * Επισκόπηση is the hub of reports it always was.
+ * Επισκόπηση is the hub of reports it always was; Μάρκετινγκ is the home of
+ * challenges, promotions, partner perks and referrals (ANR 2026-11-04).
  */
 export function AnalyticsMarketingHub() {
   const i18n = useUiTranslations();
@@ -63,7 +64,7 @@ export function AnalyticsMarketingHub() {
         />
         <div id="analytics-panel" role="tabpanel" aria-labelledby={`analytics-tab-${tab}`}>
           {tab === "overview" ? <OverviewSections /> : null}
-          {tab === "marketing" ? <MarketingLinks /> : null}
+          {tab === "marketing" ? <MarketingTab /> : null}
           {tab === "automations" ? <AutomationsTab /> : null}
           {tab === "sms" && token ? <SmsCostTab token={token} /> : null}
         </div>
@@ -82,10 +83,9 @@ function OverviewSections() {
     { title: i18n("coachingAnalyticsb6ddda1"), description: i18n("athleteActivityAdherenceAssignmentCompletionAndFollowUp144ce93"), href: "/admin/metrics/coaching" },
     { title: i18n("userEngagement72f61cf"), description: i18n("reviewsCommunicationNotificationsAndInteractionSignals6592ffe"), href: "/admin/metrics/engagement" },
     { title: i18n("healthIncidentsb8da1fe"), description: i18n("aggregateInjuryLimitationSeverityAndUnresolvedReportSignals1fecbcf"), href: "/admin/metrics/health" },
-    { title: i18n("challengesff38765"), description: i18n("manageSeasonalEngagementCampaignsAndReviewParticipationdf0bc50"), href: "/admin/challenges" },
   ] as const;
   return (
-    <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
       {SECTIONS.map((section) => (
         <Link
           key={section.title}

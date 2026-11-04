@@ -298,7 +298,7 @@ test.describe("referrals", () => {
       return route.fulfill(json({ invite: current }));
     });
 
-    await page.goto("/org/kypseli/admin/finance?tab=referrals");
+    await page.goto("/org/kypseli/admin/marketing/referrals");
     await expect(page.getByText("Last 90 days: 3 on the way · 1 counted · 0 expired")).toBeVisible();
     await page.getByRole("button", { name: /Katerina ← Maria/ }).click();
     await expect(page.getByText("Came to a trial")).toBeVisible();

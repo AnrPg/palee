@@ -68,7 +68,7 @@ export function pathActive(pathname: string, href: string) {
   if (relativeHref === "/") return relativePathname === "/";
   if (relativeHref === "/admin") return relativePathname === "/admin";
   if (relativeHref === "/admin/metrics") {
-    return ["/admin/metrics", "/admin/challenges", "/admin/reviews", "/admin/wellbeing"].some(
+    return ["/admin/metrics", "/admin/marketing", "/admin/reviews", "/admin/wellbeing"].some(
       (path) => relativePathname.startsWith(path),
     );
   }

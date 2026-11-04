@@ -14,6 +14,12 @@ describe("pathActive", () => {
     expect(pathActive("/admin/coaching-assignments", "/admin/coaching-assignments")).toBe(true);
   });
 
+  it("keeps «Στατιστικά & Μάρκετινγκ» lit on the Marketing pages, not Finance (ANR 2026-11-04)", () => {
+    expect(pathActive("/org/atlas-gym/admin/marketing/promotions", "/admin/metrics")).toBe(true);
+    expect(pathActive("/admin/marketing/challenges", "/admin/metrics")).toBe(true);
+    expect(pathActive("/org/atlas-gym/admin/marketing/perks", "/admin/finance")).toBe(false);
+  });
+
   it("matches organization-scoped paths against bare admin hrefs", () => {
     expect(pathActive("/org/atlas-gym/admin/users/123", "/admin/users")).toBe(true);
     expect(pathActive("/org/atlas-gym/admin/finance", "/admin/users")).toBe(false);

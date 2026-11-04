@@ -1646,7 +1646,7 @@ defmodule Palee.Notifications do
       case type do
         "referral_progress" -> {"#{attribution_id}:#{field(payload, :stage)}", mine}
         "referral_reward" -> {"#{attribution_id}:#{field(payload, :reward_status)}", mine}
-        "referral_review" -> {attribution_id, "/admin/finance?tab=referrals"}
+        "referral_review" -> {attribution_id, "/admin/marketing/referrals"}
       end
 
     %{

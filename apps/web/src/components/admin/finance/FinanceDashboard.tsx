@@ -210,7 +210,7 @@ export function FinanceDashboard({ analyticsMode = false }: { analyticsMode?: bo
           />
           <QueuePanel
             title={i18n("pendingRewardse6d6885")}
-            href={adminHref("/admin/finance?tab=referrals", organizationSlug)}
+            href={adminHref("/admin/marketing/referrals", organizationSlug)}
             rows={queues.pending_referral_rewards ?? []}
             renderRow={(row) => (
               <>

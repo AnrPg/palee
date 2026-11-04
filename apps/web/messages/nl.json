@@ -11210,7 +11210,7 @@
       "preview": "Voorbeeld",
       "cardCta": "Bekijken",
       "code": "Kortingscode",
-      "codeHint": "Een code alleen voor dit product, in Financiën › Aanbiedingen.",
+      "codeHint": "Een code alleen voor dit product, in Marketing › Promoties van de box.",
       "codeValue": "Code",
       "percent": "Korting (%)",
       "endsOn": "Geldig tot",
@@ -11747,7 +11747,7 @@
       },
       "partners": {
         "title": "Partnervoordelen",
-        "body": "Tik op „{label}”."
+        "body": "Ze hebben een eigen pagina in Marketing: kortingen en cadeaus van partnerwinkels voor je klanten."
       },
       "perkNew": {
         "title": "Partnerdeal toevoegen",
@@ -17600,5 +17600,18 @@
     "errorDimensions": "De afbeelding is te groot: hoogstens {width}×{height} pixels.",
     "errorSave": "De handtekening is niet opgeslagen. Probeer het opnieuw.",
     "errorRemove": "De handtekening is niet verwijderd. Probeer het opnieuw."
+  },
+  "MarketingHub": {
+    "back": "Marketing",
+    "boxPromotions": "Promoties van de box",
+    "partnerPerks": "Partnervoordelen",
+    "partnerPerksDescription": "Kortingen en cadeaus van partnerwinkels voor je klanten.",
+    "challengesStat": "{active, plural, one {# actief} other {# actief}} · {participants, plural, one {# deelnemer} other {# deelnemers}}",
+    "promotionsStat": "{active, plural, one {# actief} other {# actief}}",
+    "perksStat": "{active, plural, one {# actief} other {# actief}} · {uses, plural, one {# inwisseling} other {# inwisselingen}}",
+    "referralsStat": "{count, plural, one {# verwijzing telt} other {# verwijzingen tellen}} in de laatste 90 dagen",
+    "inFinance": "In Financiën",
+    "empty": "Er is nog niets in Marketing dat je kunt openen.",
+    "movedLine": "Promoties staan nu in Marketing."
   }
 }

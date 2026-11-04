@@ -11210,7 +11210,7 @@
       "preview": "Preview",
       "cardCta": "View",
       "code": "Discount code",
-      "codeHint": "A code for this product only, in Finance › Offers.",
+      "codeHint": "A code for this product only, in Marketing › Box promotions.",
       "codeValue": "Code",
       "percent": "Discount (%)",
       "endsOn": "Valid until",
@@ -11747,7 +11747,7 @@
       },
       "partners": {
         "title": "Partner perks",
-        "body": "Tap «{label}»."
+        "body": "They have their own page in Marketing: discounts and gifts from partner shops for your clients."
       },
       "perkNew": {
         "title": "Add a perk",
@@ -17600,5 +17600,18 @@
     "errorDimensions": "The image is too large: at most {width}×{height} pixels.",
     "errorSave": "The signature was not saved. Try again.",
     "errorRemove": "The signature was not removed. Try again."
+  },
+  "MarketingHub": {
+    "back": "Marketing",
+    "boxPromotions": "Box promotions",
+    "partnerPerks": "Partner perks",
+    "partnerPerksDescription": "Discounts and gifts from partner shops for your clients.",
+    "challengesStat": "{active, plural, one {# active} other {# active}} · {participants, plural, one {# participant} other {# participants}}",
+    "promotionsStat": "{active, plural, one {# active} other {# active}}",
+    "perksStat": "{active, plural, one {# active} other {# active}} · {uses, plural, one {# redemption} other {# redemptions}}",
+    "referralsStat": "{count, plural, one {# referral counted} other {# referrals counted}} in the last 90 days",
+    "inFinance": "In Finance",
+    "empty": "There is nothing in Marketing you can open yet.",
+    "movedLine": "Promotions are now in Marketing."
   }
 }

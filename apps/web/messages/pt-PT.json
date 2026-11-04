@@ -11210,7 +11210,7 @@
       "preview": "Pré-visualização",
       "cardCta": "Ver",
       "code": "Código de desconto",
-      "codeHint": "Um código só para este produto, em Finanças › Ofertas.",
+      "codeHint": "Um código só para este produto, em Comercialização › Promoções da box.",
       "codeValue": "Código",
       "percent": "Desconto (%)",
       "endsOn": "Válido até",
@@ -11747,7 +11747,7 @@
       },
       "partners": {
         "title": "Vantagens de parceiros",
-        "body": "Toca em «{label}»."
+        "body": "Têm uma página própria em Comercialização: descontos e ofertas de lojas parceiras para os teus clientes."
       },
       "perkNew": {
         "title": "Adiciona uma oferta de parceiro",
@@ -17600,5 +17600,18 @@
     "errorDimensions": "A imagem é demasiado grande: no máximo {width}×{height} píxeis.",
     "errorSave": "A assinatura não foi guardada. Tenta de novo.",
     "errorRemove": "A assinatura não foi removida. Tenta de novo."
+  },
+  "MarketingHub": {
+    "back": "Comercialização",
+    "boxPromotions": "Promoções da box",
+    "partnerPerks": "Vantagens de parceiros",
+    "partnerPerksDescription": "Descontos e ofertas de lojas parceiras para os teus clientes.",
+    "challengesStat": "{active, plural, one {# ativo} other {# ativos}} · {participants, plural, one {# participante} other {# participantes}}",
+    "promotionsStat": "{active, plural, one {# ativa} other {# ativas}}",
+    "perksStat": "{active, plural, one {# ativa} other {# ativas}} · {uses, plural, one {# utilização} other {# utilizações}}",
+    "referralsStat": "{count, plural, one {# referência conta} other {# referências contam}} nos últimos 90 dias",
+    "inFinance": "Em Finanças",
+    "empty": "Ainda não há nada em Comercialização que possas abrir.",
+    "movedLine": "As promoções estão agora em Comercialização."
   }
 }

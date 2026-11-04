@@ -95,6 +95,11 @@ Alerts and the daily digest link to the page.
 
 ## 5. Notes
 
+- Since 2026-11-04 (ANR) challenges, the box's promotions, partner perks and
+  referrals live under **Analytics & Marketing › Marketing** (`/admin/marketing/*`),
+  each shown to whoever holds its capability; Finance keeps packages and a
+  «Προσφορές» line that links to them. The Challenges tile of the staff home
+  opens the new page, and the top bar keeps «Στατιστικά & Μάρκετινγκ» lit there.
 - The Journal is being designed in another worktree as a diary of workouts,
   performance, injuries, reports, messages, PRs and notes. Here it holds only
   the tabs implemented in this worktree, plus **Workouts**: every finished
