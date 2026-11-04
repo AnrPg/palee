@@ -16,7 +16,7 @@ export const SITE_LANGUAGE_COOKIE = "palee_site_lang";
 
 /**
  * Server read of a box's website, in one of its translations when `lang` is
- * given (ADR-500); null when the box has none (or it fails: the box page
+ * given (ADR-520); null when the box has none (or it fails: the box page
  * still renders).
  */
 export const loadPublicSite = cache(async (slug: string, lang?: string | null): Promise<PublicSite | null> => {
@@ -114,7 +114,7 @@ export function siteLanguageCode(language: SiteLanguage, boxLanguage: string) {
 }
 
 /**
- * ADR-500: the box page with the owner's translations in it (about, rooms,
+ * ADR-520: the box page with the owner's translations in it (about, rooms,
  * locations, the class names its coaches teach), so the sections render
  * as they are. The box's own text stays where nothing is translated.
  */

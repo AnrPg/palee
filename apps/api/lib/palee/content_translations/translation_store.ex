@@ -1,5 +1,5 @@
 defmodule Palee.ContentTranslations.TranslationStore do
-  @moduledoc "Facade over the translations adapter (ADR-500); calls run in the caller's tenant session."
+  @moduledoc "Facade over the translations adapter (ADR-520); calls run in the caller's tenant session."
 
   @behaviour Palee.ContentTranslations.Ports.TranslationStore
 

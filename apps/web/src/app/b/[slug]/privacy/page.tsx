@@ -14,7 +14,7 @@ async function texts(slug: string, lang: string | undefined) {
   const page = await loadPublicBox(slug);
   if (!page) return null;
   const site = await loadPublicSite(page.box.slug);
-  // ADR-500: one of the site's translations, else the box's own language.
+  // ADR-520: one of the site's translations, else the box's own language.
   const wanted = site?.languages.find((code) => code.toLowerCase() === lang?.toLowerCase()) ?? site?.language;
   const locale = isAppLocale(wanted) ? wanted : undefined;
   const t = locale ? await getTranslations({ locale, namespace: "BoxSite.privacyPage" }) : await getTranslations("BoxSite.privacyPage");

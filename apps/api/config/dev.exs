@@ -106,7 +106,7 @@ config :palee, :channel_email_transport, Palee.Infrastructure.Channels.SandboxEm
 # ADR-366: no model calls for status page translations outside production.
 config :palee, :status_translator, Palee.Infrastructure.Status.SandboxTranslator
 
-# ADR-500: no model calls for website translations outside production.
+# ADR-520: no model calls for website translations outside production.
 config :palee,
        :content_machine_translator,
        Palee.Infrastructure.ContentTranslations.SandboxMachineTranslator

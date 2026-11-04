@@ -2,7 +2,7 @@ import type { SiteLanguages, SiteTranslationItem, SiteTranslationStatus } from "
 import { isAppLocale, LOCALE_NAMES, type AppLocale } from "@/i18n/locales";
 
 /**
- * «Μεταφράσεις» of the box's website (ADR-500): pure helpers for the
+ * «Μεταφράσεις» of the box's website (ADR-520): pure helpers for the
  * languages card, the side-by-side list and the one-at-a-time view.
  */
 

@@ -22,7 +22,7 @@ export const SITE_HOST_HEADER = "x-palee-site-host";
 
 /**
  * The public box page and, when the owner switched it on, the box's website
- * (ADR-142, ADR-352, ADR-388, ADR-500). `/b/<slug>` speaks the box's
+ * (ADR-142, ADR-352, ADR-388, ADR-520). `/b/<slug>` speaks the box's
  * language and `/b/<slug>/<code>` each translation the owner shows; on the
  * box's own domain the website stands alone.
  */

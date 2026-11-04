@@ -33,7 +33,7 @@ const languages: SiteLanguages = {
   progress: [{ locale: "en", counts: { ok: 3, missing: 1, stale: 0, machine: 0 }, total: 4 }],
 };
 
-describe("site translations (ADR-500)", () => {
+describe("site translations (ADR-520)", () => {
   it("filters by status, with «todo» being everything not ready", () => {
     expect(items.filter((item) => matchesFilter(item, "todo")).map((item) => item.key)).toEqual(["b", "c", "d"]);
     expect(items.filter((item) => matchesFilter(item, "stale")).map((item) => item.key)).toEqual(["c"]);

@@ -1467,7 +1467,7 @@ defmodule PaleeWeb.Router do
     put("/site/domains/:id/primary", AdminSiteController, :make_primary)
     delete("/site/domains/:id", AdminSiteController, :remove_domain)
     post("/site/domains/:id/instructions", AdminSiteController, :send_instructions)
-    # ADR-500: translations of the website's texts.
+    # ADR-520: translations of the website's texts.
     get("/site/translations", AdminSiteController, :translations)
     put("/site/translations", AdminSiteController, :save_translations)
     post("/site/translations/keep", AdminSiteController, :keep_translations)

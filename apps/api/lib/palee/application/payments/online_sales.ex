@@ -37,7 +37,7 @@ defmodule Palee.Application.Payments.OnlineSales do
     end
   end
 
-  @doc "The packages a box lists for sale online (also the translatable ones, ADR-500)."
+  @doc "The packages a box lists for sale online (also the translatable ones, ADR-520)."
   def listed_packages(context) do
     offer = Payments.package_offer(context)
 

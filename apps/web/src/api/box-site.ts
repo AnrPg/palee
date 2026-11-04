@@ -40,7 +40,7 @@ const publicSite = (slug: string) => `/public/sites/${encodeURIComponent(slug)}`
 
 // ── Visitors (no account) ──────────────────────────────────────────────────
 
-/** ADR-500: `lang` picks one of the site's translations. */
+/** ADR-520: `lang` picks one of the site's translations. */
 export function fetchPublicSite(slug: string, lang?: string | null) {
   return apiRequest<PublicSite>(`${publicSite(slug)}${lang ? `?lang=${encodeURIComponent(lang)}` : ""}`);
 }
@@ -68,7 +68,7 @@ export function saveSite(token: string, update: SiteSettingsUpdate) {
   return apiRequest<{ settings: SiteSettings; languages: SiteLanguages }>(SITE, { method: "PUT", token, body: update });
 }
 
-// ── Translations (ADR-500) ──────────────────────────────────────────────────
+// ── Translations (ADR-520) ──────────────────────────────────────────────────
 
 export const siteTranslationsKey = (locale: string) => ["admin", "site", "translations", locale] as const;
 

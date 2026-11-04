@@ -1,5 +1,5 @@
 defmodule Palee.Infrastructure.ContentTranslations.EctoTranslationStore do
-  @moduledoc "Ecto adapter of the translations store (ADR-500)."
+  @moduledoc "Ecto adapter of the translations store (ADR-520)."
 
   @behaviour Palee.ContentTranslations.Ports.TranslationStore
 

@@ -11,7 +11,7 @@ defmodule Palee.Application.BoxSite.PublicSite do
   ADR-388 (v3.1) adds the box's events open to everyone, «WOD της ημέρας»
   (only when the owner turns it on), the in-app reviews next to the Google
   rating (ADR-386/387), and the site's languages: the box's own plus the
-  translations the owner shows (ADR-500, before that English only).
+  translations the owner shows (ADR-520, before that English only).
   """
 
   alias Palee.Application.{PublicBox, PublicURL}
@@ -25,7 +25,7 @@ defmodule Palee.Application.BoxSite.PublicSite do
   @wods_shown 3
 
   @doc """
-  The site of a published box. `language` (ADR-500) picks one of the
+  The site of a published box. `language` (ADR-520) picks one of the
   site's translations: the box's texts then come translated where the
   owner (or a machine) translated them, the box's own text otherwise;
   `texts` holds the translations of what other reads serve (packages, rooms,
@@ -182,7 +182,7 @@ defmodule Palee.Application.BoxSite.PublicSite do
     end
   end
 
-  # ADR-500: the FAQ and timetable in the visitor's language.
+  # ADR-520: the FAQ and timetable in the visitor's language.
   defp translated_faq(entry, tr) do
     id = entry["id"]
 

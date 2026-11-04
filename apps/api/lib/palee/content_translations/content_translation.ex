@@ -1,5 +1,5 @@
 defmodule Palee.ContentTranslations.ContentTranslation do
-  @moduledoc "One translated text of a business, in one language (ADR-500)."
+  @moduledoc "One translated text of a business, in one language (ADR-520)."
 
   use Ecto.Schema
 

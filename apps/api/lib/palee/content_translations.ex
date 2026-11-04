@@ -1,6 +1,6 @@
 defmodule Palee.ContentTranslations do
   @moduledoc """
-  The ContentTranslations bounded context (ADR-500): translations of the
+  The ContentTranslations bounded context (ADR-520): translations of the
   texts a business writes (its «Σχετικά», FAQ, packages, class types,
   events, rooms, locations) into the app's other languages.
 

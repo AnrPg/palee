@@ -17,7 +17,7 @@ describe("box website on its own domain", () => {
   it("serves only the site's pages from the domain root", () => {
     expect(siteRewritePath("/", "kypseli")).toBe("/b/kypseli");
     expect(siteRewritePath("/en", "kypseli")).toBe("/b/kypseli/en");
-    // ADR-500: every language of the app is a translation's path; app pages are not.
+    // ADR-520: every language of the app is a translation's path; app pages are not.
     expect(siteRewritePath("/de", "kypseli")).toBe("/b/kypseli/de");
     expect(siteRewritePath("/pt-pt", "kypseli")).toBe("/b/kypseli/pt-pt");
     expect(siteRewritePath("/me", "kypseli")).toBeNull();

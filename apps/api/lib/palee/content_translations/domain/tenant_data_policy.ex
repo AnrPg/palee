@@ -1,6 +1,6 @@
 defmodule Palee.ContentTranslations.Domain.TenantDataPolicy do
   @moduledoc """
-  ContentTranslations tenant data retention and purge policy (ADR-117, ADR-500).
+  ContentTranslations tenant data retention and purge policy (ADR-117, ADR-520).
 
   Translations of a business's own texts are operational data with no
   retention obligation once the business leaves.

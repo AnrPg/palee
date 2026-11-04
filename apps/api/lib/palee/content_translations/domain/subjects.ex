@@ -1,6 +1,6 @@
 defmodule Palee.ContentTranslations.Domain.Subjects do
   @moduledoc """
-  ADR-500: the closed catalog of texts a business writes that can be
+  ADR-520: the closed catalog of texts a business writes that can be
   translated, as `subject_kind => %{field => max length of a translation}`.
 
   A translation may run longer than its source (German, Russian), so each

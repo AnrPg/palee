@@ -14,7 +14,7 @@ const POSITIVE_TTL_MS = 5 * 60_000;
 const NEGATIVE_TTL_MS = 60_000;
 const defaultCache = new Map<string, CacheEntry>();
 
-/** The app's languages as path segments ("en", "pt-pt"): a site's translation is `/<code>` (ADR-500). */
+/** The app's languages as path segments ("en", "pt-pt"): a site's translation is `/<code>` (ADR-520). */
 const LANGUAGE_SEGMENT = SUPPORTED_LOCALES.map((code) => code.toLowerCase()).join("|");
 
 /** The site's own pages, served under a custom host's root. */

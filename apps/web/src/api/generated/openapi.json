@@ -1248,7 +1248,7 @@
                       "type": "string"
                     },
                     "id": {
-                      "description": "Stable id (ADR-500); a new entry gets one when saved",
+                      "description": "Stable id (ADR-520); a new entry gets one when saved",
                       "format": "uuid",
                       "type": "string"
                     },
@@ -1337,7 +1337,7 @@
                 "type": "array"
               },
               "translation_locales": {
-                "description": "Languages the box translates its texts into (ADR-500)",
+                "description": "Languages the box translates its texts into (ADR-520)",
                 "items": {
                   "maxLength": 10,
                   "type": "string"
@@ -1346,7 +1346,7 @@
                 "type": "array"
               },
               "visible_locales": {
-                "description": "Translations visitors can pick on the site (ADR-500)",
+                "description": "Translations visitors can pick on the site (ADR-520)",
                 "items": {
                   "maxLength": 10,
                   "type": "string"
@@ -74019,7 +74019,7 @@
                   "type": "string"
                 },
                 "id": {
-                  "description": "Stable id (ADR-500); a new entry gets one when saved",
+                  "description": "Stable id (ADR-520); a new entry gets one when saved",
                   "format": "uuid",
                   "type": "string"
                 },
@@ -74344,7 +74344,7 @@
             "type": "object"
           },
           "translation": {
-            "description": "The translation this answer is in (ADR-500), null for the box's own",
+            "description": "The translation this answer is in (ADR-520), null for the box's own",
             "nullable": true,
             "type": "string"
           },
@@ -84231,7 +84231,7 @@
             "type": "string"
           },
           "id": {
-            "description": "Stable id (ADR-500); a new entry gets one when saved",
+            "description": "Stable id (ADR-520); a new entry gets one when saved",
             "format": "uuid",
             "type": "string"
           },
@@ -84778,7 +84778,7 @@
                   "type": "string"
                 },
                 "id": {
-                  "description": "Stable id (ADR-500); a new entry gets one when saved",
+                  "description": "Stable id (ADR-520); a new entry gets one when saved",
                   "format": "uuid",
                   "type": "string"
                 },
@@ -84867,7 +84867,7 @@
             "type": "array"
           },
           "translation_locales": {
-            "description": "Languages the box translates its texts into (ADR-500)",
+            "description": "Languages the box translates its texts into (ADR-520)",
             "items": {
               "maxLength": 10,
               "type": "string"
@@ -84876,7 +84876,7 @@
             "type": "array"
           },
           "visible_locales": {
-            "description": "Translations visitors can pick on the site (ADR-500)",
+            "description": "Translations visitors can pick on the site (ADR-520)",
             "items": {
               "maxLength": 10,
               "type": "string"
@@ -84993,7 +84993,7 @@
                       "type": "string"
                     },
                     "id": {
-                      "description": "Stable id (ADR-500); a new entry gets one when saved",
+                      "description": "Stable id (ADR-520); a new entry gets one when saved",
                       "format": "uuid",
                       "type": "string"
                     },
@@ -85082,7 +85082,7 @@
                 "type": "array"
               },
               "translation_locales": {
-                "description": "Languages the box translates its texts into (ADR-500)",
+                "description": "Languages the box translates its texts into (ADR-520)",
                 "items": {
                   "maxLength": 10,
                   "type": "string"
@@ -85091,7 +85091,7 @@
                 "type": "array"
               },
               "visible_locales": {
-                "description": "Translations visitors can pick on the site (ADR-500)",
+                "description": "Translations visitors can pick on the site (ADR-520)",
                 "items": {
                   "maxLength": 10,
                   "type": "string"
@@ -85147,7 +85147,7 @@
                   "type": "string"
                 },
                 "id": {
-                  "description": "Stable id (ADR-500); a new entry gets one when saved",
+                  "description": "Stable id (ADR-520); a new entry gets one when saved",
                   "format": "uuid",
                   "type": "string"
                 },
@@ -256376,7 +256376,7 @@
                                 "type": "string"
                               },
                               "id": {
-                                "description": "Stable id (ADR-500); a new entry gets one when saved",
+                                "description": "Stable id (ADR-520); a new entry gets one when saved",
                                 "format": "uuid",
                                 "type": "string"
                               },
@@ -256465,7 +256465,7 @@
                           "type": "array"
                         },
                         "translation_locales": {
-                          "description": "Languages the box translates its texts into (ADR-500)",
+                          "description": "Languages the box translates its texts into (ADR-520)",
                           "items": {
                             "maxLength": 10,
                             "type": "string"
@@ -256474,7 +256474,7 @@
                           "type": "array"
                         },
                         "visible_locales": {
-                          "description": "Translations visitors can pick on the site (ADR-500)",
+                          "description": "Translations visitors can pick on the site (ADR-520)",
                           "items": {
                             "maxLength": 10,
                             "type": "string"
@@ -256554,7 +256554,7 @@
                           "type": "string"
                         },
                         "id": {
-                          "description": "Stable id (ADR-500); a new entry gets one when saved",
+                          "description": "Stable id (ADR-520); a new entry gets one when saved",
                           "format": "uuid",
                           "type": "string"
                         },
@@ -256758,7 +256758,7 @@
                                 "type": "string"
                               },
                               "id": {
-                                "description": "Stable id (ADR-500); a new entry gets one when saved",
+                                "description": "Stable id (ADR-520); a new entry gets one when saved",
                                 "format": "uuid",
                                 "type": "string"
                               },
@@ -256847,7 +256847,7 @@
                           "type": "array"
                         },
                         "translation_locales": {
-                          "description": "Languages the box translates its texts into (ADR-500)",
+                          "description": "Languages the box translates its texts into (ADR-520)",
                           "items": {
                             "maxLength": 10,
                             "type": "string"
@@ -256856,7 +256856,7 @@
                           "type": "array"
                         },
                         "visible_locales": {
-                          "description": "Translations visitors can pick on the site (ADR-500)",
+                          "description": "Translations visitors can pick on the site (ADR-520)",
                           "items": {
                             "maxLength": 10,
                             "type": "string"
@@ -374819,7 +374819,7 @@
             }
           },
           {
-            "description": "One of the site's translations (ADR-500); the box's own language when absent",
+            "description": "One of the site's translations (ADR-520); the box's own language when absent",
             "in": "query",
             "name": "lang",
             "required": false,
@@ -374907,7 +374907,7 @@
                             "type": "string"
                           },
                           "id": {
-                            "description": "Stable id (ADR-500); a new entry gets one when saved",
+                            "description": "Stable id (ADR-520); a new entry gets one when saved",
                             "format": "uuid",
                             "type": "string"
                           },
@@ -375232,7 +375232,7 @@
                       "type": "object"
                     },
                     "translation": {
-                      "description": "The translation this answer is in (ADR-500), null for the box's own",
+                      "description": "The translation this answer is in (ADR-520), null for the box's own",
                       "nullable": true,
                       "type": "string"
                     },

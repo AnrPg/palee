@@ -1,6 +1,6 @@
 defmodule Palee.Repo.Migrations.DropBoxSiteAboutEn do
   @moduledoc """
-  ADR-500: the English «Σχετικά» lives in `content_translations` since the
+  ADR-520: the English «Σχετικά» lives in `content_translations` since the
   previous migration; the ADR-388 column goes. Rolling back re-adds it and the
   previous migration's `down` fills it again.
   """

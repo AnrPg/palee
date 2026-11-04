@@ -29,7 +29,7 @@ defmodule PaleeWeb.Schemas.BoxSite do
         id: %Schema{
           type: :string,
           format: :uuid,
-          description: "Stable id (ADR-500); a new entry gets one when saved"
+          description: "Stable id (ADR-520); a new entry gets one when saved"
         },
         question: %Schema{type: :string, maxLength: 200},
         answer: %Schema{type: :string, maxLength: 1000}
@@ -66,8 +66,8 @@ defmodule PaleeWeb.Schemas.BoxSite do
         public_schedule: @bool,
         public_wod: %Schema{type: :boolean, description: "«WOD της ημέρας» on the site (ADR-388)"},
         faq: faq(),
-        translation_locales: locales("Languages the box translates its texts into (ADR-500)"),
-        visible_locales: locales("Translations visitors can pick on the site (ADR-500)"),
+        translation_locales: locales("Languages the box translates its texts into (ADR-520)"),
+        visible_locales: locales("Translations visitors can pick on the site (ADR-520)"),
         forms_enabled: @bool,
         meta_pixel_id: @text,
         ga4_measurement_id: @text,
@@ -210,7 +210,7 @@ defmodule PaleeWeb.Schemas.BoxSite do
     }
   end
 
-  # ── Translations (ADR-500) ───────────────────────────────────────────────
+  # ── Translations (ADR-520) ───────────────────────────────────────────────
 
   @translation_statuses ~w(missing stale machine ok)
   @translation_groups ~w(about rooms faq packages classes events locations)
@@ -477,7 +477,7 @@ defmodule PaleeWeb.Schemas.BoxSite do
         translation: %Schema{
           type: :string,
           nullable: true,
-          description: "The translation this answer is in (ADR-500), null for the box's own"
+          description: "The translation this answer is in (ADR-520), null for the box's own"
         },
         time_zone: %Schema{type: :string},
         about: %Schema{

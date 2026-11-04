@@ -1,6 +1,6 @@
 defmodule Palee.Infrastructure.ContentTranslations.GeminiMachineTranslator do
   @moduledoc """
-  ADR-500: translates a business's website texts with Google Gemini (the
+  ADR-520: translates a business's website texts with Google Gemini (the
   platform's `GEMINI_API_KEY`, model `GEMINI_TRANSLATE_MODEL`, default
   `gemini-2.5-flash-lite`). Only the texts and the business's name are sent.
   Without a key it is not available and answers `{:error, :not_configured}`.

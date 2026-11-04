@@ -1,6 +1,6 @@
 defmodule Palee.ContentTranslations.Domain.TranslationPolicy do
   @moduledoc """
-  ADR-500: the rules of translated content, pure.
+  ADR-520: the rules of translated content, pure.
 
     * A translation remembers the hash of the source it was made from. When
       the source changes, the translation is `:stale` (still shown, flagged).

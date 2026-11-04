@@ -410,7 +410,7 @@ defmodule PaleeWeb.BoxSiteControllerTest do
     assert "wod" in (build_conn() |> get(ctx.public) |> json_response(200))["sections"]
   end
 
-  describe "ADR-500: translations of the website" do
+  describe "ADR-520: translations of the website" do
     setup ctx do
       greek_box(ctx.organization)
       :ok

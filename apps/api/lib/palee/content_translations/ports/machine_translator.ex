@@ -1,6 +1,6 @@
 defmodule Palee.ContentTranslations.Ports.MachineTranslator do
   @moduledoc """
-  ADR-500: translates a batch of a business's texts from one language into
+  ADR-520: translates a batch of a business's texts from one language into
   another. Only the texts themselves (and the business's name, kept as it
   is) are sent, never any person's data.
 

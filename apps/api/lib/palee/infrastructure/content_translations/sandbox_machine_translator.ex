@@ -1,6 +1,6 @@
 defmodule Palee.Infrastructure.ContentTranslations.SandboxMachineTranslator do
   @moduledoc """
-  ADR-500: the machine translator for dev and test. Each text comes back
+  ADR-520: the machine translator for dev and test. Each text comes back
   prefixed with the target language (`[EN] …`).
 
   `config :palee, :content_sandbox_translation, ...`: `:unavailable` makes it

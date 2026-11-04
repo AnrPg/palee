@@ -37,7 +37,7 @@ defmodule Palee.Application.BoxSite.SiteAdmin do
     end
   end
 
-  # ADR-500: the box's own language, the languages it can add, and how far
+  # ADR-520: the box's own language, the languages it can add, and how far
   # each translation is.
   defp languages(context, settings) do
     source = SiteTranslations.source_language(context)

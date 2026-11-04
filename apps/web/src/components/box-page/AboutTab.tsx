@@ -36,7 +36,7 @@ const ALL_PARTS: AboutPart[] = ["about", "coaches", "location"];
 /**
  * ADR-388: the box's website shows these parts as its «Σχετικά», «Coaches»
  * and «Τοποθεσία» sections, each where the owner put it (`parts`). A
- * translated site passes a page with the owner's translations in it (ADR-500).
+ * translated site passes a page with the owner's translations in it (ADR-520).
  */
 export function AboutTab({
   page,

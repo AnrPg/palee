@@ -1,6 +1,6 @@
 defmodule Palee.Application.BoxSite.SiteTranslations do
   @moduledoc """
-  ADR-500: «Μεταφράσεις» of the box's website. Composes the texts the box
+  ADR-520: «Μεταφράσεις» of the box's website. Composes the texts the box
   wrote that its website shows, from the contexts that own them, and hands
   them to `Palee.ContentTranslations` as sources:
 

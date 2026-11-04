@@ -38,7 +38,7 @@ defmodule PaleeWeb.PublicSiteController do
         in: :query,
         required: false,
         description:
-          "One of the site's translations (ADR-500); the box's own language when absent",
+          "One of the site's translations (ADR-520); the box's own language when absent",
         schema: S.translation_locale()
       }
     ],

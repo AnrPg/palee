@@ -45,7 +45,7 @@ const STATUS_STYLE: Record<SiteTranslationStatus, { background: string; color: s
 };
 
 /**
- * «Μεταφράσεις» (ADR-500, ANR picked A): every text the box wrote for its
+ * «Μεταφράσεις» (ADR-520, ANR picked A): every text the box wrote for its
  * website, its own text beside the translation, with a status each. A
  * person's text saves when the field is left; «Αυτόματη μετάφραση» fills
  * only what is missing or out of date; «Ένα-ένα» walks through what is left.

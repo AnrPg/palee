@@ -234,7 +234,7 @@ function ReviewsSection({ site, boxName }: { site: PublicSite; boxName: string }
 
 function FaqSection({ site }: { site: PublicSite }) {
   const t = useTranslations("BoxSite");
-  // ADR-500: the API answers the FAQ already in the page's language.
+  // ADR-520: the API answers the FAQ already in the page's language.
   const entries = site.faq;
   if (entries.length === 0) return null;
   return (

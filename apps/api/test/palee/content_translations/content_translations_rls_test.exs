@@ -1,5 +1,5 @@
 defmodule Palee.ContentTranslations.RLSTest do
-  @moduledoc "ADR-500: a box's translations are invisible outside its session."
+  @moduledoc "ADR-520: a box's translations are invisible outside its session."
   use Palee.RLSCase, async: false
 
   defp org!(conn) do

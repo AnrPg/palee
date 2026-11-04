@@ -80,7 +80,7 @@ const blank = (value: string) => (value.trim() ? value.trim() : null);
 /**
  * Ρυθμίσεις › Ιστοσελίδα (ANR s1 A, s2 A; ADR-352..354, ADR-388): the
  * sections with a switch each, in the owner's order; «Γλώσσες ιστοσελίδας»
- * (ADR-500) with each translation's progress and the way to «Μεταφράσεις»;
+ * (ADR-520) with each translation's progress and the way to «Μεταφράσεις»;
  * the domain card with its steps and records; the tags under «Προχωρημένα».
  */
 export function WebsiteSettings() {
@@ -141,7 +141,7 @@ function SiteForm({ token, site }: { token: string; site: AdminSite }) {
         public_schedule: draft.public_schedule,
         public_wod: draft.public_wod,
         forms_enabled: draft.forms_enabled,
-        // The id keeps an entry's translations with it (ADR-500).
+        // The id keeps an entry's translations with it (ADR-520).
         faq: draft.faq.map((entry) => ({ ...(entry.id ? { id: entry.id } : {}), question: entry.question.trim(), answer: entry.answer.trim() })),
         translation_locales: draft.translation_locales,
         visible_locales: draft.visible_locales,

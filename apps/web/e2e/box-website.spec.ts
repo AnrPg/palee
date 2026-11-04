@@ -88,7 +88,7 @@ const site = {
   },
 };
 
-// ADR-500: `?lang=en` answers the English translation, resolved by the API.
+// ADR-520: `?lang=en` answers the English translation, resolved by the API.
 const siteEn = {
   ...site,
   translation: "en",
@@ -352,7 +352,7 @@ test.describe("Settings › Website", () => {
   });
 });
 
-// ── Staff: «Website languages» and «Translations» (ADR-500) ──────────────────
+// ── Staff: «Website languages» and «Translations» (ADR-520) ──────────────────
 
 type Status = "ok" | "missing" | "stale" | "machine";
 type Item = { key: string; kind: string; id: string; field: string; group: string; label: string | null; source: string; text: string | null; status: Status; origin: string | null; updated_at: string | null };

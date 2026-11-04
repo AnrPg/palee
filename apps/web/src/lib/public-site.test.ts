@@ -24,7 +24,7 @@ describe("website language", () => {
 
   it("opens a translation only on a first visit from another language", () => {
     const base = { boxLanguage: "el", languages: ["el", "en", "de"], siteChoice: null, appLocaleChosen: false };
-    // ADR-500: the browser's language when the box shows it, English otherwise.
+    // ADR-520: the browser's language when the box shows it, English otherwise.
     expect(preferredSiteLanguage({ ...base, acceptLanguage: "de-DE" })).toBe("de");
     expect(preferredSiteLanguage({ ...base, acceptLanguage: "fr-FR" })).toBe("en");
     expect(preferredSiteLanguage({ ...base, languages: ["el", "de"], acceptLanguage: "fr" })).toBeNull();

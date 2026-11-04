@@ -144,7 +144,7 @@ defmodule PaleeWeb.AdminSiteController do
          do: json(conn, result)
   end
 
-  # ── Translations (ADR-500) ──────────────────────────────────────────────
+  # ── Translations (ADR-520) ──────────────────────────────────────────────
 
   operation(:translations,
     summary: "«Μεταφράσεις»: every text of the website with its translation and status",

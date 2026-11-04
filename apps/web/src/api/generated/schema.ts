@@ -19270,7 +19270,7 @@ export interface components {
                     answer: string;
                     /**
                      * Format: uuid
-                     * @description Stable id (ADR-500); a new entry gets one when saved
+                     * @description Stable id (ADR-520); a new entry gets one when saved
                      */
                     id?: string;
                     question: string;
@@ -19287,9 +19287,9 @@ export interface components {
                 /** @description «WOD της ημέρας» on the site (ADR-388) */
                 public_wod: boolean;
                 section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
-                /** @description Languages the box translates its texts into (ADR-500) */
+                /** @description Languages the box translates its texts into (ADR-520) */
                 translation_locales: string[];
-                /** @description Translations visitors can pick on the site (ADR-500) */
+                /** @description Translations visitors can pick on the site (ADR-520) */
                 visible_locales: string[];
             };
         };
@@ -41264,7 +41264,7 @@ export interface components {
                 answer: string;
                 /**
                  * Format: uuid
-                 * @description Stable id (ADR-500); a new entry gets one when saved
+                 * @description Stable id (ADR-520); a new entry gets one when saved
                  */
                 id?: string;
                 question: string;
@@ -41353,7 +41353,7 @@ export interface components {
                 };
                 validity_days: number;
             };
-            /** @description The translation this answer is in (ADR-500), null for the box's own */
+            /** @description The translation this answer is in (ADR-520), null for the box's own */
             translation: string | null;
             wod: {
                 body: string | null;
@@ -44407,7 +44407,7 @@ export interface components {
             answer: string;
             /**
              * Format: uuid
-             * @description Stable id (ADR-500); a new entry gets one when saved
+             * @description Stable id (ADR-520); a new entry gets one when saved
              */
             id?: string;
             question: string;
@@ -44572,7 +44572,7 @@ export interface components {
                 answer: string;
                 /**
                  * Format: uuid
-                 * @description Stable id (ADR-500); a new entry gets one when saved
+                 * @description Stable id (ADR-520); a new entry gets one when saved
                  */
                 id?: string;
                 question: string;
@@ -44589,9 +44589,9 @@ export interface components {
             /** @description «WOD της ημέρας» on the site (ADR-388) */
             public_wod: boolean;
             section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
-            /** @description Languages the box translates its texts into (ADR-500) */
+            /** @description Languages the box translates its texts into (ADR-520) */
             translation_locales: string[];
-            /** @description Translations visitors can pick on the site (ADR-500) */
+            /** @description Translations visitors can pick on the site (ADR-520) */
             visible_locales: string[];
         };
         /** SiteSettingsResponse */
@@ -44625,7 +44625,7 @@ export interface components {
                     answer: string;
                     /**
                      * Format: uuid
-                     * @description Stable id (ADR-500); a new entry gets one when saved
+                     * @description Stable id (ADR-520); a new entry gets one when saved
                      */
                     id?: string;
                     question: string;
@@ -44642,9 +44642,9 @@ export interface components {
                 /** @description «WOD της ημέρας» on the site (ADR-388) */
                 public_wod: boolean;
                 section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
-                /** @description Languages the box translates its texts into (ADR-500) */
+                /** @description Languages the box translates its texts into (ADR-520) */
                 translation_locales: string[];
-                /** @description Translations visitors can pick on the site (ADR-500) */
+                /** @description Translations visitors can pick on the site (ADR-520) */
                 visible_locales: string[];
             };
         };
@@ -44657,7 +44657,7 @@ export interface components {
                 answer: string;
                 /**
                  * Format: uuid
-                 * @description Stable id (ADR-500); a new entry gets one when saved
+                 * @description Stable id (ADR-520); a new entry gets one when saved
                  */
                 id?: string;
                 question: string;
@@ -106298,7 +106298,7 @@ export interface operations {
                                 answer: string;
                                 /**
                                  * Format: uuid
-                                 * @description Stable id (ADR-500); a new entry gets one when saved
+                                 * @description Stable id (ADR-520); a new entry gets one when saved
                                  */
                                 id?: string;
                                 question: string;
@@ -106315,9 +106315,9 @@ export interface operations {
                             /** @description «WOD της ημέρας» on the site (ADR-388) */
                             public_wod: boolean;
                             section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
-                            /** @description Languages the box translates its texts into (ADR-500) */
+                            /** @description Languages the box translates its texts into (ADR-520) */
                             translation_locales: string[];
-                            /** @description Translations visitors can pick on the site (ADR-500) */
+                            /** @description Translations visitors can pick on the site (ADR-520) */
                             visible_locales: string[];
                         };
                     };
@@ -106342,7 +106342,7 @@ export interface operations {
                         answer: string;
                         /**
                          * Format: uuid
-                         * @description Stable id (ADR-500); a new entry gets one when saved
+                         * @description Stable id (ADR-520); a new entry gets one when saved
                          */
                         id?: string;
                         question: string;
@@ -106400,7 +106400,7 @@ export interface operations {
                                 answer: string;
                                 /**
                                  * Format: uuid
-                                 * @description Stable id (ADR-500); a new entry gets one when saved
+                                 * @description Stable id (ADR-520); a new entry gets one when saved
                                  */
                                 id?: string;
                                 question: string;
@@ -106417,9 +106417,9 @@ export interface operations {
                             /** @description «WOD της ημέρας» on the site (ADR-388) */
                             public_wod: boolean;
                             section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
-                            /** @description Languages the box translates its texts into (ADR-500) */
+                            /** @description Languages the box translates its texts into (ADR-520) */
                             translation_locales: string[];
-                            /** @description Translations visitors can pick on the site (ADR-500) */
+                            /** @description Translations visitors can pick on the site (ADR-520) */
                             visible_locales: string[];
                         };
                     };
@@ -146892,7 +146892,7 @@ export interface operations {
     "PaleeWeb.PublicSiteController.show": {
         parameters: {
             query?: {
-                /** @description One of the site's translations (ADR-500); the box's own language when absent */
+                /** @description One of the site's translations (ADR-520); the box's own language when absent */
                 lang?: string;
             };
             header?: never;
@@ -146935,7 +146935,7 @@ export interface operations {
                             answer: string;
                             /**
                              * Format: uuid
-                             * @description Stable id (ADR-500); a new entry gets one when saved
+                             * @description Stable id (ADR-520); a new entry gets one when saved
                              */
                             id?: string;
                             question: string;
@@ -147024,7 +147024,7 @@ export interface operations {
                             };
                             validity_days: number;
                         };
-                        /** @description The translation this answer is in (ADR-500), null for the box's own */
+                        /** @description The translation this answer is in (ADR-520), null for the box's own */
                         translation: string | null;
                         wod: {
                             body: string | null;

@@ -1,6 +1,6 @@
 defmodule Palee.Repo.Migrations.ContentTranslations do
   @moduledoc """
-  ADR-500: translations of the texts a box writes for its website, in any
+  ADR-520: translations of the texts a box writes for its website, in any
   language of the app, one row per text, field and language.
 
     * `content_translations` – the translated text, the hash of the source it

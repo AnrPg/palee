@@ -113,7 +113,7 @@ defmodule Palee.BoxSite.Domain.SiteSettingsPolicy do
     with {:ok, question} <- text(entry["question"], @max_question, :required),
          {:ok, answer} <- text(entry["answer"], @max_answer, :required),
          {:ok, id} <- faq_id(entry["id"]) do
-      # ADR-500: a stable id per entry (given by `BoxSite` when new), so its
+      # ADR-520: a stable id per entry (given by `BoxSite` when new), so its
       # translations follow it when the owner reorders the list.
       Map.merge(
         %{"question" => question, "answer" => answer},
@@ -149,7 +149,7 @@ defmodule Palee.BoxSite.Domain.SiteSettingsPolicy do
 
   defp text(_value, _max, _need), do: :error
 
-  # ADR-500: the languages the owner translates into and the ones visitors
+  # ADR-520: the languages the owner translates into and the ones visitors
   # can pick. `Application.BoxSite.SiteAdmin` cleans them against the app's
   # languages and the box's own first; here only their shape is checked.
   defp languages({changes, errors}, params) do

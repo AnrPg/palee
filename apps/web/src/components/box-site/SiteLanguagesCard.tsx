@@ -14,7 +14,7 @@ import { addableLanguages, addLanguage, languageName, progressFor, readyPercent,
 type Languages = { translation_locales: string[]; visible_locales: string[] };
 
 /**
- * «Γλώσσες ιστοσελίδας» (ADR-500, ANR picked A): the box's own language,
+ * «Γλώσσες ιστοσελίδας» (ADR-520, ANR picked A): the box's own language,
  * each translation with how far it is, a switch that shows it to visitors,
  * and the way into «Μεταφράσεις». A new language starts hidden.
  */

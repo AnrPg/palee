@@ -1,6 +1,6 @@
 defmodule Palee.ContentTranslations.Ports.TranslationStore do
   @moduledoc """
-  ADR-500: persistence of translated texts. Every callback takes the tenant
+  ADR-520: persistence of translated texts. Every callback takes the tenant
   context first and runs under its row-level security.
 
   A row: `%{subject_kind, subject_id, field, locale, text, source_hash,
