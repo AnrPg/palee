@@ -107703,6 +107703,30 @@
         "title": "TrainingLogVoidRequest",
         "type": "object"
       },
+      "TrainsWithPaleeResponse": {
+        "properties": {
+          "trains_with_palee": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "trains_with_palee"
+        ],
+        "title": "TrainsWithPaleeResponse",
+        "type": "object"
+      },
+      "TrainsWithPaleeUpdate": {
+        "properties": {
+          "trains_with_palee": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "trains_with_palee"
+        ],
+        "title": "TrainsWithPaleeUpdate",
+        "type": "object"
+      },
       "TrialAsk": {
         "properties": {
           "client_operation_id": {
@@ -119772,6 +119796,11 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "trains_with_palee": {
+                              "description": "ADR-463: staff's answer to «do you train with Palee too?»; null = never asked, read as true",
+                              "nullable": true,
+                              "type": "boolean"
+                            },
                             "vendor": {
                               "type": "boolean"
                             }
@@ -121344,6 +121373,11 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "trains_with_palee": {
+                          "description": "ADR-463: staff's answer to «do you train with Palee too?»; null = never asked, read as true",
+                          "nullable": true,
+                          "type": "boolean"
+                        },
                         "vendor": {
                           "type": "boolean"
                         }
@@ -121559,6 +121593,11 @@
                       "description": "ADR-179: the zone this account's device last reported",
                       "nullable": true,
                       "type": "string"
+                    },
+                    "trains_with_palee": {
+                      "description": "ADR-463: staff's answer to «do you train with Palee too?»; null = never asked, read as true",
+                      "nullable": true,
+                      "type": "boolean"
                     },
                     "vendor": {
                       "type": "boolean"
@@ -122279,6 +122318,11 @@
                           "description": "ADR-179: the zone this account's device last reported",
                           "nullable": true,
                           "type": "string"
+                        },
+                        "trains_with_palee": {
+                          "description": "ADR-463: staff's answer to «do you train with Palee too?»; null = never asked, read as true",
+                          "nullable": true,
+                          "type": "boolean"
                         },
                         "vendor": {
                           "type": "boolean"
@@ -176271,6 +176315,73 @@
           }
         ],
         "summary": "Record that the current account finished a product tour",
+        "tags": [
+          "Me"
+        ]
+      }
+    },
+    "/api/me/trains-with-palee": {
+      "put": {
+        "callbacks": {},
+        "description": "Staff answer it in the first run and in Settings. false hides the prompts aimed at athletes; null (never asked) reads as true.",
+        "operationId": "PaleeWeb.MeController.update_trains_with_palee",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "trains_with_palee": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "trains_with_palee"
+                ],
+                "title": "TrainsWithPaleeUpdate",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "trains_with_palee": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "trains_with_palee"
+                  ],
+                  "title": "TrainsWithPaleeResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Stored answer"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Validation errors"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Say whether you also train with Palee (ADR-463)",
         "tags": [
           "Me"
         ]

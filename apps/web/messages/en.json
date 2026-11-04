@@ -142,7 +142,12 @@
     "syncOffline": "Offline",
     "syncPending": "Waiting: {count}",
     "syncAllDone": "All synced",
-    "syncNow": "Sync now"
+    "syncNow": "Sync now",
+    "athleteUseTitle": "I train with Palee too",
+    "athleteUseDescription": "For people who work at a box: if you don't train, we hide the suggestions meant for athletes.",
+    "athleteUseOn": "You also see the suggestions for athletes: find a box, sports, weekly goal.",
+    "athleteUseOff": "You don't see suggestions for athletes. Your work tools stay the same.",
+    "athleteUseError": "Not saved. Try again."
   },
   "Session": {
     "required": "Authentication required",
@@ -10247,7 +10252,14 @@
     "saveInterests": "Save",
     "interestsSaved": "Saved.",
     "interestsHubHint": "Disciplines and level, for suggestions",
-    "photoAddLabel": "Add photo"
+    "photoAddLabel": "Add photo",
+    "athleteTitle": "Will you train with Palee too?",
+    "athleteLead": "You joined {box} as {role}.",
+    "athleteYes": "Yes, I train too",
+    "athleteYesHint": "We carry on with sports and area.",
+    "athleteNo": "No, just for work",
+    "athleteNoHint": "You're done now. You won't see suggestions meant for athletes.",
+    "athleteNote": "Change it any time in Me › Settings."
   },
   "Business": {
     "common": {

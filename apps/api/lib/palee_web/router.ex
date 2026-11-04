@@ -2381,6 +2381,8 @@ defmodule PaleeWeb.Router do
     delete("/email-change", EmailChangeController, :delete)
     post("/tours/:audience/complete", MeController, :complete_tour)
     put("/time-zone", MeController, :update_time_zone)
+    # ADR-463: staff say whether they also train with Palee.
+    put("/trains-with-palee", MeController, :update_trains_with_palee)
     post("/avatar/upload-url", MeController, :avatar_upload_url)
     patch("/avatar", MeController, :update_avatar)
     get("/search/users", MeController, :search_users)

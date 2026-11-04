@@ -142,7 +142,12 @@
     "syncOffline": "Sin conexión",
     "syncPending": "En espera: {count}",
     "syncAllDone": "Todo sincronizado",
-    "syncNow": "Sincronizar ahora"
+    "syncNow": "Sincronizar ahora",
+    "athleteUseTitle": "Yo también entreno con Palee",
+    "athleteUseDescription": "Para quienes trabajan en un box: si no entrenas, ocultamos las sugerencias para deportistas.",
+    "athleteUseOn": "También ves las sugerencias para deportistas: buscar box, deportes, objetivo semanal.",
+    "athleteUseOff": "No ves sugerencias para deportistas. Tus herramientas de trabajo siguen igual.",
+    "athleteUseError": "No se guardó. Inténtalo de nuevo."
   },
   "Session": {
     "required": "Autenticación necesaria",
@@ -10247,7 +10252,14 @@
     "saveInterests": "Guardar",
     "interestsSaved": "Guardado.",
     "interestsHubHint": "Disciplinas y nivel, para sugerencias",
-    "photoAddLabel": "Añadir foto"
+    "photoAddLabel": "Añadir foto",
+    "athleteTitle": "¿Tú también entrenarás con Palee?",
+    "athleteLead": "Entraste en {box} como {role}.",
+    "athleteYes": "Sí, yo también entreno",
+    "athleteYesHint": "Seguimos con deportes y zona.",
+    "athleteNo": "No, solo para el trabajo",
+    "athleteNoHint": "Terminas ahora. No verás sugerencias pensadas para deportistas.",
+    "athleteNote": "Puedes cambiarlo cuando quieras en Yo › Ajustes."
   },
   "Business": {
     "common": {

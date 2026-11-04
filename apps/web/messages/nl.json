@@ -142,7 +142,12 @@
     "syncOffline": "Offline",
     "syncPending": "Wachtend: {count}",
     "syncAllDone": "Alles gesynchroniseerd",
-    "syncNow": "Nu synchroniseren"
+    "syncNow": "Nu synchroniseren",
+    "athleteUseTitle": "Ik train ook met Palee",
+    "athleteUseDescription": "Voor wie in een box werkt: train je niet, dan verbergen we de suggesties voor sporters.",
+    "athleteUseOn": "Je ziet ook de suggesties voor sporters: box zoeken, sporten, weekdoel.",
+    "athleteUseOff": "Je ziet geen suggesties voor sporters. Je werktools blijven hetzelfde.",
+    "athleteUseError": "Niet opgeslagen. Probeer het opnieuw."
   },
   "Session": {
     "required": "Aanmelden vereist",
@@ -10247,7 +10252,14 @@
     "saveInterests": "Opslaan",
     "interestsSaved": "Opgeslagen.",
     "interestsHubHint": "Sporten en niveau, voor suggesties",
-    "photoAddLabel": "Foto toevoegen"
+    "photoAddLabel": "Foto toevoegen",
+    "athleteTitle": "Ga jij ook trainen met Palee?",
+    "athleteLead": "Je bent bij {box} gekomen als {role}.",
+    "athleteYes": "Ja, ik train ook",
+    "athleteYesHint": "We gaan verder met sporten en gebied.",
+    "athleteNo": "Nee, alleen voor het werk",
+    "athleteNoHint": "Je bent nu klaar. Je ziet geen suggesties voor sporters.",
+    "athleteNote": "Altijd te wijzigen via Ik › Instellingen."
   },
   "Business": {
     "common": {

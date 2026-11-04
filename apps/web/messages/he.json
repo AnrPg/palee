@@ -142,7 +142,12 @@
     "syncOffline": "אין חיבור",
     "syncPending": "ממתינים: {count}",
     "syncAllDone": "הכול מסונכרן",
-    "syncNow": "סנכרון עכשיו"
+    "syncNow": "סנכרון עכשיו",
+    "athleteUseTitle": "גם אני מתאמן/ת עם Palee",
+    "athleteUseDescription": "למי שעובד בבוקס: אם אתם לא מתאמנים, נסתיר את ההצעות שמיועדות למתאמנים.",
+    "athleteUseOn": "מוצגות לכם גם ההצעות למתאמנים: מציאת בוקס, ענפי ספורט, יעד שבועי.",
+    "athleteUseOff": "לא מוצגות לכם הצעות למתאמנים. כלי העבודה שלכם נשארים כמו שהם.",
+    "athleteUseError": "לא נשמר. נסו שוב."
   },
   "Session": {
     "required": "נדרשת התחברות",
@@ -10247,7 +10252,14 @@
     "saveInterests": "שמירה",
     "interestsSaved": "נשמר.",
     "interestsHubHint": "ענפי ספורט ורמה, להצעות",
-    "photoAddLabel": "הוספת תמונה"
+    "photoAddLabel": "הוספת תמונה",
+    "athleteTitle": "גם אתם תתאמנו עם Palee?",
+    "athleteLead": "הצטרפתם אל {box} בתור {role}.",
+    "athleteYes": "כן, גם אני מתאמן/ת",
+    "athleteYesHint": "ממשיכים עם ענפי ספורט ואזור.",
+    "athleteNo": "לא, רק לעבודה",
+    "athleteNoHint": "סיימתם. לא יוצגו לכם הצעות שמיועדות למתאמנים.",
+    "athleteNote": "אפשר לשנות בכל זמן ב־אני › הגדרות."
   },
   "Business": {
     "common": {

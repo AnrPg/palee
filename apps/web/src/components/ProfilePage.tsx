@@ -45,6 +45,8 @@ import { WeeklyGoalSetting } from "@/components/training-goal/WeeklyGoalSetting"
 import { JournalSectionsSetting, UnitsSetting } from "@/components/body/BodyPreferenceSettings";
 import { showsTenantSelfServiceSurfaces } from "@/lib/account-surfaces";
 import { ThemeSetting } from "@/components/profile/ThemeSetting";
+import { AthleteUseSetting } from "@/components/profile/AthleteUseSetting";
+import { usesAppAsAthlete } from "@/lib/athlete-use";
 import { Select } from "@/components/ui/Select";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 
@@ -198,6 +200,9 @@ export function ProfilePage() {
         {/* ADR-219: roles below one's top role in the selected box. */}
         <MyRolesSection />
 
+        {/* ADR-463: staff say whether they also train; members never see it. */}
+        <AthleteUseSetting />
+
 
         <CollapsibleSection
           id="language-region"
@@ -264,7 +269,8 @@ export function ProfilePage() {
 
         <SettingsLink href="/me/settings/body" title={tBody("settingsTitle")} hint={tBody("settingsHubHint")} />
 
-        {selfService ? (
+        {/* ADR-463: the weekly goal is an athlete's prompt. */}
+        {selfService && usesAppAsAthlete(currentUser) ? (
           <CollapsibleSection
             id="training-schedule"
             title={i18n("trainingSchedule80e51e2")}

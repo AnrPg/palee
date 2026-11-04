@@ -13,18 +13,26 @@ import { aroundKindHref } from "@/components/around/around";
 import { AreaPicker } from "@/components/around/AreaPicker";
 import { useAroundArea } from "@/components/around/use-around";
 import { InterestsEditor } from "@/components/interests/InterestsEditor";
+import { useSaveTrainsWithPalee } from "@/components/profile/AthleteUseSetting";
 import { useSession } from "@/components/session-provider";
+import { useUiTranslations } from "@/i18n/ui";
+import { roleLabel } from "@/i18n/presentation";
+import { firstStaffRole, usesAppAsAthlete } from "@/lib/athlete-use";
 import { FIRST_RUN, markFirstRunDone, safeNext } from "@/lib/first-run";
 import { useOrganizationMemberships } from "@/lib/membership-role";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 
-const STEPS = ["photo", "interests", "where"] as const;
-type Step = (typeof STEPS)[number];
+const MEMBER_STEPS = ["photo", "interests", "where"] as const;
+// ADR-463: anyone with a staff role is asked first whether they train too.
+const STAFF_STEPS = ["photo", "athlete", "interests", "where"] as const;
+type Step = (typeof STAFF_STEPS)[number];
 
 /**
  * The member first-run after sign-up (ADR-183): photo, what you do, where
  * you are and whether you are in a box already. Every step can be skipped;
  * finishing or skipping records it on the account, so it shows once.
+ * Staff answer one question after the photo (ADR-463): «Όχι, μόνο για τη
+ * δουλειά» finishes there, without the sports and area steps.
  */
 export function FirstRun() {
   const t = useTranslations("FirstRun");
@@ -32,8 +40,11 @@ export function FirstRun() {
   const searchParams = useSearchParams();
   const { tokens, currentUser } = useSession();
   const token = tokens?.access_token ?? null;
+  const memberships = useOrganizationMemberships();
+  const staff = firstStaffRole(memberships.data);
+  const steps: readonly Step[] = staff ? STAFF_STEPS : MEMBER_STEPS;
   const [step, setStep] = useState<Step>("photo");
-  const index = STEPS.indexOf(step);
+  const index = Math.max(steps.indexOf(step), 0);
 
   function finish() {
     if (currentUser) markFirstRunDone(currentUser.id);
@@ -41,14 +52,14 @@ export function FirstRun() {
     router.replace(safeNext(searchParams.get("next")));
   }
 
-  const next = () => (index < STEPS.length - 1 ? setStep(STEPS[index + 1]) : finish());
+  const next = () => (index < steps.length - 1 ? setStep(steps[index + 1]) : finish());
 
   return (
     <main className="flex min-h-screen justify-center px-4 py-8" style={{ background: "var(--bg)" }}>
       <div className="flex w-full max-w-md flex-col gap-6">
         <div className="flex items-center justify-between gap-3">
-          <ol aria-label={t("progress", { step: index + 1, total: STEPS.length })} className="flex gap-1.5">
-            {STEPS.map((entry, position) => (
+          <ol aria-label={t("progress", { step: index + 1, total: steps.length })} className="flex gap-1.5">
+            {steps.map((entry, position) => (
               <li
                 key={entry}
                 aria-current={entry === step ? "step" : undefined}
@@ -68,6 +79,14 @@ export function FirstRun() {
         </div>
 
         {step === "photo" ? <PhotoStep onNext={next} /> : null}
+        {step === "athlete" && staff ? (
+          <AthleteStep
+            role={staff.role}
+            box={staff.membership.organization.name}
+            onTrains={next}
+            onWorkOnly={finish}
+          />
+        ) : null}
         {step === "interests" ? <InterestsStep onNext={next} /> : null}
         {step === "where" ? <WhereStep onFinish={finish} /> : null}
       </div>
@@ -184,6 +203,68 @@ function PhotoStep({ onNext }: { onNext: () => void }) {
         onSkip={preview ? undefined : onNext}
         busy={upload.isPending}
       />
+    </section>
+  );
+}
+
+/**
+ * ADR-463 (option Γ): «Θα προπονείσαι κι εσύ με το Palee;» for staff. The
+ * answer is kept on the account; «Ναι» goes on to sports and area, «Όχι»
+ * finishes the first run here.
+ */
+function AthleteStep({
+  role,
+  box,
+  onTrains,
+  onWorkOnly,
+}: {
+  role: string;
+  box: string;
+  onTrains: () => void;
+  onWorkOnly: () => void;
+}) {
+  const t = useTranslations("FirstRun");
+  const i18n = useUiTranslations();
+  const { currentUser } = useSession();
+  const [trains, setTrains] = useState(usesAppAsAthlete(currentUser));
+  const save = useSaveTrainsWithPalee();
+
+  function submit() {
+    save.mutate(trains, { onSuccess: () => (trains ? onTrains() : onWorkOnly()) });
+  }
+
+  const option = (value: boolean, title: string, hint: string) => {
+    const selected = trains === value;
+    return (
+      <button
+        type="button"
+        role="radio"
+        aria-checked={selected}
+        onClick={() => setTrains(value)}
+        className="flex min-h-11 w-full flex-col gap-1 rounded-2xl p-4 text-start"
+        style={{
+          background: selected ? "color-mix(in srgb, var(--primary) 12%, var(--panel))" : "var(--panel)",
+          border: `${selected ? 2 : 1}px solid ${selected ? "var(--primary)" : "var(--border)"}`,
+        }}
+      >
+        <span className="text-sm font-bold" style={{ color: "var(--text)" }}>{title}</span>
+        <span className="text-sm" style={{ color: "var(--text-soft)" }}>{hint}</span>
+      </button>
+    );
+  };
+
+  return (
+    <section className="flex flex-col gap-6">
+      <StepHeading title={t("athleteTitle")} lead={t("athleteLead", { role: roleLabel(role, i18n), box })} />
+      <div role="radiogroup" aria-label={t("athleteTitle")} className="flex flex-col gap-2">
+        {option(true, t("athleteYes"), t("athleteYesHint"))}
+        {option(false, t("athleteNo"), t("athleteNoHint"))}
+      </div>
+      {save.isError ? <ErrorText message={t("saveFailed")} /> : null}
+      <div className="flex flex-col gap-2">
+        <StepActions primary={t("continue")} onPrimary={submit} busy={save.isPending} />
+        <p className="text-xs" style={{ color: "var(--text-soft)" }}>{t("athleteNote")}</p>
+      </div>
     </section>
   );
 }

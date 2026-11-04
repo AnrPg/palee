@@ -24,6 +24,8 @@ defmodule Palee.Identity.Account do
     :preferred_theme_slug,
     # ADR-179: the IANA zone the person's device last reported (nil: never).
     :time_zone,
+    # ADR-463: staff's answer to "do you train with Palee too?"; nil: not asked.
+    :trains_with_palee,
     # The login's email (ADR-187), shared by every profile of that login.
     # Carried on the domain struct so invitation email binding can be checked
     # without reaching for the Ecto schema.
@@ -55,6 +57,7 @@ defmodule Palee.Identity.Account do
           preferred_locale: String.t() | nil,
           preferred_theme_slug: String.t() | nil,
           time_zone: String.t() | nil,
+          trains_with_palee: boolean() | nil,
           email: String.t() | nil,
           email_verified_at: DateTime.t() | nil,
           inserted_at: DateTime.t() | NaiveDateTime.t() | nil,

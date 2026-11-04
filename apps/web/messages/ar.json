@@ -142,7 +142,12 @@
     "syncOffline": "غير متصل",
     "syncPending": "بالانتظار: {count}",
     "syncAllDone": "تمت مزامنة كل شيء",
-    "syncNow": "زامن الآن"
+    "syncNow": "زامن الآن",
+    "athleteUseTitle": "أتدرّب أنا أيضًا مع Palee",
+    "athleteUseDescription": "لمن يعمل في بوكس: إن لم تكن تتدرّب، نخفي الاقتراحات الموجّهة للرياضيين.",
+    "athleteUseOn": "ترى أيضًا اقتراحات الرياضيين: ابحث عن بوكس، الرياضات، الهدف الأسبوعي.",
+    "athleteUseOff": "لا ترى اقتراحات الرياضيين. تبقى أدوات عملك كما هي.",
+    "athleteUseError": "لم يُحفظ. حاول مرة أخرى."
   },
   "Session": {
     "required": "يلزم تسجيل الدخول",
@@ -10247,7 +10252,14 @@
     "saveInterests": "حفظ",
     "interestsSaved": "تم الحفظ.",
     "interestsHubHint": "الرياضات والمستوى، للاقتراحات",
-    "photoAddLabel": "إضافة صورة"
+    "photoAddLabel": "إضافة صورة",
+    "athleteTitle": "هل ستتدرّب أنت أيضًا مع Palee؟",
+    "athleteLead": "انضممت إلى {box} بصفة {role}.",
+    "athleteYes": "نعم، أتدرّب أنا أيضًا",
+    "athleteYesHint": "نتابع مع الرياضات والمنطقة.",
+    "athleteNo": "لا، للعمل فقط",
+    "athleteNoHint": "تنتهي الآن. لن ترى اقتراحات موجّهة للرياضيين.",
+    "athleteNote": "يمكنك تغيير ذلك متى شئت من أنا › الإعدادات."
   },
   "Business": {
     "common": {
