@@ -289,6 +289,33 @@ test.describe("Settings › Billing details", () => {
     await expect(card.getByTestId("fiscal-connection-mydata-status")).toHaveText("Connected");
   });
 
+  test("keeps every row inside its card on a phone", async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 800 });
+    await signIn(page);
+    await page.route("**/api/org/box1/admin/fiscal/countries", (route) => route.fulfill(json({ countries: [DE, GR], vat_schemes: ["standard", "small_business", "exempt"] })));
+    await page.route("**/api/org/box1/admin/fiscal/identity", (route) => route.fulfill(json(greekIdentity)));
+    await page.route("**/api/org/box1/admin/fiscal/connections", (route) => route.fulfill(json(connections({}))));
+
+    await page.goto("/admin/settings/billing");
+    const card = page.getByTestId("fiscal-connections");
+    await expect(card.getByTestId("fiscal-connection-registry-status")).toBeVisible();
+
+    const cardBox = (await card.boundingBox())!;
+    for (const id of ["fiscal-connection-mydata", "fiscal-connection-registry"]) {
+      const row = (await card.getByTestId(id).boundingBox())!;
+      expect(row.x).toBeGreaterThanOrEqual(cardBox.x);
+      expect(row.x + row.width).toBeLessThanOrEqual(cardBox.x + cardBox.width + 0.5);
+    }
+    const checklist = page.getByTestId("fiscal-identity-checklist");
+    const listBox = (await checklist.boundingBox())!;
+    for (const row of await checklist.locator("button").all()) {
+      const box = (await row.boundingBox())!;
+      expect(box.x + box.width).toBeLessThanOrEqual(listBox.x + listBox.width + 0.5);
+    }
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(0);
+  });
+
   test("shows that the Palee team manages the connections (ADR-273)", async ({ page }) => {
     await signIn(page);
     await page.route("**/api/org/box1/admin/fiscal/countries", (route) => route.fulfill(json({ countries: [DE, GR], vat_schemes: ["standard", "small_business", "exempt"] })));

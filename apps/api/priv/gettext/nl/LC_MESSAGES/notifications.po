@@ -759,6 +759,12 @@ msgstr "Een fiscale koppeling vraagt aandacht"
 msgid "%{connection} stopped working. Open Billing details › Connections to fix it."
 msgstr "%{connection} werkt niet meer. Open Factuurgegevens › Koppelingen om het op te lossen."
 
+msgid "Documents did not reach the tax authority"
+msgstr "Documenten hebben de belastingdienst niet bereikt"
+
+msgid "Some documents were not accepted by %{connection}. Open Finance › Documents to see why and send them again."
+msgstr "Sommige documenten zijn niet geaccepteerd door %{connection}. Open Financiën › Documenten om te zien waarom en ze opnieuw te versturen."
+
 # ADR-280 verification: sponsors and the Palee check of Partners.
 
 msgid "Vouch for %{nickname}?"

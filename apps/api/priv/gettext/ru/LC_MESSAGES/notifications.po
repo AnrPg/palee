@@ -759,6 +759,12 @@ msgstr "Фискальное подключение требует вниман�
 msgid "%{connection} stopped working. Open Billing details › Connections to fix it."
 msgstr "%{connection} перестало работать. Откройте Платёжные реквизиты › Подключения, чтобы исправить."
 
+msgid "Documents did not reach the tax authority"
+msgstr "Документы не дошли до налоговой"
+
+msgid "Some documents were not accepted by %{connection}. Open Finance › Documents to see why and send them again."
+msgstr "%{connection} не принял некоторые документы. Открой Финансы › Документы, чтобы увидеть причину и отправить их снова."
+
 # ADR-280 verification: sponsors and the Palee check of Partners.
 
 msgid "Vouch for %{nickname}?"

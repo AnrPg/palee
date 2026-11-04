@@ -4780,6 +4780,7 @@
     "adminAlertExpiringMemberships": "{count, plural, one {# членство изтича до 30 дни} other {# членства изтичат до 30 дни}}",
     "adminAlertOverdueInvoices": "{count, plural, one {# просрочена фактура} other {# просрочени фактури}}",
     "adminAlertPendingPayments": "{count, plural, one {# чакащо плащане} other {# чакащи плащания}}",
+    "adminAlertFiscalNotReported": "{count, plural, one {# документ не стигна до данъчните} other {# документа не стигнаха до данъчните}}",
     "adminAlertPendingReferralRewards": "{count, plural, one {# чакаща награда за препоръка} other {# чакащи награди за препоръки}}",
     "adminAlertInjuryFlags": "{count, plural, one {# сигнал за травма от последното ти посещение} other {# сигнала за травми от последното ти посещение}}",
     "adminAlertUnreadWorkoutReviews": "{count, plural, one {# непрочетен отзив за тренировка} other {# непрочетени отзива за тренировки}}",
@@ -11922,6 +11923,10 @@
     "channel": {
       "in_app": "В приложението",
       "push": "Push"
+    },
+    "channelHelp": {
+      "in_app": "В Palee: на звънчето и в списъка с известия, когато отвориш приложението.",
+      "push": "На екрана на телефона или компютъра ти, дори когато Palee е затворено. Включва се само заедно с «В приложението»."
     },
     "category": {
       "bookings": {

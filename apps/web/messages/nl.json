@@ -4780,6 +4780,7 @@
     "adminAlertExpiringMemberships": "{count, plural, one {# lidmaatschap verloopt binnen 30 dagen} other {# lidmaatschappen verlopen binnen 30 dagen}}",
     "adminAlertOverdueInvoices": "{count, plural, one {# achterstallige factuur} other {# achterstallige facturen}}",
     "adminAlertPendingPayments": "{count, plural, one {# openstaande betaling} other {# openstaande betalingen}}",
+    "adminAlertFiscalNotReported": "{count, plural, one {# document heeft de belastingdienst niet bereikt} other {# documenten hebben de belastingdienst niet bereikt}}",
     "adminAlertPendingReferralRewards": "{count, plural, one {# openstaande verwijzingsbeloning} other {# openstaande verwijzingsbeloningen}}",
     "adminAlertInjuryFlags": "{count, plural, one {# blessuremelding sinds je laatste bezoek} other {# blessuremeldingen sinds je laatste bezoek}}",
     "adminAlertUnreadWorkoutReviews": "{count, plural, one {# ongelezen trainingsbeoordeling} other {# ongelezen trainingsbeoordelingen}}",
@@ -11922,6 +11923,10 @@
     "channel": {
       "in_app": "In de app",
       "push": "Push"
+    },
+    "channelHelp": {
+      "in_app": "In Palee: bij de bel en in je meldingenlijst, als je de app opent.",
+      "push": "Op het scherm van je telefoon of computer, ook als Palee gesloten is. Werkt alleen samen met «In de app»."
     },
     "category": {
       "bookings": {

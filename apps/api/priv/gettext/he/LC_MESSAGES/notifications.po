@@ -759,6 +759,12 @@ msgstr "חיבור פיסקלי דורש תשומת לב"
 msgid "%{connection} stopped working. Open Billing details › Connections to fix it."
 msgstr "%{connection} הפסיק לעבוד. פתחו את פרטי החיוב › חיבורים כדי לתקן."
 
+msgid "Documents did not reach the tax authority"
+msgstr "מסמכים לא הגיעו לרשות המסים"
+
+msgid "Some documents were not accepted by %{connection}. Open Finance › Documents to see why and send them again."
+msgstr "%{connection} לא קיבל חלק מהמסמכים. פתחו כספים › מסמכים כדי לראות למה ולשלוח שוב."
+
 # ADR-280 verification: sponsors and the Palee check of Partners.
 
 msgid "Vouch for %{nickname}?"
