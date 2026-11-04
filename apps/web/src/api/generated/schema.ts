@@ -104586,6 +104586,10 @@ export interface operations {
                             inserted_at?: string | null;
                             package_modules?: string[];
                             payment_reminder_interval_days: number;
+                            /** @description Also remind the member on the day after it ended; then every payment_reminder_interval_days until they renew or leave */
+                            subscription_day_after_reminder: boolean;
+                            /** @description Also remind the member on the day the subscription ends */
+                            subscription_end_day_reminder: boolean;
                             /** @description Days before a subscription ends to remind the member (0 = no reminder) */
                             subscription_expiry_reminder_days: number;
                             /** @description Slack days after a subscription ends or an invoice falls overdue before the member loses access */
@@ -104663,6 +104667,10 @@ export interface operations {
                         document_mode?: "invoice" | "receipt";
                         package_modules?: ("group_classes" | "online_coaching" | "open_gym" | "events" | "personal_training" | "digital_content" | "corporate_clients")[];
                         payment_reminder_interval_days?: number;
+                        /** @description Also remind the member on the day after it ended; then every payment_reminder_interval_days until they renew or leave */
+                        subscription_day_after_reminder?: boolean;
+                        /** @description Also remind the member on the day the subscription ends */
+                        subscription_end_day_reminder?: boolean;
                         /** @description Days before a subscription ends to remind the member (0 = no reminder) */
                         subscription_expiry_reminder_days?: number;
                         /** @description Slack days after a subscription ends or an invoice falls overdue before the member loses access */
@@ -104719,6 +104727,10 @@ export interface operations {
                             inserted_at?: string | null;
                             package_modules?: string[];
                             payment_reminder_interval_days: number;
+                            /** @description Also remind the member on the day after it ended; then every payment_reminder_interval_days until they renew or leave */
+                            subscription_day_after_reminder: boolean;
+                            /** @description Also remind the member on the day the subscription ends */
+                            subscription_end_day_reminder: boolean;
                             /** @description Days before a subscription ends to remind the member (0 = no reminder) */
                             subscription_expiry_reminder_days: number;
                             /** @description Slack days after a subscription ends or an invoice falls overdue before the member loses access */

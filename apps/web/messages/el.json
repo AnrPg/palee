@@ -778,7 +778,7 @@
     "displayLabeld747868": "Όνομα που εμφανίζεται",
     "addLeveld2d215f": "+ Προσθήκη επιπέδου",
     "reminderIntervalDaysee3ba34": "Συχνότητα υπενθύμισης (ημέρες)",
-    "howOftenInDaysAMemberWithAn710fa76": "Κάθε πόσες ημέρες ένα μέλος box με ανεξόφλητο υπόλοιπο λαμβάνει υπενθύμιση πληρωμής. Η υπενθύμιση επαναλαμβάνεται μέχρι να εξοφληθεί όλο το υπόλοιπο.",
+    "howOftenInDaysAMemberWithAn710fa76": "Μετά από αυτό, κάθε πόσες ημέρες επαναλαμβάνεται η υπενθύμιση, μέχρι να ανανεώσει ή να αποχωρήσει το μέλος. Όποιος χρωστάει παίρνει υπενθύμιση πληρωμής με τον ίδιο ρυθμό, μέχρι να εξοφλήσει.",
     "applicationSettingsIntroduction8f2e9b7": "εισαγωγή ρυθμίσεων εφαρμογής",
     "appConfigurations1e15749": "Ρυθμίσεις εφαρμογής.",
     "globalSettingsForAppearanceEngagementRulesAndWorkout915168c": "Γενικές ρυθμίσεις εμφάνισης, κανόνες συμμετοχής και επίπεδα προπόνησης. Οι αλλαγές ισχύουν αμέσως σε όλη την εφαρμογή.",
@@ -4895,7 +4895,12 @@
     "pkgFieldBookingDailyLimitSuffix": "{count, plural, one {μάθημα την ημέρα} other {μαθήματα την ημέρα}}",
     "pkgFieldBookingOpenBookingsLimit": "Ανοιχτές κρατήσεις",
     "pkgFieldBookingOpenBookingsLimitHint": "Πόσα επόμενα τμήματα μπορεί να έχει κλεισμένα ένα μέλος ταυτόχρονα.",
-    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {επόμενο μάθημα} other {επόμενα μαθήματα}}"
+    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {επόμενο μάθημα} other {επόμενα μαθήματα}}",
+    "subscriptionEndsTodayTitle": "Η συνδρομή σου λήγει σήμερα",
+    "subscriptionEndsTodayBody": "Η συνδρομή {package} λήγει σήμερα. Ανανέωσέ τη για να συνεχίσεις να κλείνεις τμήματα.",
+    "subscriptionEndedRenewBody": "Η συνδρομή {package} έληξε στις {date}. Ανανέωσέ τη για να ξανακλείνεις τμήματα.",
+    "subscriptionEndDayReminder": "Υπενθύμιση την ημέρα της λήξης",
+    "subscriptionDayAfterReminder": "Υπενθύμιση την επόμενη μέρα μετά τη λήξη"
   },
   "PrSharing": {
     "gymLabel": "Πού πέτυχες αυτό το PR;",
@@ -13439,7 +13444,9 @@
         "community_partners_enabled": "Συνπροπονούμενοι",
         "trials_enabled": "Δοκιμαστικά",
         "trials_seats_per_class": "Θέσεις για δοκιμαστικό ανά τμήμα",
-        "trials_approval": "Έγκριση δοκιμαστικών"
+        "trials_approval": "Έγκριση δοκιμαστικών",
+        "finance_subscription_end_day_reminder": "Υπενθύμιση την ημέρα της λήξης",
+        "finance_subscription_day_after_reminder": "Υπενθύμιση την επόμενη μέρα μετά τη λήξη"
       }
     }
   },

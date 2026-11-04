@@ -778,7 +778,7 @@
     "displayLabeld747868": "Етикет на дисплея",
     "addLeveld2d215f": "+ Добавете ниво",
     "reminderIntervalDaysee3ba34": "Интервал на напомняне (дни)",
-    "howOftenInDaysAMemberWithAn710fa76": "Колко често (в дни) член с неплатено салдо получава известие за напомняне за плащане. Напомнянето се повтаря до пълното уреждане на баланса.",
+    "howOftenInDaysAMemberWithAn710fa76": "След това — през колко дни се повтаря напомнянето, докато членът поднови или напусне. Който дължи пари, получава напомняне за плащане със същия ритъм, докато не плати.",
     "applicationSettingsIntroduction8f2e9b7": "въведение в настройките на приложението",
     "appConfigurations1e15749": "Конфигурации на приложения.",
     "globalSettingsForAppearanceEngagementRulesAndWorkout915168c": "Глобални настройки за външен вид, правила за ангажиране и дефиниции на ниво на тренировка. Промените се прилагат незабавно в цялото приложение.",
@@ -4895,7 +4895,12 @@
     "pkgFieldBookingDailyLimitSuffix": "{count, plural, one {час на ден} other {часа на ден}}",
     "pkgFieldBookingOpenBookingsLimit": "Отворени резервации",
     "pkgFieldBookingOpenBookingsLimitHint": "Колко предстоящи часа може да има резервирани един член едновременно.",
-    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {предстоящ час} other {предстоящи часа}}"
+    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {предстоящ час} other {предстоящи часа}}",
+    "subscriptionEndsTodayTitle": "Абонаментът ти изтича днес",
+    "subscriptionEndsTodayBody": "{package} изтича днес. Поднови го, за да продължиш да записваш часове.",
+    "subscriptionEndedRenewBody": "{package} изтече на {date}. Поднови го, за да записваш часове отново.",
+    "subscriptionEndDayReminder": "Напомняне в деня на изтичане",
+    "subscriptionDayAfterReminder": "Напомняне на следващия ден след изтичане"
   },
   "PrSharing": {
     "gymLabel": "Къде постигна този рекорд?",
@@ -13439,7 +13444,9 @@
         "community_partners_enabled": "Партньори за тренировка",
         "trials_enabled": "Пробни посещения",
         "trials_seats_per_class": "Места за пробно посещение на занятие",
-        "trials_approval": "Одобрение на пробни посещения"
+        "trials_approval": "Одобрение на пробни посещения",
+        "finance_subscription_end_day_reminder": "Напомняне в деня на изтичане",
+        "finance_subscription_day_after_reminder": "Напомняне на следващия ден след изтичане"
       }
     }
   },

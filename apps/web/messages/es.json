@@ -778,7 +778,7 @@
     "displayLabeld747868": "Nombre visible",
     "addLeveld2d215f": "+ Añadir nivel",
     "reminderIntervalDaysee3ba34": "Intervalo de recordatorio (días)",
-    "howOftenInDaysAMemberWithAn710fa76": "Cada cuántos días recibe un socio con saldo pendiente un recordatorio de pago. El recordatorio se repite hasta que el saldo esté totalmente saldado.",
+    "howOftenInDaysAMemberWithAn710fa76": "Después, cada cuántos días se repite el recordatorio hasta que el miembro renueve o se vaya. Quien debe dinero recibe un recordatorio de pago al mismo ritmo hasta saldar la deuda.",
     "applicationSettingsIntroduction8f2e9b7": "introducción a la configuración de la aplicación",
     "appConfigurations1e15749": "Configuración de la aplicación.",
     "globalSettingsForAppearanceEngagementRulesAndWorkout915168c": "Ajustes generales de apariencia, reglas de participación y niveles de entrenamiento. Los cambios se aplican de inmediato en toda la aplicación.",
@@ -4895,7 +4895,12 @@
     "pkgFieldBookingDailyLimitSuffix": "{count, plural, one {clase al día} other {clases al día}}",
     "pkgFieldBookingOpenBookingsLimit": "Reservas abiertas",
     "pkgFieldBookingOpenBookingsLimitHint": "Cuántas clases próximas puede tener reservadas un miembro a la vez.",
-    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {clase próxima} other {clases próximas}}"
+    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {clase próxima} other {clases próximas}}",
+    "subscriptionEndsTodayTitle": "Tu suscripción termina hoy",
+    "subscriptionEndsTodayBody": "{package} termina hoy. Renuévala para seguir reservando clases.",
+    "subscriptionEndedRenewBody": "{package} terminó el {date}. Renuévala para volver a reservar clases.",
+    "subscriptionEndDayReminder": "Recordatorio el día en que termina",
+    "subscriptionDayAfterReminder": "Recordatorio el día después de terminar"
   },
   "PrSharing": {
     "gymLabel": "¿Dónde conseguiste este PR?",
@@ -13439,7 +13444,9 @@
         "community_partners_enabled": "Compañeros de entrenamiento",
         "trials_enabled": "Pruebas",
         "trials_seats_per_class": "Plazas de prueba por clase",
-        "trials_approval": "Aprobación de pruebas"
+        "trials_approval": "Aprobación de pruebas",
+        "finance_subscription_end_day_reminder": "Recordatorio el día en que termina",
+        "finance_subscription_day_after_reminder": "Recordatorio el día después de terminar"
       }
     }
   },

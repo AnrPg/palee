@@ -778,7 +778,7 @@
     "displayLabeld747868": "Отображаемое название",
     "addLeveld2d215f": "+ Добавить уровень",
     "reminderIntervalDaysee3ba34": "Интервал напоминания (дни)",
-    "howOftenInDaysAMemberWithAn710fa76": "Как часто (в днях) участник бокса с задолженностью получает напоминание об оплате. Напоминания приходят, пока долг не будет полностью погашен.",
+    "howOftenInDaysAMemberWithAn710fa76": "Далее — через сколько дней повторяется напоминание, пока участник не продлит или не уйдёт. Тот, кто должен деньги, получает напоминание об оплате с той же частотой, пока долг не погашен.",
     "applicationSettingsIntroduction8f2e9b7": "введение в настройки приложения",
     "appConfigurations1e15749": "Настройки приложения.",
     "globalSettingsForAppearanceEngagementRulesAndWorkout915168c": "Общие настройки внешнего вида, правил вовлечённости и уровней тренировок. Изменения сразу применяются во всём приложении.",
@@ -4895,7 +4895,12 @@
     "pkgFieldBookingDailyLimitSuffix": "{count, plural, one {занятие в день} few {занятия в день} many {занятий в день} other {занятия в день}}",
     "pkgFieldBookingOpenBookingsLimit": "Открытые бронирования",
     "pkgFieldBookingOpenBookingsLimitHint": "Сколько будущих занятий участник может держать забронированными одновременно.",
-    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {будущее занятие} few {будущих занятия} many {будущих занятий} other {будущего занятия}}"
+    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {будущее занятие} few {будущих занятия} many {будущих занятий} other {будущего занятия}}",
+    "subscriptionEndsTodayTitle": "Ваша подписка заканчивается сегодня",
+    "subscriptionEndsTodayBody": "{package} заканчивается сегодня. Продлите, чтобы и дальше записываться на занятия.",
+    "subscriptionEndedRenewBody": "{package} закончилась {date}. Продлите, чтобы снова записываться на занятия.",
+    "subscriptionEndDayReminder": "Напоминание в день окончания",
+    "subscriptionDayAfterReminder": "Напоминание на следующий день после окончания"
   },
   "PrSharing": {
     "gymLabel": "Где ты установил этот PR?",
@@ -13439,7 +13444,9 @@
         "community_partners_enabled": "Партнёры по тренировкам",
         "trials_enabled": "Пробные занятия",
         "trials_seats_per_class": "Пробных мест на занятии",
-        "trials_approval": "Одобрение пробных занятий"
+        "trials_approval": "Одобрение пробных занятий",
+        "finance_subscription_end_day_reminder": "Напоминание в день окончания",
+        "finance_subscription_day_after_reminder": "Напоминание на следующий день после окончания"
       }
     }
   },

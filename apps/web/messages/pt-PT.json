@@ -778,7 +778,7 @@
     "displayLabeld747868": "Etiqueta de exibição",
     "addLeveld2d215f": "+ Adicionar nível",
     "reminderIntervalDaysee3ba34": "Intervalo de lembrete (dias)",
-    "howOftenInDaysAMemberWithAn710fa76": "Com que frequência (em dias) um membro com saldo pendente recebe uma notificação de lembrete de pagamento. O lembrete se repete até que o saldo seja totalmente liquidado.",
+    "howOftenInDaysAMemberWithAn710fa76": "Depois, de quantos em quantos dias o lembrete se repete, até o membro renovar ou sair. Quem deve dinheiro recebe um lembrete de pagamento ao mesmo ritmo até liquidar o saldo.",
     "applicationSettingsIntroduction8f2e9b7": "introdução às configurações do aplicativo",
     "appConfigurations1e15749": "Configurações de aplicativos.",
     "globalSettingsForAppearanceEngagementRulesAndWorkout915168c": "Configurações globais para aparência, regras de engajamento e definições de nível de treino. As alterações são aplicadas imediatamente em todo o aplicativo.",
@@ -4895,7 +4895,12 @@
     "pkgFieldBookingDailyLimitSuffix": "{count, plural, one {aula por dia} other {aulas por dia}}",
     "pkgFieldBookingOpenBookingsLimit": "Reservas em aberto",
     "pkgFieldBookingOpenBookingsLimitHint": "Quantas aulas futuras um membro pode ter reservadas ao mesmo tempo.",
-    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {aula futura} other {aulas futuras}}"
+    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {aula futura} other {aulas futuras}}",
+    "subscriptionEndsTodayTitle": "A tua subscrição termina hoje",
+    "subscriptionEndsTodayBody": "{package} termina hoje. Renova-a para continuares a reservar aulas.",
+    "subscriptionEndedRenewBody": "{package} terminou a {date}. Renova-a para voltares a reservar aulas.",
+    "subscriptionEndDayReminder": "Lembrete no dia em que termina",
+    "subscriptionDayAfterReminder": "Lembrete no dia seguinte ao fim"
   },
   "PrSharing": {
     "gymLabel": "Onde fizeste este PR?",
@@ -13439,7 +13444,9 @@
         "community_partners_enabled": "Parceiros de treino",
         "trials_enabled": "Experiências",
         "trials_seats_per_class": "Lugares de experiência por aula",
-        "trials_approval": "Aprovação de experiências"
+        "trials_approval": "Aprovação de experiências",
+        "finance_subscription_end_day_reminder": "Lembrete no dia em que termina",
+        "finance_subscription_day_after_reminder": "Lembrete no dia seguinte ao fim"
       }
     }
   },

@@ -778,7 +778,7 @@
     "displayLabeld747868": "Anzeigename",
     "addLeveld2d215f": "+ Level hinzufügen",
     "reminderIntervalDaysee3ba34": "Erinnerungsintervall (Tage)",
-    "howOftenInDaysAMemberWithAn710fa76": "Wie oft (in Tagen) ein Mitglied mit offenem Betrag eine Zahlungserinnerung erhält. Die Erinnerung wiederholt sich, bis der Betrag vollständig beglichen ist.",
+    "howOftenInDaysAMemberWithAn710fa76": "Danach: in welchem Abstand (Tage) die Erinnerung wiederholt wird, bis das Mitglied verlängert oder geht. Wer Geld schuldet, erhält im gleichen Rhythmus eine Zahlungserinnerung, bis der Betrag beglichen ist.",
     "applicationSettingsIntroduction8f2e9b7": "Einführung in die App-Einstellungen",
     "appConfigurations1e15749": "App-Konfigurationen.",
     "globalSettingsForAppearanceEngagementRulesAndWorkout915168c": "Globale Einstellungen für Darstellung, Engagement-Regeln und Workout-Level. Änderungen gelten sofort in der ganzen App.",
@@ -4895,7 +4895,12 @@
     "pkgFieldBookingDailyLimitSuffix": "{count, plural, one {Kurs pro Tag} other {Kurse pro Tag}}",
     "pkgFieldBookingOpenBookingsLimit": "Offene Buchungen",
     "pkgFieldBookingOpenBookingsLimitHint": "Wie viele kommende Kurse ein Mitglied gleichzeitig gebucht haben darf.",
-    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {kommender Kurs} other {kommende Kurse}}"
+    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {kommender Kurs} other {kommende Kurse}}",
+    "subscriptionEndsTodayTitle": "Dein Abo endet heute",
+    "subscriptionEndsTodayBody": "{package} endet heute. Verlängere es, um weiter Kurse zu buchen.",
+    "subscriptionEndedRenewBody": "{package} ist am {date} abgelaufen. Verlängere es, um wieder Kurse zu buchen.",
+    "subscriptionEndDayReminder": "Erinnerung am Tag des Ablaufs",
+    "subscriptionDayAfterReminder": "Erinnerung am Tag nach dem Ablauf"
   },
   "PrSharing": {
     "gymLabel": "Wo hast du diesen PR aufgestellt?",
@@ -13439,7 +13444,9 @@
         "community_partners_enabled": "Trainingspartner",
         "trials_enabled": "Probetrainings",
         "trials_seats_per_class": "Probeplätze pro Kurs",
-        "trials_approval": "Freigabe von Probetrainings"
+        "trials_approval": "Freigabe von Probetrainings",
+        "finance_subscription_end_day_reminder": "Erinnerung am Tag des Ablaufs",
+        "finance_subscription_day_after_reminder": "Erinnerung am Tag nach dem Ablauf"
       }
     }
   },

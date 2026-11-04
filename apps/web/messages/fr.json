@@ -778,7 +778,7 @@
     "displayLabeld747868": "Libellé affiché",
     "addLeveld2d215f": "+ Ajouter un niveau",
     "reminderIntervalDaysee3ba34": "Intervalle de rappel (jours)",
-    "howOftenInDaysAMemberWithAn710fa76": "À quelle fréquence (en jours) un membre ayant un solde impayé reçoit une notification de rappel de paiement. Le rappel se répète jusqu'à ce que le solde soit entièrement réglé.",
+    "howOftenInDaysAMemberWithAn710fa76": "Ensuite, tous les combien de jours le rappel se répète, jusqu’à ce que le membre renouvelle ou parte. Un membre qui doit de l’argent reçoit un rappel de paiement au même rythme jusqu’au règlement.",
     "applicationSettingsIntroduction8f2e9b7": "introduction aux paramètres de l'application",
     "appConfigurations1e15749": "Configuration de l’application.",
     "globalSettingsForAppearanceEngagementRulesAndWorkout915168c": "Réglages globaux de l’apparence, des règles d’engagement et des niveaux d’entraînement. Les modifications s’appliquent immédiatement dans toute l’application.",
@@ -4895,7 +4895,12 @@
     "pkgFieldBookingDailyLimitSuffix": "{count, plural, one {cours par jour} other {cours par jour}}",
     "pkgFieldBookingOpenBookingsLimit": "Réservations ouvertes",
     "pkgFieldBookingOpenBookingsLimitHint": "Combien de cours à venir un membre peut avoir réservés en même temps.",
-    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {cours à venir} other {cours à venir}}"
+    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {cours à venir} other {cours à venir}}",
+    "subscriptionEndsTodayTitle": "Ton abonnement se termine aujourd’hui",
+    "subscriptionEndsTodayBody": "{package} se termine aujourd’hui. Renouvelle-le pour continuer à réserver des cours.",
+    "subscriptionEndedRenewBody": "{package} s’est terminé le {date}. Renouvelle-le pour réserver à nouveau des cours.",
+    "subscriptionEndDayReminder": "Rappel le jour de la fin",
+    "subscriptionDayAfterReminder": "Rappel le lendemain de la fin"
   },
   "PrSharing": {
     "gymLabel": "Où as-tu réalisé ce PR ?",
@@ -13439,7 +13444,9 @@
         "community_partners_enabled": "Partenaires d'entraînement",
         "trials_enabled": "Essais",
         "trials_seats_per_class": "Places d'essai par cours",
-        "trials_approval": "Validation des essais"
+        "trials_approval": "Validation des essais",
+        "finance_subscription_end_day_reminder": "Rappel le jour de la fin",
+        "finance_subscription_day_after_reminder": "Rappel le lendemain de la fin"
       }
     }
   },
