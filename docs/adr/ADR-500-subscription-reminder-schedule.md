@@ -42,8 +42,9 @@ reminder interval so the box sets one pace for every repeated reminder.
 - A separate follow-up interval: one more number with no request for it.
 
 ## Consequences
-- Follow-ups have no end other than renewal or leaving; a cap (e.g. stop after
-  N follow-ups) is an open question for ANR.
+- Follow-ups have no end other than renewal or leaving, and payment reminders
+  none other than payment: ANR (2026-11-04) chose no cap ("notifs forever
+  until it is paid").
 - Packages with their own reminder days (ADR-097) keep using
   `PackageExpiryReminderJob` for the days-before step.
 
