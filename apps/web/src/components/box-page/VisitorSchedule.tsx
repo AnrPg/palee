@@ -62,7 +62,7 @@ export function VisitorSchedule({ page, token, member }: { page: PublicBoxPage; 
     [slots],
   );
   const audiences = useMemo(() => [...new Set(slots.flatMap((slot) => slot.class_type?.audiences ?? []))], [slots]);
-  // ADR-460: a class type suits several levels; one with none suits all of them.
+  // ADR-490: a class type suits several levels; one with none suits all of them.
   const levels = CLASS_LEVELS.filter((value) => slots.some((slot) => slot.class_type?.levels?.includes(value)));
   const day = slots
     .filter((slot) => dateKeyInZone(slot.scheduled_at, zone) === selectedDate)

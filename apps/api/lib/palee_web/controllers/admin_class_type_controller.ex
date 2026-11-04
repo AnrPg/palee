@@ -72,7 +72,7 @@ defmodule PaleeWeb.AdminClassTypeController do
         uniqueItems: true,
         items: %Schema{type: :string, enum: @levels},
         description:
-          "Levels the class suits, for the schedule's level filter; empty means all levels (ADR-460)"
+          "Levels the class suits, for the schedule's level filter; empty means all levels (ADR-490)"
       },
       audiences: %Schema{
         type: :array,

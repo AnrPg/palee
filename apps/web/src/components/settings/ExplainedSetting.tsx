@@ -9,7 +9,7 @@ import { HoverHint } from "@/components/HelpTooltip";
 export type ExplainedPart = { heading: string; text: string };
 
 /**
- * One advanced option with its explanation (ADR-460). The ⓘ next to the label
+ * One advanced option with its explanation (ADR-490). The ⓘ next to the label
  * shows a one-line tooltip on hover or keyboard focus; a press (the only way on
  * a touch screen, which has no hover) opens an info box under the option with
  * the full explanation, and a second press closes it.
@@ -42,22 +42,21 @@ export function ExplainedSetting({
         <span className="flex items-center gap-1.5 font-semibold" style={{ color: "var(--text-soft)" }}>
           {label}
           <HoverHint hint={tip} align="start" suppressed={open}>
+            {/* Subtle on purpose (ANR 2026-11-04): a small outlined ⓘ in the muted text colour, no fill;
+                the invisible padding keeps a usable tap target on phones. */}
             <button
               type="button"
               aria-expanded={open}
               aria-controls={panelId}
               aria-label={t("about", { name })}
               onClick={() => setOpen((value) => !value)}
-              className="inline-flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold"
-              style={{
-                background: open ? "var(--primary)" : "color-mix(in srgb, var(--primary) 12%, transparent)",
-                border: "1px solid color-mix(in srgb, var(--primary) 28%, transparent)",
-                color: open ? "var(--primary-contrast)" : "var(--primary-strong)",
-              }}
+              className="-m-1 inline-flex items-center justify-center rounded-full p-1 opacity-70 transition-opacity hover:opacity-100 focus-visible:opacity-100"
+              style={{ color: open ? "var(--primary-strong)" : "var(--dim)" }}
             >
-              <svg aria-hidden="true" viewBox="0 0 16 16" width="12" height="12" fill="currentColor">
-                <circle cx="8" cy="3.5" r="1.5" />
-                <rect x="6.75" y="6.5" width="2.5" height="7.5" rx="1.25" />
+              <svg aria-hidden="true" viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <circle cx="8" cy="8" r="6.75" />
+                <path d="M8 7.25v4" strokeLinecap="round" />
+                <circle cx="8" cy="4.9" r="0.6" fill="currentColor" stroke="none" />
               </svg>
             </button>
           </HoverHint>

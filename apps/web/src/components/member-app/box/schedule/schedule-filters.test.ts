@@ -91,7 +91,7 @@ describe("matchesScheduleFilters", () => {
     });
     expect(matches(tagged, { levels: ["beginner"], audiences: ["women_only"], focus: ["legs"], coachIds: ["coach-1"], kind: "event", durations: ["short"] })).toBe(true);
     expect(matches(tagged, { levels: ["advanced"] })).toBe(false);
-    // ADR-460: several levels on one class type, and none set means every level.
+    // ADR-490: several levels on one class type, and none set means every level.
     expect(matches(tagged, { levels: ["intermediate"] })).toBe(true);
     expect(matches(tagged, { levels: ["advanced", "intermediate"] })).toBe(true);
     expect(matches(slot(), { levels: ["advanced"] })).toBe(true);

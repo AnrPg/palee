@@ -59,7 +59,7 @@ async function openAdvanced() {
   fireEvent.click(screen.getByRole("button", { name: /Advanced/ }));
 }
 
-describe("ClassTypeSettings (ADR-460)", () => {
+describe("ClassTypeSettings (ADR-490)", () => {
   beforeEach(() => {
     api.types = [type()];
     api.update.mockReset();

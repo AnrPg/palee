@@ -78,7 +78,7 @@ defmodule Palee.Places.Domain.AroundFilterTest do
     assert AroundFilter.to_params(filter)["levels"] == ~w(beginner advanced)
     assert {:error, [levels: _]} = AroundFilter.parse(%{levels: ["expert"]}, @vocabulary)
 
-    # ADR-460: the retired all_levels from older clients and saved filters is dropped.
+    # ADR-490: the retired all_levels from older clients and saved filters is dropped.
     assert {:ok, legacy} = AroundFilter.parse(%{levels: ["all_levels", "beginner"]}, @vocabulary)
     assert legacy.levels == ["beginner"]
 

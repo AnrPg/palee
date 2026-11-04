@@ -181,7 +181,7 @@ defmodule PaleeWeb.Schemas.Social do
             levels: %Schema{
               type: :array,
               items: %Schema{type: :string, enum: Palee.Scheduling.class_levels()},
-              description: "Levels the class suits; empty means all levels (ADR-460)"
+              description: "Levels the class suits; empty means all levels (ADR-490)"
             },
             audiences: @strings
           },

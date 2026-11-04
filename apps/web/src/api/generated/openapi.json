@@ -3896,7 +3896,7 @@
             "type": "array"
           },
           "levels": {
-            "description": "Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
+            "description": "Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
             "items": {
               "enum": [
                 "beginner",
@@ -4030,7 +4030,7 @@
                 "type": "array"
               },
               "levels": {
-                "description": "Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
+                "description": "Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
                 "items": {
                   "enum": [
                     "beginner",
@@ -5938,7 +5938,7 @@
             "type": "array"
           },
           "levels": {
-            "description": "Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
+            "description": "Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
             "items": {
               "enum": [
                 "beginner",
@@ -6228,7 +6228,7 @@
                 "type": "array"
               },
               "levels": {
-                "description": "Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
+                "description": "Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
                 "items": {
                   "enum": [
                     "beginner",
@@ -8179,7 +8179,7 @@
                 "type": "array"
               },
               "levels": {
-                "description": "Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
+                "description": "Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
                 "items": {
                   "enum": [
                     "beginner",
@@ -8362,7 +8362,7 @@
                 "type": "array"
               },
               "levels": {
-                "description": "Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
+                "description": "Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
                 "items": {
                   "enum": [
                     "beginner",
@@ -78048,7 +78048,7 @@
                 "type": "string"
               },
               "levels": {
-                "description": "Levels the class suits; empty means all levels (ADR-460)",
+                "description": "Levels the class suits; empty means all levels (ADR-490)",
                 "items": {
                   "enum": [
                     "beginner",
@@ -79839,7 +79839,7 @@
                       "type": "string"
                     },
                     "levels": {
-                      "description": "Levels the class suits; empty means all levels (ADR-460)",
+                      "description": "Levels the class suits; empty means all levels (ADR-490)",
                       "items": {
                         "enum": [
                           "beginner",
@@ -115203,7 +115203,7 @@
                         "type": "array"
                       },
                       "levels": {
-                        "description": "Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
+                        "description": "Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
                         "items": {
                           "enum": [
                             "beginner",
@@ -115433,7 +115433,7 @@
                         "type": "array"
                       },
                       "levels": {
-                        "description": "Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
+                        "description": "Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
                         "items": {
                           "enum": [
                             "beginner",
@@ -115624,7 +115624,7 @@
                           "type": "array"
                         },
                         "levels": {
-                          "description": "Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
+                          "description": "Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
                           "items": {
                             "enum": [
                               "beginner",
@@ -117654,7 +117654,7 @@
                         "type": "array"
                       },
                       "levels": {
-                        "description": "Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
+                        "description": "Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
                         "items": {
                           "enum": [
                             "beginner",
@@ -127722,7 +127722,7 @@
                                 "type": "string"
                               },
                               "levels": {
-                                "description": "Levels the class suits; empty means all levels (ADR-460)",
+                                "description": "Levels the class suits; empty means all levels (ADR-490)",
                                 "items": {
                                   "enum": [
                                     "beginner",
@@ -194668,7 +194668,7 @@
                     "type": "string"
                   },
                   "levels": {
-                    "description": "Levels the class suits, for the schedule's level filter; empty means all levels (ADR-460)",
+                    "description": "Levels the class suits, for the schedule's level filter; empty means all levels (ADR-490)",
                     "items": {
                       "enum": [
                         "beginner",
@@ -195006,7 +195006,7 @@
                     "type": "string"
                   },
                   "levels": {
-                    "description": "Levels the class suits, for the schedule's level filter; empty means all levels (ADR-460)",
+                    "description": "Levels the class suits, for the schedule's level filter; empty means all levels (ADR-490)",
                     "items": {
                       "enum": [
                         "beginner",

@@ -16,7 +16,7 @@ defmodule Palee.Application.CreateClassType do
     |> put_phase_b(params)
   end
 
-  # ADR-097: credit weighting and event classes; Phase 2 levels (ADR-460) and audience
+  # ADR-097: credit weighting and event classes; Phase 2 levels (ADR-490) and audience
   # tags. Omitted values keep defaults.
   @doc false
   def put_phase_b(attrs, params) do

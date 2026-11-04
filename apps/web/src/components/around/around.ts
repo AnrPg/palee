@@ -29,7 +29,7 @@ export const DAY_TIMES: DayTime[] = ["morning", "midday", "evening"];
 export const COSTS: Cost[] = ["free", "trial"];
 /**
  * «Επίπεδο»: a level a class type of the box suits (class_types.levels; ADR-197,
- * ADR-460). Saved filters may still hold the retired `all_levels`; it is dropped.
+ * ADR-490). Saved filters may still hold the retired `all_levels`; it is dropped.
  */
 export const LEVELS = CLASS_LEVELS;
 /** «Έως €15», the price shortcut chip. */

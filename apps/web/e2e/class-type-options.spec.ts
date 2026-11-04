@@ -1,6 +1,6 @@
 import { expect, test, type Page, type Route } from "./support/test";
 
-// Ρυθμίσεις › Τύποι τμημάτων (ADR-460): «Εκδήλωση» lives under «Προχωρημένα»,
+// Ρυθμίσεις › Τύποι τμημάτων (ADR-490): «Εκδήλωση» lives under «Προχωρημένα»,
 // «Επίπεδο» takes several levels, and every advanced option has a tooltip and
 // an info box a press opens. The API is stubbed; anything not stubbed answers `{}`.
 
@@ -70,7 +70,7 @@ async function stub(page: Page, writes: Write[]) {
   });
 }
 
-test("«Εκδήλωση» sits under «Προχωρημένα» and «Επίπεδο» takes several levels (ADR-460)", async ({ page }) => {
+test("«Εκδήλωση» sits under «Προχωρημένα» and «Επίπεδο» takes several levels (ADR-490)", async ({ page }) => {
   const writes: Write[] = [];
   await stub(page, writes);
   await page.goto("/admin/settings#class-types");

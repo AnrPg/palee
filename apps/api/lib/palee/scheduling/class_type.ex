@@ -5,7 +5,7 @@ defmodule Palee.Scheduling.ClassType do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
 
-  # ADR-460: the levels a class type can suit, in their display order. A class
+  # ADR-490: the levels a class type can suit, in their display order. A class
   # type keeps a subset; an empty list means «Όλα τα επίπεδα».
   @levels ~w(beginner intermediate advanced)
   @audiences ~w(women_only teens kids over_40 seniors prenatal_postnatal adaptive)
@@ -20,7 +20,7 @@ defmodule Palee.Scheduling.ClassType do
     field :archived_at, :utc_datetime
     field :credit_cost, :integer, default: 1
     field :kind, :string, default: "class"
-    # Phase 2 schedule filters; no levels means every level (ADR-460) and no
+    # Phase 2 schedule filters; no levels means every level (ADR-490) and no
     # audiences means open to everyone. The old single `level` column is unused.
     field :levels, {:array, :string}, default: []
     field :audiences, {:array, :string}, default: []

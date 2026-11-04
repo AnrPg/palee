@@ -127,7 +127,7 @@ defmodule Palee.Partners.Domain.SuggestionPolicyTest do
       assert ids(suggest([activity(id: "all", level: "all_levels")], people: mixed)) == ["all"]
     end
 
-    test "a class type with several levels admits who each of them admits (ADR-460)" do
+    test "a class type with several levels admits who each of them admits (ADR-490)" do
       mixed = people(%{me: %{level: "beginner"}, other: %{level: "advanced"}})
       both_ends = activity(id: "both", class_levels: ["beginner", "advanced"])
       beginners = activity(id: "beginners", class_levels: ["beginner"])

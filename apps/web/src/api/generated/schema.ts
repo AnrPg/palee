@@ -21333,7 +21333,7 @@ export interface components {
             /** @description Default events, boxes, clubs */
             kinds?: ("events" | "boxes" | "clubs" | "posts")[];
             languages?: string[];
-            /** @description Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+            /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
             levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
             max_price_cents?: number | null;
             min_price_cents?: number | null;
@@ -21366,7 +21366,7 @@ export interface components {
                 /** @description Default events, boxes, clubs */
                 kinds?: ("events" | "boxes" | "clubs" | "posts")[];
                 languages?: string[];
-                /** @description Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
                 levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                 max_price_cents?: number | null;
                 min_price_cents?: number | null;
@@ -21981,7 +21981,7 @@ export interface components {
             /** @description Default events, boxes, clubs */
             kinds: ("events" | "boxes" | "clubs" | "posts")[];
             languages: string[];
-            /** @description Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+            /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
             levels: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
             max_price_cents: number | null;
             min_price_cents: number | null;
@@ -22062,7 +22062,7 @@ export interface components {
                 /** @description Default events, boxes, clubs */
                 kinds?: ("events" | "boxes" | "clubs" | "posts")[];
                 languages?: string[];
-                /** @description Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
                 levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                 max_price_cents?: number | null;
                 min_price_cents?: number | null;
@@ -22704,7 +22704,7 @@ export interface components {
                 /** @description Default events, boxes, clubs */
                 kinds?: ("events" | "boxes" | "clubs" | "posts")[];
                 languages?: string[];
-                /** @description Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
                 levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                 max_price_cents?: number | null;
                 min_price_cents?: number | null;
@@ -22761,7 +22761,7 @@ export interface components {
                 /** @description Default events, boxes, clubs */
                 kinds: ("events" | "boxes" | "clubs" | "posts")[];
                 languages: string[];
-                /** @description Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
                 levels: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                 max_price_cents: number | null;
                 min_price_cents: number | null;
@@ -43782,7 +43782,7 @@ export interface components {
                 audiences: string[];
                 /** Format: uuid */
                 id: string;
-                /** @description Levels the class suits; empty means all levels (ADR-460) */
+                /** @description Levels the class suits; empty means all levels (ADR-490) */
                 levels: ("beginner" | "intermediate" | "advanced")[];
                 name: string;
             } | null;
@@ -44326,7 +44326,7 @@ export interface components {
                     audiences: string[];
                     /** Format: uuid */
                     id: string;
-                    /** @description Levels the class suits; empty means all levels (ADR-460) */
+                    /** @description Levels the class suits; empty means all levels (ADR-490) */
                     levels: ("beginner" | "intermediate" | "advanced")[];
                     name: string;
                 } | null;
@@ -55000,7 +55000,7 @@ export interface operations {
                         /** @description Default events, boxes, clubs */
                         kinds?: ("events" | "boxes" | "clubs" | "posts")[];
                         languages?: string[];
-                        /** @description Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                        /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
                         levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                         max_price_cents?: number | null;
                         min_price_cents?: number | null;
@@ -55072,7 +55072,7 @@ export interface operations {
                         /** @description Default events, boxes, clubs */
                         kinds?: ("events" | "boxes" | "clubs" | "posts")[];
                         languages?: string[];
-                        /** @description Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                        /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
                         levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                         max_price_cents?: number | null;
                         min_price_cents?: number | null;
@@ -55137,7 +55137,7 @@ export interface operations {
                             /** @description Default events, boxes, clubs */
                             kinds: ("events" | "boxes" | "clubs" | "posts")[];
                             languages: string[];
-                            /** @description Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                            /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
                             levels: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                             max_price_cents: number | null;
                             min_price_cents: number | null;
@@ -55779,7 +55779,7 @@ export interface operations {
                         /** @description Default events, boxes, clubs */
                         kinds?: ("events" | "boxes" | "clubs" | "posts")[];
                         languages?: string[];
-                        /** @description Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                        /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
                         levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                         max_price_cents?: number | null;
                         min_price_cents?: number | null;
@@ -59790,7 +59790,7 @@ export interface operations {
                                 audiences: string[];
                                 /** Format: uuid */
                                 id: string;
-                                /** @description Levels the class suits; empty means all levels (ADR-460) */
+                                /** @description Levels the class suits; empty means all levels (ADR-490) */
                                 levels: ("beginner" | "intermediate" | "advanced")[];
                                 name: string;
                             } | null;
@@ -85458,7 +85458,7 @@ export interface operations {
                      * @enum {string}
                      */
                     kind?: "class" | "event";
-                    /** @description Levels the class suits, for the schedule's level filter; empty means all levels (ADR-460) */
+                    /** @description Levels the class suits, for the schedule's level filter; empty means all levels (ADR-490) */
                     levels?: ("beginner" | "intermediate" | "advanced")[];
                     name: string;
                     /** @default 0 */
@@ -85572,7 +85572,7 @@ export interface operations {
                      * @enum {string}
                      */
                     kind?: "class" | "event";
-                    /** @description Levels the class suits, for the schedule's level filter; empty means all levels (ADR-460) */
+                    /** @description Levels the class suits, for the schedule's level filter; empty means all levels (ADR-490) */
                     levels?: ("beginner" | "intermediate" | "advanced")[];
                     name: string;
                     /** @default 0 */

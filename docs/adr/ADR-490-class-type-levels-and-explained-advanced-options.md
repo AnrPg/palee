@@ -1,4 +1,4 @@
-# ADR-460: Class type levels as a multi-select, and explained advanced options
+# ADR-490: Class type levels as a multi-select, and explained advanced options
 Date: 2026-11-04
 Status: Accepted
 
@@ -19,7 +19,7 @@ not see the many classes marked «Όλα τα επίπεδα», although they su
 ## Decision
 - **Data:** `class_types.levels text[]`, a subset of `beginner intermediate
   advanced` kept in that order; an empty list means «Όλα τα επίπεδα». The
-  migration (`20270710100000`) backfills `beginner` and `advanced`; `all_levels`
+  migration (`20270801100000`) backfills `beginner` and `advanced`; `all_levels`
   becomes the empty list. A check constraint holds the vocabulary.
 - **API:** class types read and write `levels` (array, unique items) instead of
   `level`. The public box schedule returns `class_type.levels`.
@@ -62,7 +62,7 @@ a single indexed-friendly predicate.
   boxes have a general class type, so «Επίπεδο» narrows mainly by excluding boxes
   whose every class type targets other levels.
 - `class_types.level` stays in the table, unused, so API pods of the previous
-  release keep working during the rollout. TD-460 drops it later.
+  release keep working during the rollout. TD-490 drops it later.
 
 ## Implementation Notes
 - `Palee.Scheduling.ClassType.levels/0` is the vocabulary for the API, the

@@ -1,4 +1,4 @@
-// ADR-460: class type levels. Dependency-free on purpose: next.config.ts loads
+// ADR-490: class type levels. Dependency-free on purpose: next.config.ts loads
 // member-routes → around, which reads CLASS_LEVELS, so this file must import
 // nothing (no "@/" aliases resolve there).
 

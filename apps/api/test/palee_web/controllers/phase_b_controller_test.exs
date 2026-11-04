@@ -112,7 +112,7 @@ defmodule PaleeWeb.PhaseBControllerTest do
       |> json_response(200)
       |> Map.fetch!("class_type")
 
-    # ADR-460: several levels, kept in display order.
+    # ADR-490: several levels, kept in display order.
     assert %{"levels" => ["beginner", "advanced"], "audiences" => ["women_only"]} = tagged
 
     admin_conn

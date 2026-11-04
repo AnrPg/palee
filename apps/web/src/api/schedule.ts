@@ -27,7 +27,7 @@ export type ClassTypeRecord = {
   /** Visits one booking uses (1..10, ADR-097). */
   credit_cost?: number;
   kind?: "class" | "event";
-  /** Levels the class suits; empty means all levels (Επίπεδο filter, ADR-460). */
+  /** Levels the class suits; empty means all levels (Επίπεδο filter, ADR-490). */
   levels?: ClassLevel[];
   /** Groups the class is for; empty means everyone (Κοινό filter). */
   audiences?: ClassAudience[];

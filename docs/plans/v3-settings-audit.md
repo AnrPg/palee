@@ -173,7 +173,7 @@ Table `referral_programs` (ADR-156).
 | Field | Default | Verdict |
 |---|---|---|
 | name | — | **Basic** |
-| kind (class / event) | class | **Advanced** (ADR-460: rare, so under «Προχωρημένα») |
+| kind (class / event) | class | **Advanced** (ADR-490: rare, so under «Προχωρημένα») |
 | levels (multi-select; none = all levels) | all levels | **Advanced** |
 | audiences | open to everyone | **Advanced** |
 | credit_cost | 1 | **Advanced** |

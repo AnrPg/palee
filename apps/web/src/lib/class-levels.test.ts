@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { CLASS_LEVELS, classLevelsOf, suitsLevels } from "./class-levels";
 
-describe("class levels (ADR-460)", () => {
+describe("class levels (ADR-490)", () => {
   it("lists the three levels in display order, without «all levels»", () => {
     expect(CLASS_LEVELS).toEqual(["beginner", "intermediate", "advanced"]);
   });

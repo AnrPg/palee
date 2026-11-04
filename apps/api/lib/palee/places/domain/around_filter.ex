@@ -14,7 +14,7 @@ defmodule Palee.Places.Domain.AroundFilter do
     (ADR-142). Accessibility is the amenities `wheelchair_accessible` and
     `accessible_restroom`.
   * **Επίπεδο:** `levels` among the class levels (`beginner intermediate
-    advanced`, ADR-197, ADR-460): a host matches when it runs a current class
+    advanced`, ADR-197, ADR-490): a host matches when it runs a current class
     type that suits one of them (a type with no levels suits all); like the
     tags, a person's post has no host and drops out. The retired
     `all_levels` is dropped, so older clients keep working.
@@ -218,7 +218,7 @@ defmodule Palee.Places.Domain.AroundFilter do
     end
   end
 
-  # ADR-460: «Όλα τα επίπεδα» stopped being a level of its own.
+  # ADR-490: «Όλα τα επίπεδα» stopped being a level of its own.
   defp legacy_levels(values) when is_list(values), do: List.delete(values, "all_levels")
   defp legacy_levels(values), do: values
 

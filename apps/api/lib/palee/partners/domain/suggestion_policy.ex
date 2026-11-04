@@ -213,7 +213,7 @@ defmodule Palee.Partners.Domain.SuggestionPolicy do
   defp levels(%{level: level}) when is_binary(level), do: Map.get(@class_levels, level, [level])
   defp levels(_candidate), do: nil
 
-  # ADR-460: a class type suits several levels (none = every level); it admits
+  # ADR-490: a class type suits several levels (none = every level); it admits
   # the people each of them admits.
   defp admitted([]), do: @person_levels
 

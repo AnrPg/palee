@@ -324,7 +324,7 @@ defmodule PaleeWeb.AroundControllerTest do
                search(ctx, ctx.visitor, %{filter: %{disciplines: ["weight_loss"]}}, 422)
     end
 
-    test "level keeps hosts running a current class type that suits it (ADR-197, ADR-460)",
+    test "level keeps hosts running a current class type that suits it (ADR-197, ADR-490)",
          ctx do
       # Start from boxes whose only class types carry the levels below.
       org_ids = [ctx.alpha.organization.id, ctx.beta.organization.id]

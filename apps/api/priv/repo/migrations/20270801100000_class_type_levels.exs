@@ -1,11 +1,11 @@
 defmodule Palee.Repo.Migrations.ClassTypeLevels do
   @moduledoc """
-  ADR-460: a class type suits one or more levels («Επίπεδο» is a multi-select).
+  ADR-490: a class type suits one or more levels («Επίπεδο» is a multi-select).
 
   `class_types.levels text[]` holds a subset of `beginner intermediate advanced`
   in that order; an empty list means «Όλα τα επίπεδα». The single `level` column
   is backfilled from and then left unused, so API pods of the previous release
-  keep working during the rollout; a later migration drops it (TD in ADR-460).
+  keep working during the rollout; a later migration drops it (TD in ADR-490).
 
   Γύρω μου's `palee_around_level_match` now reads `levels`: a class type with no
   levels suits every level, otherwise it matches when the lists overlap. Saved

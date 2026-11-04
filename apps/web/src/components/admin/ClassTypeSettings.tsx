@@ -333,7 +333,7 @@ function ClassTypeRules({
 
   return (
     <div className="mt-2 flex flex-col gap-3 text-xs" style={{ color: "var(--muted)" }}>
-      {/* ADR-255, ADR-460: event, visits per booking, level and audience have a good default, so all sit under «Προχωρημένα». */}
+      {/* ADR-255, ADR-490: event, visits per booking, level and audience have a good default, so all sit under «Προχωρημένα». */}
       <button
         type="button"
         aria-expanded={open}
@@ -382,7 +382,7 @@ function ClassTypeRules({
             </span>
           </ExplainedSetting>
 
-          {/* Plan §5a decision 2: members filter Πρόγραμμα by these two tags. ADR-460: several levels; none = all. */}
+          {/* Plan §5a decision 2: members filter Πρόγραμμα by these two tags. ADR-490: several levels; none = all. */}
           <ExplainedSetting label={t("chipLevel")} tip={o("level_tip")} parts={parts("level")} stacked>
             <span className="flex flex-wrap items-center gap-1.5" role="group" aria-label={t("chipLevel")}>
               {CLASS_LEVELS.map((level) => {
