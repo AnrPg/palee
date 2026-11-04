@@ -16281,6 +16281,232 @@
     "sentTitle": "تم الاستلام!",
     "sentBody": "سيرد عليك {box} قريبًا، عادةً في اليوم نفسه."
   },
+  "SiteTemplates": {
+    "skip": "انتقل إلى المحتوى",
+    "menu": "القائمة",
+    "closeMenu": "أغلق القائمة",
+    "close": "إغلاق",
+    "pagesNav": "الصفحات",
+    "logoHome": "{box}، الصفحة الرئيسية",
+    "free": "مجانًا",
+    "from": "ابتداءً من {price}",
+    "pages": {
+      "home": "الرئيسية",
+      "schedule": "الجدول",
+      "training": "التمارين",
+      "packages": "الباقات",
+      "coaches": "المدربون",
+      "space": "المكان"
+    },
+    "cta": {
+      "trial": "حصة تجريبية مجانية",
+      "trialLong": "احجز حصة تجريبية مجانية",
+      "contact": "راسلنا",
+      "call": "اتصل على {phone}",
+      "tabTrial": "تجريبية",
+      "tabContact": "رسالة",
+      "tabCall": "اتصال"
+    },
+    "next": {
+      "title": "الحصة التالية",
+      "chip": "التالية: {name} {when}",
+      "when": "{day, select, today {اليوم {time}} tomorrow {غدًا {time}} other {{weekday} {time}}}",
+      "inDays": "{count, plural, zero {بعد # يوم} one {بعد يوم واحد} two {بعد يومين} few {بعد # أيام} many {بعد # يومًا} other {بعد # يوم}}"
+    },
+    "open": {
+      "open": "مفتوح حتى {time}",
+      "opens": "يفتح الساعة {time}",
+      "closed": "مغلق الآن",
+      "closedToday": "مغلق اليوم"
+    },
+    "per": {
+      "monthly": "شهريًا",
+      "quarterly": "كل ثلاثة أشهر",
+      "semiannual": "كل ستة أشهر",
+      "annual": "سنويًا",
+      "once": "مرة واحدة"
+    },
+    "schedule": {
+      "title": "جدول الحصص",
+      "sub": "اسحب لليوم التالي. مع «جرّبها» تنتقل الحصة إلى نموذج الحصة التجريبية.",
+      "today": "اليوم",
+      "day": "اليوم",
+      "type": "نوع الحصة",
+      "panes": "حصص اليوم",
+      "empty": "لا توجد حصص في هذا اليوم.",
+      "emptyType": "لا توجد حصص من هذا النوع في هذا اليوم.",
+      "minutes": "{count, plural, other {#′}}",
+      "done": "انتهت",
+      "try": "جرّبها",
+      "tryAria": "جرّب {name}، {day} {time}"
+    },
+    "map": {
+      "directions": "الاتجاهات",
+      "howToGet": "كيف تصل إلينا"
+    },
+    "gallery": {
+      "title": "الصور",
+      "open": "افتح: {name}",
+      "photo": "صورة {index}",
+      "prev": "الصورة السابقة",
+      "next": "الصورة التالية",
+      "count": "{index} من {count}"
+    },
+    "programmes": {
+      "weeks": "{count, plural, zero {# أسبوع} one {أسبوع واحد} two {أسبوعان} few {# أسابيع} many {# أسبوعًا} other {# أسبوع}}"
+    },
+    "stats": {
+      "classes_per_week": "{count, plural, zero {حصة أسبوعيًا} one {حصة أسبوعيًا} two {حصتان أسبوعيًا} few {حصص أسبوعيًا} many {حصة أسبوعيًا} other {حصة أسبوعيًا}}",
+      "prs_this_year": "{count, plural, other {PR هذا العام}}",
+      "years_open": "{count, plural, zero {سنة من العمل} one {سنة من العمل} two {سنتان من العمل} few {سنوات من العمل} many {سنة من العمل} other {سنة من العمل}}"
+    },
+    "reviews": {
+      "count": "{count, plural, zero {# تقييم} one {تقييم واحد} two {تقييمان} few {# تقييمات} many {# تقييمًا} other {# تقييم}}"
+    },
+    "packages": {
+      "title": "باقات الاشتراك",
+      "sub": "أسعار الـ box اليوم.",
+      "stackSub": "اسحب البطاقات أو استخدم الأسهم.",
+      "all": "كل باقات الاشتراك",
+      "bookTrial": "احجز حصة تجريبية",
+      "startTrial": "ابدأ بحصة تجريبية",
+      "choose": "اختر هذه",
+      "buyOnline": "اشترِ عبر الإنترنت",
+      "carousel": "شريط عرض",
+      "stackLabel": "باقات الاشتراك: اسحب أو استخدم الأسهم",
+      "prev": "الباقة السابقة",
+      "next": "الباقة التالية",
+      "position": "{index} من {count}"
+    },
+    "form": {
+      "trialTitle": "حصة تجريبية مجانية",
+      "contactTitle": "راسلنا",
+      "contactSub": "اكتب لنا وسيرد عليك {box} قريبًا.",
+      "choice": "اختيارك: {choice}",
+      "days": "الأيام التي تناسبك (اختياري)",
+      "thanks": "شكرًا، {name}!",
+      "contactSent": "أُرسلت رسالتك. سيرد عليك الـ box قريبًا.",
+      "previewNote": "معاينة: لم يُرسل النموذج فعلًا.",
+      "ok": "حسنًا"
+    },
+    "stories": {
+      "label": "قصة: {name}",
+      "pause": "إيقاف مؤقت",
+      "resume": "متابعة",
+      "prev": "السابقة",
+      "next": "التالية",
+      "hint": "المس اليمين للتالية، اضغط مطولًا للإيقاف، اسحب للأسفل للإغلاق.",
+      "trial1": "تمرينك",
+      "trial2": "الأول",
+      "trial3": "مجاني",
+      "hero1": "تمارين",
+      "hero2": "لكل",
+      "hero3": "المستويات",
+      "seeSpace": "شاهد المكان",
+      "fullSchedule": "الجدول كاملًا",
+      "swipe": "اسحب لتختار",
+      "ourStory": "قصتنا",
+      "allReviews": "كل التقييمات",
+      "names": {
+        "wod": "WOD",
+        "space": "المكان",
+        "coaches": "المدربون",
+        "events": "Events",
+        "reviews": "التقييمات"
+      }
+    },
+    "footer": {
+      "contact": "تواصل معنا"
+    },
+    "sections": {
+      "wod": "WOD اليوم",
+      "events": "Events",
+      "programmes": "برامج عبر الإنترنت",
+      "reviews": "التقييمات",
+      "faq": "الأسئلة الشائعة",
+      "location": "الموقع",
+      "stats": "بالأرقام"
+    },
+    "arena": {
+      "line1": "كن",
+      "line2": "أقوى",
+      "line3": "كل يوم",
+      "seeSchedule": "شاهد الجدول",
+      "seePrices": "شاهد الأسعار",
+      "whyEyebrow": "لماذا هنا",
+      "why1": "لا أحد",
+      "why2": "يتمرن",
+      "why3": "وحده",
+      "coaches": "المدربون",
+      "prevCoach": "المدرب السابق",
+      "nextCoach": "المدرب التالي",
+      "prices": "الأسعار",
+      "reviews": "ماذا يقول الأعضاء",
+      "findUs": "أين تجدنا",
+      "questions": "الأسئلة الشائعة"
+    },
+    "why": {
+      "coaches": "{count, plural, zero {# مدرب} one {مدرب واحد} two {مدربان} few {# مدربين} many {# مدربًا} other {# مدرب}}",
+      "classes": "{count, plural, zero {# حصة أسبوعيًا} one {حصة واحدة أسبوعيًا} two {حصتان أسبوعيًا} few {# حصص أسبوعيًا} many {# حصة أسبوعيًا} other {# حصة أسبوعيًا}}",
+      "progress": "تابع تقدمك",
+      "progressText": "تبقى أرقامك القياسية وتمارينك في تطبيق الـ box."
+    },
+    "wod": {
+      "band": "WOD اليوم · {title}",
+      "play": "استئناف الحركة",
+      "pause": "إيقاف الحركة"
+    },
+    "video": {
+      "play": "شغّل الفيديو",
+      "pause": "أوقف الفيديو"
+    },
+    "coaches": {
+      "sub": "الأشخاص الذين سيدربونك."
+    },
+    "space": {
+      "sub": "المس صورة لتراها بحجم كبير."
+    },
+    "tiles": {
+      "hero1": "تمارين",
+      "hero2": "في حيّك",
+      "today": "اليوم",
+      "nextDay": "في اليوم التالي",
+      "whoWeAre": "من نحن",
+      "team": "الفريق",
+      "inNumbers": "بالأرقام",
+      "moreEvents": "{count, plural, other {و# أخرى}}",
+      "programmes": "{count, plural, zero {# برنامج} one {برنامج واحد} two {برنامجان} few {# برامج} many {# برنامجًا} other {# برنامج}}",
+      "moreQuestions": "{count, plural, zero {و# سؤال آخر} one {وسؤال آخر} two {وسؤالان آخران} few {و# أسئلة أخرى} many {و# سؤالًا آخر} other {و# سؤال آخر}}",
+      "askUs": "اسألنا"
+    },
+    "atelier": {
+      "hero1": "قوة",
+      "hero2": "مع <it>عناية</it>.",
+      "scroll": "مرّر",
+      "theSchedule": "الجدول",
+      "philosophy": "فلسفتنا",
+      "chapters": "أقسام",
+      "aDayHere": "يوم <it>هنا</it>",
+      "chapterClasses": "الحصص",
+      "classesTitle": "كل حصة <it>بعناية</it>.",
+      "seeWeek": "شاهد الأسبوع",
+      "chapterSpace": "المكان",
+      "spaceTitle": "<it>مكاننا</it>.",
+      "comeIn": "تفضل بالدخول",
+      "chapterHome": "ومن البيت أيضًا",
+      "programmesTitle": "برامج من <it>مدربينا</it>.",
+      "seeProgrammes": "شاهد البرامج",
+      "people": "الناس",
+      "onTheFloor": "في القاعة <it>معك</it>",
+      "memberships": "الاشتراكات",
+      "simplePrices": "أسعار <it>بسيطة</it>",
+      "fromMembers": "من الأعضاء",
+      "firstHour": "ساعتك الأولى",
+      "closing1": "تعال",
+      "closing2": "<it>لنتعرّف</it>.",
+      "contact": "تواصل معنا"
+    }
+  },
   "BoxSite": {
     "bookTrial": "احجز حصة تجريبية",
     "askSomething": "اسأل شيئًا",

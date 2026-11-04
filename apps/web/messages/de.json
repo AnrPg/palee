@@ -16281,6 +16281,232 @@
     "sentTitle": "Angekommen!",
     "sentBody": "{box} meldet sich bald, meist noch am selben Tag."
   },
+  "SiteTemplates": {
+    "skip": "Zum Inhalt springen",
+    "menu": "Menü",
+    "closeMenu": "Menü schließen",
+    "close": "Schließen",
+    "pagesNav": "Seiten",
+    "logoHome": "{box}, Startseite",
+    "free": "Kostenlos",
+    "from": "ab {price}",
+    "pages": {
+      "home": "Start",
+      "schedule": "Kursplan",
+      "training": "Training",
+      "packages": "Pakete",
+      "coaches": "Coaches",
+      "space": "Die Räume"
+    },
+    "cta": {
+      "trial": "Kostenloses Probetraining",
+      "trialLong": "Kostenloses Probetraining buchen",
+      "contact": "Schreib uns",
+      "call": "{phone} anrufen",
+      "tabTrial": "Probetraining",
+      "tabContact": "Nachricht",
+      "tabCall": "Anrufen"
+    },
+    "next": {
+      "title": "Nächster Kurs",
+      "chip": "Nächster: {name} {when}",
+      "when": "{day, select, today {heute {time}} tomorrow {morgen {time}} other {{weekday} {time}}}",
+      "inDays": "{count, plural, one {in # Tag} other {in # Tagen}}"
+    },
+    "open": {
+      "open": "Geöffnet bis {time}",
+      "opens": "Öffnet um {time}",
+      "closed": "Jetzt geschlossen",
+      "closedToday": "Heute geschlossen"
+    },
+    "per": {
+      "monthly": "pro Monat",
+      "quarterly": "pro Quartal",
+      "semiannual": "pro Halbjahr",
+      "annual": "pro Jahr",
+      "once": "einmalig"
+    },
+    "schedule": {
+      "title": "Kursplan",
+      "sub": "Wische zum nächsten Tag. Mit «Ausprobieren» kommt der Kurs ins Formular für das Probetraining.",
+      "today": "Heute",
+      "day": "Tag",
+      "type": "Kursart",
+      "panes": "Die Kurse des Tages",
+      "empty": "An diesem Tag gibt es keine Kurse.",
+      "emptyType": "An diesem Tag gibt es keine Kurse dieser Art.",
+      "minutes": "{count, plural, other {#′}}",
+      "done": "Vorbei",
+      "try": "Ausprobieren",
+      "tryAria": "{name} ausprobieren, {day} {time}"
+    },
+    "map": {
+      "directions": "Route",
+      "howToGet": "So kommst du hin"
+    },
+    "gallery": {
+      "title": "Fotos",
+      "open": "Öffnen: {name}",
+      "photo": "Foto {index}",
+      "prev": "Vorheriges Foto",
+      "next": "Nächstes Foto",
+      "count": "{index} von {count}"
+    },
+    "programmes": {
+      "weeks": "{count, plural, one {# Woche} other {# Wochen}}"
+    },
+    "stats": {
+      "classes_per_week": "{count, plural, one {Kurs pro Woche} other {Kurse pro Woche}}",
+      "prs_this_year": "{count, plural, other {PRs in diesem Jahr}}",
+      "years_open": "{count, plural, one {Jahr geöffnet} other {Jahre geöffnet}}"
+    },
+    "reviews": {
+      "count": "{count, plural, one {# Bewertung} other {# Bewertungen}}"
+    },
+    "packages": {
+      "title": "Abo-Pakete",
+      "sub": "Die heutigen Preise der Box.",
+      "stackSub": "Wische die Karten oder nutze die Pfeile.",
+      "all": "Alle Abo-Pakete",
+      "bookTrial": "Probetraining buchen",
+      "startTrial": "Mit Probetraining starten",
+      "choose": "Auswählen",
+      "buyOnline": "Online kaufen",
+      "carousel": "Karussell",
+      "stackLabel": "Abo-Pakete: wische oder nutze die Pfeile",
+      "prev": "Vorheriges Paket",
+      "next": "Nächstes Paket",
+      "position": "{index} von {count}"
+    },
+    "form": {
+      "trialTitle": "Kostenloses Probetraining",
+      "contactTitle": "Schreib uns",
+      "contactSub": "Schreib uns, und {box} antwortet dir bald.",
+      "choice": "Deine Wahl: {choice}",
+      "days": "Welche Tage passen dir (optional)",
+      "thanks": "Danke, {name}!",
+      "contactSent": "Deine Nachricht wurde gesendet. Die Box antwortet dir bald.",
+      "previewNote": "Vorschau: Das Formular wurde nicht wirklich gesendet.",
+      "ok": "OK"
+    },
+    "stories": {
+      "label": "Story: {name}",
+      "pause": "Pause",
+      "resume": "Weiter",
+      "prev": "Zurück",
+      "next": "Weiter zur nächsten",
+      "hint": "Tippe rechts für die nächste, halte gedrückt zum Pausieren, wische nach unten zum Schließen.",
+      "trial1": "Dein erstes",
+      "trial2": "Training",
+      "trial3": "ist kostenlos",
+      "hero1": "Training",
+      "hero2": "für jedes",
+      "hero3": "Level",
+      "seeSpace": "Räume ansehen",
+      "fullSchedule": "Der ganze Kursplan",
+      "swipe": "Wische zum Auswählen",
+      "ourStory": "Unsere Geschichte",
+      "allReviews": "Alle Bewertungen",
+      "names": {
+        "wod": "WOD",
+        "space": "Die Räume",
+        "coaches": "Coaches",
+        "events": "Events",
+        "reviews": "Bewertungen"
+      }
+    },
+    "footer": {
+      "contact": "Kontakt"
+    },
+    "sections": {
+      "wod": "WOD des Tages",
+      "events": "Events",
+      "programmes": "Online-Programme",
+      "reviews": "Bewertungen",
+      "faq": "Häufige Fragen",
+      "location": "Standort",
+      "stats": "In Zahlen"
+    },
+    "arena": {
+      "line1": "Werde",
+      "line2": "stärker",
+      "line3": "jeden Tag",
+      "seeSchedule": "Zum Kursplan",
+      "seePrices": "Zu den Preisen",
+      "whyEyebrow": "Warum hier",
+      "why1": "Niemand",
+      "why2": "trainiert",
+      "why3": "allein",
+      "coaches": "Die Coaches",
+      "prevCoach": "Vorheriger Coach",
+      "nextCoach": "Nächster Coach",
+      "prices": "Preise",
+      "reviews": "Was Mitglieder sagen",
+      "findUs": "So findest du uns",
+      "questions": "Häufige Fragen"
+    },
+    "why": {
+      "coaches": "{count, plural, one {# Coach} other {# Coaches}}",
+      "classes": "{count, plural, one {# Kurs pro Woche} other {# Kurse pro Woche}}",
+      "progress": "Sieh deinen Fortschritt",
+      "progressText": "Deine PRs und Trainings bleiben in der App der Box."
+    },
+    "wod": {
+      "band": "WOD des Tages · {title}",
+      "play": "Bewegung fortsetzen",
+      "pause": "Bewegung anhalten"
+    },
+    "video": {
+      "play": "Video abspielen",
+      "pause": "Video anhalten"
+    },
+    "coaches": {
+      "sub": "Die Menschen, die dich trainieren."
+    },
+    "space": {
+      "sub": "Tippe auf ein Foto, um es groß zu sehen."
+    },
+    "tiles": {
+      "hero1": "Training",
+      "hero2": "in deiner Nachbarschaft",
+      "today": "Heute",
+      "nextDay": "Am nächsten Tag",
+      "whoWeAre": "Wer wir sind",
+      "team": "Das Team",
+      "inNumbers": "In Zahlen",
+      "moreEvents": "{count, plural, other {und # weitere}}",
+      "programmes": "{count, plural, one {# Programm} other {# Programme}}",
+      "moreQuestions": "{count, plural, one {und # weitere Frage} other {und # weitere Fragen}}",
+      "askUs": "Frag uns"
+    },
+    "atelier": {
+      "hero1": "Kraft",
+      "hero2": "mit <it>Sorgfalt</it>.",
+      "scroll": "Scrollen",
+      "theSchedule": "Der Kursplan",
+      "philosophy": "Unsere Philosophie",
+      "chapters": "Kapitel",
+      "aDayHere": "Ein Tag <it>hier</it>",
+      "chapterClasses": "Die Kurse",
+      "classesTitle": "Jeder Kurs, <it>mit Sorgfalt</it>.",
+      "seeWeek": "Die Woche ansehen",
+      "chapterSpace": "Die Räume",
+      "spaceTitle": "<it>Unsere</it> Räume.",
+      "comeIn": "Komm herein",
+      "chapterHome": "Und von zu Hause",
+      "programmesTitle": "Programme von unseren <it>Coaches</it>.",
+      "seeProgrammes": "Programme ansehen",
+      "people": "Die Menschen",
+      "onTheFloor": "Auf der Fläche <it>mit dir</it>",
+      "memberships": "Mitgliedschaften",
+      "simplePrices": "Einfache <it>Preise</it>",
+      "fromMembers": "Von den Mitgliedern",
+      "firstHour": "Deine erste Stunde",
+      "closing1": "Komm vorbei und",
+      "closing2": "<it>lern uns kennen</it>.",
+      "contact": "Kontakt"
+    }
+  },
   "BoxSite": {
     "bookTrial": "Probetraining buchen",
     "askSomething": "Frag etwas",

@@ -110,7 +110,7 @@ export function FormSheet({ kind, choice }: { kind: "trial" | "contact"; choice:
         }}
       >
         {choice ? <span className="chip" style={{ width: "max-content", maxWidth: "100%" }}>{t("form.choice", { choice })}</span> : null}
-        {request.failed ? <p className="notice" role="alert">{tb("form.failed")}</p> : null}
+        <p className={request.failed ? "notice" : "sr"} aria-live="assertive">{request.failed ? tb("form.failed") : null}</p>
         <div className="field">
           <label htmlFor={`${ids}-name`}>{tb("form.name")}</label>
           <input id={`${ids}-name`} value={form.name} onChange={(event) => set("name", event.target.value)} autoComplete="name" maxLength={80} {...field("name")} />

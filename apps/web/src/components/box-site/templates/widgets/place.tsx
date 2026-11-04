@@ -5,7 +5,7 @@ import { useSyncExternalStore } from "react";
 import { mapsSearchUrl, mapsUrl, readApple, serverApple, subscribeNever } from "@/lib/maps";
 
 import { hoursSummary, mainLocation, openState } from "../site-data";
-import { Photo, useClock, useSite, useSiteText, type PhotoIcon } from "../site-context";
+import { Photo, SVG_SLICE, useClock, useSite, useSiteText, type PhotoIcon } from "../site-context";
 
 /** «Ανοιχτά · κλείνει 22:00»: in the browser only (it depends on the time). */
 export function useOpenNow(): string | null {
@@ -64,7 +64,7 @@ export function MapCard() {
   return (
     <div data-testid="site-location">
       <div className="mapart">
-        <svg viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <svg viewBox="0 0 400 240" preserveAspectRatio={SVG_SLICE} aria-hidden="true">
           <rect width="400" height="240" fill="var(--s-surface)" />
           <g stroke="var(--s-line-strong)" strokeWidth="10" fill="none" strokeLinecap="round">
             <path d="M-10 70 L410 120" />

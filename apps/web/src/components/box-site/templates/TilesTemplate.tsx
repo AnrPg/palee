@@ -4,7 +4,7 @@ import type { CSSProperties, MouseEvent, ReactNode } from "react";
 import { flushSync } from "react-dom";
 
 import { aboutText, balanceTiles, cheapestPackage, cheapestProgramme, firstSentence, heroSpansAll, initials, mainLocation, scheduleDays } from "./site-data";
-import { CtaButton, Lines, money, PageLink, Photo, useClock, usePeriodLabel, useSite, useSiteText, withViewTransition, type TileKey } from "./site-context";
+import { CtaButton, Lines, money, PageLink, Photo, SVG_SLICE, useClock, usePeriodLabel, useSite, useSiteText, withViewTransition, type TileKey } from "./site-context";
 import { SiteFrame } from "./SiteFrame";
 import { HeroMedia } from "./widgets/hero-media";
 import { InnerPage } from "./widgets/inner-page";
@@ -84,16 +84,22 @@ function TilesHome() {
       flushSync(() => open({ kind: "tile", tile }));
     });
   };
-  const button = (tile: TileKey, testId: string, extra: string, inner: ReactNode) => (className: string, style: CSSProperties) => (
-    <button type="button" className={`${className} ${extra}`} style={style} onClick={grow(tile)} data-tilt data-testid={testId}>
-      {inner}
-    </button>
-  );
-  const link = (target: "schedule" | "packages" | "coaches" | "space", testId: string, inner: ReactNode) => (className: string, style: CSSProperties) => (
-    <PageLink page={target} className={className} style={style} data-tilt data-testid={testId}>
-      {inner}
-    </PageLink>
-  );
+  const button = (tile: TileKey, testId: string, extra: string, inner: ReactNode) =>
+    function tileButton(className: string, style: CSSProperties) {
+      return (
+        <button type="button" className={`${className} ${extra}`} style={style} onClick={grow(tile)} data-tilt data-testid={testId}>
+          {inner}
+        </button>
+      );
+    };
+  const link = (target: "schedule" | "packages" | "coaches" | "space", testId: string, inner: ReactNode) =>
+    function tileLink(className: string, style: CSSProperties) {
+      return (
+        <PageLink page={target} className={className} style={style} data-tilt data-testid={testId}>
+          {inner}
+        </PageLink>
+      );
+    };
 
   if (on("schedule") && next)
     tiles.push({
@@ -291,7 +297,7 @@ function TilesHome() {
         "space",
         "site-location",
         <>
-          <svg className="mapmini" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <svg className="mapmini" viewBox="0 0 400 200" preserveAspectRatio={SVG_SLICE} aria-hidden="true">
             <rect width="400" height="200" fill="var(--s-surface)" />
             <g stroke="var(--s-line-strong)" strokeWidth="9" fill="none">
               <path d="M-10 60 L410 110" />
@@ -414,7 +420,7 @@ function TilesHome() {
 }
 
 function TileSlot({ tile, index }: { tile: Tile; index: number }) {
-  return <>{tile.node(`tile ld-pop ${tile.wide ? "w2" : ""}`, { "--i": index + 1 } as CSSProperties)}</>;
+  return <>{tile.node(["tile", "ld-pop", tile.wide ? "w2" : ""].join(" "), { "--i": index + 1 } as CSSProperties)}</>;
 }
 
 /** A tile grown into its page (the layer over the grid). */

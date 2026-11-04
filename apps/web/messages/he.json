@@ -16281,6 +16281,232 @@
     "sentTitle": "התקבל!",
     "sentBody": "{box} יחזרו אליכם בקרוב, בדרך כלל באותו יום."
   },
+  "SiteTemplates": {
+    "skip": "דלג לתוכן",
+    "menu": "תפריט",
+    "closeMenu": "סגור את התפריט",
+    "close": "סגור",
+    "pagesNav": "עמודים",
+    "logoHome": "{box}, דף הבית",
+    "free": "חינם",
+    "from": "החל מ־{price}",
+    "pages": {
+      "home": "בית",
+      "schedule": "מערכת שעות",
+      "training": "אימונים",
+      "packages": "חבילות",
+      "coaches": "מאמנים",
+      "space": "המקום"
+    },
+    "cta": {
+      "trial": "שיעור ניסיון חינם",
+      "trialLong": "קבע שיעור ניסיון חינם",
+      "contact": "שלח לנו הודעה",
+      "call": "התקשר ל־{phone}",
+      "tabTrial": "ניסיון",
+      "tabContact": "הודעה",
+      "tabCall": "שיחה"
+    },
+    "next": {
+      "title": "השיעור הבא",
+      "chip": "הבא: {name} {when}",
+      "when": "{day, select, today {היום {time}} tomorrow {מחר {time}} other {{weekday} {time}}}",
+      "inDays": "{count, plural, one {בעוד יום} two {בעוד יומיים} other {בעוד # ימים}}"
+    },
+    "open": {
+      "open": "פתוח עד {time}",
+      "opens": "נפתח ב־{time}",
+      "closed": "סגור עכשיו",
+      "closedToday": "סגור היום"
+    },
+    "per": {
+      "monthly": "לחודש",
+      "quarterly": "לרבעון",
+      "semiannual": "לחצי שנה",
+      "annual": "לשנה",
+      "once": "פעם אחת"
+    },
+    "schedule": {
+      "title": "מערכת השיעורים",
+      "sub": "החלק ליום הבא. עם «נסה» השיעור נכנס לטופס שיעור הניסיון.",
+      "today": "היום",
+      "day": "יום",
+      "type": "סוג שיעור",
+      "panes": "השיעורים של היום",
+      "empty": "אין שיעורים ביום הזה.",
+      "emptyType": "אין שיעורים מהסוג הזה ביום הזה.",
+      "minutes": "{count, plural, other {#′}}",
+      "done": "הסתיים",
+      "try": "נסה",
+      "tryAria": "נסה את {name}, {day} {time}"
+    },
+    "map": {
+      "directions": "הוראות הגעה",
+      "howToGet": "איך מגיעים"
+    },
+    "gallery": {
+      "title": "תמונות",
+      "open": "פתח: {name}",
+      "photo": "תמונה {index}",
+      "prev": "התמונה הקודמת",
+      "next": "התמונה הבאה",
+      "count": "{index} מתוך {count}"
+    },
+    "programmes": {
+      "weeks": "{count, plural, one {שבוע אחד} two {שבועיים} other {# שבועות}}"
+    },
+    "stats": {
+      "classes_per_week": "{count, plural, one {שיעור בשבוע} other {שיעורים בשבוע}}",
+      "prs_this_year": "{count, plural, other {PR השנה}}",
+      "years_open": "{count, plural, one {שנת פעילות} other {שנות פעילות}}"
+    },
+    "reviews": {
+      "count": "{count, plural, one {ביקורת אחת} other {# ביקורות}}"
+    },
+    "packages": {
+      "title": "חבילות מנוי",
+      "sub": "המחירים של ה־box היום.",
+      "stackSub": "החלק את הכרטיסים או השתמש בחצים.",
+      "all": "כל חבילות המנוי",
+      "bookTrial": "קבע שיעור ניסיון",
+      "startTrial": "התחל בשיעור ניסיון",
+      "choose": "בחר בזה",
+      "buyOnline": "קנה אונליין",
+      "carousel": "קרוסלה",
+      "stackLabel": "חבילות מנוי: החלק או השתמש בחצים",
+      "prev": "החבילה הקודמת",
+      "next": "החבילה הבאה",
+      "position": "{index} מתוך {count}"
+    },
+    "form": {
+      "trialTitle": "שיעור ניסיון חינם",
+      "contactTitle": "שלח לנו הודעה",
+      "contactSub": "כתוב לנו ו־{box} יענה לך בקרוב.",
+      "choice": "הבחירה שלך: {choice}",
+      "days": "אילו ימים מתאימים לך (לא חובה)",
+      "thanks": "תודה, {name}!",
+      "contactSent": "ההודעה נשלחה. ה־box יענה לך בקרוב.",
+      "previewNote": "תצוגה מקדימה: הטופס לא נשלח באמת.",
+      "ok": "אישור"
+    },
+    "stories": {
+      "label": "סטורי: {name}",
+      "pause": "השהה",
+      "resume": "המשך",
+      "prev": "הקודם",
+      "next": "הבא",
+      "hint": "גע בצד ימין לבא, החזק להשהיה, החלק למטה לסגירה.",
+      "trial1": "האימון",
+      "trial2": "הראשון שלך",
+      "trial3": "בחינם",
+      "hero1": "אימונים",
+      "hero2": "לכל",
+      "hero3": "רמה",
+      "seeSpace": "ראה את המקום",
+      "fullSchedule": "כל מערכת השעות",
+      "swipe": "החלק כדי לבחור",
+      "ourStory": "הסיפור שלנו",
+      "allReviews": "כל הביקורות",
+      "names": {
+        "wod": "WOD",
+        "space": "המקום",
+        "coaches": "מאמנים",
+        "events": "Events",
+        "reviews": "ביקורות"
+      }
+    },
+    "footer": {
+      "contact": "צור קשר"
+    },
+    "sections": {
+      "wod": "WOD היום",
+      "events": "Events",
+      "programmes": "תוכניות אונליין",
+      "reviews": "ביקורות",
+      "faq": "שאלות נפוצות",
+      "location": "מיקום",
+      "stats": "במספרים"
+    },
+    "arena": {
+      "line1": "תהיה",
+      "line2": "חזק יותר",
+      "line3": "כל יום",
+      "seeSchedule": "למערכת השעות",
+      "seePrices": "למחירים",
+      "whyEyebrow": "למה כאן",
+      "why1": "אף אחד",
+      "why2": "לא מתאמן",
+      "why3": "לבד",
+      "coaches": "המאמנים",
+      "prevCoach": "המאמן הקודם",
+      "nextCoach": "המאמן הבא",
+      "prices": "מחירים",
+      "reviews": "מה החברים אומרים",
+      "findUs": "איפה תמצא אותנו",
+      "questions": "שאלות נפוצות"
+    },
+    "why": {
+      "coaches": "{count, plural, one {מאמן אחד} other {# מאמנים}}",
+      "classes": "{count, plural, one {שיעור אחד בשבוע} other {# שיעורים בשבוע}}",
+      "progress": "רואים את ההתקדמות",
+      "progressText": "השיאים והאימונים שלך נשמרים באפליקציה של ה־box."
+    },
+    "wod": {
+      "band": "WOD היום · {title}",
+      "play": "המשך את התנועה",
+      "pause": "עצור את התנועה"
+    },
+    "video": {
+      "play": "הפעל את הסרטון",
+      "pause": "השהה את הסרטון"
+    },
+    "coaches": {
+      "sub": "האנשים שיאמנו אותך."
+    },
+    "space": {
+      "sub": "גע בתמונה כדי לראות אותה בגדול."
+    },
+    "tiles": {
+      "hero1": "אימונים",
+      "hero2": "בשכונה שלך",
+      "today": "היום",
+      "nextDay": "ביום הבא",
+      "whoWeAre": "מי אנחנו",
+      "team": "הצוות",
+      "inNumbers": "במספרים",
+      "moreEvents": "{count, plural, other {ועוד #}}",
+      "programmes": "{count, plural, one {תוכנית אחת} other {# תוכניות}}",
+      "moreQuestions": "{count, plural, one {ועוד שאלה אחת} other {ועוד # שאלות}}",
+      "askUs": "שאל אותנו"
+    },
+    "atelier": {
+      "hero1": "כוח",
+      "hero2": "עם <it>אכפתיות</it>.",
+      "scroll": "גלול",
+      "theSchedule": "מערכת השעות",
+      "philosophy": "הפילוסופיה שלנו",
+      "chapters": "פרקים",
+      "aDayHere": "יום אחד <it>כאן</it>",
+      "chapterClasses": "השיעורים",
+      "classesTitle": "כל שיעור, <it>בתשומת לב</it>.",
+      "seeWeek": "ראה את השבוע",
+      "chapterSpace": "המקום",
+      "spaceTitle": "המקום <it>שלנו</it>.",
+      "comeIn": "היכנס",
+      "chapterHome": "וגם מהבית",
+      "programmesTitle": "תוכניות מה<it>מאמנים</it> שלנו.",
+      "seeProgrammes": "ראה את התוכניות",
+      "people": "האנשים",
+      "onTheFloor": "על הרצפה <it>איתך</it>",
+      "memberships": "מנויים",
+      "simplePrices": "מחירים <it>פשוטים</it>",
+      "fromMembers": "מהחברים",
+      "firstHour": "השעה הראשונה שלך",
+      "closing1": "בוא",
+      "closing2": "<it>להכיר אותנו</it>.",
+      "contact": "צור קשר"
+    }
+  },
   "BoxSite": {
     "bookTrial": "קבע אימון ניסיון",
     "askSomething": "שאל משהו",

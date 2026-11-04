@@ -125,7 +125,7 @@ export function StoryViewer({ start }: { start: number }) {
       <div
         className="story"
         onPointerDown={(event) => {
-          if ((event.target as Element).closest(".head, .act")) return;
+          if ((event.target as Element).closest(".head,.act")) return;
           const timer = window.setTimeout(() => {
             if (gesture.current) gesture.current.held = true;
             setHolding(true);

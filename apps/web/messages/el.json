@@ -16281,6 +16281,232 @@
     "sentTitle": "Το λάβαμε!",
     "sentBody": "Το {box} θα σου απαντήσει σύντομα, συνήθως την ίδια μέρα."
   },
+  "SiteTemplates": {
+    "skip": "Μετάβαση στο περιεχόμενο",
+    "menu": "Μενού",
+    "closeMenu": "Κλείσιμο μενού",
+    "close": "Κλείσιμο",
+    "pagesNav": "Σελίδες",
+    "logoHome": "{box}, αρχική σελίδα",
+    "free": "Δωρεάν",
+    "from": "από {price}",
+    "pages": {
+      "home": "Αρχική",
+      "schedule": "Πρόγραμμα",
+      "training": "Προπονήσεις",
+      "packages": "Πακέτα",
+      "coaches": "Coaches",
+      "space": "Ο χώρος"
+    },
+    "cta": {
+      "trial": "Δωρεάν δοκιμαστικό",
+      "trialLong": "Κλείσε δωρεάν δοκιμαστικό",
+      "contact": "Στείλε μας μήνυμα",
+      "call": "Κάλεσε {phone}",
+      "tabTrial": "Δοκιμαστικό",
+      "tabContact": "Μήνυμα",
+      "tabCall": "Κλήση"
+    },
+    "next": {
+      "title": "Επόμενο τμήμα",
+      "chip": "Επόμενο: {name} {when}",
+      "when": "{day, select, today {σήμερα {time}} tomorrow {αύριο {time}} other {{weekday} {time}}}",
+      "inDays": "{count, plural, one {σε # ημέρα} other {σε # ημέρες}}"
+    },
+    "open": {
+      "open": "Ανοιχτά έως {time}",
+      "opens": "Ανοίγει στις {time}",
+      "closed": "Κλειστά τώρα",
+      "closedToday": "Κλειστά σήμερα"
+    },
+    "per": {
+      "monthly": "τον μήνα",
+      "quarterly": "το τρίμηνο",
+      "semiannual": "το εξάμηνο",
+      "annual": "τον χρόνο",
+      "once": "μία φορά"
+    },
+    "schedule": {
+      "title": "Ωρολόγιο πρόγραμμα",
+      "sub": "Σύρε για την επόμενη ημέρα. Με «Δοκίμασε» το τμήμα μπαίνει στη φόρμα δοκιμαστικού.",
+      "today": "Σήμερα",
+      "day": "Ημέρα",
+      "type": "Τύπος τμήματος",
+      "panes": "Τα τμήματα της ημέρας",
+      "empty": "Κανένα τμήμα αυτή την ημέρα.",
+      "emptyType": "Κανένα τμήμα αυτού του τύπου αυτή την ημέρα.",
+      "minutes": "{count, plural, other {#′}}",
+      "done": "Έγινε",
+      "try": "Δοκίμασε",
+      "tryAria": "Δοκίμασε {name}, {day} {time}"
+    },
+    "map": {
+      "directions": "Οδηγίες",
+      "howToGet": "Πώς θα έρθεις"
+    },
+    "gallery": {
+      "title": "Φωτογραφίες",
+      "open": "Άνοιγμα: {name}",
+      "photo": "Φωτογραφία {index}",
+      "prev": "Προηγούμενη φωτογραφία",
+      "next": "Επόμενη φωτογραφία",
+      "count": "{index} από {count}"
+    },
+    "programmes": {
+      "weeks": "{count, plural, one {# εβδομάδα} other {# εβδομάδες}}"
+    },
+    "stats": {
+      "classes_per_week": "{count, plural, one {τμήμα την εβδομάδα} other {τμήματα την εβδομάδα}}",
+      "prs_this_year": "{count, plural, other {PR φέτος}}",
+      "years_open": "{count, plural, one {χρόνος λειτουργίας} other {χρόνια λειτουργίας}}"
+    },
+    "reviews": {
+      "count": "{count, plural, one {# κριτική} other {# κριτικές}}"
+    },
+    "packages": {
+      "title": "Πακέτα συνδρομής",
+      "sub": "Οι τιμές του box σήμερα.",
+      "stackSub": "Σύρε τις κάρτες ή πάτα τα βελάκια.",
+      "all": "Όλα τα πακέτα συνδρομής",
+      "bookTrial": "Κλείσε δοκιμαστικό",
+      "startTrial": "Ξεκίνα με δοκιμαστικό",
+      "choose": "Διάλεξέ το",
+      "buyOnline": "Αγορά online",
+      "carousel": "καρουζέλ",
+      "stackLabel": "Πακέτα συνδρομής: σύρε ή πάτα τα βελάκια",
+      "prev": "Προηγούμενο πακέτο",
+      "next": "Επόμενο πακέτο",
+      "position": "{index} από {count}"
+    },
+    "form": {
+      "trialTitle": "Δωρεάν δοκιμαστικό τμήμα",
+      "contactTitle": "Στείλε μας μήνυμα",
+      "contactSub": "Γράψε μας και το {box} θα σου απαντήσει σύντομα.",
+      "choice": "Επιλογή: {choice}",
+      "days": "Ποιες μέρες σε βολεύουν (προαιρετικό)",
+      "thanks": "Ευχαριστούμε, {name}!",
+      "contactSent": "Το μήνυμα στάλθηκε. Το box θα σου απαντήσει σύντομα.",
+      "previewNote": "Προεπισκόπηση: η φόρμα δεν στάλθηκε πραγματικά.",
+      "ok": "Εντάξει"
+    },
+    "stories": {
+      "label": "Ιστορία: {name}",
+      "pause": "Παύση",
+      "resume": "Συνέχεια",
+      "prev": "Προηγούμενο",
+      "next": "Επόμενο",
+      "hint": "Πάτα δεξιά για το επόμενο, κράτα πατημένο για παύση, σύρε κάτω για κλείσιμο.",
+      "trial1": "Η πρώτη σου",
+      "trial2": "προπόνηση",
+      "trial3": "είναι δωρεάν",
+      "hero1": "Προπόνηση",
+      "hero2": "για κάθε",
+      "hero3": "επίπεδο",
+      "seeSpace": "Δες τον χώρο",
+      "fullSchedule": "Όλο το πρόγραμμα",
+      "swipe": "Σύρε για να διαλέξεις",
+      "ourStory": "Η ιστορία μας",
+      "allReviews": "Όλες οι κριτικές",
+      "names": {
+        "wod": "WOD",
+        "space": "Ο χώρος",
+        "coaches": "Coaches",
+        "events": "Events",
+        "reviews": "Κριτικές"
+      }
+    },
+    "footer": {
+      "contact": "Επικοινωνία"
+    },
+    "sections": {
+      "wod": "WOD της ημέρας",
+      "events": "Events",
+      "programmes": "Online προγράμματα",
+      "reviews": "Κριτικές",
+      "faq": "Συχνές ερωτήσεις",
+      "location": "Τοποθεσία",
+      "stats": "Σε αριθμούς"
+    },
+    "arena": {
+      "line1": "Γίνε",
+      "line2": "πιο δυνατός",
+      "line3": "κάθε μέρα",
+      "seeSchedule": "Δες το πρόγραμμα",
+      "seePrices": "Δες τις τιμές",
+      "whyEyebrow": "Γιατί εδώ",
+      "why1": "Κανείς δεν",
+      "why2": "προπονείται",
+      "why3": "μόνος",
+      "coaches": "Οι coaches",
+      "prevCoach": "Προηγούμενος coach",
+      "nextCoach": "Επόμενος coach",
+      "prices": "Τιμές",
+      "reviews": "Τι λένε τα μέλη",
+      "findUs": "Πού θα μας βρεις",
+      "questions": "Συχνές ερωτήσεις"
+    },
+    "why": {
+      "coaches": "{count, plural, one {# coach} other {# coaches}}",
+      "classes": "{count, plural, one {# τμήμα την εβδομάδα} other {# τμήματα την εβδομάδα}}",
+      "progress": "Βλέπεις την πρόοδό σου",
+      "progressText": "Τα PR και οι προπονήσεις σου μένουν στο app του box."
+    },
+    "wod": {
+      "band": "WOD της ημέρας · {title}",
+      "play": "Συνέχεια κίνησης",
+      "pause": "Παύση κίνησης"
+    },
+    "video": {
+      "play": "Αναπαραγωγή βίντεο",
+      "pause": "Παύση βίντεο"
+    },
+    "coaches": {
+      "sub": "Οι άνθρωποι που θα σε προπονήσουν."
+    },
+    "space": {
+      "sub": "Πάτα μια φωτογραφία για να τη δεις μεγάλη."
+    },
+    "tiles": {
+      "hero1": "Προπόνηση",
+      "hero2": "στη γειτονιά σου",
+      "today": "Σήμερα",
+      "nextDay": "Την επόμενη μέρα",
+      "whoWeAre": "Ποιοι είμαστε",
+      "team": "Η ομάδα",
+      "inNumbers": "Σε αριθμούς",
+      "moreEvents": "{count, plural, other {και # ακόμα}}",
+      "programmes": "{count, plural, one {# πρόγραμμα} other {# προγράμματα}}",
+      "moreQuestions": "{count, plural, one {και # ερώτηση ακόμα} other {και # ερωτήσεις ακόμα}}",
+      "askUs": "Ρώτησέ μας"
+    },
+    "atelier": {
+      "hero1": "Δύναμη",
+      "hero2": "με <it>φροντίδα</it>.",
+      "scroll": "Κύλησε",
+      "theSchedule": "Το πρόγραμμα",
+      "philosophy": "Η φιλοσοφία μας",
+      "chapters": "Κεφάλαια",
+      "aDayHere": "Μια μέρα <it>εδώ</it>",
+      "chapterClasses": "Τα τμήματα",
+      "classesTitle": "Κάθε τμήμα, <it>με προσοχή</it>.",
+      "seeWeek": "Δες την εβδομάδα",
+      "chapterSpace": "Ο χώρος",
+      "spaceTitle": "Ο χώρος <it>μας</it>.",
+      "comeIn": "Μπες μέσα",
+      "chapterHome": "Και από το σπίτι",
+      "programmesTitle": "Προγράμματα από τους <it>coaches</it> μας.",
+      "seeProgrammes": "Δες τα προγράμματα",
+      "people": "Οι άνθρωποι",
+      "onTheFloor": "Στο πάτωμα <it>μαζί σου</it>",
+      "memberships": "Συνδρομές",
+      "simplePrices": "Απλές <it>τιμές</it>",
+      "fromMembers": "Από τα μέλη",
+      "firstHour": "Η πρώτη σου ώρα",
+      "closing1": "Έλα να",
+      "closing2": "<it>γνωριστούμε</it>.",
+      "contact": "Επικοινωνία"
+    }
+  },
   "BoxSite": {
     "bookTrial": "Κλείσε δοκιμαστικό",
     "askSomething": "Ρώτησε κάτι",

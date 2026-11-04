@@ -62,7 +62,7 @@ export function BoxWebsite({ page: rawPage, site: rawSite, language, basePath, s
   const page = useMemo(() => translatedPage(rawPage, site), [rawPage, site]);
   const slug = page.box.slug;
   const appLocale = useLocale();
-  const id = useId().replace(/[^a-zA-Z0-9]/g, "");
+  const id = `bw${useId().replace(/[^a-zA-Z0-9]/g, "")}`;
 
   // The base without the language, and the base of this language.
   const code = language === "box" ? null : language.toLowerCase();
@@ -90,17 +90,19 @@ export function BoxWebsite({ page: rawPage, site: rawSite, language, basePath, s
   const direction = isAppLocale(contentLanguage) ? localeDirection(contentLanguage) : "ltr";
   const calm = site.calm_motion;
 
-  const [overlay, setOverlay] = useState<Overlay | null>(null);
-  const close = useCallback(() => setOverlay(null), []);
+  // What is open belongs to the page it was opened on: a page change closes it.
+  const [opened, setOpened] = useState<{ overlay: Overlay; page: SitePage } | null>(null);
+  const overlay = opened && opened.page === pageKey ? opened.overlay : null;
+  const setOverlay = useCallback((next: Overlay) => setOpened({ overlay: next, page: pageKey }), [pageKey]);
+  const close = useCallback(() => setOpened(null), []);
   const navigate = usePageNavigation(base, preview, calm);
   const rootRef = useRef<HTMLDivElement>(null);
   const siteRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // A page change closes what was open and starts at the top.
+  // A new page ends its View Transition and starts at the top.
   useEffect(() => {
     settlePageTransition();
-    setOverlay(null);
     if (preview) scrollRef.current?.scrollTo?.({ top: 0 });
   }, [pageKey, preview]);
 
@@ -145,10 +147,6 @@ export function BoxWebsite({ page: rawPage, site: rawSite, language, basePath, s
   const light = siteTokens(site.palette, false, site.template).tokens;
   const dark = siteTokens(site.palette, true, site.template).tokens;
   const forced = site.appearance === "auto" ? null : site.appearance === "dark" ? dark : light;
-  const scheme =
-    site.appearance === "auto"
-      ? `[data-bw="${id}"]{${css(light)}}@media (prefers-color-scheme: dark){[data-bw="${id}"]{${css(dark)};color-scheme:dark}}`
-      : null;
 
   const Template = { arena: ArenaTemplate, tiles: TilesTemplate, stories: StoriesTemplate, atelier: AtelierTemplate }[site.template] ?? ArenaTemplate;
 
@@ -164,7 +162,7 @@ export function BoxWebsite({ page: rawPage, site: rawSite, language, basePath, s
       dir={direction}
       style={forced ? ({ ...forced, colorScheme: site.appearance } as CSSProperties) : undefined}
     >
-      {scheme ? <style>{scheme}</style> : null}
+      {forced ? null : <style>{`[data-bw=${id}]{${css(light)}}@media (prefers-color-scheme: dark){[data-bw=${id}]{${css(dark)};color-scheme:dark}}`}</style>}
       <SiteProvider value={ctx}>
         <Template />
         <OverlayLayer overlay={overlay} />

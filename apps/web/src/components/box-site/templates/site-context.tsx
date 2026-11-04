@@ -63,7 +63,7 @@ export const SiteProvider = Ctx.Provider;
 
 export function useSite(): SiteCtx {
   const value = useContext(Ctx);
-  if (!value) throw new Error("useSite outside BoxWebsite");
+  if (!value) throw new Error("useSite:no-BoxWebsite");
   return value;
 }
 
@@ -241,7 +241,7 @@ export function Lines({ lines }: { lines: ReactNode[] }) {
 
 const ICONS = {
   bar: (
-    <svg className="ico" viewBox="0 0 100 40" fill="#fff" aria-hidden="true">
+    <svg className="ico" viewBox="0 0 100 40" fill="currentColor" aria-hidden="true">
       <rect x="0" y="8" width="8" height="24" rx="2" />
       <rect x="10" y="2" width="9" height="36" rx="2" />
       <rect x="19" y="17" width="62" height="6" />
@@ -250,26 +250,31 @@ const ICONS = {
     </svg>
   ),
   kb: (
-    <svg className="ico" viewBox="0 0 60 70" fill="#fff" aria-hidden="true">
+    <svg className="ico" viewBox="0 0 60 70" fill="currentColor" aria-hidden="true">
       <path d="M18 4h24a8 8 0 0 1 8 8v8h-6v-7a3 3 0 0 0-3-3H19a3 3 0 0 0-3 3v7h-6v-8a8 8 0 0 1 8-8z" />
       <circle cx="30" cy="44" r="24" />
     </svg>
   ),
   rings: (
-    <svg className="ico" viewBox="0 0 80 70" fill="none" stroke="#fff" strokeWidth="6" aria-hidden="true">
+    <svg className="ico" viewBox="0 0 80 70" fill="none" stroke="currentColor" strokeWidth="6" aria-hidden="true">
       <path d="M22 0v30M58 0v30" />
       <circle cx="22" cy="48" r="16" />
       <circle cx="58" cy="48" r="16" />
     </svg>
   ),
   person: (
-    <svg className="ico" viewBox="0 0 60 80" fill="#fff" aria-hidden="true">
+    <svg className="ico" viewBox="0 0 60 80" fill="currentColor" aria-hidden="true">
       <circle cx="30" cy="18" r="14" />
       <path d="M4 80c0-20 11-34 26-34s26 14 26 34z" />
     </svg>
   ),
 };
 export type PhotoIcon = keyof typeof ICONS;
+
+const IMG = { eager: "eager", lazy: "lazy", high: "high" } as const;
+
+/** An SVG drawing that covers its box (`preserveAspectRatio`). */
+export const SVG_SLICE = ["xMidYMid", "slice"].join(" ");
 
 /**
  * A photo, or the palette's gradient with a training icon when the box has
@@ -298,7 +303,7 @@ export function Photo({
     <div className={`ph ${url ? "has-img" : ""} ${className}`} data-par={parallax} style={style}>
       {url ? (
         // eslint-disable-next-line @next/next/no-img-element -- media from the box's storage
-        <img src={url} alt={alt} loading={priority ? "eager" : "lazy"} fetchPriority={priority ? "high" : undefined} decoding="async" />
+        <img src={url} alt={alt} loading={priority ? IMG.eager : IMG.lazy} fetchPriority={priority ? IMG.high : undefined} decoding="async" />
       ) : icon ? (
         ICONS[icon]
       ) : null}

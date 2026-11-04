@@ -236,7 +236,7 @@ function ArenaHome() {
               const when = eventDate(event);
               return (
                 <div key={event.id} className="eventA" data-rv="scale">
-                  <span className="eyebrow" style={{ color: "rgba(255,255,255,.7)" }}>
+                  <span className="eyebrow" style={{ color: "color-mix(in srgb, var(--s-white) 70%, transparent)" }}>
                     {t("sections.events")}
                   </span>
                   <span className="date">

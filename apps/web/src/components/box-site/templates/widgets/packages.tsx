@@ -157,7 +157,7 @@ export function PackageStack() {
   const move = (step: number) => setIndex((value) => Math.max(0, Math.min(list.length - 1, value + step)));
 
   function down(event: PointerEvent<HTMLDivElement>) {
-    if ((event.target as Element).closest("button, a")) return;
+    if ((event.target as Element).closest("button,a")) return;
     drag.current = { x: event.clientX, id: event.pointerId };
     event.currentTarget.setPointerCapture?.(event.pointerId);
   }
@@ -193,12 +193,23 @@ export function PackageStack() {
           const offset = position - current;
           const visible = offset >= 0 && offset < 3;
           const top = offset === 0;
-          const transform = top && dx ? `translateX(${dx}px) rotate(${(dx / 20).toFixed(1)}deg)` : `translateY(${offset * 14}px) scale(${1 - offset * 0.05})`;
           return (
             <div
               key={pkg.id}
               className={`pk ${top && dx ? "dragging" : ""}`}
-              style={{ transform: calm && !top ? `translateY(${offset * 14}px)` : transform, opacity: visible ? 1 : 0, zIndex: 10 - Math.abs(offset), pointerEvents: visible && top ? undefined : "none" }}
+              style={
+                {
+                  transform:
+                    calm && !top
+                      ? `translateY(${offset * 14}px)`
+                      : top && dx
+                        ? `translateX(${dx}px) rotate(${(dx / 20).toFixed(1)}deg)`
+                        : `translateY(${offset * 14}px) scale(${1 - offset * 0.05})`,
+                  opacity: visible ? 1 : 0,
+                  "--k": Math.abs(offset),
+                  pointerEvents: visible && top ? undefined : "none",
+                } as CSSProperties
+              }
               aria-hidden={!top}
               inert={!top}
             >
