@@ -2,7 +2,8 @@ defmodule Palee.Workers.BoxSiteJob do
   @moduledoc """
   ADR-352/353: the website's background work. With an `organization_id` it
   serves that box (right after a form); without one (cron, every 5 minutes)
-  it serves every box with due domain checks, outbox rows or retention.
+  it serves every box with due domain checks, outbox rows or retention, and
+  sends the one-off notice of a site moved to «Αρένα» (ADR-530).
   """
 
   use Oban.Worker,
@@ -12,7 +13,7 @@ defmodule Palee.Workers.BoxSiteJob do
 
   require Logger
 
-  alias Palee.Application.BoxSite.{SiteDomainChecks, SiteOutbox}
+  alias Palee.Application.BoxSite.{SiteDomainChecks, SiteOutbox, SiteTemplateNotice}
   alias Palee.BoxSite
 
   @impl Oban.Worker
@@ -24,6 +25,7 @@ defmodule Palee.Workers.BoxSiteJob do
   def perform(_job) do
     now = BoxSite.clock().now()
     now |> BoxSite.due_organizations() |> Enum.each(&serve(&1, now))
+    SiteTemplateNotice.run(now)
     :ok
   end
 

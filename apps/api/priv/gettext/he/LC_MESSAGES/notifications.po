@@ -832,3 +832,9 @@ msgstr "%{package} מסתיים היום. חדשו אותו כדי להמשיך 
 
 msgid "%{package} ended on %{date}. Renew to book classes again."
 msgstr "%{package} הסתיים ב-%{date}. חדשו אותו כדי להזמין שיעורים שוב."
+
+msgid "Your website has a new look"
+msgstr "לאתר שלך יש מראה חדש"
+
+msgid "It now uses the Arena template. See it, pick another one or publish it as it is."
+msgstr "הוא משתמש עכשיו בתבנית Arena. ראה אותו, בחר תבנית אחרת או פרסם אותו כמו שהוא."

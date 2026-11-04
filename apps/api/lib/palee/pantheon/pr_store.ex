@@ -45,6 +45,11 @@ defmodule Palee.Pantheon.PRStore do
   @impl true
   def count_user_prs(user_id), do: adapter().count_user_prs(user_id)
 
+  # A SECURITY DEFINER count: no scope needed, no person in the answer.
+  @impl true
+  def count_organization_prs(organization_id, from, to),
+    do: adapter().count_organization_prs(organization_id, from, to)
+
   @impl true
   def list_organization_prs(user_id, organization_id),
     do: adapter().list_organization_prs(user_id, organization_id)

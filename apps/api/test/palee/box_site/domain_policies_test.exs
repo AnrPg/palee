@@ -39,6 +39,122 @@ defmodule Palee.BoxSite.DomainPoliciesTest do
 
       assert "schedule" in SiteSections.visible([], [], %{public_schedule: true})
     end
+
+    test "ADR-530: photos, stats and programmes show only with data" do
+      keys = SiteSections.keys()
+      assert Enum.all?(~w(photos stats programmes), &(&1 in keys))
+      assert hd(SiteSections.normalize_order(["stats", "photos"])) == "hero"
+
+      none = SiteSections.visible([], [], %{})
+      refute "photos" in none or "stats" in none or "programmes" in none
+
+      all = SiteSections.visible([], [], %{photos?: true, stats?: true, programmes?: true})
+      assert "photos" in all and "stats" in all and "programmes" in all
+      assert hd(all) == "hero"
+
+      refute "stats" in SiteSections.visible([], ["stats"], %{stats?: true})
+    end
+  end
+
+  describe "SiteSettingsPolicy: ADR-530 look and draft" do
+    setup do: %{current: SiteSettingsPolicy.defaults()}
+
+    test "a new box: tiles, Palee palette, timetable on, WOD off", %{current: current} do
+      assert %{
+               template: "tiles",
+               palette: "palee",
+               appearance: "auto",
+               calm_motion: false,
+               public_schedule: true,
+               public_wod: false,
+               draft: nil,
+               template_notice: false
+             } = current
+    end
+
+    test "unknown keys are field errors", %{current: current} do
+      assert {:error, {:invalid_fields, errors}} =
+               SiteSettingsPolicy.changes(current, %{
+                 "template" => "brutal",
+                 "palette" => "#ff0000",
+                 "appearance" => "sepia",
+                 "calm_motion" => "yes"
+               })
+
+      assert errors == %{
+               template: "invalid",
+               palette: "invalid",
+               appearance: "invalid",
+               calm_motion: "invalid"
+             }
+    end
+
+    test "publishable fields land in the draft; others save at once", %{current: current} do
+      assert {:ok, changes} =
+               SiteSettingsPolicy.changes(current, %{
+                 "template" => "stories",
+                 "palette" => "aegean",
+                 "public_wod" => true,
+                 "forms_enabled" => false
+               })
+
+      assert changes.forms_enabled == false
+      refute Map.has_key?(changes, :template)
+      refute Map.has_key?(changes, :public_wod)
+
+      assert changes.draft == %{
+               "template" => "stories",
+               "palette" => "aegean",
+               "public_wod" => true
+             }
+    end
+
+    test "the draft merges and keeps only what differs from the live site",
+         %{current: current} do
+      current = %{current | draft: %{"template" => "stories", "calm_motion" => true}}
+
+      assert {:ok, %{draft: %{"template" => "atelier", "calm_motion" => true}}} =
+               SiteSettingsPolicy.changes(current, %{"template" => "atelier"})
+
+      assert {:ok, %{draft: %{"calm_motion" => true}}} =
+               SiteSettingsPolicy.changes(current, %{"template" => "tiles"})
+
+      # Back to the live values: nothing waits any more.
+      assert {:ok, %{draft: nil}} =
+               SiteSettingsPolicy.changes(current, %{
+                 "template" => "tiles",
+                 "calm_motion" => false
+               })
+
+      # Hidden sections compare as a set.
+      current = %{SiteSettingsPolicy.defaults() | hidden_sections: ["faq", "coaches"]}
+
+      assert {:ok, %{draft: nil, section_order: _order}} =
+               SiteSettingsPolicy.changes(current, %{"hidden_sections" => ["coaches", "faq"]})
+    end
+
+    test "publish applies the draft, clears it and hides the notice", %{current: current} do
+      now = ~U[2026-11-04 10:00:00.000000Z]
+
+      current = %{
+        current
+        | draft: %{"template" => "atelier", "hidden_sections" => ["stats"], "bogus" => 1},
+          template_notice: true
+      }
+
+      assert SiteSettingsPolicy.drafted(current).template == "atelier"
+      assert SiteSettingsPolicy.drafted(current).hidden_sections == ["stats"]
+
+      assert SiteSettingsPolicy.publish(current, now) == %{
+               template: "atelier",
+               hidden_sections: ["stats"],
+               draft: nil,
+               published_at: now,
+               template_notice: false
+             }
+
+      assert %{draft: nil, published_at: ^now} = SiteSettingsPolicy.publish(%{draft: nil}, now)
+    end
   end
 
   describe "SiteSettingsPolicy" do

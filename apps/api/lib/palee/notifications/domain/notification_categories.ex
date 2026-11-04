@@ -105,7 +105,7 @@ defmodule Palee.Notifications.Domain.NotificationCategories do
         community_group_proposed community_report_created referral_review
         inventory_repair_needed inventory_stock_low inventory_digest cleaning_point_not_cleaned
         shop_stock_low shop_order_placed payment_needs_attention fiscal_connection_failed
-        site_request
+        site_request site_template_changed
       )
     },
     %{

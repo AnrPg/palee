@@ -45,6 +45,11 @@ defmodule Palee.Pantheon do
     to: Palee.Pantheon.PRStore,
     as: :list_organization_prs
 
+  @doc "ADR-530 «Αριθμοί κοινότητας»: how many PRs were recorded in a gym between two dates."
+  defdelegate count_organization_records(organization_id, from, to),
+    to: Palee.Pantheon.PRStore,
+    as: :count_organization_prs
+
   defdelegate list_record_history(pr_record_id),
     to: Palee.Pantheon.PRStore,
     as: :list_pr_history

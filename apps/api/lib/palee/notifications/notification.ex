@@ -129,6 +129,8 @@ defmodule Palee.Notifications.Notification do
     :box_automation,
     # ADR-388: a trial request or question from the box's website.
     :site_request,
+    # ADR-530: once, to the staff of a site the migration moved to «Αρένα».
+    :site_template_changed,
     # ADR-393: a WOD the person already performed was edited.
     :logged_workout_changed
   ]

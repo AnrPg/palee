@@ -717,6 +717,17 @@ defmodule Palee.Notifications do
         url: "/admin/leads?lead=#{field(payload, :lead_id)}"
       })
 
+  # ADR-530: once per box, to each staff member the use case names, when the
+  # migration moved the box's website to «Αρένα».
+  def process_event("site_template_changed", payload),
+    do:
+      enqueue_simple(:site_template_changed, payload, %{
+        organization_id: field(payload, :organization_id),
+        dedupe_key:
+          "site_template_changed:#{field(payload, :organization_id)}:#{field(payload, :user_id)}",
+        url: "/admin/settings/website"
+      })
+
   # ADR-220: a member is leaving the box. The staff who manage billing hear
   # the last day and the reason, once per leave.
   def process_event("member_leaving", payload) do

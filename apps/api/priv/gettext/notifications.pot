@@ -830,3 +830,9 @@ msgstr ""
 
 msgid "%{package} ended on %{date}. Renew to book classes again."
 msgstr ""
+
+msgid "Your website has a new look"
+msgstr ""
+
+msgid "It now uses the Arena template. See it, pick another one or publish it as it is."
+msgstr ""

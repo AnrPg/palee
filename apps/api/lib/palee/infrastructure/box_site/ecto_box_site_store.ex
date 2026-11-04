@@ -51,6 +51,17 @@ defmodule Palee.Infrastructure.BoxSite.EctoBoxSiteStore do
     Ecto.StaleEntryError -> {:error, :stale}
   end
 
+  @impl true
+  def claim_template_notice(%{organization_id: organization_id}, now) do
+    {count, _rows} =
+      SiteSettings
+      |> where([s], s.organization_id == ^organization_id)
+      |> where([s], s.template_notice and is_nil(s.template_notice_sent_at))
+      |> Repo.update_all(set: [template_notice_sent_at: now])
+
+    count == 1
+  end
+
   defp settings_row(organization_id),
     do: Repo.one(from s in SiteSettings, where: s.organization_id == ^organization_id)
 
@@ -59,7 +70,7 @@ defmodule Palee.Infrastructure.BoxSite.EctoBoxSiteStore do
   defp settings_map(%SiteSettings{} = row) do
     row
     |> Map.from_struct()
-    |> Map.drop([:__meta__, :conversions_api_token])
+    |> Map.drop([:__meta__, :conversions_api_token, :template_notice_sent_at])
     |> Map.put(:faq, Map.get(row.faq || %{}, "entries", []))
     |> Map.put(:has_conversions_api_token, not is_nil(row.conversions_api_token))
   end
@@ -416,6 +427,14 @@ defmodule Palee.Infrastructure.BoxSite.EctoBoxSiteStore do
   def due_organizations(now) do
     %{rows: rows} =
       Repo.query!("SELECT organization_id FROM palee_box_site_due_organizations($1)", [now])
+
+    Enum.map(rows, fn [id] -> Ecto.UUID.load!(id) end)
+  end
+
+  @impl true
+  def template_notices_due do
+    %{rows: rows} =
+      Repo.query!("SELECT organization_id FROM palee_box_site_template_notices_due()", [])
 
     Enum.map(rows, fn [id] -> Ecto.UUID.load!(id) end)
   end

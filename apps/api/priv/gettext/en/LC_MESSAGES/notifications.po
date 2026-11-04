@@ -832,3 +832,9 @@ msgstr "%{package} ends today. Renew to keep booking classes."
 
 msgid "%{package} ended on %{date}. Renew to book classes again."
 msgstr "%{package} ended on %{date}. Renew to book classes again."
+
+msgid "Your website has a new look"
+msgstr "Your website has a new look"
+
+msgid "It now uses the Arena template. See it, pick another one or publish it as it is."
+msgstr "It now uses the Arena template. See it, pick another one or publish it as it is."

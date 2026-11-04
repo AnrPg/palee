@@ -832,3 +832,9 @@ msgstr "%{package} заканчивается сегодня. Продлите, 
 
 msgid "%{package} ended on %{date}. Renew to book classes again."
 msgstr "%{package} закончилась %{date}. Продлите, чтобы снова записываться на занятия."
+
+msgid "Your website has a new look"
+msgstr "У твоего сайта новый вид"
+
+msgid "It now uses the Arena template. See it, pick another one or publish it as it is."
+msgstr "Теперь он использует шаблон Arena. Посмотри его, выбери другой или опубликуй как есть."
