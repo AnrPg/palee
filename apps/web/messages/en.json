@@ -778,7 +778,7 @@
     "displayLabeld747868": "Display label",
     "addLeveld2d215f": "+ Add level",
     "reminderIntervalDaysee3ba34": "Reminder interval (days)",
-    "howOftenInDaysAMemberWithAn710fa76": "How often (in days) a box member with an outstanding balance receives a payment reminder notification. The reminder repeats until the balance is fully settled.",
+    "howOftenInDaysAMemberWithAn710fa76": "After that, how many days apart the reminder repeats until the member renews or leaves. A member who owes money gets a payment reminder at the same pace until the balance is settled.",
     "applicationSettingsIntroduction8f2e9b7": "application settings introduction",
     "appConfigurations1e15749": "App configurations.",
     "globalSettingsForAppearanceEngagementRulesAndWorkout915168c": "Global settings for appearance, engagement rules, and workout level definitions. Changes apply immediately across the app.",
@@ -4895,7 +4895,12 @@
     "pkgFieldBookingDailyLimitSuffix": "{count, plural, one {class a day} other {classes a day}}",
     "pkgFieldBookingOpenBookingsLimit": "Open bookings",
     "pkgFieldBookingOpenBookingsLimitHint": "How many upcoming classes a member may hold booked at once.",
-    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {upcoming class} other {upcoming classes}}"
+    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {upcoming class} other {upcoming classes}}",
+    "subscriptionEndsTodayTitle": "Your subscription ends today",
+    "subscriptionEndsTodayBody": "{package} ends today. Renew to keep booking classes.",
+    "subscriptionEndedRenewBody": "{package} ended on {date}. Renew to book classes again.",
+    "subscriptionEndDayReminder": "Reminder on the day it ends",
+    "subscriptionDayAfterReminder": "Reminder on the day after it ends"
   },
   "PrSharing": {
     "gymLabel": "Where did you set this PR?",
@@ -13438,7 +13443,9 @@
         "community_partners_enabled": "Training partners",
         "trials_enabled": "Trials",
         "trials_seats_per_class": "Trial places per class",
-        "trials_approval": "Trial approval"
+        "trials_approval": "Trial approval",
+        "finance_subscription_end_day_reminder": "Reminder on the day it ends",
+        "finance_subscription_day_after_reminder": "Reminder on the day after it ends"
       }
     }
   },

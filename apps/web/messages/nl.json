@@ -778,7 +778,7 @@
     "displayLabeld747868": "Etiket weergeven",
     "addLeveld2d215f": "+ Niveau toevoegen",
     "reminderIntervalDaysee3ba34": "Herinneringsinterval (dagen)",
-    "howOftenInDaysAMemberWithAn710fa76": "Hoe vaak (in dagen) een lid met een openstaand saldo een betalingsherinnering ontvangt. De herinnering wordt herhaald totdat het saldo volledig is vereffend.",
+    "howOftenInDaysAMemberWithAn710fa76": "Daarna: om de hoeveel dagen de herinnering terugkomt, tot het lid verlengt of vertrekt. Wie geld schuldig is, krijgt in hetzelfde ritme een betalingsherinnering tot het saldo is betaald.",
     "applicationSettingsIntroduction8f2e9b7": "introductie van applicatie-instellingen",
     "appConfigurations1e15749": "App-configuraties.",
     "globalSettingsForAppearanceEngagementRulesAndWorkout915168c": "Algemene instellingen voor uiterlijk, betrokkenheidsregels en definities van trainingsniveaus. Wijzigingen zijn onmiddellijk van toepassing in de hele app.",
@@ -4895,7 +4895,12 @@
     "pkgFieldBookingDailyLimitSuffix": "{count, plural, one {les per dag} other {lessen per dag}}",
     "pkgFieldBookingOpenBookingsLimit": "Openstaande boekingen",
     "pkgFieldBookingOpenBookingsLimitHint": "Hoeveel komende lessen een lid tegelijk geboekt mag hebben.",
-    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {komende les} other {komende lessen}}"
+    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {komende les} other {komende lessen}}",
+    "subscriptionEndsTodayTitle": "Je abonnement eindigt vandaag",
+    "subscriptionEndsTodayBody": "{package} eindigt vandaag. Verleng het om lessen te blijven boeken.",
+    "subscriptionEndedRenewBody": "{package} is geëindigd op {date}. Verleng het om weer lessen te boeken.",
+    "subscriptionEndDayReminder": "Herinnering op de dag dat het eindigt",
+    "subscriptionDayAfterReminder": "Herinnering de dag na het einde"
   },
   "PrSharing": {
     "gymLabel": "Waar heb je dit PR neergezet?",
@@ -13438,7 +13443,9 @@
         "community_partners_enabled": "Trainingspartners",
         "trials_enabled": "Proeflessen",
         "trials_seats_per_class": "Proefplaatsen per les",
-        "trials_approval": "Goedkeuring van proeflessen"
+        "trials_approval": "Goedkeuring van proeflessen",
+        "finance_subscription_end_day_reminder": "Herinnering op de dag dat het eindigt",
+        "finance_subscription_day_after_reminder": "Herinnering de dag na het einde"
       }
     }
   },

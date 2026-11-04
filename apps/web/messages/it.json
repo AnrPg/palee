@@ -778,7 +778,7 @@
     "displayLabeld747868": "Etichetta visualizzata",
     "addLeveld2d215f": "+ Aggiungi livello",
     "reminderIntervalDaysee3ba34": "Intervallo promemoria (giorni)",
-    "howOftenInDaysAMemberWithAn710fa76": "Ogni quanti giorni un socio con un saldo da pagare riceve una notifica di promemoria di pagamento. Il promemoria si ripete finché il saldo non è pagato per intero.",
+    "howOftenInDaysAMemberWithAn710fa76": "Dopo, ogni quanti giorni si ripete il promemoria finché il membro non rinnova o se ne va. Chi deve denaro riceve un promemoria di pagamento con lo stesso ritmo finché non salda.",
     "applicationSettingsIntroduction8f2e9b7": "introduzione alle impostazioni dell'applicazione",
     "appConfigurations1e15749": "Configurazioni dell'app.",
     "globalSettingsForAppearanceEngagementRulesAndWorkout915168c": "Impostazioni globali per aspetto, regole di coinvolgimento e definizioni dei livelli di allenamento. Le modifiche si applicano subito in tutta l'app.",
@@ -4895,7 +4895,12 @@
     "pkgFieldBookingDailyLimitSuffix": "{count, plural, one {lezione al giorno} other {lezioni al giorno}}",
     "pkgFieldBookingOpenBookingsLimit": "Prenotazioni aperte",
     "pkgFieldBookingOpenBookingsLimitHint": "Quante lezioni future un membro può avere prenotate insieme.",
-    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {lezione futura} other {lezioni future}}"
+    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {lezione futura} other {lezioni future}}",
+    "subscriptionEndsTodayTitle": "Il tuo abbonamento scade oggi",
+    "subscriptionEndsTodayBody": "{package} scade oggi. Rinnovalo per continuare a prenotare le lezioni.",
+    "subscriptionEndedRenewBody": "{package} è scaduto il {date}. Rinnovalo per prenotare di nuovo le lezioni.",
+    "subscriptionEndDayReminder": "Promemoria il giorno della scadenza",
+    "subscriptionDayAfterReminder": "Promemoria il giorno dopo la scadenza"
   },
   "PrSharing": {
     "gymLabel": "Dove hai stabilito questo PR?",
@@ -13438,7 +13443,9 @@
         "community_partners_enabled": "Compagni di allenamento",
         "trials_enabled": "Prove",
         "trials_seats_per_class": "Posti di prova per lezione",
-        "trials_approval": "Approvazione delle prove"
+        "trials_approval": "Approvazione delle prove",
+        "finance_subscription_end_day_reminder": "Promemoria il giorno della scadenza",
+        "finance_subscription_day_after_reminder": "Promemoria il giorno dopo la scadenza"
       }
     }
   },

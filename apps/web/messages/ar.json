@@ -778,7 +778,7 @@
     "displayLabeld747868": "تسمية العرض",
     "addLeveld2d215f": "+ إضافة المستوى",
     "reminderIntervalDaysee3ba34": "الفاصل الزمني للتذكير (أيام)",
-    "howOftenInDaysAMemberWithAn710fa76": "عدد المرات (بالأيام) التي يتلقى فيها العضو الذي لديه رصيد مستحق إشعارًا للتذكير بالدفع. يتكرر التذكير حتى يتم تسوية الرصيد بالكامل.",
+    "howOftenInDaysAMemberWithAn710fa76": "بعد ذلك، كل كم يومًا يتكرر التذكير حتى يجدد العضو أو يغادر. من عليه مبلغ مستحق يتلقى تذكير دفع بالوتيرة نفسها حتى يسدّد.",
     "applicationSettingsIntroduction8f2e9b7": "مقدمة إعدادات التطبيق",
     "appConfigurations1e15749": "تكوينات التطبيق.",
     "globalSettingsForAppearanceEngagementRulesAndWorkout915168c": "الإعدادات العامة للمظهر وقواعد المشاركة وتعريفات مستوى التمرين. تنطبق التغييرات على الفور عبر التطبيق.",
@@ -4895,7 +4895,12 @@
     "pkgFieldBookingDailyLimitSuffix": "{count, plural, zero {حصة في اليوم} one {حصة في اليوم} two {حصتان في اليوم} few {حصص في اليوم} many {حصة في اليوم} other {حصة في اليوم}}",
     "pkgFieldBookingOpenBookingsLimit": "الحجوزات القادمة",
     "pkgFieldBookingOpenBookingsLimitHint": "عدد الحصص القادمة التي يمكن للعضو حجزها في الوقت نفسه.",
-    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, zero {حصة قادمة} one {حصة قادمة} two {حصتان قادمتان} few {حصص قادمة} many {حصة قادمة} other {حصة قادمة}}"
+    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, zero {حصة قادمة} one {حصة قادمة} two {حصتان قادمتان} few {حصص قادمة} many {حصة قادمة} other {حصة قادمة}}",
+    "subscriptionEndsTodayTitle": "ينتهي اشتراكك اليوم",
+    "subscriptionEndsTodayBody": "ينتهي {package} اليوم. جدّده لتواصل حجز الحصص.",
+    "subscriptionEndedRenewBody": "انتهى {package} في {date}. جدّده لتحجز الحصص من جديد.",
+    "subscriptionEndDayReminder": "تذكير في يوم الانتهاء",
+    "subscriptionDayAfterReminder": "تذكير في اليوم التالي للانتهاء"
   },
   "PrSharing": {
     "gymLabel": "أين حققت هذا الرقم القياسي؟",
@@ -13438,7 +13443,9 @@
         "community_partners_enabled": "شركاء التدريب",
         "trials_enabled": "الحصص التجريبية",
         "trials_seats_per_class": "أماكن التجربة في كل حصة",
-        "trials_approval": "الموافقة على التجارب"
+        "trials_approval": "الموافقة على التجارب",
+        "finance_subscription_end_day_reminder": "تذكير في يوم الانتهاء",
+        "finance_subscription_day_after_reminder": "تذكير في اليوم التالي للانتهاء"
       }
     }
   },

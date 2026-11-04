@@ -37,6 +37,8 @@ defmodule Palee.Setup.Domain.SettingsCatalog do
     {"finance.package_modules", :derive, ["group_classes", "online_coaching"], true},
     {"finance.subscription_grace_days", :advanced, 3, true},
     {"finance.subscription_expiry_reminder_days", :advanced, 5, true},
+    {"finance.subscription_end_day_reminder", :advanced, true, false},
+    {"finance.subscription_day_after_reminder", :advanced, true, false},
     {"finance.payment_reminder_interval_days", :advanced, 7, true},
     {"finance.entitlement_enforcement_mode", :remove, "observe", false},
     {"finance.entitlement_timezone", :derive, "Europe/Athens", false},
