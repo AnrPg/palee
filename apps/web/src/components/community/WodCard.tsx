@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -14,18 +14,65 @@ import { useSession } from "@/components/session-provider";
 import { TrainingLogDialog, type TrainingLogDialogState } from "@/components/training-log/TrainingLog";
 import { useUiLocale } from "@/i18n/use-ui-locale";
 import { formatClock } from "@/lib/clock";
+import { surfaceRoleForMembership, useOrganizationMemberships } from "@/lib/membership-role";
 import { adminHref } from "@/lib/organization-slug";
+import { useView } from "@/lib/view-mode";
+
+type WodClass = { id: string; scheduled_at: string };
+
+function byStart(classes: WodClass[]) {
+  return [...classes].sort((a, b) => Date.parse(a.scheduled_at) - Date.parse(b.scheduled_at));
+}
 
 /**
  * Where a tap on the WOD banner goes (ANR 2026-11-04): the box schedule with
  * the class sheet of today's next class open (it shows the WOD); the last
  * class once all have started; the schedule alone when no class has it.
+ * `day` (the gym day of the card) moves the schedule to that day, whatever
+ * range or type filter it was left on.
  */
-export function wodScheduleHref(slug: string | null, classes: { id: string; scheduled_at: string }[], now: Date) {
-  const sorted = [...classes].sort((a, b) => a.scheduled_at.localeCompare(b.scheduled_at));
-  const next = sorted.find((entry) => new Date(entry.scheduled_at).getTime() >= now.getTime()) ?? sorted.at(-1);
-  const path = next ? `/box/schedule?open_slot=${encodeURIComponent(next.id)}` : "/box/schedule";
+export function wodScheduleHref(slug: string | null, classes: WodClass[], day: string, now: Date) {
+  const sorted = byStart(classes);
+  const next = sorted.find((entry) => Date.parse(entry.scheduled_at) >= now.getTime()) ?? sorted.at(-1);
+  const path = next
+    ? `/box/schedule?open_slot=${encodeURIComponent(next.id)}&open_day=${encodeURIComponent(day)}`
+    : "/box/schedule";
   return adminHref(path, slug);
+}
+
+/**
+ * Milliseconds until the banner's destination changes (the next class
+ * start), or null when no class is still to start. The card re-renders then,
+ * so a feed left open does not keep pointing at a class that has begun.
+ */
+export function msUntilNextWodClass(classes: WodClass[], now: Date) {
+  const next = byStart(classes).find((entry) => Date.parse(entry.scheduled_at) >= now.getTime());
+  return next ? Math.max(0, Date.parse(next.scheduled_at) - now.getTime()) + 1 : null;
+}
+
+/**
+ * Only club members and staff of the box may open its schedule (the page
+ * guard); for anyone else in the gym club (e.g. an athlete) the banner stays
+ * a plain banner rather than a link that bounces them home.
+ */
+export function canOpenBoxSchedule(role: "admin" | "member" | "athlete" | null) {
+  return role === "admin" || role === "member";
+}
+
+// setTimeout takes at most a signed 32-bit delay.
+const MAX_TIMEOUT_MS = 2_147_483_647;
+
+/** The current time, refreshed at each class start of the card. */
+function useWodNow(classes: WodClass[] | undefined) {
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    if (!classes) return;
+    const wait = msUntilNextWodClass(classes, now);
+    if (wait === null) return;
+    const timer = window.setTimeout(() => setNow(new Date()), Math.min(wait, MAX_TIMEOUT_MS));
+    return () => window.clearTimeout(timer);
+  }, [classes, now]);
+  return now;
 }
 
 /**
@@ -48,6 +95,12 @@ export function WodCard({ club, showOrigin = true }: { club: CommunityClub; show
   const time = (iso: string) => formatClock(new Date(iso), locale, { hour: "2-digit", minute: "2-digit" });
   const data = card.data;
   const mine = data?.leaderboard.find((row) => row.me) ?? null;
+  const now = useWodNow(data?.classes);
+  const view = useView();
+  const membershipsQuery = useOrganizationMemberships();
+  const memberships = Array.isArray(membershipsQuery.data) ? membershipsQuery.data : [];
+  const boxMembership = memberships.find((entry) => entry.organization.slug === club.organization_slug) ?? null;
+  const scheduleOpen = canOpenBoxSchedule(boxMembership ? surfaceRoleForMembership(boxMembership, view) : null);
 
   function closeLog() {
     setLogDialog({ mode: "closed" });
@@ -62,12 +115,7 @@ export function WodCard({ club, showOrigin = true }: { club: CommunityClub; show
       <div className="flex flex-col gap-3">
         {/* The screen's hero (BRAND.md): the WOD on the deep surface, tagged in
             Spark, with a Dojo edge so Spark and Graphite never stand alone. */}
-        <Link
-          href={wodScheduleHref(club.organization_slug ?? null, data.classes, new Date())}
-          data-testid="wod-card-banner"
-          className="block rounded-2xl p-4"
-          style={{ background: "var(--deep)", color: "var(--deep-contrast)", borderInlineStart: "4px solid var(--primary)" }}
-        >
+        <BannerShell href={scheduleOpen ? wodScheduleHref(club.organization_slug ?? null, data.classes, data.date, now) : null}>
           <span
             className="inline-block rounded-full px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-[0.14em]"
             style={{ background: "var(--spark)", color: "var(--spark-contrast)" }}
@@ -78,7 +126,7 @@ export function WodCard({ club, showOrigin = true }: { club: CommunityClub; show
           <p className="text-sm" style={{ opacity: 0.75 }}>
             {[...data.classes.map((entry) => time(entry.scheduled_at)), t("wodScoreCount", { count: data.leaderboard.length })].join(" · ")}
           </p>
-        </Link>
+        </BannerShell>
         {data.score && club.organization_slug ? (
           <WodLeaderboard
             slug={club.organization_slug}
@@ -123,6 +171,21 @@ export function WodCard({ club, showOrigin = true }: { club: CommunityClub; show
         <TrainingLogDialog state={logDialog} token={token} onNavigate={setLogDialog} onClose={closeLog} />
       ) : null}
     </HubCard>
+  );
+}
+
+function BannerShell({ href, children }: { href: string | null; children: ReactNode }) {
+  const props = {
+    "data-testid": "wod-card-banner",
+    className: "block rounded-2xl p-4",
+    style: { background: "var(--deep)", color: "var(--deep-contrast)", borderInlineStart: "4px solid var(--primary)" },
+  };
+  return href ? (
+    <Link href={href} {...props}>
+      {children}
+    </Link>
+  ) : (
+    <div {...props}>{children}</div>
   );
 }
 
