@@ -118,3 +118,8 @@ config :palee, :status_translator, Palee.Infrastructure.Status.SandboxTranslator
 if System.get_env("FOOD_DATABASE") not in ["open_food_facts", "chain"] do
   config :palee, :food_database, Palee.Infrastructure.Nutrition.SandboxFoodDatabase
 end
+
+# ADR-520: no model calls for website translations outside production.
+config :palee,
+       :content_machine_translator,
+       Palee.Infrastructure.ContentTranslations.SandboxMachineTranslator

@@ -35,20 +35,18 @@ const ALL_PARTS: AboutPart[] = ["about", "coaches", "location"];
 
 /**
  * ADR-388: the box's website shows these parts as its «Σχετικά», «Coaches»
- * and «Τοποθεσία» sections, each where the owner put it (`parts`), and on
- * `/en` the owner's English about text (`aboutText`).
+ * and «Τοποθεσία» sections, each where the owner put it (`parts`). A
+ * translated site passes a page with the owner's translations in it (ADR-520).
  */
 export function AboutTab({
   page,
   onOpenPhoto,
   parts = ALL_PARTS,
-  aboutText,
   enquiry = true,
 }: {
   page: PublicBoxPage;
   onOpenPhoto: (index: number) => void;
   parts?: AboutPart[];
-  aboutText?: string;
   /** The website has its own trial and contact cards (ADR-388), so it turns this off. */
   enquiry?: boolean;
 }) {
@@ -60,7 +58,7 @@ export function AboutTab({
   const [allDisciplines, setAllDisciplines] = useState(false);
   const names = useMemo(() => languageNames(locale), [locale]);
   const show = (part: AboutPart) => parts.includes(part);
-  const about = show("about") ? (aboutText ?? profile.about ?? "") : "";
+  const about = show("about") ? (profile.about ?? "") : "";
   const longAbout = about.length > ABOUT_PREVIEW;
   const photoOffset = profile.cover ? 1 : 0;
   const disciplines = allDisciplines ? profile.disciplines : profile.disciplines.slice(0, SHOWN_DISCIPLINES);

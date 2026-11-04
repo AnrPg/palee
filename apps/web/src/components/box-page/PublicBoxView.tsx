@@ -169,7 +169,7 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
               </button>
             )}
             <span className="flex gap-2">
-              {site && (standalone || status === "guest") ? <SiteLanguageSwitch slug={page.box.slug} boxLanguage={site.language} language={language} basePath={basePath} /> : null}
+              {site && (standalone || status === "guest") ? <SiteLanguageSwitch slug={page.box.slug} boxLanguage={site.language} languages={site.languages} language={language} basePath={basePath} /> : null}
               {photos.length > 1 ? (
                 <button type="button" onClick={() => setViewer(0)} aria-label={t("openPhotos")} className={roundButtonClass} style={{ background: "var(--media-control)", color: "var(--on-media)" }}>
                   <Icon name="images" />
@@ -303,7 +303,7 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
       </div>
 
       {viewer !== null && photos.length > 0 ? <PhotoViewer photos={photos} start={viewer} onClose={() => setViewer(null)} /> : null}
-      {request ? <SiteRequestSheet slug={page.box.slug} kind={request} privacyHref={`${basePath}/privacy${language === "en" ? "?lang=en" : ""}`} onClose={() => setRequest(null)} /> : null}
+      {request ? <SiteRequestSheet slug={page.box.slug} kind={request} privacyHref={`${basePath}/privacy${language === "box" ? "" : `?lang=${encodeURIComponent(language)}`}`} onClose={() => setRequest(null)} /> : null}
     </div>
   );
 }

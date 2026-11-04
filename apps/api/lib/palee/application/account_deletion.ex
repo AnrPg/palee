@@ -28,6 +28,7 @@ defmodule Palee.Application.AccountDeletion do
   require Logger
 
   alias Palee.Application.{
+    DebtorContacts,
     DiplomaSignatures,
     LoginUser,
     PartnerVerificationRetention,
@@ -330,6 +331,9 @@ defmodule Palee.Application.AccountDeletion do
   end
 
   defp remove_profile(profile) do
+    # ADR-450: each box the person still owes keeps their name, email and
+    # SMS number until the debt is settled (read before the number goes).
+    :ok = DebtorContacts.keep(profile)
     # ADR-280: the Partners check's selfies and rows (anonymising keeps the
     # profile row, so they are removed here rather than by the cascade).
     :ok = PartnerVerificationRetention.purge_person(profile.id)

@@ -73,6 +73,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     payment_surcharge_settings
     coach_pay_rules coach_pay_periods coach_pay_statements coach_pay_lines coach_pay_items
     programmes programme_versions programme_purchases programme_deliveries programme_reviews
+    coach_pay_item_skips
     box_screens
     document_settings document_templates document_versions document_signature_requests
     document_signatures document_audit_events health_certificates
@@ -84,6 +85,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     messaging_participants messaging_messages messaging_box_blocks seasonal_challenges
     user_challenge_progress challenge_leaderboard_opt_ins leaderboard_opt_ins
     fitness_display_overrides
+    finance_debtor_contacts
     gamification_settings attendance_records communication_threads
     communication_messages analytics_events notification_click_events
     push_dispatch_attempts

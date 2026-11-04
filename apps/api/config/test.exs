@@ -173,3 +173,8 @@ config :palee, :open_food_facts_contributions,
   req_options: [plug: {Req.Test, Palee.OpenFoodFactsWrite}]
 
 config :palee, :food_label_reader, Palee.FakeFoodLabelReader
+
+# ADR-520: no model calls for website translations outside production.
+config :palee,
+       :content_machine_translator,
+       Palee.Infrastructure.ContentTranslations.SandboxMachineTranslator

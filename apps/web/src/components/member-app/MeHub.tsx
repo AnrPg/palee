@@ -16,6 +16,7 @@ import { CountsLine } from "@/components/social/SocialBits";
 import { useSocialSummary } from "@/components/social/use-social";
 import { useHasBillingProviders } from "@/lib/billing-providers";
 import { useSelectedMembershipRole } from "@/lib/membership-role";
+import { useFeatureAtAnyBusiness } from "@/lib/use-business-features";
 
 /**
  * Εγώ (brief §6.1, §7.11, mockup «me/meLinks»): who I am to others (the
@@ -38,6 +39,10 @@ export function MeHub() {
   const buddyUnread = unreadTotal(buddies.data);
   const { currentUser, signOut } = useSession();
   const { membership, memberships } = useSelectedMembershipRole();
+  const referralsAnywhere = useFeatureAtAnyBusiness(
+    memberships.map((entry) => entry.organization.slug),
+    "referrals",
+  );
   const { hasBillingProviders } = useHasBillingProviders();
   const resets = usePasswordResets();
   const openConsole = useOpenConsole();
@@ -84,7 +89,8 @@ export function MeHub() {
       ) : null}
 
       <HubList>
-        <HubListRow href="/me/referrals" label={t("meReferrals")} detail={t("meReferralsHint")} />
+        {/* ADR-470: only when one of my boxes runs a referral programme. */}
+        {referralsAnywhere ? <HubListRow href="/me/referrals" label={t("meReferrals")} detail={t("meReferralsHint")} /> : null}
         <HubListRow
           href="/me/buddy"
           label={tBuddy("title")}

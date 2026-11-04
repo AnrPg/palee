@@ -3,6 +3,7 @@ import type { WorkoutContentEntry } from "@/components/workouts/WorkoutContent";
 import { apiRequest } from "@/api/client";
 import type { DayWorkout } from "@/api/day-workouts";
 import type { operations, paths } from "@/api/generated/schema";
+import type { ClassLevel } from "@/lib/class-levels";
 
 type CreateBookingRequest = NonNullable<
   operations["PaleeWeb.ScheduleController.create_booking"]["requestBody"]
@@ -26,14 +27,13 @@ export type ClassTypeRecord = {
   /** Visits one booking uses (1..10, ADR-097). */
   credit_cost?: number;
   kind?: "class" | "event";
-  /** Who the class suits (Phase 2 Επίπεδο filter). */
-  level?: ClassLevel;
+  /** Levels the class suits; empty means all levels (Επίπεδο filter, ADR-490). */
+  levels?: ClassLevel[];
   /** Groups the class is for; empty means everyone (Κοινό filter). */
   audiences?: ClassAudience[];
 };
 
-export const CLASS_LEVELS = ["beginner", "all_levels", "advanced"] as const;
-export type ClassLevel = (typeof CLASS_LEVELS)[number];
+export { CLASS_LEVELS, classLevelsOf, suitsLevels, type ClassLevel } from "@/lib/class-levels";
 export const CLASS_AUDIENCES = ["women_only", "teens", "kids", "over_40", "seniors", "prenatal_postnatal", "adaptive"] as const;
 export type ClassAudience = (typeof CLASS_AUDIENCES)[number];
 export const WORKOUT_FOCUSES = [
@@ -277,7 +277,7 @@ export type ClassTypePayload = {
   sort_order?: number;
   credit_cost?: number;
   kind?: "class" | "event";
-  level?: ClassLevel;
+  levels?: ClassLevel[];
   audiences?: ClassAudience[];
 };
 

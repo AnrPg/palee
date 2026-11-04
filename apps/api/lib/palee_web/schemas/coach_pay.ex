@@ -219,7 +219,49 @@ defmodule PaleeWeb.Schemas.CoachPay do
         approved_by_id: %{@uuid | nullable: true},
         exported_at: @time,
         reopen_reason: %Schema{type: :string, nullable: true},
-        statements: %Schema{type: :array, items: statement()}
+        statements: %Schema{type: :array, items: statement()},
+        item_skips: %Schema{
+          type: :array,
+          description: "ADR-510: recurring allowances taken off a person for this period",
+          items: item_skip()
+        }
+      }
+    }
+  end
+
+  def item_skip do
+    %Schema{
+      type: :object,
+      required: [:id, :name, :pay_item_id, :user_id],
+      properties: %{
+        id: @uuid,
+        user_id: @uuid,
+        pay_item_id: @uuid,
+        name: %Schema{type: :string, nullable: true}
+      }
+    }
+  end
+
+  def people do
+    %Schema{
+      type: :object,
+      required: [:people],
+      properties: %{
+        people: %Schema{
+          type: :array,
+          items: %Schema{
+            type: :object,
+            required: [:name, :pay_roles, :user_id],
+            properties: %{
+              user_id: @uuid,
+              name: %Schema{type: :string, nullable: true},
+              pay_roles: %Schema{
+                type: :array,
+                items: %Schema{type: :string, enum: CoachPay.pay_item_roles()}
+              }
+            }
+          }
+        }
       }
     }
   end
@@ -304,6 +346,19 @@ defmodule PaleeWeb.Schemas.CoachPay do
         pay_item_id: @uuid,
         user_id: @uuid,
         quantity: %Schema{type: :integer, minimum: 1, maximum: 1_000},
+        minutes: %Schema{
+          type: :integer,
+          minimum: 1,
+          maximum: 10_080,
+          description: "One-off overtime only: the minutes worked"
+        },
+        unit_cents: %Schema{
+          type: :integer,
+          minimum: 1,
+          maximum: 10_000_000,
+          description:
+            "One-off overtime only: the rate per hour for this line (default: the item's)"
+        },
         note: %Schema{type: :string, maxLength: 500, nullable: true},
         amount_basis: @basis
       }
@@ -334,6 +389,12 @@ defmodule PaleeWeb.Schemas.CoachPay do
           items: %Schema{type: :string, enum: CoachPay.pay_item_roles()}
         },
         weekly_threshold: %{@int | nullable: true},
+        frequency: %Schema{
+          type: :string,
+          enum: CoachPay.pay_item_frequencies(),
+          nullable: true,
+          description: "Recurring allowance (unit per_period) only"
+        },
         currency: %Schema{type: :string},
         amount_basis: @basis,
         archived_at: @time
@@ -360,7 +421,17 @@ defmodule PaleeWeb.Schemas.CoachPay do
         unit: %Schema{
           type: :string,
           enum: CoachPay.pay_item_units(),
-          description: "overtime: per_hour; allowance: per_period or per_occurrence"
+          description:
+            "overtime: per_hour; allowance: per_period (recurring, added by every " <>
+              "calculation) or per_occurrence (a rate added by hand)"
+        },
+        frequency: %Schema{
+          type: :string,
+          enum: CoachPay.pay_item_frequencies(),
+          nullable: true,
+          description:
+            "Recurring allowance: once per pay period (`period`, default) or per day, week " <>
+              "or month, prorated by the period's days"
         },
         roles: %Schema{
           type: :array,
@@ -372,7 +443,9 @@ defmodule PaleeWeb.Schemas.CoachPay do
           minimum: 0,
           maximum: 168,
           nullable: true,
-          description: "Overtime: hours a week (Monday to Sunday) before overtime; required"
+          description:
+            "Overtime: hours a week (Monday to Sunday) before overtime is counted from " <>
+              "classes; null keeps it a rate for one-off hours only"
         },
         currency: %Schema{type: :string, minLength: 3, maxLength: 3},
         amount_basis: @basis

@@ -734,6 +734,8 @@ defmodule PaleeWeb.Router do
     ])
 
     get("/finance", MyFinanceController, :index)
+    # ADR-470: which optional features the business has switched on.
+    get("/features", MyFeaturesController, :show)
     # ADR-346: my choices about the box's automatic messages.
     get("/automatic-messages", MyAutomationPreferencesController, :show)
     put("/automatic-messages", MyAutomationPreferencesController, :update)
@@ -1601,6 +1603,11 @@ defmodule PaleeWeb.Router do
     put("/site/domains/:id/primary", AdminSiteController, :make_primary)
     delete("/site/domains/:id", AdminSiteController, :remove_domain)
     post("/site/domains/:id/instructions", AdminSiteController, :send_instructions)
+    # ADR-520: translations of the website's texts.
+    get("/site/translations", AdminSiteController, :translations)
+    put("/site/translations", AdminSiteController, :save_translations)
+    post("/site/translations/keep", AdminSiteController, :keep_translations)
+    post("/site/translations/machine", AdminSiteController, :machine_translations)
     # ADR-355: Google review asks.
     get("/review-asks/settings", AdminReviewAsksController, :show)
     put("/review-asks/settings", AdminReviewAsksController, :update)
@@ -1814,6 +1821,7 @@ defmodule PaleeWeb.Router do
       :delete_adjustment
     )
 
+    delete("/coach-pay/periods/:id/skips/:skip_id", AdminCoachPayController, :restore_item)
     post("/coach-pay/periods/:id/approve", AdminCoachPayController, :approve)
     post("/coach-pay/periods/:id/reopen", AdminCoachPayController, :reopen)
     get("/coach-pay/periods/:id/export", AdminCoachPayController, :export)
@@ -1831,6 +1839,7 @@ defmodule PaleeWeb.Router do
       :payslip
     )
 
+    get("/coach-pay/people", AdminCoachPayController, :people)
     get("/coach-pay/people/:user_id/statements", AdminCoachPayController, :person_statements)
     get("/coach-pay/summary", AdminCoachPayController, :summary)
     get("/coach-pay/items", AdminCoachPayController, :items)

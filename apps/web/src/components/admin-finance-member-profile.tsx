@@ -44,6 +44,7 @@ import {
   buildFinanceReceiptPayload,
   receiptPackageLabel,
 } from "@/components/admin-finance-receipt";
+import { useBusinessFeatures } from "@/lib/use-business-features";
 import { useSession } from "@/components/session-provider";
 import { generateExportFile, type ExportDocument } from "@/lib/document-export";
 import { ChargeCategorySelect } from "@/components/admin/finance/shared/ChargeCategorySelect";
@@ -148,6 +149,7 @@ async function downloadReceipt(
 }
 
 export function AdminFinanceMemberProfile({ userId }: { userId: string }) {
+  const features = useBusinessFeatures();
   const uiLocale = useUiLocale();
   const i18n = useUiTranslations();
   const { tokens } = useSession();
@@ -826,7 +828,8 @@ export function AdminFinanceMemberProfile({ userId }: { userId: string }) {
             </form>
           </Panel> : null}
 
-          <Panel title={i18n("redeemPromotiona0fb02e")}>
+          {/* ADR-470: redeeming a code only while a promotion runs. */}
+          {features.on("promotions") ? <Panel title={i18n("redeemPromotiona0fb02e")}>
             <form
               className="space-y-3"
               onSubmit={(event) => {
@@ -856,7 +859,7 @@ export function AdminFinanceMemberProfile({ userId }: { userId: string }) {
               </SubmitButton>
               <ErrorText error={redeemMutation.error} />
             </form>
-          </Panel>
+          </Panel> : null}
 
           <Panel title={i18n("grantManualCreditfa7b548")}>
             <form
@@ -1090,7 +1093,9 @@ export function AdminFinanceMemberProfile({ userId }: { userId: string }) {
           <History title={i18n("packageSubscriptions09a33f1")} rows={memberQuery.data?.package_subscriptions ?? []} primary="package_name" secondary="status" primaryFallback={(row) => packageLabel(row)} />
           <History title={i18n("payments44357ae")} rows={memberQuery.data?.payments ?? []} primary="payment_status" secondary="amount_cents" moneySecondary />
           <History title={i18n("paymentReversals0f3a7be")} rows={memberQuery.data?.payment_reversals ?? []} primary="reversal_type" secondary="amount_cents" moneySecondary />
-          <History title={i18n("promoRedemptions7408919")} rows={memberQuery.data?.promotion_redemptions ?? []} primary="discount_type_snapshot" secondary="discount_value_snapshot" />
+          {features.shows("promotions", (memberQuery.data?.promotion_redemptions ?? []).length) ? (
+            <History title={i18n("promoRedemptions7408919")} rows={memberQuery.data?.promotion_redemptions ?? []} primary="discount_type_snapshot" secondary="discount_value_snapshot" />
+          ) : null}
           <History title={i18n("creditLedgerc2e8688")} rows={creditLedgerEntries} primary="entry_type" secondary="amount_cents" moneySecondary />
         </section>
       </div>

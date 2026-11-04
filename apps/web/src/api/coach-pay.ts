@@ -44,6 +44,8 @@ export type MyPay = Json<"PaleeWeb.MyCoachPayController.index">;
 export type MyStatement = MyPay["statements"][number];
 export type PayTotals = MyPay["totals"][number];
 export type PaySummary = Json<"PaleeWeb.AdminCoachPayController.summary">;
+export type PayPerson = Json<"PaleeWeb.AdminCoachPayController.people">["people"][number];
+export type PayItemSkip = NonNullable<PayPeriod["item_skips"]>[number];
 
 /** The period a statement belongs to, as `GET /coach-pay/mine` and the staff profile return it. */
 export type StatementPeriod = { id: string; starts_on: string; ends_on: string; status: PayPeriodStatus; currency: string };
@@ -57,6 +59,7 @@ export const coachPayKeys = {
   periods: ["admin", "coach-pay", "periods"] as const,
   period: (periodId: string) => ["admin", "coach-pay", "period", periodId] as const,
   items: ["admin", "coach-pay", "items"] as const,
+  people: ["admin", "coach-pay", "people"] as const,
   person: (userId: string) => ["admin", "coach-pay", "person", userId] as const,
   summary: ["admin", "coach-pay", "summary"] as const,
   mine: ["admin", "coach-pay", "mine"] as const,
@@ -117,6 +120,19 @@ export function addPayAdjustment(token: string, periodId: string, body: Adjustme
 
 export function deletePayAdjustment(token: string, periodId: string, lineId: string) {
   return apiRequest<{ period: PayPeriod }>(`${base}/periods/${id(periodId)}/adjustments/${id(lineId)}`, { method: "DELETE", token });
+}
+
+/** ADR-510: puts a recurring allowance taken off a person back, and recalculates. */
+export function restorePayItem(token: string, periodId: string, skipId: string) {
+  return apiRequest<{ period: PayPeriod }>(`${base}/periods/${id(periodId)}/skips/${id(skipId)}`, { method: "DELETE", token });
+}
+
+/** ADR-510: the people who can be paid overtime or allowances, with their pay roles. */
+/** People with pay roles; a malformed answer reads as nobody (never a crash). */
+export async function fetchPayPeople(token: string): Promise<{ people: PayPerson[] }> {
+  const answer = await apiRequest<{ people?: unknown }>(`${base}/people`, { token });
+  const people = Array.isArray(answer?.people) ? (answer.people as PayPerson[]) : [];
+  return { people: people.map((person) => ({ ...person, pay_roles: Array.isArray(person.pay_roles) ? person.pay_roles : [] })) };
 }
 
 export function setPayLineBasis(token: string, periodId: string, lineId: string, basis: AmountBasis) {

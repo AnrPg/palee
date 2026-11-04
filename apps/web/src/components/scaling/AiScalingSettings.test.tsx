@@ -5,7 +5,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AiScalingSettings } from "./AiScalingSettings";
 
 vi.mock("next-intl", () => ({
-  useTranslations: () => (key: string) => key,
+  useTranslations: () => (key: string, values?: Record<string, unknown>) =>
+    values ? `${key} ${JSON.stringify(values)}` : key,
 }));
 vi.mock("@/i18n/ui", () => ({ useUiTranslations: () => (key: string) => key }));
 
@@ -73,5 +74,24 @@ describe("AiScalingSettings", () => {
     await screen.findByRole("alert");
     expect(voice.checked).toBe(false);
     expect(updateAiSettings).toHaveBeenCalledWith("t", { voice_enabled: true });
+  });
+
+  // The usage line counts everything the gym's key paid for: suggestions
+  // and voice drafts, with their summed cost.
+  it("shows suggestions, voice drafts and their cost, and which features use the key", async () => {
+    fetchAiSettings.mockResolvedValue({ ...settings, usage: { suggestions: 2, voice_drafts: 3, cost_usd: 0.0371 } });
+    renderSettings();
+
+    const usage = await screen.findByTestId("ai-usage");
+    expect(usage.textContent).toBe('settings.usage {"count":2,"voice":3,"cost":"0.04"}');
+    expect(screen.getByText("settings.keyHint")).toBeTruthy();
+  });
+
+  it("reads an older answer without voice drafts as zero", async () => {
+    fetchAiSettings.mockResolvedValue({ ...settings, usage: { suggestions: 1, cost_usd: 0 } });
+    renderSettings();
+
+    const usage = await screen.findByTestId("ai-usage");
+    expect(usage.textContent).toBe('settings.usage {"count":1,"voice":0,"cost":"0.00"}');
   });
 });

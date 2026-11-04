@@ -856,6 +856,7 @@ msgstr "L’équipe Palee a rétabli ton avis"
 
 msgid "Your review shows again in the box's reviews."
 msgstr "Ton avis est de nouveau visible dans les avis de la box."
+
 msgid "A webhook was turned off"
 msgstr "Un webhook a été désactivé"
 
@@ -867,3 +868,12 @@ msgstr "Nouvelles compétences"
 
 msgid "Your coach ticked new skills for %{rank}."
 msgstr "Ton coach a validé de nouvelles compétences pour %{rank}."
+
+msgid "Your subscription ends today"
+msgstr "Ton abonnement se termine aujourd’hui"
+
+msgid "%{package} ends today. Renew to keep booking classes."
+msgstr "%{package} se termine aujourd’hui. Renouvelle-le pour continuer à réserver des cours."
+
+msgid "%{package} ended on %{date}. Renew to book classes again."
+msgstr "%{package} s’est terminé le %{date}. Renouvelle-le pour réserver à nouveau des cours."

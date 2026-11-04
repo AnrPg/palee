@@ -6431,7 +6431,7 @@ export interface paths {
         put?: never;
         /**
          * Add overtime or an allowance to the box's catalogue
-         * @description Overtime: an amount per hour above `weekly_threshold` hours a week (both required), counted from the classes the person led. Allowance: per period or per occurrence, added to a period by hand. `roles`: the staff roles it applies to.
+         * @description Overtime: an amount per hour above `weekly_threshold` hours a week (both required), counted from the classes the person led. Allowance: `per_period` (recurring, added by every calculation at its `frequency`) or `per_occurrence` (a rate added by hand). `roles`: the staff roles it applies to.
          */
         post: operations["PaleeWeb.AdminCoachPayController.create_item"];
         delete?: never;
@@ -6500,6 +6500,23 @@ export interface paths {
         };
         /** My pay statement of an approved period as PDF («Εκκαθαριστικό») */
         get: operations["PaleeWeb.MyCoachPayController.payslip"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/people": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's people who can be paid overtime or allowances, with their pay roles */
+        get: operations["PaleeWeb.AdminCoachPayController.people"];
         put?: never;
         post?: never;
         delete?: never;
@@ -6590,7 +6607,10 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        /** Remove a line added by hand (draft periods only) */
+        /**
+         * Remove a line added by hand, or take a recurring allowance off its person
+         * @description Draft periods only. A recurring allowance's line is taken off its person for this period (ADR-510): later calculations leave it out until it is put back.
+         */
         delete: operations["PaleeWeb.AdminCoachPayController.delete_adjustment"];
         options?: never;
         head?: never;
@@ -6677,7 +6697,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Add an allowance from the catalogue to a person's statement (draft periods only) */
+        /**
+         * Add an allowance or one-off overtime from the catalogue to a person's statement (draft periods only)
+         * @description Allowance: `quantity` occurrences (`per_period` is always 1), optional note. Overtime: `minutes` worked at the item's rate or at `unit_cents` an hour, with a required note (the reason).
+         */
         post: operations["PaleeWeb.AdminCoachPayController.add_pay_item_line"];
         delete?: never;
         options?: never;
@@ -6697,6 +6720,23 @@ export interface paths {
         /** Reopen an approved period, with a reason (an exported one stays as it is) */
         post: operations["PaleeWeb.AdminCoachPayController.reopen"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/skips/{skip_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Put a recurring allowance back on its person and recalculate (draft periods only) */
+        delete: operations["PaleeWeb.AdminCoachPayController.restore_item"];
         options?: never;
         head?: never;
         patch?: never;
@@ -12263,6 +12303,58 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/site/translations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** «Μεταφράσεις»: every text of the website with its translation and status */
+        get: operations["PaleeWeb.AdminSiteController.translations"];
+        /** Save translations a person wrote (an empty text removes one); live at once */
+        put: operations["PaleeWeb.AdminSiteController.save_translations"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/site/translations/keep": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Εντάξει, κράτα το»: keep machine or out-of-date translations as they are */
+        post: operations["PaleeWeb.AdminSiteController.keep_translations"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/site/translations/machine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Αυτόματη μετάφραση»: fill every missing or out-of-date text by machine */
+        post: operations["PaleeWeb.AdminSiteController.machine_translations"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/trial-policy": {
         parameters: {
             query?: never;
@@ -14557,6 +14649,26 @@ export interface paths {
         };
         /** The WOD as my own run performed it, and whether it changed since (ADR-389) */
         get: operations["PaleeWeb.WorkoutSnapshotController.execution"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/features": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Which optional features this business has on
+         * @description ADR-470. With `location_ids` (a branch filter) a feature a branch can have on its own (promotions, a floor plan) counts only when it covers one of those branches or the whole box.
+         */
+        get: operations["PaleeWeb.MyFeaturesController.show"];
         put?: never;
         post?: never;
         delete?: never;
@@ -20547,19 +20659,40 @@ export interface components {
                 /** Format: date-time */
                 verified_at: string | null;
             }[];
+            /**
+             * SiteLanguages
+             * @description The site's own language, the ones it can add and each translation's progress
+             */
+            languages: {
+                available: string[];
+                machine_available: boolean;
+                progress: {
+                    /** SiteTranslationCounts */
+                    counts: {
+                        machine: number;
+                        missing: number;
+                        ok: number;
+                        stale: number;
+                    };
+                    locale: string;
+                    total: number;
+                }[];
+                /** @description The box's own language (the source) */
+                source: string;
+            };
             section_keys: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
             /** SiteSettings */
             settings: {
-                about_en: string | null;
                 banner_version: number;
                 conversions_api_enabled: boolean;
                 faq: {
                     answer: string;
-                    /** @description Optional English text (ADR-388) */
-                    answer_en?: string;
+                    /**
+                     * Format: uuid
+                     * @description Stable id (ADR-520); a new entry gets one when saved
+                     */
+                    id?: string;
                     question: string;
-                    /** @description Optional English text (ADR-388) */
-                    question_en?: string;
                 }[];
                 forms_enabled: boolean;
                 ga4_measurement_id: string | null;
@@ -20573,6 +20706,10 @@ export interface components {
                 /** @description «WOD της ημέρας» on the site (ADR-388) */
                 public_wod: boolean;
                 section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                /** @description Languages the box translates its texts into (ADR-520) */
+                translation_locales: string[];
+                /** @description Translations visitors can pick on the site (ADR-520) */
+                visible_locales: string[];
             };
         };
         /** AnatomyNode */
@@ -21333,8 +21470,8 @@ export interface components {
             /** @description Default events, boxes, clubs */
             kinds?: ("events" | "boxes" | "clubs" | "posts")[];
             languages?: string[];
-            /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-            levels?: ("beginner" | "all_levels" | "advanced")[];
+            /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+            levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
             max_price_cents?: number | null;
             min_price_cents?: number | null;
             /** @description Gazetteer places to search from, at most 5 */
@@ -21366,8 +21503,8 @@ export interface components {
                 /** @description Default events, boxes, clubs */
                 kinds?: ("events" | "boxes" | "clubs" | "posts")[];
                 languages?: string[];
-                /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-                levels?: ("beginner" | "all_levels" | "advanced")[];
+                /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                 max_price_cents?: number | null;
                 min_price_cents?: number | null;
                 /** @description Gazetteer places to search from, at most 5 */
@@ -21981,8 +22118,8 @@ export interface components {
             /** @description Default events, boxes, clubs */
             kinds: ("events" | "boxes" | "clubs" | "posts")[];
             languages: string[];
-            /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-            levels: ("beginner" | "all_levels" | "advanced")[];
+            /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+            levels: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
             max_price_cents: number | null;
             min_price_cents: number | null;
             /** @description Gazetteer places to search from, at most 5 */
@@ -22062,8 +22199,8 @@ export interface components {
                 /** @description Default events, boxes, clubs */
                 kinds?: ("events" | "boxes" | "clubs" | "posts")[];
                 languages?: string[];
-                /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-                levels?: ("beginner" | "all_levels" | "advanced")[];
+                /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                 max_price_cents?: number | null;
                 min_price_cents?: number | null;
                 /** @description Gazetteer places to search from, at most 5 */
@@ -22704,8 +22841,8 @@ export interface components {
                 /** @description Default events, boxes, clubs */
                 kinds?: ("events" | "boxes" | "clubs" | "posts")[];
                 languages?: string[];
-                /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-                levels?: ("beginner" | "all_levels" | "advanced")[];
+                /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                 max_price_cents?: number | null;
                 min_price_cents?: number | null;
                 /** @description Gazetteer places to search from, at most 5 */
@@ -22761,8 +22898,8 @@ export interface components {
                 /** @description Default events, boxes, clubs */
                 kinds: ("events" | "boxes" | "clubs" | "posts")[];
                 languages: string[];
-                /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-                levels: ("beginner" | "all_levels" | "advanced")[];
+                /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                levels: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                 max_price_cents: number | null;
                 min_price_cents: number | null;
                 /** @description Gazetteer places to search from, at most 5 */
@@ -27508,6 +27645,32 @@ export interface components {
                 section: string;
                 seeded: boolean;
             }[];
+        };
+        /** BusinessFeatures */
+        BusinessFeatures: {
+            /** @description ADR-470: every feature key with whether it is on */
+            features: {
+                branches: boolean;
+                card_autopay: boolean;
+                floor_plan: boolean;
+                module_corporate_clients: boolean;
+                module_digital_content: boolean;
+                module_events: boolean;
+                module_group_classes: boolean;
+                module_online_coaching: boolean;
+                module_open_gym: boolean;
+                module_personal_training: boolean;
+                online_drop_in: boolean;
+                online_packages: boolean;
+                online_payments: boolean;
+                online_personal_training: boolean;
+                online_programmes: boolean;
+                online_shop: boolean;
+                perks: boolean;
+                promotions: boolean;
+                referrals: boolean;
+                trials: boolean;
+            };
         };
         /** BusinessOrganization */
         BusinessOrganization: {
@@ -35969,10 +36132,13 @@ export interface components {
             scaling_enabled: boolean;
             /** GymAiUsage */
             usage: {
+                /** @description What the gym's key paid this month: suggestions plus voice drafts */
                 cost_usd: number;
                 /** Format: date-time */
                 since: string;
                 suggestions: number;
+                /** @description Voice drafts written with the gym's key this month */
+                voice_drafts: number;
             };
             voice_enabled: boolean;
         };
@@ -35991,10 +36157,13 @@ export interface components {
                 scaling_enabled: boolean;
                 /** GymAiUsage */
                 usage: {
+                    /** @description What the gym's key paid this month: suggestions plus voice drafts */
                     cost_usd: number;
                     /** Format: date-time */
                     since: string;
                     suggestions: number;
+                    /** @description Voice drafts written with the gym's key this month */
+                    voice_drafts: number;
                 };
                 voice_enabled: boolean;
             };
@@ -36009,10 +36178,13 @@ export interface components {
         };
         /** GymAiUsage */
         GymAiUsage: {
+            /** @description What the gym's key paid this month: suggestions plus voice drafts */
             cost_usd: number;
             /** Format: date-time */
             since: string;
             suggestions: number;
+            /** @description Voice drafts written with the gym's key this month */
+            voice_drafts: number;
         };
         /** HealthConsents */
         HealthConsents: {
@@ -43782,7 +43954,8 @@ export interface components {
                 audiences: string[];
                 /** Format: uuid */
                 id: string;
-                level?: string | null;
+                /** @description Levels the class suits; empty means all levels (ADR-490) */
+                levels: ("beginner" | "intermediate" | "advanced")[];
                 name: string;
             } | null;
             coach?: {
@@ -44325,7 +44498,8 @@ export interface components {
                     audiences: string[];
                     /** Format: uuid */
                     id: string;
-                    level?: string | null;
+                    /** @description Levels the class suits; empty means all levels (ADR-490) */
+                    levels: ("beginner" | "intermediate" | "advanced")[];
                     name: string;
                 } | null;
                 coach?: {
@@ -44498,8 +44672,13 @@ export interface components {
         };
         /** PublicSiteResponse */
         PublicSiteResponse: {
-            about_en: string | null;
+            /** @description The translated «Σχετικά», null when there is none */
+            about: string | null;
             canonical_url: string;
+            /** @description Translated class names by the box's own name */
+            class_type_names: {
+                [key: string]: string;
+            };
             events: {
                 currency: string;
                 /** Format: date-time */
@@ -44515,11 +44694,12 @@ export interface components {
             }[];
             faq: {
                 answer: string;
-                /** @description Optional English text (ADR-388) */
-                answer_en?: string;
+                /**
+                 * Format: uuid
+                 * @description Stable id (ADR-520); a new entry gets one when saved
+                 */
+                id?: string;
                 question: string;
-                /** @description Optional English text (ADR-388) */
-                question_en?: string;
             }[];
             forms: {
                 contact: boolean;
@@ -44528,7 +44708,7 @@ export interface components {
             };
             /** @description The box's language (ADR-388) */
             language: string;
-            /** @description The site's languages: the box's own and English */
+            /** @description The site's languages: the box's own first, then its visible translations */
             languages: string[];
             /** @description Palee's address for reporting content on the site (ADR-397, DSA Art. 16) */
             report_contact: string | null;
@@ -44574,6 +44754,10 @@ export interface components {
             };
             sections: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
             slug: string;
+            /** @description Translations of texts served by other reads, keyed kind:id:field */
+            texts: {
+                [key: string]: string;
+            };
             time_zone: string;
             /** @description The next 7 days' classes when the owner shows the timetable (no spots or people) */
             timetable: {
@@ -44603,6 +44787,8 @@ export interface components {
                 };
                 validity_days: number;
             };
+            /** @description The translation this answer is in (ADR-520), null for the box's own */
+            translation: string | null;
             wod: {
                 body: string | null;
                 /** Format: date */
@@ -48602,11 +48788,12 @@ export interface components {
         /** SiteFaqEntry */
         SiteFaqEntry: {
             answer: string;
-            /** @description Optional English text (ADR-388) */
-            answer_en?: string;
+            /**
+             * Format: uuid
+             * @description Stable id (ADR-520); a new entry gets one when saved
+             */
+            id?: string;
             question: string;
-            /** @description Optional English text (ADR-388) */
-            question_en?: string;
         };
         /** SiteFormRequest */
         SiteFormRequest: {
@@ -48649,6 +48836,39 @@ export interface components {
         SiteFormResponse: {
             /** @enum {string} */
             status: "received";
+        };
+        /** SiteLanguageProgress */
+        SiteLanguageProgress: {
+            /** SiteTranslationCounts */
+            counts: {
+                machine: number;
+                missing: number;
+                ok: number;
+                stale: number;
+            };
+            locale: string;
+            total: number;
+        };
+        /**
+         * SiteLanguages
+         * @description The site's own language, the ones it can add and each translation's progress
+         */
+        SiteLanguages: {
+            available: string[];
+            machine_available: boolean;
+            progress: {
+                /** SiteTranslationCounts */
+                counts: {
+                    machine: number;
+                    missing: number;
+                    ok: number;
+                    stale: number;
+                };
+                locale: string;
+                total: number;
+            }[];
+            /** @description The box's own language (the source) */
+            source: string;
         };
         /** SiteOpsDomainsResponse */
         SiteOpsDomainsResponse: {
@@ -48729,16 +48949,16 @@ export interface components {
         };
         /** SiteSettings */
         SiteSettings: {
-            about_en: string | null;
             banner_version: number;
             conversions_api_enabled: boolean;
             faq: {
                 answer: string;
-                /** @description Optional English text (ADR-388) */
-                answer_en?: string;
+                /**
+                 * Format: uuid
+                 * @description Stable id (ADR-520); a new entry gets one when saved
+                 */
+                id?: string;
                 question: string;
-                /** @description Optional English text (ADR-388) */
-                question_en?: string;
             }[];
             forms_enabled: boolean;
             ga4_measurement_id: string | null;
@@ -48752,21 +48972,46 @@ export interface components {
             /** @description «WOD της ημέρας» on the site (ADR-388) */
             public_wod: boolean;
             section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            /** @description Languages the box translates its texts into (ADR-520) */
+            translation_locales: string[];
+            /** @description Translations visitors can pick on the site (ADR-520) */
+            visible_locales: string[];
         };
         /** SiteSettingsResponse */
         SiteSettingsResponse: {
+            /**
+             * SiteLanguages
+             * @description The site's own language, the ones it can add and each translation's progress
+             */
+            languages: {
+                available: string[];
+                machine_available: boolean;
+                progress: {
+                    /** SiteTranslationCounts */
+                    counts: {
+                        machine: number;
+                        missing: number;
+                        ok: number;
+                        stale: number;
+                    };
+                    locale: string;
+                    total: number;
+                }[];
+                /** @description The box's own language (the source) */
+                source: string;
+            };
             /** SiteSettings */
             settings: {
-                about_en: string | null;
                 banner_version: number;
                 conversions_api_enabled: boolean;
                 faq: {
                     answer: string;
-                    /** @description Optional English text (ADR-388) */
-                    answer_en?: string;
+                    /**
+                     * Format: uuid
+                     * @description Stable id (ADR-520); a new entry gets one when saved
+                     */
+                    id?: string;
                     question: string;
-                    /** @description Optional English text (ADR-388) */
-                    question_en?: string;
                 }[];
                 forms_enabled: boolean;
                 ga4_measurement_id: string | null;
@@ -48780,21 +49025,25 @@ export interface components {
                 /** @description «WOD της ημέρας» on the site (ADR-388) */
                 public_wod: boolean;
                 section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                /** @description Languages the box translates its texts into (ADR-520) */
+                translation_locales: string[];
+                /** @description Translations visitors can pick on the site (ADR-520) */
+                visible_locales: string[];
             };
         };
         /** SiteSettingsUpdate */
         SiteSettingsUpdate: {
-            about_en?: string | null;
             conversions_api_enabled?: boolean;
             /** @description Meta Conversions API access token (write-only; empty removes it) */
             conversions_api_token?: string | null;
             faq?: {
                 answer: string;
-                /** @description Optional English text (ADR-388) */
-                answer_en?: string;
+                /**
+                 * Format: uuid
+                 * @description Stable id (ADR-520); a new entry gets one when saved
+                 */
+                id?: string;
                 question: string;
-                /** @description Optional English text (ADR-388) */
-                question_en?: string;
             }[];
             forms_enabled?: boolean;
             ga4_measurement_id?: string | null;
@@ -48805,6 +49054,10 @@ export interface components {
             public_schedule?: boolean;
             public_wod?: boolean;
             section_order?: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            /** @description Languages to translate into; the box's own is left out */
+            translation_locales?: string[];
+            /** @description Translations visitors can pick; a subset of translation_locales */
+            visible_locales?: string[];
         };
         /** SiteSummaryResponse */
         SiteSummaryResponse: {
@@ -48843,6 +49096,108 @@ export interface components {
             name: string;
             /** Format: date-time */
             scheduled_at: string;
+        };
+        /** SiteTranslationCounts */
+        SiteTranslationCounts: {
+            machine: number;
+            missing: number;
+            ok: number;
+            stale: number;
+        };
+        /** SiteTranslationEdit */
+        SiteTranslationEdit: {
+            field: string;
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            kind: "box_profile" | "class_type" | "event" | "location" | "package" | "site_faq" | "space";
+            /** @description Empty or null removes the translation */
+            text: string | null;
+        };
+        /** SiteTranslationItem */
+        SiteTranslationItem: {
+            field: string;
+            /** @enum {string} */
+            group: "about" | "rooms" | "faq" | "packages" | "classes" | "events" | "locations";
+            /** Format: uuid */
+            id: string;
+            /** @description kind:id:field */
+            key: string;
+            /** @enum {string} */
+            kind: "box_profile" | "class_type" | "event" | "location" | "package" | "site_faq" | "space";
+            /** @description What the text belongs to (a package's name, an FAQ number) */
+            label: string | null;
+            /** @enum {string|null} */
+            origin: "manual" | "machine" | null;
+            /** @description The box's own text */
+            source: string;
+            /** @enum {string} */
+            status: "missing" | "stale" | "machine" | "ok";
+            /** @description The translation */
+            text: string | null;
+            /** Format: date-time */
+            updated_at: string | null;
+        };
+        /** SiteTranslationsKeep */
+        SiteTranslationsKeep: {
+            keys: string[];
+            locale: string;
+        };
+        /** SiteTranslationsMachine */
+        SiteTranslationsMachine: {
+            locale: string;
+        };
+        /** SiteTranslationsResponse */
+        SiteTranslationsResponse: {
+            /** SiteTranslationCounts */
+            counts: {
+                machine: number;
+                missing: number;
+                ok: number;
+                stale: number;
+            };
+            items: {
+                field: string;
+                /** @enum {string} */
+                group: "about" | "rooms" | "faq" | "packages" | "classes" | "events" | "locations";
+                /** Format: uuid */
+                id: string;
+                /** @description kind:id:field */
+                key: string;
+                /** @enum {string} */
+                kind: "box_profile" | "class_type" | "event" | "location" | "package" | "site_faq" | "space";
+                /** @description What the text belongs to (a package's name, an FAQ number) */
+                label: string | null;
+                /** @enum {string|null} */
+                origin: "manual" | "machine" | null;
+                /** @description The box's own text */
+                source: string;
+                /** @enum {string} */
+                status: "missing" | "stale" | "machine" | "ok";
+                /** @description The translation */
+                text: string | null;
+                /** Format: date-time */
+                updated_at: string | null;
+            }[];
+            locale: string;
+            machine_available: boolean;
+            source_language: string;
+            total: number;
+            /** @description Texts the machine wrote (machine only) */
+            written?: number;
+        };
+        /** SiteTranslationsSave */
+        SiteTranslationsSave: {
+            entries: {
+                field: string;
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                kind: "box_profile" | "class_type" | "event" | "location" | "package" | "site_faq" | "space";
+                /** @description Empty or null removes the translation */
+                text: string | null;
+            }[];
+            locale: string;
         };
         /** SiteWod */
         SiteWod: {
@@ -52623,6 +52978,8 @@ export interface components {
                 workout_id?: string | null;
                 workout_title?: string | null;
             }[];
+            /** @description ADR-451: the source types this person may log here, in display order (freeform is always last). */
+            available_sources: ("class" | "assigned_workout" | "library_workout" | "freeform")[];
             classes: {
                 /** Format: uuid */
                 booking_id?: string | null;
@@ -54998,8 +55355,8 @@ export interface operations {
                         /** @description Default events, boxes, clubs */
                         kinds?: ("events" | "boxes" | "clubs" | "posts")[];
                         languages?: string[];
-                        /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-                        levels?: ("beginner" | "all_levels" | "advanced")[];
+                        /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                        levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                         max_price_cents?: number | null;
                         min_price_cents?: number | null;
                         /** @description Gazetteer places to search from, at most 5 */
@@ -55070,8 +55427,8 @@ export interface operations {
                         /** @description Default events, boxes, clubs */
                         kinds?: ("events" | "boxes" | "clubs" | "posts")[];
                         languages?: string[];
-                        /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-                        levels?: ("beginner" | "all_levels" | "advanced")[];
+                        /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                        levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                         max_price_cents?: number | null;
                         min_price_cents?: number | null;
                         /** @description Gazetteer places to search from, at most 5 */
@@ -55135,8 +55492,8 @@ export interface operations {
                             /** @description Default events, boxes, clubs */
                             kinds: ("events" | "boxes" | "clubs" | "posts")[];
                             languages: string[];
-                            /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-                            levels: ("beginner" | "all_levels" | "advanced")[];
+                            /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                            levels: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                             max_price_cents: number | null;
                             min_price_cents: number | null;
                             /** @description Gazetteer places to search from, at most 5 */
@@ -55777,8 +56134,8 @@ export interface operations {
                         /** @description Default events, boxes, clubs */
                         kinds?: ("events" | "boxes" | "clubs" | "posts")[];
                         languages?: string[];
-                        /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-                        levels?: ("beginner" | "all_levels" | "advanced")[];
+                        /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                        levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                         max_price_cents?: number | null;
                         min_price_cents?: number | null;
                         /** @description Gazetteer places to search from, at most 5 */
@@ -59788,7 +60145,8 @@ export interface operations {
                                 audiences: string[];
                                 /** Format: uuid */
                                 id: string;
-                                level?: string | null;
+                                /** @description Levels the class suits; empty means all levels (ADR-490) */
+                                levels: ("beginner" | "intermediate" | "advanced")[];
                                 name: string;
                             } | null;
                             coach?: {
@@ -80871,10 +81229,13 @@ export interface operations {
                             scaling_enabled: boolean;
                             /** GymAiUsage */
                             usage: {
+                                /** @description What the gym's key paid this month: suggestions plus voice drafts */
                                 cost_usd: number;
                                 /** Format: date-time */
                                 since: string;
                                 suggestions: number;
+                                /** @description Voice drafts written with the gym's key this month */
+                                voice_drafts: number;
                             };
                             voice_enabled: boolean;
                         };
@@ -80922,10 +81283,13 @@ export interface operations {
                             scaling_enabled: boolean;
                             /** GymAiUsage */
                             usage: {
+                                /** @description What the gym's key paid this month: suggestions plus voice drafts */
                                 cost_usd: number;
                                 /** Format: date-time */
                                 since: string;
                                 suggestions: number;
+                                /** @description Voice drafts written with the gym's key this month */
+                                voice_drafts: number;
                             };
                             voice_enabled: boolean;
                         };
@@ -85424,8 +85788,7 @@ export interface operations {
                             inserted_at?: string;
                             /** @enum {string} */
                             kind: "class" | "event";
-                            /** @enum {string} */
-                            level: "beginner" | "all_levels" | "advanced";
+                            levels: ("beginner" | "intermediate" | "advanced")[];
                             name: string;
                             slug: string;
                             sort_order: number;
@@ -85456,11 +85819,8 @@ export interface operations {
                      * @enum {string}
                      */
                     kind?: "class" | "event";
-                    /**
-                     * @description Who the class suits, for the schedule's level filter
-                     * @enum {string}
-                     */
-                    level?: "beginner" | "all_levels" | "advanced";
+                    /** @description Levels the class suits, for the schedule's level filter; empty means all levels (ADR-490) */
+                    levels?: ("beginner" | "intermediate" | "advanced")[];
                     name: string;
                     /** @default 0 */
                     sort_order?: number;
@@ -85487,8 +85847,7 @@ export interface operations {
                             inserted_at?: string;
                             /** @enum {string} */
                             kind: "class" | "event";
-                            /** @enum {string} */
-                            level: "beginner" | "all_levels" | "advanced";
+                            levels: ("beginner" | "intermediate" | "advanced")[];
                             name: string;
                             slug: string;
                             sort_order: number;
@@ -85532,8 +85891,7 @@ export interface operations {
                             inserted_at?: string;
                             /** @enum {string} */
                             kind: "class" | "event";
-                            /** @enum {string} */
-                            level: "beginner" | "all_levels" | "advanced";
+                            levels: ("beginner" | "intermediate" | "advanced")[];
                             name: string;
                             slug: string;
                             sort_order: number;
@@ -85575,11 +85933,8 @@ export interface operations {
                      * @enum {string}
                      */
                     kind?: "class" | "event";
-                    /**
-                     * @description Who the class suits, for the schedule's level filter
-                     * @enum {string}
-                     */
-                    level?: "beginner" | "all_levels" | "advanced";
+                    /** @description Levels the class suits, for the schedule's level filter; empty means all levels (ADR-490) */
+                    levels?: ("beginner" | "intermediate" | "advanced")[];
                     name: string;
                     /** @default 0 */
                     sort_order?: number;
@@ -85606,8 +85961,7 @@ export interface operations {
                             inserted_at?: string;
                             /** @enum {string} */
                             kind: "class" | "event";
-                            /** @enum {string} */
-                            level: "beginner" | "all_levels" | "advanced";
+                            levels: ("beginner" | "intermediate" | "advanced")[];
                             name: string;
                             slug: string;
                             sort_order: number;
@@ -85648,6 +86002,11 @@ export interface operations {
                             /** Format: date-time */
                             archived_at?: string | null;
                             currency: string;
+                            /**
+                             * @description Recurring allowance (unit per_period) only
+                             * @enum {string|null}
+                             */
+                            frequency?: "period" | "daily" | "weekly" | "monthly" | null;
                             /** Format: uuid */
                             id: string;
                             /** @enum {string} */
@@ -85680,16 +86039,21 @@ export interface operations {
                     amount_basis?: "gross" | "net";
                     amount_cents: number;
                     currency?: string;
+                    /**
+                     * @description Recurring allowance: once per pay period (`period`, default) or per day, week or month, prorated by the period's days
+                     * @enum {string|null}
+                     */
+                    frequency?: "period" | "daily" | "weekly" | "monthly" | null;
                     /** @enum {string} */
                     kind: "overtime" | "allowance";
                     name: string;
                     roles: ("owner" | "admin" | "head_coach" | "coach" | "front_desk" | "accountant" | "janitor")[];
                     /**
-                     * @description overtime: per_hour; allowance: per_period or per_occurrence
+                     * @description overtime: per_hour; allowance: per_period (recurring, added by every calculation) or per_occurrence (a rate added by hand)
                      * @enum {string}
                      */
                     unit: "per_period" | "per_occurrence" | "per_hour";
-                    /** @description Overtime: hours a week (Monday to Sunday) before overtime; required */
+                    /** @description Overtime: hours a week (Monday to Sunday) before overtime is counted from classes; null keeps it a rate for one-off hours only */
                     weekly_threshold?: number | null;
                 };
             };
@@ -85712,6 +86076,11 @@ export interface operations {
                             /** Format: date-time */
                             archived_at?: string | null;
                             currency: string;
+                            /**
+                             * @description Recurring allowance (unit per_period) only
+                             * @enum {string|null}
+                             */
+                            frequency?: "period" | "daily" | "weekly" | "monthly" | null;
                             /** Format: uuid */
                             id: string;
                             /** @enum {string} */
@@ -85746,16 +86115,21 @@ export interface operations {
                     amount_basis?: "gross" | "net";
                     amount_cents?: number;
                     currency?: string;
+                    /**
+                     * @description Recurring allowance: once per pay period (`period`, default) or per day, week or month, prorated by the period's days
+                     * @enum {string|null}
+                     */
+                    frequency?: "period" | "daily" | "weekly" | "monthly" | null;
                     /** @enum {string} */
                     kind?: "overtime" | "allowance";
                     name?: string;
                     roles?: ("owner" | "admin" | "head_coach" | "coach" | "front_desk" | "accountant" | "janitor")[];
                     /**
-                     * @description overtime: per_hour; allowance: per_period or per_occurrence
+                     * @description overtime: per_hour; allowance: per_period (recurring, added by every calculation) or per_occurrence (a rate added by hand)
                      * @enum {string}
                      */
                     unit?: "per_period" | "per_occurrence" | "per_hour";
-                    /** @description Overtime: hours a week (Monday to Sunday) before overtime; required */
+                    /** @description Overtime: hours a week (Monday to Sunday) before overtime is counted from classes; null keeps it a rate for one-off hours only */
                     weekly_threshold?: number | null;
                 };
             };
@@ -85778,6 +86152,11 @@ export interface operations {
                             /** Format: date-time */
                             archived_at?: string | null;
                             currency: string;
+                            /**
+                             * @description Recurring allowance (unit per_period) only
+                             * @enum {string|null}
+                             */
+                            frequency?: "period" | "daily" | "weekly" | "monthly" | null;
                             /** Format: uuid */
                             id: string;
                             /** @enum {string} */
@@ -85821,6 +86200,11 @@ export interface operations {
                             /** Format: date-time */
                             archived_at?: string | null;
                             currency: string;
+                            /**
+                             * @description Recurring allowance (unit per_period) only
+                             * @enum {string|null}
+                             */
+                            frequency?: "period" | "daily" | "weekly" | "monthly" | null;
                             /** Format: uuid */
                             id: string;
                             /** @enum {string} */
@@ -85959,6 +86343,33 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminCoachPayController.people": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description People */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        people: {
+                            name: string | null;
+                            pay_roles: ("owner" | "admin" | "head_coach" | "coach" | "front_desk" | "accountant" | "janitor")[];
+                            /** Format: uuid */
+                            user_id: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminCoachPayController.person_statements": {
         parameters: {
             query?: never;
@@ -86092,6 +86503,16 @@ export interface operations {
                             gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            /** @description ADR-510: recurring allowances taken off a person for this period */
+                            item_skips?: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string | null;
+                                /** Format: uuid */
+                                pay_item_id: string;
+                                /** Format: uuid */
+                                user_id: string;
+                            }[];
                             net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
@@ -86216,6 +86637,16 @@ export interface operations {
                             gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            /** @description ADR-510: recurring allowances taken off a person for this period */
+                            item_skips?: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string | null;
+                                /** Format: uuid */
+                                pay_item_id: string;
+                                /** Format: uuid */
+                                user_id: string;
+                            }[];
                             net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
@@ -86333,6 +86764,16 @@ export interface operations {
                             gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            /** @description ADR-510: recurring allowances taken off a person for this period */
+                            item_skips?: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string | null;
+                                /** Format: uuid */
+                                pay_item_id: string;
+                                /** Format: uuid */
+                                user_id: string;
+                            }[];
                             net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
@@ -86470,6 +86911,16 @@ export interface operations {
                             gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            /** @description ADR-510: recurring allowances taken off a person for this period */
+                            item_skips?: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string | null;
+                                /** Format: uuid */
+                                pay_item_id: string;
+                                /** Format: uuid */
+                                user_id: string;
+                            }[];
                             net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
@@ -86588,6 +87039,16 @@ export interface operations {
                             gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            /** @description ADR-510: recurring allowances taken off a person for this period */
+                            item_skips?: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string | null;
+                                /** Format: uuid */
+                                pay_item_id: string;
+                                /** Format: uuid */
+                                user_id: string;
+                            }[];
                             net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
@@ -86705,6 +87166,16 @@ export interface operations {
                             gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            /** @description ADR-510: recurring allowances taken off a person for this period */
+                            item_skips?: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string | null;
+                                /** Format: uuid */
+                                pay_item_id: string;
+                                /** Format: uuid */
+                                user_id: string;
+                            }[];
                             net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
@@ -86822,6 +87293,16 @@ export interface operations {
                             gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            /** @description ADR-510: recurring allowances taken off a person for this period */
+                            item_skips?: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string | null;
+                                /** Format: uuid */
+                                pay_item_id: string;
+                                /** Format: uuid */
+                                user_id: string;
+                            }[];
                             net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
@@ -86972,6 +87453,16 @@ export interface operations {
                             gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            /** @description ADR-510: recurring allowances taken off a person for this period */
+                            item_skips?: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string | null;
+                                /** Format: uuid */
+                                pay_item_id: string;
+                                /** Format: uuid */
+                                user_id: string;
+                            }[];
                             net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
@@ -87073,10 +87564,14 @@ export interface operations {
                      * @enum {string}
                      */
                     amount_basis?: "gross" | "net";
+                    /** @description One-off overtime only: the minutes worked */
+                    minutes?: number;
                     note?: string | null;
                     /** Format: uuid */
                     pay_item_id: string;
                     quantity?: number;
+                    /** @description One-off overtime only: the rate per hour for this line (default: the item's) */
+                    unit_cents?: number;
                     /** Format: uuid */
                     user_id: string;
                 };
@@ -87105,6 +87600,16 @@ export interface operations {
                             gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            /** @description ADR-510: recurring allowances taken off a person for this period */
+                            item_skips?: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string | null;
+                                /** Format: uuid */
+                                pay_item_id: string;
+                                /** Format: uuid */
+                                user_id: string;
+                            }[];
                             net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
@@ -87228,6 +87733,144 @@ export interface operations {
                             gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            /** @description ADR-510: recurring allowances taken off a person for this period */
+                            item_skips?: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string | null;
+                                /** Format: uuid */
+                                pay_item_id: string;
+                                /** Format: uuid */
+                                user_id: string;
+                            }[];
+                            net_cents: number;
+                            reopen_reason?: string | null;
+                            /** Format: date */
+                            starts_on: string;
+                            statements?: {
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                coach_user_id: string;
+                                gross_cents: number;
+                                groups: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    key: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    line_count: number;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** @description The rule's or pay item's terms when the statement was calculated */
+                                    terms?: Record<string, never> | null;
+                                    unit_cents?: number | null;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                line_count: number;
+                                lines: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    /** Format: uuid */
+                                    created_by_id?: string | null;
+                                    description: string;
+                                    /** @description True for a net line (the default is gross): show it marked */
+                                    deviates_from_default: boolean;
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** Format: date-time */
+                                    inserted_at?: string | null;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    note?: string | null;
+                                    /** Format: date */
+                                    occurred_on: string;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    percent_bps?: number | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** Format: uuid */
+                                    source_id?: string | null;
+                                    /** @enum {string} */
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual" | "rule" | "pay_item";
+                                    unit_cents?: number | null;
+                                }[];
+                                net_cents: number;
+                                net_line_count: number;
+                                period?: Record<string, never> | null;
+                                /** @description Every line summed whatever its basis; show gross_cents and net_cents */
+                                total_cents: number;
+                            }[];
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "exported";
+                            total_cents: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.restore_item": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                skip_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Period */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        period: {
+                            /** Format: date-time */
+                            approved_at?: string | null;
+                            /** Format: uuid */
+                            approved_by_id?: string | null;
+                            /** Format: date-time */
+                            calculated_at?: string | null;
+                            currency: string;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: date-time */
+                            exported_at?: string | null;
+                            gross_cents: number;
+                            /** Format: uuid */
+                            id: string;
+                            /** @description ADR-510: recurring allowances taken off a person for this period */
+                            item_skips?: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string | null;
+                                /** Format: uuid */
+                                pay_item_id: string;
+                                /** Format: uuid */
+                                user_id: string;
+                            }[];
                             net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
@@ -114292,6 +114935,10 @@ export interface operations {
                             inserted_at?: string | null;
                             package_modules?: string[];
                             payment_reminder_interval_days: number;
+                            /** @description Also remind the member on the day after it ended; then every payment_reminder_interval_days until they renew or leave */
+                            subscription_day_after_reminder: boolean;
+                            /** @description Also remind the member on the day the subscription ends */
+                            subscription_end_day_reminder: boolean;
                             /** @description Days before a subscription ends to remind the member (0 = no reminder) */
                             subscription_expiry_reminder_days: number;
                             /** @description Slack days after a subscription ends or an invoice falls overdue before the member loses access */
@@ -114369,6 +115016,10 @@ export interface operations {
                         document_mode?: "invoice" | "receipt";
                         package_modules?: ("group_classes" | "online_coaching" | "open_gym" | "events" | "personal_training" | "digital_content" | "corporate_clients")[];
                         payment_reminder_interval_days?: number;
+                        /** @description Also remind the member on the day after it ended; then every payment_reminder_interval_days until they renew or leave */
+                        subscription_day_after_reminder?: boolean;
+                        /** @description Also remind the member on the day the subscription ends */
+                        subscription_end_day_reminder?: boolean;
                         /** @description Days before a subscription ends to remind the member (0 = no reminder) */
                         subscription_expiry_reminder_days?: number;
                         /** @description Slack days after a subscription ends or an invoice falls overdue before the member loses access */
@@ -114425,6 +115076,10 @@ export interface operations {
                             inserted_at?: string | null;
                             package_modules?: string[];
                             payment_reminder_interval_days: number;
+                            /** @description Also remind the member on the day after it ended; then every payment_reminder_interval_days until they renew or leave */
+                            subscription_day_after_reminder: boolean;
+                            /** @description Also remind the member on the day the subscription ends */
+                            subscription_end_day_reminder: boolean;
                             /** @description Days before a subscription ends to remind the member (0 = no reminder) */
                             subscription_expiry_reminder_days: number;
                             /** @description Slack days after a subscription ends or an invoice falls overdue before the member loses access */
@@ -115741,19 +116396,40 @@ export interface operations {
                             /** Format: date-time */
                             verified_at: string | null;
                         }[];
+                        /**
+                         * SiteLanguages
+                         * @description The site's own language, the ones it can add and each translation's progress
+                         */
+                        languages: {
+                            available: string[];
+                            machine_available: boolean;
+                            progress: {
+                                /** SiteTranslationCounts */
+                                counts: {
+                                    machine: number;
+                                    missing: number;
+                                    ok: number;
+                                    stale: number;
+                                };
+                                locale: string;
+                                total: number;
+                            }[];
+                            /** @description The box's own language (the source) */
+                            source: string;
+                        };
                         section_keys: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
                         /** SiteSettings */
                         settings: {
-                            about_en: string | null;
                             banner_version: number;
                             conversions_api_enabled: boolean;
                             faq: {
                                 answer: string;
-                                /** @description Optional English text (ADR-388) */
-                                answer_en?: string;
+                                /**
+                                 * Format: uuid
+                                 * @description Stable id (ADR-520); a new entry gets one when saved
+                                 */
+                                id?: string;
                                 question: string;
-                                /** @description Optional English text (ADR-388) */
-                                question_en?: string;
                             }[];
                             forms_enabled: boolean;
                             ga4_measurement_id: string | null;
@@ -115767,6 +116443,10 @@ export interface operations {
                             /** @description «WOD της ημέρας» on the site (ADR-388) */
                             public_wod: boolean;
                             section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                            /** @description Languages the box translates its texts into (ADR-520) */
+                            translation_locales: string[];
+                            /** @description Translations visitors can pick on the site (ADR-520) */
+                            visible_locales: string[];
                         };
                     };
                 };
@@ -115783,17 +116463,17 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    about_en?: string | null;
                     conversions_api_enabled?: boolean;
                     /** @description Meta Conversions API access token (write-only; empty removes it) */
                     conversions_api_token?: string | null;
                     faq?: {
                         answer: string;
-                        /** @description Optional English text (ADR-388) */
-                        answer_en?: string;
+                        /**
+                         * Format: uuid
+                         * @description Stable id (ADR-520); a new entry gets one when saved
+                         */
+                        id?: string;
                         question: string;
-                        /** @description Optional English text (ADR-388) */
-                        question_en?: string;
                     }[];
                     forms_enabled?: boolean;
                     ga4_measurement_id?: string | null;
@@ -115804,6 +116484,10 @@ export interface operations {
                     public_schedule?: boolean;
                     public_wod?: boolean;
                     section_order?: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                    /** @description Languages to translate into; the box's own is left out */
+                    translation_locales?: string[];
+                    /** @description Translations visitors can pick; a subset of translation_locales */
+                    visible_locales?: string[];
                 };
             };
         };
@@ -115815,18 +116499,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /**
+                         * SiteLanguages
+                         * @description The site's own language, the ones it can add and each translation's progress
+                         */
+                        languages: {
+                            available: string[];
+                            machine_available: boolean;
+                            progress: {
+                                /** SiteTranslationCounts */
+                                counts: {
+                                    machine: number;
+                                    missing: number;
+                                    ok: number;
+                                    stale: number;
+                                };
+                                locale: string;
+                                total: number;
+                            }[];
+                            /** @description The box's own language (the source) */
+                            source: string;
+                        };
                         /** SiteSettings */
                         settings: {
-                            about_en: string | null;
                             banner_version: number;
                             conversions_api_enabled: boolean;
                             faq: {
                                 answer: string;
-                                /** @description Optional English text (ADR-388) */
-                                answer_en?: string;
+                                /**
+                                 * Format: uuid
+                                 * @description Stable id (ADR-520); a new entry gets one when saved
+                                 */
+                                id?: string;
                                 question: string;
-                                /** @description Optional English text (ADR-388) */
-                                question_en?: string;
                             }[];
                             forms_enabled: boolean;
                             ga4_measurement_id: string | null;
@@ -115840,6 +116545,10 @@ export interface operations {
                             /** @description «WOD της ημέρας» on the site (ADR-388) */
                             public_wod: boolean;
                             section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                            /** @description Languages the box translates its texts into (ADR-520) */
+                            translation_locales: string[];
+                            /** @description Translations visitors can pick on the site (ADR-520) */
+                            visible_locales: string[];
                         };
                     };
                 };
@@ -116243,6 +116952,309 @@ export interface operations {
                             waiting: number;
                         };
                     };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.translations": {
+        parameters: {
+            query: {
+                locale: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Translations */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** SiteTranslationCounts */
+                        counts: {
+                            machine: number;
+                            missing: number;
+                            ok: number;
+                            stale: number;
+                        };
+                        items: {
+                            field: string;
+                            /** @enum {string} */
+                            group: "about" | "rooms" | "faq" | "packages" | "classes" | "events" | "locations";
+                            /** Format: uuid */
+                            id: string;
+                            /** @description kind:id:field */
+                            key: string;
+                            /** @enum {string} */
+                            kind: "box_profile" | "class_type" | "event" | "location" | "package" | "site_faq" | "space";
+                            /** @description What the text belongs to (a package's name, an FAQ number) */
+                            label: string | null;
+                            /** @enum {string|null} */
+                            origin: "manual" | "machine" | null;
+                            /** @description The box's own text */
+                            source: string;
+                            /** @enum {string} */
+                            status: "missing" | "stale" | "machine" | "ok";
+                            /** @description The translation */
+                            text: string | null;
+                            /** Format: date-time */
+                            updated_at: string | null;
+                        }[];
+                        locale: string;
+                        machine_available: boolean;
+                        source_language: string;
+                        total: number;
+                        /** @description Texts the machine wrote (machine only) */
+                        written?: number;
+                    };
+                };
+            };
+            /** @description Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.save_translations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    entries: {
+                        field: string;
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        kind: "box_profile" | "class_type" | "event" | "location" | "package" | "site_faq" | "space";
+                        /** @description Empty or null removes the translation */
+                        text: string | null;
+                    }[];
+                    locale: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Translations */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** SiteTranslationCounts */
+                        counts: {
+                            machine: number;
+                            missing: number;
+                            ok: number;
+                            stale: number;
+                        };
+                        items: {
+                            field: string;
+                            /** @enum {string} */
+                            group: "about" | "rooms" | "faq" | "packages" | "classes" | "events" | "locations";
+                            /** Format: uuid */
+                            id: string;
+                            /** @description kind:id:field */
+                            key: string;
+                            /** @enum {string} */
+                            kind: "box_profile" | "class_type" | "event" | "location" | "package" | "site_faq" | "space";
+                            /** @description What the text belongs to (a package's name, an FAQ number) */
+                            label: string | null;
+                            /** @enum {string|null} */
+                            origin: "manual" | "machine" | null;
+                            /** @description The box's own text */
+                            source: string;
+                            /** @enum {string} */
+                            status: "missing" | "stale" | "machine" | "ok";
+                            /** @description The translation */
+                            text: string | null;
+                            /** Format: date-time */
+                            updated_at: string | null;
+                        }[];
+                        locale: string;
+                        machine_available: boolean;
+                        source_language: string;
+                        total: number;
+                        /** @description Texts the machine wrote (machine only) */
+                        written?: number;
+                    };
+                };
+            };
+            /** @description Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.keep_translations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    keys: string[];
+                    locale: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Translations */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** SiteTranslationCounts */
+                        counts: {
+                            machine: number;
+                            missing: number;
+                            ok: number;
+                            stale: number;
+                        };
+                        items: {
+                            field: string;
+                            /** @enum {string} */
+                            group: "about" | "rooms" | "faq" | "packages" | "classes" | "events" | "locations";
+                            /** Format: uuid */
+                            id: string;
+                            /** @description kind:id:field */
+                            key: string;
+                            /** @enum {string} */
+                            kind: "box_profile" | "class_type" | "event" | "location" | "package" | "site_faq" | "space";
+                            /** @description What the text belongs to (a package's name, an FAQ number) */
+                            label: string | null;
+                            /** @enum {string|null} */
+                            origin: "manual" | "machine" | null;
+                            /** @description The box's own text */
+                            source: string;
+                            /** @enum {string} */
+                            status: "missing" | "stale" | "machine" | "ok";
+                            /** @description The translation */
+                            text: string | null;
+                            /** Format: date-time */
+                            updated_at: string | null;
+                        }[];
+                        locale: string;
+                        machine_available: boolean;
+                        source_language: string;
+                        total: number;
+                        /** @description Texts the machine wrote (machine only) */
+                        written?: number;
+                    };
+                };
+            };
+            /** @description Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.machine_translations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    locale: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Translations */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** SiteTranslationCounts */
+                        counts: {
+                            machine: number;
+                            missing: number;
+                            ok: number;
+                            stale: number;
+                        };
+                        items: {
+                            field: string;
+                            /** @enum {string} */
+                            group: "about" | "rooms" | "faq" | "packages" | "classes" | "events" | "locations";
+                            /** Format: uuid */
+                            id: string;
+                            /** @description kind:id:field */
+                            key: string;
+                            /** @enum {string} */
+                            kind: "box_profile" | "class_type" | "event" | "location" | "package" | "site_faq" | "space";
+                            /** @description What the text belongs to (a package's name, an FAQ number) */
+                            label: string | null;
+                            /** @enum {string|null} */
+                            origin: "manual" | "machine" | null;
+                            /** @description The box's own text */
+                            source: string;
+                            /** @enum {string} */
+                            status: "missing" | "stale" | "machine" | "ok";
+                            /** @description The translation */
+                            text: string | null;
+                            /** Format: date-time */
+                            updated_at: string | null;
+                        }[];
+                        locale: string;
+                        machine_available: boolean;
+                        source_language: string;
+                        total: number;
+                        /** @description Texts the machine wrote (machine only) */
+                        written?: number;
+                    };
+                };
+            };
+            /** @description Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Error */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
                 };
             };
         };
@@ -130930,6 +131942,53 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.MyFeaturesController.show": {
+        parameters: {
+            query?: {
+                /** @description ADR-186: comma-separated branch ids to filter by */
+                location_ids?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Features */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description ADR-470: every feature key with whether it is on */
+                        features: {
+                            branches: boolean;
+                            card_autopay: boolean;
+                            floor_plan: boolean;
+                            module_corporate_clients: boolean;
+                            module_digital_content: boolean;
+                            module_events: boolean;
+                            module_group_classes: boolean;
+                            module_online_coaching: boolean;
+                            module_open_gym: boolean;
+                            module_personal_training: boolean;
+                            online_drop_in: boolean;
+                            online_packages: boolean;
+                            online_payments: boolean;
+                            online_personal_training: boolean;
+                            online_programmes: boolean;
+                            online_shop: boolean;
+                            perks: boolean;
+                            promotions: boolean;
+                            referrals: boolean;
+                            trials: boolean;
+                        };
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.MyFinanceController.index": {
         parameters: {
             query?: never;
@@ -136755,6 +137814,8 @@ export interface operations {
                             workout_id?: string | null;
                             workout_title?: string | null;
                         }[];
+                        /** @description ADR-451: the source types this person may log here, in display order (freeform is always last). */
+                        available_sources: ("class" | "assigned_workout" | "library_workout" | "freeform")[];
                         classes: {
                             /** Format: uuid */
                             booking_id?: string | null;
@@ -158454,7 +159515,10 @@ export interface operations {
     };
     "PaleeWeb.PublicSiteController.show": {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description One of the site's translations (ADR-520); the box's own language when absent */
+                lang?: string;
+            };
             header?: never;
             path: {
                 /** @description The box's slug or one of its former slugs */
@@ -158471,8 +159535,13 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        about_en: string | null;
+                        /** @description The translated «Σχετικά», null when there is none */
+                        about: string | null;
                         canonical_url: string;
+                        /** @description Translated class names by the box's own name */
+                        class_type_names: {
+                            [key: string]: string;
+                        };
                         events: {
                             currency: string;
                             /** Format: date-time */
@@ -158488,11 +159557,12 @@ export interface operations {
                         }[];
                         faq: {
                             answer: string;
-                            /** @description Optional English text (ADR-388) */
-                            answer_en?: string;
+                            /**
+                             * Format: uuid
+                             * @description Stable id (ADR-520); a new entry gets one when saved
+                             */
+                            id?: string;
                             question: string;
-                            /** @description Optional English text (ADR-388) */
-                            question_en?: string;
                         }[];
                         forms: {
                             contact: boolean;
@@ -158501,7 +159571,7 @@ export interface operations {
                         };
                         /** @description The box's language (ADR-388) */
                         language: string;
-                        /** @description The site's languages: the box's own and English */
+                        /** @description The site's languages: the box's own first, then its visible translations */
                         languages: string[];
                         /** @description Palee's address for reporting content on the site (ADR-397, DSA Art. 16) */
                         report_contact: string | null;
@@ -158547,6 +159617,10 @@ export interface operations {
                         };
                         sections: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
                         slug: string;
+                        /** @description Translations of texts served by other reads, keyed kind:id:field */
+                        texts: {
+                            [key: string]: string;
+                        };
                         time_zone: string;
                         /** @description The next 7 days' classes when the owner shows the timetable (no spots or people) */
                         timetable: {
@@ -158576,6 +159650,8 @@ export interface operations {
                             };
                             validity_days: number;
                         };
+                        /** @description The translation this answer is in (ADR-520), null for the box's own */
+                        translation: string | null;
                         wod: {
                             body: string | null;
                             /** Format: date */

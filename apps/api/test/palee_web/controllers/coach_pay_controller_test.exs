@@ -210,8 +210,8 @@ defmodule PaleeWeb.CoachPayControllerTest do
       assert %{"currency" => "EUR", "amount_basis" => "gross", "roles" => ["head_coach", "coach"]} =
                overtime
 
-      # Overtime needs its weekly threshold.
-      assert %{"errors" => _errors} =
+      # ADR-510: overtime without a threshold is a rate for one-off hours only.
+      assert %{"item" => %{"weekly_threshold" => nil}} =
                conn
                |> as(ctx.admin)
                |> post(pay_path(ctx, "/items"), %{
@@ -220,6 +220,20 @@ defmodule PaleeWeb.CoachPayControllerTest do
                  amount_cents: 2_000,
                  unit: "per_hour",
                  roles: ["coach"]
+               })
+               |> json_response(201)
+
+      # A weekly threshold over a week is refused.
+      assert %{"errors" => _errors} =
+               conn
+               |> as(ctx.admin)
+               |> post(pay_path(ctx, "/items"), %{
+                 kind: "overtime",
+                 name: "Πάνω από μια εβδομάδα",
+                 amount_cents: 2_000,
+                 unit: "per_hour",
+                 roles: ["coach"],
+                 weekly_threshold: 169
                })
                |> json_response(422)
 
@@ -257,7 +271,7 @@ defmodule PaleeWeb.CoachPayControllerTest do
                |> patch(pay_path(ctx, "/items/#{overtime["id"]}"), %{name: "x"})
                |> json_response(409)
 
-      assert %{"items" => []} =
+      assert %{"items" => [%{"name" => "Χωρίς όριο"}]} =
                conn |> as(ctx.admin) |> get(pay_path(ctx, "/items")) |> json_response(200)
     end
 

@@ -14,6 +14,7 @@ import {
   fetchPayPeriod,
   fetchPayPeriods,
   fetchPayslipPdf,
+  restorePayItem,
   setPayLineBasis,
   type PayLine,
   type PayPeriod,
@@ -339,7 +340,15 @@ function StatementRow({
 }
 
 /** The groups of a statement (each rule or item with its terms), then the lines added by hand with their notes. */
-export function StatementLines({ period, statement, editable }: { period: Pick<PayPeriod, "id" | "currency">; statement: Pick<PayStatement, "groups" | "lines">; editable: boolean }) {
+export function StatementLines({
+  period,
+  statement,
+  editable,
+}: {
+  period: Pick<PayPeriod, "id" | "currency"> & Partial<Pick<PayPeriod, "item_skips">>;
+  statement: Pick<PayStatement, "groups" | "lines"> & Partial<Pick<PayStatement, "coach_user_id">>;
+  editable: boolean;
+}) {
   const t = useTranslations("CoachPay");
   const ui = useUiTranslations();
   const token = useSession().tokens?.access_token ?? "";
@@ -352,10 +361,14 @@ export function StatementLines({ period, statement, editable }: { period: Pick<P
   };
   const basis = useMutation({ mutationFn: (line: PayLine) => setPayLineBasis(token, period.id, line.id, isNet(line) ? "gross" : "net"), onSuccess: store });
   const remove = useMutation({ mutationFn: (line: PayLine) => deletePayAdjustment(token, period.id, line.id), onSuccess: store });
+  const restore = useMutation({ mutationFn: (skipId: string) => restorePayItem(token, period.id, skipId), onSuccess: store });
 
-  const calculated = statement.groups.filter((group) => !["adjustment", "ad_hoc", "non_taxable_reimbursement"].includes(group.kind));
-  const manual = statement.lines.filter((line) => isManual(line) && ["adjustment", "ad_hoc", "non_taxable_reimbursement"].includes(line.kind));
+  // ADR-510: lines added by hand (one-off overtime and allowances too) are
+  // listed with their notes and can be removed; calculated ones are grouped.
+  const calculated = statement.groups.filter((group) => !group.key.startsWith("manual:"));
+  const manual = statement.lines.filter((line) => isManual(line));
   const groupLines = (key: string) => statement.lines.filter((line) => !isManual(line) && groupKeyOf(line) === key);
+  const skipped = (Array.isArray(period.item_skips) ? period.item_skips : []).filter((skip) => skip.user_id === statement.coach_user_id);
 
   return (
     <div className="space-y-1.5" data-testid="pay-statement-lines">
@@ -375,6 +388,10 @@ export function StatementLines({ period, statement, editable }: { period: Pick<P
                     label: group.amount_basis === "net" ? t("markGross") : t("markNet"),
                     onSelect: () => lines.forEach((line) => basis.mutate(line)),
                   },
+                  // A recurring allowance can be taken off this person for this period (ADR-510).
+                  ...(group.kind === "allowance" && lines[0]?.source_type === "pay_item"
+                    ? [{ label: t("skipForPeriod"), tone: "danger" as const, onSelect: () => remove.mutate(lines[0]) }]
+                    : []),
                 ]}
               />
             ) : null}
@@ -385,6 +402,8 @@ export function StatementLines({ period, statement, editable }: { period: Pick<P
         <div key={line.id} className="flex flex-wrap items-center gap-2 text-sm" data-testid="pay-manual-line">
           <span className="min-w-0 flex-1" style={{ color: "var(--text-soft)" }}>
             {t(`kind_${line.kind}`)}
+            {["overtime", "allowance"].includes(line.kind) && line.description ? <span> · {line.description}</span> : null}
+            {line.kind === "overtime" && line.quantity_divisor ? <span> · {t("hoursCount", { count: Math.round((line.quantity / line.quantity_divisor) * 100) / 100 })}</span> : null}
             {line.note ? <span style={{ color: "var(--dim)" }}> · {line.note}</span> : null}
           </span>
           {isNet(line) ? <NetMark /> : null}
@@ -400,8 +419,18 @@ export function StatementLines({ period, statement, editable }: { period: Pick<P
           ) : null}
         </div>
       ))}
-      {statement.groups.length === 0 && manual.length === 0 ? <p className="text-sm" style={{ color: "var(--dim)" }}>{t("noLines")}</p> : null}
-      {basis.isError || remove.isError ? <ErrorNotice variant="field">{localizeError(basis.error ?? remove.error, ui)}</ErrorNotice> : null}
+      {skipped.map((skip) => (
+        <div key={skip.id} className="flex flex-wrap items-center gap-2 text-sm" data-testid="pay-skipped-item">
+          <span className="min-w-0 flex-1" style={{ color: "var(--dim)" }}>{t("skippedThisPeriod", { name: skip.name ?? t("kind_allowance") })}</span>
+          {editable ? (
+            <button type="button" className="text-sm font-semibold" style={{ color: "var(--primary)" }} disabled={restore.isPending} onClick={() => restore.mutate(skip.id)} data-testid="pay-restore-item">
+              {t("restoreItem")}
+            </button>
+          ) : null}
+        </div>
+      ))}
+      {statement.groups.length === 0 && manual.length === 0 && skipped.length === 0 ? <p className="text-sm" style={{ color: "var(--dim)" }}>{t("noLines")}</p> : null}
+      {basis.isError || remove.isError || restore.isError ? <ErrorNotice variant="field">{localizeError(basis.error ?? remove.error ?? restore.error, ui)}</ErrorNotice> : null}
     </div>
   );
 }

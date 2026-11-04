@@ -91,7 +91,12 @@ defmodule Palee.BoxSite do
     end
   end
 
-  defp maybe_wrap_faq(%{faq: entries} = changes), do: %{changes | faq: %{"entries" => entries}}
+  # ADR-520: a new FAQ entry gets its stable id here.
+  defp maybe_wrap_faq(%{faq: entries} = changes) do
+    entries = Enum.map(entries, &Map.put_new_lazy(&1, "id", fn -> Ecto.UUID.generate() end))
+    %{changes | faq: %{"entries" => entries}}
+  end
+
   defp maybe_wrap_faq(changes), do: changes
 
   defdelegate conversions_api_token(context), to: BoxSiteStore

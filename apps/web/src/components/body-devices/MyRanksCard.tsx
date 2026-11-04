@@ -83,11 +83,16 @@ function RankLine({ standing }: { standing: RankStanding }) {
   return (
     <span className="flex min-h-12 items-center gap-3 py-1.5">
       {current ? <Belt color={current.rank.color} stripes={current.stripes} className="h-3 w-12" /> : null}
+      {/* ANR 2026-11-03: never cut with an ellipsis; the rest wraps onto its own line. */}
       <span className="flex min-w-0 flex-1 flex-col">
-        <span className="truncate text-sm font-semibold" style={{ color: "var(--text)" }}>
+        <span className="break-words text-sm font-semibold" style={{ color: "var(--text)" }}>
           {current ? current.rank.name : standing.ladder.name}
-          {towards ? <span className="font-normal" style={{ color: "var(--text-soft)" }}> · {towards}</span> : null}
         </span>
+        {towards ? (
+          <span className="break-words text-sm" style={{ color: "var(--text-soft)" }}>
+            {towards}
+          </span>
+        ) : null}
       </span>
       <span aria-hidden="true" style={{ color: "var(--dim)" }}>›</span>
     </span>
@@ -182,9 +187,11 @@ function Diplomas({ token, slug, standing }: { token: string; slug: string; stan
         {awards.map((award, index) => (
           <li key={award.id} className="flex min-h-12 items-center gap-3 py-1.5" style={index === 0 ? undefined : { borderTop: "1px solid var(--border)" }}>
             <Belt color={award.color} stripes={award.stripes} className="h-2.5 w-10" />
-            <span className="min-w-0 flex-1 truncate text-sm" style={{ color: "var(--text)" }}>
-              {award.stripes > 0 ? t("ranks.historyStripe", { rank: award.rank_name ?? "", stripes: award.stripes }) : (award.rank_name ?? "")} ·{" "}
-              {formatRankDate(award.awarded_on, locale)}
+            <span className="flex min-w-0 flex-1 flex-col text-sm">
+              <span className="break-words" style={{ color: "var(--text)" }}>
+                {award.stripes > 0 ? t("ranks.currentLine", { rank: award.rank_name ?? "", stripes: award.stripes }) : (award.rank_name ?? "")}
+              </span>
+              <span style={{ color: "var(--text-soft)" }}>{formatRankDate(award.awarded_on, locale)}</span>
             </span>
             <button type="button" onClick={() => diploma.mutate(award.id)} className="text-sm font-semibold" style={{ color: "var(--primary)" }}>
               {t("ranks.diploma")}

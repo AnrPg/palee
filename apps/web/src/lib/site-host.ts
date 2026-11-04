@@ -1,3 +1,4 @@
+import { SUPPORTED_LOCALES } from "@/i18n/locales";
 import { apiOriginForProxy } from "@/lib/organization-slug-alias";
 
 /**
@@ -13,8 +14,12 @@ const POSITIVE_TTL_MS = 5 * 60_000;
 const NEGATIVE_TTL_MS = 60_000;
 const defaultCache = new Map<string, CacheEntry>();
 
+/** The app's languages as path segments ("en", "pt-pt"): a site's translation is `/<code>` (ADR-520). */
+const LANGUAGE_SEGMENT = SUPPORTED_LOCALES.map((code) => code.toLowerCase()).join("|");
+
 /** The site's own pages, served under a custom host's root. */
-const SITE_PATHS = /^\/(?:en|privacy|packages)?\/?$/;
+const SITE_PATHS = new RegExp(`^/(?:${LANGUAGE_SEGMENT}|privacy|packages)?/?$`, "i");
+const SITE_PAGE = new RegExp(`^/b/[^/]+(?:/(?:${LANGUAGE_SEGMENT})|/privacy)?/?$`, "i");
 
 /** Hosts the app itself answers on: never looked up as a box's domain. */
 export function isAppHost(host: string, env: Record<string, string | undefined> = process.env) {
@@ -89,5 +94,5 @@ export const SITE_TAG_ORIGINS = {
 
 /** Whether a path is a box's website page (where the tags may load after consent). */
 export function isSitePath(pathname: string) {
-  return /^\/b\/[^/]+(?:\/en|\/privacy)?\/?$/.test(pathname);
+  return SITE_PAGE.test(pathname);
 }
