@@ -36,6 +36,7 @@ defmodule PaleeWeb.ProgrammePagesControllerTest do
       workout_fixture(owner, %{
         tenant_context: context,
         title: "Strength",
+        type: :strength,
         estimated_duration_seconds: 2_700,
         sections: [
           %{
@@ -395,6 +396,68 @@ defmodule PaleeWeb.ProgrammePagesControllerTest do
       assert row["main_equipment"] == ["rings", "rower", "barbell"]
       assert row["minutes_per_session"] == 30
       refute Map.has_key?(row, "facts")
+    end
+
+    test "the public page outlines every day without its WOD, and names the coach", ctx do
+      bare = workout_fixture(ctx.owner, %{tenant_context: ctx.context, title: "Bare"})
+
+      programme =
+        draft(ctx, %{
+          preview_days: 1,
+          draft_days: [
+            %{day: 0, workout_id: ctx.strength.id},
+            %{day: 2, workout_id: ctx.engine.id},
+            %{day: 2, workout_id: ctx.strength.id},
+            %{day: 9, workout_id: bare.id}
+          ]
+        })
+
+      publish(ctx, programme)
+      publish_page(ctx)
+      path = "/api/public/boxes/#{ctx.organization.slug}/programmes/#{programme["id"]}"
+      public = build_conn() |> get(path) |> json_response(200) |> Map.fetch!("programme")
+
+      assert public["coach_name"] == "pages_owner"
+      assert [%{"day" => 0, "title" => "Strength"}] = public["preview"]
+
+      assert [%{"week" => 1, "sessions" => 3, "days" => week1}, %{"week" => 2, "days" => week2}] =
+               public["week_outline"]
+
+      assert length(week1) == 7 and length(week2) == 7
+
+      assert Enum.at(week1, 0) == %{
+               "day" => 0,
+               "weekday" => 0,
+               "rest" => false,
+               "workout_type" => "strength",
+               "minutes" => 45,
+               "preview" => true
+             }
+
+      assert %{"rest" => true, "workout_type" => nil, "minutes" => nil, "preview" => false} =
+               Enum.at(week1, 1)
+
+      # Two WODs that day: the longer one's type, 20 + 45 minutes.
+      assert %{"day" => 2, "rest" => false, "workout_type" => "strength", "minutes" => 65} =
+               Enum.at(week1, 2)
+
+      # A WOD without a duration: the type only.
+      assert %{"day" => 9, "weekday" => 2, "workout_type" => "crossfit", "minutes" => nil} =
+               Enum.at(week2, 2)
+
+      # Locked days never carry a WOD.
+      for day <- week1 ++ week2 do
+        refute Map.has_key?(day, "title") or Map.has_key?(day, "workout_id")
+      end
+
+      Repo.query!("UPDATE users SET nickname = $2, display_nickname = $3 WHERE id = $1", [
+        Ecto.UUID.dump!(ctx.owner.id),
+        "deleted.0123456789",
+        "Deleted account"
+      ])
+
+      public = build_conn() |> get(path) |> json_response(200) |> Map.fetch!("programme")
+      assert public["coach_name"] == nil
     end
 
     test "a WOD without a duration leaves the minutes out", ctx do

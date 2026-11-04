@@ -112,6 +112,7 @@ defmodule Palee.Application.Programmes.Storefront do
       reviews = Programmes.list_reviews(context, programme.id, %{published_only: true, limit: 20})
       names = first_names(reviews)
       cover = Covers.urls(context, [programme])[programme.id]
+      facts = Facts.of_version(context, version)
 
       {:ok,
        %{
@@ -122,7 +123,8 @@ defmodule Palee.Application.Programmes.Storefront do
                version.days
                |> Programmes.preview(programme.preview_days)
                |> Presenter.preview_days(),
-             week_outline: week_outline(version),
+             week_outline: week_outline(version, programme.preview_days, facts),
+             coach_name: coach_name(programme.author_id),
              reviews:
                Map.get(Programmes.review_summaries(context, [programme.id]), programme.id, %{
                  average: nil,
@@ -131,15 +133,52 @@ defmodule Palee.Application.Programmes.Storefront do
              latest_reviews: Enum.map(reviews, &Presenter.review(&1, Map.get(names, &1.user_id))),
              cover_url: cover.url
            })
-           |> Map.merge(Facts.shown(programme, Facts.of_version(context, version)))
+           |> Map.merge(Facts.shown(programme, facts))
        }}
     end
   end
 
-  # How many WODs each week has, without naming them.
-  defp week_outline(version) do
+  # How many WODs each week has and, for every day, whether it trains, its
+  # workout type and its minutes (the mockup's «Ημ. 3 · Δύναμη · ~45′»),
+  # never a WOD's title or content: locked days stay locked, and the preview
+  # days show their WODs in `preview` as before.
+  defp week_outline(version, preview_days, facts) do
     counts = Enum.frequencies_by(version.days, &(div(&1["day"], 7) + 1))
-    Enum.map(1..version.weeks, &%{week: &1, sessions: Map.get(counts, &1, 0)})
+    outline = Map.new((facts || %{})["days"] || [], &{&1["day"], &1})
+    preview_days = preview_days || 0
+
+    Enum.map(1..version.weeks, fn week ->
+      %{
+        week: week,
+        sessions: Map.get(counts, week, 0),
+        days:
+          Enum.map(0..6, fn weekday ->
+            day = (week - 1) * 7 + weekday
+            row = Map.get(outline, day)
+
+            %{
+              day: day,
+              weekday: weekday,
+              rest: is_nil(row),
+              workout_type: row && row["type"],
+              minutes: row && row["minutes"],
+              preview: day < preview_days
+            }
+          end)
+      }
+    end)
+  end
+
+  # ADR-370 addendum: the author's public name under the title; nil once the
+  # account is deleted (the row gone, or anonymised to a `deleted.` handle).
+  defp coach_name(nil), do: nil
+
+  defp coach_name(author_id) do
+    case Identity.list_by_ids([author_id]) do
+      [%{handle: "deleted." <> _rest}] -> nil
+      [%{nickname: name}] when is_binary(name) and name != "" -> name
+      _missing -> nil
+    end
   end
 
   defp first_names(reviews) do

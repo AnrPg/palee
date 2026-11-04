@@ -26,15 +26,25 @@ defmodule Palee.Application.Programmes.Facts do
   defp workout_facts(%{} = workout) do
     %{
       equipment: Workouts.workout_equipment(workout).equipment,
-      duration_seconds: workout[:estimated_duration_seconds]
+      duration_seconds: workout[:estimated_duration_seconds],
+      type: workout_type(workout[:type])
     }
   end
 
-  defp workout_facts(_missing), do: %{equipment: [], duration_seconds: nil}
+  defp workout_facts(_missing), do: %{equipment: [], duration_seconds: nil, type: nil}
 
-  @doc "A version's stored facts, or derived from its WODs (older versions)."
+  # The ADR-275 kind, only when it is one of the list (never "" or a stray value).
+  defp workout_type(type) do
+    type = type && to_string(type)
+    if type in Workouts.workout_type_keys(), do: type
+  end
+
+  @doc """
+  A version's stored facts, or derived from its WODs (versions published
+  before ADR-542, or before the day outline was stored with them).
+  """
   def of_version(_context, nil), do: nil
-  def of_version(_context, %{facts: %{} = facts}), do: facts
+  def of_version(_context, %{facts: %{"days" => _days} = facts}), do: facts
   def of_version(context, version), do: derive(context, version.days)
 
   @doc """

@@ -133,6 +133,9 @@ defmodule Palee.Workouts do
     as: :for_scale
 
   def supported_workout_types, do: WorkoutType.values()
+
+  @doc "The workout kinds (ADR-275), as strings."
+  def workout_type_keys, do: WorkoutType.keys()
   def authoring_modes, do: Palee.Workouts.MasterWorkout.authoring_modes()
   def parse_dsl(source), do: WorkoutDsl.parse(source)
   def normalize_timer_config(config), do: TimerConfig.normalize(config)
