@@ -24,9 +24,9 @@ const ROLES: SegmentOption<string>[] = [
   { value: "admin", label: "Staff", count: 1 },
 ];
 
-function Picker({ options = ROLES, stretch = false }: { options?: SegmentOption<string>[]; stretch?: boolean }) {
+function Picker({ options = ROLES, stretch = false, level }: { options?: SegmentOption<string>[]; stretch?: boolean; level?: "page" | "sub" }) {
   const [value, setValue] = useState(options[0].value);
-  return <SegmentPicker ariaLabel="Role" value={value} onChange={setValue} options={options} stretch={stretch} />;
+  return <SegmentPicker ariaLabel="Role" value={value} onChange={setValue} options={options} stretch={stretch} level={level} />;
 }
 
 const SEGMENTS: SegmentOption<string>[] = [
@@ -58,6 +58,16 @@ describe("SegmentPicker", () => {
     const list = screen.getByRole("tablist");
     expect(list.className).toContain("grid");
     expect(list.style.gridTemplateColumns).toBe("repeat(2, minmax(0, 1fr))");
+  });
+
+  it("folds a nested (sub-level) switch into an Ink dropdown, unlike the page switch", () => {
+    fakeLayout({ container: 300, chip: 120 });
+    render(<Picker options={ROLES.slice(0, 3)} level="sub" />);
+    const select = screen.getByRole("combobox", { name: "Role" });
+    expect(select.getAttribute("data-segment-dropdown")).toBe("sub");
+    expect(select.style.background).toBe("var(--text)");
+    expect(select.style.color).toBe("var(--bg)");
+    expect(select.style.getPropertyValue("--select-chevron")).toBe("var(--bg)");
   });
 
   it("falls back to a dropdown when no grid is full", () => {

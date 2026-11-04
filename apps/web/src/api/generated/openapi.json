@@ -179224,6 +179224,17 @@
                           "currency": {
                             "type": "string"
                           },
+                          "frequency": {
+                            "description": "Recurring allowance (unit per_period) only",
+                            "enum": [
+                              "period",
+                              "daily",
+                              "weekly",
+                              "monthly"
+                            ],
+                            "nullable": true,
+                            "type": "string"
+                          },
                           "id": {
                             "format": "uuid",
                             "type": "string"
@@ -179303,7 +179314,7 @@
       },
       "post": {
         "callbacks": {},
-        "description": "Overtime: an amount per hour above `weekly_threshold` hours a week (both required), counted from the classes the person led. Allowance: per period or per occurrence, added to a period by hand. `roles`: the staff roles it applies to.",
+        "description": "Overtime: an amount per hour above `weekly_threshold` hours a week (both required), counted from the classes the person led. Allowance: `per_period` (recurring, added by every calculation at its `frequency`) or `per_occurrence` (a rate added by hand). `roles`: the staff roles it applies to.",
         "operationId": "PaleeWeb.AdminCoachPayController.create_item",
         "parameters": [],
         "requestBody": {
@@ -179328,6 +179339,17 @@
                   "currency": {
                     "maxLength": 3,
                     "minLength": 3,
+                    "type": "string"
+                  },
+                  "frequency": {
+                    "description": "Recurring allowance: once per pay period (`period`, default) or per day, week or month, prorated by the period's days",
+                    "enum": [
+                      "period",
+                      "daily",
+                      "weekly",
+                      "monthly"
+                    ],
+                    "nullable": true,
                     "type": "string"
                   },
                   "kind": {
@@ -179359,7 +179381,7 @@
                     "type": "array"
                   },
                   "unit": {
-                    "description": "overtime: per_hour; allowance: per_period or per_occurrence",
+                    "description": "overtime: per_hour; allowance: per_period (recurring, added by every calculation) or per_occurrence (a rate added by hand)",
                     "enum": [
                       "per_period",
                       "per_occurrence",
@@ -179368,7 +179390,7 @@
                     "type": "string"
                   },
                   "weekly_threshold": {
-                    "description": "Overtime: hours a week (Monday to Sunday) before overtime; required",
+                    "description": "Overtime: hours a week (Monday to Sunday) before overtime is counted from classes; null keeps it a rate for one-off hours only",
                     "maximum": 168,
                     "minimum": 0,
                     "nullable": true,
@@ -179413,6 +179435,17 @@
                           "type": "string"
                         },
                         "currency": {
+                          "type": "string"
+                        },
+                        "frequency": {
+                          "description": "Recurring allowance (unit per_period) only",
+                          "enum": [
+                            "period",
+                            "daily",
+                            "weekly",
+                            "monthly"
+                          ],
+                          "nullable": true,
                           "type": "string"
                         },
                         "id": {
@@ -179530,6 +179563,17 @@
                     "minLength": 3,
                     "type": "string"
                   },
+                  "frequency": {
+                    "description": "Recurring allowance: once per pay period (`period`, default) or per day, week or month, prorated by the period's days",
+                    "enum": [
+                      "period",
+                      "daily",
+                      "weekly",
+                      "monthly"
+                    ],
+                    "nullable": true,
+                    "type": "string"
+                  },
                   "kind": {
                     "enum": [
                       "overtime",
@@ -179559,7 +179603,7 @@
                     "type": "array"
                   },
                   "unit": {
-                    "description": "overtime: per_hour; allowance: per_period or per_occurrence",
+                    "description": "overtime: per_hour; allowance: per_period (recurring, added by every calculation) or per_occurrence (a rate added by hand)",
                     "enum": [
                       "per_period",
                       "per_occurrence",
@@ -179568,7 +179612,7 @@
                     "type": "string"
                   },
                   "weekly_threshold": {
-                    "description": "Overtime: hours a week (Monday to Sunday) before overtime; required",
+                    "description": "Overtime: hours a week (Monday to Sunday) before overtime is counted from classes; null keeps it a rate for one-off hours only",
                     "maximum": 168,
                     "minimum": 0,
                     "nullable": true,
@@ -179606,6 +179650,17 @@
                           "type": "string"
                         },
                         "currency": {
+                          "type": "string"
+                        },
+                        "frequency": {
+                          "description": "Recurring allowance (unit per_period) only",
+                          "enum": [
+                            "period",
+                            "daily",
+                            "weekly",
+                            "monthly"
+                          ],
+                          "nullable": true,
                           "type": "string"
                         },
                         "id": {
@@ -179724,6 +179779,17 @@
                           "type": "string"
                         },
                         "currency": {
+                          "type": "string"
+                        },
+                        "frequency": {
+                          "description": "Recurring allowance (unit per_period) only",
+                          "enum": [
+                            "period",
+                            "daily",
+                            "weekly",
+                            "monthly"
+                          ],
+                          "nullable": true,
                           "type": "string"
                         },
                         "id": {
@@ -180161,6 +180227,75 @@
         ]
       }
     },
+    "/api/org/{organization_slug}/admin/coach-pay/people": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminCoachPayController.people",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "people": {
+                      "items": {
+                        "properties": {
+                          "name": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "pay_roles": {
+                            "items": {
+                              "enum": [
+                                "owner",
+                                "admin",
+                                "head_coach",
+                                "coach",
+                                "front_desk",
+                                "accountant",
+                                "janitor"
+                              ],
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "user_id": {
+                            "format": "uuid",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "pay_roles",
+                          "user_id"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "people"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "People"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The box's people who can be paid overtime or allowances, with their pay roles",
+        "tags": [
+          "Coach pay"
+        ]
+      }
+    },
     "/api/org/{organization_slug}/admin/coach-pay/people/{user_id}/statements": {
       "get": {
         "callbacks": {},
@@ -180544,6 +180679,37 @@
                             "format": "uuid",
                             "type": "string"
                           },
+                          "item_skips": {
+                            "description": "ADR-510: recurring allowances taken off a person for this period",
+                            "items": {
+                              "properties": {
+                                "id": {
+                                  "format": "uuid",
+                                  "type": "string"
+                                },
+                                "name": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "pay_item_id": {
+                                  "format": "uuid",
+                                  "type": "string"
+                                },
+                                "user_id": {
+                                  "format": "uuid",
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "name",
+                                "pay_item_id",
+                                "user_id"
+                              ],
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
                           "net_cents": {
                             "type": "integer"
                           },
@@ -180924,6 +181090,37 @@
                           "format": "uuid",
                           "type": "string"
                         },
+                        "item_skips": {
+                          "description": "ADR-510: recurring allowances taken off a person for this period",
+                          "items": {
+                            "properties": {
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "pay_item_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "user_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "pay_item_id",
+                              "user_id"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
                         "net_cents": {
                           "type": "integer"
                         },
@@ -181288,6 +181485,37 @@
                         "id": {
                           "format": "uuid",
                           "type": "string"
+                        },
+                        "item_skips": {
+                          "description": "ADR-510: recurring allowances taken off a person for this period",
+                          "items": {
+                            "properties": {
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "pay_item_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "user_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "pay_item_id",
+                              "user_id"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
                         },
                         "net_cents": {
                           "type": "integer"
@@ -181708,6 +181936,37 @@
                           "format": "uuid",
                           "type": "string"
                         },
+                        "item_skips": {
+                          "description": "ADR-510: recurring allowances taken off a person for this period",
+                          "items": {
+                            "properties": {
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "pay_item_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "user_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "pay_item_id",
+                              "user_id"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
                         "net_cents": {
                           "type": "integer"
                         },
@@ -182019,6 +182278,7 @@
     "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/adjustments/{line_id}": {
       "delete": {
         "callbacks": {},
+        "description": "Draft periods only. A recurring allowance's line is taken off its person for this period (ADR-510): later calculations leave it out until it is put back.",
         "operationId": "PaleeWeb.AdminCoachPayController.delete_adjustment",
         "parameters": [
           {
@@ -182081,6 +182341,37 @@
                         "id": {
                           "format": "uuid",
                           "type": "string"
+                        },
+                        "item_skips": {
+                          "description": "ADR-510: recurring allowances taken off a person for this period",
+                          "items": {
+                            "properties": {
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "pay_item_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "user_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "pay_item_id",
+                              "user_id"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
                         },
                         "net_cents": {
                           "type": "integer"
@@ -182384,7 +182675,7 @@
             "bearerAuth": []
           }
         ],
-        "summary": "Remove a line added by hand (draft periods only)",
+        "summary": "Remove a line added by hand, or take a recurring allowance off its person",
         "tags": [
           "Coach pay"
         ]
@@ -182446,6 +182737,37 @@
                         "id": {
                           "format": "uuid",
                           "type": "string"
+                        },
+                        "item_skips": {
+                          "description": "ADR-510: recurring allowances taken off a person for this period",
+                          "items": {
+                            "properties": {
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "pay_item_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "user_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "pay_item_id",
+                              "user_id"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
                         },
                         "net_cents": {
                           "type": "integer"
@@ -182811,6 +183133,37 @@
                         "id": {
                           "format": "uuid",
                           "type": "string"
+                        },
+                        "item_skips": {
+                          "description": "ADR-510: recurring allowances taken off a person for this period",
+                          "items": {
+                            "properties": {
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "pay_item_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "user_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "pay_item_id",
+                              "user_id"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
                         },
                         "net_cents": {
                           "type": "integer"
@@ -183249,6 +183602,37 @@
                           "format": "uuid",
                           "type": "string"
                         },
+                        "item_skips": {
+                          "description": "ADR-510: recurring allowances taken off a person for this period",
+                          "items": {
+                            "properties": {
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "pay_item_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "user_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "pay_item_id",
+                              "user_id"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
                         "net_cents": {
                           "type": "integer"
                         },
@@ -183560,6 +183944,7 @@
     "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/pay-items": {
       "post": {
         "callbacks": {},
+        "description": "Allowance: `quantity` occurrences (`per_period` is always 1), optional note. Overtime: `minutes` worked at the item's rate or at `unit_cents` an hour, with a required note (the reason).",
         "operationId": "PaleeWeb.AdminCoachPayController.add_pay_item_line",
         "parameters": [
           {
@@ -183586,6 +183971,12 @@
                     ],
                     "type": "string"
                   },
+                  "minutes": {
+                    "description": "One-off overtime only: the minutes worked",
+                    "maximum": 10080,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
                   "note": {
                     "maxLength": 500,
                     "nullable": true,
@@ -183597,6 +183988,12 @@
                   },
                   "quantity": {
                     "maximum": 1000,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  "unit_cents": {
+                    "description": "One-off overtime only: the rate per hour for this line (default: the item's)",
+                    "maximum": 10000000,
                     "minimum": 1,
                     "type": "integer"
                   },
@@ -183656,6 +184053,37 @@
                         "id": {
                           "format": "uuid",
                           "type": "string"
+                        },
+                        "item_skips": {
+                          "description": "ADR-510: recurring allowances taken off a person for this period",
+                          "items": {
+                            "properties": {
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "pay_item_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "user_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "pay_item_id",
+                              "user_id"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
                         },
                         "net_cents": {
                           "type": "integer"
@@ -183959,7 +184387,7 @@
             "bearerAuth": []
           }
         ],
-        "summary": "Add an allowance from the catalogue to a person's statement (draft periods only)",
+        "summary": "Add an allowance or one-off overtime from the catalogue to a person's statement (draft periods only)",
         "tags": [
           "Coach pay"
         ]
@@ -184042,6 +184470,37 @@
                         "id": {
                           "format": "uuid",
                           "type": "string"
+                        },
+                        "item_skips": {
+                          "description": "ADR-510: recurring allowances taken off a person for this period",
+                          "items": {
+                            "properties": {
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "pay_item_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "user_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "pay_item_id",
+                              "user_id"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
                         },
                         "net_cents": {
                           "type": "integer"
@@ -184346,6 +184805,411 @@
           }
         ],
         "summary": "Reopen an approved period, with a reason (an exported one stays as it is)",
+        "tags": [
+          "Coach pay"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/skips/{skip_id}": {
+      "delete": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminCoachPayController.restore_item",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "skip_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "period": {
+                      "properties": {
+                        "approved_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "approved_by_id": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "calculated_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "currency": {
+                          "type": "string"
+                        },
+                        "ends_on": {
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "exported_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "gross_cents": {
+                          "type": "integer"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "item_skips": {
+                          "description": "ADR-510: recurring allowances taken off a person for this period",
+                          "items": {
+                            "properties": {
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "pay_item_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "user_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "pay_item_id",
+                              "user_id"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "net_cents": {
+                          "type": "integer"
+                        },
+                        "reopen_reason": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "starts_on": {
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "statements": {
+                          "items": {
+                            "properties": {
+                              "coach_name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "coach_user_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "gross_cents": {
+                                "type": "integer"
+                              },
+                              "groups": {
+                                "items": {
+                                  "properties": {
+                                    "amount_basis": {
+                                      "description": "Whether the amount is before (gross) or after (net) the person's taxes",
+                                      "enum": [
+                                        "gross",
+                                        "net"
+                                      ],
+                                      "type": "string"
+                                    },
+                                    "amount_cents": {
+                                      "type": "integer"
+                                    },
+                                    "base_cents": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    },
+                                    "key": {
+                                      "type": "string"
+                                    },
+                                    "kind": {
+                                      "enum": [
+                                        "per_class",
+                                        "per_attendee",
+                                        "per_session",
+                                        "percent_of_sales",
+                                        "fixed",
+                                        "clawback",
+                                        "adjustment",
+                                        "ad_hoc",
+                                        "non_taxable_reimbursement",
+                                        "overtime",
+                                        "allowance"
+                                      ],
+                                      "type": "string"
+                                    },
+                                    "line_count": {
+                                      "type": "integer"
+                                    },
+                                    "pay_item_id": {
+                                      "format": "uuid",
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "quantity": {
+                                      "type": "integer"
+                                    },
+                                    "quantity_divisor": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    },
+                                    "rule_id": {
+                                      "format": "uuid",
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "terms": {
+                                      "description": "The rule's or pay item's terms when the statement was calculated",
+                                      "nullable": true,
+                                      "type": "object"
+                                    },
+                                    "unit_cents": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    }
+                                  },
+                                  "required": [
+                                    "amount_basis",
+                                    "amount_cents",
+                                    "key",
+                                    "kind",
+                                    "line_count",
+                                    "quantity"
+                                  ],
+                                  "type": "object"
+                                },
+                                "type": "array"
+                              },
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "line_count": {
+                                "type": "integer"
+                              },
+                              "lines": {
+                                "items": {
+                                  "properties": {
+                                    "amount_basis": {
+                                      "description": "Whether the amount is before (gross) or after (net) the person's taxes",
+                                      "enum": [
+                                        "gross",
+                                        "net"
+                                      ],
+                                      "type": "string"
+                                    },
+                                    "amount_cents": {
+                                      "type": "integer"
+                                    },
+                                    "base_cents": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    },
+                                    "created_by_id": {
+                                      "format": "uuid",
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "description": {
+                                      "type": "string"
+                                    },
+                                    "deviates_from_default": {
+                                      "description": "True for a net line (the default is gross): show it marked",
+                                      "type": "boolean"
+                                    },
+                                    "id": {
+                                      "format": "uuid",
+                                      "type": "string"
+                                    },
+                                    "inserted_at": {
+                                      "format": "date-time",
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "kind": {
+                                      "enum": [
+                                        "per_class",
+                                        "per_attendee",
+                                        "per_session",
+                                        "percent_of_sales",
+                                        "fixed",
+                                        "clawback",
+                                        "adjustment",
+                                        "ad_hoc",
+                                        "non_taxable_reimbursement",
+                                        "overtime",
+                                        "allowance"
+                                      ],
+                                      "type": "string"
+                                    },
+                                    "note": {
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "occurred_on": {
+                                      "format": "date",
+                                      "type": "string"
+                                    },
+                                    "pay_item_id": {
+                                      "format": "uuid",
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "percent_bps": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    },
+                                    "quantity": {
+                                      "type": "integer"
+                                    },
+                                    "quantity_divisor": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    },
+                                    "rule_id": {
+                                      "format": "uuid",
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "source_id": {
+                                      "format": "uuid",
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "source_type": {
+                                      "enum": [
+                                        "scheduled_class",
+                                        "appointment_slot",
+                                        "finance_payment",
+                                        "finance_reversal",
+                                        "manual",
+                                        "rule",
+                                        "pay_item"
+                                      ],
+                                      "type": "string"
+                                    },
+                                    "unit_cents": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    }
+                                  },
+                                  "required": [
+                                    "amount_basis",
+                                    "amount_cents",
+                                    "description",
+                                    "deviates_from_default",
+                                    "id",
+                                    "kind",
+                                    "occurred_on",
+                                    "quantity",
+                                    "source_type"
+                                  ],
+                                  "type": "object"
+                                },
+                                "type": "array"
+                              },
+                              "net_cents": {
+                                "type": "integer"
+                              },
+                              "net_line_count": {
+                                "type": "integer"
+                              },
+                              "period": {
+                                "nullable": true,
+                                "type": "object"
+                              },
+                              "total_cents": {
+                                "description": "Every line summed whatever its basis; show gross_cents and net_cents",
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "coach_user_id",
+                              "gross_cents",
+                              "groups",
+                              "id",
+                              "line_count",
+                              "lines",
+                              "net_cents",
+                              "net_line_count",
+                              "total_cents"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "status": {
+                          "enum": [
+                            "draft",
+                            "approved",
+                            "exported"
+                          ],
+                          "type": "string"
+                        },
+                        "total_cents": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "currency",
+                        "ends_on",
+                        "gross_cents",
+                        "id",
+                        "net_cents",
+                        "starts_on",
+                        "status",
+                        "total_cents"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "period"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Period"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Put a recurring allowance back on its person and recalculate (draft periods only)",
         "tags": [
           "Coach pay"
         ]

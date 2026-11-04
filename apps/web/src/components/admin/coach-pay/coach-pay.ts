@@ -5,6 +5,7 @@ import type {
   PayGroup,
   PayItem,
   PayItemBody,
+  PayItemLineBody,
   PayLine,
   PayPeriodStatus,
   PayPeriodSummary,
@@ -266,6 +267,8 @@ export function groupSentence(group: PayGroup, money: Money, percent: (bps: numb
   if (group.kind === "percent_of_sales" && typeof terms.percent_bps === "number") {
     return { key: "groupPercent", values: { percent: percent(terms.percent_bps), base: money(group.base_cents ?? 0) } };
   }
+  // A prorated group over months of different lengths has no single divisor: name it only.
+  if (["weekly", "monthly"].includes(String(terms.frequency)) && !group.quantity_divisor) return { key: `kind_${group.kind}`, values: {} };
   if (typeof group.unit_cents === "number" && group.unit_cents !== 0 && ["per_class", "per_attendee", "per_session", "overtime", "allowance", "fixed"].includes(group.kind)) {
     return { key: `group_${group.kind}`, values: { count: Math.round(quantity * 100) / 100, unit: money(group.unit_cents) } };
   }
@@ -281,11 +284,54 @@ export function defaultBasis(kind: AdjustmentKind): AmountBasis {
   return kind === "non_taxable_reimbursement" ? "net" : "gross";
 }
 
-export type LineDraft = { kind: AdjustmentKind | "allowance"; amount: string; note: string; basis: AmountBasis; itemId: string; quantity: string };
-export type LineField = "amount" | "note" | "itemId" | "quantity";
+/**
+ * A line added by hand: an adjustment kind, an allowance from the catalogue,
+ * or one-off overtime (hours × a rate per hour, from an overtime item;
+ * ANR 2026-11-04). `hours` and `rate` are overtime only; an empty `rate`
+ * means the item's own.
+ */
+export type LineDraft = {
+  kind: AdjustmentKind | "allowance" | "overtime";
+  amount: string;
+  note: string;
+  basis: AmountBasis;
+  itemId: string;
+  quantity: string;
+  hours: string;
+  rate: string;
+};
+export type LineField = "amount" | "note" | "itemId" | "quantity" | "hours" | "rate";
 
 export function emptyLineDraft(): LineDraft {
-  return { kind: "adjustment", amount: "", note: "", basis: "gross", itemId: "", quantity: "1" };
+  return { kind: "adjustment", amount: "", note: "", basis: "gross", itemId: "", quantity: "1", hours: "", rate: "" };
+}
+
+/** At most a week of overtime on one line, as the API allows. */
+const MAX_OVERTIME_MINUTES = 7 * 24 * 60;
+
+/** «2», «2,5» or «2:30» hours → minutes; anything else, zero or over a week → null. */
+export function parseHours(text: string): number | null {
+  const clean = text.trim().replace(",", ".");
+  let minutes: number;
+  const clock = /^(\d{1,3}):([0-5]\d)$/.exec(clean);
+  if (clock) minutes = Number(clock[1]) * 60 + Number(clock[2]);
+  else if (/^\d{1,3}(\.\d{1,2})?$/.test(clean)) minutes = Math.round(Number(clean) * 60);
+  else return null;
+  return minutes > 0 && minutes <= MAX_OVERTIME_MINUTES ? minutes : null;
+}
+
+/** The rate one-off overtime is paid at: the typed one, or the item's. */
+export function overtimeRate(draft: LineDraft, item: PayItem | null): number | null {
+  if (draft.rate.trim() === "") return item?.amount_cents ?? null;
+  const cents = parseCents(draft.rate);
+  return cents !== null && cents > 0 ? cents : null;
+}
+
+/** One-off overtime's total in cents (rounded half up, like the API), or null while a field is not valid. */
+export function overtimeTotal(draft: LineDraft, item: PayItem | null): number | null {
+  const minutes = parseHours(draft.hours);
+  const rate = overtimeRate(draft, item);
+  return minutes === null || rate === null ? null : Math.round((rate * minutes) / 60);
 }
 
 /** A correction may be negative; an ad hoc payment and «Μη φορολογητέο» are positive. Every kind needs a note, except an allowance. */
@@ -296,11 +342,31 @@ export function lineErrors(draft: LineDraft, item: PayItem | null): Partial<Reco
     if (item?.unit === "per_occurrence" && !/^[1-9]\d{0,2}$/.test(draft.quantity.trim())) errors.quantity = "errorWholeNumber";
     return errors;
   }
+  if (draft.kind === "overtime") {
+    if (!item) errors.itemId = "errorOvertimeItem";
+    if (parseHours(draft.hours) === null) errors.hours = "errorHours";
+    if (draft.rate.trim() !== "" && overtimeRate(draft, item) === null) errors.rate = "errorAmount";
+    if (draft.note.trim() === "") errors.note = "errorNoteRequired";
+    return errors;
+  }
   const cents = parseCents(draft.amount, true);
   if (cents === null || cents === 0) errors.amount = "errorAmount";
   else if (draft.kind !== "adjustment" && cents < 0) errors.amount = "errorPositive";
   if (draft.note.trim() === "") errors.note = "errorNoteRequired";
   return errors;
+}
+
+/** One-off overtime for `POST …/pay-items`; the rate goes only when it differs from the item's. */
+export function overtimeLineBody(draft: LineDraft, userId: string, item: PayItem): PayItemLineBody {
+  const rate = overtimeRate(draft, item);
+  return {
+    user_id: userId,
+    pay_item_id: item.id,
+    minutes: parseHours(draft.hours) ?? 0,
+    ...(rate !== null && rate !== item.amount_cents ? { unit_cents: rate } : {}),
+    note: draft.note.trim(),
+    amount_basis: draft.basis,
+  };
 }
 
 export function adjustmentBody(draft: LineDraft, userId: string): AdjustmentBody {
@@ -315,27 +381,47 @@ export function adjustmentBody(draft: LineDraft, userId: string): AdjustmentBody
 
 // ── Overtime and allowances ─────────────────────────────────────────────────
 
+/** How often a recurring allowance pays (ADR-510): once per pay period, or per day, week or month, prorated by the period's days. */
+export type ItemFrequency = NonNullable<PayItem["frequency"]>;
+export const ITEM_FREQUENCIES: ItemFrequency[] = ["period", "monthly", "weekly", "daily"];
+
+/**
+ * ANR 2026-11-04: every overtime or allowance is one of two workflows.
+ * `recurring` is added by every calculation (overtime counted from classes
+ * above a weekly threshold; an allowance to everyone holding its roles).
+ * `oneOff` is a saved rate added by hand to one person's period (overtime
+ * without a threshold; an allowance per occurrence).
+ */
+export type ItemMode = "recurring" | "oneOff";
+
+export function itemMode(item: Pick<PayItem, "kind" | "unit" | "weekly_threshold">): ItemMode {
+  if (item.kind === "overtime") return item.weekly_threshold == null ? "oneOff" : "recurring";
+  return item.unit === "per_period" ? "recurring" : "oneOff";
+}
+
 export type ItemDraft = {
   kind: PayItem["kind"];
+  mode: ItemMode;
   name: string;
   amount: string;
-  unit: PayItem["unit"];
+  frequency: ItemFrequency;
   threshold: string;
   roles: PayRole[];
   basis: AmountBasis;
 };
 export type ItemField = "name" | "amount" | "threshold" | "roles";
 
-export function emptyItemDraft(kind: PayItem["kind"] = "allowance"): ItemDraft {
-  return { kind, name: "", amount: "", unit: kind === "overtime" ? "per_hour" : "per_period", threshold: "", roles: ["coach"], basis: "gross" };
+export function emptyItemDraft(kind: PayItem["kind"] = "allowance", mode: ItemMode = "recurring"): ItemDraft {
+  return { kind, mode, name: "", amount: "", frequency: "period", threshold: "", roles: ["coach"], basis: "gross" };
 }
 
 export function itemDraftFrom(item: PayItem): ItemDraft {
   return {
     kind: item.kind,
+    mode: itemMode(item),
     name: item.name,
     amount: (item.amount_cents / 100).toFixed(2),
-    unit: item.unit,
+    frequency: item.frequency ?? "period",
     threshold: item.weekly_threshold == null ? "" : String(item.weekly_threshold),
     roles: [...item.roles],
     basis: item.amount_basis,
@@ -347,7 +433,7 @@ export function itemErrors(draft: ItemDraft): Partial<Record<ItemField, string>>
   if (draft.name.trim() === "" || draft.name.trim().length > 120) errors.name = "errorName";
   const cents = parseCents(draft.amount);
   if (cents === null || cents <= 0) errors.amount = "errorAmount";
-  if (draft.kind === "overtime") {
+  if (draft.kind === "overtime" && draft.mode === "recurring") {
     const hours = draft.threshold.trim();
     if (!/^\d{1,3}$/.test(hours) || Number(hours) > 168) errors.threshold = "errorThreshold";
   }
@@ -356,20 +442,114 @@ export function itemErrors(draft: ItemDraft): Partial<Record<ItemField, string>>
 }
 
 export function itemBody(draft: ItemDraft): PayItemBody {
+  const recurring = draft.mode === "recurring";
+  const overtime = draft.kind === "overtime";
   return {
     kind: draft.kind,
     name: draft.name.trim(),
     amount_cents: parseCents(draft.amount) ?? 0,
-    unit: draft.kind === "overtime" ? "per_hour" : draft.unit,
-    weekly_threshold: draft.kind === "overtime" ? Number(draft.threshold) : null,
+    unit: overtime ? "per_hour" : recurring ? "per_period" : "per_occurrence",
+    weekly_threshold: overtime && recurring ? Number(draft.threshold) : null,
+    frequency: !overtime && recurring ? draft.frequency : null,
     roles: PAY_ROLES.filter((role) => draft.roles.includes(role)),
     amount_basis: draft.basis,
   };
 }
 
-/** The allowances a person can be given: active ones (overtime is calculated, never added by hand). */
-export function addableItems(items: PayItem[]): PayItem[] {
-  return items.filter((item) => item.kind === "allowance" && !item.archived_at);
+/** Whether an item applies to someone holding `roles` (the API refuses the rest). */
+export function appliesTo(item: Pick<PayItem, "roles">, roles: readonly string[] | null): boolean {
+  return roles === null || item.roles.some((role) => roles.includes(role));
+}
+
+/**
+ * The allowances added by hand to one person: active saved rates per
+ * occurrence that apply to their roles (`null`: roles unknown, all of them).
+ * Recurring allowances are added by the calculation, never by hand.
+ */
+export function addableItems(items: PayItem[], roles: readonly string[] | null = null): PayItem[] {
+  return items.filter((item) => item.kind === "allowance" && item.unit === "per_occurrence" && !item.archived_at && appliesTo(item, roles));
+}
+
+/** The overtime rates one-off hours can be paid by (recurring or one-off ones), for the person's roles. */
+export function overtimeItems(items: PayItem[], roles: readonly string[] | null = null): PayItem[] {
+  return items.filter((item) => item.kind === "overtime" && !item.archived_at && appliesTo(item, roles));
+}
+
+/**
+ * «Μία φορά» from the catalogue (ANR 2026-11-04): one person, one open
+ * period. Overtime is hours at a saved rate (or a new one-off rate, saved
+ * by people who manage settings); an allowance is a saved rate per
+ * occurrence, or «Άλλο ποσό» (a payment by hand, optionally kept as a rate).
+ */
+export type OneOffDraft = {
+  userId: string;
+  periodId: string;
+  /** A pay item id, `OTHER_AMOUNT` («Άλλο ποσό» / a new rate) or "". */
+  itemId: string;
+  hours: string;
+  rate: string;
+  quantity: string;
+  amount: string;
+  note: string;
+  name: string;
+  keep: boolean;
+};
+export type OneOffField = "userId" | "periodId" | "itemId" | "hours" | "rate" | "quantity" | "amount" | "note" | "name";
+export const OTHER_AMOUNT = "other";
+
+export function emptyOneOffDraft(periodId = ""): OneOffDraft {
+  return { userId: "", periodId, itemId: "", hours: "", rate: "", quantity: "1", amount: "", note: "", name: "", keep: false };
+}
+
+/** The form's errors, under their fields (message keys of `CoachPay`); `item` is the picked saved rate. */
+export function oneOffErrors(kind: PayItem["kind"], draft: OneOffDraft, item: PayItem | null): Partial<Record<OneOffField, string>> {
+  const errors: Partial<Record<OneOffField, string>> = {};
+  if (!draft.userId) errors.userId = "errorPerson";
+  if (!draft.periodId) errors.periodId = "errorPeriod";
+  const other = draft.itemId === OTHER_AMOUNT;
+  if (!other && !item) errors.itemId = kind === "overtime" ? "errorOvertimeItem" : "errorItem";
+  if (kind === "overtime") {
+    if (parseHours(draft.hours) === null) errors.hours = "errorHours";
+    const rate = draft.rate.trim() === "" ? (other ? null : item?.amount_cents ?? null) : parseCents(draft.rate);
+    if (rate === null || rate <= 0) errors.rate = "errorAmount";
+    if (draft.note.trim() === "") errors.note = "errorNoteRequired";
+  } else if (other) {
+    const cents = parseCents(draft.amount);
+    if (cents === null || cents <= 0) errors.amount = "errorAmount";
+    if (draft.note.trim() === "") errors.note = "errorNoteRequired";
+  } else if (!/^[1-9]\d{0,2}$/.test(draft.quantity.trim())) {
+    errors.quantity = "errorWholeNumber";
+  }
+  if (other && (kind === "overtime" || draft.keep) && (draft.name.trim() === "" || draft.name.trim().length > 120)) errors.name = "errorName";
+  return errors;
+}
+
+/** The one-off's total in cents, or null while a field is not valid. */
+export function oneOffTotal(kind: PayItem["kind"], draft: OneOffDraft, item: PayItem | null): number | null {
+  if (kind === "overtime") {
+    const minutes = parseHours(draft.hours);
+    const rate = draft.rate.trim() === "" ? item?.amount_cents ?? null : parseCents(draft.rate);
+    return minutes === null || rate === null || rate <= 0 ? null : Math.round((rate * minutes) / 60);
+  }
+  if (draft.itemId === OTHER_AMOUNT) return parseCents(draft.amount);
+  const quantity = Number(draft.quantity);
+  return item && Number.isInteger(quantity) && quantity > 0 ? item.amount_cents * quantity : null;
+}
+
+/** A one-off rate kept for next time (ADR-510): overtime without a threshold, or an allowance per occurrence, for the person's roles. */
+export function oneOffItemBody(kind: PayItem["kind"], draft: OneOffDraft, roles: readonly string[]): PayItemBody {
+  return itemBody({
+    ...emptyItemDraft(kind, "oneOff"),
+    name: draft.name,
+    amount: kind === "overtime" ? draft.rate : draft.amount,
+    roles: PAY_ROLES.filter((role) => roles.includes(role)),
+  });
+}
+
+/** The draft period a one-off goes to by default: the one covering `today`, else the latest. */
+export function defaultDraftPeriod<P extends Pick<PayPeriodSummary, "id" | "status" | "starts_on" | "ends_on">>(periods: P[], today: string): P | null {
+  const drafts = periods.filter((period) => period.status === "draft").sort((a, b) => b.starts_on.localeCompare(a.starts_on));
+  return drafts.find((period) => period.starts_on <= today && today <= period.ends_on) ?? drafts[0] ?? null;
 }
 
 // ── Files and dates ─────────────────────────────────────────────────────────
@@ -389,8 +569,9 @@ export function calendarNoon(iso: string): Date {
  * `StatementGroups`): its rule, or its pay item and kind, or its kind when
  * added by hand, and its gross/net basis. Clawbacks join their rule's group.
  */
-export function groupKeyOf(line: Pick<PayLine, "rule_id" | "pay_item_id" | "kind" | "amount_basis">): string {
+export function groupKeyOf(line: Pick<PayLine, "rule_id" | "pay_item_id" | "kind" | "amount_basis" | "source_type">): string {
   const basis = line.amount_basis || "gross";
+  if (line.source_type === "manual") return ["manual", line.kind, basis].join(":");
   if (line.rule_id) return ["rule", line.rule_id, basis].join(":");
   if (line.pay_item_id) return ["pay_item", line.pay_item_id, line.kind, basis].join(":");
   return ["manual", line.kind, basis].join(":");

@@ -47,9 +47,13 @@ defmodule Palee.CoachPay do
   def pay_item_kinds, do: PayItemPolicy.kinds()
   def pay_item_units, do: PayItemPolicy.units()
   def pay_item_roles, do: PayItemPolicy.roles()
+  def pay_item_frequencies, do: PayItemPolicy.frequencies()
 
   @doc "A person's pay-item roles from their membership roles and coach scope."
   def person_roles(roles, coach_scope), do: PayItemPolicy.person_roles(roles, coach_scope)
+
+  @doc "ADR-510: the box's people with pay-item roles (`%{user_id => [role]}`)."
+  def pay_roles(context), do: work_source().staff_roles(context)
 
   @doc "Kinds of every statement line (for the API's enums)."
   def line_kinds,
@@ -131,9 +135,36 @@ defmodule Palee.CoachPay do
 
         period ->
           statements = period.id |> CoachPayStore.statements() |> Enum.map(&with_groups/1)
-          {:ok, Map.put(period, :statements, statements)}
+
+          {:ok,
+           period
+           |> Map.put(:statements, statements)
+           |> Map.put(:item_skips, named_skips(period.id))}
       end
     end)
+  end
+
+  # ADR-510: the recurring allowances taken off a person, with their names.
+  defp named_skips(period_id) do
+    case CoachPayStore.item_skips(period_id) do
+      [] ->
+        []
+
+      skips ->
+        names =
+          %{include_archived: true}
+          |> CoachPayStore.list_items()
+          |> Map.new(&{&1.id, &1.name})
+
+        Enum.map(skips, fn skip ->
+          %{
+            id: skip.id,
+            user_id: skip.user_id,
+            pay_item_id: skip.pay_item_id,
+            name: Map.get(names, skip.pay_item_id)
+          }
+        end)
+    end
   end
 
   @doc """
@@ -157,8 +188,9 @@ defmodule Palee.CoachPay do
           with %{} = locked <- CoachPayStore.lock_period(id) || {:error, :not_found},
                :ok <- PeriodPolicy.editable?(locked) do
             rules = CoachPayStore.rules_between(period.starts_on, period.ends_on)
-            items = CoachPayStore.list_items(%{kind: "overtime"})
-            work = Map.put(work, :pay_items, items)
+            items = CoachPayStore.list_items(%{})
+            skips = Enum.map(CoachPayStore.item_skips(id), &{&1.user_id, &1.pay_item_id})
+            work = work |> Map.put(:pay_items, items) |> Map.put(:item_skips, skips)
             lines = PayCalculator.calculate(rules, work, period.currency)
             terms = PayCalculator.terms_by_coach(rules, items, lines)
             CoachPayStore.replace_lines(id, lines, terms, now)
@@ -248,18 +280,47 @@ defmodule Palee.CoachPay do
     end)
   end
 
-  def delete_adjustment(context, id, line_id) do
+  @doc """
+  Removes a line of a draft period: a line added by hand goes; a recurring
+  allowance (ADR-510) is taken off its person for this period, so the next
+  calculation leaves it out too (`restore_item/4` puts it back).
+  """
+  def delete_adjustment(context, id, line_id, actor_id \\ nil) do
     scoped(context, fn ->
       CoachPayStore.transaction(fn ->
         with %{} = period <- CoachPayStore.lock_period(id) || {:error, :not_found},
              :ok <- PeriodPolicy.editable?(period),
-             :ok <- CoachPayStore.delete_adjustment(id, line_id) do
+             :ok <- delete_or_skip(id, line_id, actor_id) do
           {:ok, :deleted}
         end
       end)
     end)
     |> then(fn
       {:ok, _deleted} -> get_period(context, id)
+      error -> error
+    end)
+  end
+
+  defp delete_or_skip(id, line_id, actor_id) do
+    case CoachPayStore.delete_adjustment(id, line_id) do
+      {:error, :not_found} -> CoachPayStore.skip_pay_item_line(id, line_id, actor_id)
+      result -> result
+    end
+  end
+
+  @doc "ADR-510: puts a recurring allowance back on its person and recalculates the period."
+  def restore_item(context, id, skip_id, %DateTime{} = now) do
+    scoped(context, fn ->
+      CoachPayStore.transaction(fn ->
+        with %{} = period <- CoachPayStore.lock_period(id) || {:error, :not_found},
+             :ok <- PeriodPolicy.editable?(period),
+             :ok <- CoachPayStore.delete_skip(id, skip_id) do
+          {:ok, :restored}
+        end
+      end)
+    end)
+    |> then(fn
+      {:ok, _restored} -> calculate(context, id, now)
       error -> error
     end)
   end
