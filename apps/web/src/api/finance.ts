@@ -29,6 +29,11 @@ export async function fetchFinanceSummary(token: string, locationIds?: string) {
   return apiRequest<FinanceRecord>(`/admin/finance/summary${query}`, { token });
 }
 
+/** ADR-462: the finance summary for a «Στατιστικά» period and filters (`analyticsApiQuery`). */
+export async function fetchFinanceAnalyticsSummary(token: string, query: Record<string, string>) {
+  return apiRequest<FinanceRecord>(`/admin/finance/summary?${new URLSearchParams(query).toString()}`, { token });
+}
+
 export async function fetchFinanceCleanupRecords(
   token: string,
   params: { q?: string; limit?: string } = {},
