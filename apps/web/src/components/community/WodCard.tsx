@@ -14,6 +14,19 @@ import { useSession } from "@/components/session-provider";
 import { TrainingLogDialog, type TrainingLogDialogState } from "@/components/training-log/TrainingLog";
 import { useUiLocale } from "@/i18n/use-ui-locale";
 import { formatClock } from "@/lib/clock";
+import { adminHref } from "@/lib/organization-slug";
+
+/**
+ * Where a tap on the WOD banner goes (ANR 2026-11-04): the box schedule with
+ * the class sheet of today's next class open (it shows the WOD); the last
+ * class once all have started; the schedule alone when no class has it.
+ */
+export function wodScheduleHref(slug: string | null, classes: { id: string; scheduled_at: string }[], now: Date) {
+  const sorted = [...classes].sort((a, b) => a.scheduled_at.localeCompare(b.scheduled_at));
+  const next = sorted.find((entry) => new Date(entry.scheduled_at).getTime() >= now.getTime()) ?? sorted.at(-1);
+  const path = next ? `/box/schedule?open_slot=${encodeURIComponent(next.id)}` : "/box/schedule";
+  return adminHref(path, slug);
+}
 
 /**
  * The club's #wod-σήμερα card (ADR-138 D6, mockup «lbCard»): today's class
@@ -49,8 +62,10 @@ export function WodCard({ club, showOrigin = true }: { club: CommunityClub; show
       <div className="flex flex-col gap-3">
         {/* The screen's hero (BRAND.md): the WOD on the deep surface, tagged in
             Spark, with a Dojo edge so Spark and Graphite never stand alone. */}
-        <div
-          className="rounded-2xl p-4"
+        <Link
+          href={wodScheduleHref(club.organization_slug ?? null, data.classes, new Date())}
+          data-testid="wod-card-banner"
+          className="block rounded-2xl p-4"
           style={{ background: "var(--deep)", color: "var(--deep-contrast)", borderInlineStart: "4px solid var(--primary)" }}
         >
           <span
@@ -63,7 +78,7 @@ export function WodCard({ club, showOrigin = true }: { club: CommunityClub; show
           <p className="text-sm" style={{ opacity: 0.75 }}>
             {[...data.classes.map((entry) => time(entry.scheduled_at)), t("wodScoreCount", { count: data.leaderboard.length })].join(" · ")}
           </p>
-        </div>
+        </Link>
         {data.score && club.organization_slug ? (
           <WodLeaderboard
             slug={club.organization_slug}

@@ -133,6 +133,20 @@ defmodule Palee.Infrastructure.Fiscal.EctoTransmissionStore do
   end
 
   @impl true
+  def touch_claims(_context, [], _at), do: :ok
+
+  def touch_claims(%{organization_id: organization_id}, ids, %DateTime{} = at) do
+    Transmission
+    |> where(
+      [t],
+      t.organization_id == ^organization_id and t.id in ^ids and t.status == "sending"
+    )
+    |> Repo.update_all(set: [claimed_at: at])
+
+    :ok
+  end
+
+  @impl true
   def finish(%{organization_id: organization_id}, id, changes, attempt) do
     Repo.transaction(fn ->
       with :ok <- insert_attempt(attempt, id),

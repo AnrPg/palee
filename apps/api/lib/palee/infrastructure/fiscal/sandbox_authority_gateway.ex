@@ -17,31 +17,43 @@ defmodule Palee.Infrastructure.Fiscal.SandboxAuthorityGateway do
   @impl true
   def check(_connection), do: {:ok, %{}}
 
+  @doc "ADR-452: the sandbox keeps nothing, so a lost answer is never found."
   @impl true
-  def submit(_connection, invoice) do
-    body = XmlCodec.invoices_doc([invoice])
-    digest = :crypto.hash(:sha, body)
+  def find(_connection, _key), do: :not_found
 
-    result =
-      if Enum.any?(invoice, &match?({"invoiceDetails", _}, &1)) do
-        <<number::unsigned-integer-size(40), _rest::binary>> = digest
+  @impl true
+  def submit(_connection, invoices) when is_list(invoices) do
+    body = XmlCodec.invoices_doc(invoices)
 
-        {:ok,
-         %{
-           mark:
-             "9000" <>
-               (number
-                |> rem(100_000_000_000)
-                |> Integer.to_string()
-                |> String.pad_leading(11, "0")),
-           uid: Base.encode16(digest),
-           authentication_code: nil,
-           qr_url: nil
-         }}
-      else
-        {:error, {:rejected, [%{code: "sandbox", message: "Document without lines"}]}}
-      end
+    {Enum.map(invoices, &result/1),
+     %{
+       request_body: body,
+       request_bodies: Enum.map(invoices, &XmlCodec.invoices_doc([&1])),
+       response_status: nil,
+       response_body: nil
+     }}
+  end
 
-    {result, %{request_body: body, response_status: nil, response_body: nil}}
+  defp result(invoice) do
+    digest = :crypto.hash(:sha, XmlCodec.invoices_doc([invoice]))
+
+    if Enum.any?(invoice, &match?({"invoiceDetails", _}, &1)) do
+      <<number::unsigned-integer-size(40), _rest::binary>> = digest
+
+      {:ok,
+       %{
+         mark:
+           "9000" <>
+             (number
+              |> rem(100_000_000_000)
+              |> Integer.to_string()
+              |> String.pad_leading(11, "0")),
+         uid: Base.encode16(digest),
+         authentication_code: nil,
+         qr_url: nil
+       }}
+    else
+      {:error, {:rejected, [%{code: "sandbox", message: "Document without lines"}]}}
+    end
   end
 end

@@ -759,6 +759,12 @@ msgstr "اتصال ضريبي يحتاج إلى انتباه"
 msgid "%{connection} stopped working. Open Billing details › Connections to fix it."
 msgstr "توقف %{connection} عن العمل. افتح بيانات الفوترة › الاتصالات لإصلاحه."
 
+msgid "Documents did not reach the tax authority"
+msgstr "لم تصل بعض المستندات إلى مصلحة الضرائب"
+
+msgid "Some documents were not accepted by %{connection}. Open Finance › Documents to see why and send them again."
+msgstr "لم يقبل %{connection} بعض المستندات. افتح المالية › المستندات لمعرفة السبب وإرسالها مجددًا."
+
 # ADR-280 verification: sponsors and the Palee check of Partners.
 
 msgid "Vouch for %{nickname}?"

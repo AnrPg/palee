@@ -16,6 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import { type AdminChallengeRecord, fetchAdminChallenges } from "@/api/challenges";
 import { fetchAdminAnalyticsSummary } from "@/api/analytics";
 import { fetchFinanceQueues, fetchFinanceSummary, type FinanceRecord } from "@/api/finance";
+import { fetchFiscalTransmissionCounts } from "@/api/fiscal";
 import { fetchLandingPayload, type AdminMetrics } from "@/api/landing";
 import { fetchSchedule } from "@/api/schedule";
 import { fetchScalingQueue, SCALING_QUEUE_KEY } from "@/api/scaling";
@@ -57,6 +58,7 @@ type AlertMessageKey =
   | "adminAlertExpiringMemberships"
   | "adminAlertOverdueInvoices"
   | "adminAlertPendingPayments"
+  | "adminAlertFiscalNotReported"
   | "adminAlertPendingReferralRewards"
   | "adminAlertInjuryFlags"
   | "adminAlertUnreadWorkoutReviews"
@@ -307,6 +309,13 @@ export function AdminDashboard({
     queryFn: () => fetchFinanceQueues(token!, { expires_within_days: "30" }),
   });
 
+  // ADR-452: documents the tax authority refused or that ran out of attempts.
+  const transmissionsQuery = useQuery({
+    queryKey: ["admin", "dashboard", "fiscal-transmissions"],
+    enabled: enabled && canFinanceReports,
+    queryFn: () => fetchFiscalTransmissionCounts(token!),
+  });
+
   const analyticsQuery = useQuery({
     queryKey: ["admin", "dashboard", "analytics"],
     enabled: enabled && canBusinessAnalytics,
@@ -431,6 +440,7 @@ export function AdminDashboard({
     [Number(totals.expiring_memberships ?? 0), "adminAlertExpiringMemberships", financeQueueHref("expiring"), expiresOn(queues.expiring_memberships)],
     [(queues.overdue_invoices ?? []).length, "adminAlertOverdueInvoices", financeQueueHref("debts"), dueSince(queues.overdue_invoices, "due_date")],
     [(queues.pending_payments ?? []).length, "adminAlertPendingPayments", financeQueueHref("debts")],
+    [notReportedCount(transmissionsQuery.data), "adminAlertFiscalNotReported", "/admin/finance?tab=documents"],
     [(queues.pending_referral_rewards ?? []).length, "adminAlertPendingReferralRewards", MARKETING_ROUTES.referrals],
   ]);
 
@@ -775,4 +785,10 @@ export function AdminDashboard({
       </div>
     </main>
   );
+}
+
+/** ADR-452: reports that need someone (refused, or out of attempts); malformed answers count none. */
+export function notReportedCount(list: { counts?: Record<string, number> } | undefined): number {
+  const counts = list && typeof list.counts === "object" && list.counts ? list.counts : {};
+  return (Number(counts.rejected) || 0) + (Number(counts.failed) || 0);
 }

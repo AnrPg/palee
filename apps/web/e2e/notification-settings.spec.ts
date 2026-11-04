@@ -94,6 +94,17 @@ test.describe("notification settings", () => {
     await expect(journalPush).toBeDisabled();
     expect(updates).toContainEqual({ category: "journal", body: { in_app: false } });
 
+    // ANR 2026-11-04: each column is explained, and its head stays over its switches.
+    await expect(section.getByTestId("notification-channel-help")).toContainText("even when Palee is closed");
+    const heads = section.getByTestId("notification-channel-heads").locator("span");
+    const pushHead = (await heads.nth(1).boundingBox())!;
+    const pushSwitch = (await communityPush.boundingBox())!;
+    expect(Math.abs(pushHead.x + pushHead.width / 2 - (pushSwitch.x + pushSwitch.width / 2))).toBeLessThan(2);
+    for (const head of await heads.all()) {
+      const box = (await head.boundingBox())!;
+      expect(box.width).toBeLessThanOrEqual(64.5);
+    }
+
     // No horizontal scroll at phone width.
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(0);

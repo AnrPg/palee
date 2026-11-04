@@ -4742,6 +4742,7 @@
     "adminAlertExpiringMemberships": "{count, plural, one {מנוי אחד פג תוך 30 יום} two {# מנויים פגים תוך 30 יום} other {# מנויים פגים תוך 30 יום}}",
     "adminAlertOverdueInvoices": "{count, plural, one {חשבונית אחת באיחור} two {# חשבוניות באיחור} other {# חשבוניות באיחור}}",
     "adminAlertPendingPayments": "{count, plural, one {תשלום אחד ממתין} two {# תשלומים ממתינים} other {# תשלומים ממתינים}}",
+    "adminAlertFiscalNotReported": "{count, plural, one {מסמך אחד לא הגיע לרשות המסים} two {# מסמכים לא הגיעו לרשות המסים} other {# מסמכים לא הגיעו לרשות המסים}}",
     "adminAlertPendingReferralRewards": "{count, plural, one {תגמול הפניה אחד ממתין} two {# תגמולי הפניה ממתינים} other {# תגמולי הפניה ממתינים}}",
     "adminAlertInjuryFlags": "{count, plural, one {דיווח פציעה אחד מאז הביקור האחרון שלך} two {# דיווחי פציעה מאז הביקור האחרון שלך} other {# דיווחי פציעה מאז הביקור האחרון שלך}}",
     "adminAlertUnreadWorkoutReviews": "{count, plural, one {משוב אימון אחד שלא נקרא} two {# משובי אימון שלא נקראו} other {# משובי אימון שלא נקראו}}",
@@ -12026,6 +12027,10 @@
     "channel": {
       "in_app": "באפליקציה",
       "push": "פוש"
+    },
+    "channelHelp": {
+      "in_app": "בתוך Palee: בפעמון וברשימת ההתראות, כשאתה פותח את האפליקציה.",
+      "push": "על מסך הטלפון או המחשב, גם כש-Palee סגורה. נדלק רק יחד עם «באפליקציה»."
     },
     "category": {
       "bookings": {

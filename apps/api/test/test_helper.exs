@@ -9,7 +9,12 @@ missing_tools =
   |> Enum.filter(fn {_tag, path} -> is_nil(path) end)
   |> Enum.map(&elem(&1, 0))
 
-ExUnit.start(exclude: missing_tools)
+# ADR-452: AADE's development API is called only on request
+# (`mix test --only aade_live`, which needs MYDATA_DEV_*), never in a normal
+# run: it is slow and rate-limited (HTTP 429).
+live_aade = [:aade_live]
+
+ExUnit.start(exclude: missing_tools ++ live_aade)
 # TD-046: the RLS-enforcing role that ConnCase requests and `:rls_enforced` tests run as.
 Palee.RLSCase.ensure_runtime_role!()
 Ecto.Adapters.SQL.Sandbox.mode(Palee.Repo, :manual)

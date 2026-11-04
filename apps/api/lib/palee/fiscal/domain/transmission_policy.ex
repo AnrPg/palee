@@ -77,7 +77,7 @@ defmodule Palee.Fiscal.Domain.TransmissionPolicy do
           last_error_message: nil
         }
 
-      {:error, {:rejected, errors}} ->
+      {:error, {kind, errors}} when kind in [:rejected, :duplicate] ->
         %{
           status: "rejected",
           next_attempt_at: nil,
@@ -130,7 +130,10 @@ defmodule Palee.Fiscal.Domain.TransmissionPolicy do
 
   @doc "The outcome name recorded on the attempt row."
   def attempt_outcome({:ok, _receipt}), do: "accepted"
-  def attempt_outcome({:error, {:rejected, _errors}}), do: "rejected"
+
+  def attempt_outcome({:error, {kind, _errors}}) when kind in [:rejected, :duplicate],
+    do: "rejected"
+
   def attempt_outcome({:error, {:unauthorized, _reason}}), do: "unauthorized"
   def attempt_outcome({:error, _reason}), do: "transient"
 
