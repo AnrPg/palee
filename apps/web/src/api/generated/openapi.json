@@ -24645,6 +24645,103 @@
         "title": "BusinessDemoStatus",
         "type": "object"
       },
+      "BusinessFeatures": {
+        "properties": {
+          "features": {
+            "description": "ADR-470: every feature key with whether it is on",
+            "properties": {
+              "branches": {
+                "type": "boolean"
+              },
+              "card_autopay": {
+                "type": "boolean"
+              },
+              "floor_plan": {
+                "type": "boolean"
+              },
+              "module_corporate_clients": {
+                "type": "boolean"
+              },
+              "module_digital_content": {
+                "type": "boolean"
+              },
+              "module_events": {
+                "type": "boolean"
+              },
+              "module_group_classes": {
+                "type": "boolean"
+              },
+              "module_online_coaching": {
+                "type": "boolean"
+              },
+              "module_open_gym": {
+                "type": "boolean"
+              },
+              "module_personal_training": {
+                "type": "boolean"
+              },
+              "online_drop_in": {
+                "type": "boolean"
+              },
+              "online_packages": {
+                "type": "boolean"
+              },
+              "online_payments": {
+                "type": "boolean"
+              },
+              "online_personal_training": {
+                "type": "boolean"
+              },
+              "online_programmes": {
+                "type": "boolean"
+              },
+              "online_shop": {
+                "type": "boolean"
+              },
+              "perks": {
+                "type": "boolean"
+              },
+              "promotions": {
+                "type": "boolean"
+              },
+              "referrals": {
+                "type": "boolean"
+              },
+              "trials": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "online_payments",
+              "card_autopay",
+              "online_drop_in",
+              "online_packages",
+              "online_personal_training",
+              "online_programmes",
+              "online_shop",
+              "referrals",
+              "promotions",
+              "perks",
+              "trials",
+              "branches",
+              "floor_plan",
+              "module_group_classes",
+              "module_online_coaching",
+              "module_open_gym",
+              "module_events",
+              "module_personal_training",
+              "module_digital_content",
+              "module_corporate_clients"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "features"
+        ],
+        "title": "BusinessFeatures",
+        "type": "object"
+      },
       "BusinessOrganization": {
         "properties": {
           "activated_at": {
@@ -325381,6 +325478,140 @@
         "summary": "The WOD as my own run performed it, and whether it changed since (ADR-389)",
         "tags": [
           "Workouts"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/me/features": {
+      "get": {
+        "callbacks": {},
+        "description": "ADR-470. With `location_ids` (a branch filter) a feature a branch can have on its own (promotions) counts only when it covers one of those branches.",
+        "operationId": "PaleeWeb.MyFeaturesController.show",
+        "parameters": [
+          {
+            "description": "ADR-186: comma-separated branch ids to filter by",
+            "in": "query",
+            "name": "location_ids",
+            "required": false,
+            "schema": {
+              "maxLength": 7400,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "features": {
+                      "description": "ADR-470: every feature key with whether it is on",
+                      "properties": {
+                        "branches": {
+                          "type": "boolean"
+                        },
+                        "card_autopay": {
+                          "type": "boolean"
+                        },
+                        "floor_plan": {
+                          "type": "boolean"
+                        },
+                        "module_corporate_clients": {
+                          "type": "boolean"
+                        },
+                        "module_digital_content": {
+                          "type": "boolean"
+                        },
+                        "module_events": {
+                          "type": "boolean"
+                        },
+                        "module_group_classes": {
+                          "type": "boolean"
+                        },
+                        "module_online_coaching": {
+                          "type": "boolean"
+                        },
+                        "module_open_gym": {
+                          "type": "boolean"
+                        },
+                        "module_personal_training": {
+                          "type": "boolean"
+                        },
+                        "online_drop_in": {
+                          "type": "boolean"
+                        },
+                        "online_packages": {
+                          "type": "boolean"
+                        },
+                        "online_payments": {
+                          "type": "boolean"
+                        },
+                        "online_personal_training": {
+                          "type": "boolean"
+                        },
+                        "online_programmes": {
+                          "type": "boolean"
+                        },
+                        "online_shop": {
+                          "type": "boolean"
+                        },
+                        "perks": {
+                          "type": "boolean"
+                        },
+                        "promotions": {
+                          "type": "boolean"
+                        },
+                        "referrals": {
+                          "type": "boolean"
+                        },
+                        "trials": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "online_payments",
+                        "card_autopay",
+                        "online_drop_in",
+                        "online_packages",
+                        "online_personal_training",
+                        "online_programmes",
+                        "online_shop",
+                        "referrals",
+                        "promotions",
+                        "perks",
+                        "trials",
+                        "branches",
+                        "floor_plan",
+                        "module_group_classes",
+                        "module_online_coaching",
+                        "module_open_gym",
+                        "module_events",
+                        "module_personal_training",
+                        "module_digital_content",
+                        "module_corporate_clients"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "features"
+                  ],
+                  "title": "BusinessFeatures",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Features"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Which optional features this business has on",
+        "tags": [
+          "Organizations"
         ]
       }
     },

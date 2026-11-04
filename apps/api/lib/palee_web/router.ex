@@ -734,6 +734,8 @@ defmodule PaleeWeb.Router do
     ])
 
     get("/finance", MyFinanceController, :index)
+    # ADR-470: which optional features the business has switched on.
+    get("/features", MyFeaturesController, :show)
     # ADR-346: my choices about the box's automatic messages.
     get("/automatic-messages", MyAutomationPreferencesController, :show)
     put("/automatic-messages", MyAutomationPreferencesController, :update)
