@@ -127,6 +127,16 @@ defmodule Palee.Partners.Domain.SuggestionPolicyTest do
       assert ids(suggest([activity(id: "all", level: "all_levels")], people: mixed)) == ["all"]
     end
 
+    test "a class type with several levels admits who each of them admits (ADR-460)" do
+      mixed = people(%{me: %{level: "beginner"}, other: %{level: "advanced"}})
+      both_ends = activity(id: "both", class_levels: ["beginner", "advanced"])
+      beginners = activity(id: "beginners", class_levels: ["beginner"])
+      open = activity(id: "open", class_levels: [])
+
+      assert Enum.sort(ids(suggest([both_ends, beginners, open], people: mixed))) ==
+               ["both", "open"]
+    end
+
     test "a person without a level fits any level" do
       unknown = people(%{me: %{level: nil}})
       assert ids(suggest([activity(id: "adv", level: "advanced")], people: unknown)) == ["adv"]

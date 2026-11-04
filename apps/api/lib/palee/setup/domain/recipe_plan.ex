@@ -154,7 +154,7 @@ defmodule Palee.Setup.Domain.RecipePlan do
         name: name,
         attrs:
           %{name: name, kind: Map.get(class_type, :kind, "class")}
-          |> put_present(:level, Map.get(class_type, :level))
+          |> put_present(:levels, Map.get(class_type, :levels))
           |> put_present(:audiences, Map.get(class_type, :audiences))
       }
     end

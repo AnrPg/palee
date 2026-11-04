@@ -10,6 +10,7 @@ import { DocumentsGate } from "@/components/documents/DocumentsGate";
 import { gateReady, gateSteps } from "@/components/documents/documents-model";
 import {
   cancelBooking,
+  classLevelsOf,
   joinWaitlist,
   sendSlotMessage,
   type ScheduleLocation,
@@ -113,7 +114,7 @@ export function ClassSheet({
   const clock = { format: (at: Date) => zonedText(at, timeZone, locale, "time") };
   const location = slotLocationName(slot, locations);
   const credits = slotCreditCost(slot);
-  const level = slot.class_type.level;
+  const levels = classLevelsOf(slot.class_type.levels);
   const focus = slot.workout?.focus ?? [];
   const ownBooking = state.kind === "booked";
   const cancelUntil = slot.cancel_free_until ? new Date(slot.cancel_free_until) : null;
@@ -335,7 +336,9 @@ export function ClassSheet({
             <Fact label={t("chipSpots")}>
               {slot.spots_remaining > 0 ? t("spotsLeft", { count: slot.spots_remaining }) : t("statusFull")}
             </Fact>
-            {level ? <Fact label={t("chipLevel")}>{t(`level_${level}`)}</Fact> : null}
+            <Fact label={t("chipLevel")}>
+              {levels.length === 0 ? t("level_all_levels") : levels.map((value) => t(`level_${value}`)).join(", ")}
+            </Fact>
             {focus.length > 0 ? (
               <Fact label={t("focus")}>{focus.map((value) => t(`focus_${value}`)).join(" · ")}</Fact>
             ) : null}

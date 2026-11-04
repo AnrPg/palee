@@ -3896,12 +3896,13 @@
             "type": "array"
           },
           "levels": {
-            "description": "Class levels (ADR-197): hosts running a current class type at one of them",
+            "description": "Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
             "items": {
               "enum": [
                 "beginner",
-                "all_levels",
-                "advanced"
+                "intermediate",
+                "advanced",
+                "all_levels"
               ],
               "type": "string"
             },
@@ -4029,12 +4030,13 @@
                 "type": "array"
               },
               "levels": {
-                "description": "Class levels (ADR-197): hosts running a current class type at one of them",
+                "description": "Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
                 "items": {
                   "enum": [
                     "beginner",
-                    "all_levels",
-                    "advanced"
+                    "intermediate",
+                    "advanced",
+                    "all_levels"
                   ],
                   "type": "string"
                 },
@@ -5936,12 +5938,13 @@
             "type": "array"
           },
           "levels": {
-            "description": "Class levels (ADR-197): hosts running a current class type at one of them",
+            "description": "Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
             "items": {
               "enum": [
                 "beginner",
-                "all_levels",
-                "advanced"
+                "intermediate",
+                "advanced",
+                "all_levels"
               ],
               "type": "string"
             },
@@ -6225,12 +6228,13 @@
                 "type": "array"
               },
               "levels": {
-                "description": "Class levels (ADR-197): hosts running a current class type at one of them",
+                "description": "Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
                 "items": {
                   "enum": [
                     "beginner",
-                    "all_levels",
-                    "advanced"
+                    "intermediate",
+                    "advanced",
+                    "all_levels"
                   ],
                   "type": "string"
                 },
@@ -8175,12 +8179,13 @@
                 "type": "array"
               },
               "levels": {
-                "description": "Class levels (ADR-197): hosts running a current class type at one of them",
+                "description": "Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
                 "items": {
                   "enum": [
                     "beginner",
-                    "all_levels",
-                    "advanced"
+                    "intermediate",
+                    "advanced",
+                    "all_levels"
                   ],
                   "type": "string"
                 },
@@ -8357,12 +8362,13 @@
                 "type": "array"
               },
               "levels": {
-                "description": "Class levels (ADR-197): hosts running a current class type at one of them",
+                "description": "Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
                 "items": {
                   "enum": [
                     "beginner",
-                    "all_levels",
-                    "advanced"
+                    "intermediate",
+                    "advanced",
+                    "all_levels"
                   ],
                   "type": "string"
                 },
@@ -78041,18 +78047,27 @@
                 "format": "uuid",
                 "type": "string"
               },
-              "level": {
-                "nullable": true,
-                "type": "string"
+              "levels": {
+                "description": "Levels the class suits; empty means all levels (ADR-460)",
+                "items": {
+                  "enum": [
+                    "beginner",
+                    "intermediate",
+                    "advanced"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
               },
               "name": {
                 "type": "string"
               }
             },
             "required": [
+              "audiences",
               "id",
-              "name",
-              "audiences"
+              "levels",
+              "name"
             ],
             "type": "object"
           },
@@ -79823,18 +79838,27 @@
                       "format": "uuid",
                       "type": "string"
                     },
-                    "level": {
-                      "nullable": true,
-                      "type": "string"
+                    "levels": {
+                      "description": "Levels the class suits; empty means all levels (ADR-460)",
+                      "items": {
+                        "enum": [
+                          "beginner",
+                          "intermediate",
+                          "advanced"
+                        ],
+                        "type": "string"
+                      },
+                      "type": "array"
                     },
                     "name": {
                       "type": "string"
                     }
                   },
                   "required": [
+                    "audiences",
                     "id",
-                    "name",
-                    "audiences"
+                    "levels",
+                    "name"
                   ],
                   "type": "object"
                 },
@@ -115179,12 +115203,13 @@
                         "type": "array"
                       },
                       "levels": {
-                        "description": "Class levels (ADR-197): hosts running a current class type at one of them",
+                        "description": "Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
                         "items": {
                           "enum": [
                             "beginner",
-                            "all_levels",
-                            "advanced"
+                            "intermediate",
+                            "advanced",
+                            "all_levels"
                           ],
                           "type": "string"
                         },
@@ -115408,12 +115433,13 @@
                         "type": "array"
                       },
                       "levels": {
-                        "description": "Class levels (ADR-197): hosts running a current class type at one of them",
+                        "description": "Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
                         "items": {
                           "enum": [
                             "beginner",
-                            "all_levels",
-                            "advanced"
+                            "intermediate",
+                            "advanced",
+                            "all_levels"
                           ],
                           "type": "string"
                         },
@@ -115598,12 +115624,13 @@
                           "type": "array"
                         },
                         "levels": {
-                          "description": "Class levels (ADR-197): hosts running a current class type at one of them",
+                          "description": "Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
                           "items": {
                             "enum": [
                               "beginner",
-                              "all_levels",
-                              "advanced"
+                              "intermediate",
+                              "advanced",
+                              "all_levels"
                             ],
                             "type": "string"
                           },
@@ -117627,12 +117654,13 @@
                         "type": "array"
                       },
                       "levels": {
-                        "description": "Class levels (ADR-197): hosts running a current class type at one of them",
+                        "description": "Class levels (ADR-197, ADR-460): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
                         "items": {
                           "enum": [
                             "beginner",
-                            "all_levels",
-                            "advanced"
+                            "intermediate",
+                            "advanced",
+                            "all_levels"
                           ],
                           "type": "string"
                         },
@@ -127693,18 +127721,27 @@
                                 "format": "uuid",
                                 "type": "string"
                               },
-                              "level": {
-                                "nullable": true,
-                                "type": "string"
+                              "levels": {
+                                "description": "Levels the class suits; empty means all levels (ADR-460)",
+                                "items": {
+                                  "enum": [
+                                    "beginner",
+                                    "intermediate",
+                                    "advanced"
+                                  ],
+                                  "type": "string"
+                                },
+                                "type": "array"
                               },
                               "name": {
                                 "type": "string"
                               }
                             },
                             "required": [
+                              "audiences",
                               "id",
-                              "name",
-                              "audiences"
+                              "levels",
+                              "name"
                             ],
                             "type": "object"
                           },
@@ -194529,13 +194566,16 @@
                             ],
                             "type": "string"
                           },
-                          "level": {
-                            "enum": [
-                              "beginner",
-                              "all_levels",
-                              "advanced"
-                            ],
-                            "type": "string"
+                          "levels": {
+                            "items": {
+                              "enum": [
+                                "beginner",
+                                "intermediate",
+                                "advanced"
+                              ],
+                              "type": "string"
+                            },
+                            "type": "array"
                           },
                           "name": {
                             "type": "string"
@@ -194558,7 +194598,7 @@
                           "sort_order",
                           "credit_cost",
                           "kind",
-                          "level",
+                          "levels",
                           "audiences",
                           "archived_at"
                         ],
@@ -194627,14 +194667,18 @@
                     ],
                     "type": "string"
                   },
-                  "level": {
-                    "description": "Who the class suits, for the schedule's level filter",
-                    "enum": [
-                      "beginner",
-                      "all_levels",
-                      "advanced"
-                    ],
-                    "type": "string"
+                  "levels": {
+                    "description": "Levels the class suits, for the schedule's level filter; empty means all levels (ADR-460)",
+                    "items": {
+                      "enum": [
+                        "beginner",
+                        "intermediate",
+                        "advanced"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "array",
+                    "uniqueItems": true
                   },
                   "name": {
                     "maxLength": 80,
@@ -194707,13 +194751,16 @@
                           ],
                           "type": "string"
                         },
-                        "level": {
-                          "enum": [
-                            "beginner",
-                            "all_levels",
-                            "advanced"
-                          ],
-                          "type": "string"
+                        "levels": {
+                          "items": {
+                            "enum": [
+                              "beginner",
+                              "intermediate",
+                              "advanced"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
                         },
                         "name": {
                           "type": "string"
@@ -194736,7 +194783,7 @@
                         "sort_order",
                         "credit_cost",
                         "kind",
-                        "level",
+                        "levels",
                         "audiences",
                         "archived_at"
                       ],
@@ -194839,13 +194886,16 @@
                           ],
                           "type": "string"
                         },
-                        "level": {
-                          "enum": [
-                            "beginner",
-                            "all_levels",
-                            "advanced"
-                          ],
-                          "type": "string"
+                        "levels": {
+                          "items": {
+                            "enum": [
+                              "beginner",
+                              "intermediate",
+                              "advanced"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
                         },
                         "name": {
                           "type": "string"
@@ -194868,7 +194918,7 @@
                         "sort_order",
                         "credit_cost",
                         "kind",
-                        "level",
+                        "levels",
                         "audiences",
                         "archived_at"
                       ],
@@ -194955,14 +195005,18 @@
                     ],
                     "type": "string"
                   },
-                  "level": {
-                    "description": "Who the class suits, for the schedule's level filter",
-                    "enum": [
-                      "beginner",
-                      "all_levels",
-                      "advanced"
-                    ],
-                    "type": "string"
+                  "levels": {
+                    "description": "Levels the class suits, for the schedule's level filter; empty means all levels (ADR-460)",
+                    "items": {
+                      "enum": [
+                        "beginner",
+                        "intermediate",
+                        "advanced"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "array",
+                    "uniqueItems": true
                   },
                   "name": {
                     "maxLength": 80,
@@ -195035,13 +195089,16 @@
                           ],
                           "type": "string"
                         },
-                        "level": {
-                          "enum": [
-                            "beginner",
-                            "all_levels",
-                            "advanced"
-                          ],
-                          "type": "string"
+                        "levels": {
+                          "items": {
+                            "enum": [
+                              "beginner",
+                              "intermediate",
+                              "advanced"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
                         },
                         "name": {
                           "type": "string"
@@ -195064,7 +195121,7 @@
                         "sort_order",
                         "credit_cost",
                         "kind",
-                        "level",
+                        "levels",
                         "audiences",
                         "archived_at"
                       ],

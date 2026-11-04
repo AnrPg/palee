@@ -45,9 +45,9 @@ function localDate(days = 0) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 }
 
-const crossfit = { id: "ct-1", name: "CrossFit", kind: "class", level: "all_levels", audiences: [] };
-const oly = { id: "ct-2", name: "Olympic lifting", kind: "class", level: "advanced", audiences: [] };
-const openGym = { id: "ct-3", name: "Open gym", kind: "event", level: "all_levels", audiences: [] };
+const crossfit = { id: "ct-1", name: "CrossFit", kind: "class", levels: [] as string[], audiences: [] };
+const oly = { id: "ct-2", name: "Olympic lifting", kind: "class", levels: ["advanced"], audiences: [] };
+const openGym = { id: "ct-3", name: "Open gym", kind: "event", levels: [] as string[], audiences: [] };
 
 function slot(id: string, type: typeof crossfit, hour: number, extra: Record<string, unknown> = {}) {
   return {

@@ -248,6 +248,8 @@ Terms marked **(proposed)** change today's wording; see §5. Everything else mat
 | Trial class | Δοκιμαστικό τμήμα | `trials` | A newcomer's free class. Short form «Δοκιμαστικό». A trial period of a plan is «Δοκιμαστική περίοδος». | Guest. |
 | Day WOD | WOD ημέρας | `day_workouts` | The WOD set for a whole date: every class (τμήμα) of that day, or only chosen class types (and, with branches, one branch), takes it unless the class has its own WOD. (ADR-230) | A class's own WOD (an override); «WOD σήμερα» (the club channel). |
 | Workout type | Τύπος προπόνησης | `master_workouts.type`, `WorkoutType` | The kind of training a WOD is (CrossFit, Πυγμαχία, Χορός …): one fixed list for the platform, grouped in families (Λειτουργική & CrossFit, Δύναμη, Γυμναστική & σωματικό βάρος, Αντοχή, Σώμα & νους, Μαχητικά αθλήματα, Χορός, Υπαίθριο, Αποκατάσταση) that stats, badges and colours read. The box chooses which ones its editors offer (Ρυθμίσεις › Τύποι προπόνησης). (ADR-275) | Class type (Τύπος τμήματος): the box's own list for its timetable, bookings and credits. |
+| Class level | Επίπεδο | `class_types.levels` (`beginner`, `intermediate`, `advanced`) | The levels a class type suits: «Αρχάριοι», «Μεσαίοι», «Προχωρημένοι», one or more; none chosen is shown as «Όλα τα επίπεδα». It informs and filters, it never blocks a booking. (ADR-460) | Scale level (Rx/Scaled), XP level, rank, Partners level («Αρχάριος / Μέτριος / Προχωρημένος» of a person). |
+| Event class type | Εκδήλωση | `class_types.kind: event` | A class type whose bookings use the package's event visits, for seminars, workshops and open days. Set under «Προχωρημένα». (ADR-097, ADR-460) | Event (`community_events`) of a club or organiser. |
 
 ### 4.5 Relations between people
 

@@ -324,12 +324,26 @@ defmodule PaleeWeb.AroundControllerTest do
                search(ctx, ctx.visitor, %{filter: %{disciplines: ["weight_loss"]}}, 422)
     end
 
-    test "level keeps hosts running a current class type at that level (ADR-197)", ctx do
-      {:ok, _type} =
-        CreateClassType.call(ctx.alpha.context, %{name: "Foundations", level: "beginner"})
+    test "level keeps hosts running a current class type that suits it (ADR-197, ADR-460)",
+         ctx do
+      # Start from boxes whose only class types carry the levels below.
+      org_ids = [ctx.alpha.organization.id, ctx.beta.organization.id]
+
+      Repo.update_all(
+        from(ct in "class_types",
+          where: ct.organization_id in type(^org_ids, {:array, Ecto.UUID})
+        ),
+        set: [archived_at: DateTime.utc_now()]
+      )
 
       {:ok, _type} =
-        CreateClassType.call(ctx.beta.context, %{name: "Power flow", level: "advanced"})
+        CreateClassType.call(ctx.alpha.context, %{
+          name: "Foundations",
+          levels: ["beginner", "intermediate"]
+        })
+
+      {:ok, _type} =
+        CreateClassType.call(ctx.beta.context, %{name: "Power flow", levels: ["advanced"]})
 
       filtered = fn filter -> search(ctx, ctx.visitor, %{filter: filter}) end
 
@@ -337,7 +351,17 @@ defmodule PaleeWeb.AroundControllerTest do
       assert beginners["filter"]["levels"] == ["beginner"]
       assert names(beginners, "boxes") == ["Alpha"]
       assert names(beginners, "clubs") == ["Alpha runners"]
+      assert names(filtered.(%{levels: ["intermediate"]}), "boxes") == ["Alpha"]
       assert names(filtered.(%{levels: ["advanced", "beginner"]}), "boxes") == ["Beta", "Alpha"]
+
+      # The retired «Όλα τα επίπεδα» value of older clients is ignored.
+      legacy = filtered.(%{levels: ["all_levels", "advanced"]})
+      assert legacy["filter"]["levels"] == ["advanced"]
+      assert names(legacy, "boxes") == ["Beta"]
+
+      # A class type with no levels suits every level.
+      {:ok, _type} = CreateClassType.call(ctx.beta.context, %{name: "Open gym"})
+      assert names(filtered.(%{levels: ["beginner"]}), "boxes") == ["Beta", "Alpha"]
 
       assert %{"errors" => _} = search(ctx, ctx.visitor, %{filter: %{levels: ["expert"]}}, 422)
     end

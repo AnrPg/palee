@@ -3524,8 +3524,6 @@
     "admCheckInAllowanceExhausted": "Dieses Mitglied hat alle Open-Gym-Besuche für diesen Zeitraum verbraucht. Zusätzliche Besuche kannst du in seinem Profil vergeben.",
     "admCheckInFrozen": "Das Abo-Paket dieses Mitglieds ist heute pausiert. Heb die Pause in seinem Profil auf, um es einzuchecken.",
     "admCheckInLocationNotIncluded": "Das Abo-Paket dieses Mitglieds gilt nicht für diesen Standort.",
-    "admClassTypeEvent": "Event",
-    "admClassTypeRulesHint": "Besuche pro Buchung: wie viele Besuche eines Abo-Pakets eine Buchung verbraucht. Markiere Sonderkurse als Events, damit sie die Event-Besuche des Abo-Pakets nutzen.",
     "admVisitsPerBooking": "Besuche pro Buchung",
     "admDecrease": "Verringern",
     "admIncrease": "Erhöhen",
@@ -6129,6 +6127,7 @@
     "package": "Abo-Paket",
     "chipLevel": "Level",
     "level_beginner": "Einsteiger",
+    "level_intermediate": "Mittelstufe",
     "level_all_levels": "Alle Level",
     "level_advanced": "Fortgeschrittene",
     "coach": "Coach",
@@ -17558,5 +17557,32 @@
     "errorDimensions": "Das Bild ist zu groß: höchstens {width}×{height} Pixel.",
     "errorSave": "Die Unterschrift wurde nicht gespeichert. Versuche es erneut.",
     "errorRemove": "Die Unterschrift wurde nicht entfernt. Versuche es erneut."
+  },
+  "ExplainedSetting": {
+    "about": "Was ist «{name}»?"
+  },
+  "ClassTypeOptions": {
+    "eventLabel": "Event",
+    "whatHeading": "Was es bewirkt:",
+    "membersHeading": "Was Mitglieder sehen:",
+    "whenHeading": "Wann ändern:",
+    "levelNoneChosen": "Alle Level",
+    "audienceNoneChosen": "Alle",
+    "event_tip": "Buchungen zählen gegen die Event-Besuche des Pakets, nicht gegen die Kursbesuche.",
+    "event_what": "Eine Buchung in einem Kurs dieses Typs zieht Event-Besuche vom Mitgliedschaftspaket ab. Die Kursbesuche bleiben unberührt.",
+    "event_members": "Buchen können nur Mitglieder, deren Paket Events enthält. Im Stundenplan trägt der Kurs die Markierung «Event», und der Filter «Events» findet ihn.",
+    "event_when": "Für alles, was kein tägliches Training ist: Seminar, Workshop, Tag der offenen Tür oder interner Wettkampf. Soll jede Mitgliedschaft den Kurs abdecken, bleibt er ein normaler Kurs.",
+    "visits_tip": "Wie viele Besuche des Pakets eine Buchung verbraucht. Meist 1.",
+    "visits_what": "Jede Buchung zieht so viele Besuche vom Paket ab, von 1 bis 10. So kostet ein längerer oder teurerer Kurs mehr, ohne eigenes Paket.",
+    "visits_members": "Vor dem Buchen sehen Mitglieder, wie viele Besuche der Kurs verbraucht. Mit einem 8er-Paket und einem Kurs zu 2 Besuchen passen 4 Buchungen.",
+    "visits_when": "Für Kurse, die dich mehr kosten: kleine Gruppen, 90-Minuten-Einheiten, Spezialausrüstung oder ein Gastcoach. Normale Kurse bleiben bei 1.",
+    "level_tip": "Für welche Level der Kurs passt. Ohne Auswahl für alle.",
+    "level_what": "Wähle eines oder mehrere: Einsteiger, Mittelstufe, Fortgeschrittene. Ohne Auswahl ist der Kurs für alle Level. Die Angabe informiert, sie sperrt keine Buchung.",
+    "level_members": "Das Level steht in den Kursdetails. Wer den Stundenplan, die Box-Seite oder «In der Nähe» nach «Einsteiger» filtert, findet Kurse für Einsteiger und Kurse für alle Level.",
+    "level_when": "Markiere Kurse, die Neue nicht zufällig wählen sollten (Olympic Lifting nur für Fortgeschrittene), und solche, die der beste erste Besuch sind (Foundations für Einsteiger). Ein für alle skalierter Kurs bleibt ohne Auswahl.",
+    "audience_tip": "Für welche Gruppen der Kurs gedacht ist. Ohne Auswahl für alle.",
+    "audience_what": "Wähle die Gruppen, für die der Kurs gemacht ist, etwa «Jugendliche». Ohne Auswahl ist er für alle. Auch das informiert nur und sperrt keine Buchung.",
+    "audience_members": "Die Gruppen stehen in den Kursdetails, und Mitglieder filtern Stundenplan und Box-Seite danach.",
+    "audience_when": "Wenn der Kurs für bestimmte Menschen gedacht ist: nur Frauen, Kinder, 40+. Offene Kurse bleiben ohne Auswahl, damit sich niemand ausgeschlossen fühlt."
   }
 }

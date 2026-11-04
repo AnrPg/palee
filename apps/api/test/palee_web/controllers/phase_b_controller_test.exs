@@ -90,7 +90,7 @@ defmodule PaleeWeb.PhaseBControllerTest do
     end
   end
 
-  test "class types carry a level and audiences for the schedule filters", %{
+  test "class types carry levels and audiences for the schedule filters", %{
     admin_conn: admin_conn,
     base: base
   } do
@@ -100,22 +100,23 @@ defmodule PaleeWeb.PhaseBControllerTest do
       |> json_response(201)
       |> Map.fetch!("class_type")
 
-    assert %{"level" => "all_levels", "audiences" => []} = default
+    assert %{"levels" => [], "audiences" => []} = default
 
     tagged =
       admin_conn
       |> send_json(:patch, "#{base}/admin/class-types/#{default["id"]}", %{
         name: "Ladies foundations",
-        level: "beginner",
+        levels: ["advanced", "beginner"],
         audiences: ["women_only"]
       })
       |> json_response(200)
       |> Map.fetch!("class_type")
 
-    assert %{"level" => "beginner", "audiences" => ["women_only"]} = tagged
+    # ADR-460: several levels, kept in display order.
+    assert %{"levels" => ["beginner", "advanced"], "audiences" => ["women_only"]} = tagged
 
     admin_conn
-    |> send_json(:post, "#{base}/admin/class-types", %{name: "Bad", level: "expert"})
+    |> send_json(:post, "#{base}/admin/class-types", %{name: "Bad", levels: ["expert"]})
     |> json_response(422)
 
     admin_conn
@@ -128,7 +129,7 @@ defmodule PaleeWeb.PhaseBControllerTest do
       |> get("#{base}/schedule?start_date=#{gym_today()}&days=7")
       |> json_response(200)
 
-    assert %{"level" => "beginner", "audiences" => ["women_only"]} =
+    assert %{"levels" => ["beginner", "advanced"], "audiences" => ["women_only"]} =
              Enum.find(schedule["class_types"], &(&1["id"] == default["id"]))
   end
 

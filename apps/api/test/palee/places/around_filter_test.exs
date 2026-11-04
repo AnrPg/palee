@@ -7,7 +7,7 @@ defmodule Palee.Places.Domain.AroundFilterTest do
     disciplines: ~w(crossfit hyrox running yoga),
     audiences: ~w(beginners women_only over_40),
     amenities: ~w(showers wheelchair_accessible accessible_restroom),
-    levels: ~w(beginner all_levels advanced)
+    levels: ~w(beginner intermediate advanced)
   }
   @id "0b9d3f1e-6a52-4c8e-9a51-2f3b7c1d8e90"
 
@@ -77,6 +77,10 @@ defmodule Palee.Places.Domain.AroundFilterTest do
     assert AroundFilter.active_count(filter) == 1
     assert AroundFilter.to_params(filter)["levels"] == ~w(beginner advanced)
     assert {:error, [levels: _]} = AroundFilter.parse(%{levels: ["expert"]}, @vocabulary)
+
+    # ADR-460: the retired all_levels from older clients and saved filters is dropped.
+    assert {:ok, legacy} = AroundFilter.parse(%{levels: ["all_levels", "beginner"]}, @vocabulary)
+    assert legacy.levels == ["beginner"]
 
     viewer = %{user_id: Ecto.UUID.generate(), organization_ids: []}
     assert AroundPlan.build(filter, viewer, DateTime.utc_now()).levels == ~w(beginner advanced)

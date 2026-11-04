@@ -72,10 +72,10 @@ const slot = {
   spots_remaining: 4,
   location_id: "loc-1",
   coach: { id: "coach-1", nickname: "Stelios", avatar_url: null },
-  class_type: { id: "type-1", name: "CrossFit", level: "beginner", audiences: [] },
+  class_type: { id: "type-1", name: "CrossFit", levels: ["beginner"], audiences: [] },
   trial_seats: 2,
 };
-const closedSlot = { ...slot, id: "slot-2", name: "Competitors", class_type: { id: "type-2", name: "Comp", level: "advanced", audiences: [] }, trial_seats: null };
+const closedSlot = { ...slot, id: "slot-2", name: "Competitors", class_type: { id: "type-2", name: "Comp", levels: ["advanced"], audiences: [] }, trial_seats: null };
 
 const trial = (overrides: Record<string, unknown> = {}) => ({
   id: "trial-1",
