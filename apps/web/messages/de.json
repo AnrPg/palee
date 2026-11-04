@@ -17775,5 +17775,576 @@
       "workout_published": "WOD veröffentlicht",
       "workout_republished": "WOD erneut veröffentlicht"
     }
+  },
+  "StaffAnalytics": {
+    "period": {
+      "label": "Zeitraum",
+      "options": {
+        "7": "7 Tage",
+        "30": "30 Tage",
+        "90": "90 Tage",
+        "ytd": "Dieses Jahr",
+        "custom": "Von…bis"
+      },
+      "compare": "im Vergleich zu {count, plural, one {dem Vortag} other {den vorherigen # Tagen}}",
+      "from": "Von",
+      "to": "Bis"
+    },
+    "filters": {
+      "region": "Zeitraum und Filter",
+      "button": "{count, plural, =0 {Filter} other {Filter (#)}}",
+      "title": "Filter",
+      "active": "Aktive Filter",
+      "chip": "{group}: {value}",
+      "remove": "Entfernen: {label}",
+      "all": "Alle",
+      "clear": "Filter löschen",
+      "done": "Fertig",
+      "unknownValue": "Unbekannt",
+      "demographicsNote": "* Alter und Geschlecht gibt es nur von Personen, die sie für die Ranglisten freigegeben haben. Eine Zahl, die weniger als 5 Personen betrifft, wird ausgeblendet."
+    },
+    "groups": {
+      "location_ids": "Standort",
+      "class_type_ids": "Kursart",
+      "levels": "Level",
+      "coach_ids": "Coach",
+      "time_of_day": "Uhrzeit",
+      "package_ids": "Abo-Paket",
+      "tenure_bands": "Dabei seit",
+      "age_bands": "Alter",
+      "genders": "Geschlecht"
+    },
+    "values": {
+      "levels": {
+        "beginner": "Anfänger",
+        "all_levels": "Alle Level",
+        "advanced": "Fortgeschrittene"
+      },
+      "time_of_day": {
+        "morning": "Morgens",
+        "midday": "Mittags",
+        "afternoon": "Nachmittags",
+        "evening": "Abends"
+      },
+      "tenure_bands": {
+        "lt_3m": "Unter 3 Monaten",
+        "3_12m": "3–12 Monate",
+        "gt_12m": "Über ein Jahr"
+      },
+      "age_bands": {
+        "under_18": "Unter 18",
+        "18_34": "18–34",
+        "35_44": "35–44",
+        "45_54": "45–54",
+        "55_64": "55–64",
+        "65_plus": "65+",
+        "unknown": "Unbekannt"
+      },
+      "genders": {
+        "women": "Frauen",
+        "men": "Männer",
+        "unknown": "Unbekannt"
+      }
+    },
+    "help": {
+      "open": "Was bedeutet: {label}",
+      "what": "Was es misst",
+      "how": "Wie es berechnet wird",
+      "good": "Guter Wert",
+      "change": "Wenn es sich ändert"
+    },
+    "reset": {
+      "action": "Ab heute zurücksetzen",
+      "title": "«{label}» zurücksetzen?",
+      "body": "Die Zählung beginnt ab heute neu. Alte Daten werden nicht gelöscht: Du findest sie unter Einstellungen › Daten › Verlauf der Zurücksetzungen.",
+      "confirm": "Ab heute zurücksetzen",
+      "cancel": "Abbrechen"
+    },
+    "kpi": {
+      "days": "{count, plural, one {# Tag} other {# Tage}}",
+      "points": "{value} Pkt.",
+      "daysChange": "{sign}{count, plural, one {# Tag} other {# Tage}}",
+      "since": "ab {date}",
+      "suppressed": "—",
+      "suppressedReason": "Ausgeblendet: weniger als 5 Personen",
+      "noPrevious": "Kein Vergleich möglich",
+      "noValue": "Zu wenige Daten",
+      "unchanged": "Keine Änderung",
+      "previous": "(vorher: {value})",
+      "noData": "Für diesen Zeitraum gibt es noch keine Daten.",
+      "unknownCoach": "Unbekannter Coach",
+      "classesAttendances": "{classes, plural, one {# Kurs} other {# Kurse}} · {attendances} Teilnahmen",
+      "athletes": "{count, plural, one {# Athlet} other {# Athleten}}",
+      "rating": "{rating} ★ · {count, plural, one {# Bewertung} other {# Bewertungen}}",
+      "people": "{count, plural, one {# Person} other {# Personen}}",
+      "noPackage": "Ohne Abo-Paket",
+      "more": "Weitere Zahlen",
+      "loading": "Wird geladen…",
+      "teamWorkouts": "Team- und Einzel-Workouts"
+    },
+    "pages": {
+      "overview": {
+        "title": "Überblick",
+        "what": "Der Zustand der Box auf einer Seite: Box-Mitglieder, Neue, wer gegangen ist und wer gehen könnte.",
+        "how": "Jede Zahl gilt für den gewählten Zeitraum und wird mit dem gleich langen Zeitraum direkt davor verglichen. Die Filter gelten für die ganze Seite."
+      },
+      "training": {
+        "title": "Training",
+        "what": "Wie die Kurse genutzt werden: Auslastung, Nichterscheinen, Absagen, Stoßzeiten und wie Workouts beendet werden.",
+        "how": "Aus Buchungen und Anwesenheit im Zeitraum, verglichen mit dem gleich langen Zeitraum davor. Die Filter gelten für die ganze Seite."
+      },
+      "coaching": {
+        "title": "Coaching",
+        "what": "Die Arbeit der Coaches: geleitete Kurse, betreute Athleten, erledigte Programme und Bewertungen.",
+        "how": "Aus den Kursen, dem Coaching und den Bewertungen des Zeitraums, verglichen mit dem davor. Die Filter gelten für die ganze Seite."
+      },
+      "engagement": {
+        "title": "Engagement",
+        "what": "Wie viel Box-Mitglieder Palee nutzen: wöchentlich Aktive, Challenges, Serien und Aktivität.",
+        "how": "Aus dem, was Box-Mitglieder im Zeitraum in der App und in der Box gemacht haben, verglichen mit dem davor. Aktionen des Teams zählen nicht."
+      },
+      "health": {
+        "title": "Gesundheit",
+        "what": "Verletzungen und Genesung: wie oft, wie lange und wo.",
+        "how": "Aus den Verletzungsmeldungen des Zeitraums, verglichen mit dem davor. Die Filter gelten für die ganze Seite."
+      },
+      "finance": {
+        "title": "Finanzen",
+        "what": "Die Finanzen der Box: monatlich wiederkehrender Umsatz, Umsatz pro Box-Mitglied und Zahlungseingang.",
+        "how": "Aus Abos, Rechnungen und Zahlungen des Zeitraums, verglichen mit dem davor. Die Filter gelten für die ganze Seite."
+      }
+    },
+    "metrics": {
+      "overview": {
+        "active_members": {
+          "label": "Aktive Box-Mitglieder",
+          "what": "Box-Mitglieder mit einem aktiven Abo-Paket.",
+          "how": "Gezählt am letzten Tag des Zeitraums.",
+          "change": "Ein Rückgang folgt meist auf auslaufende Pakete ohne Verlängerung: Sieh dir die Verlängerungsliste an."
+        },
+        "net_member_change": {
+          "label": "Nettoveränderung",
+          "what": "Wie viele Box-Mitglieder du insgesamt gewonnen oder verloren hast.",
+          "how": "Aktive Box-Mitglieder am Ende des Zeitraums minus die am Tag vor seinem Beginn.",
+          "change": "Unter null heißt: Mehr sind gegangen als gekommen. Sieh dir Abgänge und neue Box-Mitglieder zusammen an."
+        },
+        "new_members": {
+          "label": "Neue Box-Mitglieder",
+          "what": "Personen, die im Zeitraum ihr erstes Abo-Paket genommen haben.",
+          "how": "Gezählt nach dem Beginn des ersten Pakets ohne Probetraining.",
+          "change": "Ein Rückgang folgt oft auf weniger Probetrainings oder weniger, die danach abschließen."
+        },
+        "churn_rate": {
+          "label": "Abgänge",
+          "what": "Der Anteil der Box-Mitglieder, die im Zeitraum gegangen sind.",
+          "how": "Aktiv am Tag vor dem Zeitraum und ohne aktives Paket an seinem Ende, geteilt durch alle an jenem Tag Aktiven.",
+          "change": "Wenn er steigt, sprich die gefährdeten Box-Mitglieder an und prüfe, was sich geändert hat (Plan, Preise, Coaches)."
+        },
+        "trial_conversion": {
+          "label": "Probetraining zu Abo",
+          "what": "Wie viele Probetrainings zu Box-Mitgliedern wurden.",
+          "how": "Probetraining-Anfragen des Zeitraums, die später abgeschlossen haben, geteilt durch alle Anfragen des Zeitraums.",
+          "change": "Wenn sie sinkt, melde dich schneller nach dem Probetraining und prüfe dein Angebot."
+        },
+        "members_at_risk": {
+          "label": "Gefährdete Box-Mitglieder",
+          "what": "Box-Mitglieder, bei denen Palee ein Abwanderungsrisiko sieht.",
+          "how": "Mittleres oder hohes Risiko am letzten Tag des Zeitraums, ohne die, die du zurückgestellt hast.",
+          "change": "Steigt die Zahl, handle: Schreib ihnen oder lade sie zu einem Kurs ein."
+        }
+      },
+      "training": {
+        "class_fill_rate": {
+          "label": "Kursauslastung",
+          "what": "Wie voll die Kurse waren.",
+          "how": "Bestätigte Buchungen geteilt durch die Kapazität der Kurse im Zeitraum (Kurse ohne Kapazität zählen nicht).",
+          "change": "Niedrige Auslastung zu manchen Zeiten heißt vielleicht zu viele Kurse; hohe heißt, dass manche keinen Platz finden."
+        },
+        "no_show_rate": {
+          "label": "Nicht erschienen",
+          "what": "Buchungen, bei denen die Person nicht kam.",
+          "how": "Verpasste Teilnahmen geteilt durch verpasste plus wahrgenommene.",
+          "change": "Steigt sie, erinnere vor dem Kurs oder prüfe die Regel für späte Absagen."
+        },
+        "late_cancellations": {
+          "label": "Späte Absagen",
+          "what": "Buchungen, die nach der Frist für späte Absagen storniert wurden.",
+          "how": "Gezählt aus den Anwesenheitsdaten des Zeitraums.",
+          "change": "Viele späte Absagen nehmen anderen den Platz: Prüfe Frist und Erinnerungen."
+        },
+        "waitlist_conversion": {
+          "label": "Von der Warteliste",
+          "what": "Wie viele auf der Warteliste am Ende einen Platz bekamen.",
+          "how": "Bestätigte Buchungen von der Warteliste geteilt durch alle Buchungen auf der Warteliste.",
+          "change": "Ist sie niedrig, sind diese Kurse zu klein: Denk an einen weiteren Kurs zu der Zeit."
+        },
+        "visits_per_member_week": {
+          "label": "Besuche pro Woche",
+          "what": "Wie oft jemand, der trainiert, im Schnitt kommt.",
+          "how": "Besuchte Kurse geteilt durch die Personen, die kamen, und durch die Wochen des Zeitraums.",
+          "change": "Ein Rückgang ist ein frühes Zeichen sinkender Motivation, oft bevor jemand geht."
+        },
+        "attendance_by_hour": {
+          "label": "Anwesenheit nach Uhrzeit",
+          "what": "Wann die Leute zu Kursen kommen, nach Tageszeit.",
+          "how": "Besuchte Kurse nach Startzeit, in der Zeit der Box.",
+          "change": "Verschiebe oder ergänze Kurse in Richtung der Stoßzeiten."
+        },
+        "attendance_by_weekday": {
+          "label": "Anwesenheit nach Tag",
+          "what": "An welchen Tagen die Leute zu Kursen kommen.",
+          "how": "Besuchte Kurse nach Wochentag, in der Zeit der Box.",
+          "change": "Volle Tage brauchen vielleicht mehr Kurse, ruhige weniger."
+        },
+        "execution_kpis": {
+          "label": "Workout-Ausführung",
+          "what": "Wie Athleten ihre Workouts in der App absolvieren: was sie beenden, überspringen, pausieren und abbrechen.",
+          "how": "Aus den im Zeitraum gestarteten Workout-Ausführungen.",
+          "change": "Sinkt der Abschluss, sieh unten, wo abgebrochen wird, und vereinfache diese Teile."
+        }
+      },
+      "coaching": {
+        "classes_per_coach": {
+          "label": "Kurse pro Coach",
+          "what": "Wie viele Kurse jeder Coach geleitet hat und wie viele kamen.",
+          "how": "Die Kurse des Zeitraums nach Coach, mit den Teilnahmen.",
+          "change": "Große Unterschiede zwischen Coaches brauchen vielleicht einen faireren Plan."
+        },
+        "athletes_per_coach": {
+          "label": "Athleten pro Coach",
+          "what": "Wie viele Athleten jeder Coach persönlich betreut.",
+          "how": "Aktive Coaching-Beziehungen am letzten Tag des Zeitraums; die Zahl ist der Schnitt pro Coach.",
+          "change": "Ein Coach mit viel mehr Athleten braucht vielleicht Hilfe oder eine Grenze."
+        },
+        "programme_adherence": {
+          "label": "Programmtreue",
+          "what": "Wie viele zugewiesene Workouts die Athleten wirklich gemacht haben.",
+          "how": "Zugewiesene Workouts, beendet zwischen einem Tag vor und sieben Tagen nach ihrem Datum, geteilt durch alle bis heute zugewiesenen.",
+          "change": "Sinkt sie, frag die Athleten, ob das Programm zu ihnen passt."
+        },
+        "review_rating_per_coach": {
+          "label": "Bewertungen pro Coach",
+          "what": "Die durchschnittliche Kursbewertung pro Coach.",
+          "how": "Bewertungen des Zeitraums nach Coach des Kurses; die Zahl ist der Schnitt aller Bewertungen.",
+          "change": "Lies die schwachen Bewertungen gemeinsam mit dem Coach."
+        }
+      },
+      "engagement": {
+        "weekly_active_users": {
+          "label": "Aktiv pro Woche",
+          "what": "Personen, die die App genutzt haben oder zu einem Kurs kamen, pro Woche.",
+          "how": "Verschiedene Personen pro Woche, gemittelt über die Wochen des Zeitraums. Das Team zählt nicht.",
+          "change": "Ein Rückgang ist oft das erste Zeichen nachlassenden Interesses."
+        },
+        "challenge_participation": {
+          "label": "Teilnahme an Challenges",
+          "what": "Der Anteil der Box-Mitglieder, die an einer Challenge teilgenommen haben.",
+          "how": "Personen mit Fortschritt in einer Challenge des Zeitraums, geteilt durch die aktiven Box-Mitglieder.",
+          "change": "Ist sie niedrig, mach Challenges einfacher oder kündige sie besser an."
+        },
+        "booking_streaks": {
+          "label": "Buchungsserien",
+          "what": "Personen, die Woche für Woche trainieren.",
+          "how": "Personen mit 4 oder mehr Wochen in Folge mit einem Kurs, bis zum Ende des Zeitraums.",
+          "change": "Mehr lange Serien heißen feste Gewohnheiten; ein Rückgang braucht Erinnerungen."
+        },
+        "event_mix": {
+          "label": "Aktivitätsmix",
+          "what": "Was die Leute in Palee gemacht haben, nach Art der Aktivität.",
+          "how": "Die erfassten Ereignisse des Zeitraums, nach Kategorie.",
+          "change": "Vergleiche die Arten: Ein Anstieg kann von einer neuen Funktion oder Kampagne kommen."
+        }
+      },
+      "health": {
+        "injuries_per_1000_attendances": {
+          "label": "Verletzungen pro 1.000 Besuche",
+          "what": "Wie oft Verletzungen passieren, im Verhältnis zum Training.",
+          "how": "Im Zeitraum gemeldete Verletzungen pro 1.000 besuchte Kurse.",
+          "change": "Steigt die Zahl, sieh dir die Körperbereiche unten und die Programmierung dieser Wochen an."
+        },
+        "mean_recovery_days": {
+          "label": "Genesungszeit",
+          "what": "Wie lange eine Verletzung im Schnitt dauert.",
+          "how": "Tage vom Beginn bis zur Heilung, für die im Zeitraum geheilten Verletzungen.",
+          "change": "Längere Genesungen brauchen vielleicht engere Begleitung durch die Coaches."
+        },
+        "top_body_areas": {
+          "label": "Körperbereiche",
+          "what": "Wo die Verletzungen sind.",
+          "how": "Verletzungen des Zeitraums nach Körperbereich.",
+          "change": "Steigt ein Bereich, deutet das vielleicht auf eine Übung oder Technik hin, an der man arbeiten sollte."
+        }
+      },
+      "finance": {
+        "mrr": {
+          "label": "Monatlich wiederkehrender Umsatz",
+          "what": "Was die aktiven Abos pro Monat einbringen.",
+          "how": "Der Preis jedes aktiven wiederkehrenden Abos am letzten Tag des Zeitraums, umgerechnet auf einen Monat.",
+          "change": "Ein Rückgang kommt von gekündigten oder günstigeren Abos: Vergleiche mit den Abgängen."
+        },
+        "arpm": {
+          "label": "Umsatz pro Box-Mitglied",
+          "what": "Was ein Box-Mitglied im Schnitt pro Monat einbringt.",
+          "how": "Bezahlter Umsatz des Zeitraums geteilt durch die aktiven Box-Mitglieder und die Monate des Zeitraums.",
+          "change": "Ein Anstieg heißt bessere Pakete oder Extras; ein Rückgang vielleicht mehr Rabatte."
+        },
+        "ltv": {
+          "label": "Kundenwert",
+          "what": "Eine Schätzung, was ein Box-Mitglied über die ganze Zeit einbringt, die es bleibt.",
+          "how": "Umsatz pro Box-Mitglied geteilt durch die monatlichen Abgänge. Leer, wenn niemand gegangen ist.",
+          "change": "Er folgt den Abgängen: Je länger die Leute bleiben, desto höher."
+        },
+        "on_time_collection": {
+          "label": "Pünktlich bezahlt",
+          "what": "Der Anteil der Rechnungen, die bis zur Fälligkeit bezahlt wurden.",
+          "how": "Im Zeitraum fällige Rechnungen, bis zur Fälligkeit voll bezahlt, geteilt durch alle im Zeitraum fälligen.",
+          "change": "Sinkt er, schick Erinnerungen vor der Fälligkeit."
+        },
+        "days_sales_outstanding": {
+          "label": "Tage bis zur Zahlung",
+          "what": "Wie lange eine Rechnung im Schnitt auf die Zahlung wartet.",
+          "how": "Tage von der Ausstellung bis zur letzten Zahlung, für im Zeitraum voll bezahlte Rechnungen.",
+          "change": "Wird es länger, bitte am Empfang um Zahlung oder schalte Online-Zahlung ein."
+        },
+        "revenue_per_package": {
+          "label": "Umsatz pro Abo-Paket",
+          "what": "Welche Abo-Pakete den Umsatz bringen.",
+          "how": "Bezahlter Umsatz des Zeitraums nach Abo-Paket, abzüglich Erstattungen.",
+          "change": "Bewirb die Pakete, die funktionieren, und überdenke die, die wenig bringen."
+        }
+      },
+      "demographics": {
+        "age_bands": {
+          "label": "Alter",
+          "what": "Das Alter der Box-Mitglieder, die es freigegeben haben.",
+          "how": "Aktive Box-Mitglieder nach dem Alter, das sie für die Ranglisten angegeben haben. Gruppen unter 5 Personen werden ausgeblendet.",
+          "change": "Nutze es, um Kurse und Nachrichten auf deine Gruppen abzustimmen."
+        },
+        "genders": {
+          "label": "Geschlecht",
+          "what": "Das Geschlecht der Box-Mitglieder, die es freigegeben haben.",
+          "how": "Aktive Box-Mitglieder nach der Kategorie, die sie für die Ranglisten gewählt haben. Gruppen unter 5 Personen werden ausgeblendet.",
+          "change": "Nutze es, um zu sehen, wen deine Kurse erreichen."
+        }
+      }
+    },
+    "widgets": {
+      "overview": {
+        "paid_revenue": {
+          "what": "Das im Zeitraum tatsächlich bezahlte Geld.",
+          "change": "Öffne Finanzen, um zu sehen, welche Zahlungen fehlen."
+        },
+        "reviews": {
+          "what": "Bewertungen, die Box-Mitglieder im Zeitraum abgegeben haben.",
+          "change": "Viele Bewertungen auf einmal folgen meist einer Änderung: Lies die neuesten."
+        },
+        "active_injuries": {
+          "what": "Verletzungen, die noch nicht geheilt sind.",
+          "change": "Öffne Gesundheit, um zu sehen, wer ein angepasstes Programm braucht."
+        },
+        "notification_clicks": {
+          "what": "Wie oft eine Benachrichtigung der Box geöffnet wurde.",
+          "change": "Wenige Klicks heißen, die Nachrichten sind nicht nützlich genug: Probier weniger und klarere."
+        },
+        "operational_status": {
+          "what": "Ein paar Dinge, die Aufmerksamkeit brauchen: Finanzen, schwache Bewertungen, auslaufende Mitgliedschaften und Coaching.",
+          "change": "Jede Zeile ist eine Aufgabe: Öffne die zugehörige Seite."
+        }
+      },
+      "training": {
+        "team_completions": {
+          "what": "Im Zeitraum beendete Team-Workouts.",
+          "change": "Mehr Team-Workouts heißen meist eine stärkere Community."
+        },
+        "individual_completions": {
+          "what": "Im Zeitraum allein beendete Workouts.",
+          "change": "Vergleiche mit Team-Workouts, um zu sehen, wie die Leute trainieren möchten."
+        },
+        "total_completions": {
+          "what": "Alle im Zeitraum beendeten Workouts, im Team und allein.",
+          "change": "Ein Rückgang hier kommt oft vor einem Rückgang der Anwesenheit."
+        },
+        "attendance_status": {
+          "what": "Anwesenheitsdaten nach Ergebnis: anwesend, verpasst, abgesagt.",
+          "change": "Viele verpasste oder spät abgesagte Plätze brauchen Erinnerungen."
+        }
+      },
+      "engagement": {
+        "push_delivery": {
+          "what": "App-Benachrichtigungen nach Ergebnis: gesendet, fehlgeschlagen usw.",
+          "change": "Viele Fehler heißen vielleicht alte Geräte: Bitte die Leute, die App erneut zu öffnen."
+        },
+        "communication": {
+          "what": "Nachrichten zwischen Box und Box-Mitgliedern, nach Richtung.",
+          "change": "Viele Nachrichten an die Box deuten vielleicht auf eine Frage, die du einmal für alle beantworten kannst."
+        },
+        "review_ratings": {
+          "what": "Bewertungen nach vergebenen Sternen.",
+          "change": "Lies zuerst die schwachen."
+        }
+      },
+      "coaching": {
+        "active_athletes": {
+          "what": "Athleten mit persönlichem Coaching im Moment.",
+          "change": "Vergleiche mit deinen Coaches, um zu sehen, wie ausgelastet sie sind."
+        },
+        "captured_events": {
+          "what": "Im Zeitraum erfasste Coaching-Aktionen.",
+          "change": "Wenige Aktionen heißen vielleicht, dass Athleten nicht eng begleitet werden."
+        },
+        "reviews": {
+          "what": "Bewertungen des Coachings im Zeitraum.",
+          "change": "Lies sie mit dem Coach, um den es geht."
+        }
+      },
+      "health": {
+        "active_injuries": {
+          "what": "Gemeldete, noch nicht geheilte Verletzungen.",
+          "change": "Prüfe, dass jede ein angepasstes Programm hat."
+        },
+        "total_reports": {
+          "what": "Alle Verletzungsmeldungen des Zeitraums, geheilt oder nicht.",
+          "change": "Vergleiche mit den Verletzungen pro 1.000 Besuche, um zu sehen, ob mehr Training es erklärt."
+        },
+        "recent_injury_flags": {
+          "what": "Kürzlich im Coaching markierte Verletzungen.",
+          "change": "Sprich vor ihrem nächsten Workout mit diesen Athleten."
+        }
+      },
+      "execution": {
+        "completion_rate": {
+          "change": "Sinkt sie, sieh unten, wo abgebrochen wird."
+        },
+        "score_capture": {
+          "change": "Erinnere daran, am Ende den Score einzutragen."
+        },
+        "skip_rate": {
+          "change": "Viele Übersprünge heißen vielleicht zu lange Countdowns."
+        },
+        "time_to_start": {
+          "change": "Lange Wartezeit heißt vielleicht, das Workout ist vor dem Start schwer zu lesen."
+        },
+        "pauses": {
+          "change": "Viele Pausen heißen vielleicht, das Workout ist zu lang oder zu schwer."
+        },
+        "review_drop_off": {
+          "change": "Kürze die Abschlussschritte, wenn viele dort aufhören."
+        },
+        "median_duration": {
+          "change": "Vergleiche mit der Zeit, die du für das Workout geplant hast."
+        },
+        "clock_adjusted": {
+          "change": "Viele Korrekturen heißen vielleicht falsch geplante Zeiten."
+        },
+        "abandon_by_format": {
+          "change": "Vereinfache die Formate, bei denen die meisten aufhören."
+        },
+        "abandon_points": {
+          "change": "Sieh dir diese Teile an: Sie sind vielleicht zu lang oder unklar."
+        },
+        "free_text": {
+          "change": "Brechen Freitext-Workouts früh ab, schreib sie strukturiert."
+        },
+        "daily_trend": {
+          "what": "Jeden Tag gestartete Workouts, beendet oder nicht.",
+          "change": "Ruhige Tage folgen vielleicht dem Kursplan oder der Programmierung."
+        },
+        "completion_by_format": {
+          "what": "Wie oft Workouts beendet werden, nach Format (AMRAP, EMOM…).",
+          "change": "Ein Format mit wenig Abschlüssen braucht vielleicht eine kürzere Zeit."
+        },
+        "completion_by_source": {
+          "what": "Wie oft Workouts beendet werden, nach Herkunft (Kurs, Coach, eigene Wahl).",
+          "change": "Vergleiche die Herkünfte, um zu sehen, bei welchen Workouts die Leute dranbleiben."
+        },
+        "structured": {
+          "what": "Schritt für Schritt geschriebene Workouts, gestartet und beendet.",
+          "change": "Vergleiche mit Freitext-Workouts, um zu sehen, welche Art beendet wird."
+        }
+      },
+      "finance": {
+        "active_memberships": {
+          "what": "Heute aktive Mitgliedschaften.",
+          "change": "Ein Rückgang heißt meist verpasste Verlängerungen."
+        },
+        "expiring": {
+          "what": "Mitgliedschaften, die in den nächsten 30 Tagen enden.",
+          "change": "Kontaktiere diese Personen vor dem Ende wegen der Verlängerung."
+        },
+        "revenue": {
+          "what": "Im Zeitraum bezahltes Geld.",
+          "change": "Vergleiche mit den offenen Rechnungen, um zu sehen, was noch kommt."
+        },
+        "credit_balance": {
+          "what": "Guthaben, das Box-Mitglieder bei der Box haben und noch nicht genutzt haben.",
+          "change": "Ein hohes Guthaben ist Geld, das du in Kursen oder Produkten schuldest."
+        },
+        "pending_invoices": {
+          "what": "Noch nicht voll bezahlte Rechnungen.",
+          "change": "Bitte am Empfang oder mit einer Erinnerung um Zahlung."
+        },
+        "overdue_invoices": {
+          "what": "Unbezahlte Rechnungen nach der Fälligkeit.",
+          "change": "Kontaktiere zuerst diese Personen."
+        },
+        "renewal_rate": {
+          "what": "Der Anteil der Mitgliedschaften, die bei Ablauf verlängert wurden.",
+          "change": "Sinkt er, melde dich, bevor die Mitgliedschaft endet."
+        },
+        "credit_offsets": {
+          "what": "Rechnungsbeträge, die mit Guthaben statt Geld gedeckt wurden.",
+          "change": "Viele Verrechnungen senken das Bargeld, das du einnimmst."
+        },
+        "monthly_revenue": {
+          "what": "Umsatz pro Monat: bezahlt und noch offen.",
+          "how": "Zahlungen und offene Rechnungen nach Monat.",
+          "change": "Wächst die offene Linie, kommen die Zahlungen zu spät."
+        },
+        "revenue_streams": {
+          "what": "Woher der Umsatz kommt: Abos, Produkte, Events und mehr.",
+          "change": "Bau die Quellen aus, die am besten laufen."
+        },
+        "expiring_soon": {
+          "what": "Die Personen, deren Mitgliedschaft bald endet.",
+          "change": "Kontaktiere sie vor dem Ende."
+        },
+        "overdue_list": {
+          "what": "Rechnungen nach der Fälligkeit, mit den Tagen Verzug.",
+          "change": "Fang mit den ältesten an."
+        },
+        "pending_payments": {
+          "what": "Zahlungen, die auf Bestätigung warten.",
+          "change": "Bestätige oder lehne sie ab, damit die Zahlen stimmen."
+        },
+        "pending_rewards": {
+          "what": "Empfehlungsprämien, die noch vergeben werden müssen.",
+          "change": "Vergib sie bald, damit die Leute weiter Freunde einladen."
+        }
+      }
+    },
+    "history": {
+      "sectionTitle": "Daten",
+      "sectionDescription": "Verlauf der Zurücksetzungen der Box-Statistiken.",
+      "title": "Verlauf der Zurücksetzungen",
+      "description": "Jede Zahl, die du zurückgesetzt hast, mit wer es war und ihrem Wert davor. Nichts wurde gelöscht: Mit Rückgängig zählen die alten Daten wieder.",
+      "empty": "Es wurde noch keine Zahl zurückgesetzt.",
+      "metric": "Zahl",
+      "date": "Datum",
+      "who": "Von",
+      "before": "Vorher",
+      "status": "Status",
+      "active": "Aktiv",
+      "undone": "Rückgängig gemacht {date}",
+      "undo": "Rückgängig",
+      "undoTitle": "Zurücksetzung von «{label}» rückgängig machen?",
+      "undoBody": "Die Zahl zählt ihre älteren Daten wieder, wie vor der Zurücksetzung.",
+      "undoConfirm": "Zurücksetzung rückgängig machen",
+      "cancel": "Abbrechen",
+      "previous": "Zurück",
+      "next": "Weiter",
+      "page": "Seite {page} von {pages}",
+      "unknownPerson": "Unbekannt",
+      "beforeValue": "{value} · {from}–{to}"
+    }
   }
 }

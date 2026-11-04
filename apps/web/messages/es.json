@@ -17775,5 +17775,576 @@
       "workout_published": "WOD publicado",
       "workout_republished": "WOD publicado de nuevo"
     }
+  },
+  "StaffAnalytics": {
+    "period": {
+      "label": "Periodo",
+      "options": {
+        "7": "7 días",
+        "30": "30 días",
+        "90": "90 días",
+        "ytd": "Este año",
+        "custom": "Del…al"
+      },
+      "compare": "comparado con {count, plural, one {el día anterior} other {los # días anteriores}}",
+      "from": "Desde",
+      "to": "Hasta"
+    },
+    "filters": {
+      "region": "Periodo y filtros",
+      "button": "{count, plural, =0 {Filtros} other {Filtros (#)}}",
+      "title": "Filtros",
+      "active": "Filtros activos",
+      "chip": "{group}: {value}",
+      "remove": "Quitar: {label}",
+      "all": "Todos",
+      "clear": "Borrar filtros",
+      "done": "Listo",
+      "unknownValue": "Desconocido",
+      "demographicsNote": "* La edad y el género solo vienen de quienes eligieron mostrarlos en las clasificaciones. Una cifra que abarca a menos de 5 personas se oculta."
+    },
+    "groups": {
+      "location_ids": "Sede",
+      "class_type_ids": "Tipo de clase",
+      "levels": "Nivel",
+      "coach_ids": "Coach",
+      "time_of_day": "Hora",
+      "package_ids": "Paquete de suscripción",
+      "tenure_bands": "Antigüedad",
+      "age_bands": "Edad",
+      "genders": "Género"
+    },
+    "values": {
+      "levels": {
+        "beginner": "Principiantes",
+        "all_levels": "Todos los niveles",
+        "advanced": "Avanzados"
+      },
+      "time_of_day": {
+        "morning": "Mañana",
+        "midday": "Mediodía",
+        "afternoon": "Tarde",
+        "evening": "Noche"
+      },
+      "tenure_bands": {
+        "lt_3m": "Menos de 3 meses",
+        "3_12m": "3–12 meses",
+        "gt_12m": "Más de un año"
+      },
+      "age_bands": {
+        "under_18": "Menos de 18",
+        "18_34": "18–34",
+        "35_44": "35–44",
+        "45_54": "45–54",
+        "55_64": "55–64",
+        "65_plus": "65+",
+        "unknown": "Desconocido"
+      },
+      "genders": {
+        "women": "Mujeres",
+        "men": "Hombres",
+        "unknown": "Desconocido"
+      }
+    },
+    "help": {
+      "open": "Qué significa: {label}",
+      "what": "Qué mide",
+      "how": "Cómo se calcula",
+      "good": "Una buena cifra",
+      "change": "Si cambia"
+    },
+    "reset": {
+      "action": "Reiniciar desde hoy",
+      "title": "¿Reiniciar «{label}»?",
+      "body": "La cifra empezará a contar desde hoy. Los datos antiguos no se borran: los encontrarás en Ajustes › Datos › Historial de reinicios.",
+      "confirm": "Reiniciar desde hoy",
+      "cancel": "Cancelar"
+    },
+    "kpi": {
+      "days": "{count, plural, one {# día} other {# días}}",
+      "points": "{value} pts",
+      "daysChange": "{sign}{count, plural, one {# día} other {# días}}",
+      "since": "desde el {date}",
+      "suppressed": "—",
+      "suppressedReason": "Oculto: menos de 5 personas",
+      "noPrevious": "Nada con qué comparar",
+      "noValue": "Pocos datos",
+      "unchanged": "Sin cambios",
+      "previous": "(antes: {value})",
+      "noData": "Aún no hay datos para este periodo.",
+      "unknownCoach": "Coach desconocido",
+      "classesAttendances": "{classes, plural, one {# clase} other {# clases}} · {attendances} asistencias",
+      "athletes": "{count, plural, one {# atleta} other {# atletas}}",
+      "rating": "{rating} ★ · {count, plural, one {# reseña} other {# reseñas}}",
+      "people": "{count, plural, one {# persona} other {# personas}}",
+      "noPackage": "Sin paquete de suscripción",
+      "more": "Más cifras",
+      "loading": "Cargando…",
+      "teamWorkouts": "Entrenamientos en equipo y en solitario"
+    },
+    "pages": {
+      "overview": {
+        "title": "Resumen",
+        "what": "La salud del box en una página: miembros del box, nuevos, quién se fue y quién podría irse.",
+        "how": "Cada cifra cubre el periodo que elijas y se compara con el periodo de igual duración justo antes. Los filtros se aplican a toda la página."
+      },
+      "training": {
+        "title": "Entrenamiento",
+        "what": "Cómo se usan las clases: ocupación, ausencias, cancelaciones, horas punta y cómo se terminan los entrenamientos.",
+        "how": "A partir de las reservas y asistencias del periodo, comparadas con el periodo de igual duración anterior. Los filtros se aplican a toda la página."
+      },
+      "coaching": {
+        "title": "Coaching",
+        "what": "El trabajo de los coaches: clases dadas, atletas seguidos, programas hechos y valoraciones.",
+        "how": "A partir de las clases, el coaching y las reseñas del periodo, comparados con el anterior. Los filtros se aplican a toda la página."
+      },
+      "engagement": {
+        "title": "Participación",
+        "what": "Cuánto usan Palee los miembros del box: activos por semana, retos, rachas y actividad.",
+        "how": "A partir de lo que los miembros del box hicieron en la app y en el box durante el periodo, comparado con el anterior. Las acciones del equipo no cuentan."
+      },
+      "health": {
+        "title": "Salud",
+        "what": "Lesiones y recuperación: con qué frecuencia, cuánto duran y dónde.",
+        "how": "A partir de los avisos de lesión del periodo, comparados con el anterior. Los filtros se aplican a toda la página."
+      },
+      "finance": {
+        "title": "Finanzas",
+        "what": "Las finanzas del box: ingresos recurrentes mensuales, ingresos por miembro del box y cobros.",
+        "how": "A partir de suscripciones, facturas y pagos del periodo, comparados con el anterior. Los filtros se aplican a toda la página."
+      }
+    },
+    "metrics": {
+      "overview": {
+        "active_members": {
+          "label": "Miembros del box activos",
+          "what": "Miembros del box con un paquete de suscripción activo.",
+          "how": "Contados el último día del periodo.",
+          "change": "Una bajada suele venir de paquetes que vencieron sin renovar: revisa la lista de renovaciones."
+        },
+        "net_member_change": {
+          "label": "Cambio neto",
+          "what": "Cuántos miembros del box ganaste o perdiste en total.",
+          "how": "Miembros del box activos al final del periodo menos los del día antes de empezar.",
+          "change": "Por debajo de cero se fueron más de los que llegaron: mira juntas las bajas y las altas."
+        },
+        "new_members": {
+          "label": "Nuevos miembros del box",
+          "what": "Personas que tomaron su primer paquete de suscripción en el periodo.",
+          "how": "Contadas por el inicio del primer paquete que no es de prueba.",
+          "change": "Una bajada suele seguir a menos clases de prueba o a menos pruebas que se convierten."
+        },
+        "churn_rate": {
+          "label": "Bajas",
+          "what": "La parte de miembros del box que se fueron en el periodo.",
+          "how": "Activos el día antes del periodo y sin paquete activo al final, divididos entre todos los activos ese día.",
+          "change": "Si sube, contacta con los miembros en riesgo y revisa qué cambió (horario, precios, coaches)."
+        },
+        "trial_conversion": {
+          "label": "Pruebas convertidas",
+          "what": "Cuántas personas de prueba se hicieron miembros del box.",
+          "how": "Solicitudes de prueba del periodo convertidas después, divididas entre todas las solicitudes de prueba del periodo.",
+          "change": "Si baja, contacta antes tras la clase de prueba y revisa la oferta que das."
+        },
+        "members_at_risk": {
+          "label": "Miembros del box en riesgo",
+          "what": "Miembros del box que Palee ve con probabilidad de irse.",
+          "how": "Riesgo medio o alto el último día del periodo, sin los que pospusiste.",
+          "change": "Si sube, actúa: escríbeles o invítalos a una clase."
+        }
+      },
+      "training": {
+        "class_fill_rate": {
+          "label": "Ocupación de clases",
+          "what": "Lo llenas que estuvieron las clases.",
+          "how": "Reservas aprobadas divididas entre la capacidad de las clases del periodo (las clases sin capacidad no cuentan).",
+          "change": "Poca ocupación en ciertas horas quizá signifique demasiadas clases; mucha, que hay quien no encuentra plaza."
+        },
+        "no_show_rate": {
+          "label": "No vinieron",
+          "what": "Reservas en las que la persona no vino.",
+          "how": "Ausencias divididas entre ausencias más asistencias.",
+          "change": "Si sube, envía un recordatorio antes de la clase o revisa la regla de cancelación tardía."
+        },
+        "late_cancellations": {
+          "label": "Cancelaciones tardías",
+          "what": "Reservas canceladas después del plazo de cancelación tardía.",
+          "how": "Contadas a partir de las asistencias del periodo.",
+          "change": "Muchas cancelaciones tardías quitan plazas a otros: revisa el plazo y los recordatorios."
+        },
+        "waitlist_conversion": {
+          "label": "Desde la lista de espera",
+          "what": "Cuántas personas en lista de espera consiguieron plaza al final.",
+          "how": "Reservas en lista de espera aprobadas, divididas entre todas las reservas en lista de espera.",
+          "change": "Si es bajo, esas clases se quedan pequeñas: piensa en otra clase a esa hora."
+        },
+        "visits_per_member_week": {
+          "label": "Visitas por semana",
+          "what": "Con qué frecuencia viene de media quien entrena.",
+          "how": "Clases asistidas divididas entre las personas que vinieron y entre las semanas del periodo.",
+          "change": "Una bajada es una señal temprana de menos motivación, a menudo antes de una baja."
+        },
+        "attendance_by_hour": {
+          "label": "Asistencia por hora",
+          "what": "Cuándo vienen a clase, por hora del día.",
+          "how": "Clases asistidas por hora de inicio, en la hora del box.",
+          "change": "Mueve o añade clases hacia las horas punta."
+        },
+        "attendance_by_weekday": {
+          "label": "Asistencia por día",
+          "what": "Qué días vienen a clase.",
+          "how": "Clases asistidas por día de la semana, en la hora del box.",
+          "change": "Los días llenos quizá necesiten más clases; los tranquilos, menos."
+        },
+        "execution_kpis": {
+          "label": "Ejecución de entrenamientos",
+          "what": "Cómo hacen los atletas sus entrenamientos en la app: qué terminan, saltan, pausan y dejan.",
+          "how": "A partir de los entrenamientos empezados en el periodo.",
+          "change": "Si baja la finalización, mira abajo dónde paran y simplifica esas partes."
+        }
+      },
+      "coaching": {
+        "classes_per_coach": {
+          "label": "Clases por coach",
+          "what": "Cuántas clases dio cada coach y cuánta gente vino.",
+          "how": "Las clases del periodo por coach, con las asistencias.",
+          "change": "Una gran diferencia entre coaches quizá pida un horario más justo."
+        },
+        "athletes_per_coach": {
+          "label": "Atletas por coach",
+          "what": "Cuántos atletas sigue cada coach en persona.",
+          "how": "Relaciones de coaching activas el último día del periodo; la cifra es la media por coach.",
+          "change": "Un coach con muchos más atletas quizá necesite ayuda o un límite."
+        },
+        "programme_adherence": {
+          "label": "Seguimiento del programa",
+          "what": "Cuántos entrenamientos asignados hicieron de verdad los atletas.",
+          "how": "Entrenamientos asignados terminados entre un día antes y siete días después de su fecha, divididos entre todos los asignados hasta hoy.",
+          "change": "Si baja, pregunta a los atletas si el programa les encaja."
+        },
+        "review_rating_per_coach": {
+          "label": "Valoraciones por coach",
+          "what": "La valoración media de las clases por coach.",
+          "how": "Reseñas del periodo por coach de la clase; la cifra es la media de todas.",
+          "change": "Lee las reseñas bajas de un coach junto con él."
+        }
+      },
+      "engagement": {
+        "weekly_active_users": {
+          "label": "Activos por semana",
+          "what": "Personas que usaron la app o vinieron a clase, por semana.",
+          "how": "Personas distintas cada semana, de media en las semanas del periodo. El equipo no cuenta.",
+          "change": "Una bajada suele ser la primera señal de menos interés."
+        },
+        "challenge_participation": {
+          "label": "Participación en retos",
+          "what": "La parte de miembros del box que participaron en un reto.",
+          "how": "Personas con progreso en un reto del periodo, divididas entre los miembros del box activos.",
+          "change": "Si es baja, haz los retos más sencillos o anúncialos mejor."
+        },
+        "booking_streaks": {
+          "label": "Rachas de reservas",
+          "what": "Personas que entrenan semana tras semana.",
+          "how": "Personas con 4 o más semanas seguidas con una clase, hasta el final del periodo.",
+          "change": "Más rachas largas significan hábitos firmes; una bajada pide recordatorios."
+        },
+        "event_mix": {
+          "label": "Reparto de actividad",
+          "what": "Qué hizo la gente en Palee, por tipo de actividad.",
+          "how": "Los eventos registrados en el periodo, por categoría.",
+          "change": "Compara tipos: una subida puede venir de una función nueva o de una campaña."
+        }
+      },
+      "health": {
+        "injuries_per_1000_attendances": {
+          "label": "Lesiones por 1000 visitas",
+          "what": "Con qué frecuencia hay lesiones en relación con lo que se entrena.",
+          "how": "Lesiones avisadas en el periodo por cada 1000 clases asistidas.",
+          "change": "Si sube, mira las zonas del cuerpo abajo y la programación de esas semanas."
+        },
+        "mean_recovery_days": {
+          "label": "Tiempo de recuperación",
+          "what": "Cuánto dura de media una lesión.",
+          "how": "Días del inicio a la curación, para las lesiones curadas en el periodo.",
+          "change": "Recuperaciones más largas quizá pidan un seguimiento más cercano de los coaches."
+        },
+        "top_body_areas": {
+          "label": "Zonas del cuerpo",
+          "what": "Dónde están las lesiones.",
+          "how": "Lesiones del periodo por zona del cuerpo.",
+          "change": "Si una zona sube, quizá haya un ejercicio o técnica que trabajar."
+        }
+      },
+      "finance": {
+        "mrr": {
+          "label": "Ingresos recurrentes mensuales",
+          "what": "Lo que aportan al mes las suscripciones activas.",
+          "how": "El precio de cada suscripción recurrente activa el último día del periodo, pasado a un importe mensual.",
+          "change": "Una bajada viene de suscripciones canceladas o más baratas: compara con las bajas."
+        },
+        "arpm": {
+          "label": "Ingresos por miembro del box",
+          "what": "Lo que aporta de media un miembro del box al mes.",
+          "how": "Ingresos cobrados del periodo divididos entre los miembros del box activos y entre los meses del periodo.",
+          "change": "Una subida indica mejores paquetes o extras; una bajada, quizá más descuentos."
+        },
+        "ltv": {
+          "label": "Valor del miembro del box",
+          "what": "Una estimación de lo que aporta un miembro del box durante todo el tiempo que se queda.",
+          "how": "Ingresos por miembro del box divididos entre las bajas mensuales. Vacío cuando nadie se fue.",
+          "change": "Sigue a las bajas: que la gente se quede más es lo que más lo sube."
+        },
+        "on_time_collection": {
+          "label": "Pagado a tiempo",
+          "what": "La parte de facturas pagadas antes de su vencimiento.",
+          "how": "Facturas que vencen en el periodo pagadas por completo al vencimiento, divididas entre todas las que vencen en el periodo.",
+          "change": "Si baja, envía recordatorios antes del vencimiento."
+        },
+        "days_sales_outstanding": {
+          "label": "Días hasta el cobro",
+          "what": "Cuánto espera de media una factura a cobrarse.",
+          "how": "Días desde la emisión hasta el último pago, para facturas pagadas por completo en el periodo.",
+          "change": "Si crece, pide el pago en recepción o activa el pago online."
+        },
+        "revenue_per_package": {
+          "label": "Ingresos por paquete de suscripción",
+          "what": "Qué paquetes de suscripción traen el dinero.",
+          "how": "Ingresos cobrados del periodo por paquete de suscripción, menos devoluciones.",
+          "change": "Promociona los paquetes que funcionan y revisa los que aportan poco."
+        }
+      },
+      "demographics": {
+        "age_bands": {
+          "label": "Edad",
+          "what": "Las edades de los miembros del box que eligieron mostrarlas.",
+          "how": "Miembros del box activos por la edad que dieron para las clasificaciones. Los grupos de menos de 5 personas se ocultan.",
+          "change": "Úsalo para adaptar clases y mensajes a los grupos que tienes."
+        },
+        "genders": {
+          "label": "Género",
+          "what": "El género de los miembros del box que eligieron mostrarlo.",
+          "how": "Miembros del box activos por la categoría que eligieron para las clasificaciones. Los grupos de menos de 5 personas se ocultan.",
+          "change": "Úsalo para ver a quién llegan tus clases."
+        }
+      }
+    },
+    "widgets": {
+      "overview": {
+        "paid_revenue": {
+          "what": "El dinero cobrado de verdad en el periodo.",
+          "change": "Abre Finanzas para ver qué pagos faltan."
+        },
+        "reviews": {
+          "what": "Reseñas que dejaron los miembros del box en el periodo.",
+          "change": "Muchas reseñas de golpe suelen seguir a un cambio: lee las más recientes."
+        },
+        "active_injuries": {
+          "what": "Lesiones que aún no se han curado.",
+          "change": "Abre Salud para ver quién necesita un programa adaptado."
+        },
+        "notification_clicks": {
+          "what": "Veces que se abrió una notificación del box.",
+          "change": "Pocos clics significan mensajes poco útiles: prueba con menos y más claros."
+        },
+        "operational_status": {
+          "what": "Algunas cosas que piden atención: finanzas, valoraciones bajas, membresías que vencen y coaching.",
+          "change": "Cada línea es una tarea: abre su página."
+        }
+      },
+      "training": {
+        "team_completions": {
+          "what": "Entrenamientos en equipo terminados en el periodo.",
+          "change": "Más entrenamientos en equipo suelen indicar una comunidad más unida."
+        },
+        "individual_completions": {
+          "what": "Entrenamientos terminados en solitario en el periodo.",
+          "change": "Compara con los de equipo para ver cómo les gusta entrenar."
+        },
+        "total_completions": {
+          "what": "Todos los entrenamientos terminados en el periodo, en equipo y en solitario.",
+          "change": "Una bajada aquí suele llegar antes que una bajada de asistencia."
+        },
+        "attendance_status": {
+          "what": "Las asistencias según lo que pasó: asistió, faltó, canceló.",
+          "change": "Muchas faltas o cancelaciones tardías piden recordatorios."
+        }
+      },
+      "engagement": {
+        "push_delivery": {
+          "what": "Las notificaciones de la app según lo que pasó: enviadas, fallidas, etc.",
+          "change": "Muchos fallos quizá indiquen dispositivos antiguos: pide que abran la app de nuevo."
+        },
+        "communication": {
+          "what": "Mensajes entre el box y los miembros del box, por sentido.",
+          "change": "Muchos mensajes al box quizá señalen una pregunta que puedes responder una vez para todos."
+        },
+        "review_ratings": {
+          "what": "Reseñas según las estrellas dadas.",
+          "change": "Lee primero las valoraciones bajas."
+        }
+      },
+      "coaching": {
+        "active_athletes": {
+          "what": "Atletas con coaching personal ahora mismo.",
+          "change": "Compara con tus coaches para ver lo llenos que están."
+        },
+        "captured_events": {
+          "what": "Acciones de coaching registradas en el periodo.",
+          "change": "Pocas acciones quizá signifiquen que los atletas no tienen un seguimiento cercano."
+        },
+        "reviews": {
+          "what": "Reseñas del coaching en el periodo.",
+          "change": "Léelas con el coach al que se refieren."
+        }
+      },
+      "health": {
+        "active_injuries": {
+          "what": "Lesiones avisadas y aún no curadas.",
+          "change": "Comprueba que cada una tiene un programa adaptado."
+        },
+        "total_reports": {
+          "what": "Todos los avisos de lesión del periodo, curados o no.",
+          "change": "Compara con las lesiones por 1000 visitas para ver si lo explica entrenar más."
+        },
+        "recent_injury_flags": {
+          "what": "Lesiones marcadas hace poco en el coaching.",
+          "change": "Habla con esos atletas antes de su próximo entrenamiento."
+        }
+      },
+      "execution": {
+        "completion_rate": {
+          "change": "Si baja, mira abajo dónde paran."
+        },
+        "score_capture": {
+          "change": "Recuerda que anoten la puntuación al final."
+        },
+        "skip_rate": {
+          "change": "Muchos saltos quizá indiquen cuentas atrás demasiado largas."
+        },
+        "time_to_start": {
+          "change": "Una espera larga quizá signifique que el entrenamiento cuesta de leer antes de empezar."
+        },
+        "pauses": {
+          "change": "Muchas pausas quizá signifiquen que el entrenamiento es demasiado largo o duro."
+        },
+        "review_drop_off": {
+          "change": "Acorta los pasos finales si muchos paran ahí."
+        },
+        "median_duration": {
+          "change": "Compara con el tiempo que planeaste para el entrenamiento."
+        },
+        "clock_adjusted": {
+          "change": "Muchos ajustes quizá indiquen tiempos mal planeados."
+        },
+        "abandon_by_format": {
+          "change": "Simplifica los formatos donde paran la mayoría."
+        },
+        "abandon_points": {
+          "change": "Revisa estas partes: quizá sean demasiado largas o poco claras."
+        },
+        "free_text": {
+          "change": "Si los entrenamientos de texto libre se dejan pronto, escríbelos estructurados."
+        },
+        "daily_trend": {
+          "what": "Entrenamientos empezados cada día, terminados o no.",
+          "change": "Los días tranquilos quizá sigan el horario o la programación."
+        },
+        "completion_by_format": {
+          "what": "Con qué frecuencia se terminan los entrenamientos, por formato (AMRAP, EMOM…).",
+          "change": "Un formato con poca finalización quizá necesite menos tiempo."
+        },
+        "completion_by_source": {
+          "what": "Con qué frecuencia se terminan los entrenamientos, por origen (clase, coach, elección propia).",
+          "change": "Compara los orígenes para ver con qué entrenamientos sigue la gente."
+        },
+        "structured": {
+          "what": "Entrenamientos escritos paso a paso, empezados y terminados.",
+          "change": "Compara con los de texto libre para ver qué tipo terminan."
+        }
+      },
+      "finance": {
+        "active_memberships": {
+          "what": "Membresías activas hoy.",
+          "change": "Una bajada suele indicar renovaciones perdidas."
+        },
+        "expiring": {
+          "what": "Membresías que terminan en los próximos 30 días.",
+          "change": "Contacta con estas personas antes del final para renovar."
+        },
+        "revenue": {
+          "what": "El dinero cobrado en el periodo.",
+          "change": "Compara con las facturas pendientes para ver lo que aún falta."
+        },
+        "credit_balance": {
+          "what": "Saldo a favor de los miembros del box en el box, aún sin usar.",
+          "change": "Un saldo alto es dinero que debes en clases o productos."
+        },
+        "pending_invoices": {
+          "what": "Facturas aún no pagadas por completo.",
+          "change": "Pide el pago en recepción o con un recordatorio."
+        },
+        "overdue_invoices": {
+          "what": "Facturas impagadas tras su vencimiento.",
+          "change": "Contacta primero con estas personas."
+        },
+        "renewal_rate": {
+          "what": "La parte de membresías renovadas al terminar.",
+          "change": "Si baja, contacta antes de que termine la membresía."
+        },
+        "credit_offsets": {
+          "what": "Importes de facturas cubiertos con saldo en lugar de dinero.",
+          "change": "Muchas compensaciones reducen el dinero que cobras."
+        },
+        "monthly_revenue": {
+          "what": "Ingresos por mes: cobrados y pendientes.",
+          "how": "Pagos y facturas abiertas agrupados por mes.",
+          "change": "Si crece la línea de pendientes, los pagos llegan tarde."
+        },
+        "revenue_streams": {
+          "what": "De dónde vienen los ingresos: suscripciones, productos, eventos y más.",
+          "change": "Haz crecer las fuentes que mejor funcionan."
+        },
+        "expiring_soon": {
+          "what": "Las personas cuya membresía termina pronto.",
+          "change": "Contacta con ellas antes del final."
+        },
+        "overdue_list": {
+          "what": "Facturas vencidas, con los días de retraso.",
+          "change": "Empieza por las más antiguas."
+        },
+        "pending_payments": {
+          "what": "Pagos que esperan confirmación.",
+          "change": "Confírmalos o recházalos para que las cifras sean correctas."
+        },
+        "pending_rewards": {
+          "what": "Recompensas por recomendación pendientes de dar.",
+          "change": "Dalas pronto, para que la gente siga invitando a amigos."
+        }
+      }
+    },
+    "history": {
+      "sectionTitle": "Datos",
+      "sectionDescription": "Historial de reinicios de las estadísticas del box.",
+      "title": "Historial de reinicios",
+      "description": "Cada cifra que reiniciaste, con quién lo hizo y su valor anterior. No se borró nada: deshaz un reinicio para volver a contar los datos antiguos.",
+      "empty": "Todavía no se ha reiniciado ninguna cifra.",
+      "metric": "Cifra",
+      "date": "Fecha",
+      "who": "Por",
+      "before": "Antes",
+      "status": "Estado",
+      "active": "Activo",
+      "undone": "Deshecho el {date}",
+      "undo": "Deshacer",
+      "undoTitle": "¿Deshacer el reinicio de «{label}»?",
+      "undoBody": "La cifra volverá a contar sus datos anteriores, como antes del reinicio.",
+      "undoConfirm": "Deshacer reinicio",
+      "cancel": "Cancelar",
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "page": "Página {page} de {pages}",
+      "unknownPerson": "Desconocido",
+      "beforeValue": "{value} · {from}–{to}"
+    }
   }
 }
