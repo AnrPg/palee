@@ -52,6 +52,18 @@ defmodule Palee.CoachPay.Ports.CoachPayStore do
   @doc "Removes a line added by hand (`source_type = manual`)."
   @callback delete_adjustment(period_id :: id(), line_id :: id()) :: :ok | {:error, term()}
 
+  # Recurring allowances taken off a person for a period (ADR-510)
+  @doc "The period's skips: `[%{id, user_id, pay_item_id, ...}]`."
+  @callback item_skips(period_id :: id()) :: [map()]
+  @doc """
+  Takes a calculated recurring allowance line off its person for the
+  period: records the skip, removes that allowance's lines of the person
+  and updates the totals.
+  """
+  @callback skip_pay_item_line(period_id :: id(), line_id :: id(), actor_id :: id() | nil) ::
+              :ok | {:error, term()}
+  @callback delete_skip(period_id :: id(), skip_id :: id()) :: :ok | {:error, term()}
+
   # Pay items (ADR-382)
   @callback list_items(filters :: map()) :: [map()]
   @callback get_item(id()) :: map() | nil

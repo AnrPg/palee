@@ -5,7 +5,7 @@ defmodule Palee.Infrastructure.CoachPay.EctoCoachPayStore do
 
   import Ecto.Query
 
-  alias Palee.CoachPay.{Line, PayItem, Period, Rule, Statement}
+  alias Palee.CoachPay.{ItemSkip, Line, PayItem, Period, Rule, Statement}
   alias Palee.CoachPay.Domain.AmountBasis
   alias Palee.Infrastructure.Tenancy.RepoContext
   alias Palee.Repo
@@ -302,6 +302,77 @@ defmodule Palee.Infrastructure.CoachPay.EctoCoachPayStore do
       else
         {:error, :not_found}
       end
+    end) || {:error, :not_found}
+  end
+
+  # ── Recurring allowances taken off a person (ADR-510) ───────────────────
+
+  @impl true
+  def item_skips(period_id) do
+    ItemSkip
+    |> tenant_scope()
+    |> where([skip], skip.period_id == ^period_id)
+    |> order_by([skip], asc: skip.inserted_at)
+    |> Repo.all()
+    |> Enum.map(&plain/1)
+  end
+
+  @impl true
+  def skip_pay_item_line(period_id, line_id, actor_id) do
+    with_uuid(line_id, fn id ->
+      statements = statement_map(period_id)
+      coach_by_statement = Map.new(statements, fn {coach, statement} -> {statement, coach} end)
+
+      line =
+        Line
+        |> tenant_scope()
+        |> where(
+          [line],
+          line.id == ^id and line.source_type == "pay_item" and line.kind == "allowance" and
+            line.statement_id in ^Map.values(statements)
+        )
+        |> Repo.one()
+
+      case line do
+        nil ->
+          {:error, :not_found}
+
+        line ->
+          %ItemSkip{}
+          |> ItemSkip.changeset(%{
+            period_id: period_id,
+            pay_item_id: line.pay_item_id,
+            user_id: Map.fetch!(coach_by_statement, line.statement_id),
+            created_by_id: actor_id
+          })
+          |> Repo.insert!(on_conflict: :nothing)
+
+          Line
+          |> tenant_scope()
+          |> where(
+            [other],
+            other.statement_id == ^line.statement_id and other.source_type == "pay_item" and
+              other.pay_item_id == ^line.pay_item_id
+          )
+          |> Repo.delete_all()
+
+          refresh_totals(period_id)
+          update_period(period_id, period_totals(period_id))
+          :ok
+      end
+    end) || {:error, :not_found}
+  end
+
+  @impl true
+  def delete_skip(period_id, skip_id) do
+    with_uuid(skip_id, fn id ->
+      {count, _} =
+        ItemSkip
+        |> tenant_scope()
+        |> where([skip], skip.id == ^id and skip.period_id == ^period_id)
+        |> Repo.delete_all()
+
+      if count == 1, do: :ok, else: {:error, :not_found}
     end) || {:error, :not_found}
   end
 

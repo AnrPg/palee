@@ -546,6 +546,15 @@ config :palee, :box_screen_clock, Palee.Infrastructure.BoxScreens.SystemClock
 # ADR-352..354: the box's website. Form submissions become leads (ADR-345).
 config :palee, :box_site_store, Palee.Infrastructure.BoxSite.EctoBoxSiteStore
 config :palee, :box_site_clock, Palee.Infrastructure.BoxSite.SystemClock
+# ADR-520: translations of a business's website texts, machine-filled on request.
+config :palee,
+       :content_translation_store,
+       Palee.Infrastructure.ContentTranslations.EctoTranslationStore
+
+config :palee,
+       :content_machine_translator,
+       Palee.Infrastructure.ContentTranslations.GeminiMachineTranslator
+
 config :palee, :box_site_lead_intake, Palee.Infrastructure.Leads.BoxSiteIntake
 config :palee, :box_site_dns, Palee.Infrastructure.BoxSite.InetDomainDns
 config :palee, :box_site_tls_probe, Palee.Infrastructure.BoxSite.HttpTlsProbe

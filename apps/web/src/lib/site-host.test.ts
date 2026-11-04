@@ -17,6 +17,11 @@ describe("box website on its own domain", () => {
   it("serves only the site's pages from the domain root", () => {
     expect(siteRewritePath("/", "kypseli")).toBe("/b/kypseli");
     expect(siteRewritePath("/en", "kypseli")).toBe("/b/kypseli/en");
+    // ADR-520: every language of the app is a translation's path; app pages are not.
+    expect(siteRewritePath("/de", "kypseli")).toBe("/b/kypseli/de");
+    expect(siteRewritePath("/pt-pt", "kypseli")).toBe("/b/kypseli/pt-pt");
+    expect(siteRewritePath("/me", "kypseli")).toBeNull();
+    expect(siteRewritePath("/tv", "kypseli")).toBeNull();
     expect(siteRewritePath("/privacy", "kypseli")).toBe("/b/kypseli/privacy");
     expect(siteRewritePath("/packages/", "kypseli")).toBe("/b/kypseli/packages");
     expect(siteRewritePath("/_next/static/x.js", "kypseli")).toBeNull();
@@ -26,6 +31,7 @@ describe("box website on its own domain", () => {
   it("allows the tags' origins only on website pages", () => {
     expect(isSitePath("/b/kypseli")).toBe(true);
     expect(isSitePath("/b/kypseli/en")).toBe(true);
+    expect(isSitePath("/b/kypseli/fr")).toBe(true);
     expect(isSitePath("/b/kypseli/chat")).toBe(false);
     expect(isSitePath("/admin")).toBe(false);
   });

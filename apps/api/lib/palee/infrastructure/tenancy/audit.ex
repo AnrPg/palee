@@ -73,6 +73,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     payment_surcharge_settings
     coach_pay_rules coach_pay_periods coach_pay_statements coach_pay_lines coach_pay_items
     programmes programme_versions programme_purchases programme_deliveries programme_reviews
+    coach_pay_item_skips
     box_screens
     document_settings document_templates document_versions document_signature_requests
     document_signatures document_audit_events health_certificates

@@ -263,6 +263,8 @@ defmodule Palee.PersonalData.Domain.Catalog do
         {:in, "statement_id", "coach_pay_statements", "id", {:eq, "coach_user_id"}},
         drop: ~w(source_id)
       ),
+      # ADR-510: recurring allowances taken off the person for a period.
+      tenant("payments", "coach_pay_item_skips", {:eq, "user_id"}),
 
       # -- fiscal documents addressed to the person ------------------------------
       tenant("fiscal_documents", "fiscal_documents", fiscal_documents(),
