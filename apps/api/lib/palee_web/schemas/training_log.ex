@@ -186,8 +186,14 @@ defmodule PaleeWeb.Schemas.TrainingLog do
     %Schema{
       title: "TrainingLogSources",
       type: :object,
-      required: [:classes, :assignments, :library_workouts],
+      required: [:available_sources, :classes, :assignments, :library_workouts],
       properties: %{
+        available_sources: %Schema{
+          type: :array,
+          description:
+            "ADR-451: the source types this person may log here, in display order (freeform is always last).",
+          items: %Schema{type: :string, enum: @source_types}
+        },
         classes: %Schema{
           type: :array,
           items: %Schema{
