@@ -574,14 +574,15 @@ defmodule PaleeWeb.ProgrammePagesControllerTest do
   end
 
   describe "the box website (ADR-543)" do
-    test "«Προγράμματα» shows only with a programme on sale, the first three and the total",
+    test "«Προγράμματα» shows only with a programme on sale, newest first, with the total",
          ctx do
       publish_page(ctx)
       site = "/api/public/sites/#{ctx.organization.slug}"
 
       empty = build_conn() |> get(site) |> json_response(200)
       refute "programmes" in empty["sections"]
-      assert empty["programmes"] == %{"items" => [], "total" => 0}
+      assert empty["programmes"] == []
+      assert empty["programmes_total"] == 0
 
       for n <- 1..4, do: ctx |> draft(%{title: "Programme #{n}"}) |> then(&publish(ctx, &1))
       # A draft is not on sale.
@@ -589,12 +590,13 @@ defmodule PaleeWeb.ProgrammePagesControllerTest do
 
       shown = build_conn() |> get(site) |> json_response(200)
       assert "programmes" in shown["sections"]
-      assert shown["programmes"]["total"] == 4
+      assert shown["programmes_total"] == 4
 
+      # The ADR-530 list (at most 6; the website shows the first three).
       assert [%{"title" => "Programme 4", "weeks" => 2, "cover_url" => nil} | _] =
-               items = shown["programmes"]["items"]
+               items = shown["programmes"]
 
-      assert length(items) == 3
+      assert length(items) == 4
 
       # The owner hides it like any other section.
       settings =
@@ -613,9 +615,13 @@ defmodule PaleeWeb.ProgrammePagesControllerTest do
       })
       |> json_response(200)
 
+      # ADR-530: a settings change goes live only with «Δημοσίευση».
+      ctx.as.(ctx.owner) |> post(ctx.admin <> "/site/publish") |> json_response(200)
+
       hidden = build_conn() |> get(site) |> json_response(200)
       refute "programmes" in hidden["sections"]
-      assert hidden["programmes"]["items"] == []
+      assert hidden["programmes"] == []
+      assert hidden["programmes_total"] == 0
     end
   end
 
