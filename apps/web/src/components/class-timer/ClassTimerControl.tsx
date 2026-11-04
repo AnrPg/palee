@@ -1,7 +1,7 @@
 "use client";
 
 import { useUiTranslations } from "@/i18n/ui";
-import React, { createContext, useContext, useState, type ReactNode } from "react";
+import React, { useState, type ReactNode } from "react";
 
 import type { ClassTimerCommand } from "@/api/class-timers";
 import { useSession } from "@/components/session-provider";
@@ -19,6 +19,7 @@ import { type CueMode, primeCueAudio, readCueMode, storeCueMode } from "@/lib/ti
 import { ClassScreenPin } from "./ClassScreenPin";
 import { ClassTimerChooser } from "./ClassTimerChooser";
 import { ClassTimerFace } from "./ClassTimerFace";
+import { HelpCaption, RemoteHelpContext, useRemoteHelp } from "./remote-help";
 import { TimerNowPanel, useTimerNow } from "./TimerNowPanel";
 
 const COUNTDOWN_CHOICES = [0, 5, 10, 15];
@@ -27,20 +28,6 @@ const COUNTDOWN_CHOICES = [0, 5, 10, 15];
 // controls that work right now (nothing greyed out), the playback controls stay
 // in a dock at the bottom within thumb reach, and «?» shows a short caption
 // under every control explaining what it does.
-
-/** Whether «?» captions are showing. */
-const HelpContext = createContext(false);
-
-/** A caption under a control, shown while «?» is on. */
-export function HelpCaption({ children, id }: { children: ReactNode; id?: string }) {
-  const on = useContext(HelpContext);
-  if (!on) return null;
-  return (
-    <span id={id} data-testid="remote-help" className="mt-0.5 block text-xs font-medium leading-snug" style={{ opacity: 0.8 }}>
-      {children}
-    </span>
-  );
-}
 
 /** The coach's remote: drives the class timer every screen in the room follows. */
 export function ClassTimerControl({ slotId }: { slotId: string }) {
@@ -111,7 +98,7 @@ export function ClassTimerControl({ slotId }: { slotId: string }) {
   }
 
   return (
-    <HelpContext.Provider value={help}>
+    <RemoteHelpContext.Provider value={help}>
       <main className="flex min-h-dvh flex-col" style={{ background: "var(--bg)", color: "var(--text)" }}>
         <div className="mx-auto w-full max-w-3xl flex-1 space-y-4 px-4 py-5">
           <header className="flex items-start justify-between gap-3">
@@ -144,7 +131,7 @@ export function ClassTimerControl({ slotId }: { slotId: string }) {
                   primeCueAudio();
                 }}
               >
-                {cueMode === "off" ? <BellOffIcon /> : <BellIcon />}
+                {cueMode === "off" ? <SoundOffIcon /> : <SoundOnIcon />}
               </IconButton>
             </div>
           </header>
@@ -354,7 +341,7 @@ export function ClassTimerControl({ slotId }: { slotId: string }) {
           {null}
         </Dialog>
       ) : null}
-    </HelpContext.Provider>
+    </RemoteHelpContext.Provider>
   );
 }
 
@@ -465,7 +452,7 @@ function ControlButton({ label, help, disabled, onClick }: { label: string; help
 }
 
 function DockMore({ items, label }: { items: MoreMenuItem[]; label: string }) {
-  const help = useContext(HelpContext);
+  const help = useRemoteHelp();
   if (items.length === 0) return null;
   return <MoreMenu label={label} items={items} variant="tile" testId="remote-more" showHints={help} />;
 }
@@ -501,24 +488,21 @@ function ScreenIcon() {
   );
 }
 
-function BellIcon() {
+function SoundOnIcon() {
   return (
     <svg {...iconProps}>
-      <path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-      <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+      <path d="M11 5 6 9H3v6h3l5 4V5z" />
+      <path d="M15.5 8.5a5 5 0 0 1 0 7" />
+      <path d="M18.5 5.5a9 9 0 0 1 0 13" />
     </svg>
   );
 }
 
-function BellOffIcon() {
+function SoundOffIcon() {
   return (
     <svg {...iconProps}>
-      <path d="M6 8a6 6 0 0 1 9.3-5" />
-      <path d="M18 8c0 7 3 9 3 9H9" />
-      <path d="M6 8c0 4-1 6.5-2 7.7" />
-      <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-      <path d="m2 2 20 20" />
+      <path d="M11 5 6 9H3v6h3l5 4V5z" />
+      <path d="m22 9-6 6M16 9l6 6" />
     </svg>
   );
 }
-

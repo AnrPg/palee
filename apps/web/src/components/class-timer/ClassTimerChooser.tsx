@@ -7,7 +7,9 @@ import { FreeTextTimerFields } from "@/components/workouts/creation/FreeTextTime
 import { type FreeTextTimerPreset, QUICK_PRESETS } from "@/lib/free-text-timer";
 import { getFormatLabels } from "@/types/workout";
 
-type Draft = { source: "own" | string; preset: FreeTextTimerPreset };
+import { useRemoteHelp } from "./remote-help";
+
+type Draft = { preset: FreeTextTimerPreset };
 
 type Props = {
   /** The class already has a timed workout (or a preset): the chooser starts folded as «Άλλο χρονόμετρο». */
@@ -19,9 +21,8 @@ type Props = {
 };
 
 // ANR 2026-11-04: the coach's own timer comes first, in Spark, and the common
-// timers follow under «ή διάλεξε από συνηθισμένα χρονόμετρα:». Picking a common
-// one explains what its name means (EMOM, AMRAP, time cap…) and opens the same
-// fields, filled in, to change before use.
+// timers follow under «ή διάλεξε από συνηθισμένα χρονόμετρα:». A common timer
+// is used with one tap; «?» explains what each name means (EMOM, AMRAP, time cap…).
 
 /** Pick the timer the class runs: your own, or one of the common ones. */
 export function ClassTimerChooser({ hasTimer, hasWorkout, presetActive, sending, onConfigure }: Props) {
@@ -29,6 +30,7 @@ export function ClassTimerChooser({ hasTimer, hasWorkout, presetActive, sending,
   const formatLabels = useMemo(() => getFormatLabels(i18n), [i18n]);
   const [open, setOpen] = useState(!hasTimer);
   const [draft, setDraft] = useState<Draft | null>(null);
+  const help = useRemoteHelp();
 
   if (!open) {
     return (
@@ -46,7 +48,7 @@ export function ClassTimerChooser({ hasTimer, hasWorkout, presetActive, sending,
     );
   }
 
-  const ownActive = draft?.source === "own";
+  const ownActive = draft !== null;
 
   return (
     <section className="space-y-3 rounded-3xl border p-5" style={{ borderColor: "var(--border)", background: "var(--panel)" }} data-testid="remote-chooser">
@@ -61,7 +63,7 @@ export function ClassTimerChooser({ hasTimer, hasWorkout, presetActive, sending,
         type="button"
         aria-pressed={ownActive}
         data-testid="remote-own-timer"
-        onClick={() => setDraft(ownActive ? null : { source: "own", preset: { format: "untimed" } })}
+        onClick={() => setDraft(ownActive ? null : { preset: { format: "untimed" } })}
         className="min-h-12 w-full rounded-2xl px-4 text-base font-extrabold"
         style={{ background: "var(--spark)", color: "var(--spark-contrast)", outline: ownActive ? "2px solid var(--text)" : undefined, outlineOffset: 2 }}
       >
@@ -74,30 +76,26 @@ export function ClassTimerChooser({ hasTimer, hasWorkout, presetActive, sending,
         {i18n("classTimerOrCommon")}
       </p>
       <div className="flex flex-wrap gap-2">
-        {QUICK_PRESETS.map((quick) => {
-          const active = draft?.source === quick.id;
-          return (
-            <button
-              key={quick.id}
-              type="button"
-              aria-pressed={active}
-              onClick={() => setDraft(active ? null : { source: quick.id, preset: quick.preset })}
-              className="min-h-10 whitespace-nowrap rounded-full px-3 text-sm font-semibold"
-              style={active ? { background: "var(--primary)", color: "var(--primary-contrast)" } : { border: "1px solid var(--border)", color: "var(--text-soft)" }}
-            >
-              {i18n(`timerPreset_${quick.id}`)}
-            </button>
-          );
-        })}
+        {QUICK_PRESETS.map((quick) => (
+          <button
+            key={quick.id}
+            type="button"
+            disabled={sending}
+            onClick={() => onConfigure(quick.preset)}
+            className="min-h-10 whitespace-nowrap rounded-full px-3 text-sm font-semibold disabled:opacity-40"
+            style={{ border: "1px solid var(--border)", color: "var(--text-soft)" }}
+          >
+            {i18n(`timerPreset_${quick.id}`)}
+          </button>
+        ))}
       </div>
 
-      {draft && !ownActive ? (
-        <>
-          <p data-testid="remote-preset-help" className="rounded-xl px-3 py-2 text-sm" style={{ background: "var(--panel-muted)", color: "var(--text-soft)" }}>
-            {i18n(`timerPresetHelp_${draft.source}`)}
-          </p>
-          <DraftFields draft={draft} formatLabels={formatLabels} onChange={setDraft} sending={sending} onUse={() => onConfigure(draft.preset)} />
-        </>
+      {help ? (
+        <ul data-testid="remote-preset-help" className="grid gap-1.5 rounded-xl px-3 py-2 text-xs" style={{ background: "var(--panel-muted)", color: "var(--text-soft)" }}>
+          {QUICK_PRESETS.map((quick) => (
+            <li key={quick.id}>{i18n(`timerPresetHelp_${quick.id}`)}</li>
+          ))}
+        </ul>
       ) : null}
 
       {presetActive && hasWorkout ? (

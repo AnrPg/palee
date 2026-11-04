@@ -131,11 +131,18 @@ test.describe("Class timer remote › On screen", () => {
     await expect(page.getByRole("button", { name: "Start", exact: true })).toHaveCount(0);
     await expect(page.getByTestId("remote-own-timer")).toBeVisible();
 
-    await page.getByRole("button", { name: "AMRAP 12" }).click();
-    await expect(page.getByTestId("remote-preset-help")).toContainText("As Many Rounds As Possible");
-
     await page.getByTestId("remote-help-toggle").click();
     await expect(page.getByTestId("remote-help-header")).toContainText("Wall screen");
+    await expect(page.getByTestId("remote-preset-help")).toContainText("As Many Rounds As Possible");
+
+    // A common timer is used with one tap.
+    let configured: Record<string, unknown> | null = null;
+    await page.route("**/api/org/box1/class-timers/c18/commands", (route) => {
+      configured = bodyOf(route.request());
+      return route.fulfill(json({}));
+    });
+    await page.getByRole("button", { name: "AMRAP 12" }).click();
+    await expect.poll(() => configured).toMatchObject({ command: "configure", timer_preset: { format: "amrap", duration_seconds: 720 } });
     const width = await page.evaluate(() => document.documentElement.scrollWidth);
     expect(width).toBeLessThanOrEqual(390);
   });

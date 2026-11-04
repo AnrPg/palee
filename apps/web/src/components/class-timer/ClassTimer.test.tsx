@@ -90,15 +90,17 @@ describe("class timer screens", () => {
     expect(screen.queryByRole("group", { name: "classTimerGetReadyLabel" })).toBeNull();
     expect(screen.getByText("classTimerNoTimedWorkout")).toBeInTheDocument();
 
-    // A common timer explains its name before it is used.
+    // A common timer is used with one tap (ANR 2026-11-04).
     fireEvent.click(screen.getByRole("button", { name: "timerPreset_emom10" }));
-    expect(screen.getByTestId("remote-preset-help")).toHaveTextContent("timerPresetHelp_emom10");
-    fireEvent.click(screen.getByTestId("remote-use-timer"));
     expect(send).toHaveBeenLastCalledWith({ command: "configure", timer_preset: { format: "emom", interval_seconds: 60, rounds: 10 } });
+
+    // «?» explains what each common timer's name means.
+    expect(screen.queryByTestId("remote-preset-help")).toBeNull();
+    fireEvent.click(screen.getByTestId("remote-help-toggle"));
+    expect(screen.getByTestId("remote-preset-help")).toHaveTextContent("timerPresetHelp_amrap12");
 
     // Your own timer comes first and starts from no invented numbers.
     fireEvent.click(screen.getByTestId("remote-own-timer"));
-    expect(screen.queryByTestId("remote-preset-help")).toBeNull();
     fireEvent.click(screen.getByTestId("remote-use-timer"));
     expect(send).toHaveBeenLastCalledWith({ command: "configure", timer_preset: { format: "untimed" } });
   });
