@@ -1,5 +1,6 @@
 "use client";
 
+import { useWorkoutTypeLabels } from "@/components/workouts/WorkoutTypeSelect";
 import type { CSSProperties, ReactNode } from "react";
 
 import { aboutText, classTypes, firstSentence, mainLocation } from "./site-data";
@@ -52,6 +53,7 @@ type Chapter = { key: string; lab: string; title: ReactNode; text: string; photo
 function AtelierHome() {
   const { page, site, on, pages, gallery } = useSite();
   const { t } = useSiteText();
+  const { type: workoutType } = useWorkoutTypeLabels();
   const stats = useStats();
   const rating = useHeadlineRating();
   const eventDate = useEventDate();
@@ -209,7 +211,7 @@ function AtelierHome() {
 
       {on("wod") && wod ? (
         <section className="sec wrapx" data-testid="site-wod">
-          <span className="lab">{[t("sections.wod"), wod.type].filter(Boolean).join(" · ")}</span>
+          <span className="lab">{[t("sections.wod"), workoutType(wod.type)].filter(Boolean).join(" · ")}</span>
           <h2 className="h2D" style={{ margin: "10px 0 14px" }} data-rv="lines">
             <Lines lines={[<span key="it" className="it">{wod.title}</span>]} />
           </h2>

@@ -20,7 +20,7 @@ const base = {
   section_order: ["hero", "about"],
   translation_locales: [],
   visible_locales: [],
-} as LooseSiteSettings;
+} as unknown as LooseSiteSettings;
 
 const settings = (extra: Partial<LooseSiteSettings> = {}): LooseSiteSettings => ({ ...base, ...extra });
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { useWorkoutTypeLabels } from "@/components/workouts/WorkoutTypeSelect";
 import type { CSSProperties, MouseEvent, ReactNode } from "react";
 import { flushSync } from "react-dom";
 
@@ -427,6 +428,7 @@ function TileSlot({ tile, index }: { tile: Tile; index: number }) {
 export function TileDetail({ tile }: { tile: TileKey }) {
   const { site, page, close } = useSite();
   const { t } = useSiteText();
+  const { type: workoutType } = useWorkoutTypeLabels();
   const wod = site.wod[0];
   const titles: Record<TileKey, string> = {
     next: t("schedule.title"),
@@ -449,7 +451,7 @@ export function TileDetail({ tile }: { tile: TileKey }) {
           {tile === "wod"
             ? site.wod.map((entry) => (
                 <div key={entry.id}>
-                  {entry.type ? <span className="chip">{entry.type}</span> : null}
+                  {entry.type ? <span className="chip">{workoutType(entry.type)}</span> : null}
                   {entry.body ? <div className="wod">{entry.body}</div> : null}
                 </div>
               ))

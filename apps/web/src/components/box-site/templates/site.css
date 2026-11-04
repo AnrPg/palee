@@ -22,7 +22,7 @@
 .bw-frame[data-device="phone"] .bw-scroll{scrollbar-width:none}
 
 /* ===== root ===== */
-.bw{--s-radius:12px; isolation:isolate; min-height:100vh; background:var(--s-bg); color:var(--s-ink); font-family:var(--s-body); font-size:15px; line-height:1.55; -webkit-font-smoothing:antialiased; color-scheme:light}
+.bw{--s-radius:12px; isolation:isolate; overflow-x:clip; min-height:100vh; background:var(--s-bg); color:var(--s-ink); font-family:var(--s-body); font-size:15px; line-height:1.55; -webkit-font-smoothing:antialiased; color-scheme:light}
 .bw[data-mode="dark"]{color-scheme:dark}
 .bw-frame .bw{min-height:100%}
 .bw *, .bw *::before, .bw *::after{box-sizing:border-box}
@@ -238,7 +238,7 @@
 .tB .tile.ink::before{content:""; position:absolute; inset:0; background:linear-gradient(110deg,transparent 30%,color-mix(in srgb,var(--s-white) 9%,transparent) 50%,transparent 70%); background-size:250% 100%; animation:bw-shine 4s ease-in-out infinite; pointer-events:none}
 @keyframes bw-shine{from{background-position:120% 0}to{background-position:-120% 0}}
 .tB .mini{display:grid; gap:6px; font-size:13px}
-.tB .mini div{display:flex; justify-content:space-between; gap:8px; padding:6px 0; border-top:1px solid var(--s-line)}
+.tB .mini > *{display:flex; justify-content:space-between; gap:8px; padding:6px 0; border-top:1px solid var(--s-line)}
 .tB .faces{display:flex}
 .tB .faces i{width:40px; height:40px; border-radius:50%; margin-inline-end:-10px; border:2px solid var(--s-surface); display:grid; place-items:center; font-style:normal; font-weight:800; font-size:14px; background:var(--s-accent2); color:var(--s-on-accent2); transition:margin .3s; overflow:hidden}
 .tB .faces i img{width:100%; height:100%; object-fit:cover}
@@ -266,14 +266,14 @@
 .tC .topC{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:14px 16px 6px}
 .tC .logo{font-weight:900; font-size:20px; letter-spacing:-.02em; text-decoration:none; min-height:44px; display:flex; align-items:center}
 .tC .rings{display:flex; gap:14px; overflow-x:auto; padding:8px 16px 14px; scrollbar-width:none}
-.tC .ring{flex:none; display:grid; justify-items:center; gap:6px; border:0; background:none; color:inherit; font:inherit; font-size:12px; font-weight:600; cursor:pointer; width:74px}
-.tC .ring span.o{width:70px; height:70px; border-radius:50%; padding:3px; position:relative; display:block}
-.tC .ring span.o::before{content:""; position:absolute; inset:0; border-radius:50%; background:conic-gradient(var(--s-accent),var(--s-accent2),var(--s-accent)); animation:bw-spin 6s linear infinite}
+.tC .story-ring{flex:none; display:grid; justify-items:center; gap:6px; border:0; background:none; color:inherit; font:inherit; font-size:12px; font-weight:600; cursor:pointer; width:74px}
+.tC .story-ring span.o{width:70px; height:70px; border-radius:50%; padding:3px; position:relative; display:block}
+.tC .story-ring span.o::before{content:""; position:absolute; inset:0; border-radius:50%; background:conic-gradient(var(--s-accent),var(--s-accent2),var(--s-accent)); animation:bw-spin 6s linear infinite}
 @keyframes bw-spin{to{transform:rotate(1turn)}}
-.tC .ring span.o i{position:relative; display:grid; place-items:center; width:100%; height:100%; border-radius:50%; border:3px solid var(--s-bg); background:linear-gradient(150deg,var(--s-deep),color-mix(in oklab,var(--s-accent) 50%,var(--s-deep))); font-style:normal; font-size:24px; color:var(--s-white); transition:transform .2s; overflow:hidden}
-.tC .ring span.o i img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover}
-.tC .ring:active span.o i{transform:scale(.92)}
-.tC .ring.seen span.o::before{background:var(--s-line-strong); animation:none}
+.tC .story-ring span.o i{position:relative; display:grid; place-items:center; width:100%; height:100%; border-radius:50%; border:3px solid var(--s-bg); background:linear-gradient(150deg,var(--s-deep),color-mix(in oklab,var(--s-accent) 50%,var(--s-deep))); font-style:normal; font-size:24px; color:var(--s-white); transition:transform .2s; overflow:hidden}
+.tC .story-ring span.o i img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover}
+.tC .story-ring:active span.o i{transform:scale(.92)}
+.tC .story-ring.seen span.o::before{background:var(--s-line-strong); animation:none}
 .tC .reel{position:relative; margin:0 12px 12px; border-radius:var(--s-radius); min-height:460px; overflow:hidden; color:var(--s-white); display:flex; flex-direction:column; justify-content:flex-end; padding:20px}
 .tC .reel > .ph{position:absolute; inset:-30px 0; border-radius:0}
 .tC .reel::after{content:""; position:absolute; inset:0; background:linear-gradient(transparent 35%,color-mix(in srgb,var(--s-black) 70%,transparent)); z-index:1; pointer-events:none}
@@ -500,7 +500,7 @@
 .bw.calm .pre-up,.bw.calm .pre-scale,.bw.calm .pre-left{opacity:1; transform:none}
 .bw.calm .pre-lines .ln > span{transform:none}
 .bw.calm .ld-go .ln > span,.bw.calm .ld-pop,.bw.calm .ld-fade{animation:none}
-.bw.calm .live,.bw.calm .marq .track,.bw.calm .marqD .track,.bw.calm .hero > .ph,.bw.calm .tile.ink::before,.bw.calm .ring span.o::before,.bw.calm .story .slide,.bw.calm .story .slide > .ph,.bw.calm .mapart .pin,.bw.calm .scrim,.bw.calm .sheet,.bw.calm details.faq[open] p,.bw.calm .menuD{animation:none}
+.bw.calm .live,.bw.calm .marq .track,.bw.calm .marqD .track,.bw.calm .hero > .ph,.bw.calm .tile.ink::before,.bw.calm .story-ring span.o::before,.bw.calm .story .slide,.bw.calm .story .slide > .ph,.bw.calm .mapart .pin,.bw.calm .scrim,.bw.calm .sheet,.bw.calm details.faq[open] p,.bw.calm .menuD{animation:none}
 .bw.calm .menuA nav a,.bw.calm .menuD nav a{animation:none; opacity:1; transform:none}
 .bw.calm .cue i::after{animation:none; top:0}
 .bw.calm .words span{opacity:1}
@@ -510,7 +510,7 @@
   .bw .pre-up,.bw .pre-scale,.bw .pre-left{opacity:1; transform:none}
   .bw .pre-lines .ln > span{transform:none}
   .bw .ld-go .ln > span,.bw .ld-pop,.bw .ld-fade{animation:none}
-  .bw .live,.bw .marq .track,.bw .marqD .track,.bw .hero > .ph,.bw .tile.ink::before,.bw .ring span.o::before,.bw .story .slide,.bw .story .slide > .ph,.bw .mapart .pin,.bw .scrim,.bw .sheet,.bw details.faq[open] p,.bw .menuD{animation:none}
+  .bw .live,.bw .marq .track,.bw .marqD .track,.bw .hero > .ph,.bw .tile.ink::before,.bw .story-ring span.o::before,.bw .story .slide,.bw .story .slide > .ph,.bw .mapart .pin,.bw .scrim,.bw .sheet,.bw details.faq[open] p,.bw .menuD{animation:none}
   .bw .menuA nav a,.bw .menuD nav a{animation:none; opacity:1; transform:none}
   .bw .cue i::after{animation:none; top:0}
   .bw .words span{opacity:1}

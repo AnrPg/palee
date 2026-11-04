@@ -96,7 +96,7 @@ function StoriesHome() {
             <button
               key={story.kind}
               type="button"
-              className={`ring ld-pop ${seenStories.has(story.kind) ? "seen" : ""}`}
+              className={`story-ring ld-pop ${seenStories.has(story.kind) ? "seen" : ""}`}
               style={{ "--i": index } as CSSProperties}
               onClick={() => open({ kind: "story", index })}
               aria-haspopup="dialog"
