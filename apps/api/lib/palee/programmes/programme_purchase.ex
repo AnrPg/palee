@@ -35,6 +35,10 @@ defmodule Palee.Programmes.ProgrammePurchase do
     field :activated_at, :utc_datetime_usec
     field :ended_at, :utc_datetime_usec
     field :end_reason, :string
+    # ADR-540: the days the buyer moved or skipped, and the end sold with.
+    field :day_dates, :map, default: %{}
+    field :skipped_days, {:array, :integer}, default: []
+    field :planned_ends_on, :date
 
     timestamps(type: :utc_datetime_usec)
   end
@@ -65,7 +69,16 @@ defmodule Palee.Programmes.ProgrammePurchase do
       :ends_on,
       :idempotency_key
     ])
+    |> then(&put_change(&1, :planned_ends_on, get_field(&1, :ends_on)))
     |> unique_constraint([:organization_id, :idempotency_key])
+    |> check_constraint(:status, name: :programme_purchases_check)
+  end
+
+  @doc "ADR-540: the buyer's moves and skips, as `PurchaseSchedule` decided them."
+  def schedule_changeset(purchase, changes) do
+    purchase
+    |> cast(changes, [:day_dates, :skipped_days, :ends_on, :planned_ends_on])
+    |> check_constraint(:ends_on, name: :programme_purchases_days_check)
     |> check_constraint(:status, name: :programme_purchases_check)
   end
 

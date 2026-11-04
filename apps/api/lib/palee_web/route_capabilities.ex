@@ -500,6 +500,11 @@ defmodule PaleeWeb.RouteCapabilities do
     {W.AdminProgrammeController, :refund} => [:manage_billing],
     {W.AdminProgrammeController, :reviews} => [:manage_workouts, :manage_packages],
     {W.AdminProgrammeController, :moderate_review} => [:manage_packages],
+    # ADR-541: the cover is written with the programme.
+    {W.AdminProgrammeController, :cover_upload} => [:manage_workouts],
+    {W.AdminProgrammeController, :complete_cover} => [:manage_workouts],
+    {W.AdminProgrammeController, :set_cover} => [:manage_workouts],
+    {W.AdminProgrammeController, :remove_cover} => [:manage_workouts],
     # ADR-167: seasons are sold like packages; places are answered like payments.
     {W.AdminSeasonController, :index} => [:view_package_catalog, :take_payments],
     {W.AdminSeasonController, :show} => [:view_package_catalog, :take_payments],

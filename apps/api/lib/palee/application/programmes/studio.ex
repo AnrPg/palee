@@ -11,7 +11,7 @@ defmodule Palee.Application.Programmes.Studio do
 
   require Logger
 
-  alias Palee.Application.Programmes.Presenter
+  alias Palee.Application.Programmes.{Covers, Facts, Presenter}
   alias Palee.{Identity, Organizations, Payments, Programmes, Workouts}
 
   # ── Programmes ──────────────────────────────────────────────────────────
@@ -21,11 +21,13 @@ defmodule Palee.Application.Programmes.Studio do
     ids = Enum.map(programmes, & &1.id)
     sales = Programmes.sales(context, ids)
     reviews = Programmes.review_summaries(context, ids)
+    covers = Covers.urls(context, programmes)
 
     Enum.map(programmes, fn programme ->
       Presenter.staff(programme, %{
         sales: Map.get(sales, programme.id, %{buyers: 0, active: 0}),
-        reviews: Map.get(reviews, programme.id, %{average: nil, count: 0})
+        reviews: Map.get(reviews, programme.id, %{average: nil, count: 0}),
+        cover_url: get_in(covers, [programme.id, :url])
       })
     end)
   end
@@ -35,7 +37,7 @@ defmodule Palee.Application.Programmes.Studio do
       versions = Programmes.list_versions(context, programme.id)
 
       {:ok,
-       Presenter.staff(programme, %{
+       present(context, programme, %{
          versions: Enum.map(versions, &Presenter.version/1),
          sales:
            Map.get(Programmes.sales(context, [programme.id]), programme.id, %{
@@ -53,20 +55,22 @@ defmodule Palee.Application.Programmes.Studio do
   end
 
   def create(context, params) do
-    with {:ok, params} <- check_draft(context, params, nil),
+    with :ok <- check_equipment(params),
+         {:ok, params} <- check_draft(context, params, nil),
          {:ok, programme} <-
            Programmes.create_programme(
              context,
              Map.merge(params, %{author_id: context.user_id, updated_by_id: context.user_id})
            ) do
       telemetry(:created, context, programme)
-      {:ok, Presenter.staff(programme)}
+      {:ok, present(context, programme)}
     end
   end
 
   def update(context, id, params) do
     with {:ok, programme} <- fetch(context, id),
          true <- programme.status != "archived" || {:error, :programme_archived},
+         :ok <- check_equipment(params),
          {:ok, params} <- check_draft(context, params, programme),
          {:ok, programme} <-
            Programmes.update_programme(
@@ -74,8 +78,39 @@ defmodule Palee.Application.Programmes.Studio do
              programme,
              Map.put(params, :updated_by_id, context.user_id)
            ) do
-      {:ok, Presenter.staff(programme)}
+      {:ok, present(context, programme)}
     end
+  end
+
+  # ADR-542: the author's equipment lists are vocabulary keys.
+  defp check_equipment(params),
+    do:
+      Programmes.check_equipment(
+        params[:equipment],
+        params[:equipment_removed],
+        Workouts.equipment_keys()
+      )
+
+  # One programme for the editor: its cover (ADR-541) and the facts its
+  # draft's WODs give (ADR-542), with what the page shows.
+  defp present(context, programme, extra \\ %{}) do
+    urls = Covers.urls(context, [programme])[programme.id]
+    facts = Facts.derive(context, programme.draft_days || [])
+
+    Presenter.staff(
+      programme,
+      Map.merge(
+        %{
+          cover: Covers.staff(programme, urls),
+          cover_url: urls && urls.url,
+          facts: %{
+            equipment: facts["equipment"],
+            minutes_per_session: facts["minutes_per_session"]
+          }
+        },
+        Map.merge(Facts.shown(programme, facts), extra)
+      )
+    )
   end
 
   # The draft's days must use published WODs of this business.
@@ -118,6 +153,7 @@ defmodule Palee.Application.Programmes.Studio do
          :ok <- Programmes.publishable(programme, days),
          :ok <- check_workouts(context, Programmes.workout_ids(days)),
          {:ok, frozen} <- freeze(context, programme, days),
+         facts = Facts.derive(context, frozen),
          {:ok, %{programme: programme, version: version}} <-
            Programmes.publish_version(
              context,
@@ -127,7 +163,8 @@ defmodule Palee.Application.Programmes.Studio do
                days: frozen,
                changelog: params[:changelog],
                published_at: now,
-               published_by_id: context.user_id
+               published_by_id: context.user_id,
+               facts: facts
              },
              %{
                status: "published",
@@ -137,7 +174,7 @@ defmodule Palee.Application.Programmes.Studio do
              }
            ) do
       telemetry(:published, context, programme, %{version: version.number})
-      {:ok, Presenter.staff(programme, %{version: Presenter.version(version)})}
+      {:ok, present(context, programme, %{version: Presenter.version(version)})}
     end
   end
 
@@ -213,6 +250,24 @@ defmodule Palee.Application.Programmes.Studio do
 
   defp summary(_workout), do: nil
 
+  # ── Cover (ADR-541) ─────────────────────────────────────────────────────
+
+  @doc "Sets the cover (`Covers.set/3`); an archived programme keeps its own."
+  def set_cover(context, id, params) do
+    with {:ok, programme} <- fetch(context, id),
+         true <- programme.status != "archived" || {:error, :programme_archived},
+         {:ok, programme} <- Covers.set(context, programme, params) do
+      {:ok, present(context, programme)}
+    end
+  end
+
+  def remove_cover(context, id) do
+    with {:ok, programme} <- fetch(context, id),
+         {:ok, programme} <- Covers.remove(context, programme) do
+      {:ok, present(context, programme)}
+    end
+  end
+
   def archive(context, id), do: step(context, id, :archive)
   def restore(context, id), do: step(context, id, :restore)
 
@@ -220,7 +275,7 @@ defmodule Palee.Application.Programmes.Studio do
     with {:ok, programme} <- fetch(context, id),
          {:ok, programme} <- Programmes.transition(context, programme, step, DateTime.utc_now()) do
       telemetry(step, context, programme)
-      {:ok, Presenter.staff(programme)}
+      {:ok, present(context, programme)}
     end
   end
 

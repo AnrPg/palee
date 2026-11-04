@@ -7,6 +7,7 @@ defmodule PaleeWeb.AdminProgrammeController do
   use PaleeWeb, :controller
   use PaleeWeb.ControllerSpecs
 
+  alias Palee.Application.{CompleteMediaUpload, RequestMediaUpload}
   alias Palee.Application.Programmes.Studio
   alias PaleeWeb.Schemas.Programmes, as: S
   alias OpenApiSpex.{Parameter, Schema}
@@ -165,5 +166,65 @@ defmodule PaleeWeb.AdminProgrammeController do
              conn.body_params[:hidden_reason]
            ),
          do: json(conn, %{review: review})
+  end
+
+  # ── Cover (ADR-541) ─────────────────────────────────────────────────────
+
+  operation(:cover_upload,
+    summary: "Reserve a cover photo (programme_cover) and get a presigned upload for it",
+    description:
+      "Upload the original photo and the cover rendered from it (16:9) the same way, then " <>
+        "set them on the programme.",
+    request_body: S.body(PaleeWeb.Schemas.Media.upload_request()),
+    responses: [ok: {"Upload", "application/json", PaleeWeb.Schemas.Media.upload()}] ++ @refused
+  )
+
+  def cover_upload(conn, _params) do
+    with {:ok, upload} <-
+           RequestMediaUpload.call(
+             conn.assigns.tenant_context,
+             "programme_cover",
+             conn.body_params
+           ),
+         do: json(conn, upload)
+  end
+
+  operation(:complete_cover,
+    summary: "Verify an uploaded cover photo (type, size, no metadata) and mark it ready",
+    parameters: [@id],
+    responses:
+      [ok: {"Media", "application/json", PaleeWeb.Schemas.Media.media_response()}] ++ @refused
+  )
+
+  def complete_cover(conn, %{id: id}) do
+    with {:ok, media} <-
+           CompleteMediaUpload.call(conn.assigns.tenant_context, "programme_cover", id),
+         do: json(conn, %{media: media})
+  end
+
+  operation(:set_cover,
+    summary: "Set the programme's cover: the rendered 16:9 image, its original and the edit",
+    description:
+      "Editing again starts from the original with the stored edit. The replaced uploads are " <>
+        "deleted.",
+    parameters: [@id],
+    request_body: S.body(S.cover_input()),
+    responses: [ok: {"Programme", "application/json", S.staff_response()}] ++ @refused
+  )
+
+  def set_cover(conn, %{id: id}) do
+    with {:ok, programme} <- Studio.set_cover(conn.assigns.tenant_context, id, conn.body_params),
+         do: json(conn, %{programme: programme})
+  end
+
+  operation(:remove_cover,
+    summary: "Remove the cover: the page shows the theme colour strip again",
+    parameters: [@id],
+    responses: [ok: {"Programme", "application/json", S.staff_response()}] ++ @refused
+  )
+
+  def remove_cover(conn, %{id: id}) do
+    with {:ok, programme} <- Studio.remove_cover(conn.assigns.tenant_context, id),
+         do: json(conn, %{programme: programme})
   end
 end

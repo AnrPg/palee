@@ -12,10 +12,15 @@ defmodule Palee.Application.BoxSite.PublicSite do
   (only when the owner turns it on), the in-app reviews next to the Google
   rating (ADR-386/387), and the site's languages: the box's own plus the
   translations the owner shows (ADR-520, before that English only).
+
+  ADR-543 adds «Προγράμματα»: the first #{3} programmes the box sells
+  (newest first, as public cards with the cover) and how many there are,
+  for «Όλα τα προγράμματα (N)».
   """
 
   alias Palee.Application.{PublicBox, PublicURL}
   alias Palee.Application.BoxSite.{SiteOutbox, SiteTranslations}
+  alias Palee.Application.Programmes.Storefront
   alias Palee.Application.ReviewAsks.BoxReviews
   alias Palee.{BoxSite, Community, Organizations, ReviewAsks, Scheduling, Workouts}
   alias Palee.Scheduling.DayWorkoutStore
@@ -23,6 +28,7 @@ defmodule Palee.Application.BoxSite.PublicSite do
 
   @events_shown 6
   @wods_shown 3
+  @programmes_shown 3
 
   @doc """
   The site of a published box. `language` (ADR-520) picks one of the
@@ -37,13 +43,15 @@ defmodule Palee.Application.BoxSite.PublicSite do
       place_id = ReviewAsks.settings(context).google_place_id
       faq = settings.faq || []
       reviews = BoxReviews.public(context, place_id)
+      programmes_total = programmes_total(context)
 
       facts = %{
         public_schedule: settings.public_schedule,
         public_wod: Map.get(settings, :public_wod, false),
         faq?: faq != [],
         forms_enabled: settings.forms_enabled,
-        reviews?: not is_nil(place_id) or reviews.palee.count > 0
+        reviews?: not is_nil(place_id) or reviews.palee.count > 0,
+        programmes?: programmes_total > 0
       }
 
       sections = BoxSite.visible_sections(settings.section_order, settings.hidden_sections, facts)
@@ -79,6 +87,14 @@ defmodule Palee.Application.BoxSite.PublicSite do
              else: []
            ),
          wod: if("wod" in sections, do: wods(context, zone), else: []),
+         programmes:
+           if("programmes" in sections,
+             do: %{
+               items: Storefront.on_sale(context, @programmes_shown),
+               total: programmes_total
+             },
+             else: %{items: [], total: 0}
+           ),
          faq:
            if("faq" in sections,
              do: Enum.map(faq, &translated_faq(&1, tr)),
@@ -101,13 +117,13 @@ defmodule Palee.Application.BoxSite.PublicSite do
            categories: BoxSite.consent_categories(),
            validity_days: BoxSite.consent_validity_days()
          },
-          timetable:
-            if("schedule" in sections,
-              do: Enum.map(timetable(slug), &translated_slot(&1, tr)),
-              else: []
-            ),
-          # ADR-397: where anyone reports content on the site (DSA Art. 16).
-          report_contact: ReviewAsks.moderation_contact()
+         timetable:
+           if("schedule" in sections,
+             do: Enum.map(timetable(slug), &translated_slot(&1, tr)),
+             else: []
+           ),
+         # ADR-397: where anyone reports content on the site (DSA Art. 16).
+         report_contact: ReviewAsks.moderation_contact()
        }}
     end
   end
@@ -162,6 +178,13 @@ defmodule Palee.Application.BoxSite.PublicSite do
     end)
   rescue
     _error -> []
+  end
+
+  # ADR-543: how many programmes the box sells (the section shows only then).
+  defp programmes_total(context) do
+    Storefront.on_sale_count(context)
+  rescue
+    _error -> 0
   end
 
   # ADR-352 §3: the week's classes, without spots, bookings or people.

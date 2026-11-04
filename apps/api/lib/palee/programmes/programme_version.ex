@@ -22,6 +22,8 @@ defmodule Palee.Programmes.ProgrammeVersion do
     field :changelog, :string
     field :published_at, :utc_datetime_usec
     field :published_by_id, :binary_id
+    # ADR-542: equipment and minutes per session derived from the frozen WODs.
+    field :facts, :map
 
     timestamps(type: :utc_datetime_usec, updated_at: false)
   end
@@ -36,7 +38,8 @@ defmodule Palee.Programmes.ProgrammeVersion do
       :days,
       :changelog,
       :published_at,
-      :published_by_id
+      :published_by_id,
+      :facts
     ])
     |> validate_required([:programme_id, :number, :weeks, :days, :published_at])
     |> validate_length(:changelog, max: 600)

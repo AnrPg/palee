@@ -10,7 +10,8 @@ defmodule PaleeWeb.Schemas.BoxSite do
   @int %Schema{type: :integer}
   @bool %Schema{type: :boolean}
 
-  @section_keys ~w(hero about schedule events wod packages coaches location reviews faq trial_form contact_form)
+  @section_keys ~w(hero about schedule events wod packages programmes coaches location reviews faq
+                   trial_form contact_form)
   @domain_statuses ~w(pending_dns pending_tls active broken expired)
   # ADR-398 (`BoxSite.Domain.IngressPolicy`).
   @certificate_statuses ~w(none pending issuing active failed)
@@ -524,6 +525,18 @@ defmodule PaleeWeb.Schemas.BoxSite do
         },
         events: %Schema{type: :array, items: BoxReviews.site_event()},
         wod: %Schema{type: :array, items: BoxReviews.site_wod()},
+        programmes: %Schema{
+          title: "SiteProgrammes",
+          type: :object,
+          description:
+            "«Προγράμματα» (ADR-543): the first programmes on sale, newest first, and how many " <>
+              "there are («Όλα τα προγράμματα (N)»); empty when the section is not shown",
+          properties: %{
+            items: %Schema{type: :array, items: PaleeWeb.Schemas.Programmes.public_programme()},
+            total: @int
+          },
+          required: [:items, :total]
+        },
         tracking: %Schema{
           type: :object,
           properties: %{
@@ -575,7 +588,8 @@ defmodule PaleeWeb.Schemas.BoxSite do
         :timetable,
         :tracking,
         :translation,
-        :wod
+        :wod,
+        :programmes
       ]
     }
   end

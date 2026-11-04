@@ -15,6 +15,16 @@ defmodule Palee.Infrastructure.Programmes.EctoProgrammeStore do
 
   alias Palee.Repo
 
+  @impl true
+  def transaction(_context, fun) when is_function(fun, 0) do
+    Repo.transaction(fn ->
+      case fun.() do
+        {:ok, value} -> value
+        {:error, reason} -> Repo.rollback(reason)
+      end
+    end)
+  end
+
   # ── Programmes ──────────────────────────────────────────────────────────
 
   @impl true
@@ -32,6 +42,22 @@ defmodule Palee.Infrastructure.Programmes.EctoProgrammeStore do
   @impl true
   def set_state(_context, programme, changes),
     do: programme |> Programme.state_changeset(changes) |> Repo.update()
+
+  @impl true
+  def set_cover(_context, programme, changes),
+    do: programme |> Programme.cover_changeset(changes) |> Repo.update()
+
+  @impl true
+  def cover_in_use?(_context, [], _except_id), do: false
+
+  def cover_in_use?(%{organization_id: organization_id}, media_ids, except_id) do
+    Repo.exists?(
+      from p in Programme,
+        where:
+          p.organization_id == ^organization_id and p.id != ^except_id and
+            (p.cover_media_id in ^media_ids or p.cover_original_media_id in ^media_ids)
+    )
+  end
 
   @impl true
   def get_programme(%{organization_id: organization_id}, id) do
@@ -206,6 +232,32 @@ defmodule Palee.Infrastructure.Programmes.EctoProgrammeStore do
   end
 
   @impl true
+  def update_schedule(%{organization_id: organization_id}, id, decide) do
+    Repo.transaction(fn ->
+      purchase =
+        Repo.one(
+          from p in ProgrammePurchase,
+            where: p.id == ^id and p.organization_id == ^organization_id,
+            lock: "FOR UPDATE"
+        ) || Repo.rollback(:not_found)
+
+      case decide.(purchase) do
+        {:ok, changes} when changes == %{} ->
+          purchase
+
+        {:ok, changes} ->
+          purchase
+          |> ProgrammePurchase.schedule_changeset(changes)
+          |> Repo.update()
+          |> ok_or_rollback()
+
+        {:error, reason} ->
+          Repo.rollback(reason)
+      end
+    end)
+  end
+
+  @impl true
   def list_purchases(%{organization_id: organization_id}, filters) do
     ProgrammePurchase
     |> where([p], p.organization_id == ^organization_id)
@@ -304,6 +356,22 @@ defmodule Palee.Infrastructure.Programmes.EctoProgrammeStore do
       )
 
     count
+  end
+
+  @impl true
+  def move_deliveries(_context, _purchase_id, []), do: :ok
+
+  def move_deliveries(%{organization_id: organization_id}, purchase_id, moves) do
+    Enum.each(moves, fn {id, date} ->
+      Repo.update_all(
+        from(d in ProgrammeDelivery,
+          where:
+            d.id == ^id and d.organization_id == ^organization_id and
+              d.purchase_id == ^purchase_id
+        ),
+        set: [scheduled_for: date]
+      )
+    end)
   end
 
   # ── Reviews ─────────────────────────────────────────────────────────────

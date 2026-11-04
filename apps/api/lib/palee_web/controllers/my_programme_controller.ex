@@ -8,7 +8,7 @@ defmodule PaleeWeb.MyProgrammeController do
   use PaleeWeb, :controller
   use PaleeWeb.ControllerSpecs
 
-  alias Palee.Application.Programmes.Buying
+  alias Palee.Application.Programmes.{BuyerDays, Buying}
   alias PaleeWeb.Schemas.Programmes, as: S
   alias OpenApiSpex.{Parameter, Schema}
 
@@ -101,5 +101,45 @@ defmodule PaleeWeb.MyProgrammeController do
   def review(conn, %{id: id}) do
     with {:ok, review} <- Buying.review(conn.assigns.tenant_context, id, conn.body_params),
          do: json(conn, %{review: review})
+  end
+
+  # ── The buyer's days (ADR-540) ──────────────────────────────────────────
+
+  operation(:days,
+    summary: "A programme you bought as its days: done, skipped, behind, today, upcoming, rest",
+    parameters: [@id],
+    responses: [ok: {"Days", "application/json", S.purchase_days_response()}] ++ @refused
+  )
+
+  def days(conn, %{id: id}) do
+    with {:ok, days} <- BuyerDays.show(conn.assigns.tenant_context, id), do: json(conn, days)
+  end
+
+  operation(:do_today,
+    summary: "«Κάν' τη σήμερα»: a behind day moves to today and the days after it follow",
+    description:
+      "Done and skipped days keep their dates; the end moves with the last day, never past " <>
+        "latest_end (409 programme_schedule_limit: skip instead).",
+    parameters: [@id],
+    request_body: S.body(S.day_action_input()),
+    responses: [ok: {"Days", "application/json", S.purchase_days_response()}] ++ @refused
+  )
+
+  def do_today(conn, %{id: id}) do
+    with {:ok, days} <-
+           BuyerDays.do_today(conn.assigns.tenant_context, id, conn.body_params[:day]),
+         do: json(conn, days)
+  end
+
+  operation(:skip_day,
+    summary: "«Παράλειψη»: let a behind day go; nothing moves",
+    parameters: [@id],
+    request_body: S.body(S.day_action_input()),
+    responses: [ok: {"Days", "application/json", S.purchase_days_response()}] ++ @refused
+  )
+
+  def skip_day(conn, %{id: id}) do
+    with {:ok, days} <- BuyerDays.skip(conn.assigns.tenant_context, id, conn.body_params[:day]),
+         do: json(conn, days)
   end
 end

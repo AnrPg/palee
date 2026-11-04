@@ -11,6 +11,9 @@ defmodule Palee.Programmes.ProgrammeStore do
     do: RepoContext.run(context, fn -> apply(adapter(), function, [context | args]) end)
 
   @impl true
+  def transaction(context, fun), do: call(context, :transaction, [fun])
+
+  @impl true
   def create_programme(context, attrs), do: call(context, :create_programme, [attrs])
   @impl true
   def update_programme(context, programme, attrs),
@@ -18,6 +21,12 @@ defmodule Palee.Programmes.ProgrammeStore do
 
   @impl true
   def set_state(context, programme, changes), do: call(context, :set_state, [programme, changes])
+  @impl true
+  def set_cover(context, programme, changes), do: call(context, :set_cover, [programme, changes])
+  @impl true
+  def cover_in_use?(context, media_ids, except_id),
+    do: call(context, :cover_in_use?, [media_ids, except_id])
+
   @impl true
   def get_programme(context, id), do: call(context, :get_programme, [id])
   @impl true
@@ -48,6 +57,8 @@ defmodule Palee.Programmes.ProgrammeStore do
   @impl true
   def update_purchase(context, id, decide), do: call(context, :update_purchase, [id, decide])
   @impl true
+  def update_schedule(context, id, decide), do: call(context, :update_schedule, [id, decide])
+  @impl true
   def list_purchases(context, filters), do: call(context, :list_purchases, [filters])
   @impl true
   def due_completions(context, today), do: call(context, :due_completions, [today])
@@ -63,6 +74,10 @@ defmodule Palee.Programmes.ProgrammeStore do
   @impl true
   def delete_deliveries(context, purchase_id, from),
     do: call(context, :delete_deliveries, [purchase_id, from])
+
+  @impl true
+  def move_deliveries(context, purchase_id, moves),
+    do: call(context, :move_deliveries, [purchase_id, moves])
 
   @impl true
   def save_review(context, purchase, attrs), do: call(context, :save_review, [purchase, attrs])
