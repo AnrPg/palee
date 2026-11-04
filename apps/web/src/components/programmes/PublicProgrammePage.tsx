@@ -75,12 +75,13 @@ export function PublicProgrammePage({ slug, id }: { slug: string; id: string }) 
     setOpenWeeks((current) => ({ ...current, 1: true }));
     document.getElementById(weeksId)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
-  const previewButton = (className: string) =>
+  // On a large screen the buy card carries it, so the page's own copy is for phones (and the store apps, which have no card).
+  const previewButton = (inBuyCard: boolean) =>
     freeDays > 0 ? (
       <button
         type="button"
         onClick={showPreview}
-        className={`min-h-11 w-full items-center justify-center rounded-2xl px-4 text-sm font-bold ${className}`}
+        className={`${inBuyCard || !sellable ? "flex" : "flex lg:hidden"} min-h-11 w-full items-center justify-center rounded-2xl px-4 text-sm font-bold`}
         style={{ background: "var(--panel-raised)", color: "var(--text)", border: "1px solid var(--border)" }}
       >
         {t("buyer2.previewFree", { count: freeDays })}
@@ -111,7 +112,7 @@ export function PublicProgrammePage({ slug, id }: { slug: string; id: string }) 
           {programme.summary ? <p className="text-sm" style={{ color: "var(--text-soft)" }}>{programme.summary}</p> : null}
           {programme.description ? <p className="whitespace-pre-line text-sm" style={{ color: "var(--text-soft)" }}>{programme.description}</p> : null}
 
-          {previewButton(sellable ? "flex lg:hidden" : "flex")}
+          {previewButton(false)}
 
           {reviews.length > 0 ? (
             <section className="flex flex-col gap-2" data-testid="programme-reviews">
@@ -153,7 +154,7 @@ export function PublicProgrammePage({ slug, id }: { slug: string; id: string }) 
             <span className="text-3xl font-extrabold tabular-nums" style={{ color: "var(--text)" }}>{price}</span>
             {policy ? <span className="text-sm" style={{ color: "var(--muted)" }}>{t(`buyer2.refundShort.${policy}`)}</span> : null}
             <BuyButton onClick={() => setBuying(true)} testId="programme-buy-open-desktop" />
-            {previewButton("flex")}
+            {previewButton(true)}
             <ul className="flex flex-col gap-1.5 pt-3 text-sm" style={{ borderTop: "1px solid var(--border)", color: "var(--text-soft)" }}>
               {(["perkStart", "perkDaily", "perkLog"] as const).map((perk) => (
                 <li key={perk} className="flex items-center gap-2">
