@@ -165,8 +165,9 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
 
   # ADR-462: tables holding both a box's rows (organization_id) and a
   # person's own account-level rows (user_id), each under its own forced
-  # policy. A row with neither is unmapped.
-  @ready_mixed_tables ~w(analytics_metric_resets)
+  # policy. A row with neither is unmapped. ADR-461: `exercise_names` holds a
+  # box's names (scope org) and a person's own names (scope user).
+  @ready_mixed_tables ~w(analytics_metric_resets exercise_names)
 
   def report do
     %{
