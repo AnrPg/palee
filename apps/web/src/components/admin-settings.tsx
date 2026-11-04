@@ -4,6 +4,7 @@
 
 
 
+import { AnalyticsResetHistory } from "@/components/admin/analytics/AnalyticsResetHistory";
 import {useUiTranslations} from "@/i18n/ui";
 import { useTranslations } from "next-intl";
 import { localizeError } from "@/i18n/presentation";
@@ -1206,6 +1207,7 @@ export function AdminSettingsHub() {
   const coachPayT = useTranslations("CoachPay");
   const adv = useTranslations("AdvancedSettings");
   const bodyDevices = useTranslations("BodyDevices");
+  const analyticsT = useTranslations("StaffAnalytics");
   const { tokens, currentUser } = useSession();
   const token = tokens?.access_token;
   const { membership, selectedOrganizationSlug } = useSelectedMembershipRole();
@@ -1390,6 +1392,13 @@ export function AdminSettingsHub() {
                   currentUserId={currentUser?.id}
                   currentUserEmail={currentUser?.email}
                 />
+              </CollapsibleSection>
+            ) : null}
+
+            {/* ADR-462: «Δεδομένα › Ιστορικό μηδενισμών», owners and admins only. */}
+            {can(membership, "reset_analytics") ? (
+              <CollapsibleSection id="data" title={analyticsT("history.sectionTitle")} description={analyticsT("history.sectionDescription")} defaultOpen={false}>
+                <AnalyticsResetHistory />
               </CollapsibleSection>
             ) : null}
 

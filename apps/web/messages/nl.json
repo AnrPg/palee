@@ -17867,5 +17867,576 @@
       "workout_published": "WOD gepubliceerd",
       "workout_republished": "WOD opnieuw gepubliceerd"
     }
+  },
+  "StaffAnalytics": {
+    "period": {
+      "label": "Periode",
+      "options": {
+        "7": "7 dagen",
+        "30": "30 dagen",
+        "90": "90 dagen",
+        "ytd": "Dit jaar",
+        "custom": "Van…tot"
+      },
+      "compare": "vergeleken met {count, plural, one {de vorige dag} other {de vorige # dagen}}",
+      "from": "Van",
+      "to": "Tot"
+    },
+    "filters": {
+      "region": "Periode en filters",
+      "button": "{count, plural, =0 {Filters} other {Filters (#)}}",
+      "title": "Filters",
+      "active": "Actieve filters",
+      "chip": "{group}: {value}",
+      "remove": "Verwijderen: {label}",
+      "all": "Alle",
+      "clear": "Filters wissen",
+      "done": "Klaar",
+      "unknownValue": "Onbekend",
+      "demographicsNote": "* Leeftijd en gender komen alleen van mensen die ervoor kozen ze in de ranglijsten te tonen. Een getal over minder dan 5 mensen wordt verborgen."
+    },
+    "groups": {
+      "location_ids": "Vestiging",
+      "class_type_ids": "Soort les",
+      "levels": "Niveau",
+      "coach_ids": "Coach",
+      "time_of_day": "Tijd",
+      "package_ids": "Abonnementspakket",
+      "tenure_bands": "Lid sinds",
+      "age_bands": "Leeftijd",
+      "genders": "Gender"
+    },
+    "values": {
+      "levels": {
+        "beginner": "Beginners",
+        "all_levels": "Alle niveaus",
+        "advanced": "Gevorderden"
+      },
+      "time_of_day": {
+        "morning": "Ochtend",
+        "midday": "Middag",
+        "afternoon": "Namiddag",
+        "evening": "Avond"
+      },
+      "tenure_bands": {
+        "lt_3m": "Korter dan 3 maanden",
+        "3_12m": "3–12 maanden",
+        "gt_12m": "Langer dan een jaar"
+      },
+      "age_bands": {
+        "under_18": "Onder 18",
+        "18_34": "18–34",
+        "35_44": "35–44",
+        "45_54": "45–54",
+        "55_64": "55–64",
+        "65_plus": "65+",
+        "unknown": "Onbekend"
+      },
+      "genders": {
+        "women": "Vrouwen",
+        "men": "Mannen",
+        "unknown": "Onbekend"
+      }
+    },
+    "help": {
+      "open": "Wat betekent: {label}",
+      "what": "Wat het meet",
+      "how": "Hoe het berekend wordt",
+      "good": "Een goed getal",
+      "change": "Als het verandert"
+    },
+    "reset": {
+      "action": "Vanaf vandaag op nul zetten",
+      "title": "«{label}» op nul zetten?",
+      "body": "De telling begint vanaf vandaag opnieuw. Oude gegevens worden niet gewist: je vindt ze in Instellingen › Gegevens › Geschiedenis van nulstellingen.",
+      "confirm": "Vanaf vandaag op nul zetten",
+      "cancel": "Annuleren"
+    },
+    "kpi": {
+      "days": "{count, plural, one {# dag} other {# dagen}}",
+      "points": "{value} ptn",
+      "daysChange": "{sign}{count, plural, one {# dag} other {# dagen}}",
+      "since": "vanaf {date}",
+      "suppressed": "—",
+      "suppressedReason": "Verborgen: minder dan 5 mensen",
+      "noPrevious": "Niets om mee te vergelijken",
+      "noValue": "Te weinig gegevens",
+      "unchanged": "Geen verandering",
+      "previous": "(eerder: {value})",
+      "noData": "Nog geen gegevens voor deze periode.",
+      "unknownCoach": "Onbekende coach",
+      "classesAttendances": "{classes, plural, one {# les} other {# lessen}} · {attendances} aanwezig",
+      "athletes": "{count, plural, one {# atleet} other {# atleten}}",
+      "rating": "{rating} ★ · {count, plural, one {# review} other {# reviews}}",
+      "people": "{count, plural, one {# persoon} other {# personen}}",
+      "noPackage": "Zonder abonnementspakket",
+      "more": "Meer cijfers",
+      "loading": "Laden…",
+      "teamWorkouts": "Team- en solotrainingen"
+    },
+    "pages": {
+      "overview": {
+        "title": "Overzicht",
+        "what": "De gezondheid van de box op één pagina: boxleden, nieuwe, wie vertrok en wie zou kunnen vertrekken.",
+        "how": "Elk getal geldt voor de gekozen periode en wordt vergeleken met de even lange periode ervoor. De filters gelden voor de hele pagina."
+      },
+      "training": {
+        "title": "Training",
+        "what": "Hoe de lessen gebruikt worden: bezetting, niet gekomen, annuleringen, drukke uren en hoe trainingen afgemaakt worden.",
+        "how": "Uit boekingen en aanwezigheid in de periode, vergeleken met de even lange periode ervoor. De filters gelden voor de hele pagina."
+      },
+      "coaching": {
+        "title": "Coaching",
+        "what": "Het werk van de coaches: gegeven lessen, begeleide atleten, gedane programma’s en beoordelingen.",
+        "how": "Uit de lessen, de coaching en de reviews van de periode, vergeleken met de vorige. De filters gelden voor de hele pagina."
+      },
+      "engagement": {
+        "title": "Betrokkenheid",
+        "what": "Hoeveel boxleden Palee gebruiken: actief per week, uitdagingen, reeksen en activiteit.",
+        "how": "Uit wat boxleden in de periode in de app en in de box deden, vergeleken met de vorige. Acties van het team tellen niet."
+      },
+      "health": {
+        "title": "Gezondheid",
+        "what": "Blessures en herstel: hoe vaak, hoe lang en waar.",
+        "how": "Uit de blessuremeldingen van de periode, vergeleken met de vorige. De filters gelden voor de hele pagina."
+      },
+      "finance": {
+        "title": "Financiën",
+        "what": "De financiën van de box: maandelijks terugkerende omzet, omzet per boxlid en inning.",
+        "how": "Uit abonnementen, facturen en betalingen van de periode, vergeleken met de vorige. De filters gelden voor de hele pagina."
+      }
+    },
+    "metrics": {
+      "overview": {
+        "active_members": {
+          "label": "Actieve boxleden",
+          "what": "Boxleden met een actief abonnementspakket.",
+          "how": "Geteld op de laatste dag van de periode.",
+          "change": "Een daling volgt meestal op pakketten die afliepen zonder verlenging: bekijk de verlengingslijst."
+        },
+        "net_member_change": {
+          "label": "Netto verandering",
+          "what": "Hoeveel boxleden je in totaal won of verloor.",
+          "how": "Actieve boxleden aan het eind van de periode min die op de dag vóór het begin.",
+          "change": "Onder nul vertrokken er meer dan er kwamen: bekijk vertrek en nieuwe boxleden samen."
+        },
+        "new_members": {
+          "label": "Nieuwe boxleden",
+          "what": "Mensen die in de periode hun eerste abonnementspakket namen.",
+          "how": "Geteld bij de start van ieders eerste pakket dat geen proefles is.",
+          "change": "Een daling volgt vaak op minder proeflessen of minder proeven die omzetten."
+        },
+        "churn_rate": {
+          "label": "Vertrek",
+          "what": "Het deel van de boxleden dat in de periode vertrok.",
+          "how": "Actief op de dag vóór de periode en zonder actief pakket aan het eind, gedeeld door alle actieven op die dag.",
+          "change": "Stijgt het, neem contact op met de boxleden met risico en kijk wat er veranderde (rooster, prijzen, coaches)."
+        },
+        "trial_conversion": {
+          "label": "Proefles naar abonnement",
+          "what": "Hoeveel proefdeelnemers boxlid werden.",
+          "how": "Proefaanvragen van de periode die later omzetten, gedeeld door alle proefaanvragen van de periode.",
+          "change": "Daalt het, neem sneller contact op na de proefles en bekijk je aanbod."
+        },
+        "members_at_risk": {
+          "label": "Boxleden met risico",
+          "what": "Boxleden van wie Palee denkt dat ze kunnen vertrekken.",
+          "how": "Middel of hoog vertrekrisico op de laatste dag van de periode, zonder wie je hebt uitgesteld.",
+          "change": "Stijgt het, doe iets: stuur ze een bericht of nodig ze uit voor een les."
+        }
+      },
+      "training": {
+        "class_fill_rate": {
+          "label": "Bezetting van lessen",
+          "what": "Hoe vol de lessen waren.",
+          "how": "Goedgekeurde boekingen gedeeld door de capaciteit van de lessen in de periode (lessen zonder capaciteit tellen niet).",
+          "change": "Lage bezetting op sommige uren betekent misschien te veel lessen; hoge dat sommigen geen plek vinden."
+        },
+        "no_show_rate": {
+          "label": "Niet gekomen",
+          "what": "Boekingen waarbij de persoon niet kwam.",
+          "how": "Gemiste aanwezigheden gedeeld door gemiste plus bijgewoonde.",
+          "change": "Stijgt het, stuur een herinnering vóór de les of bekijk de regel voor laat annuleren."
+        },
+        "late_cancellations": {
+          "label": "Late annuleringen",
+          "what": "Boekingen die na de termijn voor laat annuleren werden geannuleerd.",
+          "how": "Geteld uit de aanwezigheid van de periode.",
+          "change": "Veel late annuleringen nemen anderen een plek af: bekijk de termijn en de herinneringen."
+        },
+        "waitlist_conversion": {
+          "label": "Van de wachtlijst",
+          "what": "Hoeveel mensen op de wachtlijst toch een plek kregen.",
+          "how": "Goedgekeurde boekingen van de wachtlijst, gedeeld door alle boekingen op de wachtlijst.",
+          "change": "Is het laag, dan zijn die lessen te klein: denk aan nog een les op dat uur."
+        },
+        "visits_per_member_week": {
+          "label": "Bezoeken per week",
+          "what": "Hoe vaak iemand die traint gemiddeld komt.",
+          "how": "Bijgewoonde lessen gedeeld door de mensen die kwamen en door de weken van de periode.",
+          "change": "Een daling is een vroeg teken van minder motivatie, vaak vóór iemand vertrekt."
+        },
+        "attendance_by_hour": {
+          "label": "Aanwezigheid per uur",
+          "what": "Wanneer mensen naar de les komen, per uur van de dag.",
+          "how": "Bijgewoonde lessen per beginuur, in de tijd van de box.",
+          "change": "Verplaats of voeg lessen toe richting de drukke uren."
+        },
+        "attendance_by_weekday": {
+          "label": "Aanwezigheid per dag",
+          "what": "Op welke dagen mensen naar de les komen.",
+          "how": "Bijgewoonde lessen per dag van de week, in de tijd van de box.",
+          "change": "Drukke dagen hebben misschien meer lessen nodig, rustige minder."
+        },
+        "execution_kpis": {
+          "label": "Uitvoering van trainingen",
+          "what": "Hoe atleten hun trainingen in de app doen: wat ze afmaken, overslaan, pauzeren en stoppen.",
+          "how": "Uit de trainingen die in de periode gestart zijn.",
+          "change": "Daalt het afmaken, kijk hieronder waar mensen stoppen en vereenvoudig die delen."
+        }
+      },
+      "coaching": {
+        "classes_per_coach": {
+          "label": "Lessen per coach",
+          "what": "Hoeveel lessen elke coach gaf en hoeveel mensen kwamen.",
+          "how": "De lessen van de periode per coach, met de aanwezigheden.",
+          "change": "Een groot verschil tussen coaches vraagt misschien om een eerlijker rooster."
+        },
+        "athletes_per_coach": {
+          "label": "Atleten per coach",
+          "what": "Hoeveel atleten elke coach persoonlijk begeleidt.",
+          "how": "Actieve coachingrelaties op de laatste dag van de periode; het getal is het gemiddelde per coach.",
+          "change": "Een coach met veel meer atleten heeft misschien hulp of een grens nodig."
+        },
+        "programme_adherence": {
+          "label": "Programmatrouw",
+          "what": "Hoeveel toegewezen trainingen de atleten echt deden.",
+          "how": "Toegewezen trainingen afgemaakt tussen een dag vóór en zeven dagen na hun datum, gedeeld door alle tot vandaag toegewezen.",
+          "change": "Daalt het, vraag de atleten of het programma bij ze past."
+        },
+        "review_rating_per_coach": {
+          "label": "Beoordelingen per coach",
+          "what": "De gemiddelde lesbeoordeling per coach.",
+          "how": "Reviews van de periode per coach van de les; het getal is het gemiddelde van alle reviews.",
+          "change": "Lees de lage reviews van een coach samen met die coach."
+        }
+      },
+      "engagement": {
+        "weekly_active_users": {
+          "label": "Actief per week",
+          "what": "Mensen die de app gebruikten of naar een les kwamen, per week.",
+          "how": "Verschillende mensen per week, gemiddeld over de weken van de periode. Het team telt niet.",
+          "change": "Een daling is vaak het eerste teken van minder interesse."
+        },
+        "challenge_participation": {
+          "label": "Deelname aan uitdagingen",
+          "what": "Het deel van de boxleden dat aan een uitdaging meedeed.",
+          "how": "Mensen met voortgang in een uitdaging van de periode, gedeeld door de actieve boxleden.",
+          "change": "Is het laag, maak uitdagingen eenvoudiger of kondig ze beter aan."
+        },
+        "booking_streaks": {
+          "label": "Boekingsreeksen",
+          "what": "Mensen die week na week trainen.",
+          "how": "Mensen met 4 of meer weken op rij met een les, tot het eind van de periode.",
+          "change": "Meer lange reeksen betekent vaste gewoontes; een daling vraagt om herinneringen."
+        },
+        "event_mix": {
+          "label": "Verdeling van activiteit",
+          "what": "Wat mensen in Palee deden, per soort activiteit.",
+          "how": "De vastgelegde gebeurtenissen van de periode, per categorie.",
+          "change": "Vergelijk de soorten: een stijging kan komen van een nieuwe functie of een campagne."
+        }
+      },
+      "health": {
+        "injuries_per_1000_attendances": {
+          "label": "Blessures per 1000 bezoeken",
+          "what": "Hoe vaak blessures voorkomen ten opzichte van hoeveel er getraind wordt.",
+          "how": "In de periode gemelde blessures per 1000 bijgewoonde lessen.",
+          "change": "Stijgt het, bekijk de lichaamsdelen hieronder en de programmering van die weken."
+        },
+        "mean_recovery_days": {
+          "label": "Hersteltijd",
+          "what": "Hoe lang een blessure gemiddeld duurt.",
+          "how": "Dagen van begin tot herstel, voor de blessures die in de periode herstelden.",
+          "change": "Langer herstel vraagt misschien om nauwere begeleiding door de coaches."
+        },
+        "top_body_areas": {
+          "label": "Lichaamsdelen",
+          "what": "Waar de blessures zitten.",
+          "how": "Blessures van de periode per lichaamsdeel.",
+          "change": "Stijgt één deel, dan wijst dat misschien op een oefening of techniek om aan te werken."
+        }
+      },
+      "finance": {
+        "mrr": {
+          "label": "Maandelijks terugkerende omzet",
+          "what": "Wat de actieve abonnementen per maand opleveren.",
+          "how": "De prijs van elk actief terugkerend abonnement op de laatste dag van de periode, omgerekend naar een maandbedrag.",
+          "change": "Een daling komt van opgezegde of goedkopere abonnementen: vergelijk met het vertrek."
+        },
+        "arpm": {
+          "label": "Omzet per boxlid",
+          "what": "Wat een boxlid gemiddeld per maand oplevert.",
+          "how": "Betaalde omzet van de periode gedeeld door de actieve boxleden en door de maanden van de periode.",
+          "change": "Een stijging betekent betere pakketten of extra’s; een daling misschien meer kortingen."
+        },
+        "ltv": {
+          "label": "Waarde van een boxlid",
+          "what": "Een schatting van wat een boxlid oplevert over de hele tijd dat het blijft.",
+          "how": "Omzet per boxlid gedeeld door het maandelijkse vertrek. Leeg als niemand vertrok.",
+          "change": "Het volgt het vertrek: mensen langer houden verhoogt het het meest."
+        },
+        "on_time_collection": {
+          "label": "Op tijd betaald",
+          "what": "Het deel van de facturen dat vóór de vervaldatum betaald werd.",
+          "how": "Facturen die in de periode vervielen en op tijd volledig betaald werden, gedeeld door alle facturen die in de periode vervielen.",
+          "change": "Daalt het, stuur herinneringen vóór de vervaldatum."
+        },
+        "days_sales_outstanding": {
+          "label": "Dagen tot betaling",
+          "what": "Hoe lang een factuur gemiddeld op betaling wacht.",
+          "how": "Dagen van uitgifte tot laatste betaling, voor facturen die in de periode volledig betaald werden.",
+          "change": "Wordt het langer, vraag om betaling aan de balie of zet online betalen aan."
+        },
+        "revenue_per_package": {
+          "label": "Omzet per abonnementspakket",
+          "what": "Welke abonnementspakketten de omzet brengen.",
+          "how": "Betaalde omzet van de periode per abonnementspakket, min terugbetalingen.",
+          "change": "Promoot de pakketten die werken en herzie die weinig opbrengen."
+        }
+      },
+      "demographics": {
+        "age_bands": {
+          "label": "Leeftijd",
+          "what": "De leeftijden van de boxleden die ervoor kozen ze te tonen.",
+          "how": "Actieve boxleden per leeftijd die ze voor de ranglijsten opgaven. Groepen kleiner dan 5 mensen worden verborgen.",
+          "change": "Gebruik het om lessen en berichten op je groepen af te stemmen."
+        },
+        "genders": {
+          "label": "Gender",
+          "what": "Het gender van de boxleden die ervoor kozen het te tonen.",
+          "how": "Actieve boxleden per categorie die ze voor de ranglijsten kozen. Groepen kleiner dan 5 mensen worden verborgen.",
+          "change": "Gebruik het om te zien wie je lessen bereiken."
+        }
+      }
+    },
+    "widgets": {
+      "overview": {
+        "paid_revenue": {
+          "what": "Het geld dat in de periode echt betaald is.",
+          "change": "Open Financiën om te zien welke betalingen ontbreken."
+        },
+        "reviews": {
+          "what": "Reviews die boxleden in de periode gaven.",
+          "change": "Veel reviews tegelijk volgen meestal op een verandering: lees de nieuwste."
+        },
+        "active_injuries": {
+          "what": "Blessures die nog niet hersteld zijn.",
+          "change": "Open Gezondheid om te zien wie een aangepast programma nodig heeft."
+        },
+        "notification_clicks": {
+          "what": "Hoe vaak een melding van de box geopend werd.",
+          "change": "Weinig klikken betekent dat de berichten niet nuttig genoeg zijn: probeer er minder en duidelijkere."
+        },
+        "operational_status": {
+          "what": "Een paar dingen die aandacht vragen: financiën, lage beoordelingen, aflopende lidmaatschappen en coaching.",
+          "change": "Elke regel is een taak: open de bijbehorende pagina."
+        }
+      },
+      "training": {
+        "team_completions": {
+          "what": "Teamtrainingen die in de periode afgemaakt zijn.",
+          "change": "Meer teamtrainingen betekent meestal een hechtere community."
+        },
+        "individual_completions": {
+          "what": "Trainingen die in de periode alleen afgemaakt zijn.",
+          "change": "Vergelijk met teamtrainingen om te zien hoe mensen graag trainen."
+        },
+        "total_completions": {
+          "what": "Alle trainingen die in de periode afgemaakt zijn, in een team en alleen.",
+          "change": "Een daling hier komt vaak vóór een daling van de aanwezigheid."
+        },
+        "attendance_status": {
+          "what": "Aanwezigheid naar wat er gebeurde: aanwezig, gemist, geannuleerd.",
+          "change": "Veel gemiste of laat geannuleerde plekken vragen om herinneringen."
+        }
+      },
+      "engagement": {
+        "push_delivery": {
+          "what": "Appmeldingen naar wat ermee gebeurde: verzonden, mislukt enzovoort.",
+          "change": "Veel mislukkingen wijzen misschien op oude toestellen: vraag mensen de app opnieuw te openen."
+        },
+        "communication": {
+          "what": "Berichten tussen de box en de boxleden, per richting.",
+          "change": "Veel berichten aan de box wijzen misschien op een vraag die je één keer voor iedereen kunt beantwoorden."
+        },
+        "review_ratings": {
+          "what": "Reviews naar het aantal sterren.",
+          "change": "Lees eerst de lage beoordelingen."
+        }
+      },
+      "coaching": {
+        "active_athletes": {
+          "what": "Atleten met persoonlijke coaching op dit moment.",
+          "change": "Vergelijk met je coaches om te zien hoe vol ze zitten."
+        },
+        "captured_events": {
+          "what": "In de periode vastgelegde coachingacties.",
+          "change": "Weinig acties betekent misschien dat atleten niet van dichtbij gevolgd worden."
+        },
+        "reviews": {
+          "what": "Reviews over de coaching in de periode.",
+          "change": "Lees ze samen met de coach over wie ze gaan."
+        }
+      },
+      "health": {
+        "active_injuries": {
+          "what": "Gemelde blessures die nog niet hersteld zijn.",
+          "change": "Controleer dat elke blessure een aangepast programma heeft."
+        },
+        "total_reports": {
+          "what": "Alle blessuremeldingen van de periode, hersteld of niet.",
+          "change": "Vergelijk met de blessures per 1000 bezoeken om te zien of meer trainen het verklaart."
+        },
+        "recent_injury_flags": {
+          "what": "Blessures die onlangs in de coaching gemarkeerd zijn.",
+          "change": "Praat met deze atleten vóór hun volgende training."
+        }
+      },
+      "execution": {
+        "completion_rate": {
+          "change": "Daalt het, kijk hieronder waar mensen stoppen."
+        },
+        "score_capture": {
+          "change": "Herinner mensen eraan hun score aan het eind in te vullen."
+        },
+        "skip_rate": {
+          "change": "Veel overslaan wijst misschien op te lange aftellingen."
+        },
+        "time_to_start": {
+          "change": "Lang wachten betekent misschien dat de training vóór de start moeilijk te lezen is."
+        },
+        "pauses": {
+          "change": "Veel pauzes betekenen misschien dat de training te lang of te zwaar is."
+        },
+        "review_drop_off": {
+          "change": "Maak de afrondingsstappen korter als velen daar stoppen."
+        },
+        "median_duration": {
+          "change": "Vergelijk met de tijd die je voor de training plande."
+        },
+        "clock_adjusted": {
+          "change": "Veel aanpassingen wijzen misschien op verkeerd geplande tijden."
+        },
+        "abandon_by_format": {
+          "change": "Vereenvoudig de formats waar de meesten stoppen."
+        },
+        "abandon_points": {
+          "change": "Bekijk deze delen: ze zijn misschien te lang of onduidelijk."
+        },
+        "free_text": {
+          "change": "Stoppen vrije-teksttrainingen vroeg, schrijf ze dan gestructureerd."
+        },
+        "daily_trend": {
+          "what": "Trainingen die elke dag gestart zijn, afgemaakt of niet.",
+          "change": "Rustige dagen volgen misschien het rooster of de programmering."
+        },
+        "completion_by_format": {
+          "what": "Hoe vaak trainingen afgemaakt worden, per format (AMRAP, EMOM…).",
+          "change": "Een format dat weinig afgemaakt wordt, heeft misschien een kortere tijd nodig."
+        },
+        "completion_by_source": {
+          "what": "Hoe vaak trainingen afgemaakt worden, per herkomst (les, coach, eigen keuze).",
+          "change": "Vergelijk de herkomsten om te zien bij welke trainingen mensen blijven."
+        },
+        "structured": {
+          "what": "Stap voor stap geschreven trainingen, gestart en afgemaakt.",
+          "change": "Vergelijk met vrije-teksttrainingen om te zien welk soort afgemaakt wordt."
+        }
+      },
+      "finance": {
+        "active_memberships": {
+          "what": "Lidmaatschappen die vandaag actief zijn.",
+          "change": "Een daling betekent meestal gemiste verlengingen."
+        },
+        "expiring": {
+          "what": "Lidmaatschappen die in de komende 30 dagen aflopen.",
+          "change": "Neem vóór het einde contact op met deze mensen om te verlengen."
+        },
+        "revenue": {
+          "what": "Het geld dat in de periode betaald is.",
+          "change": "Vergelijk met de openstaande facturen om te zien wat er nog komt."
+        },
+        "credit_balance": {
+          "what": "Tegoed van boxleden bij de box dat nog niet gebruikt is.",
+          "change": "Een hoog tegoed is geld dat je verschuldigd bent in lessen of producten."
+        },
+        "pending_invoices": {
+          "what": "Facturen die nog niet volledig betaald zijn.",
+          "change": "Vraag om betaling aan de balie of met een herinnering."
+        },
+        "overdue_invoices": {
+          "what": "Onbetaalde facturen na hun vervaldatum.",
+          "change": "Neem eerst contact op met deze mensen."
+        },
+        "renewal_rate": {
+          "what": "Het deel van de lidmaatschappen dat bij het aflopen verlengd werd.",
+          "change": "Daalt het, neem contact op voordat het lidmaatschap afloopt."
+        },
+        "credit_offsets": {
+          "what": "Factuurbedragen die met tegoed in plaats van geld gedekt zijn.",
+          "change": "Veel verrekeningen verlagen het geld dat je ontvangt."
+        },
+        "monthly_revenue": {
+          "what": "Omzet per maand: betaald en nog open.",
+          "how": "Betalingen en open facturen per maand gegroepeerd.",
+          "change": "Groeit de open lijn, dan komen betalingen te laat."
+        },
+        "revenue_streams": {
+          "what": "Waar de omzet vandaan komt: abonnementen, producten, evenementen en meer.",
+          "change": "Laat de bronnen groeien die het best werken."
+        },
+        "expiring_soon": {
+          "what": "De mensen van wie het lidmaatschap binnenkort afloopt.",
+          "change": "Neem vóór het einde contact met ze op."
+        },
+        "overdue_list": {
+          "what": "Facturen na de vervaldatum, met de dagen achterstand.",
+          "change": "Begin met de oudste."
+        },
+        "pending_payments": {
+          "what": "Betalingen die op bevestiging wachten.",
+          "change": "Bevestig of weiger ze zodat de cijfers kloppen."
+        },
+        "pending_rewards": {
+          "what": "Doorverwijsbeloningen die nog gegeven moeten worden.",
+          "change": "Geef ze snel, zodat mensen vrienden blijven uitnodigen."
+        }
+      }
+    },
+    "history": {
+      "sectionTitle": "Gegevens",
+      "sectionDescription": "Geschiedenis van nulstellingen van de boxstatistieken.",
+      "title": "Geschiedenis van nulstellingen",
+      "description": "Elk getal dat je op nul zette, met wie het deed en de waarde ervoor. Er is niets gewist: maak een nulstelling ongedaan om de oude gegevens weer te tellen.",
+      "empty": "Er is nog geen getal op nul gezet.",
+      "metric": "Getal",
+      "date": "Datum",
+      "who": "Door",
+      "before": "Ervoor",
+      "status": "Status",
+      "active": "Actief",
+      "undone": "Ongedaan gemaakt op {date}",
+      "undo": "Ongedaan maken",
+      "undoTitle": "Nulstelling van «{label}» ongedaan maken?",
+      "undoBody": "Het getal telt zijn oudere gegevens weer mee, zoals vóór de nulstelling.",
+      "undoConfirm": "Nulstelling ongedaan maken",
+      "cancel": "Annuleren",
+      "previous": "Vorige",
+      "next": "Volgende",
+      "page": "Pagina {page} van {pages}",
+      "unknownPerson": "Onbekend",
+      "beforeValue": "{value} · {from}–{to}"
+    }
   }
 }

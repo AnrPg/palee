@@ -17867,5 +17867,576 @@
       "workout_published": "WOD published",
       "workout_republished": "WOD published again"
     }
+  },
+  "StaffAnalytics": {
+    "period": {
+      "label": "Period",
+      "options": {
+        "7": "7 days",
+        "30": "30 days",
+        "90": "90 days",
+        "ytd": "This year",
+        "custom": "From…to"
+      },
+      "compare": "compared with the previous {count, plural, one {day} other {# days}}",
+      "from": "From",
+      "to": "To"
+    },
+    "filters": {
+      "region": "Period and filters",
+      "button": "{count, plural, =0 {Filters} other {Filters (#)}}",
+      "title": "Filters",
+      "active": "Filters in use",
+      "chip": "{group}: {value}",
+      "remove": "Remove {label}",
+      "all": "All",
+      "clear": "Clear filters",
+      "done": "Done",
+      "unknownValue": "Unknown",
+      "demographicsNote": "* Age and gender come only from people who chose to share them for the leaderboards. A figure that covers fewer than 5 people is hidden."
+    },
+    "groups": {
+      "location_ids": "Branch",
+      "class_type_ids": "Class type",
+      "levels": "Level",
+      "coach_ids": "Coach",
+      "time_of_day": "Time",
+      "package_ids": "Subscription package",
+      "tenure_bands": "Time with the box",
+      "age_bands": "Age",
+      "genders": "Gender"
+    },
+    "values": {
+      "levels": {
+        "beginner": "Beginners",
+        "all_levels": "All levels",
+        "advanced": "Advanced"
+      },
+      "time_of_day": {
+        "morning": "Morning",
+        "midday": "Midday",
+        "afternoon": "Afternoon",
+        "evening": "Evening"
+      },
+      "tenure_bands": {
+        "lt_3m": "Under 3 months",
+        "3_12m": "3–12 months",
+        "gt_12m": "Over a year"
+      },
+      "age_bands": {
+        "under_18": "Under 18",
+        "18_34": "18–34",
+        "35_44": "35–44",
+        "45_54": "45–54",
+        "55_64": "55–64",
+        "65_plus": "65+",
+        "unknown": "Unknown"
+      },
+      "genders": {
+        "women": "Women",
+        "men": "Men",
+        "unknown": "Unknown"
+      }
+    },
+    "help": {
+      "open": "About: {label}",
+      "what": "What it measures",
+      "how": "How it is calculated",
+      "good": "A good number",
+      "change": "If it changes"
+    },
+    "reset": {
+      "action": "Reset from today",
+      "title": "Reset «{label}»?",
+      "body": "The figure will start counting from today. Old data is not deleted: you will find it in Settings › Data › Reset history.",
+      "confirm": "Reset from today",
+      "cancel": "Cancel"
+    },
+    "kpi": {
+      "days": "{count, plural, one {# day} other {# days}}",
+      "points": "{value} pts",
+      "daysChange": "{sign}{count, plural, one {# day} other {# days}}",
+      "since": "from {date}",
+      "suppressed": "—",
+      "suppressedReason": "Hidden: fewer than 5 people",
+      "noPrevious": "Nothing to compare with",
+      "noValue": "Not enough data",
+      "unchanged": "No change",
+      "previous": "(before: {value})",
+      "noData": "No data for this period yet.",
+      "unknownCoach": "Unknown coach",
+      "classesAttendances": "{classes, plural, one {# class} other {# classes}} · {attendances} attended",
+      "athletes": "{count, plural, one {# athlete} other {# athletes}}",
+      "rating": "{rating} ★ · {count, plural, one {# review} other {# reviews}}",
+      "people": "{count, plural, one {# person} other {# people}}",
+      "noPackage": "No subscription package",
+      "more": "More figures",
+      "loading": "Loading…",
+      "teamWorkouts": "Team and solo workouts"
+    },
+    "pages": {
+      "overview": {
+        "title": "Overview",
+        "what": "The health of the box in one page: box members, newcomers, who left and who may leave.",
+        "how": "Every figure covers the period you pick and is compared with the period of the same length just before it. The filters narrow every figure on the page."
+      },
+      "training": {
+        "title": "Training",
+        "what": "How classes are used: fill, no-shows, cancellations, busy hours and how workouts are finished.",
+        "how": "Counted from bookings and attendance in the period, compared with the period of the same length before it. The filters apply to the whole page."
+      },
+      "coaching": {
+        "title": "Coaching",
+        "what": "The coaches' work: classes led, athletes followed, programmes done and ratings.",
+        "how": "Counted from the classes, coaching and reviews of the period, compared with the period before it. The filters apply to the whole page."
+      },
+      "engagement": {
+        "title": "Engagement",
+        "what": "How much box members use Palee: weekly active people, challenges, streaks and activity.",
+        "how": "Counted from what box members did in the app and at the box in the period, compared with the period before it. Staff actions are left out."
+      },
+      "health": {
+        "title": "Health",
+        "what": "Injuries and recovery: how often they happen, how long they last and where.",
+        "how": "Counted from the injury reports of the period, compared with the period before it. The filters apply to the whole page."
+      },
+      "finance": {
+        "title": "Finance",
+        "what": "The money side of the box: monthly recurring revenue, revenue per box member and collections.",
+        "how": "Counted from subscriptions, invoices and payments of the period, compared with the period before it. The filters apply to the whole page."
+      }
+    },
+    "metrics": {
+      "overview": {
+        "active_members": {
+          "label": "Active box members",
+          "what": "Box members with an active subscription package.",
+          "how": "Counted on the last day of the period.",
+          "change": "A fall usually follows expiring packages that were not renewed: check the renewals list."
+        },
+        "net_member_change": {
+          "label": "Net change",
+          "what": "How many box members you gained or lost overall.",
+          "how": "Active box members at the end of the period minus those the day before it started.",
+          "change": "Below zero means more people left than joined: look at churn and new box members together."
+        },
+        "new_members": {
+          "label": "New box members",
+          "what": "People who took their first subscription package in the period.",
+          "how": "Counted by the start of each person's first non-trial package.",
+          "change": "A drop often follows fewer trial classes or fewer trials that convert."
+        },
+        "churn_rate": {
+          "label": "Churn",
+          "what": "The share of box members who left during the period.",
+          "how": "Active the day before the period and without an active package at its end, divided by all active the day before.",
+          "change": "If it rises, contact the box members at risk and check what changed (schedule, prices, coaches)."
+        },
+        "trial_conversion": {
+          "label": "Trial conversion",
+          "what": "How many trial visitors became box members.",
+          "how": "Trial requests of the period that were later converted, divided by all trial requests of the period.",
+          "change": "If it falls, follow up sooner after the trial class and check the offer you give."
+        },
+        "members_at_risk": {
+          "label": "Box members at risk",
+          "what": "Box members Palee sees as likely to leave.",
+          "how": "Medium or high retention risk on the period's last day, without the ones you snoozed.",
+          "change": "A rise is a call to act: message them or invite them to a class."
+        }
+      },
+      "training": {
+        "class_fill_rate": {
+          "label": "Class fill",
+          "what": "How full the classes were.",
+          "how": "Approved bookings divided by the capacity of the classes in the period (classes without a capacity are left out).",
+          "change": "Low fill on certain hours may mean too many classes at that time; high fill means people may not find a place."
+        },
+        "no_show_rate": {
+          "label": "No-shows",
+          "what": "Bookings where the person did not come.",
+          "how": "Missed attendances divided by missed plus attended ones.",
+          "change": "If it rises, remind people before class or review the late cancellation rule."
+        },
+        "late_cancellations": {
+          "label": "Late cancellations",
+          "what": "Bookings cancelled after the late cancellation time.",
+          "how": "Counted from the attendance records of the period.",
+          "change": "Many late cancellations take places from others: check the cancellation time and reminders."
+        },
+        "waitlist_conversion": {
+          "label": "From the waitlist",
+          "what": "How many people on a waitlist finally got a place.",
+          "how": "Waitlisted bookings that were approved, divided by all waitlisted bookings.",
+          "change": "If it is low, those classes are too small for the demand: consider another class at that time."
+        },
+        "visits_per_member_week": {
+          "label": "Visits per week",
+          "what": "How often a person who trains comes, on average.",
+          "how": "Attended classes divided by the people who attended and by the weeks of the period.",
+          "change": "A fall is an early sign of lower motivation, often before people leave."
+        },
+        "attendance_by_hour": {
+          "label": "Attendance by hour",
+          "what": "When people come to class, by hour of the day.",
+          "how": "Attended classes by the start hour, in the box's time.",
+          "change": "Move or add classes towards the busy hours."
+        },
+        "attendance_by_weekday": {
+          "label": "Attendance by day",
+          "what": "Which days people come to class.",
+          "how": "Attended classes by the day of the week, in the box's time.",
+          "change": "Busy days may need more classes; quiet days may need fewer."
+        },
+        "execution_kpis": {
+          "label": "Workout execution",
+          "what": "How athletes run their workouts in the app: what they finish, skip, pause and stop.",
+          "how": "From the workout executions started in the period.",
+          "change": "If completion falls, look at where people stop below and simplify those parts."
+        }
+      },
+      "coaching": {
+        "classes_per_coach": {
+          "label": "Classes per coach",
+          "what": "How many classes each coach led and how many people attended them.",
+          "how": "Classes of the period by their coach, with the attended places.",
+          "change": "A big gap between coaches may need a fairer schedule."
+        },
+        "athletes_per_coach": {
+          "label": "Athletes per coach",
+          "what": "How many athletes each coach follows personally.",
+          "how": "Active coaching relationships on the period's last day; the figure is the average per coach.",
+          "change": "A coach with many more athletes may need help or a limit."
+        },
+        "programme_adherence": {
+          "label": "Programme adherence",
+          "what": "How many assigned workouts athletes actually did.",
+          "how": "Assigned workouts finished from a day before to seven days after their date, divided by all assigned ones up to today.",
+          "change": "If it falls, check with the athletes whether the programme suits them."
+        },
+        "review_rating_per_coach": {
+          "label": "Ratings per coach",
+          "what": "The average class rating per coach.",
+          "how": "Reviews of the period by the coach of the class; the figure is the average of all reviews.",
+          "change": "Read the low reviews of a coach together with them."
+        }
+      },
+      "engagement": {
+        "weekly_active_users": {
+          "label": "Active per week",
+          "what": "People who used the app or came to class, per week.",
+          "how": "Different people each week, averaged over the weeks of the period. Staff are left out.",
+          "change": "A fall is often the first sign of lower interest."
+        },
+        "challenge_participation": {
+          "label": "Challenge participation",
+          "what": "The share of box members who took part in a challenge.",
+          "how": "People with progress in a challenge of the period, divided by the active box members.",
+          "change": "If it is low, make challenges simpler or announce them better."
+        },
+        "booking_streaks": {
+          "label": "Booking streaks",
+          "what": "People who train week after week.",
+          "how": "People with 4 or more weeks in a row with a class, up to the end of the period.",
+          "change": "More long streaks mean steadier habits; a fall needs reminders."
+        },
+        "event_mix": {
+          "label": "Activity mix",
+          "what": "What people did in Palee, by kind of activity.",
+          "how": "The recorded events of the period, grouped by category.",
+          "change": "Compare kinds: a rise in one may come from a new feature or a campaign."
+        }
+      },
+      "health": {
+        "injuries_per_1000_attendances": {
+          "label": "Injuries per 1,000 visits",
+          "what": "How often injuries happen compared with how much people train.",
+          "how": "Injuries reported in the period for every 1,000 attended classes.",
+          "change": "If it rises, look at the body areas below and the programming of those weeks."
+        },
+        "mean_recovery_days": {
+          "label": "Recovery time",
+          "what": "How long an injury lasts, on average.",
+          "how": "Days from start to healing, for the injuries that healed in the period.",
+          "change": "Longer recoveries may need closer follow-up from the coaches."
+        },
+        "top_body_areas": {
+          "label": "Body areas",
+          "what": "Where the injuries are.",
+          "how": "Injuries of the period by body area.",
+          "change": "One area rising may point to an exercise or technique to work on."
+        }
+      },
+      "finance": {
+        "mrr": {
+          "label": "Monthly recurring revenue",
+          "what": "What the active subscriptions bring in per month.",
+          "how": "The price of every active recurring subscription on the period's last day, turned into a monthly amount.",
+          "change": "A fall comes from cancelled or cheaper subscriptions: compare with churn."
+        },
+        "arpm": {
+          "label": "Revenue per box member",
+          "what": "What a box member brings in per month, on average.",
+          "how": "Paid revenue of the period divided by the active box members and by the months of the period.",
+          "change": "A rise means better packages or extras; a fall may mean more discounts."
+        },
+        "ltv": {
+          "label": "Lifetime value",
+          "what": "An estimate of what a box member brings in over the whole time they stay.",
+          "how": "Revenue per box member divided by the monthly churn. Empty when nobody left.",
+          "change": "It moves with churn: keeping people longer raises it the most."
+        },
+        "on_time_collection": {
+          "label": "Paid on time",
+          "what": "The share of invoices paid by their due date.",
+          "how": "Invoices due in the period and paid in full by the due date, divided by all invoices due in the period.",
+          "change": "If it falls, send reminders before the due date."
+        },
+        "days_sales_outstanding": {
+          "label": "Days to get paid",
+          "what": "How long an invoice waits to be paid, on average.",
+          "how": "Days from issue to the last payment, for invoices paid in full in the period.",
+          "change": "If it grows, ask for payment at the desk or turn on online payment."
+        },
+        "revenue_per_package": {
+          "label": "Revenue per subscription package",
+          "what": "Which subscription packages bring in the money.",
+          "how": "Paid revenue of the period by subscription package, minus refunds.",
+          "change": "Promote the packages that work and review the ones that bring little."
+        }
+      },
+      "demographics": {
+        "age_bands": {
+          "label": "Age",
+          "what": "The ages of the box members who chose to share them.",
+          "how": "Active box members by the age they gave for the leaderboards. Groups of fewer than 5 people are hidden.",
+          "change": "Use it to shape classes and messages for the groups you have."
+        },
+        "genders": {
+          "label": "Gender",
+          "what": "The gender of the box members who chose to share it.",
+          "how": "Active box members by the division they chose for the leaderboards. Groups of fewer than 5 people are hidden.",
+          "change": "Use it to see who your classes reach."
+        }
+      }
+    },
+    "widgets": {
+      "overview": {
+        "paid_revenue": {
+          "what": "Money actually paid in the period.",
+          "change": "Open Finance to see which payments are missing."
+        },
+        "reviews": {
+          "what": "Reviews box members left in the period.",
+          "change": "Many reviews at once usually follow a change: read the newest ones."
+        },
+        "active_injuries": {
+          "what": "Injuries that are not healed yet.",
+          "change": "Open Health to see who needs a scaled programme."
+        },
+        "notification_clicks": {
+          "what": "Times people opened a notification from the box.",
+          "change": "Few clicks mean the messages are not useful enough: try fewer and clearer ones."
+        },
+        "operational_status": {
+          "what": "A few things that need attention: finance, low ratings, expiring memberships and coaching.",
+          "change": "Each line is a task: open the page it belongs to."
+        }
+      },
+      "training": {
+        "team_completions": {
+          "what": "Team workouts finished in the period.",
+          "change": "More team workouts usually mean a stronger community."
+        },
+        "individual_completions": {
+          "what": "Workouts finished alone in the period.",
+          "change": "Compare with team workouts to see how people like to train."
+        },
+        "total_completions": {
+          "what": "All workouts finished in the period, team and alone.",
+          "change": "A fall here often comes before a fall in attendance."
+        },
+        "attendance_status": {
+          "what": "Attendance records by what happened: attended, missed, cancelled.",
+          "change": "Many missed or late-cancelled places need reminders."
+        }
+      },
+      "engagement": {
+        "push_delivery": {
+          "what": "App notifications by what happened to them: sent, failed and so on.",
+          "change": "Many failures may mean old devices: ask people to open the app again."
+        },
+        "communication": {
+          "what": "Messages between the box and box members, by direction.",
+          "change": "Many messages to the box may point to a question you can answer once for everyone."
+        },
+        "review_ratings": {
+          "what": "Reviews by the stars given.",
+          "change": "Read the low ratings first."
+        }
+      },
+      "coaching": {
+        "active_athletes": {
+          "what": "Athletes with personal coaching right now.",
+          "change": "Compare with the coaches you have to see how full they are."
+        },
+        "captured_events": {
+          "what": "Coaching actions recorded in the period.",
+          "change": "Few actions may mean athletes are not followed closely."
+        },
+        "reviews": {
+          "what": "Reviews of coaching in the period.",
+          "change": "Read them with the coach they are about."
+        }
+      },
+      "health": {
+        "active_injuries": {
+          "what": "Injuries reported and not healed yet.",
+          "change": "Check that each one has a scaled programme."
+        },
+        "total_reports": {
+          "what": "All injury reports of the period, healed or not.",
+          "change": "Compare with the injuries per 1,000 visits to see if more training explains it."
+        },
+        "recent_injury_flags": {
+          "what": "Injuries flagged recently in coaching.",
+          "change": "Talk to the athletes flagged before their next workout."
+        }
+      },
+      "execution": {
+        "completion_rate": {
+          "change": "If it falls, see below where people stop."
+        },
+        "score_capture": {
+          "change": "Remind people to log their score at the end."
+        },
+        "skip_rate": {
+          "change": "Many skips may mean the countdowns are too long."
+        },
+        "time_to_start": {
+          "change": "A long wait may mean the workout is hard to read before starting."
+        },
+        "pauses": {
+          "change": "Many pauses may mean the workout is too long or hard."
+        },
+        "review_drop_off": {
+          "change": "Make the finish steps shorter if many stop there."
+        },
+        "median_duration": {
+          "change": "Compare with the time you planned for the workout."
+        },
+        "clock_adjusted": {
+          "change": "Many adjustments may mean the planned times are wrong."
+        },
+        "abandon_by_format": {
+          "change": "Simplify the formats where most people stop."
+        },
+        "abandon_points": {
+          "change": "Look at these parts: they may be too long or unclear."
+        },
+        "free_text": {
+          "change": "If free text workouts stop early, write them as structured ones."
+        },
+        "daily_trend": {
+          "what": "Workouts started each day, finished or not.",
+          "change": "Quiet days may follow the schedule or the programming."
+        },
+        "completion_by_format": {
+          "what": "How often workouts are finished, by format (AMRAP, EMOM…).",
+          "change": "A format with low completion may need a shorter time."
+        },
+        "completion_by_source": {
+          "what": "How often workouts are finished, by where they came from (class, coach, own choice).",
+          "change": "Compare sources to see which workouts people stick with."
+        },
+        "structured": {
+          "what": "Workouts written step by step, started and finished.",
+          "change": "Compare with free text workouts to see which kind people finish."
+        }
+      },
+      "finance": {
+        "active_memberships": {
+          "what": "Memberships active today.",
+          "change": "A fall usually means renewals were missed."
+        },
+        "expiring": {
+          "what": "Memberships that end in the next 30 days.",
+          "change": "Contact these people before the end to renew."
+        },
+        "revenue": {
+          "what": "Money paid in the period.",
+          "change": "Compare with the pending invoices to see what is still to come."
+        },
+        "credit_balance": {
+          "what": "Credit box members have with the box, still unused.",
+          "change": "A large balance is money you owe in classes or products."
+        },
+        "pending_invoices": {
+          "what": "Invoices not yet paid in full.",
+          "change": "Ask for payment at the desk or with a reminder."
+        },
+        "overdue_invoices": {
+          "what": "Unpaid invoices past their due date.",
+          "change": "Contact these people first."
+        },
+        "renewal_rate": {
+          "what": "The share of memberships renewed when they ended.",
+          "change": "If it falls, contact people before their membership ends."
+        },
+        "credit_offsets": {
+          "what": "Invoice amounts covered by credit instead of money.",
+          "change": "Many offsets lower the cash you collect."
+        },
+        "monthly_revenue": {
+          "what": "Revenue per month: paid and still pending.",
+          "how": "Payments and open invoices grouped by month.",
+          "change": "A growing pending line means payments are late."
+        },
+        "revenue_streams": {
+          "what": "Where the revenue comes from: subscriptions, products, events and more.",
+          "change": "Grow the streams that work best."
+        },
+        "expiring_soon": {
+          "what": "The people whose membership ends soon.",
+          "change": "Contact them before the end."
+        },
+        "overdue_list": {
+          "what": "Invoices past their due date, with the days overdue.",
+          "change": "Start with the oldest ones."
+        },
+        "pending_payments": {
+          "what": "Payments waiting to be confirmed.",
+          "change": "Confirm or reject them so the figures stay right."
+        },
+        "pending_rewards": {
+          "what": "Referral rewards waiting to be given.",
+          "change": "Give them soon, so people keep inviting friends."
+        }
+      }
+    },
+    "history": {
+      "sectionTitle": "Data",
+      "sectionDescription": "Reset history of the box statistics.",
+      "title": "Reset history",
+      "description": "Every figure you reset, with who did it and its value before. Nothing was deleted: undo a reset to count the old data again.",
+      "empty": "No figure has been reset yet.",
+      "metric": "Figure",
+      "date": "Date",
+      "who": "By",
+      "before": "Before",
+      "status": "Status",
+      "active": "Active",
+      "undone": "Undone {date}",
+      "undo": "Undo",
+      "undoTitle": "Undo the reset of «{label}»?",
+      "undoBody": "The figure will count its older data again, as before the reset.",
+      "undoConfirm": "Undo reset",
+      "cancel": "Cancel",
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {page} of {pages}",
+      "unknownPerson": "Unknown",
+      "beforeValue": "{value} · {from}–{to}"
+    }
   }
 }

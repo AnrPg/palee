@@ -1,13 +1,10 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { ExecutionKpiDashboard } from "./ExecutionKpiDashboard";
 
-const fetchAdminAnalyticsSummary = vi.fn();
-
-vi.mock("@/api/analytics", () => ({
-  fetchAdminAnalyticsSummary: (...args: unknown[]) => fetchAdminAnalyticsSummary(...args),
+vi.mock("next-intl", () => ({
+  useTranslations: () => (key: string) => key,
 }));
 vi.mock("@/i18n/ui", () => ({
   useUiTranslations: () => (key: string, params?: Record<string, unknown>) =>
@@ -16,7 +13,12 @@ vi.mock("@/i18n/ui", () => ({
 vi.mock("@/i18n/use-ui-locale", () => ({ useUiLocale: () => "en" }));
 vi.mock("@/components/session-provider", () => ({ useSession: () => ({ tokens: { access_token: "token" } }) }));
 vi.mock("@/components/semantic-label", () => ({ SemanticLabel: ({ value }: { value: string }) => <>{value}</> }));
-vi.mock("@/components/HelpTooltip", () => ({ HelpTooltip: () => null }));
+vi.mock("@/components/admin/analytics/MetricHelp", () => ({
+  MetricHelp: ({ label, metricKey }: { label: string; metricKey?: string }) => <span data-testid="help" data-metric={metricKey}>{label}</span>,
+}));
+vi.mock("@/components/admin/analytics/KpiWidgets", () => ({
+  useSinceLabel: () => (since: string | null) => (since ? `since ${since.slice(0, 10)}` : null),
+}));
 
 const report = {
   started: 4,
@@ -43,25 +45,15 @@ const report = {
   ],
 };
 
-function renderDashboard() {
-  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  return render(
-    <QueryClientProvider client={client}>
-      <ExecutionKpiDashboard />
-    </QueryClientProvider>,
-  );
+function renderDashboard(since: string | null = null) {
+  return render(<ExecutionKpiDashboard payload={{ execution: report }} since={since} />);
 }
 
 describe("ExecutionKpiDashboard", () => {
-  beforeEach(() => {
-    fetchAdminAnalyticsSummary.mockReset();
-    fetchAdminAnalyticsSummary.mockResolvedValue({ execution: report });
-  });
-
-  it("shows headline KPIs, stopping points and a table view of the trend", async () => {
+  it("shows headline KPIs, stopping points and a table view of the trend", () => {
     renderDashboard();
 
-    expect(await screen.findByText('kpiCompletedOfStarted:{"completed":3,"started":4}')).toBeInTheDocument();
+    expect(screen.getByText('kpiCompletedOfStarted:{"completed":3,"started":4}')).toBeInTheDocument();
     expect(screen.getAllByText("75%").length).toBeGreaterThan(0);
     expect(screen.getByText("0:42")).toBeInTheDocument();
     expect(screen.getByText("EMOM 10")).toBeInTheDocument();
@@ -72,11 +64,16 @@ describe("ExecutionKpiDashboard", () => {
     expect(screen.queryByRole("img", { name: /kpiDailyTrendSummary/ })).not.toBeInTheDocument();
   });
 
-  it("refetches for another period", async () => {
-    renderDashboard();
-    await screen.findByText("0:42");
+  it("has no period picker of its own and shows its reset date and infobox", () => {
+    renderDashboard("2026-11-04T08:00:00Z");
 
-    fireEvent.click(screen.getByRole("button", { name: 'kpiLastDays:{"days":7}' }));
-    expect(fetchAdminAnalyticsSummary).toHaveBeenLastCalledWith("token", 7);
+    expect(screen.queryByRole("button", { name: /kpiLastDays/ })).not.toBeInTheDocument();
+    expect(screen.getByTestId("metric-since")).toHaveTextContent("since 2026-11-04");
+    expect(screen.getAllByTestId("help").some((node) => node.dataset.metric === "training.execution_kpis")).toBe(true);
+  });
+
+  it("shows the empty state without an execution block", () => {
+    render(<ExecutionKpiDashboard payload={{}} />);
+    expect(screen.getByText("noCapturedFactsInThisReportingWindowdc344c7")).toBeInTheDocument();
   });
 });
