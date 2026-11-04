@@ -1053,6 +1053,17 @@ defmodule Palee.Notifications do
         url: field(payload, :url)
       })
 
+  # ADR-451: documents that did not reach the tax authority (refused or out
+  # of attempts); to the staff who manage billing, once a day at most.
+  def process_event("fiscal_documents_not_reported", payload),
+    do:
+      enqueue_simple(:fiscal_documents_not_reported, payload, %{
+        connection: field(payload, :connection),
+        count: field(payload, :count),
+        dedupe_key: field(payload, :dedupe_key),
+        url: field(payload, :url)
+      })
+
   # ADR-379: Palee turned off a failing webhook; to each person who manages
   # settings, once per turn-off (the dedupe key has the endpoint and time).
   def process_event("webhook_disabled", payload),

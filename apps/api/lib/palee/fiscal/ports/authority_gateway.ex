@@ -6,10 +6,14 @@ defmodule Palee.Fiscal.Ports.AuthorityGateway do
 
   `connection` is the organization's authority connection with its
   decrypted credentials (`%{environment, user_id, subscription_key}`).
-  `invoice` is the element tree of `Fiscal.Domain.MyDataInvoice.build/2`.
+  `invoices` are element trees of `Fiscal.Domain.MyDataInvoice.build/2`,
+  sent together (ADR-451); the results come back in the same order.
 
   Errors:
     * `{:rejected, [%{code, message}]}` – the authority refused the content;
+    * `{:duplicate, [%{code, message}]}` – the authority already has this
+      document (a lost answer to an earlier attempt): look it up with
+      `find/2` (ADR-451);
     * `{:unauthorized, reason}` – the credentials were refused;
     * anything else is transient (network, timeout, 5xx, technical error).
 
@@ -17,7 +21,8 @@ defmodule Palee.Fiscal.Ports.AuthorityGateway do
   credit note, which is reported like any other document (ADR-241).
 
   Every call also returns what went over the wire, for the attempt log:
-  `%{request_body, response_status, response_body}`.
+  `%{request_body, request_bodies, response_status, response_body}`, where
+  `request_bodies` holds each invoice's own `InvoicesDoc` in order.
   """
 
   @type connection :: %{
@@ -32,13 +37,31 @@ defmodule Palee.Fiscal.Ports.AuthorityGateway do
           qr_url: String.t() | nil
         }
   @type wire :: %{
+          optional(:request_bodies) => [String.t()],
           request_body: String.t() | nil,
           response_status: non_neg_integer() | nil,
           response_body: String.t() | nil
         }
 
-  @callback submit(connection(), invoice :: list()) ::
-              {{:ok, receipt()} | {:error, term()}, wire()}
+  @type result :: {:ok, receipt()} | {:error, term()}
+
+  @type document_key :: %{
+          issuer_vat: String.t(),
+          series: String.t(),
+          aa: String.t(),
+          issue_date: Date.t(),
+          invoice_type: String.t()
+        }
+
+  @callback submit(connection(), invoices :: [list()]) :: {[result()], wire()}
+
+  @doc """
+  ADR-451: the receipt of a document the authority already registered,
+  found by its keys. `:not_found` when it has none; errors as `check/1`.
+  Used before resending after an attempt whose answer was lost, and when
+  the authority answers "duplicate".
+  """
+  @callback find(connection(), document_key()) :: {:ok, receipt()} | :not_found | {:error, term()}
 
   @doc """
   «Δοκιμή σύνδεσης» (ADR-273): asks the authority something harmless with

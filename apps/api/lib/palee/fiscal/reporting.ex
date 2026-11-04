@@ -76,33 +76,190 @@ defmodule Palee.Fiscal.Reporting do
   @doc """
   Sends what is due (or only `id`): `{:ok, %{accepted, rejected, failed,
   deferred, retrying}}` (counts). Safe to run from several workers at once.
+
+  ADR-451: the claimed documents go to AADE in one `InvoicesDoc`, so a
+  claim never outlives `TransmissionPolicy.claim_timeout_seconds/0`
+  (guarded by a test). A document whose last attempt ended without an
+  answer is first looked up at AADE, and an "already sent" answer is
+  resolved the same way, so a lost answer never becomes a rejection or a
+  second document. New rejections and failures are told to the staff
+  who manage billing, once a day.
   """
   def transmit(context, which \\ :due, %DateTime{} = now) do
-    context
-    |> TransmissionStore.claim(which, now, @batch)
-    |> Enum.map(&transmit_one(context, &1, now))
+    outcomes =
+      context
+      |> TransmissionStore.claim(which, now, @batch)
+      |> Enum.group_by(& &1.authority)
+      |> Enum.flat_map(fn {authority, rows} -> transmit_group(context, authority, rows, now) end)
+
+    notify_problems(context, outcomes)
+
+    outcomes
     |> Enum.frequencies()
     |> then(
       &{:ok, Map.merge(%{accepted: 0, rejected: 0, failed: 0, deferred: 0, retrying: 0}, &1)}
     )
   end
 
-  defp transmit_one(context, transmission, now) do
-    connection = TransmissionStore.get_connection(context, transmission.authority)
-    document = FiscalStore.get_document(context, transmission.document_id, [])
+  @doc false
+  def batch_size, do: @batch
+
+  defp transmit_group(context, authority, rows, now) do
+    connection = TransmissionStore.get_connection(context, authority)
 
     cond do
       is_nil(connection) ->
-        defer(context, transmission, :connection_missing, now)
+        Enum.map(rows, &defer(context, &1, :connection_missing, now))
 
       connection.status == "invalid" ->
-        defer(context, transmission, :connection_invalid, now)
+        Enum.map(rows, &defer(context, &1, :connection_invalid, now))
 
       true ->
-        case original(context, document) do
-          {:wait, _original} -> defer(context, transmission, :original_not_accepted, now)
-          {:ok, original} -> submit(context, transmission, connection, document, original, now)
+        rows
+        |> Enum.map(&prepare(context, &1))
+        |> send_prepared(context, connection, now)
+    end
+  end
+
+  # What each claimed row needs: a deferral, a result already known (a
+  # document myDATA cannot express), or a send.
+  defp prepare(context, transmission) do
+    document = FiscalStore.get_document(context, transmission.document_id, [])
+
+    case original(context, document) do
+      {:wait, _original} ->
+        {:defer, transmission}
+
+      {:ok, original} ->
+        case MyDataInvoice.build(document, original: original) do
+          {:ok, invoice} ->
+            {:send, transmission, document, invoice}
+
+          {:error, reason} ->
+            {:done, transmission, document,
+             {:error, {:rejected, [%{code: Atom.to_string(reason), message: "palee"}]}}, nil}
         end
+    end
+  end
+
+  defp send_prepared(prepared, context, connection, now) do
+    started = System.monotonic_time(:millisecond)
+    gateway = gateway(connection.environment)
+    claimed = for {:send, transmission, _d, _i} <- prepared, do: transmission.id
+    # Each call to the authority starts with a fresh claim (ADR-451).
+    beat = fn -> TransmissionStore.touch_claims(context, claimed, latest(now)) end
+
+    deferred =
+      for {:defer, transmission} <- prepared,
+          do: defer(context, transmission, :original_not_accepted, now)
+
+    # A row whose last attempt got no answer may already be at AADE.
+    {found, to_send} =
+      prepared
+      |> Enum.filter(&match?({:send, _t, _d, _i}, &1))
+      |> Enum.map(fn {:send, transmission, document, invoice} = item ->
+        if transmission.last_error_code == "transient" do
+          beat.()
+
+          case gateway.find(connection, MyDataInvoice.key(invoice)) do
+            {:ok, receipt} -> {:done, transmission, document, {:ok, receipt}, nil}
+            :not_found -> item
+            {:error, reason} -> {:done, transmission, document, {:error, reason}, nil}
+          end
+        else
+          item
+        end
+      end)
+      |> Enum.split_with(&match?({:done, _t, _d, _r, _i}, &1))
+
+    {results, wire} =
+      case to_send do
+        [] ->
+          {[], %{}}
+
+        items ->
+          beat.()
+          gateway.submit(connection, Enum.map(items, &elem(&1, 3)))
+      end
+
+    # Each attempt keeps its own document's XML; the answer is shared.
+    bodies =
+      Map.get(wire, :request_bodies) || List.duplicate(wire[:request_body], length(to_send))
+
+    sent =
+      [to_send, results, bodies]
+      |> Enum.zip()
+      |> Enum.map(fn {{:send, transmission, document, invoice}, result, body} ->
+        {:done, transmission, document,
+         resolve_duplicate(gateway, connection, invoice, result, beat), body}
+      end)
+
+    known = for {:done, _t, _d, _r, _i} = item <- prepared, do: item
+    duration = System.monotonic_time(:millisecond) - started
+
+    finished =
+      Enum.map(known ++ found ++ sent, fn {:done, transmission, document, result, body} ->
+        finish(context, connection, transmission, document, result, body, wire, duration, now)
+      end)
+
+    if Enum.any?(
+         known ++ found ++ sent,
+         &match?({:done, _t, _d, {:error, {:unauthorized, _}}, _i}, &1)
+       ) do
+      Connections.mark_invalid(context, "mydata", "credentials_rejected", "unauthorized", now)
+    end
+
+    deferred ++ finished
+  end
+
+  # "Already sent" (a lost answer): take AADE's MARK; when AADE cannot show
+  # it, the original rejection stands.
+  defp resolve_duplicate(gateway, connection, invoice, {:error, {:duplicate, errors}}, beat) do
+    beat.()
+
+    case gateway.find(connection, MyDataInvoice.key(invoice)) do
+      {:ok, receipt} -> {:ok, receipt}
+      :not_found -> {:error, {:rejected, errors}}
+      {:error, reason} -> {:error, reason}
+    end
+  end
+
+  defp resolve_duplicate(_gateway, _connection, _invoice, result, _beat), do: result
+
+  defp latest(now) do
+    wall = DateTime.utc_now()
+    if DateTime.compare(wall, now) == :gt, do: wall, else: now
+  end
+
+  defp finish(context, connection, transmission, document, result, body, wire, duration, now) do
+    changes =
+      transmission
+      |> TransmissionPolicy.outcome(result, now)
+      |> Map.put(:environment, connection.environment)
+
+    attempt = %{
+      request_body: body,
+      response_status: body && wire[:response_status],
+      response_body: body && wire[:response_body],
+      attempt: transmission.attempts,
+      environment: connection.environment,
+      outcome: TransmissionPolicy.attempt_outcome(result),
+      error: error_text(result),
+      duration_ms: duration,
+      started_at: now
+    }
+
+    case record(context, transmission, document, changes, attempt, now) do
+      {:ok, _saved} ->
+        case changes.status do
+          "accepted" -> :accepted
+          "rejected" -> :rejected
+          "failed" -> :failed
+          _pending -> :retrying
+        end
+
+      _error ->
+        :retrying
     end
   end
 
@@ -124,54 +281,11 @@ defmodule Palee.Fiscal.Reporting do
     end
   end
 
-  defp submit(context, transmission, connection, document, original, now) do
-    started = System.monotonic_time(:millisecond)
-
-    {result, wire} =
-      case MyDataInvoice.build(document, original: original) do
-        {:ok, invoice} ->
-          gateway(connection.environment).submit(connection, invoice)
-
-        {:error, reason} ->
-          {{:error, {:rejected, [%{code: Atom.to_string(reason), message: "palee"}]}},
-           %{request_body: nil, response_status: nil, response_body: nil}}
-      end
-
-    changes =
-      transmission
-      |> TransmissionPolicy.outcome(result, now)
-      |> Map.put(:environment, connection.environment)
-
-    attempt =
-      Map.merge(wire, %{
-        attempt: transmission.attempts,
-        environment: connection.environment,
-        outcome: TransmissionPolicy.attempt_outcome(result),
-        error: error_text(result),
-        duration_ms: System.monotonic_time(:millisecond) - started,
-        started_at: now
-      })
-
-    with {:ok, _saved} <- record(context, transmission, document, changes, attempt, now) do
-      if match?({:error, {:unauthorized, _}}, result) do
-        Connections.mark_invalid(
-          context,
-          "mydata",
-          "credentials_rejected",
-          error_text(result),
-          now
-        )
-      end
-
-      case changes.status do
-        "accepted" -> :accepted
-        "rejected" -> :rejected
-        "failed" -> :failed
-        _pending -> :retrying
-      end
-    else
-      _error -> :retrying
-    end
+  # ADR-451 (Κ4): documents that will not reach AADE without someone's help.
+  defp notify_problems(context, outcomes) do
+    count = Enum.count(outcomes, &(&1 in [:rejected, :failed]))
+    if count > 0, do: Connections.documents_not_reported(context, @authority, count)
+    :ok
   end
 
   defp record(context, transmission, document, %{status: "accepted"} = changes, attempt, now) do

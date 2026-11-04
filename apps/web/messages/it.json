@@ -4744,6 +4744,7 @@
     "adminAlertExpiringMemberships": "{count, plural, one {# abbonamento scade entro 30 giorni} other {# abbonamenti scadono entro 30 giorni}}",
     "adminAlertOverdueInvoices": "{count, plural, one {# fattura scaduta} other {# fatture scadute}}",
     "adminAlertPendingPayments": "{count, plural, one {# pagamento in sospeso} other {# pagamenti in sospeso}}",
+    "adminAlertFiscalNotReported": "{count, plural, one {# documento non è arrivato all’autorità fiscale} many {# documenti non sono arrivati all’autorità fiscale} other {# documenti non sono arrivati all’autorità fiscale}}",
     "adminAlertPendingReferralRewards": "{count, plural, one {# premio per invito in attesa} other {# premi per inviti in attesa}}",
     "adminAlertInjuryFlags": "{count, plural, one {# segnalazione di infortunio dalla tua ultima visita} other {# segnalazioni di infortuni dalla tua ultima visita}}",
     "adminAlertUnreadWorkoutReviews": "{count, plural, one {# recensione di allenamento non letta} other {# recensioni di allenamenti non lette}}",

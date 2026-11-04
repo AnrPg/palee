@@ -35,6 +35,8 @@ defmodule Palee.Fiscal.TransmissionStore do
   @impl true
   def claim(context, which, now, limit), do: tenant_call(context, :claim, [which, now, limit])
   @impl true
+  def touch_claims(context, ids, at), do: tenant_call(context, :touch_claims, [ids, at])
+  @impl true
   def finish(context, id, changes, attempt),
     do: tenant_call(context, :finish, [id, changes, attempt])
 
