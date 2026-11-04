@@ -16411,6 +16411,232 @@
     "sentTitle": "Получено!",
     "sentBody": "{box} скоро ответит, обычно в тот же день."
   },
+  "SiteTemplates": {
+    "skip": "Перейти к содержанию",
+    "menu": "Меню",
+    "closeMenu": "Закрыть меню",
+    "close": "Закрыть",
+    "pagesNav": "Страницы",
+    "logoHome": "{box}, главная страница",
+    "free": "Бесплатно",
+    "from": "от {price}",
+    "pages": {
+      "home": "Главная",
+      "schedule": "Расписание",
+      "training": "Тренировки",
+      "packages": "Пакеты",
+      "coaches": "Коучи",
+      "space": "Наш зал"
+    },
+    "cta": {
+      "trial": "Бесплатное пробное занятие",
+      "trialLong": "Запишись на бесплатное пробное занятие",
+      "contact": "Напиши нам",
+      "call": "Позвонить {phone}",
+      "tabTrial": "Пробное",
+      "tabContact": "Сообщение",
+      "tabCall": "Звонок"
+    },
+    "next": {
+      "title": "Следующее занятие",
+      "chip": "Следующее: {name} {when}",
+      "when": "{day, select, today {сегодня {time}} tomorrow {завтра {time}} other {{weekday} {time}}}",
+      "inDays": "{count, plural, one {через # день} few {через # дня} many {через # дней} other {через # дня}}"
+    },
+    "open": {
+      "open": "Открыто до {time}",
+      "opens": "Откроется в {time}",
+      "closed": "Сейчас закрыто",
+      "closedToday": "Сегодня закрыто"
+    },
+    "per": {
+      "monthly": "в месяц",
+      "quarterly": "в квартал",
+      "semiannual": "за полгода",
+      "annual": "в год",
+      "once": "один раз"
+    },
+    "schedule": {
+      "title": "Расписание занятий",
+      "sub": "Листай к следующему дню. Кнопка «Попробовать» переносит занятие в форму пробного.",
+      "today": "Сегодня",
+      "day": "День",
+      "type": "Тип занятия",
+      "panes": "Занятия дня",
+      "empty": "В этот день занятий нет.",
+      "emptyType": "В этот день нет занятий этого типа.",
+      "minutes": "{count, plural, other {#′}}",
+      "done": "Прошло",
+      "try": "Попробовать",
+      "tryAria": "Попробовать {name}, {day} {time}"
+    },
+    "map": {
+      "directions": "Маршрут",
+      "howToGet": "Как добраться"
+    },
+    "gallery": {
+      "title": "Фото",
+      "open": "Открыть: {name}",
+      "photo": "Фото {index}",
+      "prev": "Предыдущее фото",
+      "next": "Следующее фото",
+      "count": "{index} из {count}"
+    },
+    "programmes": {
+      "weeks": "{count, plural, one {# неделя} few {# недели} many {# недель} other {# недели}}"
+    },
+    "stats": {
+      "classes_per_week": "{count, plural, one {занятие в неделю} few {занятия в неделю} many {занятий в неделю} other {занятия в неделю}}",
+      "prs_this_year": "{count, plural, other {PR в этом году}}",
+      "years_open": "{count, plural, one {год работы} few {года работы} many {лет работы} other {года работы}}"
+    },
+    "reviews": {
+      "count": "{count, plural, one {# отзыв} few {# отзыва} many {# отзывов} other {# отзыва}}"
+    },
+    "packages": {
+      "title": "Абонементные пакеты",
+      "sub": "Цены box на сегодня.",
+      "stackSub": "Листай карточки или нажимай стрелки.",
+      "all": "Все абонементные пакеты",
+      "bookTrial": "Записаться на пробное",
+      "startTrial": "Начать с пробного",
+      "choose": "Выбрать",
+      "buyOnline": "Купить онлайн",
+      "carousel": "карусель",
+      "stackLabel": "Абонементные пакеты: листай или нажимай стрелки",
+      "prev": "Предыдущий пакет",
+      "next": "Следующий пакет",
+      "position": "{index} из {count}"
+    },
+    "form": {
+      "trialTitle": "Бесплатное пробное занятие",
+      "contactTitle": "Напиши нам",
+      "contactSub": "Напиши нам, и {box} скоро ответит.",
+      "choice": "Твой выбор: {choice}",
+      "days": "Какие дни тебе подходят (необязательно)",
+      "thanks": "Спасибо, {name}!",
+      "contactSent": "Сообщение отправлено. Box скоро ответит.",
+      "previewNote": "Предпросмотр: форма на самом деле не отправлена.",
+      "ok": "Хорошо"
+    },
+    "stories": {
+      "label": "История: {name}",
+      "pause": "Пауза",
+      "resume": "Продолжить",
+      "prev": "Назад",
+      "next": "Дальше",
+      "hint": "Нажми справа для следующей, удерживай для паузы, смахни вниз, чтобы закрыть.",
+      "trial1": "Твоя первая",
+      "trial2": "тренировка",
+      "trial3": "бесплатно",
+      "hero1": "Тренировки",
+      "hero2": "для любого",
+      "hero3": "уровня",
+      "seeSpace": "Посмотреть зал",
+      "fullSchedule": "Всё расписание",
+      "swipe": "Листай и выбирай",
+      "ourStory": "Наша история",
+      "allReviews": "Все отзывы",
+      "names": {
+        "wod": "WOD",
+        "space": "Наш зал",
+        "coaches": "Коучи",
+        "events": "Events",
+        "reviews": "Отзывы"
+      }
+    },
+    "footer": {
+      "contact": "Контакты"
+    },
+    "sections": {
+      "wod": "WOD дня",
+      "events": "Events",
+      "programmes": "Онлайн-программы",
+      "reviews": "Отзывы",
+      "faq": "Частые вопросы",
+      "location": "Адрес",
+      "stats": "В цифрах"
+    },
+    "arena": {
+      "line1": "Становись",
+      "line2": "сильнее",
+      "line3": "каждый день",
+      "seeSchedule": "Смотреть расписание",
+      "seePrices": "Смотреть цены",
+      "whyEyebrow": "Почему здесь",
+      "why1": "Никто не",
+      "why2": "тренируется",
+      "why3": "один",
+      "coaches": "Коучи",
+      "prevCoach": "Предыдущий коуч",
+      "nextCoach": "Следующий коуч",
+      "prices": "Цены",
+      "reviews": "Что говорят участники",
+      "findUs": "Где нас найти",
+      "questions": "Частые вопросы"
+    },
+    "why": {
+      "coaches": "{count, plural, one {# коуч} few {# коуча} many {# коучей} other {# коуча}}",
+      "classes": "{count, plural, one {# занятие в неделю} few {# занятия в неделю} many {# занятий в неделю} other {# занятия в неделю}}",
+      "progress": "Следи за прогрессом",
+      "progressText": "Твои PR и тренировки сохраняются в приложении box."
+    },
+    "wod": {
+      "band": "WOD дня · {title}",
+      "play": "Продолжить движение",
+      "pause": "Остановить движение"
+    },
+    "video": {
+      "play": "Включить видео",
+      "pause": "Остановить видео"
+    },
+    "coaches": {
+      "sub": "Люди, которые будут тебя тренировать."
+    },
+    "space": {
+      "sub": "Нажми на фото, чтобы увеличить."
+    },
+    "tiles": {
+      "hero1": "Тренировки",
+      "hero2": "рядом с домом",
+      "today": "Сегодня",
+      "nextDay": "На следующий день",
+      "whoWeAre": "Кто мы",
+      "team": "Команда",
+      "inNumbers": "В цифрах",
+      "moreEvents": "{count, plural, other {и ещё #}}",
+      "programmes": "{count, plural, one {# программа} few {# программы} many {# программ} other {# программы}}",
+      "moreQuestions": "{count, plural, one {и ещё # вопрос} few {и ещё # вопроса} many {и ещё # вопросов} other {и ещё # вопроса}}",
+      "askUs": "Спроси нас"
+    },
+    "atelier": {
+      "hero1": "Сила",
+      "hero2": "с <it>заботой</it>.",
+      "scroll": "Листай",
+      "theSchedule": "Расписание",
+      "philosophy": "Наша философия",
+      "chapters": "Главы",
+      "aDayHere": "Один день <it>здесь</it>",
+      "chapterClasses": "Занятия",
+      "classesTitle": "Каждое занятие <it>с вниманием</it>.",
+      "seeWeek": "Смотреть неделю",
+      "chapterSpace": "Наш зал",
+      "spaceTitle": "<it>Наше</it> пространство.",
+      "comeIn": "Заходи",
+      "chapterHome": "И из дома",
+      "programmesTitle": "Программы от наших <it>коучей</it>.",
+      "seeProgrammes": "Смотреть программы",
+      "people": "Люди",
+      "onTheFloor": "В зале <it>вместе с тобой</it>",
+      "memberships": "Абонементы",
+      "simplePrices": "Простые <it>цены</it>",
+      "fromMembers": "От участников",
+      "firstHour": "Твой первый час",
+      "closing1": "Приходи",
+      "closing2": "<it>познакомиться</it>.",
+      "contact": "Контакты"
+    }
+  },
   "BoxSite": {
     "bookTrial": "Записаться на пробное",
     "askSomething": "Задать вопрос",

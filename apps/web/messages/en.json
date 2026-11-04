@@ -16411,6 +16411,232 @@
     "sentTitle": "Got it!",
     "sentBody": "{box} will get back to you soon, usually the same day."
   },
+  "SiteTemplates": {
+    "skip": "Skip to content",
+    "menu": "Menu",
+    "closeMenu": "Close menu",
+    "close": "Close",
+    "pagesNav": "Pages",
+    "logoHome": "{box}, home page",
+    "free": "Free",
+    "from": "from {price}",
+    "pages": {
+      "home": "Home",
+      "schedule": "Schedule",
+      "training": "Training",
+      "packages": "Packages",
+      "coaches": "Coaches",
+      "space": "The space"
+    },
+    "cta": {
+      "trial": "Free trial class",
+      "trialLong": "Book a free trial class",
+      "contact": "Send us a message",
+      "call": "Call {phone}",
+      "tabTrial": "Trial",
+      "tabContact": "Message",
+      "tabCall": "Call"
+    },
+    "next": {
+      "title": "Next class",
+      "chip": "Next: {name} {when}",
+      "when": "{day, select, today {today {time}} tomorrow {tomorrow {time}} other {{weekday} {time}}}",
+      "inDays": "{count, plural, one {in # day} other {in # days}}"
+    },
+    "open": {
+      "open": "Open until {time}",
+      "opens": "Opens at {time}",
+      "closed": "Closed now",
+      "closedToday": "Closed today"
+    },
+    "per": {
+      "monthly": "per month",
+      "quarterly": "per quarter",
+      "semiannual": "per six months",
+      "annual": "per year",
+      "once": "one time"
+    },
+    "schedule": {
+      "title": "Timetable",
+      "sub": "Swipe for the next day. «Try it» puts the class in the trial form.",
+      "today": "Today",
+      "day": "Day",
+      "type": "Class type",
+      "panes": "The day's classes",
+      "empty": "No classes on this day.",
+      "emptyType": "No classes of this type on this day.",
+      "minutes": "{count, plural, other {#′}}",
+      "done": "Done",
+      "try": "Try it",
+      "tryAria": "Try {name}, {day} {time}"
+    },
+    "map": {
+      "directions": "Directions",
+      "howToGet": "How to get here"
+    },
+    "gallery": {
+      "title": "Photos",
+      "open": "Open: {name}",
+      "photo": "Photo {index}",
+      "prev": "Previous photo",
+      "next": "Next photo",
+      "count": "{index} of {count}"
+    },
+    "programmes": {
+      "weeks": "{count, plural, one {# week} other {# weeks}}"
+    },
+    "stats": {
+      "classes_per_week": "{count, plural, one {class a week} other {classes a week}}",
+      "prs_this_year": "{count, plural, one {PR this year} other {PRs this year}}",
+      "years_open": "{count, plural, one {year open} other {years open}}"
+    },
+    "reviews": {
+      "count": "{count, plural, one {# review} other {# reviews}}"
+    },
+    "packages": {
+      "title": "Subscription packages",
+      "sub": "The box's prices today.",
+      "stackSub": "Swipe the cards or use the arrows.",
+      "all": "All subscription packages",
+      "bookTrial": "Book a trial class",
+      "startTrial": "Start with a trial class",
+      "choose": "Choose it",
+      "buyOnline": "Buy online",
+      "carousel": "carousel",
+      "stackLabel": "Subscription packages: swipe or use the arrows",
+      "prev": "Previous package",
+      "next": "Next package",
+      "position": "{index} of {count}"
+    },
+    "form": {
+      "trialTitle": "Free trial class",
+      "contactTitle": "Send us a message",
+      "contactSub": "Write to us and {box} will answer soon.",
+      "choice": "Your pick: {choice}",
+      "days": "Which days suit you (optional)",
+      "thanks": "Thank you, {name}!",
+      "contactSent": "Your message was sent. The box will answer soon.",
+      "previewNote": "Preview: the form was not really sent.",
+      "ok": "OK"
+    },
+    "stories": {
+      "label": "Story: {name}",
+      "pause": "Pause",
+      "resume": "Resume",
+      "prev": "Previous",
+      "next": "Next",
+      "hint": "Tap right for the next one, hold to pause, swipe down to close.",
+      "trial1": "Your first",
+      "trial2": "workout",
+      "trial3": "is free",
+      "hero1": "Training",
+      "hero2": "for every",
+      "hero3": "level",
+      "seeSpace": "See the space",
+      "fullSchedule": "The whole schedule",
+      "swipe": "Swipe to choose",
+      "ourStory": "Our story",
+      "allReviews": "All the reviews",
+      "names": {
+        "wod": "WOD",
+        "space": "The space",
+        "coaches": "Coaches",
+        "events": "Events",
+        "reviews": "Reviews"
+      }
+    },
+    "footer": {
+      "contact": "Contact"
+    },
+    "sections": {
+      "wod": "WOD of the day",
+      "events": "Events",
+      "programmes": "Online programmes",
+      "reviews": "Reviews",
+      "faq": "Frequently asked questions",
+      "location": "Location",
+      "stats": "In numbers"
+    },
+    "arena": {
+      "line1": "Get",
+      "line2": "stronger",
+      "line3": "every day",
+      "seeSchedule": "See the schedule",
+      "seePrices": "See the prices",
+      "whyEyebrow": "Why here",
+      "why1": "Nobody",
+      "why2": "trains",
+      "why3": "alone",
+      "coaches": "The coaches",
+      "prevCoach": "Previous coach",
+      "nextCoach": "Next coach",
+      "prices": "Prices",
+      "reviews": "What members say",
+      "findUs": "Where to find us",
+      "questions": "Frequently asked questions"
+    },
+    "why": {
+      "coaches": "{count, plural, one {# coach} other {# coaches}}",
+      "classes": "{count, plural, one {# class a week} other {# classes a week}}",
+      "progress": "See your progress",
+      "progressText": "Your PRs and workouts stay in the box's app."
+    },
+    "wod": {
+      "band": "WOD of the day · {title}",
+      "play": "Resume the motion",
+      "pause": "Pause the motion"
+    },
+    "video": {
+      "play": "Play the video",
+      "pause": "Pause the video"
+    },
+    "coaches": {
+      "sub": "The people who will coach you."
+    },
+    "space": {
+      "sub": "Tap a photo to see it large."
+    },
+    "tiles": {
+      "hero1": "Training",
+      "hero2": "in your neighbourhood",
+      "today": "Today",
+      "nextDay": "The next day",
+      "whoWeAre": "Who we are",
+      "team": "The team",
+      "inNumbers": "In numbers",
+      "moreEvents": "{count, plural, other {and # more}}",
+      "programmes": "{count, plural, one {# programme} other {# programmes}}",
+      "moreQuestions": "{count, plural, one {and # more question} other {and # more questions}}",
+      "askUs": "Ask us"
+    },
+    "atelier": {
+      "hero1": "Strength",
+      "hero2": "with <it>care</it>.",
+      "scroll": "Scroll",
+      "theSchedule": "The schedule",
+      "philosophy": "Our philosophy",
+      "chapters": "Chapters",
+      "aDayHere": "A day <it>here</it>",
+      "chapterClasses": "The classes",
+      "classesTitle": "Every class, <it>with care</it>.",
+      "seeWeek": "See the week",
+      "chapterSpace": "The space",
+      "spaceTitle": "<it>Our</it> space.",
+      "comeIn": "Come in",
+      "chapterHome": "And from home",
+      "programmesTitle": "Programmes by our <it>coaches</it>.",
+      "seeProgrammes": "See the programmes",
+      "people": "The people",
+      "onTheFloor": "On the floor <it>with you</it>",
+      "memberships": "Memberships",
+      "simplePrices": "Simple <it>prices</it>",
+      "fromMembers": "From the members",
+      "firstHour": "Your first hour",
+      "closing1": "Come and",
+      "closing2": "<it>meet us</it>.",
+      "contact": "Contact"
+    }
+  },
   "BoxSite": {
     "bookTrial": "Book a trial class",
     "askSomething": "Ask something",

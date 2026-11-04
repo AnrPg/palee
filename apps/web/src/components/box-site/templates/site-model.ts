@@ -56,3 +56,26 @@ export function sitePagePath(base: string, page: SitePage) {
   if (page === "home") return base || "/";
   return `${base}/${page}`;
 }
+
+export type SubPage = Exclude<SitePage, "home">;
+
+/**
+ * What a path segment after `/b/<slug>/` names: a page in the box's own
+ * language (`/schedule`) or one of the app's languages (`/en`, `/pt-pt`).
+ * Language codes and page keys never collide. Null for anything else.
+ */
+export function siteSegment(
+  segment: string | null | undefined,
+  languages: readonly string[],
+): { kind: "page"; page: SubPage } | { kind: "language"; code: string } | null {
+  if (!segment) return null;
+  const wanted = segment.toLowerCase();
+  if (isSubPage(wanted)) return { kind: "page", page: wanted };
+  const code = languages.find((entry) => entry.toLowerCase() === wanted);
+  return code ? { kind: "language", code } : null;
+}
+
+/** Whether a page is in the menu; a page that is not redirects to the home page. */
+export function pageIsShown(page: SitePage, visible: readonly SiteSection[]) {
+  return sitePages(visible).some((entry) => entry.key === page);
+}

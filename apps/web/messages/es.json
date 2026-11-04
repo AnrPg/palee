@@ -16411,6 +16411,232 @@
     "sentTitle": "¡Recibido!",
     "sentBody": "{box} te responderá pronto, normalmente el mismo día."
   },
+  "SiteTemplates": {
+    "skip": "Ir al contenido",
+    "menu": "Menú",
+    "closeMenu": "Cerrar el menú",
+    "close": "Cerrar",
+    "pagesNav": "Páginas",
+    "logoHome": "{box}, página de inicio",
+    "free": "Gratis",
+    "from": "desde {price}",
+    "pages": {
+      "home": "Inicio",
+      "schedule": "Horario",
+      "training": "Entrenamientos",
+      "packages": "Paquetes",
+      "coaches": "Coaches",
+      "space": "El espacio"
+    },
+    "cta": {
+      "trial": "Clase de prueba gratis",
+      "trialLong": "Reserva tu clase de prueba gratis",
+      "contact": "Escríbenos",
+      "call": "Llamar al {phone}",
+      "tabTrial": "Prueba",
+      "tabContact": "Mensaje",
+      "tabCall": "Llamar"
+    },
+    "next": {
+      "title": "Próxima clase",
+      "chip": "Próxima: {name} {when}",
+      "when": "{day, select, today {hoy {time}} tomorrow {mañana {time}} other {{weekday} {time}}}",
+      "inDays": "{count, plural, one {en # día} other {en # días}}"
+    },
+    "open": {
+      "open": "Abierto hasta las {time}",
+      "opens": "Abre a las {time}",
+      "closed": "Cerrado ahora",
+      "closedToday": "Cerrado hoy"
+    },
+    "per": {
+      "monthly": "al mes",
+      "quarterly": "al trimestre",
+      "semiannual": "al semestre",
+      "annual": "al año",
+      "once": "una vez"
+    },
+    "schedule": {
+      "title": "Horario de clases",
+      "sub": "Desliza para ver el día siguiente. Con «Pruébala» la clase pasa al formulario de prueba.",
+      "today": "Hoy",
+      "day": "Día",
+      "type": "Tipo de clase",
+      "panes": "Las clases del día",
+      "empty": "No hay clases este día.",
+      "emptyType": "No hay clases de este tipo este día.",
+      "minutes": "{count, plural, other {#′}}",
+      "done": "Terminada",
+      "try": "Pruébala",
+      "tryAria": "Prueba {name}, {day} {time}"
+    },
+    "map": {
+      "directions": "Cómo llegar",
+      "howToGet": "Cómo llegar hasta aquí"
+    },
+    "gallery": {
+      "title": "Fotos",
+      "open": "Abrir: {name}",
+      "photo": "Foto {index}",
+      "prev": "Foto anterior",
+      "next": "Foto siguiente",
+      "count": "{index} de {count}"
+    },
+    "programmes": {
+      "weeks": "{count, plural, one {# semana} other {# semanas}}"
+    },
+    "stats": {
+      "classes_per_week": "{count, plural, one {clase a la semana} other {clases a la semana}}",
+      "prs_this_year": "{count, plural, other {PR este año}}",
+      "years_open": "{count, plural, one {año abierto} other {años abiertos}}"
+    },
+    "reviews": {
+      "count": "{count, plural, one {# reseña} other {# reseñas}}"
+    },
+    "packages": {
+      "title": "Paquetes de suscripción",
+      "sub": "Los precios del box hoy.",
+      "stackSub": "Desliza las tarjetas o usa las flechas.",
+      "all": "Todos los paquetes de suscripción",
+      "bookTrial": "Reservar una prueba",
+      "startTrial": "Empezar con una prueba",
+      "choose": "Elegirlo",
+      "buyOnline": "Comprar online",
+      "carousel": "carrusel",
+      "stackLabel": "Paquetes de suscripción: desliza o usa las flechas",
+      "prev": "Paquete anterior",
+      "next": "Paquete siguiente",
+      "position": "{index} de {count}"
+    },
+    "form": {
+      "trialTitle": "Clase de prueba gratis",
+      "contactTitle": "Escríbenos",
+      "contactSub": "Escríbenos y {box} te responderá pronto.",
+      "choice": "Tu elección: {choice}",
+      "days": "Qué días te vienen bien (opcional)",
+      "thanks": "¡Gracias, {name}!",
+      "contactSent": "Tu mensaje se ha enviado. El box te responderá pronto.",
+      "previewNote": "Vista previa: el formulario no se ha enviado de verdad.",
+      "ok": "Vale"
+    },
+    "stories": {
+      "label": "Historia: {name}",
+      "pause": "Pausa",
+      "resume": "Seguir",
+      "prev": "Anterior",
+      "next": "Siguiente",
+      "hint": "Toca a la derecha para la siguiente, mantén pulsado para pausar, desliza hacia abajo para cerrar.",
+      "trial1": "Tu primer",
+      "trial2": "entrenamiento",
+      "trial3": "es gratis",
+      "hero1": "Entrenamiento",
+      "hero2": "para cada",
+      "hero3": "nivel",
+      "seeSpace": "Ver el espacio",
+      "fullSchedule": "Todo el horario",
+      "swipe": "Desliza para elegir",
+      "ourStory": "Nuestra historia",
+      "allReviews": "Todas las reseñas",
+      "names": {
+        "wod": "WOD",
+        "space": "El espacio",
+        "coaches": "Coaches",
+        "events": "Events",
+        "reviews": "Reseñas"
+      }
+    },
+    "footer": {
+      "contact": "Contacto"
+    },
+    "sections": {
+      "wod": "WOD del día",
+      "events": "Events",
+      "programmes": "Programas online",
+      "reviews": "Reseñas",
+      "faq": "Preguntas frecuentes",
+      "location": "Ubicación",
+      "stats": "En cifras"
+    },
+    "arena": {
+      "line1": "Hazte",
+      "line2": "más fuerte",
+      "line3": "cada día",
+      "seeSchedule": "Ver el horario",
+      "seePrices": "Ver los precios",
+      "whyEyebrow": "Por qué aquí",
+      "why1": "Nadie",
+      "why2": "entrena",
+      "why3": "solo",
+      "coaches": "Los coaches",
+      "prevCoach": "Coach anterior",
+      "nextCoach": "Coach siguiente",
+      "prices": "Precios",
+      "reviews": "Lo que dicen los miembros",
+      "findUs": "Dónde encontrarnos",
+      "questions": "Preguntas frecuentes"
+    },
+    "why": {
+      "coaches": "{count, plural, one {# coach} other {# coaches}}",
+      "classes": "{count, plural, one {# clase a la semana} other {# clases a la semana}}",
+      "progress": "Mira tu progreso",
+      "progressText": "Tus PR y entrenamientos quedan en la app del box."
+    },
+    "wod": {
+      "band": "WOD del día · {title}",
+      "play": "Reanudar el movimiento",
+      "pause": "Pausar el movimiento"
+    },
+    "video": {
+      "play": "Reproducir el vídeo",
+      "pause": "Pausar el vídeo"
+    },
+    "coaches": {
+      "sub": "Las personas que te van a entrenar."
+    },
+    "space": {
+      "sub": "Toca una foto para verla en grande."
+    },
+    "tiles": {
+      "hero1": "Entrenamiento",
+      "hero2": "en tu barrio",
+      "today": "Hoy",
+      "nextDay": "El día siguiente",
+      "whoWeAre": "Quiénes somos",
+      "team": "El equipo",
+      "inNumbers": "En cifras",
+      "moreEvents": "{count, plural, one {y # más} other {y # más}}",
+      "programmes": "{count, plural, one {# programa} other {# programas}}",
+      "moreQuestions": "{count, plural, one {y # pregunta más} other {y # preguntas más}}",
+      "askUs": "Pregúntanos"
+    },
+    "atelier": {
+      "hero1": "Fuerza",
+      "hero2": "con <it>cuidado</it>.",
+      "scroll": "Desliza",
+      "theSchedule": "El horario",
+      "philosophy": "Nuestra filosofía",
+      "chapters": "Capítulos",
+      "aDayHere": "Un día <it>aquí</it>",
+      "chapterClasses": "Las clases",
+      "classesTitle": "Cada clase, <it>con cuidado</it>.",
+      "seeWeek": "Ver la semana",
+      "chapterSpace": "El espacio",
+      "spaceTitle": "<it>Nuestro</it> espacio.",
+      "comeIn": "Entra",
+      "chapterHome": "Y desde casa",
+      "programmesTitle": "Programas de nuestros <it>coaches</it>.",
+      "seeProgrammes": "Ver los programas",
+      "people": "Las personas",
+      "onTheFloor": "En la sala <it>contigo</it>",
+      "memberships": "Membresías",
+      "simplePrices": "Precios <it>sencillos</it>",
+      "fromMembers": "De los miembros",
+      "firstHour": "Tu primera hora",
+      "closing1": "Ven a",
+      "closing2": "<it>conocernos</it>.",
+      "contact": "Contacto"
+    }
+  },
   "BoxSite": {
     "bookTrial": "Reserva una clase de prueba",
     "askSomething": "Pregunta algo",

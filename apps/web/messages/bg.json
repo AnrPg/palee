@@ -16411,6 +16411,232 @@
     "sentTitle": "Получено!",
     "sentBody": "{box} ще ви отговори скоро, обикновено същия ден."
   },
+  "SiteTemplates": {
+    "skip": "Към съдържанието",
+    "menu": "Меню",
+    "closeMenu": "Затвори менюто",
+    "close": "Затвори",
+    "pagesNav": "Страници",
+    "logoHome": "{box}, начална страница",
+    "free": "Безплатно",
+    "from": "от {price}",
+    "pages": {
+      "home": "Начало",
+      "schedule": "Разписание",
+      "training": "Тренировки",
+      "packages": "Пакети",
+      "coaches": "Треньори",
+      "space": "Залата"
+    },
+    "cta": {
+      "trial": "Безплатно пробно занятие",
+      "trialLong": "Запиши се за безплатно пробно занятие",
+      "contact": "Пиши ни",
+      "call": "Обади се на {phone}",
+      "tabTrial": "Пробно",
+      "tabContact": "Съобщение",
+      "tabCall": "Обаждане"
+    },
+    "next": {
+      "title": "Следващо занятие",
+      "chip": "Следващо: {name} {when}",
+      "when": "{day, select, today {днес {time}} tomorrow {утре {time}} other {{weekday} {time}}}",
+      "inDays": "{count, plural, one {след # ден} other {след # дни}}"
+    },
+    "open": {
+      "open": "Отворено до {time}",
+      "opens": "Отваря в {time}",
+      "closed": "Затворено сега",
+      "closedToday": "Затворено днес"
+    },
+    "per": {
+      "monthly": "на месец",
+      "quarterly": "на тримесечие",
+      "semiannual": "на полугодие",
+      "annual": "на година",
+      "once": "еднократно"
+    },
+    "schedule": {
+      "title": "Разписание на занятията",
+      "sub": "Плъзни към следващия ден. С «Пробвай» занятието влиза във формата за пробно.",
+      "today": "Днес",
+      "day": "Ден",
+      "type": "Вид занятие",
+      "panes": "Занятията за деня",
+      "empty": "Няма занятия в този ден.",
+      "emptyType": "Няма занятия от този вид в този ден.",
+      "minutes": "{count, plural, other {#′}}",
+      "done": "Приключило",
+      "try": "Пробвай",
+      "tryAria": "Пробвай {name}, {day} {time}"
+    },
+    "map": {
+      "directions": "Маршрут",
+      "howToGet": "Как да стигнеш"
+    },
+    "gallery": {
+      "title": "Снимки",
+      "open": "Отвори: {name}",
+      "photo": "Снимка {index}",
+      "prev": "Предишна снимка",
+      "next": "Следваща снимка",
+      "count": "{index} от {count}"
+    },
+    "programmes": {
+      "weeks": "{count, plural, one {# седмица} other {# седмици}}"
+    },
+    "stats": {
+      "classes_per_week": "{count, plural, one {занятие седмично} other {занятия седмично}}",
+      "prs_this_year": "{count, plural, other {PR тази година}}",
+      "years_open": "{count, plural, one {година работа} other {години работа}}"
+    },
+    "reviews": {
+      "count": "{count, plural, one {# отзив} other {# отзива}}"
+    },
+    "packages": {
+      "title": "Абонаментни пакети",
+      "sub": "Цените на box днес.",
+      "stackSub": "Плъзгай картите или натисни стрелките.",
+      "all": "Всички абонаментни пакети",
+      "bookTrial": "Запиши пробно",
+      "startTrial": "Започни с пробно",
+      "choose": "Избери го",
+      "buyOnline": "Купи онлайн",
+      "carousel": "въртележка",
+      "stackLabel": "Абонаментни пакети: плъзгай или натисни стрелките",
+      "prev": "Предишен пакет",
+      "next": "Следващ пакет",
+      "position": "{index} от {count}"
+    },
+    "form": {
+      "trialTitle": "Безплатно пробно занятие",
+      "contactTitle": "Пиши ни",
+      "contactSub": "Пиши ни и {box} ще ти отговори скоро.",
+      "choice": "Твоят избор: {choice}",
+      "days": "Кои дни ти подхождат (по желание)",
+      "thanks": "Благодарим, {name}!",
+      "contactSent": "Съобщението е изпратено. Box ще ти отговори скоро.",
+      "previewNote": "Преглед: формата не е изпратена наистина.",
+      "ok": "Добре"
+    },
+    "stories": {
+      "label": "История: {name}",
+      "pause": "Пауза",
+      "resume": "Продължи",
+      "prev": "Назад",
+      "next": "Напред",
+      "hint": "Докосни вдясно за следващата, задръж за пауза, плъзни надолу за затваряне.",
+      "trial1": "Първата ти",
+      "trial2": "тренировка",
+      "trial3": "е безплатна",
+      "hero1": "Тренировки",
+      "hero2": "за всяко",
+      "hero3": "ниво",
+      "seeSpace": "Виж залата",
+      "fullSchedule": "Цялото разписание",
+      "swipe": "Плъзни, за да избереш",
+      "ourStory": "Нашата история",
+      "allReviews": "Всички отзиви",
+      "names": {
+        "wod": "WOD",
+        "space": "Залата",
+        "coaches": "Треньори",
+        "events": "Events",
+        "reviews": "Отзиви"
+      }
+    },
+    "footer": {
+      "contact": "Контакт"
+    },
+    "sections": {
+      "wod": "WOD на деня",
+      "events": "Events",
+      "programmes": "Онлайн програми",
+      "reviews": "Отзиви",
+      "faq": "Често задавани въпроси",
+      "location": "Местоположение",
+      "stats": "В числа"
+    },
+    "arena": {
+      "line1": "Ставай",
+      "line2": "по-силен",
+      "line3": "всеки ден",
+      "seeSchedule": "Виж разписанието",
+      "seePrices": "Виж цените",
+      "whyEyebrow": "Защо тук",
+      "why1": "Никой не",
+      "why2": "тренира",
+      "why3": "сам",
+      "coaches": "Треньорите",
+      "prevCoach": "Предишен треньор",
+      "nextCoach": "Следващ треньор",
+      "prices": "Цени",
+      "reviews": "Какво казват членовете",
+      "findUs": "Къде да ни намериш",
+      "questions": "Често задавани въпроси"
+    },
+    "why": {
+      "coaches": "{count, plural, one {# треньор} other {# треньори}}",
+      "classes": "{count, plural, one {# занятие седмично} other {# занятия седмично}}",
+      "progress": "Следи напредъка си",
+      "progressText": "Твоите PR и тренировки остават в приложението на box."
+    },
+    "wod": {
+      "band": "WOD на деня · {title}",
+      "play": "Пусни движението",
+      "pause": "Спри движението"
+    },
+    "video": {
+      "play": "Пусни видеото",
+      "pause": "Спри видеото"
+    },
+    "coaches": {
+      "sub": "Хората, които ще те тренират."
+    },
+    "space": {
+      "sub": "Докосни снимка, за да я видиш в голям размер."
+    },
+    "tiles": {
+      "hero1": "Тренировки",
+      "hero2": "в твоя квартал",
+      "today": "Днес",
+      "nextDay": "На следващия ден",
+      "whoWeAre": "Кои сме ние",
+      "team": "Екипът",
+      "inNumbers": "В числа",
+      "moreEvents": "{count, plural, other {и още #}}",
+      "programmes": "{count, plural, one {# програма} other {# програми}}",
+      "moreQuestions": "{count, plural, one {и още # въпрос} other {и още # въпроса}}",
+      "askUs": "Попитай ни"
+    },
+    "atelier": {
+      "hero1": "Сила",
+      "hero2": "с <it>грижа</it>.",
+      "scroll": "Превърти",
+      "theSchedule": "Разписанието",
+      "philosophy": "Нашата философия",
+      "chapters": "Глави",
+      "aDayHere": "Един ден <it>тук</it>",
+      "chapterClasses": "Занятията",
+      "classesTitle": "Всяко занятие <it>с внимание</it>.",
+      "seeWeek": "Виж седмицата",
+      "chapterSpace": "Залата",
+      "spaceTitle": "<it>Нашата</it> зала.",
+      "comeIn": "Влез",
+      "chapterHome": "И от вкъщи",
+      "programmesTitle": "Програми от нашите <it>треньори</it>.",
+      "seeProgrammes": "Виж програмите",
+      "people": "Хората",
+      "onTheFloor": "В залата <it>заедно с теб</it>",
+      "memberships": "Абонаменти",
+      "simplePrices": "Прости <it>цени</it>",
+      "fromMembers": "От членовете",
+      "firstHour": "Първият ти час",
+      "closing1": "Ела да",
+      "closing2": "<it>се запознаем</it>.",
+      "contact": "Контакт"
+    }
+  },
   "BoxSite": {
     "bookTrial": "Запиши пробна тренировка",
     "askSomething": "Попитай нещо",

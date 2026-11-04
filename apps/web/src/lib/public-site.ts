@@ -1,6 +1,7 @@
 import { cache } from "react";
 
 import type { PublicSite } from "@/api/box-site";
+import type { PublicPackages } from "@/api/my-payments";
 import type { PublicBoxPage } from "@/api/social";
 import { SUPPORTED_LOCALES } from "@/i18n/locales";
 import { apiOriginForProxy } from "@/lib/organization-slug-alias";
@@ -28,6 +29,23 @@ export const loadPublicSite = cache(async (slug: string, lang?: string | null): 
     });
     if (!response.ok) return null;
     return (await response.json()) as PublicSite;
+  } catch {
+    return null;
+  }
+});
+
+/**
+ * Server read of the packages a box sells (ADR-530: the website's
+ * «Πακέτα συνδρομής», its JSON-LD offers and llms.txt); null on failure.
+ */
+export const loadPublicPackages = cache(async (slug: string): Promise<PublicPackages | null> => {
+  try {
+    const response = await fetch(`${apiOriginForProxy()}/api/public/boxes/${encodeURIComponent(slug)}/packages`, {
+      headers: { accept: "application/json" },
+      next: { revalidate: 60 },
+    });
+    if (!response.ok) return null;
+    return (await response.json()) as PublicPackages;
   } catch {
     return null;
   }

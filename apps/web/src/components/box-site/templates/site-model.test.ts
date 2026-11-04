@@ -3,9 +3,34 @@ import { describe, expect, it } from "vitest";
 import type { SiteSection } from "@/api/box-site";
 
 import { contrast, siteTokens, PALETTE_KEYS } from "./palettes";
-import { siteCta, sitePagePath, sitePages } from "./site-model";
+import { pageIsShown, siteCta, sitePagePath, sitePages, siteSegment } from "./site-model";
 
 const s = (...keys: string[]) => keys as SiteSection[];
+
+describe("siteSegment (the segment after /b/<slug>/)", () => {
+  const languages = ["el", "en", "pt-PT"];
+  it("names a page in the box's language or one of its translations", () => {
+    expect(siteSegment("schedule", languages)).toEqual({ kind: "page", page: "schedule" });
+    expect(siteSegment("Coaches", languages)).toEqual({ kind: "page", page: "coaches" });
+    expect(siteSegment("en", languages)).toEqual({ kind: "language", code: "en" });
+    expect(siteSegment("pt-pt", languages)).toEqual({ kind: "language", code: "pt-PT" });
+  });
+  it("rejects anything else, the home page included", () => {
+    expect(siteSegment("home", languages)).toBeNull();
+    expect(siteSegment("de", languages)).toBeNull();
+    expect(siteSegment("", languages)).toBeNull();
+  });
+});
+
+describe("pageIsShown (a page without sections redirects home)", () => {
+  it("follows the menu", () => {
+    expect(pageIsShown("home", s("hero"))).toBe(true);
+    expect(pageIsShown("coaches", s("hero", "about"))).toBe(false);
+    expect(pageIsShown("coaches", s("hero", "coaches"))).toBe(true);
+    expect(pageIsShown("schedule", s("events"))).toBe(true);
+    expect(pageIsShown("space", s("faq"))).toBe(true);
+  });
+});
 
 describe("sitePages", () => {
   it("drops pages with nothing on them", () => {

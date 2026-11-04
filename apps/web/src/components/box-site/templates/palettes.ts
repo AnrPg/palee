@@ -139,6 +139,9 @@ export function siteTokens(palette: PaletteKey, dark: boolean, template: Templat
     "--s-ok": dark ? "#3DDC84" : "#138A4B",
     "--s-err": dark ? "#FF8A8A" : "#B42318",
     "--s-star": dark ? "#FFC94D" : "#B7791F",
+    // Pure white and black, only for text and scrims over photos (ADR-530).
+    "--s-white": "#FFFFFF",
+    "--s-black": "#000000",
   };
   return { tokens, aa: contrast(accentInk, bg) };
 }
