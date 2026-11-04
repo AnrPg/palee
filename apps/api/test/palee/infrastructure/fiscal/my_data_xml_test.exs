@@ -11,7 +11,12 @@ defmodule Palee.Infrastructure.Fiscal.MyDataXmlTest do
   alias Palee.Fiscal.Domain.MyDataInvoice
   alias Palee.Infrastructure.Fiscal.MyData.XmlCodec
 
-  @xsd Path.expand("../../../../priv/fiscal/mydata/v2.0.1/InvoicesDoc-v2.0.1.xsd", __DIR__)
+  # ADR-452: AADE's published v1.0.12 (what the API serves today) and the
+  # newer v2.0.1 drafts; every document must pass both.
+  @xsds [
+    Path.expand("../../../../priv/fiscal/mydata/v1.0.12/InvoicesDoc-v1.0.12.xsd", __DIR__),
+    Path.expand("../../../../priv/fiscal/mydata/v2.0.1/InvoicesDoc-v2.0.1.xsd", __DIR__)
+  ]
 
   @moduletag :tmp_dir
 
@@ -19,10 +24,12 @@ defmodule Palee.Infrastructure.Fiscal.MyDataXmlTest do
     path = Path.join(dir, "invoices-#{System.unique_integer([:positive])}.xml")
     File.write!(path, xml)
 
-    {output, status} =
-      System.cmd("xmllint", ["--noout", "--schema", @xsd, path], stderr_to_stdout: true)
+    for xsd <- @xsds do
+      {output, status} =
+        System.cmd("xmllint", ["--noout", "--schema", xsd, path], stderr_to_stdout: true)
 
-    assert status == 0, output
+      assert status == 0, Path.basename(xsd) <> ": " <> output
+    end
   end
 
   @tag :xmllint
@@ -117,6 +124,43 @@ defmodule Palee.Infrastructure.Fiscal.MyDataXmlTest do
     assert success.errors == []
     assert failure.status == "ValidationError"
     assert [%{code: "101", message: "Το ΑΦΜ δεν είναι έγκυρο"}, %{code: "102"}] = failure.errors
+  end
+
+  test "reads transmitted documents and the next page token (ADR-452)" do
+    body = """
+    <?xml version="1.0" encoding="utf-8"?>
+    <RequestedDoc xmlns="http://www.aade.gr/myDATA/invoice/v1.0">
+      <continuationToken><nextPartitionKey>P1</nextPartitionKey><nextRowKey>R1</nextRowKey></continuationToken>
+      <invoicesDoc>
+        <invoice>
+          <uid>UID1</uid><mark>400000000000123</mark>
+          <issuer><vatNumber>090000045</vatNumber><country>GR</country><branch>0</branch></issuer>
+          <invoiceHeader><series>A</series><aa>7</aa><issueDate>2027-02-01</issueDate><invoiceType>11.2</invoiceType></invoiceHeader>
+        </invoice>
+      </invoicesDoc>
+    </RequestedDoc>
+    """
+
+    assert {:ok, %{invoices: [invoice], next: %{partition_key: "P1", row_key: "R1"}}} =
+             XmlCodec.parse_transmitted(body)
+
+    assert invoice == %{
+             mark: "400000000000123",
+             cancelled_by_mark: nil,
+             uid: "UID1",
+             authentication_code: nil,
+             qr_url: nil,
+             issuer_vat: "090000045",
+             series: "A",
+             aa: "7",
+             issue_date: "2027-02-01",
+             invoice_type: "11.2"
+           }
+
+    assert {:ok, %{invoices: [], next: nil}} =
+             XmlCodec.parse_transmitted("<RequestedDoc><invoicesDoc/></RequestedDoc>")
+
+    assert {:error, :invalid_response} = XmlCodec.parse_transmitted("nope")
   end
 
   test "refuses entities and garbage" do

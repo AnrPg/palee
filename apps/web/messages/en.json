@@ -4780,6 +4780,7 @@
     "adminAlertExpiringMemberships": "{count, plural, one {# membership expires within 30 days} other {# memberships expire within 30 days}}",
     "adminAlertOverdueInvoices": "{count, plural, one {# overdue invoice} other {# overdue invoices}}",
     "adminAlertPendingPayments": "{count, plural, one {# pending payment} other {# pending payments}}",
+    "adminAlertFiscalNotReported": "{count, plural, one {# document did not reach the tax authority} other {# documents did not reach the tax authority}}",
     "adminAlertPendingReferralRewards": "{count, plural, one {# pending referral reward} other {# pending referral rewards}}",
     "adminAlertInjuryFlags": "{count, plural, one {# injury flag since your last visit} other {# injury flags since your last visit}}",
     "adminAlertUnreadWorkoutReviews": "{count, plural, one {# unread workout review} other {# unread workout reviews}}",
@@ -11922,6 +11923,10 @@
     "channel": {
       "in_app": "In app",
       "push": "Push"
+    },
+    "channelHelp": {
+      "in_app": "Inside Palee: on the bell and in your notifications list, when you open the app.",
+      "push": "On your phone or computer screen, even when Palee is closed. It turns on only together with «In app»."
     },
     "category": {
       "bookings": {

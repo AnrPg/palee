@@ -759,6 +759,12 @@ msgstr "Uma ligação fiscal precisa de atenção"
 msgid "%{connection} stopped working. Open Billing details › Connections to fix it."
 msgstr "%{connection} deixou de funcionar. Abra Dados de faturação › Ligações para corrigir."
 
+msgid "Documents did not reach the tax authority"
+msgstr "Há documentos que não chegaram à autoridade fiscal"
+
+msgid "Some documents were not accepted by %{connection}. Open Finance › Documents to see why and send them again."
+msgstr "Alguns documentos não foram aceites por %{connection}. Abre Finanças › Documentos para ver porquê e enviá-los de novo."
+
 # ADR-280 verification: sponsors and the Palee check of Partners.
 
 msgid "Vouch for %{nickname}?"

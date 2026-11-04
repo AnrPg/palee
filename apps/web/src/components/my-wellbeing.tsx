@@ -126,7 +126,8 @@ export function MyWellbeing() {
           <button
             type="button"
             onClick={() => setReporting(true)}
-            className="min-h-11 rounded-full border border-[var(--border)] bg-[var(--panel)] px-5 text-sm font-bold"
+            data-testid="report-injury-open"
+            className="min-h-11 rounded-full bg-[var(--text)] px-5 text-sm font-bold text-[var(--bg)]"
           >
             {i18n("reportInjuryea0dc21")}
           </button>

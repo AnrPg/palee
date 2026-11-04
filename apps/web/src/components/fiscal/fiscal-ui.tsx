@@ -49,7 +49,7 @@ export function Card({ children, className = "", style, testId }: { children: Re
   return (
     <section
       data-testid={testId}
-      className={`grid min-w-0 gap-3 rounded-[18px] px-4 py-4 sm:px-5 ${className}`}
+      className={`grid min-w-0 grid-cols-1 gap-3 rounded-[18px] px-4 py-4 sm:px-5 ${className}`}
       style={{ background: "var(--panel)", border: "1px solid var(--border)", ...style }}
     >
       {children}

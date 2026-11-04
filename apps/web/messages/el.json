@@ -4780,6 +4780,7 @@
     "adminAlertExpiringMemberships": "{count, plural, one {# συνδρομή λήγει μέσα σε 30 ημέρες} other {# συνδρομές λήγουν μέσα σε 30 ημέρες}}",
     "adminAlertOverdueInvoices": "{count, plural, one {# ληξιπρόθεσμο τιμολόγιο} other {# ληξιπρόθεσμα τιμολόγια}}",
     "adminAlertPendingPayments": "{count, plural, one {# εκκρεμής πληρωμή} other {# εκκρεμείς πληρωμές}}",
+    "adminAlertFiscalNotReported": "{count, plural, one {# παραστατικό δεν έφτασε στην ΑΑΔΕ} other {# παραστατικά δεν έφτασαν στην ΑΑΔΕ}}",
     "adminAlertPendingReferralRewards": "{count, plural, one {# ανταμοιβή σύστασης σε εκκρεμότητα} other {# ανταμοιβές συστάσεων σε εκκρεμότητα}}",
     "adminAlertInjuryFlags": "{count, plural, one {# επισήμανση τραυματισμού από την τελευταία σου επίσκεψη} other {# επισημάνσεις τραυματισμών από την τελευταία σου επίσκεψη}}",
     "adminAlertUnreadWorkoutReviews": "{count, plural, one {# αδιάβαστη αξιολόγηση προπόνησης} other {# αδιάβαστες αξιολογήσεις προπονήσεων}}",
@@ -11922,6 +11923,10 @@
     "channel": {
       "in_app": "Στην εφαρμογή",
       "push": "Push"
+    },
+    "channelHelp": {
+      "in_app": "Μέσα στο Palee: στο καμπανάκι και στη λίστα ειδοποιήσεων, όταν ανοίξεις την εφαρμογή.",
+      "push": "Στην οθόνη του κινητού ή του υπολογιστή σου, ακόμα κι όταν το Palee είναι κλειστό. Ανοίγει μόνο μαζί με το «Στην εφαρμογή»."
     },
     "category": {
       "bookings": {

@@ -266,6 +266,14 @@ defmodule Palee.Fiscal.Connections do
   end
 
   @doc """
+  ADR-452: tells the staff who manage billing that `count` documents of
+  connection `kind` were not reported (refused, or out of attempts). The
+  notifier sends it at most once a day per person.
+  """
+  def documents_not_reported(context, kind, count) when count > 0,
+    do: notifier().documents_not_reported(context, kind, count)
+
+  @doc """
   The scheduled sweep for one box: checks every connection of its
   country that is due. `{:ok, checked}`.
   """

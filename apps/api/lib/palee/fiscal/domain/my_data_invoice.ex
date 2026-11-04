@@ -161,6 +161,30 @@ defmodule Palee.Fiscal.Domain.MyDataInvoice do
     end
   end
 
+  @doc """
+  ADR-452: the keys AADE knows a built invoice by (issuer's ΑΦΜ, series,
+  number, issue date and type), to look it up after a lost answer.
+  """
+  def key(invoice) when is_list(invoice) do
+    issuer = child(invoice, "issuer")
+    header = child(invoice, "invoiceHeader")
+
+    %{
+      issuer_vat: child(issuer, "vatNumber"),
+      series: child(header, "series"),
+      aa: child(header, "aa"),
+      issue_date: header |> child("issueDate") |> Date.from_iso8601!(),
+      invoice_type: child(header, "invoiceType")
+    }
+  end
+
+  defp child(tree, name) do
+    Enum.find_value(tree, fn
+      {^name, value} -> value
+      _other -> nil
+    end)
+  end
+
   # ── Parties ─────────────────────────────────────────────────────────────
 
   defp greek_seller(seller) do
@@ -232,7 +256,10 @@ defmodule Palee.Fiscal.Domain.MyDataInvoice do
   defp correlated("11.4", %{mark: mark}) when is_binary(mark) and mark != "", do: {:ok, [mark]}
   defp correlated(_type, _original), do: {:ok, []}
 
-  defp currency("EUR"), do: []
+  # AADE's live API refuses every retail type (11.x) without a currency
+  # (error 204 "Currency is mandatory for this invoice type"), although the
+  # XSD marks it optional, so it is always sent, EUR included.
+  defp currency(nil), do: [{"currency", "EUR"}]
   defp currency(currency), do: [{"currency", currency}]
 
   defp payment(document, pos) do

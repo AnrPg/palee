@@ -216,7 +216,7 @@ test.describe("community", () => {
         json({
           date: "2026-10-20",
           channel_id: null,
-          classes: [],
+          classes: [{ id: "class-1", scheduled_at: new Date(Date.now() + 3_600_000).toISOString() }],
           leaderboard: [],
           logged_by_me: false,
           score: null,
@@ -274,6 +274,8 @@ test.describe("community", () => {
     }
     expect([...tops].sort((a, b) => a - b)).toEqual(tops);
     await expect(page.getByText("No posts yet.")).toHaveCount(0);
+    // ANR 2026-11-04: the WOD banner opens the schedule with that class's sheet.
+    await expect(page.getByTestId("wod-card-banner")).toHaveAttribute("href", /\/box\/schedule\?open_slot=class-1$/);
   });
 
   test("an empty club Feed shows no empty cards, only one quiet line", async ({ page }) => {

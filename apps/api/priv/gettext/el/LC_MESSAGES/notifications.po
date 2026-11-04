@@ -759,6 +759,12 @@ msgstr "Μια φορολογική σύνδεση θέλει προσοχή"
 msgid "%{connection} stopped working. Open Billing details › Connections to fix it."
 msgstr "Το %{connection} σταμάτησε να λειτουργεί. Άνοιξε Στοιχεία τιμολόγησης › Συνδέσεις για να το διορθώσεις."
 
+msgid "Documents did not reach the tax authority"
+msgstr "Παραστατικά δεν έφτασαν στη φορολογική αρχή"
+
+msgid "Some documents were not accepted by %{connection}. Open Finance › Documents to see why and send them again."
+msgstr "Κάποια παραστατικά δεν έγιναν δεκτά από το %{connection}. Άνοιξε Οικονομικά › Παραστατικά για να δεις γιατί και να τα στείλεις ξανά."
+
 # ADR-280 verification: sponsors and the Palee check of Partners.
 
 msgid "Vouch for %{nickname}?"

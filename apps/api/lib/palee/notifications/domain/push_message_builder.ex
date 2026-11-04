@@ -1493,6 +1493,19 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
     }
   end
 
+  # ADR-452: documents the tax authority refused or that ran out of attempts.
+  def build("fiscal_documents_not_reported", payload, localize) do
+    %{
+      title: localize.("Documents did not reach the tax authority", %{}),
+      body:
+        localize.(
+          "Some documents were not accepted by %{connection}. Open Finance › Documents to see why and send them again.",
+          %{connection: payload["connection"] || ""}
+        ),
+      url: payload["url"] || "/admin/finance?tab=documents"
+    }
+  end
+
   # ADR-379: Palee turned off a webhook; `host` is the receiver's host name.
   def build("webhook_disabled", payload, localize) do
     %{

@@ -4780,6 +4780,7 @@
     "adminAlertExpiringMemberships": "{count, plural, one {# abonnement expire dans les 30 jours} other {# abonnements expirent dans les 30 jours}}",
     "adminAlertOverdueInvoices": "{count, plural, one {# facture en retard} other {# factures en retard}}",
     "adminAlertPendingPayments": "{count, plural, one {# paiement en attente} other {# paiements en attente}}",
+    "adminAlertFiscalNotReported": "{count, plural, one {# document n’a pas atteint l’administration fiscale} many {# documents n’ont pas atteint l’administration fiscale} other {# documents n’ont pas atteint l’administration fiscale}}",
     "adminAlertPendingReferralRewards": "{count, plural, one {# récompense de parrainage en attente} other {# récompenses de parrainage en attente}}",
     "adminAlertInjuryFlags": "{count, plural, one {# blessure signalée depuis ta dernière visite} other {# blessures signalées depuis ta dernière visite}}",
     "adminAlertUnreadWorkoutReviews": "{count, plural, one {# avis d’entraînement non lu} other {# avis d’entraînement non lus}}",
@@ -11922,6 +11923,10 @@
     "channel": {
       "in_app": "Dans l’app",
       "push": "Push"
+    },
+    "channelHelp": {
+      "in_app": "Dans Palee : sur la cloche et dans ta liste de notifications, quand tu ouvres l’app.",
+      "push": "Sur l’écran de ton téléphone ou de ton ordinateur, même quand Palee est fermée. S’active seulement avec «Dans l’app»."
     },
     "category": {
       "bookings": {

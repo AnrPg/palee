@@ -759,6 +759,12 @@ msgstr "Eine Steuerverbindung braucht Aufmerksamkeit"
 msgid "%{connection} stopped working. Open Billing details › Connections to fix it."
 msgstr "%{connection} funktioniert nicht mehr. Öffne Rechnungsdaten › Verbindungen, um es zu beheben."
 
+msgid "Documents did not reach the tax authority"
+msgstr "Belege haben die Steuerbehörde nicht erreicht"
+
+msgid "Some documents were not accepted by %{connection}. Open Finance › Documents to see why and send them again."
+msgstr "Einige Belege wurden von %{connection} nicht angenommen. Öffne Finanzen › Belege, um den Grund zu sehen und sie erneut zu senden."
+
 # ADR-280 verification: sponsors and the Palee check of Partners.
 
 msgid "Vouch for %{nickname}?"
