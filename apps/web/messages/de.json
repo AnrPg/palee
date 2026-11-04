@@ -14840,6 +14840,29 @@
       "hint": "Tippe auf eine Art, um sie in den WOD-Editoren auszublenden. Ein WOD mit einer ausgeblendeten Art behält sie."
     }
   },
+  "Equipment": {
+    "none": "Ohne Equipment",
+    "barbell": "Langhantel",
+    "dumbbell": "Kurzhanteln",
+    "kettlebell": "Kettlebell",
+    "bench": "Bank",
+    "box": "Box",
+    "pull_up_bar": "Klimmzugstange",
+    "rings": "Ringe",
+    "dip_bars": "Dipbarren",
+    "climbing_rope": "Kletterseil",
+    "ghd": "GHD",
+    "jump_rope": "Springseil",
+    "wall_ball": "Wall Ball",
+    "sled": "Schlitten",
+    "rower": "Rudergerät",
+    "bike": "Ergometer",
+    "air_bike": "Air Bike",
+    "ski_erg": "SkiErg",
+    "pool": "Schwimmbecken",
+    "band": "Widerstandsband",
+    "foam_roller": "Faszienrolle"
+  },
   "SaveBar": {
     "region": "Ungespeicherte Änderungen",
     "unsaved": "{count, plural, one {# ungespeicherte Änderung} other {# ungespeicherte Änderungen}}",

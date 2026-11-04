@@ -14840,6 +14840,29 @@
       "hint": "הקש על סוג כדי להסתיר אותו בעורכי ה-WOD. WOD שכבר יש לו סוג מוסתר שומר עליו."
     }
   },
+  "Equipment": {
+    "none": "ללא ציוד",
+    "barbell": "מוט",
+    "dumbbell": "משקולות יד",
+    "kettlebell": "קטלבל",
+    "bench": "ספסל",
+    "box": "קופסה",
+    "pull_up_bar": "מתח",
+    "rings": "טבעות",
+    "dip_bars": "מקבילים",
+    "climbing_rope": "חבל טיפוס",
+    "ghd": "GHD",
+    "jump_rope": "חבל קפיצה",
+    "wall_ball": "כדור קיר",
+    "sled": "מזחלת",
+    "rower": "מכונת חתירה",
+    "bike": "אופניים",
+    "air_bike": "אייר בייק",
+    "ski_erg": "SkiErg",
+    "pool": "בריכה",
+    "band": "גומיית התנגדות",
+    "foam_roller": "גליל עיסוי"
+  },
   "SaveBar": {
     "region": "שינויים שלא נשמרו",
     "unsaved": "{count, plural, one {שינוי אחד שלא נשמר} other {# שינויים שלא נשמרו}}",

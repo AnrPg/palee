@@ -14840,6 +14840,29 @@
       "hint": "Tik op een type om het te verbergen in de WOD-editors. Een WOD dat al een verborgen type heeft, houdt het."
     }
   },
+  "Equipment": {
+    "none": "Geen materiaal",
+    "barbell": "Halterstang",
+    "dumbbell": "Dumbbells",
+    "kettlebell": "Kettlebell",
+    "bench": "Bank",
+    "box": "Box",
+    "pull_up_bar": "Optrekstang",
+    "rings": "Ringen",
+    "dip_bars": "Dipbars",
+    "climbing_rope": "Klimtouw",
+    "ghd": "GHD",
+    "jump_rope": "Springtouw",
+    "wall_ball": "Wall ball",
+    "sled": "Slee",
+    "rower": "Roeitrainer",
+    "bike": "Fiets",
+    "air_bike": "Air bike",
+    "ski_erg": "SkiErg",
+    "pool": "Zwembad",
+    "band": "Weerstandsband",
+    "foam_roller": "Foamroller"
+  },
   "SaveBar": {
     "region": "Niet-opgeslagen wijzigingen",
     "unsaved": "{count, plural, one {# niet-opgeslagen wijziging} other {# niet-opgeslagen wijzigingen}}",

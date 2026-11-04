@@ -14840,6 +14840,29 @@
       "hint": "Tocca un tipo per nasconderlo negli editor dei WOD. Un WOD che ha già un tipo nascosto lo mantiene."
     }
   },
+  "Equipment": {
+    "none": "Senza attrezzi",
+    "barbell": "Bilanciere",
+    "dumbbell": "Manubri",
+    "kettlebell": "Kettlebell",
+    "bench": "Panca",
+    "box": "Box",
+    "pull_up_bar": "Sbarra per trazioni",
+    "rings": "Anelli",
+    "dip_bars": "Parallele",
+    "climbing_rope": "Corda per arrampicata",
+    "ghd": "GHD",
+    "jump_rope": "Corda per saltare",
+    "wall_ball": "Wall ball",
+    "sled": "Slitta",
+    "rower": "Vogatore",
+    "bike": "Bici",
+    "air_bike": "Air bike",
+    "ski_erg": "SkiErg",
+    "pool": "Piscina",
+    "band": "Elastico",
+    "foam_roller": "Rullo massaggiante"
+  },
   "SaveBar": {
     "region": "Modifiche non salvate",
     "unsaved": "{count, plural, one {# modifica non salvata} other {# modifiche non salvate}}",

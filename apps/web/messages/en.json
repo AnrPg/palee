@@ -14840,6 +14840,29 @@
       "hint": "Tap a type to hide it from the WOD editors. A WOD that already has a hidden type keeps it."
     }
   },
+  "Equipment": {
+    "none": "No equipment",
+    "barbell": "Barbell",
+    "dumbbell": "Dumbbells",
+    "kettlebell": "Kettlebell",
+    "bench": "Bench",
+    "box": "Box",
+    "pull_up_bar": "Pull-up bar",
+    "rings": "Rings",
+    "dip_bars": "Dip bars",
+    "climbing_rope": "Climbing rope",
+    "ghd": "GHD",
+    "jump_rope": "Jump rope",
+    "wall_ball": "Wall ball",
+    "sled": "Sled",
+    "rower": "Rower",
+    "bike": "Bike",
+    "air_bike": "Air bike",
+    "ski_erg": "SkiErg",
+    "pool": "Pool",
+    "band": "Resistance band",
+    "foam_roller": "Foam roller"
+  },
   "SaveBar": {
     "region": "Unsaved changes",
     "unsaved": "{count, plural, one {# unsaved change} other {# unsaved changes}}",

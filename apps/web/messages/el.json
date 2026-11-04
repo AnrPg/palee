@@ -14840,6 +14840,29 @@
       "hint": "Πάτα έναν τύπο για να μην εμφανίζεται στη δημιουργία WOD. Ένα WOD που έχει ήδη κρυμμένο τύπο τον κρατάει."
     }
   },
+  "Equipment": {
+    "none": "Χωρίς εξοπλισμό",
+    "barbell": "Μπάρα",
+    "dumbbell": "Αλτήρες",
+    "kettlebell": "Kettlebell",
+    "bench": "Πάγκος",
+    "box": "Κουτί",
+    "pull_up_bar": "Μονόζυγο",
+    "rings": "Κρίκοι",
+    "dip_bars": "Δίζυγο",
+    "climbing_rope": "Σχοινί αναρρίχησης",
+    "ghd": "GHD",
+    "jump_rope": "Σχοινάκι",
+    "wall_ball": "Wall ball",
+    "sled": "Έλκηθρο",
+    "rower": "Κωπηλατικό",
+    "bike": "Ποδήλατο",
+    "air_bike": "Air bike",
+    "ski_erg": "SkiErg",
+    "pool": "Πισίνα",
+    "band": "Λάστιχο αντίστασης",
+    "foam_roller": "Foam roller"
+  },
   "SaveBar": {
     "region": "Αλλαγές χωρίς αποθήκευση",
     "unsaved": "{count, plural, one {# αλλαγή χωρίς αποθήκευση} other {# αλλαγές χωρίς αποθήκευση}}",
