@@ -2,10 +2,15 @@ defmodule Palee.Application.BoxSite.SiteAdmin do
   @moduledoc """
   ADR-352..354: the box's website for staff (`/admin/site`): its settings,
   custom domains and what the site brought in (counts only).
+
+  ADR-530: the look and the section switches wait in a draft until
+  «Δημοσίευση» (`publish/1`); `discard_draft/1` throws it away, `preview/2`
+  answers the public site with it applied and `dismiss_notice/1` hides the
+  notice of a site the migration moved to «Αρένα».
   """
 
   alias Palee.Application.{PublicURL, SignedToken}
-  alias Palee.Application.BoxSite.{SiteDomainChecks, SiteIngresses, SiteTranslations}
+  alias Palee.Application.BoxSite.{PublicSite, SiteDomainChecks, SiteIngresses, SiteTranslations}
   alias Palee.{BoxSite, ContentTranslations, Email, Organizations}
   alias Palee.Email.Domain.Address
 
@@ -36,6 +41,23 @@ defmodule Palee.Application.BoxSite.SiteAdmin do
       {:ok, %{settings: present_settings(settings), languages: languages(context, settings)}}
     end
   end
+
+  @doc "ADR-530 «Δημοσίευση»: the draft goes live; answers the settings."
+  def publish(context), do: settings_answer(BoxSite.publish(context, user_id(context)))
+
+  @doc "ADR-530 «Απόρριψη αλλαγών»: throws the draft away; answers the settings."
+  def discard_draft(context),
+    do: settings_answer(BoxSite.discard_draft(context, user_id(context)))
+
+  @doc "ADR-530: hides the notice of a moved site; answers the settings."
+  def dismiss_notice(context),
+    do: settings_answer(BoxSite.dismiss_template_notice(context, user_id(context)))
+
+  @doc "ADR-530: the public site as it will look with the draft applied."
+  def preview(context, language), do: PublicSite.preview(context, language)
+
+  defp settings_answer({:ok, settings}), do: {:ok, %{settings: present_settings(settings)}}
+  defp settings_answer(error), do: error
 
   # ADR-520: the box's own language, the languages it can add, and how far
   # each translation is.
@@ -219,6 +241,13 @@ defmodule Palee.Application.BoxSite.SiteAdmin do
       :banner_version,
       :conversions_api_enabled,
       :has_conversions_api_token,
+      :template,
+      :palette,
+      :appearance,
+      :calm_motion,
+      :draft,
+      :published_at,
+      :template_notice,
       :lock_version
     ])
   end

@@ -877,3 +877,9 @@ msgstr "%{package} изтича днес. Поднови го, за да про�
 
 msgid "%{package} ended on %{date}. Renew to book classes again."
 msgstr "%{package} изтече на %{date}. Поднови го, за да записваш часове отново."
+
+msgid "Your website has a new look"
+msgstr "Сайтът ти има нов вид"
+
+msgid "It now uses the Arena template. See it, pick another one or publish it as it is."
+msgstr "Вече използва шаблона Arena. Разгледай го, избери друг или го публикувай както е."

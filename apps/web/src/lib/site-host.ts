@@ -17,9 +17,12 @@ const defaultCache = new Map<string, CacheEntry>();
 /** The app's languages as path segments ("en", "pt-pt"): a site's translation is `/<code>` (ADR-520). */
 const LANGUAGE_SEGMENT = SUPPORTED_LOCALES.map((code) => code.toLowerCase()).join("|");
 
-/** The site's own pages, served under a custom host's root. */
-const SITE_PATHS = new RegExp(`^/(?:${LANGUAGE_SEGMENT}|privacy|packages)?/?$`, "i");
-const SITE_PAGE = new RegExp(`^/b/[^/]+(?:/(?:${LANGUAGE_SEGMENT})|/privacy)?/?$`, "i");
+/** The website's sub-pages (ADR-530), each in every language. */
+const SUB_PAGE = "schedule|packages|coaches|space";
+
+/** The site's own pages and files, served under a custom host's root. */
+const SITE_PATHS = new RegExp(`^/(?:(?:${LANGUAGE_SEGMENT})(?:/(?:${SUB_PAGE}))?|${SUB_PAGE}|privacy|llms\\.txt|sitemap\\.xml|robots\\.txt)?/?$`, "i");
+const SITE_PAGE = new RegExp(`^/b/[^/]+(?:/(?:${LANGUAGE_SEGMENT})(?:/(?:${SUB_PAGE}))?|/(?:${SUB_PAGE})|/privacy)?/?$`, "i");
 
 /** Hosts the app itself answers on: never looked up as a box's domain. */
 export function isAppHost(host: string, env: Record<string, string | undefined> = process.env) {

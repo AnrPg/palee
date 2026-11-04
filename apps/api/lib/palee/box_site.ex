@@ -91,6 +91,64 @@ defmodule Palee.BoxSite do
     end
   end
 
+  @doc """
+  ADR-530 «Δημοσίευση»: the draft goes live (also without one: the notice of
+  a moved site is then hidden and `published_at` stamped).
+  """
+  def publish(context, user_id) do
+    current = settings(context)
+    save_quietly(context, current, SiteSettingsPolicy.publish(current, clock().now()), user_id)
+  end
+
+  @doc "ADR-530 «Απόρριψη αλλαγών»: throws the draft away."
+  def discard_draft(context, user_id) do
+    current = settings(context)
+
+    if is_nil(current.draft),
+      do: {:ok, current},
+      else: save_quietly(context, current, %{draft: nil}, user_id)
+  end
+
+  @doc "ADR-530: hides «Η ιστοσελίδα σου πήρε νέα όψη»."
+  def dismiss_template_notice(context, user_id) do
+    current = settings(context)
+
+    if current.template_notice,
+      do: save_quietly(context, current, %{template_notice: false}, user_id),
+      else: {:ok, current}
+  end
+
+  defp save_quietly(context, current, changes, user_id) do
+    changes = Map.put(changes, :updated_by_id, user_id)
+
+    case BoxSiteStore.save_settings(context, changes, current.lock_version) do
+      {:ok, settings} ->
+        {:ok, Map.update!(settings, :section_order, &SiteSections.normalize_order/1)}
+
+      {:error, :stale} ->
+        {:error, :settings_changed_meanwhile}
+
+      error ->
+        error
+    end
+  end
+
+  @doc "The settings with the draft applied (ADR-530 preview)."
+  def drafted_settings(context), do: context |> settings() |> SiteSettingsPolicy.drafted()
+
+  defdelegate templates(), to: SiteSettingsPolicy
+  defdelegate palettes(), to: SiteSettingsPolicy
+  defdelegate appearances(), to: SiteSettingsPolicy
+
+  @doc """
+  ADR-530: the live boxes whose site the migration moved to «Αρένα» and whose
+  staff were not told yet (never a demo business).
+  """
+  defdelegate template_notices_due(), to: BoxSiteStore
+
+  @doc "Marks the box's one-off notice as sent; `true` only for the caller that marked it."
+  defdelegate claim_template_notice(context, now), to: BoxSiteStore
+
   # ADR-520: a new FAQ entry gets its stable id here.
   defp maybe_wrap_faq(%{faq: entries} = changes) do
     entries = Enum.map(entries, &Map.put_new_lazy(&1, "id", fn -> Ecto.UUID.generate() end))

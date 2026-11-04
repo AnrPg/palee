@@ -12,6 +12,8 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
+      // ADR-530: the website's fonts load through Next's compiler only.
+      "next/font/google": path.resolve(__dirname, "src/lib/testing/next-font-google.ts"),
     },
   },
 });

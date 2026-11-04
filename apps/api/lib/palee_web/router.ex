@@ -1596,6 +1596,11 @@ defmodule PaleeWeb.Router do
     # ADR-352..354: the box's website and custom domains.
     get("/site", AdminSiteController, :show)
     put("/site", AdminSiteController, :update)
+    # ADR-530: the draft of the look and section switches.
+    post("/site/publish", AdminSiteController, :publish)
+    delete("/site/draft", AdminSiteController, :discard_draft)
+    delete("/site/notice", AdminSiteController, :dismiss_notice)
+    get("/site/preview", AdminSiteController, :preview)
     get("/site/summary", AdminSiteController, :summary)
     get("/site/domains", AdminSiteController, :domains)
     post("/site/domains", AdminSiteController, :add_domain)

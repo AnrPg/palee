@@ -19,6 +19,8 @@ defmodule Palee.BoxSite.Ports.BoxSiteStore do
   @callback conversions_api_token(context()) :: String.t() | nil
   @callback save_settings(context(), map(), lock_version :: non_neg_integer()) ::
               {:ok, map()} | {:error, :stale | term()}
+  @doc "ADR-530: marks the one-off template notice sent; true when this call marked it."
+  @callback claim_template_notice(context(), DateTime.t()) :: boolean()
 
   # Domains
   @callback list_domains(context()) :: [map()]
@@ -56,4 +58,5 @@ defmodule Palee.BoxSite.Ports.BoxSiteStore do
   @callback ingress_hosts() :: [
               %{organization_id: id(), id: id(), host: String.t(), certificate_status: String.t()}
             ]
+  @callback template_notices_due() :: [id()]
 end

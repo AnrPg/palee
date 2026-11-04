@@ -13,6 +13,8 @@ defmodule Palee.Pantheon.Ports.PRStore do
   @callback list_pr_history(pr_record_id :: Ecto.UUID.t()) :: [map()]
   @callback list_user_pr_history(user_id :: Ecto.UUID.t()) :: [map()]
   @callback count_user_prs(user_id :: Ecto.UUID.t()) :: non_neg_integer()
+  @doc "ADR-530: PRs recorded in a gym between two dates (an aggregate, never a person)."
+  @callback count_organization_prs(Ecto.UUID.t(), Date.t(), Date.t()) :: non_neg_integer()
   @callback list_organization_prs(user_id :: Ecto.UUID.t(), organization_id :: Ecto.UUID.t()) ::
               [map()]
   # ADR-139 ladder: one PR's rung, and bulk moves when the PR default changes.

@@ -2,6 +2,13 @@ defmodule Palee.BoxSite.Domain.SiteSettingsPolicy do
   @moduledoc """
   ADR-352/354: what an owner may set on the website, and which of it is
   public. The Conversions API token is write-only: never in a projection.
+
+  ADR-530: the look (`template`, `palette`, `appearance`, `calm_motion`)
+  and the section switches (`hidden_sections`, `public_schedule`,
+  `public_wod`) are publishable: an edit of them lands in `draft` (only the
+  values that differ from what is live; a draft equal to the live site is
+  nil) and goes live with `publish/2`. Every other field saves at once.
+  Only keys are validated; colours are presentation and live in the web.
   """
 
   alias Palee.BoxSite.Domain.SiteSections
@@ -17,7 +24,17 @@ defmodule Palee.BoxSite.Domain.SiteSettingsPolicy do
     gtm_container_id: ~r/^GTM-[A-Z0-9]{4,12}$/
   }
 
+  @templates ~w(arena tiles stories atelier)
+  @palettes ~w(palee electric flame sun amber emerald aegean violet fuchsia olive navy mono)
+  @appearances ~w(auto light dark)
+  @publishable ~w(template palette appearance calm_motion hidden_sections public_schedule public_wod)a
+
   def max_faq, do: @max_faq
+  def templates, do: @templates
+  def palettes, do: @palettes
+  def appearances, do: @appearances
+  @doc "The fields that go live only with «Δημοσίευση» (ADR-530 §2)."
+  def publishable_fields, do: @publishable
   def tag_fields, do: Map.keys(@tag_formats) |> Enum.sort()
 
   @doc "Default settings of a box that never saved any."
@@ -25,7 +42,8 @@ defmodule Palee.BoxSite.Domain.SiteSettingsPolicy do
     %{
       section_order: SiteSections.keys(),
       hidden_sections: [],
-      public_schedule: false,
+      # ADR-530: for new boxes the timetable is on and the WOD off.
+      public_schedule: true,
       public_wod: false,
       faq: [],
       translation_locales: ["en"],
@@ -37,6 +55,13 @@ defmodule Palee.BoxSite.Domain.SiteSettingsPolicy do
       banner_version: 1,
       conversions_api_enabled: false,
       has_conversions_api_token: false,
+      template: "tiles",
+      palette: "palee",
+      appearance: "auto",
+      calm_motion: false,
+      draft: nil,
+      published_at: nil,
+      template_notice: false,
       lock_version: 0
     }
   end
@@ -45,14 +70,19 @@ defmodule Palee.BoxSite.Domain.SiteSettingsPolicy do
   Turns an edit (string keys) into changes against `current` (the saved
   settings or `defaults/0`). Returns `{:ok, changes}` or
   `{:error, {:invalid_fields, %{field => code}}}`. A new tag bumps the
-  banner version so visitors are asked again (ADR-354 §3).
+  banner version so visitors are asked again (ADR-354 §3). The publishable
+  fields come back merged into `:draft` (ADR-530), never as columns.
   """
   def changes(current, params) when is_map(params) do
     {changes, errors} =
       {%{}, %{}}
-      |> sections(current, params)
+      |> sections(drafted(current), params)
       |> boolean(params, "public_schedule", :public_schedule)
       |> boolean(params, "public_wod", :public_wod)
+      |> one_of(params, "template", :template, @templates)
+      |> one_of(params, "palette", :palette, @palettes)
+      |> one_of(params, "appearance", :appearance, @appearances)
+      |> boolean(params, "calm_motion", :calm_motion)
       |> languages(params)
       |> boolean(params, "forms_enabled", :forms_enabled)
       |> boolean(params, "conversions_api_enabled", :conversions_api_enabled)
@@ -63,7 +93,7 @@ defmodule Palee.BoxSite.Domain.SiteSettingsPolicy do
     errors = conversions_api_errors(current, changes, errors)
 
     if errors == %{} do
-      {:ok, bump_banner(current, changes)}
+      {:ok, current |> bump_banner(changes) |> into_draft(current)}
     else
       {:error, {:invalid_fields, errors}}
     end
@@ -92,6 +122,82 @@ defmodule Palee.BoxSite.Domain.SiteSettingsPolicy do
       {:ok, _other} -> {changes, Map.put(errors, field, "invalid")}
       :error -> {changes, errors}
     end
+  end
+
+  defp one_of({changes, errors}, params, key, field, allowed) do
+    case Map.fetch(params, key) do
+      {:ok, value} when is_binary(value) ->
+        if value in allowed,
+          do: {Map.put(changes, field, value), errors},
+          else: {changes, Map.put(errors, field, "invalid")}
+
+      {:ok, _other} ->
+        {changes, Map.put(errors, field, "invalid")}
+
+      :error ->
+        {changes, errors}
+    end
+  end
+
+  # ── Draft and publish (ADR-530 §2) ──────────────────────────────────────
+
+  # The publishable changes move into the draft, merged with what already
+  # waits there; only values that differ from the live site stay.
+  defp into_draft(changes, current) do
+    {publishable, immediate} = Map.split(changes, @publishable)
+
+    if publishable == %{} do
+      immediate
+    else
+      waiting = current |> draft_values() |> Map.merge(publishable)
+
+      draft =
+        waiting
+        |> Enum.reject(fn {field, value} -> same?(value, Map.get(current, field)) end)
+        |> Map.new(fn {field, value} -> {Atom.to_string(field), value} end)
+
+      Map.put(immediate, :draft, if(draft == %{}, do: nil, else: draft))
+    end
+  end
+
+  defp same?(a, b) when is_list(a) and is_list(b), do: Enum.sort(a) == Enum.sort(b)
+  defp same?(a, b), do: a == b
+
+  @doc """
+  The draft's values (atom keys), dropping any key or value that is no
+  longer valid; `%{}` when nothing waits.
+  """
+  def draft_values(%{draft: draft}) when is_map(draft) do
+    Enum.reduce(@publishable, %{}, fn field, acc ->
+      case Map.fetch(draft, Atom.to_string(field)) do
+        {:ok, value} -> if valid_value?(field, value), do: Map.put(acc, field, value), else: acc
+        :error -> acc
+      end
+    end)
+  end
+
+  def draft_values(_settings), do: %{}
+
+  defp valid_value?(:template, value), do: value in @templates
+  defp valid_value?(:palette, value), do: value in @palettes
+  defp valid_value?(:appearance, value), do: value in @appearances
+
+  defp valid_value?(:hidden_sections, value),
+    do: match?({:ok, _}, SiteSections.validate([], value))
+
+  defp valid_value?(_boolean, value), do: is_boolean(value)
+
+  @doc "The settings as they will be once the draft is published (the preview)."
+  def drafted(settings), do: Map.merge(settings, draft_values(settings))
+
+  @doc """
+  «Δημοσίευση»: the changes that put the draft live, clear it, stamp
+  `published_at` and hide the notice of a moved site.
+  """
+  def publish(settings, now) do
+    settings
+    |> draft_values()
+    |> Map.merge(%{draft: nil, published_at: now, template_notice: false})
   end
 
   defp faq({changes, errors}, %{"faq" => entries}) when is_list(entries) do

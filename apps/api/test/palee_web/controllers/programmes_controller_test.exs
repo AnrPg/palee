@@ -168,6 +168,28 @@ defmodule PaleeWeb.ProgrammesControllerTest do
     refute Enum.any?(catalogue["programmes"], &(&1["id"] == box_only["id"]))
   end
 
+  # ADR-530 §3: the website's «Προγράμματα» lists what the box sells.
+  test "the box website lists the programmes for sale with a link to each", ctx do
+    programme = create_published(ctx)
+    publish_page(ctx)
+
+    site =
+      public_conn()
+      |> get("/api/public/sites/#{ctx.organization.slug}")
+      |> json_response(200)
+
+    assert "programmes" in site["sections"]
+
+    assert [
+             %{"id" => id, "title" => "Engine 2 weeks", "weeks" => 2, "price_cents" => 4_000} =
+               listed
+           ] =
+             site["programmes"]
+
+    assert id == programme["id"]
+    assert String.ends_with?(listed["url"], "/b/#{ctx.organization.slug}/programmes/#{id}")
+  end
+
   test "buying: checkout, WODs on dated days, Finance lineage, review, withdrawal", ctx do
     programme = create_published(ctx)
     connect_sandbox(ctx)
