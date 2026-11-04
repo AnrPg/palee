@@ -16453,6 +16453,7 @@
       "events": "Evenementen",
       "wod": "WOD van de dag",
       "packages": "Pakketten",
+      "programmes": "Trainingsprogramma’s",
       "coaches": "Coaches",
       "location": "Locatie",
       "reviews": "Reviews",
@@ -16696,6 +16697,13 @@
       "left": "Nog {left} van {total}",
       "skip": "Overslaan",
       "saveNext": "Opslaan en volgende"
+    },
+    "programmesSection": {
+      "eyebrow": "Programma’s waar je ook bent",
+      "title": "Train met onze coaches, ook thuis",
+      "all": "{count, plural, one {Alle trainingsprogramma’s (#)} other {Alle trainingsprogramma’s (#)}}",
+      "nav": "Trainingsprogramma’s",
+      "settingsHint": "Zichtbaar als je een trainingsprogramma te koop hebt."
     }
   },
   "BoxReviews": {
@@ -17134,6 +17142,83 @@
       "review_not_allowed": "Alleen kopers kunnen een programma beoordelen.",
       "invalid_review": "Geef 1 tot 5 sterren en maximaal 1000 tekens.",
       "online_payments_unavailable": "Deze box accepteert nog geen online betalingen."
+    },
+    "buyer2": {
+      "factWeeks": "{count, plural, one {week} other {weken}}",
+      "factPerWeek": "{count, plural, one {training per week} other {trainingen per week}}",
+      "factMinutes": "ongeveer per training",
+      "factEquipment": "belangrijkste materiaal",
+      "minutes": "{minutes}′",
+      "reviewsCount": "{count, plural, one {# review} other {# reviews}}",
+      "previewFree": "{count, plural, one {Bekijk de eerste dag gratis} other {Bekijk de eerste # dagen gratis}}",
+      "reviews": "Reviews",
+      "weeksTitle": "De weken",
+      "week": "Week {week}",
+      "weekRange": "Weken {from}–{to}",
+      "freeCount": "{count, plural, one {# gratis} other {# gratis}}",
+      "free": "Gratis",
+      "locked": "{count, plural, one {# vergrendelde WOD} other {# vergrendelde WOD’s}}",
+      "lockedEach": "elk ~{minutes}′",
+      "lockedHint": "Open na aankoop",
+      "faqTitle": "Veelgestelde vragen",
+      "faqStartQ": "Wanneer begin ik?",
+      "faqStartA": "Je kiest een startdag als je het koopt, van vandaag tot 60 dagen later.",
+      "faqMissQ": "En als ik een dag mis?",
+      "faqMissA": "De dag wacht op je: doe hem wanneer het kan of sla hem over. Geen training gaat verloren zonder dat jij dat kiest.",
+      "faqRefundQ": "Terugbetaling",
+      "faqRefund": {
+        "before_start": "Tot de startdag krijg je de hele prijs terug.",
+        "withdrawal_only": "Binnen de herroepingstermijn de prijs zonder de dagen die al geleverd zijn.",
+        "pro_rata": "Als je stopt, krijg je de dagen terug die nog moeten komen."
+      },
+      "refundShort": {
+        "before_start": "Terugbetaling tot de start",
+        "withdrawal_only": "Terugbetaling binnen de herroepingstermijn",
+        "pro_rata": "Terugbetaling voor de resterende dagen"
+      },
+      "buy": "Kopen",
+      "perkStart": "Je kiest de startdag",
+      "perkDaily": "Elke dag de WOD in de app",
+      "perkLog": "Loggen en geschiedenis",
+      "perWeekShort": "{count, plural, one {# per week} other {# per week}}",
+      "see": "Bekijken",
+      "boxEmpty": "Deze box heeft nog geen trainingsprogramma’s te koop.",
+      "weekOf": "Week {week} van {weeks}",
+      "doneOf": "{done} / {total, plural, one {# training} other {# trainingen}}",
+      "behindTitle": "Dag {day} is blijven liggen ({weekday})",
+      "behindTitleShort": "Dag {day} is blijven liggen",
+      "behindText": "Doe hem vandaag of ga door naar de volgende.",
+      "behindNoRoom": "Hij kan niet verder worden verschoven. Je kunt hem overslaan.",
+      "doToday": "Vandaag doen",
+      "skip": "Overslaan",
+      "daysAria": "De dagen van de week",
+      "prevWeek": "Vorige week",
+      "nextWeek": "Volgende week",
+      "status": {
+        "done": "Gedaan",
+        "skipped": "Overgeslagen",
+        "behind": "Achter",
+        "today": "Vandaag",
+        "upcoming": "Hierna",
+        "rest": "Rust"
+      },
+      "pill": {
+        "done": "gedaan",
+        "skipped": "overgeslagen",
+        "behind": "achter",
+        "today": "vandaag"
+      },
+      "weekDay": "Wk {week} · Dag {day}",
+      "start": "Start",
+      "seeLog": "Bekijk de log",
+      "thisWeek": "Deze week",
+      "noDays": "Dit trainingsprogramma heeft nog geen dagen.",
+      "errors": {
+        "programme_day_not_behind": "Deze dag ligt niet meer achter. Bekijk de pagina opnieuw.",
+        "programme_day_not_found": "Deze dag hoort niet bij het trainingsprogramma.",
+        "programme_schedule_limit": "Verder verschuiven kan niet: het trainingsprogramma zou te laat eindigen. Je kunt hem overslaan.",
+        "programme_purchase_not_active": "Dit trainingsprogramma is niet meer actief."
+      }
     }
   },
   "BodyDevices": {

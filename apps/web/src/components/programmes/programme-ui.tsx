@@ -27,10 +27,25 @@ const PROGRAMME_CODES = new Set([
   "online_payments_unavailable",
 ]);
 
+/** The day refusals of a bought programme (ADR-540): «Κάν' τη σήμερα» and «Παράλειψη». */
+export const PROGRAMME_DAY_CODES = [
+  "programme_day_not_behind",
+  "programme_day_not_found",
+  "programme_schedule_limit",
+  "programme_purchase_not_active",
+] as const;
+type ProgrammeDayCode = (typeof PROGRAMME_DAY_CODES)[number];
+
 export function programmeErrorKey(error: unknown): string | null {
   if (!(error instanceof ApiError)) return null;
   const code = error.payload.code;
   return typeof code === "string" && PROGRAMME_CODES.has(code) ? code : null;
+}
+
+export function programmeDayErrorKey(error: unknown): ProgrammeDayCode | null {
+  if (!(error instanceof ApiError)) return null;
+  const code = error.payload?.code;
+  return (PROGRAMME_DAY_CODES as readonly unknown[]).includes(code) ? (code as ProgrammeDayCode) : null;
 }
 
 export function useProgrammeError() {
@@ -39,7 +54,9 @@ export function useProgrammeError() {
   return useCallback(
     (error: unknown) => {
       const key = programmeErrorKey(error);
-      return key ? t(`errors.${key}`) : localizeError(error, ui);
+      if (key) return t(`errors.${key}`);
+      const day = programmeDayErrorKey(error);
+      return day ? t(`buyer2.errors.${day}`) : localizeError(error, ui);
     },
     [t, ui],
   );
@@ -81,7 +98,12 @@ export const LEVELS = ["all", "beginner", "intermediate", "advanced"] as const;
 
 /** «★ 4,8 (23)», or nothing without reviews. */
 export function ratingLabel(locale: string, average: number | null | undefined, count: number | null | undefined) {
-  if (!count || average == null) return null;
-  const value = new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(average);
-  return `★ ${value} (${count})`;
+  const stars = ratingStars(locale, average, count);
+  return stars ? `${stars} (${count})` : null;
+}
+
+/** «★ 4,8», or nothing without reviews. */
+export function ratingStars(locale: string, average: number | null | undefined, count: number | null | undefined) {
+  if (!count || typeof average !== "number" || !Number.isFinite(average)) return null;
+  return `★ ${new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(average)}`;
 }

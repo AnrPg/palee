@@ -16453,6 +16453,7 @@
       "events": "الفعاليات",
       "wod": "تمرين اليوم",
       "packages": "الباقات",
+      "programmes": "برامج التدريب",
       "coaches": "المدربون",
       "location": "الموقع",
       "reviews": "المراجعات",
@@ -16696,6 +16697,13 @@
       "left": "متبقٍّ {left} من {total}",
       "skip": "تخطٍّ",
       "saveNext": "حفظ والتالي"
+    },
+    "programmesSection": {
+      "eyebrow": "برامج أينما كنت",
+      "title": "تدرّب مع مدربينا، ومن البيت أيضًا",
+      "all": "{count, plural, zero {كل برامج التدريب (#)} one {كل برامج التدريب (#)} two {كل برامج التدريب (#)} few {كل برامج التدريب (#)} many {كل برامج التدريب (#)} other {كل برامج التدريب (#)}}",
+      "nav": "برامج التدريب",
+      "settingsHint": "تظهر عندما يكون لديك برنامج تدريب معروض للبيع."
     }
   },
   "BoxReviews": {
@@ -17134,6 +17142,83 @@
       "review_not_allowed": "المشترون فقط يمكنهم مراجعة البرنامج.",
       "invalid_review": "امنح من 1 إلى 5 نجوم وبحد أقصى 1000 حرف.",
       "online_payments_unavailable": "هذا الـ box لا يقبل الدفع عبر الإنترنت بعد."
+    },
+    "buyer2": {
+      "factWeeks": "{count, plural, zero {أسابيع} one {أسبوع} two {أسبوعان} few {أسابيع} many {أسبوعًا} other {أسبوع}}",
+      "factPerWeek": "{count, plural, zero {حصص في الأسبوع} one {حصة في الأسبوع} two {حصتان في الأسبوع} few {حصص في الأسبوع} many {حصة في الأسبوع} other {حصة في الأسبوع}}",
+      "factMinutes": "تقريبًا لكل حصة",
+      "factEquipment": "المعدات الرئيسية",
+      "minutes": "{minutes}′",
+      "reviewsCount": "{count, plural, zero {# تقييمات} one {تقييم واحد} two {تقييمان} few {# تقييمات} many {# تقييمًا} other {# تقييم}}",
+      "previewFree": "{count, plural, zero {شاهد الأيام الأولى مجانًا} one {شاهد اليوم الأول مجانًا} two {شاهد اليومين الأولين مجانًا} few {شاهد أول # أيام مجانًا} many {شاهد أول # يومًا مجانًا} other {شاهد أول # يوم مجانًا}}",
+      "reviews": "التقييمات",
+      "weeksTitle": "الأسابيع",
+      "week": "الأسبوع {week}",
+      "weekRange": "الأسابيع {from}–{to}",
+      "freeCount": "{count, plural, zero {# مجانًا} one {# مجانًا} two {# مجانًا} few {# مجانًا} many {# مجانًا} other {# مجانًا}}",
+      "free": "مجانًا",
+      "locked": "{count, plural, zero {# WOD مقفلة} one {WOD واحد مقفل} two {WOD اثنان مقفلان} few {# WOD مقفلة} many {# WOD مقفلًا} other {# WOD مقفل}}",
+      "lockedEach": "~{minutes}′ لكل واحد",
+      "lockedHint": "تُفتح عند الشراء",
+      "faqTitle": "الأسئلة الشائعة",
+      "faqStartQ": "متى أبدأ؟",
+      "faqStartA": "تختار يوم البدء عند الشراء، من اليوم وحتى 60 يومًا لاحقًا.",
+      "faqMissQ": "وماذا لو فاتني يوم؟",
+      "faqMissA": "اليوم ينتظرك: أدِّه متى استطعت أو تخطَّه. لا تضيع أي حصة إلا إذا اخترت ذلك.",
+      "faqRefundQ": "استرداد المال",
+      "faqRefund": {
+        "before_start": "تسترد السعر كاملًا حتى يوم البدء.",
+        "withdrawal_only": "خلال مهلة الانسحاب، السعر بعد خصم الأيام التي قُدمت.",
+        "pro_rata": "متى توقفت، تسترد الأيام التي لم تأتِ بعد."
+      },
+      "refundShort": {
+        "before_start": "استرداد حتى البدء",
+        "withdrawal_only": "استرداد خلال مهلة الانسحاب",
+        "pro_rata": "استرداد عن الأيام المتبقية"
+      },
+      "buy": "شراء",
+      "perkStart": "تختار يوم البدء",
+      "perkDaily": "تمرين WOD كل يوم في التطبيق",
+      "perkLog": "التسجيل والسجل",
+      "perWeekShort": "{count, plural, zero {# أسبوعيًا} one {# أسبوعيًا} two {# أسبوعيًا} few {# أسبوعيًا} many {# أسبوعيًا} other {# أسبوعيًا}}",
+      "see": "شاهده",
+      "boxEmpty": "لا توجد لدى هذا البوكس برامج تدريب معروضة للبيع بعد.",
+      "weekOf": "الأسبوع {week} من {weeks}",
+      "doneOf": "{done} / {total, plural, zero {# حصص} one {حصة واحدة} two {حصتان} few {# حصص} many {# حصة} other {# حصة}}",
+      "behindTitle": "تأخر اليوم {day} ({weekday})",
+      "behindTitleShort": "تأخر اليوم {day}",
+      "behindText": "أدِّه اليوم أو انتقل إلى التالي.",
+      "behindNoRoom": "لا يمكن تأجيله أكثر. يمكنك تخطيه.",
+      "doToday": "أدِّه اليوم",
+      "skip": "تخطٍّ",
+      "daysAria": "أيام الأسبوع",
+      "prevWeek": "الأسبوع السابق",
+      "nextWeek": "الأسبوع التالي",
+      "status": {
+        "done": "تم",
+        "skipped": "تم التخطي",
+        "behind": "متأخر",
+        "today": "اليوم",
+        "upcoming": "قادم",
+        "rest": "راحة"
+      },
+      "pill": {
+        "done": "تم",
+        "skipped": "تخطٍّ",
+        "behind": "متأخر",
+        "today": "اليوم"
+      },
+      "weekDay": "أسبوع {week} · يوم {day}",
+      "start": "ابدأ",
+      "seeLog": "اعرض التسجيل",
+      "thisWeek": "هذا الأسبوع",
+      "noDays": "لا توجد أيام في برنامج التدريب هذا بعد.",
+      "errors": {
+        "programme_day_not_behind": "هذا اليوم لم يعد متأخرًا. انظر إلى الصفحة من جديد.",
+        "programme_day_not_found": "هذا اليوم ليس جزءًا من برنامج التدريب.",
+        "programme_schedule_limit": "لا يمكن التأجيل أكثر: سينتهي برنامج التدريب متأخرًا جدًا. يمكنك تخطيه.",
+        "programme_purchase_not_active": "برنامج التدريب هذا لم يعد نشطًا."
+      }
     }
   },
   "BodyDevices": {

@@ -16453,6 +16453,7 @@
       "events": "אירועים",
       "wod": "האימון היומי",
       "packages": "חבילות",
+      "programmes": "תוכניות אימון",
       "coaches": "מאמנים",
       "location": "מיקום",
       "reviews": "ביקורות",
@@ -16696,6 +16697,13 @@
       "left": "נשארו {left} מתוך {total}",
       "skip": "דילוג",
       "saveNext": "שמירה והבא"
+    },
+    "programmesSection": {
+      "eyebrow": "תוכניות לכל מקום שבו אתה נמצא",
+      "title": "התאמן עם המאמנים שלנו, גם מהבית",
+      "all": "{count, plural, one {כל תוכניות האימון (#)} two {כל תוכניות האימון (#)} other {כל תוכניות האימון (#)}}",
+      "nav": "תוכניות אימון",
+      "settingsHint": "מוצג כשיש לך תוכנית אימון במכירה."
     }
   },
   "BoxReviews": {
@@ -17134,6 +17142,83 @@
       "review_not_allowed": "רק קונים יכולים לכתוב ביקורת.",
       "invalid_review": "תנו 1 עד 5 כוכבים ועד 1000 תווים.",
       "online_payments_unavailable": "ה-box הזה עוד לא מקבל תשלומים מקוונים."
+    },
+    "buyer2": {
+      "factWeeks": "{count, plural, one {שבוע} two {שבועות} other {שבועות}}",
+      "factPerWeek": "{count, plural, one {אימון בשבוע} two {אימונים בשבוע} other {אימונים בשבוע}}",
+      "factMinutes": "בערך לאימון",
+      "factEquipment": "ציוד עיקרי",
+      "minutes": "{minutes}′",
+      "reviewsCount": "{count, plural, one {ביקורת אחת} two {# ביקורות} other {# ביקורות}}",
+      "previewFree": "{count, plural, one {צפה ביום הראשון בחינם} two {צפה ביומיים הראשונים בחינם} other {צפה ב־# הימים הראשונים בחינם}}",
+      "reviews": "ביקורות",
+      "weeksTitle": "השבועות",
+      "week": "שבוע {week}",
+      "weekRange": "שבועות {from}–{to}",
+      "freeCount": "{count, plural, one {# בחינם} two {# בחינם} other {# בחינם}}",
+      "free": "בחינם",
+      "locked": "{count, plural, one {WOD נעול אחד} two {# WOD נעולים} other {# WOD נעולים}}",
+      "lockedEach": "~{minutes}′ כל אחד",
+      "lockedHint": "נפתחים עם הרכישה",
+      "faqTitle": "שאלות נפוצות",
+      "faqStartQ": "מתי אני מתחיל?",
+      "faqStartA": "בוחרים יום התחלה בזמן הרכישה, מהיום ועד 60 יום קדימה.",
+      "faqMissQ": "ואם פספסתי יום?",
+      "faqMissA": "היום מחכה לך: עשה אותו מתי שתוכל או דלג עליו. שום אימון לא הולך לאיבוד בלי שתבחר בכך.",
+      "faqRefundQ": "החזר כספי",
+      "faqRefund": {
+        "before_start": "עד יום ההתחלה מקבלים את כל המחיר בחזרה.",
+        "withdrawal_only": "בתוך תקופת הביטול, המחיר בלי הימים שכבר ניתנו.",
+        "pro_rata": "מתי שתפסיק, תקבל בחזרה את הימים שעוד לא הגיעו."
+      },
+      "refundShort": {
+        "before_start": "החזר עד ההתחלה",
+        "withdrawal_only": "החזר בתקופת הביטול",
+        "pro_rata": "החזר על הימים שנותרו"
+      },
+      "buy": "רכישה",
+      "perkStart": "אתה בוחר את יום ההתחלה",
+      "perkDaily": "כל יום ה־WOD באפליקציה",
+      "perkLog": "תיעוד והיסטוריה",
+      "perWeekShort": "{count, plural, one {# בשבוע} two {# בשבוע} other {# בשבוע}}",
+      "see": "לצפייה",
+      "boxEmpty": "לבוקס הזה עדיין אין תוכניות אימון במכירה.",
+      "weekOf": "שבוע {week} מתוך {weeks}",
+      "doneOf": "{done} / {total, plural, one {אימון #} two {# אימונים} other {# אימונים}}",
+      "behindTitle": "יום {day} נשאר מאחור ({weekday})",
+      "behindTitleShort": "יום {day} נשאר מאחור",
+      "behindText": "עשה אותו היום או המשך לבא.",
+      "behindNoRoom": "אי אפשר לדחות אותו יותר. אפשר לדלג עליו.",
+      "doToday": "לעשות היום",
+      "skip": "דילוג",
+      "daysAria": "ימי השבוע",
+      "prevWeek": "השבוע הקודם",
+      "nextWeek": "השבוע הבא",
+      "status": {
+        "done": "בוצע",
+        "skipped": "דולג",
+        "behind": "מאחור",
+        "today": "היום",
+        "upcoming": "בהמשך",
+        "rest": "מנוחה"
+      },
+      "pill": {
+        "done": "בוצע",
+        "skipped": "דולג",
+        "behind": "מאחור",
+        "today": "היום"
+      },
+      "weekDay": "שבוע {week} · יום {day}",
+      "start": "התחל",
+      "seeLog": "לתיעוד",
+      "thisWeek": "השבוע",
+      "noDays": "בתוכנית האימון הזו עדיין אין ימים.",
+      "errors": {
+        "programme_day_not_behind": "היום הזה כבר לא מאחור. הסתכל שוב בעמוד.",
+        "programme_day_not_found": "היום הזה אינו חלק מתוכנית האימון.",
+        "programme_schedule_limit": "אי אפשר לדחות יותר: תוכנית האימון הייתה מסתיימת מאוחר מדי. אפשר לדלג עליו.",
+        "programme_purchase_not_active": "תוכנית האימון הזו כבר לא פעילה."
+      }
     }
   },
   "BodyDevices": {

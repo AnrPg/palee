@@ -169,6 +169,7 @@ function SiteForm({ token, site }: { token: string; site: AdminSite }) {
               <span className="flex flex-1 flex-col">
                 <span className="text-sm font-semibold" style={{ color: "var(--text)" }}>{t(`sections.${key}`)}</span>
                 {key === "hero" ? <span className="text-xs" style={{ color: "var(--dim)" }}>{t("settings.heroAlways")}</span> : null}
+                {key === "programmes" ? <span className="text-xs" style={{ color: "var(--dim)" }}>{t("programmesSection.settingsHint")}</span> : null}
               </span>
               {key !== "hero" ? (
                 <>
