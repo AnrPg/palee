@@ -92,6 +92,29 @@ describe("GuideOverlay (ADR-193)", () => {
     expect(goTo).toHaveBeenCalledWith(2);
   });
 
+  it("still follows the tap when the next screen arrives after the button is gone (a slow page)", () => {
+    index = 1;
+    const button = document.createElement("a");
+    button.setAttribute("data-guide", "shop.newProduct");
+    button.setAttribute("data-test-anchor", "");
+    document.body.appendChild(button);
+    render(wrap(<GuideOverlay />));
+    act(() => void vi.advanceTimersByTime(300));
+    fireEvent.click(button);
+    // The console is gone and the editor not there yet: the step says «not here».
+    button.remove();
+    act(() => void vi.advanceTimersByTime(3000));
+    expect(screen.getByText("ui.notHere")).toBeTruthy();
+    expect(goTo).not.toHaveBeenCalled();
+
+    const editor = document.createElement("section");
+    editor.setAttribute("data-guide", "shop.editor.photos");
+    editor.setAttribute("data-test-anchor", "");
+    document.body.appendChild(editor);
+    act(() => void vi.advanceTimersByTime(300));
+    expect(goTo).toHaveBeenCalledWith(2);
+  });
+
   it("explains a step in the middle when its spot is not on screen", () => {
     index = 2;
     render(wrap(<GuideOverlay />));

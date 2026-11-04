@@ -153,16 +153,19 @@ function ActiveStep({
   }, [index, onGo]);
   useEffect(() => {
     const action = step.action;
-    if (!action || stepMissing) return;
+    if (!action) return;
     let tapped = false;
     const onClick = (event: MouseEvent) => {
       const target = findAnchor(action.target);
       if (target && event.target instanceof Node && target.contains(event.target)) tapped = true;
     };
     document.addEventListener("click", onClick, true);
+    // `until` keeps being watched while the step's own anchor is gone: a tap
+    // that opens a slow page leaves neither on screen for a moment, and the
+    // guide must still follow once the page arrives.
     const timer = window.setInterval(() => {
       if (reached(action)) advance();
-      else if (tapped && !action.until && !action.untilGone) advance();
+      else if (!stepMissing && tapped && !action.until && !action.untilGone) advance();
     }, POLL_MS);
     return () => {
       document.removeEventListener("click", onClick, true);

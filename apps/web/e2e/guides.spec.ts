@@ -94,6 +94,9 @@ test("the shop guide walks the real console, tap by tap, and is recorded as done
   await expect(card(page)).toHaveAttribute("data-guide-step", "shop_staff.newProduct");
   await page.locator('[data-guide="shop.newProduct"]').click();
   await expect(page).toHaveURL(/\/admin\/shop\/products\/new/);
+  // The editor is a new route: its first compile on the dev server can take
+  // longer than one expect under load. The guide moves on once it shows.
+  await expect(page.locator('[data-guide="shop.editor.photos"]')).toBeVisible({ timeout: 30_000 });
   await expect(card(page)).toHaveAttribute("data-guide-step", "shop_staff.photos");
 
   for (const step of ["price", "selling", "save", "ordersTab"]) {

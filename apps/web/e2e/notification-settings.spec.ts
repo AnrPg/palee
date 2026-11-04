@@ -228,12 +228,15 @@ test.describe("notification settings", () => {
       // A real touch swipe to the left: the buttons sit behind the card until then.
       await swipeLeft(page, card.locator("article"));
       await expect(card).toHaveAttribute("data-revealed", "true");
-      await card.getByRole("button", { name: "Delete this notification" }).tap();
+      // Then the uncovered trash is pressed. (A synthetic CDP tap right after
+      // the synthetic swipe is sometimes not turned into a click by Chromium.)
+      await card.getByRole("button", { name: "Delete this notification" }).click();
+      await expect(drawer.getByTestId("notification-undo-toast")).toContainText("Notification deleted");
     } else {
       await card.hover();
       await card.getByRole("button", { name: "Delete this notification" }).click();
+      await expect(drawer.getByTestId("notification-undo-toast")).toContainText("Notification deleted");
     }
-    await expect(drawer.getByTestId("notification-undo-toast")).toContainText("Notification deleted");
     await drawer.getByRole("button", { name: "Undo" }).click();
     await expect.poll(() => calls).toEqual(["DELETE n-1", "restore n-1"]);
   });
