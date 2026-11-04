@@ -56,7 +56,9 @@ describe("NextRankCard (member progress, option Α)", () => {
     render(<NextRankCard standing={standing} />);
     const card = screen.getByTestId("next-rank-card");
     expect(within(card).getByText("Μπλε")).toBeInTheDocument();
-    expect(within(card).getByText("ranks.my.days:12,30 · ranks.skillsDone:1,3")).toBeInTheDocument();
+    // One line per count, never joined with «·».
+    expect(within(card).getByText("ranks.my.days:12,30")).toBeInTheDocument();
+    expect(within(card).getByText("ranks.skillsDone:1,3")).toBeInTheDocument();
     expect(within(card).queryByText(/ranks.my.classes/)).not.toBeInTheDocument();
     expect(within(card).getByText("Triangle")).toBeInTheDocument();
     expect(within(card).getByText("Κράτα τα γόνατα κλειστά")).toBeInTheDocument();

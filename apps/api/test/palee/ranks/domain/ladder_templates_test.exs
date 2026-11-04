@@ -50,6 +50,7 @@ defmodule Palee.Ranks.Domain.LadderTemplatesTest do
 
   test "Greek has every name and skill; other languages have every template name and system" do
     greek = catalogue("el")
+    others = Map.new(~w(ar ru de es pt_PT he it bg nl fr), &{&1, catalogue(&1)})
 
     for template <- LadderPolicy.templates() do
       assert Map.get(greek, template.name, "") != "", "no Greek for #{template.name}"
@@ -59,9 +60,9 @@ defmodule Palee.Ranks.Domain.LadderTemplatesTest do
         assert Map.get(greek, skill, "") != "", "#{template.key}: no Greek for #{skill}"
       end
 
-      for locale <- ~w(ar ru de es pt_PT he it bg nl fr) do
-        assert Map.get(catalogue(locale), template.name, "") != "", "#{locale}: #{template.key}"
-        assert Map.get(catalogue(locale), template.system, "") != "", "#{locale}: #{template.key}"
+      for {locale, catalogue} <- others do
+        assert Map.get(catalogue, template.name, "") != "", "#{locale}: #{template.key}"
+        assert Map.get(catalogue, template.system, "") != "", "#{locale}: #{template.key}"
       end
     end
   end
