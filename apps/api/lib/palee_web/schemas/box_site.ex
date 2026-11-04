@@ -611,7 +611,8 @@ defmodule PaleeWeb.Schemas.BoxSite do
         },
         programmes_total: %{
           @int
-          | description: "How many programmes the box sells (ADR-543), for «Όλα τα προγράμματα (N)»"
+          | description:
+              "How many programmes the box sells (ADR-543), for «Όλα τα προγράμματα (N)»"
         },
         events: %Schema{type: :array, items: BoxReviews.site_event()},
         wod: %Schema{type: :array, items: BoxReviews.site_wod()},

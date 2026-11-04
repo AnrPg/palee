@@ -57,9 +57,10 @@ type Draft = {
 
 function toDraft(settings: AdminSite["settings"]): Draft {
   return {
-    faq: settings.faq,
-    translation_locales: settings.translation_locales,
-    visible_locales: settings.visible_locales,
+    // Lists from an older API or a stub answering `{}` read as empty.
+    faq: Array.isArray(settings.faq) ? settings.faq : [],
+    translation_locales: Array.isArray(settings.translation_locales) ? settings.translation_locales : [],
+    visible_locales: Array.isArray(settings.visible_locales) ? settings.visible_locales : [],
     ga4_measurement_id: settings.ga4_measurement_id ?? "",
     gtm_container_id: settings.gtm_container_id ?? "",
     meta_pixel_id: settings.meta_pixel_id ?? "",
@@ -103,7 +104,7 @@ export function WebsiteSettings() {
             <a href={openHref} target="_blank" rel="noreferrer" className="font-bold" style={{ color: "var(--primary-strong)" }} data-testid="website-open">
               {t("settings.open")} ↗
             </a>
-            {summary.data ? (
+            {summary.data?.submissions ? (
               <span style={{ color: "var(--text-soft)" }} data-testid="website-summary">
                 {t("settings.requests", { count: summary.data.submissions.total, days: summary.data.days })}
               </span>
@@ -193,12 +194,14 @@ function SiteForm({ token, site, faqOn }: { token: string; site: AdminSite; faqO
 
   return (
     <>
-      <SiteLanguagesCard
-        languages={site.languages}
-        value={{ translation_locales: draft.translation_locales, visible_locales: draft.visible_locales }}
-        onChange={(next) => form.edit(next)}
-        disabled={form.saving}
-      />
+      {site.languages ? (
+        <SiteLanguagesCard
+          languages={site.languages}
+          value={{ translation_locales: draft.translation_locales, visible_locales: draft.visible_locales }}
+          onChange={(next) => form.edit(next)}
+          disabled={form.saving}
+        />
+      ) : null}
 
       {faqOn || draft.faq.length > 0 ? (
         <section className="flex flex-col gap-3 rounded-3xl p-5" style={{ background: "var(--panel)", border: "1px solid var(--border)" }} data-testid="website-faq">

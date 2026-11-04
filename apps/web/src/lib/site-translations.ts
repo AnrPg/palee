@@ -62,15 +62,19 @@ export function languageName(locale: string) {
 
 /** The progress of one language, or an empty one when it was never counted (just added). */
 export function progressFor(languages: SiteLanguages, locale: string) {
-  const found = languages.progress.find((entry) => entry.locale === locale);
-  const total = found?.total ?? languages.progress[0]?.total ?? 0;
+  const progress = Array.isArray(languages?.progress) ? languages.progress : [];
+  const found = progress.find((entry) => entry.locale === locale);
+  const total = found?.total ?? progress[0]?.total ?? 0;
   const counts: StatusCounts = found?.counts ?? { missing: total, stale: 0, machine: 0, ok: 0 };
   return { counts, total };
 }
 
 /** The languages the owner can still add. */
 export function addableLanguages(languages: SiteLanguages, chosen: string[]) {
-  return languages.available.filter((locale) => !chosen.includes(locale));
+  // A malformed answer (an older API, an e2e stub answering `{}`) offers nothing.
+  const available = Array.isArray(languages?.available) ? languages.available : [];
+  const taken = Array.isArray(chosen) ? chosen : [];
+  return available.filter((locale) => !taken.includes(locale));
 }
 
 /** Adds a language (hidden until the owner shows it). */
