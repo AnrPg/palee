@@ -50,6 +50,37 @@ defmodule Palee.Programmes.Domain.ProgrammePageFactsTest do
                ProgrammeFacts.derive([], workouts, @order)
     end
 
+    test "each training day has its type (its longest typed WOD's) and its minutes" do
+      workouts = %{
+        "a" => %{equipment: [], duration_seconds: 1_200, type: nil},
+        "b" => %{equipment: [], duration_seconds: 1_500, type: "strength"},
+        "c" => %{equipment: [], duration_seconds: nil, type: "running"},
+        "d" => %{equipment: [], duration_seconds: 600, type: "mobility"}
+      }
+
+      assert ProgrammeFacts.derive(
+               days([{3, "c"}, {0, "d"}, {0, "a"}, {0, "b"}, {1, "a"}, {5, "x"}]),
+               workouts,
+               @order
+             )["days"] == [
+               # 10 + 20 + 25 = 55 minutes; "a" (longer) has no type, so "b"'s.
+               %{"day" => 0, "type" => "strength", "minutes" => 55},
+               # 20 minutes, no type.
+               %{"day" => 1, "type" => nil, "minutes" => 20},
+               %{"day" => 3, "type" => "running", "minutes" => nil},
+               # A WOD that is gone: a training day with nothing known.
+               %{"day" => 5, "type" => nil, "minutes" => nil}
+             ]
+
+      # The same day in any order gives the same type.
+      for rows <- [[{0, "b"}, {0, "d"}], [{0, "d"}, {0, "b"}]] do
+        assert [%{"type" => "strength"}] =
+                 ProgrammeFacts.derive(days(rows), workouts, @order)["days"]
+      end
+
+      assert ProgrammeFacts.derive([], workouts, @order)["days"] == []
+    end
+
     test "`none` shows only when nothing else is needed" do
       workouts = %{
         "a" => %{equipment: ["none"], duration_seconds: 600},

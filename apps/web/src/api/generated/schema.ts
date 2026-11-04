@@ -25848,6 +25848,8 @@ export interface components {
                 [key: string]: unknown;
             };
             programmes: {
+                /** @description The author's public name; null once the account is deleted */
+                coach_name?: string | null;
                 /** @description ADR-541: null shows the theme strip */
                 cover_url?: string | null;
                 currency: string;
@@ -25904,6 +25906,20 @@ export interface components {
                 title: string;
                 version_number?: number | null;
                 week_outline?: {
+                    /** @description The week's seven days (weekday 0 is the weekday of the start date) */
+                    days: {
+                        /** @description Day 0 is the start date */
+                        day: number;
+                        /** @description Approximate minutes (rounded to 5); null when a WOD has no duration */
+                        minutes: number | null;
+                        /** @description One of the free preview days */
+                        preview: boolean;
+                        /** @description No WOD that day */
+                        rest: boolean;
+                        weekday: number;
+                        /** @description The WOD's workout type (ADR-275 key); null when not set or a rest day */
+                        workout_type: string | null;
+                    }[];
                     sessions: number;
                     week: number;
                 }[];
@@ -43299,6 +43315,42 @@ export interface components {
             summary?: string | null;
             title?: string;
         };
+        /**
+         * ProgrammeOutlineDay
+         * @description A day of the programme as the public page shows it: never the WOD itself (preview days show theirs in `preview`)
+         */
+        ProgrammeOutlineDay: {
+            /** @description Day 0 is the start date */
+            day: number;
+            /** @description Approximate minutes (rounded to 5); null when a WOD has no duration */
+            minutes: number | null;
+            /** @description One of the free preview days */
+            preview: boolean;
+            /** @description No WOD that day */
+            rest: boolean;
+            weekday: number;
+            /** @description The WOD's workout type (ADR-275 key); null when not set or a rest day */
+            workout_type: string | null;
+        };
+        /** ProgrammeOutlineWeek */
+        ProgrammeOutlineWeek: {
+            /** @description The week's seven days (weekday 0 is the weekday of the start date) */
+            days: {
+                /** @description Day 0 is the start date */
+                day: number;
+                /** @description Approximate minutes (rounded to 5); null when a WOD has no duration */
+                minutes: number | null;
+                /** @description One of the free preview days */
+                preview: boolean;
+                /** @description No WOD that day */
+                rest: boolean;
+                weekday: number;
+                /** @description The WOD's workout type (ADR-275 key); null when not set or a rest day */
+                workout_type: string | null;
+            }[];
+            sessions: number;
+            week: number;
+        };
         /** ProgrammePreviewDay */
         ProgrammePreviewDay: {
             day: number;
@@ -43852,6 +43904,8 @@ export interface components {
             owned?: string | null;
             /** PublicProgramme */
             programme: {
+                /** @description The author's public name; null once the account is deleted */
+                coach_name?: string | null;
                 /** @description ADR-541: null shows the theme strip */
                 cover_url?: string | null;
                 currency: string;
@@ -43908,6 +43962,20 @@ export interface components {
                 title: string;
                 version_number?: number | null;
                 week_outline?: {
+                    /** @description The week's seven days (weekday 0 is the weekday of the start date) */
+                    days: {
+                        /** @description Day 0 is the start date */
+                        day: number;
+                        /** @description Approximate minutes (rounded to 5); null when a WOD has no duration */
+                        minutes: number | null;
+                        /** @description One of the free preview days */
+                        preview: boolean;
+                        /** @description No WOD that day */
+                        rest: boolean;
+                        weekday: number;
+                        /** @description The WOD's workout type (ADR-275 key); null when not set or a rest day */
+                        workout_type: string | null;
+                    }[];
                     sessions: number;
                     week: number;
                 }[];
@@ -44935,6 +45003,8 @@ export interface components {
         };
         /** PublicProgramme */
         PublicProgramme: {
+            /** @description The author's public name; null once the account is deleted */
+            coach_name?: string | null;
             /** @description ADR-541: null shows the theme strip */
             cover_url?: string | null;
             currency: string;
@@ -44991,6 +45061,20 @@ export interface components {
             title: string;
             version_number?: number | null;
             week_outline?: {
+                /** @description The week's seven days (weekday 0 is the weekday of the start date) */
+                days: {
+                    /** @description Day 0 is the start date */
+                    day: number;
+                    /** @description Approximate minutes (rounded to 5); null when a WOD has no duration */
+                    minutes: number | null;
+                    /** @description One of the free preview days */
+                    preview: boolean;
+                    /** @description No WOD that day */
+                    rest: boolean;
+                    weekday: number;
+                    /** @description The WOD's workout type (ADR-275 key); null when not set or a rest day */
+                    workout_type: string | null;
+                }[];
                 sessions: number;
                 week: number;
             }[];
@@ -45004,6 +45088,8 @@ export interface components {
             };
             /** PublicProgramme */
             programme: {
+                /** @description The author's public name; null once the account is deleted */
+                coach_name?: string | null;
                 /** @description ADR-541: null shows the theme strip */
                 cover_url?: string | null;
                 currency: string;
@@ -45060,6 +45146,20 @@ export interface components {
                 title: string;
                 version_number?: number | null;
                 week_outline?: {
+                    /** @description The week's seven days (weekday 0 is the weekday of the start date) */
+                    days: {
+                        /** @description Day 0 is the start date */
+                        day: number;
+                        /** @description Approximate minutes (rounded to 5); null when a WOD has no duration */
+                        minutes: number | null;
+                        /** @description One of the free preview days */
+                        preview: boolean;
+                        /** @description No WOD that day */
+                        rest: boolean;
+                        weekday: number;
+                        /** @description The WOD's workout type (ADR-275 key); null when not set or a rest day */
+                        workout_type: string | null;
+                    }[];
                     sessions: number;
                     week: number;
                 }[];
@@ -45112,6 +45212,8 @@ export interface components {
              */
             programmes: {
                 items: {
+                    /** @description The author's public name; null once the account is deleted */
+                    coach_name?: string | null;
                     /** @description ADR-541: null shows the theme strip */
                     cover_url?: string | null;
                     currency: string;
@@ -45168,6 +45270,20 @@ export interface components {
                     title: string;
                     version_number?: number | null;
                     week_outline?: {
+                        /** @description The week's seven days (weekday 0 is the weekday of the start date) */
+                        days: {
+                            /** @description Day 0 is the start date */
+                            day: number;
+                            /** @description Approximate minutes (rounded to 5); null when a WOD has no duration */
+                            minutes: number | null;
+                            /** @description One of the free preview days */
+                            preview: boolean;
+                            /** @description No WOD that day */
+                            rest: boolean;
+                            weekday: number;
+                            /** @description The WOD's workout type (ADR-275 key); null when not set or a rest day */
+                            workout_type: string | null;
+                        }[];
                         sessions: number;
                         week: number;
                     }[];
@@ -49378,6 +49494,8 @@ export interface components {
          */
         SiteProgrammes: {
             items: {
+                /** @description The author's public name; null once the account is deleted */
+                coach_name?: string | null;
                 /** @description ADR-541: null shows the theme strip */
                 cover_url?: string | null;
                 currency: string;
@@ -49434,6 +49552,20 @@ export interface components {
                 title: string;
                 version_number?: number | null;
                 week_outline?: {
+                    /** @description The week's seven days (weekday 0 is the weekday of the start date) */
+                    days: {
+                        /** @description Day 0 is the start date */
+                        day: number;
+                        /** @description Approximate minutes (rounded to 5); null when a WOD has no duration */
+                        minutes: number | null;
+                        /** @description One of the free preview days */
+                        preview: boolean;
+                        /** @description No WOD that day */
+                        rest: boolean;
+                        weekday: number;
+                        /** @description The WOD's workout type (ADR-275 key); null when not set or a rest day */
+                        workout_type: string | null;
+                    }[];
                     sessions: number;
                     week: number;
                 }[];
@@ -136424,6 +136556,8 @@ export interface operations {
                         owned?: string | null;
                         /** PublicProgramme */
                         programme: {
+                            /** @description The author's public name; null once the account is deleted */
+                            coach_name?: string | null;
                             /** @description ADR-541: null shows the theme strip */
                             cover_url?: string | null;
                             currency: string;
@@ -136480,6 +136614,20 @@ export interface operations {
                             title: string;
                             version_number?: number | null;
                             week_outline?: {
+                                /** @description The week's seven days (weekday 0 is the weekday of the start date) */
+                                days: {
+                                    /** @description Day 0 is the start date */
+                                    day: number;
+                                    /** @description Approximate minutes (rounded to 5); null when a WOD has no duration */
+                                    minutes: number | null;
+                                    /** @description One of the free preview days */
+                                    preview: boolean;
+                                    /** @description No WOD that day */
+                                    rest: boolean;
+                                    weekday: number;
+                                    /** @description The WOD's workout type (ADR-275 key); null when not set or a rest day */
+                                    workout_type: string | null;
+                                }[];
                                 sessions: number;
                                 week: number;
                             }[];
@@ -160891,6 +161039,8 @@ export interface operations {
                             [key: string]: unknown;
                         };
                         programmes: {
+                            /** @description The author's public name; null once the account is deleted */
+                            coach_name?: string | null;
                             /** @description ADR-541: null shows the theme strip */
                             cover_url?: string | null;
                             currency: string;
@@ -160947,6 +161097,20 @@ export interface operations {
                             title: string;
                             version_number?: number | null;
                             week_outline?: {
+                                /** @description The week's seven days (weekday 0 is the weekday of the start date) */
+                                days: {
+                                    /** @description Day 0 is the start date */
+                                    day: number;
+                                    /** @description Approximate minutes (rounded to 5); null when a WOD has no duration */
+                                    minutes: number | null;
+                                    /** @description One of the free preview days */
+                                    preview: boolean;
+                                    /** @description No WOD that day */
+                                    rest: boolean;
+                                    weekday: number;
+                                    /** @description The WOD's workout type (ADR-275 key); null when not set or a rest day */
+                                    workout_type: string | null;
+                                }[];
                                 sessions: number;
                                 week: number;
                             }[];
@@ -160994,6 +161158,8 @@ export interface operations {
                         };
                         /** PublicProgramme */
                         programme: {
+                            /** @description The author's public name; null once the account is deleted */
+                            coach_name?: string | null;
                             /** @description ADR-541: null shows the theme strip */
                             cover_url?: string | null;
                             currency: string;
@@ -161050,6 +161216,20 @@ export interface operations {
                             title: string;
                             version_number?: number | null;
                             week_outline?: {
+                                /** @description The week's seven days (weekday 0 is the weekday of the start date) */
+                                days: {
+                                    /** @description Day 0 is the start date */
+                                    day: number;
+                                    /** @description Approximate minutes (rounded to 5); null when a WOD has no duration */
+                                    minutes: number | null;
+                                    /** @description One of the free preview days */
+                                    preview: boolean;
+                                    /** @description No WOD that day */
+                                    rest: boolean;
+                                    weekday: number;
+                                    /** @description The WOD's workout type (ADR-275 key); null when not set or a rest day */
+                                    workout_type: string | null;
+                                }[];
                                 sessions: number;
                                 week: number;
                             }[];
@@ -161670,6 +161850,8 @@ export interface operations {
                          */
                         programmes: {
                             items: {
+                                /** @description The author's public name; null once the account is deleted */
+                                coach_name?: string | null;
                                 /** @description ADR-541: null shows the theme strip */
                                 cover_url?: string | null;
                                 currency: string;
@@ -161726,6 +161908,20 @@ export interface operations {
                                 title: string;
                                 version_number?: number | null;
                                 week_outline?: {
+                                    /** @description The week's seven days (weekday 0 is the weekday of the start date) */
+                                    days: {
+                                        /** @description Day 0 is the start date */
+                                        day: number;
+                                        /** @description Approximate minutes (rounded to 5); null when a WOD has no duration */
+                                        minutes: number | null;
+                                        /** @description One of the free preview days */
+                                        preview: boolean;
+                                        /** @description No WOD that day */
+                                        rest: boolean;
+                                        weekday: number;
+                                        /** @description The WOD's workout type (ADR-275 key); null when not set or a rest day */
+                                        workout_type: string | null;
+                                    }[];
                                     sessions: number;
                                     week: number;
                                 }[];

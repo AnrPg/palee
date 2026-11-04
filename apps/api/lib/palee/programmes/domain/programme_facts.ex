@@ -10,6 +10,12 @@ defmodule Palee.Programmes.Domain.ProgrammeFacts do
     * **περίπου ανά προπόνηση** (`minutes_per_session`): the mean length of a
       training day (the WODs of a day added up), rounded to 5 minutes; nil
       unless **every** WOD of the programme has a duration.
+    * the **outline of each training day** (`days`): its workout type
+      (ADR-275: of the day's longest WOD that has one, ties by key, as a
+      day's WODs are kept in no author order) and its minutes (the
+      day's WODs added up and rounded like a session, nil unless every WOD
+      of the day has a duration). The public page shows these for the days
+      it keeps locked, never their WODs.
 
   The author adds or removes equipment on the programme (`equipment` and
   `equipment_removed`, vocabulary keys): the author's choice wins over the
@@ -25,21 +31,50 @@ defmodule Palee.Programmes.Domain.ProgrammeFacts do
 
   @doc """
   The facts of `days` (`[%{"day", "workout_id"}]`), with `workouts`
-  `%{workout_id => %{equipment: [key], duration_seconds: integer | nil}}`
-  and `order` the vocabulary (for ties). A WOD missing from `workouts` has
-  no known equipment and no duration.
+  `%{workout_id => %{equipment: [key], duration_seconds: integer | nil,
+  type: key | nil}}` and `order` the vocabulary (for ties). A WOD missing
+  from `workouts` has no known equipment, type or duration.
 
-  `%{"equipment" => [key], "minutes_per_session" => integer | nil}` (string
-  keys: it is stored on the published version).
+  `%{"equipment" => [key], "minutes_per_session" => integer | nil,
+  "days" => [%{"day", "type", "minutes"}]}` (string keys: it is stored on
+  the published version; `days` by day, training days only).
   """
   def derive(days, workouts, order \\ []) when is_list(days) and is_map(workouts) do
     by_day = Enum.group_by(days, & &1["day"], & &1["workout_id"])
 
     %{
       "equipment" => equipment(by_day, workouts, order),
-      "minutes_per_session" => minutes(by_day, workouts)
+      "minutes_per_session" => minutes(by_day, workouts),
+      "days" => day_outline(by_day, workouts)
     }
   end
+
+  defp day_outline(by_day, workouts) do
+    by_day
+    |> Enum.sort_by(&elem(&1, 0))
+    |> Enum.map(fn {day, ids} ->
+      seconds = Enum.map(ids, &get_in(workouts, [&1, :duration_seconds]))
+
+      %{
+        "day" => day,
+        "type" => main_type(ids, workouts),
+        "minutes" => if(all_known?(seconds), do: round_minutes(Enum.sum(seconds) / 60))
+      }
+    end)
+  end
+
+  defp main_type(ids, workouts) do
+    ids
+    |> Enum.map(&Map.get(workouts, &1, %{}))
+    |> Enum.filter(&is_binary(&1[:type]))
+    |> Enum.sort_by(&{-(&1[:duration_seconds] || 0), &1[:type]})
+    |> List.first(%{})
+    |> Map.get(:type)
+  end
+
+  defp all_known?(seconds), do: Enum.all?(seconds, &(is_integer(&1) and &1 > 0))
+
+  defp round_minutes(minutes), do: max(5, round(minutes / 5) * 5)
 
   defp equipment(by_day, workouts, order) do
     rank = order |> Enum.with_index() |> Map.new()
@@ -67,9 +102,8 @@ defmodule Palee.Programmes.Domain.ProgrammeFacts do
         Enum.map(ids, &get_in(workouts, [&1, :duration_seconds]))
       end)
 
-    if Enum.all?(totals, fn seconds -> Enum.all?(seconds, &(is_integer(&1) and &1 > 0)) end) do
-      mean = (totals |> Enum.map(&Enum.sum/1) |> Enum.sum()) / length(totals) / 60
-      max(5, round(mean / 5) * 5)
+    if Enum.all?(totals, &all_known?/1) do
+      round_minutes((totals |> Enum.map(&Enum.sum/1) |> Enum.sum()) / length(totals) / 60)
     end
   end
 

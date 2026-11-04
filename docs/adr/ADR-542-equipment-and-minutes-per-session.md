@@ -46,6 +46,18 @@ only when known, with the author able to add or remove equipment.
    `main_equipment`, `minutes_per_session`, `equipment`, `equipment_removed`.
    Public programme, box list, catalogue, box website: `main_equipment`,
    `minutes_per_session`.
+7. **The locked days, outlined (addendum).** The public page (mockup 2κ A,
+   «Ημ. 3 · Δύναμη · ~45′») shows every day of every week without its WOD:
+   `week_outline[].days[]` = `{day, weekday, rest, workout_type, minutes,
+   preview}`. The facts keep a `days` list (`{day, type, minutes}`, training
+   days only) frozen with the version; a version stored without it derives it
+   on read. `workout_type` is the ADR-275 kind of the day's longest WOD that
+   has one (ties by key: a day's WODs are stored in no author order), null
+   when none has; `minutes` the day's WODs added up and rounded to 5, null
+   unless each has a duration. A WOD's title or content never appears for a
+   locked day; the preview days keep theirs in `preview`. The page also names
+   the author under the title (`coach_name`: the display name, else the
+   handle; null when the account is gone or anonymised). No purchase counts.
 
 ## Consequences
 - Meilisearch does not index exercises on `main` yet; ADR-461's exercise-name

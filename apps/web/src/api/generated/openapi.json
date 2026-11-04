@@ -17472,6 +17472,11 @@
           "programmes": {
             "items": {
               "properties": {
+                "coach_name": {
+                  "description": "The author's public name; null once the account is deleted",
+                  "nullable": true,
+                  "type": "string"
+                },
                 "cover_url": {
                   "description": "ADR-541: null shows the theme strip",
                   "nullable": true,
@@ -17688,6 +17693,52 @@
                 "week_outline": {
                   "items": {
                     "properties": {
+                      "days": {
+                        "description": "The week's seven days (weekday 0 is the weekday of the start date)",
+                        "items": {
+                          "description": "A day of the programme as the public page shows it: never the WOD itself (preview days show theirs in `preview`)",
+                          "properties": {
+                            "day": {
+                              "description": "Day 0 is the start date",
+                              "type": "integer"
+                            },
+                            "minutes": {
+                              "description": "Approximate minutes (rounded to 5); null when a WOD has no duration",
+                              "nullable": true,
+                              "type": "integer"
+                            },
+                            "preview": {
+                              "description": "One of the free preview days",
+                              "type": "boolean"
+                            },
+                            "rest": {
+                              "description": "No WOD that day",
+                              "type": "boolean"
+                            },
+                            "weekday": {
+                              "maximum": 6,
+                              "minimum": 0,
+                              "type": "integer"
+                            },
+                            "workout_type": {
+                              "description": "The WOD's workout type (ADR-275 key); null when not set or a rest day",
+                              "nullable": true,
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "day",
+                            "weekday",
+                            "rest",
+                            "workout_type",
+                            "minutes",
+                            "preview"
+                          ],
+                          "title": "ProgrammeOutlineDay",
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
                       "sessions": {
                         "type": "integer"
                       },
@@ -17696,9 +17747,11 @@
                       }
                     },
                     "required": [
+                      "days",
                       "sessions",
                       "week"
                     ],
+                    "title": "ProgrammeOutlineWeek",
                     "type": "object"
                   },
                   "type": "array"
@@ -75888,6 +75941,111 @@
         "title": "ProgrammeInput",
         "type": "object"
       },
+      "ProgrammeOutlineDay": {
+        "description": "A day of the programme as the public page shows it: never the WOD itself (preview days show theirs in `preview`)",
+        "properties": {
+          "day": {
+            "description": "Day 0 is the start date",
+            "type": "integer"
+          },
+          "minutes": {
+            "description": "Approximate minutes (rounded to 5); null when a WOD has no duration",
+            "nullable": true,
+            "type": "integer"
+          },
+          "preview": {
+            "description": "One of the free preview days",
+            "type": "boolean"
+          },
+          "rest": {
+            "description": "No WOD that day",
+            "type": "boolean"
+          },
+          "weekday": {
+            "maximum": 6,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "workout_type": {
+            "description": "The WOD's workout type (ADR-275 key); null when not set or a rest day",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "day",
+          "weekday",
+          "rest",
+          "workout_type",
+          "minutes",
+          "preview"
+        ],
+        "title": "ProgrammeOutlineDay",
+        "type": "object"
+      },
+      "ProgrammeOutlineWeek": {
+        "properties": {
+          "days": {
+            "description": "The week's seven days (weekday 0 is the weekday of the start date)",
+            "items": {
+              "description": "A day of the programme as the public page shows it: never the WOD itself (preview days show theirs in `preview`)",
+              "properties": {
+                "day": {
+                  "description": "Day 0 is the start date",
+                  "type": "integer"
+                },
+                "minutes": {
+                  "description": "Approximate minutes (rounded to 5); null when a WOD has no duration",
+                  "nullable": true,
+                  "type": "integer"
+                },
+                "preview": {
+                  "description": "One of the free preview days",
+                  "type": "boolean"
+                },
+                "rest": {
+                  "description": "No WOD that day",
+                  "type": "boolean"
+                },
+                "weekday": {
+                  "maximum": 6,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "workout_type": {
+                  "description": "The WOD's workout type (ADR-275 key); null when not set or a rest day",
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "day",
+                "weekday",
+                "rest",
+                "workout_type",
+                "minutes",
+                "preview"
+              ],
+              "title": "ProgrammeOutlineDay",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "sessions": {
+            "type": "integer"
+          },
+          "week": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "days",
+          "sessions",
+          "week"
+        ],
+        "title": "ProgrammeOutlineWeek",
+        "type": "object"
+      },
       "ProgrammePreviewDay": {
         "properties": {
           "day": {
@@ -77566,6 +77724,11 @@
           },
           "programme": {
             "properties": {
+              "coach_name": {
+                "description": "The author's public name; null once the account is deleted",
+                "nullable": true,
+                "type": "string"
+              },
               "cover_url": {
                 "description": "ADR-541: null shows the theme strip",
                 "nullable": true,
@@ -77782,6 +77945,52 @@
               "week_outline": {
                 "items": {
                   "properties": {
+                    "days": {
+                      "description": "The week's seven days (weekday 0 is the weekday of the start date)",
+                      "items": {
+                        "description": "A day of the programme as the public page shows it: never the WOD itself (preview days show theirs in `preview`)",
+                        "properties": {
+                          "day": {
+                            "description": "Day 0 is the start date",
+                            "type": "integer"
+                          },
+                          "minutes": {
+                            "description": "Approximate minutes (rounded to 5); null when a WOD has no duration",
+                            "nullable": true,
+                            "type": "integer"
+                          },
+                          "preview": {
+                            "description": "One of the free preview days",
+                            "type": "boolean"
+                          },
+                          "rest": {
+                            "description": "No WOD that day",
+                            "type": "boolean"
+                          },
+                          "weekday": {
+                            "maximum": 6,
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          "workout_type": {
+                            "description": "The WOD's workout type (ADR-275 key); null when not set or a rest day",
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "day",
+                          "weekday",
+                          "rest",
+                          "workout_type",
+                          "minutes",
+                          "preview"
+                        ],
+                        "title": "ProgrammeOutlineDay",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
                     "sessions": {
                       "type": "integer"
                     },
@@ -77790,9 +77999,11 @@
                     }
                   },
                   "required": [
+                    "days",
                     "sessions",
                     "week"
                   ],
+                  "title": "ProgrammeOutlineWeek",
                   "type": "object"
                 },
                 "type": "array"
@@ -81210,6 +81421,11 @@
       },
       "PublicProgramme": {
         "properties": {
+          "coach_name": {
+            "description": "The author's public name; null once the account is deleted",
+            "nullable": true,
+            "type": "string"
+          },
           "cover_url": {
             "description": "ADR-541: null shows the theme strip",
             "nullable": true,
@@ -81426,6 +81642,52 @@
           "week_outline": {
             "items": {
               "properties": {
+                "days": {
+                  "description": "The week's seven days (weekday 0 is the weekday of the start date)",
+                  "items": {
+                    "description": "A day of the programme as the public page shows it: never the WOD itself (preview days show theirs in `preview`)",
+                    "properties": {
+                      "day": {
+                        "description": "Day 0 is the start date",
+                        "type": "integer"
+                      },
+                      "minutes": {
+                        "description": "Approximate minutes (rounded to 5); null when a WOD has no duration",
+                        "nullable": true,
+                        "type": "integer"
+                      },
+                      "preview": {
+                        "description": "One of the free preview days",
+                        "type": "boolean"
+                      },
+                      "rest": {
+                        "description": "No WOD that day",
+                        "type": "boolean"
+                      },
+                      "weekday": {
+                        "maximum": 6,
+                        "minimum": 0,
+                        "type": "integer"
+                      },
+                      "workout_type": {
+                        "description": "The WOD's workout type (ADR-275 key); null when not set or a rest day",
+                        "nullable": true,
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "day",
+                      "weekday",
+                      "rest",
+                      "workout_type",
+                      "minutes",
+                      "preview"
+                    ],
+                    "title": "ProgrammeOutlineDay",
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
                 "sessions": {
                   "type": "integer"
                 },
@@ -81434,9 +81696,11 @@
                 }
               },
               "required": [
+                "days",
                 "sessions",
                 "week"
               ],
+              "title": "ProgrammeOutlineWeek",
               "type": "object"
             },
             "type": "array"
@@ -81466,6 +81730,11 @@
           },
           "programme": {
             "properties": {
+              "coach_name": {
+                "description": "The author's public name; null once the account is deleted",
+                "nullable": true,
+                "type": "string"
+              },
               "cover_url": {
                 "description": "ADR-541: null shows the theme strip",
                 "nullable": true,
@@ -81682,6 +81951,52 @@
               "week_outline": {
                 "items": {
                   "properties": {
+                    "days": {
+                      "description": "The week's seven days (weekday 0 is the weekday of the start date)",
+                      "items": {
+                        "description": "A day of the programme as the public page shows it: never the WOD itself (preview days show theirs in `preview`)",
+                        "properties": {
+                          "day": {
+                            "description": "Day 0 is the start date",
+                            "type": "integer"
+                          },
+                          "minutes": {
+                            "description": "Approximate minutes (rounded to 5); null when a WOD has no duration",
+                            "nullable": true,
+                            "type": "integer"
+                          },
+                          "preview": {
+                            "description": "One of the free preview days",
+                            "type": "boolean"
+                          },
+                          "rest": {
+                            "description": "No WOD that day",
+                            "type": "boolean"
+                          },
+                          "weekday": {
+                            "maximum": 6,
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          "workout_type": {
+                            "description": "The WOD's workout type (ADR-275 key); null when not set or a rest day",
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "day",
+                          "weekday",
+                          "rest",
+                          "workout_type",
+                          "minutes",
+                          "preview"
+                        ],
+                        "title": "ProgrammeOutlineDay",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
                     "sessions": {
                       "type": "integer"
                     },
@@ -81690,9 +82005,11 @@
                     }
                   },
                   "required": [
+                    "days",
                     "sessions",
                     "week"
                   ],
+                  "title": "ProgrammeOutlineWeek",
                   "type": "object"
                 },
                 "type": "array"
@@ -81856,6 +82173,11 @@
               "items": {
                 "items": {
                   "properties": {
+                    "coach_name": {
+                      "description": "The author's public name; null once the account is deleted",
+                      "nullable": true,
+                      "type": "string"
+                    },
                     "cover_url": {
                       "description": "ADR-541: null shows the theme strip",
                       "nullable": true,
@@ -82072,6 +82394,52 @@
                     "week_outline": {
                       "items": {
                         "properties": {
+                          "days": {
+                            "description": "The week's seven days (weekday 0 is the weekday of the start date)",
+                            "items": {
+                              "description": "A day of the programme as the public page shows it: never the WOD itself (preview days show theirs in `preview`)",
+                              "properties": {
+                                "day": {
+                                  "description": "Day 0 is the start date",
+                                  "type": "integer"
+                                },
+                                "minutes": {
+                                  "description": "Approximate minutes (rounded to 5); null when a WOD has no duration",
+                                  "nullable": true,
+                                  "type": "integer"
+                                },
+                                "preview": {
+                                  "description": "One of the free preview days",
+                                  "type": "boolean"
+                                },
+                                "rest": {
+                                  "description": "No WOD that day",
+                                  "type": "boolean"
+                                },
+                                "weekday": {
+                                  "maximum": 6,
+                                  "minimum": 0,
+                                  "type": "integer"
+                                },
+                                "workout_type": {
+                                  "description": "The WOD's workout type (ADR-275 key); null when not set or a rest day",
+                                  "nullable": true,
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "day",
+                                "weekday",
+                                "rest",
+                                "workout_type",
+                                "minutes",
+                                "preview"
+                              ],
+                              "title": "ProgrammeOutlineDay",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
                           "sessions": {
                             "type": "integer"
                           },
@@ -82080,9 +82448,11 @@
                           }
                         },
                         "required": [
+                          "days",
                           "sessions",
                           "week"
                         ],
+                        "title": "ProgrammeOutlineWeek",
                         "type": "object"
                       },
                       "type": "array"
@@ -96256,6 +96626,11 @@
           "items": {
             "items": {
               "properties": {
+                "coach_name": {
+                  "description": "The author's public name; null once the account is deleted",
+                  "nullable": true,
+                  "type": "string"
+                },
                 "cover_url": {
                   "description": "ADR-541: null shows the theme strip",
                   "nullable": true,
@@ -96472,6 +96847,52 @@
                 "week_outline": {
                   "items": {
                     "properties": {
+                      "days": {
+                        "description": "The week's seven days (weekday 0 is the weekday of the start date)",
+                        "items": {
+                          "description": "A day of the programme as the public page shows it: never the WOD itself (preview days show theirs in `preview`)",
+                          "properties": {
+                            "day": {
+                              "description": "Day 0 is the start date",
+                              "type": "integer"
+                            },
+                            "minutes": {
+                              "description": "Approximate minutes (rounded to 5); null when a WOD has no duration",
+                              "nullable": true,
+                              "type": "integer"
+                            },
+                            "preview": {
+                              "description": "One of the free preview days",
+                              "type": "boolean"
+                            },
+                            "rest": {
+                              "description": "No WOD that day",
+                              "type": "boolean"
+                            },
+                            "weekday": {
+                              "maximum": 6,
+                              "minimum": 0,
+                              "type": "integer"
+                            },
+                            "workout_type": {
+                              "description": "The WOD's workout type (ADR-275 key); null when not set or a rest day",
+                              "nullable": true,
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "day",
+                            "weekday",
+                            "rest",
+                            "workout_type",
+                            "minutes",
+                            "preview"
+                          ],
+                          "title": "ProgrammeOutlineDay",
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
                       "sessions": {
                         "type": "integer"
                       },
@@ -96480,9 +96901,11 @@
                       }
                     },
                     "required": [
+                      "days",
                       "sessions",
                       "week"
                     ],
+                    "title": "ProgrammeOutlineWeek",
                     "type": "object"
                   },
                   "type": "array"
@@ -341899,6 +342322,11 @@
                     },
                     "programme": {
                       "properties": {
+                        "coach_name": {
+                          "description": "The author's public name; null once the account is deleted",
+                          "nullable": true,
+                          "type": "string"
+                        },
                         "cover_url": {
                           "description": "ADR-541: null shows the theme strip",
                           "nullable": true,
@@ -342115,6 +342543,52 @@
                         "week_outline": {
                           "items": {
                             "properties": {
+                              "days": {
+                                "description": "The week's seven days (weekday 0 is the weekday of the start date)",
+                                "items": {
+                                  "description": "A day of the programme as the public page shows it: never the WOD itself (preview days show theirs in `preview`)",
+                                  "properties": {
+                                    "day": {
+                                      "description": "Day 0 is the start date",
+                                      "type": "integer"
+                                    },
+                                    "minutes": {
+                                      "description": "Approximate minutes (rounded to 5); null when a WOD has no duration",
+                                      "nullable": true,
+                                      "type": "integer"
+                                    },
+                                    "preview": {
+                                      "description": "One of the free preview days",
+                                      "type": "boolean"
+                                    },
+                                    "rest": {
+                                      "description": "No WOD that day",
+                                      "type": "boolean"
+                                    },
+                                    "weekday": {
+                                      "maximum": 6,
+                                      "minimum": 0,
+                                      "type": "integer"
+                                    },
+                                    "workout_type": {
+                                      "description": "The WOD's workout type (ADR-275 key); null when not set or a rest day",
+                                      "nullable": true,
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "day",
+                                    "weekday",
+                                    "rest",
+                                    "workout_type",
+                                    "minutes",
+                                    "preview"
+                                  ],
+                                  "title": "ProgrammeOutlineDay",
+                                  "type": "object"
+                                },
+                                "type": "array"
+                              },
                               "sessions": {
                                 "type": "integer"
                               },
@@ -342123,9 +342597,11 @@
                               }
                             },
                             "required": [
+                              "days",
                               "sessions",
                               "week"
                             ],
+                            "title": "ProgrammeOutlineWeek",
                             "type": "object"
                           },
                           "type": "array"
@@ -413543,6 +414019,11 @@
                     "programmes": {
                       "items": {
                         "properties": {
+                          "coach_name": {
+                            "description": "The author's public name; null once the account is deleted",
+                            "nullable": true,
+                            "type": "string"
+                          },
                           "cover_url": {
                             "description": "ADR-541: null shows the theme strip",
                             "nullable": true,
@@ -413759,6 +414240,52 @@
                           "week_outline": {
                             "items": {
                               "properties": {
+                                "days": {
+                                  "description": "The week's seven days (weekday 0 is the weekday of the start date)",
+                                  "items": {
+                                    "description": "A day of the programme as the public page shows it: never the WOD itself (preview days show theirs in `preview`)",
+                                    "properties": {
+                                      "day": {
+                                        "description": "Day 0 is the start date",
+                                        "type": "integer"
+                                      },
+                                      "minutes": {
+                                        "description": "Approximate minutes (rounded to 5); null when a WOD has no duration",
+                                        "nullable": true,
+                                        "type": "integer"
+                                      },
+                                      "preview": {
+                                        "description": "One of the free preview days",
+                                        "type": "boolean"
+                                      },
+                                      "rest": {
+                                        "description": "No WOD that day",
+                                        "type": "boolean"
+                                      },
+                                      "weekday": {
+                                        "maximum": 6,
+                                        "minimum": 0,
+                                        "type": "integer"
+                                      },
+                                      "workout_type": {
+                                        "description": "The WOD's workout type (ADR-275 key); null when not set or a rest day",
+                                        "nullable": true,
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "day",
+                                      "weekday",
+                                      "rest",
+                                      "workout_type",
+                                      "minutes",
+                                      "preview"
+                                    ],
+                                    "title": "ProgrammeOutlineDay",
+                                    "type": "object"
+                                  },
+                                  "type": "array"
+                                },
                                 "sessions": {
                                   "type": "integer"
                                 },
@@ -413767,9 +414294,11 @@
                                 }
                               },
                               "required": [
+                                "days",
                                 "sessions",
                                 "week"
                               ],
+                              "title": "ProgrammeOutlineWeek",
                               "type": "object"
                             },
                             "type": "array"
@@ -413870,6 +414399,11 @@
                     },
                     "programme": {
                       "properties": {
+                        "coach_name": {
+                          "description": "The author's public name; null once the account is deleted",
+                          "nullable": true,
+                          "type": "string"
+                        },
                         "cover_url": {
                           "description": "ADR-541: null shows the theme strip",
                           "nullable": true,
@@ -414086,6 +414620,52 @@
                         "week_outline": {
                           "items": {
                             "properties": {
+                              "days": {
+                                "description": "The week's seven days (weekday 0 is the weekday of the start date)",
+                                "items": {
+                                  "description": "A day of the programme as the public page shows it: never the WOD itself (preview days show theirs in `preview`)",
+                                  "properties": {
+                                    "day": {
+                                      "description": "Day 0 is the start date",
+                                      "type": "integer"
+                                    },
+                                    "minutes": {
+                                      "description": "Approximate minutes (rounded to 5); null when a WOD has no duration",
+                                      "nullable": true,
+                                      "type": "integer"
+                                    },
+                                    "preview": {
+                                      "description": "One of the free preview days",
+                                      "type": "boolean"
+                                    },
+                                    "rest": {
+                                      "description": "No WOD that day",
+                                      "type": "boolean"
+                                    },
+                                    "weekday": {
+                                      "maximum": 6,
+                                      "minimum": 0,
+                                      "type": "integer"
+                                    },
+                                    "workout_type": {
+                                      "description": "The WOD's workout type (ADR-275 key); null when not set or a rest day",
+                                      "nullable": true,
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "day",
+                                    "weekday",
+                                    "rest",
+                                    "workout_type",
+                                    "minutes",
+                                    "preview"
+                                  ],
+                                  "title": "ProgrammeOutlineDay",
+                                  "type": "object"
+                                },
+                                "type": "array"
+                              },
                               "sessions": {
                                 "type": "integer"
                               },
@@ -414094,9 +414674,11 @@
                               }
                             },
                             "required": [
+                              "days",
                               "sessions",
                               "week"
                             ],
+                            "title": "ProgrammeOutlineWeek",
                             "type": "object"
                           },
                           "type": "array"
@@ -415557,6 +416139,11 @@
                         "items": {
                           "items": {
                             "properties": {
+                              "coach_name": {
+                                "description": "The author's public name; null once the account is deleted",
+                                "nullable": true,
+                                "type": "string"
+                              },
                               "cover_url": {
                                 "description": "ADR-541: null shows the theme strip",
                                 "nullable": true,
@@ -415773,6 +416360,52 @@
                               "week_outline": {
                                 "items": {
                                   "properties": {
+                                    "days": {
+                                      "description": "The week's seven days (weekday 0 is the weekday of the start date)",
+                                      "items": {
+                                        "description": "A day of the programme as the public page shows it: never the WOD itself (preview days show theirs in `preview`)",
+                                        "properties": {
+                                          "day": {
+                                            "description": "Day 0 is the start date",
+                                            "type": "integer"
+                                          },
+                                          "minutes": {
+                                            "description": "Approximate minutes (rounded to 5); null when a WOD has no duration",
+                                            "nullable": true,
+                                            "type": "integer"
+                                          },
+                                          "preview": {
+                                            "description": "One of the free preview days",
+                                            "type": "boolean"
+                                          },
+                                          "rest": {
+                                            "description": "No WOD that day",
+                                            "type": "boolean"
+                                          },
+                                          "weekday": {
+                                            "maximum": 6,
+                                            "minimum": 0,
+                                            "type": "integer"
+                                          },
+                                          "workout_type": {
+                                            "description": "The WOD's workout type (ADR-275 key); null when not set or a rest day",
+                                            "nullable": true,
+                                            "type": "string"
+                                          }
+                                        },
+                                        "required": [
+                                          "day",
+                                          "weekday",
+                                          "rest",
+                                          "workout_type",
+                                          "minutes",
+                                          "preview"
+                                        ],
+                                        "title": "ProgrammeOutlineDay",
+                                        "type": "object"
+                                      },
+                                      "type": "array"
+                                    },
                                     "sessions": {
                                       "type": "integer"
                                     },
@@ -415781,9 +416414,11 @@
                                     }
                                   },
                                   "required": [
+                                    "days",
                                     "sessions",
                                     "week"
                                   ],
+                                  "title": "ProgrammeOutlineWeek",
                                   "type": "object"
                                 },
                                 "type": "array"

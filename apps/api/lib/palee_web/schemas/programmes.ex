@@ -637,10 +637,23 @@ defmodule PaleeWeb.Schemas.Programmes do
         week_outline: %Schema{
           type: :array,
           items: %Schema{
+            title: "ProgrammeOutlineWeek",
             type: :object,
-            properties: %{week: @int, sessions: @int},
-            required: [:sessions, :week]
+            properties: %{
+              week: @int,
+              sessions: @int,
+              days: %Schema{
+                type: :array,
+                description: "The week's seven days (weekday 0 is the weekday of the start date)",
+                items: outline_day()
+              }
+            },
+            required: [:days, :sessions, :week]
           }
+        },
+        coach_name: %{
+          @maybe_string
+          | description: "The author's public name; null once the account is deleted"
         },
         latest_reviews: %Schema{type: :array, items: review()},
         cover_url: %{@maybe_string | description: "ADR-541: null shows the theme strip"},
@@ -648,6 +661,31 @@ defmodule PaleeWeb.Schemas.Programmes do
         minutes_per_session: minutes_per_session()
       },
       required: [:currency, :goal, :id, :level, :price_cents, :title]
+    }
+  end
+
+  defp outline_day do
+    %Schema{
+      title: "ProgrammeOutlineDay",
+      type: :object,
+      description:
+        "A day of the programme as the public page shows it: never the WOD itself " <>
+          "(preview days show theirs in `preview`)",
+      properties: %{
+        day: %Schema{type: :integer, description: "Day 0 is the start date"},
+        weekday: %Schema{type: :integer, minimum: 0, maximum: 6},
+        rest: %Schema{type: :boolean, description: "No WOD that day"},
+        workout_type: %{
+          @maybe_string
+          | description: "The WOD's workout type (ADR-275 key); null when not set or a rest day"
+        },
+        minutes: %{
+          @maybe_int
+          | description: "Approximate minutes (rounded to 5); null when a WOD has no duration"
+        },
+        preview: %Schema{type: :boolean, description: "One of the free preview days"}
+      },
+      required: [:day, :weekday, :rest, :workout_type, :minutes, :preview]
     }
   end
 
