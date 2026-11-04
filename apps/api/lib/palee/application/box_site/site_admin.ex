@@ -5,8 +5,8 @@ defmodule Palee.Application.BoxSite.SiteAdmin do
   """
 
   alias Palee.Application.{PublicURL, SignedToken}
-  alias Palee.Application.BoxSite.SiteDomainChecks
-  alias Palee.{BoxSite, Email, Organizations}
+  alias Palee.Application.BoxSite.{SiteDomainChecks, SiteTranslations}
+  alias Palee.{BoxSite, ContentTranslations, Email, Organizations}
   alias Palee.Email.Domain.Address
 
   @status_salt "box-site-domain-status"
@@ -14,23 +14,52 @@ defmodule Palee.Application.BoxSite.SiteAdmin do
 
   @summary_days 30
 
-  @doc "The settings, the section keys and the domains."
+  @doc "The settings, the section keys, the domains and the website's languages."
   def show(context) do
+    settings = BoxSite.settings(context)
+
     {:ok,
      %{
-       settings: present_settings(BoxSite.settings(context)),
+       settings: present_settings(settings),
        section_keys: BoxSite.section_keys(),
-       domains: domains(context)
+       domains: domains(context),
+       languages: languages(context, settings)
      }}
   end
 
-  @doc "Saves an edit; answers the new settings."
+  @doc "Saves an edit; answers the new settings and languages."
   def update(context, params) do
     params = stringify(params)
 
-    with {:ok, settings} <- BoxSite.update_settings(context, params, user_id(context)) do
-      {:ok, %{settings: present_settings(settings)}}
+    with {:ok, params} <- SiteTranslations.clean_languages(context, params),
+         {:ok, settings} <- BoxSite.update_settings(context, params, user_id(context)) do
+      {:ok, %{settings: present_settings(settings), languages: languages(context, settings)}}
     end
+  end
+
+  # ADR-500: the box's own language, the languages it can add, and how far
+  # each translation is.
+  defp languages(context, settings) do
+    source = SiteTranslations.source_language(context)
+
+    %{
+      source: source,
+      available:
+        Enum.reject(
+          ContentTranslations.locales(),
+          &(ContentTranslations.base_language(&1) == source)
+        ),
+      machine_available: ContentTranslations.machine_available?(),
+      progress:
+        context
+        |> SiteTranslations.progress(settings)
+        |> Enum.map(fn {locale, %{counts: counts, total: total}} ->
+          %{locale: locale, counts: counts, total: total}
+        end)
+        |> Enum.sort_by(
+          &Enum.find_index(settings.translation_locales, fn l -> l == &1.locale end)
+        )
+    }
   end
 
   @doc "The custom hosts with their DNS records."
@@ -177,8 +206,9 @@ defmodule Palee.Application.BoxSite.SiteAdmin do
       :hidden_sections,
       :public_schedule,
       :public_wod,
-      :about_en,
       :faq,
+      :translation_locales,
+      :visible_locales,
       :forms_enabled,
       :meta_pixel_id,
       :ga4_measurement_id,

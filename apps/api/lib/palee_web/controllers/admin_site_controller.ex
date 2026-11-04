@@ -4,7 +4,7 @@ defmodule PaleeWeb.AdminSiteController do
   use PaleeWeb, :controller
   use PaleeWeb.ControllerSpecs
 
-  alias Palee.Application.BoxSite.SiteAdmin
+  alias Palee.Application.BoxSite.{SiteAdmin, SiteTranslations}
   alias PaleeWeb.Schemas.BoxSite, as: S
   alias OpenApiSpex.{Parameter, Schema}
 
@@ -14,7 +14,14 @@ defmodule PaleeWeb.AdminSiteController do
   security([%{"bearerAuth" => []}])
 
   plug OpenApiSpex.Plug.CastAndValidate,
-       [json_render_error_v2: true] when action in [:update, :add_domain]
+       [json_render_error_v2: true]
+       when action in [
+              :update,
+              :add_domain,
+              :save_translations,
+              :keep_translations,
+              :machine_translations
+            ]
 
   @id %Parameter{
     name: :id,
@@ -135,5 +142,76 @@ defmodule PaleeWeb.AdminSiteController do
     with {:ok, result} <-
            SiteAdmin.send_instructions(conn.assigns.tenant_context, id, conn.body_params),
          do: json(conn, result)
+  end
+
+  # ── Translations (ADR-500) ──────────────────────────────────────────────
+
+  operation(:translations,
+    summary: "«Μεταφράσεις»: every text of the website with its translation and status",
+    parameters: [
+      %Parameter{name: :locale, in: :query, required: true, schema: S.translation_locale()}
+    ],
+    responses: [
+      ok: {"Translations", "application/json", S.translations_response()},
+      unprocessable_entity: @error
+    ]
+  )
+
+  def translations(conn, params) do
+    with {:ok, page} <- SiteTranslations.show(conn.assigns.tenant_context, params["locale"]),
+         do: json(conn, page)
+  end
+
+  operation(:save_translations,
+    summary: "Save translations a person wrote (an empty text removes one); live at once",
+    request_body: S.body(S.translations_save_request()),
+    responses: [
+      ok: {"Translations", "application/json", S.translations_response()},
+      unprocessable_entity: @error
+    ]
+  )
+
+  def save_translations(conn, _params) do
+    body = conn.body_params
+
+    with {:ok, page} <-
+           SiteTranslations.save(conn.assigns.tenant_context, body.locale, body.entries),
+         do: json(conn, page)
+  end
+
+  operation(:keep_translations,
+    summary: "«Εντάξει, κράτα το»: keep machine or out-of-date translations as they are",
+    request_body: S.body(S.translations_keep_request()),
+    responses: [
+      ok: {"Translations", "application/json", S.translations_response()},
+      unprocessable_entity: @error
+    ]
+  )
+
+  def keep_translations(conn, _params) do
+    body = conn.body_params
+
+    with {:ok, page} <-
+           SiteTranslations.keep(conn.assigns.tenant_context, body.locale, body.keys),
+         do: json(conn, page)
+  end
+
+  operation(:machine_translations,
+    summary: "«Αυτόματη μετάφραση»: fill every missing or out-of-date text by machine",
+    request_body: S.body(S.translations_machine_request()),
+    responses: [
+      ok: {"Translations", "application/json", S.translations_response()},
+      unprocessable_entity: @error,
+      service_unavailable: @error
+    ]
+  )
+
+  def machine_translations(conn, _params) do
+    with {:ok, page} <-
+           SiteTranslations.machine_translate(
+             conn.assigns.tenant_context,
+             conn.body_params.locale
+           ),
+         do: json(conn, page)
   end
 end

@@ -181,7 +181,8 @@ defmodule Palee.Application.PublicBox do
 
   # ADR-290: the rooms whose staff put photos on the public page, with only
   # those photos; archived rooms never show.
-  defp rooms(context) do
+  @doc "The rooms with photos the box made public (also the translatable rooms, ADR-500)."
+  def rooms(context) do
     case Spaces.list_photos(context, :photos, %{public: true}) do
       [] ->
         []
