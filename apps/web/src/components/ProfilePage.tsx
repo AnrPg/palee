@@ -9,11 +9,11 @@ import { localizeError } from "@/i18n/presentation";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
 import { SESSION_UPDATED_EVENT } from "@/api/client";
 import { signOutAllDevices } from "@/api/auth";
-import { getAvatarUploadUrl, updateAvatar, updateProfile } from "@/api/profile";
+import { getAvatarUploadUrl, updateAvatar } from "@/api/profile";
 import { IdentitySettings, IDENTITY_FORM_ID } from "@/components/account/IdentitySettings";
 import { ProfilesSection } from "@/components/account/ProfilesSection";
 import { MyRolesSection } from "@/components/roles/MyRolesSection";
@@ -30,10 +30,9 @@ import { AroundAreaSetting } from "@/components/around/AroundSettings";
 import { JournalSettingsSections } from "@/components/providers/JournalSettings";
 import { isSupportedAvatarSource } from "@/components/profile/avatar-crop";
 import { useSession } from "@/components/session-provider";
+import { useAppLanguage } from "@/components/account/use-app-language";
 import {
-  isAppLocale,
   LOCALE_NAMES,
-  persistLocaleCookie,
   SUPPORTED_LOCALES,
   type AppLocale,
 } from "@/i18n/locales";
@@ -72,7 +71,6 @@ type CurrentUserWithAvatar = {
 
 export function ProfilePage() {
   const i18n = useUiTranslations();
-  const locale = useLocale();
   const tProfile = useTranslations("Profile");
   const tAround = useTranslations("Around");
   const tMe = useTranslations("MemberApp");
@@ -85,8 +83,7 @@ export function ProfilePage() {
   const user = currentUser as CurrentUserWithAvatar | null;
   useLegacySectionRedirects();
 
-  const [languagePending, setLanguagePending] = useState(false);
-  const [languageError, setLanguageError] = useState<string | null>(null);
+  const language = useAppLanguage();
   const [securityPending, setSecurityPending] = useState(false);
   const [securityError, setSecurityError] = useState<string | null>(null);
 
@@ -161,23 +158,6 @@ export function ProfilePage() {
     setAvatarSource(file);
   }
 
-  async function handleLanguageChange(nextLocale: AppLocale) {
-    if (!tokens || nextLocale === user?.preferred_locale) return;
-
-    setLanguageError(null);
-    setLanguagePending(true);
-
-    try {
-      const result = await updateProfile(tokens.access_token, { preferred_locale: nextLocale });
-      broadcastUserUpdate(result.user);
-      persistLocaleCookie(nextLocale);
-      window.location.reload();
-    } catch {
-      setLanguageError(tProfile("languageError"));
-      setLanguagePending(false);
-    }
-  }
-
   return (
     <main className="min-h-screen px-6 py-10 md:px-10" style={{ background: "var(--bg)" }}>
       <div className="mx-auto max-w-3xl space-y-4">
@@ -214,9 +194,9 @@ export function ProfilePage() {
             <Select
               aria-label={tProfile("languageLabel")}
               className="w-full rounded-xl px-4 py-2.5 text-sm outline-none"
-              disabled={languagePending}
-              value={isAppLocale(user?.preferred_locale) ? user.preferred_locale : locale}
-              onValueChange={(value) => void handleLanguageChange(value as AppLocale)}
+              disabled={language.pending}
+              value={language.value}
+              onValueChange={(value) => void language.choose(value as AppLocale)}
               style={{
                 background: "var(--panel-muted)",
                 border: "1px solid var(--border)",
@@ -230,14 +210,14 @@ export function ProfilePage() {
               ))}
             </Select>
           </FieldGroup>
-          {languagePending ? (
+          {language.pending ? (
             <p className="mt-3 text-sm" style={{ color: "var(--muted)" }}>
               {tProfile("languageSaved")}
             </p>
           ) : null}
-          {languageError ? (
+          {language.error ? (
             <ErrorNotice className="mt-3">
-              {languageError}
+              {language.error}
             </ErrorNotice>
           ) : null}
         </CollapsibleSection>

@@ -260,6 +260,18 @@ test.describe("the box's public website", () => {
     await page.goto(`/b/${slug}/en/coaches`);
     await expect(page.getByTestId("box-website")).toHaveAttribute("data-page", "coaches");
     await expect(page.getByTestId("site-language-switch").getByRole("link", { name: "el" })).toHaveAttribute("href", `/b/${slug}/coaches`);
+
+    // ADR-545: «🇬🇧 EN ▾» at the top right opens the list, current first; each row is a flag, its code and its own name.
+    const button = page.getByTestId("site-language-button");
+    await expect(button).toHaveText(/EN/);
+    await expect(button.locator('img[data-flag="en"]')).toHaveAttribute("src", "/flags/gb.svg");
+    await button.click();
+    const list = page.getByTestId("site-languages");
+    await expect(list.getByRole("link").first()).toHaveAttribute("aria-current", "page");
+    await expect(list.getByTestId("site-language-option-el")).toContainText("Ελληνικά");
+    await expect(list.getByTestId("site-language-option-el")).toHaveAttribute("href", `/b/${slug}/coaches`);
+    await page.keyboard.press("Escape");
+    await expect(list).toHaveCount(0);
   });
 
   test("a first visit from an English browser opens the same page in /en", async ({ page }) => {

@@ -16818,7 +16818,7 @@
       "events": "Evenementen",
       "wod": "WOD van de dag",
       "packages": "Pakketten",
-      "programmes": "Trainingsprogramma’s",
+      "programmes": "Programma's",
       "coaches": "Coaches",
       "location": "Locatie",
       "reviews": "Reviews",
@@ -16826,8 +16826,7 @@
       "trial_form": "Aanvraag proefles",
       "contact_form": "Contactformulier",
       "photos": "Foto's",
-      "stats": "Community in cijfers",
-      "programmes": "Programma's"
+      "stats": "Community in cijfers"
     },
     "form": {
       "trial": {
@@ -19229,5 +19228,11 @@
     "audience_what": "Kies de groepen waarvoor de les gemaakt is, zoals «Tieners». Zonder keuze is ze voor iedereen. Ook dit informeert; het blokkeert nooit een boeking.",
     "audience_members": "De groepen staan in de lesdetails, en leden filteren er het rooster en de boxpagina mee.",
     "audience_when": "Als de les voor bepaalde mensen ontworpen is: alleen vrouwen, kinderen, 40+. Open lessen blijven zonder keuze, zodat niemand denkt dat ze niet voor hem zijn."
+  },
+  "LanguageMenu": {
+    "title": "Taal",
+    "current": "Huidig",
+    "others": "Andere talen",
+    "button": "Taal: {language}"
   }
 }

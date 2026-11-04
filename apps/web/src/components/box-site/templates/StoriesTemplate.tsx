@@ -6,6 +6,7 @@ import { aboutText, firstSentence, mainLocation } from "./site-data";
 import { CtaButton, Lines, PageLink, Photo, useSite, useSiteText } from "./site-context";
 import type { SitePage } from "./site-model";
 import { SiteFrame } from "./SiteFrame";
+import { SiteLanguageButton } from "./widgets/languages";
 import { HeroMedia } from "./widgets/hero-media";
 import { InnerPage } from "./widgets/inner-page";
 import { PackageStack } from "./widgets/packages";
@@ -32,7 +33,10 @@ export function StoriesTemplate() {
       <PageLink page="home" className="logo" aria-label={t("logoHome", { box: page.box.name })}>
         {page.box.name}
       </PageLink>
-      {on("location") ? <OpenNowChip /> : null}
+      <span className="topEnd">
+        {on("location") ? <OpenNowChip /> : null}
+        <SiteLanguageButton />
+      </span>
     </header>
   );
   const tab = (entry: (typeof pages)[number]) => (

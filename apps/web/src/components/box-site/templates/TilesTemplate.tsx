@@ -7,6 +7,7 @@ import { flushSync } from "react-dom";
 import { aboutText, balanceTiles, cheapestPackage, cheapestProgramme, firstSentence, heroSpansAll, initials, mainLocation, scheduleDays } from "./site-data";
 import { CtaButton, Lines, money, PageLink, Photo, SVG_SLICE, useClock, usePeriodLabel, useSite, useSiteText, withViewTransition, type TileKey } from "./site-context";
 import { SiteFrame } from "./SiteFrame";
+import { SiteLanguageButton } from "./widgets/languages";
 import { HeroMedia } from "./widgets/hero-media";
 import { InnerPage } from "./widgets/inner-page";
 import { OverlayShell } from "./widgets/overlays";
@@ -37,7 +38,10 @@ export function TilesTemplate() {
         )}
         <span>{page.box.name}</span>
       </PageLink>
-      <CtaButton />
+      <span className="topEnd">
+        <SiteLanguageButton />
+        <CtaButton />
+      </span>
     </header>
   );
   const bars =

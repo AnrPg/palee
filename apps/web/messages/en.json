@@ -16818,7 +16818,7 @@
       "events": "Events",
       "wod": "WOD of the day",
       "packages": "Packages",
-      "programmes": "Training programmes",
+      "programmes": "Programmes",
       "coaches": "Coaches",
       "location": "Location",
       "reviews": "Reviews",
@@ -16826,8 +16826,7 @@
       "trial_form": "Trial class request",
       "contact_form": "Contact form",
       "photos": "Photos",
-      "stats": "Community numbers",
-      "programmes": "Programmes"
+      "stats": "Community numbers"
     },
     "form": {
       "trial": {
@@ -19229,5 +19228,11 @@
     "audience_what": "Pick the groups the class is built for, such as «Teens». With none chosen it is for everyone. This also informs; it never blocks a booking.",
     "audience_members": "The groups show in the class details, and members filter the schedule and the box page by them.",
     "audience_when": "When the class is designed for particular people: women only, kids, over 40. Open classes stay with none chosen, so nobody thinks they are not for them."
+  },
+  "LanguageMenu": {
+    "title": "Language",
+    "current": "Current",
+    "others": "Other languages",
+    "button": "Language: {language}"
   }
 }

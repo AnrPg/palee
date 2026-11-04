@@ -19,6 +19,7 @@ import { sitePagePath, type SiteCta, type SitePage, type SitePageEntry } from ".
 export type Overlay =
   | { kind: "form"; form: "trial" | "contact"; choice: string }
   | { kind: "menu" }
+  | { kind: "languages" }
   | { kind: "light"; index: number }
   | { kind: "story"; index: number }
   | { kind: "tile"; tile: TileKey };

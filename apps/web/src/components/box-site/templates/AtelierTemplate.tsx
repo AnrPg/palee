@@ -7,6 +7,7 @@ import { aboutText, classTypes, firstSentence, mainLocation } from "./site-data"
 import { CtaButton, italic, Lines, PageLink, Photo, Stars, useSite, useSiteText, type PhotoIcon } from "./site-context";
 import type { SitePage } from "./site-model";
 import { SiteFrame } from "./SiteFrame";
+import { SiteLanguageButton } from "./widgets/languages";
 import { HeroMedia } from "./widgets/hero-media";
 import { InnerPage } from "./widgets/inner-page";
 import { PackageMenu } from "./widgets/packages";
@@ -30,9 +31,12 @@ export function AtelierTemplate() {
       <PageLink page="home" className="logo" aria-label={t("logoHome", { box: page.box.name })}>
         {page.box.name}
       </PageLink>
-      <button type="button" className="menuBtn" aria-haspopup="dialog" onClick={() => open({ kind: "menu" })} data-testid="site-menu-open">
-        {pages.length > 1 ? t("menu") : t("atelier.contact")} <i aria-hidden="true" />
-      </button>
+      <span className="topEnd">
+        <SiteLanguageButton />
+        <button type="button" className="menuBtn" aria-haspopup="dialog" onClick={() => open({ kind: "menu" })} data-testid="site-menu-open">
+          {pages.length > 1 ? t("menu") : t("atelier.contact")} <i aria-hidden="true" />
+        </button>
+      </span>
     </header>
   );
   return (

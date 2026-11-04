@@ -16818,7 +16818,7 @@
       "events": "Eventos",
       "wod": "WOD do dia",
       "packages": "Pacotes",
-      "programmes": "Programas de treino",
+      "programmes": "Programas",
       "coaches": "Coaches",
       "location": "Localização",
       "reviews": "Avaliações",
@@ -16826,8 +16826,7 @@
       "trial_form": "Pedido de aula experimental",
       "contact_form": "Formulário de contacto",
       "photos": "Fotografias",
-      "stats": "A comunidade em números",
-      "programmes": "Programas"
+      "stats": "A comunidade em números"
     },
     "form": {
       "trial": {
@@ -19229,5 +19228,11 @@
     "audience_what": "Escolhe os grupos para os quais a aula foi feita, por exemplo «Adolescentes». Sem escolha é para todos. Também informa; nunca impede uma reserva.",
     "audience_members": "Os grupos aparecem nos detalhes da aula, e os membros filtram com eles o horário e a página do box.",
     "audience_when": "Quando a aula foi desenhada para pessoas concretas: só mulheres, crianças, 40+. As aulas abertas ficam sem escolha, para ninguém pensar que não são para si."
+  },
+  "LanguageMenu": {
+    "title": "Idioma",
+    "current": "Atual",
+    "others": "Outros idiomas",
+    "button": "Idioma: {language}"
   }
 }

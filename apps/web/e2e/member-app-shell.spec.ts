@@ -689,6 +689,28 @@ test.describe("member app shell", () => {
     await page.screenshot({ path: "test-results/member-app/progress.png", fullPage: true });
   });
 
+  test("«Εγώ» changes the app language in two presses from the top right (ADR-545)", async ({ page }) => {
+    await stubMemberApi(page);
+    const patches: unknown[] = [];
+    await page.route("**/api/me/profile", async (route) => {
+      if (route.request().method() !== "PATCH") return route.fallback();
+      patches.push(route.request().postDataJSON());
+      return route.fulfill(json({ user: { ...user, preferred_locale: "el" } }));
+    });
+    await page.goto("/me");
+
+    const button = page.getByTestId("app-language-menu");
+    await expect(button).toHaveText(/EN/);
+    await expect(button.locator('img[data-flag="en"]')).toHaveAttribute("src", "/flags/gb.svg");
+    await button.click();
+    const list = page.getByTestId("app-language-menu-list");
+    await expect(list.getByTestId("app-language-menu-option-en")).toHaveAttribute("aria-current", "true");
+    await expect(list.getByTestId("app-language-menu-option-el")).toContainText("Ελληνικά");
+    await expect(list.getByTestId("app-language-menu-option-ar").getByText("العربية")).toHaveAttribute("dir", "rtl");
+    await list.getByTestId("app-language-menu-option-el").click();
+    await expect.poll(() => patches).toEqual([{ preferred_locale: "el" }]);
+  });
+
   test("Sharing & visibility groups what the coach sees and the community opt-ins; rest days moved to Settings", async ({ page }) => {
     await stubMemberApi(page);
     await page.goto("/me");

@@ -3,7 +3,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { AuthConsole } from "@/components/auth-console";
 import { ApiError } from "@/api/client";
-import { chooseValue } from "@/components/ui/select-test-utils";
 
 const replace = vi.fn();
 const refresh = vi.fn();
@@ -65,10 +64,11 @@ describe("AuthConsole", () => {
     search = "";
   });
 
-  it("switches the page language from the sign-in screen (ADR-195)", async () => {
+  it("switches the page language from the sign-in screen (ADR-195/545)", async () => {
     render(<AuthConsole />);
 
-    await chooseValue(screen.getByRole("combobox", { name: "languageLabel" }), "el");
+    fireEvent.click(screen.getByTestId("auth-language-menu"));
+    fireEvent.click(screen.getByTestId("auth-language-menu-option-el"));
 
     expect(document.cookie).toContain("palee_locale=el");
     expect(document.documentElement.lang).toBe("el");

@@ -24,6 +24,7 @@ import { siteFontClass } from "./site-fonts";
 import { siteCta, sitePages, type SitePage } from "./site-model";
 import { StoriesTemplate } from "./StoriesTemplate";
 import { TileDetail, TilesTemplate } from "./TilesTemplate";
+import { LanguagesSheet } from "./widgets/languages";
 import { FormSheet, Lightbox, MenuOverlay } from "./widgets/overlays";
 import { StoryViewer } from "./widgets/stories";
 
@@ -195,6 +196,8 @@ function OverlayLayer({ overlay }: { overlay: Overlay | null }) {
       return <FormSheet kind={overlay.form} choice={overlay.choice} />;
     case "menu":
       return <MenuOverlay />;
+    case "languages":
+      return <LanguagesSheet />;
     case "light":
       return <Lightbox start={overlay.index} />;
     case "story":
