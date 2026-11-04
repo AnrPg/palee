@@ -2404,6 +2404,10 @@ defmodule PaleeWeb.Router do
     post("/notifications/read-all", NotificationController, :mark_all_read)
     post("/notifications/:id/read", NotificationController, :mark_read)
     post("/notifications/:id/click", NotificationController, :mark_clicked)
+
+    # ADR-460: delete for the person (soft), «Αναίρεση», and bulk from Ρυθμίσεις.
+    post("/notifications/delete", NotificationController, :bulk_delete)
+    post("/notifications/:id/restore", NotificationController, :restore)
     get("/notifications/push-config", NotificationController, :push_config)
     post("/notifications/push-subscriptions", NotificationController, :create_push_subscription)
 
@@ -2414,6 +2418,8 @@ defmodule PaleeWeb.Router do
     )
 
     delete("/notifications/push-subscriptions", NotificationController, :delete_push_subscription)
+    # ADR-460: after every literal /notifications/<name> DELETE route.
+    delete("/notifications/:id", NotificationController, :delete)
     # ADR-199: per-category notification choices (Εγώ › Ρυθμίσεις).
     get("/notifications/preferences", NotificationPreferenceController, :index)
     put("/notifications/preferences/:category", NotificationPreferenceController, :update)

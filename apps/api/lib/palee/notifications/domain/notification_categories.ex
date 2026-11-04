@@ -136,6 +136,15 @@ defmodule Palee.Notifications.Domain.NotificationCategories do
   def channels, do: @channels
   def category_ids, do: Enum.map(@categories, & &1.id)
 
+  @doc "The notification types of a category (ADR-460: the delete filter), or nil if unknown."
+  @spec types_for(category_id()) :: [String.t()] | nil
+  def types_for(category_id) do
+    case Map.fetch(@by_id, category_id) do
+      {:ok, category} -> category.types
+      :error -> nil
+    end
+  end
+
   @doc "Every type with a category, for the exhaustiveness check."
   def mapped_types, do: Map.keys(@type_category)
 

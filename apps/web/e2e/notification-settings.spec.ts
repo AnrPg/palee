@@ -121,7 +121,7 @@ test.describe("notification settings", () => {
     });
     await page.goto("/me/settings");
     await page.getByTestId("member-top-bar").getByRole("button", { name: "1 unread notification" }).click();
-    await page.getByText("Your password was reset").click();
+    await page.getByRole("dialog", { name: "Notifications" }).getByText("Your password was reset").click();
 
     await expect(page).toHaveURL(/\/me\/settings#security$/);
     await expect(page.getByRole("button", { name: "Sign out all devices" })).toBeVisible();
@@ -160,10 +160,78 @@ test.describe("notification settings", () => {
     await page.goto("/me/settings");
     await page.getByTestId("member-top-bar").getByRole("button", { name: "25 unread notifications" }).click();
 
-    await page.getByTestId("notifications-retry").click();
-    await expect(page.getByText("Your password was reset")).toHaveCount(20);
-    await page.getByRole("button", { name: "Load older notifications" }).click();
-    await expect(page.getByText("Your password was reset")).toHaveCount(25);
+    // Inside the drawer: Settings' «Delete notifications» card lists them too (ADR-460).
+    const drawer = page.getByRole("dialog", { name: "Notifications" });
+    await drawer.getByTestId("notifications-retry").click();
+    await expect(drawer.getByText("Your password was reset")).toHaveCount(20);
+    await drawer.getByRole("button", { name: "Load older notifications" }).click();
+    await expect(drawer.getByText("Your password was reset")).toHaveCount(25);
     expect(cursors).toEqual([null, "page-2"]);
+  });
+  // ADR-460 (option B): trash and closed eye on hover or focus of a card;
+  // a delete offers «Undo» and the server restores it.
+  test("a notification is deleted from the bell and brought back with Undo", async ({ page }) => {
+    const calls: string[] = [];
+    await stub(page, {
+      notifications: [
+        {
+          id: "n-1",
+          user_id: user.id,
+          organization_id: null,
+          type: "password_reset_completed",
+          payload: { url: "/me/settings#security" },
+          read_at: null,
+          inserted_at: new Date().toISOString(),
+        },
+      ],
+    });
+    await page.route("**/api/notifications/n-1", (route) => {
+      calls.push(`${route.request().method()} n-1`);
+      return route.fulfill(json({ deleted: true, restorable_for_seconds: 60 }));
+    });
+    await page.route("**/api/notifications/n-1/restore", (route) => {
+      calls.push("restore n-1");
+      return route.fulfill(json({ restored: true }));
+    });
+    await page.goto("/me/settings");
+    await page.getByTestId("member-top-bar").getByRole("button", { name: "1 unread notification" }).click();
+
+    const drawer = page.getByRole("dialog", { name: "Notifications" });
+    const card = drawer.getByTestId("notification-card");
+    await card.hover();
+    await card.getByRole("button", { name: "Delete this notification" }).click();
+    await expect(drawer.getByTestId("notification-undo-toast")).toContainText("Notification deleted");
+    await drawer.getByRole("button", { name: "Undo" }).click();
+    await expect.poll(() => calls).toEqual(["DELETE n-1", "restore n-1"]);
+  });
+
+  test("Settings deletes every notification a filter matches, after a confirm", async ({ page }) => {
+    const notes = Array.from({ length: 3 }, (_, i) => ({
+      id: `n-${i}`,
+      user_id: user.id,
+      organization_id: null,
+      type: "password_reset_completed",
+      payload: {},
+      read_at: new Date().toISOString(),
+      inserted_at: new Date(Date.now() - i * 60_000).toISOString(),
+    }));
+    await stub(page);
+    await page.route("**/api/notifications?**", (route) =>
+      route.fulfill(json({ notifications: notes, next_cursor: null, unread_count: 0, matching_count: 3 })),
+    );
+    const bodies: unknown[] = [];
+    await page.route("**/api/notifications/delete", (route) => {
+      bodies.push(route.request().postDataJSON());
+      return route.fulfill(json({ deleted_count: 3 }));
+    });
+    await page.goto("/me/settings#notifications");
+
+    const card = page.getByTestId("notification-cleanup");
+    await card.getByRole("radio", { name: "Read" }).click();
+    await card.getByLabel("Select all (3)").check();
+    await card.getByRole("button", { name: "Delete 3 notifications" }).click();
+    await page.getByRole("dialog").getByTestId("notification-cleanup-confirm").click();
+    await expect(card.getByText("3 notifications deleted.")).toBeVisible();
+    expect(bodies).toEqual([{ filter: { state: "read" } }]);
   });
 });

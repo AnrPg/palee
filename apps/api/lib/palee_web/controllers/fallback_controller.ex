@@ -38,7 +38,9 @@ defmodule PaleeWeb.FallbackController do
     invalid_push_contact:
       {:unprocessable_entity, "Enter an email address or a web address that starts with https://"},
     push_managed_by_server:
-      {:conflict, "The server's WEB_PUSH_* settings are in use; change them in gitops"}
+      {:conflict, "The server's WEB_PUSH_* settings are in use; change them in gitops"},
+    # ADR-460: «Αναίρεση» came after the restore window, or for a row not deleted.
+    notification_not_restorable: {:gone, "This notification can no longer be restored"}
   }
 
   # ADR-203: what `Palee.Email.enqueue/4` refuses. `:not_live` answers as
