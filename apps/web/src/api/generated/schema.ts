@@ -36015,10 +36015,13 @@ export interface components {
             scaling_enabled: boolean;
             /** GymAiUsage */
             usage: {
+                /** @description What the gym's key paid this month: suggestions plus voice drafts */
                 cost_usd: number;
                 /** Format: date-time */
                 since: string;
                 suggestions: number;
+                /** @description Voice drafts written with the gym's key this month */
+                voice_drafts: number;
             };
             voice_enabled: boolean;
         };
@@ -36037,10 +36040,13 @@ export interface components {
                 scaling_enabled: boolean;
                 /** GymAiUsage */
                 usage: {
+                    /** @description What the gym's key paid this month: suggestions plus voice drafts */
                     cost_usd: number;
                     /** Format: date-time */
                     since: string;
                     suggestions: number;
+                    /** @description Voice drafts written with the gym's key this month */
+                    voice_drafts: number;
                 };
                 voice_enabled: boolean;
             };
@@ -36055,10 +36061,13 @@ export interface components {
         };
         /** GymAiUsage */
         GymAiUsage: {
+            /** @description What the gym's key paid this month: suggestions plus voice drafts */
             cost_usd: number;
             /** Format: date-time */
             since: string;
             suggestions: number;
+            /** @description Voice drafts written with the gym's key this month */
+            voice_drafts: number;
         };
         /** HealthConsents */
         HealthConsents: {
@@ -80922,10 +80931,13 @@ export interface operations {
                             scaling_enabled: boolean;
                             /** GymAiUsage */
                             usage: {
+                                /** @description What the gym's key paid this month: suggestions plus voice drafts */
                                 cost_usd: number;
                                 /** Format: date-time */
                                 since: string;
                                 suggestions: number;
+                                /** @description Voice drafts written with the gym's key this month */
+                                voice_drafts: number;
                             };
                             voice_enabled: boolean;
                         };
@@ -80973,10 +80985,13 @@ export interface operations {
                             scaling_enabled: boolean;
                             /** GymAiUsage */
                             usage: {
+                                /** @description What the gym's key paid this month: suggestions plus voice drafts */
                                 cost_usd: number;
                                 /** Format: date-time */
                                 since: string;
                                 suggestions: number;
+                                /** @description Voice drafts written with the gym's key this month */
+                                voice_drafts: number;
                             };
                             voice_enabled: boolean;
                         };
@@ -114333,6 +114348,10 @@ export interface operations {
                             inserted_at?: string | null;
                             package_modules?: string[];
                             payment_reminder_interval_days: number;
+                            /** @description Also remind the member on the day after it ended; then every payment_reminder_interval_days until they renew or leave */
+                            subscription_day_after_reminder: boolean;
+                            /** @description Also remind the member on the day the subscription ends */
+                            subscription_end_day_reminder: boolean;
                             /** @description Days before a subscription ends to remind the member (0 = no reminder) */
                             subscription_expiry_reminder_days: number;
                             /** @description Slack days after a subscription ends or an invoice falls overdue before the member loses access */
@@ -114410,6 +114429,10 @@ export interface operations {
                         document_mode?: "invoice" | "receipt";
                         package_modules?: ("group_classes" | "online_coaching" | "open_gym" | "events" | "personal_training" | "digital_content" | "corporate_clients")[];
                         payment_reminder_interval_days?: number;
+                        /** @description Also remind the member on the day after it ended; then every payment_reminder_interval_days until they renew or leave */
+                        subscription_day_after_reminder?: boolean;
+                        /** @description Also remind the member on the day the subscription ends */
+                        subscription_end_day_reminder?: boolean;
                         /** @description Days before a subscription ends to remind the member (0 = no reminder) */
                         subscription_expiry_reminder_days?: number;
                         /** @description Slack days after a subscription ends or an invoice falls overdue before the member loses access */
@@ -114466,6 +114489,10 @@ export interface operations {
                             inserted_at?: string | null;
                             package_modules?: string[];
                             payment_reminder_interval_days: number;
+                            /** @description Also remind the member on the day after it ended; then every payment_reminder_interval_days until they renew or leave */
+                            subscription_day_after_reminder: boolean;
+                            /** @description Also remind the member on the day the subscription ends */
+                            subscription_end_day_reminder: boolean;
                             /** @description Days before a subscription ends to remind the member (0 = no reminder) */
                             subscription_expiry_reminder_days: number;
                             /** @description Slack days after a subscription ends or an invoice falls overdue before the member loses access */

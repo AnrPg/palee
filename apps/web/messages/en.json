@@ -779,7 +779,7 @@
     "displayLabeld747868": "Display label",
     "addLeveld2d215f": "+ Add level",
     "reminderIntervalDaysee3ba34": "Reminder interval (days)",
-    "howOftenInDaysAMemberWithAn710fa76": "How often (in days) a box member with an outstanding balance receives a payment reminder notification. The reminder repeats until the balance is fully settled.",
+    "howOftenInDaysAMemberWithAn710fa76": "After that, how many days apart the reminder repeats until the member renews or leaves. A member who owes money gets a payment reminder at the same pace until the balance is settled.",
     "applicationSettingsIntroduction8f2e9b7": "application settings introduction",
     "appConfigurations1e15749": "App configurations.",
     "globalSettingsForAppearanceEngagementRulesAndWorkout915168c": "Global settings for appearance, engagement rules, and workout level definitions. Changes apply immediately across the app.",
@@ -4949,7 +4949,12 @@
     "semanticWorkoutContemporaryDance": "Contemporary & modern dance",
     "semanticWorkoutLatinDance": "Latin dance (salsa, bachata, reggaeton)",
     "semanticWorkoutStreetDance": "Street dance (hip-hop, heels)",
-    "semanticWorkoutSkateboarding": "Skateboarding"
+    "semanticWorkoutSkateboarding": "Skateboarding",
+    "subscriptionEndsTodayTitle": "Your subscription ends today",
+    "subscriptionEndsTodayBody": "{package} ends today. Renew to keep booking classes.",
+    "subscriptionEndedRenewBody": "{package} ended on {date}. Renew to book classes again.",
+    "subscriptionEndDayReminder": "Reminder on the day it ends",
+    "subscriptionDayAfterReminder": "Reminder on the day after it ends"
   },
   "PrSharing": {
     "gymLabel": "Where did you set this PR?",
@@ -9940,8 +9945,9 @@
       "title": "AI assistant",
       "description": "The WOD assistant, plus scaling suggestions and voice logging with your own key. A coach approves every suggestion.",
       "enable": "Scaling suggestions",
-      "enableHint": "Off by default. Needs an API key.",
-      "key": "API key (Anthropic)",
+      "enableHint": "For an athlete with an injury the box recorded, AI suggests how to adapt the workout: a lighter load, fewer reps or another movement. A coach approves every suggestion before the athlete sees it. It needs AI because every workout and injury combination is different and fixed rules can't cover them.",
+      "key": "Claude key (Anthropic)",
+      "keyHint": "Scaling suggestions and voice logging need it. Usage is billed to your own Anthropic account.",
       "keySet": "A key ending in {last4} is set.",
       "keyRejected": "The provider rejected the key ending in {last4}. Add a new key.",
       "keyMissing": "No key set.",
@@ -9950,8 +9956,8 @@
       "removeKey": "Remove key",
       "model": "Model (optional)",
       "saveModel": "Save model",
-      "usage": "This month · suggestions: {count} · cost: ${cost}",
-      "privacy": "Only the workout and the injuries the box recorded are sent, without names. The key is never shown again."
+      "usage": "This month · {count, plural, one {# suggestion} other {# suggestions}} · {voice, plural, one {# voice draft} other {# voice drafts}} · cost: ${cost}",
+      "privacy": "No names are sent. Suggestions send the workout and the injuries the box recorded. Voice logging sends only the text of what the member said. The key is never shown again."
     },
     "queue": {
       "eyebrow": "My clients",
@@ -10015,7 +10021,7 @@
     },
     "settings": {
       "enable": "Voice logging",
-      "enableHint": "Box members record their workout and review a draft before saving. Audio is not kept."
+      "enableHint": "Members say in their own words what they did, and AI turns it into exercises, sets, reps and loads. The member checks the draft before saving. It needs AI to understand free speech like “three sets of ten at 60”. Audio is not kept."
     }
   },
   "Pickers": {
@@ -13512,7 +13518,9 @@
         "community_partners_enabled": "Training partners",
         "trials_enabled": "Trials",
         "trials_seats_per_class": "Trial places per class",
-        "trials_approval": "Trial approval"
+        "trials_approval": "Trial approval",
+        "finance_subscription_end_day_reminder": "Reminder on the day it ends",
+        "finance_subscription_day_after_reminder": "Reminder on the day after it ends"
       }
     }
   },

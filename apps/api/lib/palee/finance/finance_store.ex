@@ -243,8 +243,8 @@ defmodule Palee.Finance.FinanceStore do
     do: adapter().memberships_needing_payment_reminder(interval_days)
 
   @impl true
-  def subscriptions_needing_expiry_notice(kind, days),
-    do: adapter().subscriptions_needing_expiry_notice(kind, days)
+  def subscriptions_needing_expiry_notice(kind, opts),
+    do: adapter().subscriptions_needing_expiry_notice(kind, opts)
 
   @impl true
   def withdrawal_facts(payment_id), do: adapter().withdrawal_facts(payment_id)

@@ -2,10 +2,11 @@ defmodule Palee.Application.GymAiSettings do
   @moduledoc """
   The gym's AI settings (ADR-174): read and write the switch for scaling
   suggestions, the gym's own key (write-only) and an optional model, plus
-  this month's metered usage of the feature (ADR-152).
+  this month's metered usage the key paid for (ADR-152): scaling
+  suggestions and voice drafts.
   """
 
-  alias Palee.Application.ScalingSuggestions
+  alias Palee.Application.{ScalingSuggestions, VoiceLogDrafts}
   alias Palee.{AiUsage, Scaling}
 
   def get(context, now \\ DateTime.utc_now()) do
@@ -24,17 +25,28 @@ defmodule Palee.Application.GymAiSettings do
     end
   end
 
-  # The current calendar month (UTC): suggestions asked and their cost.
+  # The current calendar month (UTC): what the gym's own key paid for, i.e.
+  # scaling suggestions and voice drafts (the Claude step only: the speech to
+  # text step runs on the platform's key and is not billed to the gym's key).
   defp month_usage(context, now) do
     from = %{DateTime.truncate(now, :second) | day: 1, hour: 0, minute: 0, second: 0}
 
-    summary =
-      AiUsage.usage_summary(context, %{from: from, feature: ScalingSuggestions.feature()})
+    scaling = AiUsage.usage_summary(context, %{from: from, feature: ScalingSuggestions.feature()})
+
+    voice =
+      AiUsage.usage_summary(context, %{
+        from: from,
+        feature: VoiceLogDrafts.feature(),
+        agent: "voice_parse"
+      })
 
     %{
       since: from,
-      suggestions: Enum.sum(Enum.map(summary.rows, & &1.operations)),
-      cost_usd: summary.cost_usd || 0.0
+      suggestions: operations(scaling),
+      voice_drafts: operations(voice),
+      cost_usd: (scaling.cost_usd || 0.0) + (voice.cost_usd || 0.0)
     }
   end
+
+  defp operations(summary), do: summary.rows |> Enum.map(& &1.operations) |> Enum.sum()
 end

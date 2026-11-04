@@ -10,6 +10,10 @@ defmodule Palee.Finance.FinanceSetting do
     field :payment_reminder_interval_days, :integer, default: 7
     # Days before a subscription ends to remind the member (0 = no reminder).
     field :subscription_expiry_reminder_days, :integer, default: 5
+    # ADR-500: also remind on the day it ends and on the day after; then every
+    # `payment_reminder_interval_days` until the member renews or leaves.
+    field :subscription_end_day_reminder, :boolean, default: true
+    field :subscription_day_after_reminder, :boolean, default: true
     # Slack after a subscription ends or an invoice falls overdue during which
     # the member keeps access (entitlement "grace"); 0 = cut off immediately.
     field :subscription_grace_days, :integer, default: 3
@@ -26,6 +30,8 @@ defmodule Palee.Finance.FinanceSetting do
     |> cast(params, [
       :payment_reminder_interval_days,
       :subscription_expiry_reminder_days,
+      :subscription_end_day_reminder,
+      :subscription_day_after_reminder,
       :subscription_grace_days,
       :entitlement_enforcement_mode,
       :entitlement_timezone,

@@ -850,6 +850,7 @@ msgstr "Η ομάδα Palee επανέφερε την κριτική σου"
 
 msgid "Your review shows again in the box's reviews."
 msgstr "Η κριτική σου φαίνεται ξανά στις κριτικές του box."
+
 msgid "A webhook was turned off"
 msgstr "Ένα webhook απενεργοποιήθηκε"
 
@@ -861,3 +862,12 @@ msgstr "Νέες δεξιότητες"
 
 msgid "Your coach ticked new skills for %{rank}."
 msgstr "Ο coach σου τσέκαρε νέες δεξιότητες για %{rank}."
+
+msgid "Your subscription ends today"
+msgstr "Η συνδρομή σου λήγει σήμερα"
+
+msgid "%{package} ends today. Renew to keep booking classes."
+msgstr "Η συνδρομή %{package} λήγει σήμερα. Ανανέωσέ τη για να συνεχίσεις να κλείνεις τμήματα."
+
+msgid "%{package} ended on %{date}. Renew to book classes again."
+msgstr "Η συνδρομή %{package} έληξε στις %{date}. Ανανέωσέ τη για να ξανακλείνεις τμήματα."
