@@ -16574,7 +16574,7 @@
       "recordsTitle": "רשומות להוספה",
       "recordName": "שם",
       "recordValue": "ערך",
-      "aliasType": "CNAME flattening / ALIAS / ANAME",
+      "aliasType": "שיטוח CNAME / ALIAS / ANAME",
       "aliasHint": "לדומיין בלי www אי אפשר להגדיר CNAME. הוסף CNAME flattening, ‏ALIAS או ANAME לערך הזה, לפי מה שהספק שלך קורא לזה. לא רשומת A עם IP קבוע: הכתובות שלנו משתנות.",
       "copy": "העתקה",
       "copied": "הועתק",

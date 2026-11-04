@@ -16574,7 +16574,7 @@
       "recordsTitle": "Registos a adicionar",
       "recordName": "Nome",
       "recordValue": "Valor",
-      "aliasType": "CNAME flattening / ALIAS / ANAME",
+      "aliasType": "Achatamento de CNAME / ALIAS / ANAME",
       "aliasHint": "Um domínio sem www não pode ter CNAME. Adiciona CNAME flattening, ALIAS ou ANAME para este valor, conforme o teu fornecedor lhe chama. Não um registo A com IP fixo: os nossos endereços mudam.",
       "copy": "Copiar",
       "copied": "Copiado",

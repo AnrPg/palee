@@ -16574,7 +16574,7 @@
       "recordsTitle": "Εγγραφές για προσθήκη",
       "recordName": "Όνομα",
       "recordValue": "Τιμή",
-      "aliasType": "CNAME flattening / ALIAS / ANAME",
+      "aliasType": "Ισοπέδωση CNAME / ALIAS / ANAME",
       "aliasHint": "Στο domain χωρίς www δεν μπαίνει CNAME. Βάλε CNAME flattening, ALIAS ή ANAME προς αυτή την τιμή, όπως το λέει ο πάροχός σου. Όχι εγγραφή A με σταθερή IP: οι διευθύνσεις μας αλλάζουν.",
       "copy": "Αντιγραφή",
       "copied": "Αντιγράφηκε",

@@ -16574,7 +16574,7 @@
       "recordsTitle": "السجلات المطلوب إضافتها",
       "recordName": "الاسم",
       "recordValue": "القيمة",
-      "aliasType": "CNAME flattening / ALIAS / ANAME",
+      "aliasType": "تسطيح CNAME / ALIAS / ANAME",
       "aliasHint": "لا يمكن أن يكون للنطاق بدون www سجل CNAME. أضف CNAME flattening أو ALIAS أو ANAME إلى هذه القيمة، حسب تسمية مزوّدك. لا تستخدم سجل A بعنوان IP ثابت: عناويننا تتغيّر.",
       "copy": "نسخ",
       "copied": "تم النسخ",

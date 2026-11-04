@@ -16574,7 +16574,7 @@
       "recordsTitle": "Записи для добавления",
       "recordName": "Имя",
       "recordValue": "Значение",
-      "aliasType": "CNAME flattening / ALIAS / ANAME",
+      "aliasType": "Выравнивание CNAME / ALIAS / ANAME",
       "aliasHint": "У домена без www не может быть CNAME. Добавь CNAME flattening, ALIAS или ANAME на это значение, как это называет твой провайдер. Не запись A с постоянным IP: наши адреса меняются.",
       "copy": "Копировать",
       "copied": "Скопировано",

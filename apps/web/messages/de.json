@@ -16574,7 +16574,7 @@
       "recordsTitle": "Einzutragende Einträge",
       "recordName": "Name",
       "recordValue": "Wert",
-      "aliasType": "CNAME flattening / ALIAS / ANAME",
+      "aliasType": "CNAME-Flattening / ALIAS / ANAME",
       "aliasHint": "Eine Domain ohne www kann keinen CNAME haben. Lege CNAME-Flattening, ALIAS oder ANAME auf diesen Wert an, wie es dein Anbieter nennt. Keinen A-Eintrag mit fester IP: unsere Adressen ändern sich.",
       "copy": "Kopieren",
       "copied": "Kopiert",
