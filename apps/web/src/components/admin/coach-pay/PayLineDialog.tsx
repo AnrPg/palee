@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useId, useState } from "react";
 
 import { ApiError } from "@/api/client";
-import { addPayAdjustment, addPayItemLine, coachPayKeys, fetchPayItems, reopenPayPeriod, type PayPeriod } from "@/api/coach-pay";
+import { addPayAdjustment, addPayItemLine, coachPayKeys, fetchPayItems, fetchPayPeople, reopenPayPeriod, type PayPeriod } from "@/api/coach-pay";
 import { useSession } from "@/components/session-provider";
 import { Dialog, DialogButton } from "@/components/ui/Dialog";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
@@ -21,6 +21,9 @@ import {
   defaultBasis,
   emptyLineDraft,
   lineErrors,
+  overtimeItems,
+  overtimeLineBody,
+  overtimeTotal,
   type LineDraft,
   type LineField,
 } from "./coach-pay";
@@ -45,12 +48,19 @@ export function PayLineDialog({ period, userId, name, onClose }: { period: PayPe
   const [advanced, setAdvanced] = useState(false);
 
   const itemsQuery = useQuery({ queryKey: coachPayKeys.items, enabled: Boolean(token), queryFn: () => fetchPayItems(token) });
-  const allowances = addableItems(itemsQuery.data?.items ?? []);
-  const item = allowances.find((candidate) => candidate.id === draft.itemId) ?? null;
+  const peopleQuery = useQuery({ queryKey: coachPayKeys.people, enabled: Boolean(token), queryFn: () => fetchPayPeople(token) });
+  // ADR-510: only what applies to the person's roles (the API refuses the rest).
+  const roles = peopleQuery.data ? (peopleQuery.data.people.find((person) => person.user_id === userId)?.pay_roles ?? []) : null;
+  const allowances = addableItems(itemsQuery.data?.items ?? [], roles);
+  const overtimes = overtimeItems(itemsQuery.data?.items ?? [], roles);
+  const choices = draft.kind === "overtime" ? overtimes : allowances;
+  const item = choices.find((candidate) => candidate.id === draft.itemId) ?? null;
 
   const save = useMutation({
     mutationFn: () =>
-      draft.kind === "allowance"
+      draft.kind === "overtime" && item
+        ? addPayItemLine(token, period.id, overtimeLineBody(draft, userId, item))
+        : draft.kind === "allowance"
         ? addPayItemLine(token, period.id, {
             user_id: userId,
             pay_item_id: draft.itemId,
@@ -68,13 +78,33 @@ export function PayLineDialog({ period, userId, name, onClose }: { period: PayPe
 
   const errors = checked ? lineErrors(draft, item) : {};
   const serverFields = save.error instanceof ApiError ? (save.error.payload.errors ?? {}) : {};
-  const apiKey: Record<LineField, string> = { amount: "amount_cents", note: "note", itemId: "pay_item_id", quantity: "quantity" };
+  const apiKey: Record<LineField, string> = {
+    amount: "amount_cents",
+    note: "note",
+    itemId: "pay_item_id",
+    quantity: "quantity",
+    hours: "minutes",
+    rate: "unit_cents",
+  };
   const message = (field: LineField) => (errors[field] ? t(errors[field]!) : apiKey[field] in serverFields ? localizeError(save.error, ui) : null);
   const formError = save.error && Object.keys(serverFields).length === 0 ? localizeError(save.error, ui) : null;
 
-  const kinds = [...ADJUSTMENT_KINDS, ...(allowances.length > 0 ? (["allowance"] as const) : [])];
-  const setKind = (kind: LineDraft["kind"]) =>
-    setDraft({ ...draft, kind, basis: kind === "allowance" ? (allowances.find((entry) => entry.id === draft.itemId)?.amount_basis ?? "gross") : defaultBasis(kind) });
+  const kinds = [
+    ...ADJUSTMENT_KINDS,
+    ...(allowances.length > 0 ? (["allowance"] as const) : []),
+    ...(overtimes.length > 0 ? (["overtime"] as const) : []),
+  ];
+  const setKind = (kind: LineDraft["kind"]) => {
+    if (kind === "allowance" || kind === "overtime") {
+      const list = kind === "overtime" ? overtimes : allowances;
+      // The only item is picked already; otherwise the person picks one.
+      const picked = list.length === 1 ? list[0] : null;
+      setDraft({ ...draft, kind, itemId: picked?.id ?? "", rate: "", basis: picked?.amount_basis ?? "gross" });
+      return;
+    }
+    setDraft({ ...draft, kind, itemId: "", basis: defaultBasis(kind) });
+  };
+  const total = draft.kind === "overtime" ? overtimeTotal(draft, item) : null;
 
   return (
     <Dialog
@@ -105,7 +135,62 @@ export function PayLineDialog({ period, userId, name, onClose }: { period: PayPe
           <Choice label={t("lineKind")} value={draft.kind} onChange={setKind} options={kinds.map((kind) => ({ value: kind, label: t(`kind_${kind}`) }))} testId="pay-line-kind" />
         </FormRow>
 
-        {draft.kind === "allowance" ? (
+        {draft.kind === "overtime" ? (
+          <>
+            {overtimes.length > 1 ? (
+              <FormRow label={t("overtimeItem")} error={message("itemId")} errorId={`${ids}-item-error`}>
+                <Select
+                  aria-label={t("overtimeItem")}
+                  className={controlClass}
+                  style={{ ...controlStyle, border: fieldBorder(message("itemId")) }}
+                  value={draft.itemId}
+                  onValueChange={(itemId) => setDraft({ ...draft, itemId, basis: overtimes.find((entry) => entry.id === itemId)?.amount_basis ?? draft.basis })}
+                  {...invalidFieldProps(message("itemId"), `${ids}-item-error`)}
+                >
+                  <option value="">{t("pickOvertime")}</option>
+                  {overtimes.map((entry) => (
+                    <option key={entry.id} value={entry.id}>
+                      {`${entry.name} · ${t("perHourAmount", { amount: money(entry.amount_cents) })}`}
+                    </option>
+                  ))}
+                </Select>
+              </FormRow>
+            ) : null}
+            <div className="grid grid-cols-2 gap-3">
+              <FormRow label={t("hours")} htmlFor={`${ids}-hours`} hint={t("hoursHint")} error={message("hours")} errorId={`${ids}-hours-error`}>
+                <input
+                  id={`${ids}-hours`}
+                  inputMode="decimal"
+                  className={controlClass}
+                  style={{ ...controlStyle, border: fieldBorder(message("hours")) }}
+                  value={draft.hours}
+                  onChange={(event) => setDraft({ ...draft, hours: event.target.value })}
+                  data-testid="pay-line-hours"
+                  {...invalidFieldProps(message("hours"), `${ids}-hours-error`)}
+                />
+              </FormRow>
+              <FormRow label={t("ratePerHour")} htmlFor={`${ids}-rate`} error={message("rate")} errorId={`${ids}-rate-error`}>
+                <input
+                  id={`${ids}-rate`}
+                  inputMode="decimal"
+                  className={controlClass}
+                  style={{ ...controlStyle, border: fieldBorder(message("rate")) }}
+                  placeholder={item ? (item.amount_cents / 100).toFixed(2) : undefined}
+                  value={draft.rate}
+                  onChange={(event) => setDraft({ ...draft, rate: event.target.value })}
+                  data-testid="pay-line-rate"
+                  {...invalidFieldProps(message("rate"), `${ids}-rate-error`)}
+                />
+              </FormRow>
+            </div>
+            {total !== null ? (
+              <p className="flex justify-between rounded-xl px-3 py-2 text-sm tabular-nums" style={{ background: "var(--panel-muted)", color: "var(--text)" }} data-testid="pay-line-total">
+                <span>{t("lineTotal")}</span>
+                <span className="font-semibold">{money(total)}</span>
+              </p>
+            ) : null}
+          </>
+        ) : draft.kind === "allowance" ? (
           <>
             <FormRow label={t("allowance")} error={message("itemId")} errorId={`${ids}-item-error`}>
               <Select

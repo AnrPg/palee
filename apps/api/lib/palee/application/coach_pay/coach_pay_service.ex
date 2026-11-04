@@ -121,7 +121,32 @@ defmodule Palee.Application.CoachPay.CoachPayService do
       |> named()
 
   def delete_adjustment(context, id, line_id),
-    do: context |> CoachPay.delete_adjustment(id, line_id) |> named()
+    do:
+      context
+      |> CoachPay.delete_adjustment(id, line_id, Map.get(context, :user_id))
+      |> named()
+
+  @doc "ADR-510: puts a recurring allowance back on its person for the period."
+  def restore_item(context, id, skip_id),
+    do: context |> CoachPay.restore_item(id, skip_id, now()) |> named()
+
+  @doc """
+  ADR-510: the box's people who can be paid by overtime or allowances, with
+  their pay-item roles, so forms offer each person only what applies.
+  """
+  def people(context) do
+    roles = CoachPay.pay_roles(context)
+    names = names(Map.keys(roles))
+
+    people =
+      roles
+      |> Enum.map(fn {user_id, pay_roles} ->
+        %{user_id: user_id, name: Map.get(names, user_id), pay_roles: pay_roles}
+      end)
+      |> Enum.sort_by(&{String.downcase(&1.name || ""), &1.user_id})
+
+    %{people: people}
+  end
 
   def approve(context, id),
     do: context |> CoachPay.approve(id, Map.get(context, :user_id), now()) |> named()

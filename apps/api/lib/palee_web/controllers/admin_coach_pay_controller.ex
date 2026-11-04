@@ -182,7 +182,13 @@ defmodule PaleeWeb.AdminCoachPayController do
   end
 
   operation(:add_pay_item_line,
-    summary: "Add an allowance from the catalogue to a person's statement (draft periods only)",
+    summary:
+      "Add an allowance or one-off overtime from the catalogue to a person's statement " <>
+        "(draft periods only)",
+    description:
+      "Allowance: `quantity` occurrences (`per_period` is always 1), optional note. " <>
+        "Overtime: `minutes` worked at the item's rate or at `unit_cents` an hour, with a " <>
+        "required note (the reason).",
     parameters: [@id],
     request_body: S.body(S.pay_item_line_body()),
     responses: [ok: {"Period", "application/json", S.one(:period, S.period())}]
@@ -226,7 +232,10 @@ defmodule PaleeWeb.AdminCoachPayController do
   end
 
   operation(:delete_adjustment,
-    summary: "Remove a line added by hand (draft periods only)",
+    summary: "Remove a line added by hand, or take a recurring allowance off its person",
+    description:
+      "Draft periods only. A recurring allowance's line is taken off its person for this " <>
+        "period (ADR-510): later calculations leave it out until it is put back.",
     parameters: [
       @id,
       %Parameter{
@@ -245,6 +254,35 @@ defmodule PaleeWeb.AdminCoachPayController do
       json(conn, %{period: period})
     end
   end
+
+  operation(:restore_item,
+    summary: "Put a recurring allowance back on its person and recalculate (draft periods only)",
+    parameters: [
+      @id,
+      %Parameter{
+        name: :skip_id,
+        in: :path,
+        required: true,
+        schema: %Schema{type: :string, format: :uuid}
+      }
+    ],
+    responses: [ok: {"Period", "application/json", S.one(:period, S.period())}]
+  )
+
+  def restore_item(conn, %{id: id, skip_id: skip_id}) do
+    with {:ok, period} <-
+           CoachPayService.restore_item(conn.assigns.tenant_context, id, skip_id) do
+      json(conn, %{period: period})
+    end
+  end
+
+  operation(:people,
+    summary: "The box's people who can be paid overtime or allowances, with their pay roles",
+    responses: [ok: {"People", "application/json", S.people()}]
+  )
+
+  def people(conn, _params),
+    do: json(conn, CoachPayService.people(conn.assigns.tenant_context))
 
   operation(:approve,
     summary: "Approve a period: its statements are locked and shown to the coaches",
@@ -368,8 +406,9 @@ defmodule PaleeWeb.AdminCoachPayController do
     summary: "Add overtime or an allowance to the box's catalogue",
     description:
       "Overtime: an amount per hour above `weekly_threshold` hours a week (both required), " <>
-        "counted from the classes the person led. Allowance: per period or per occurrence, " <>
-        "added to a period by hand. `roles`: the staff roles it applies to.",
+        "counted from the classes the person led. Allowance: `per_period` (recurring, added " <>
+        "by every calculation at its `frequency`) or `per_occurrence` (a rate added by hand). " <>
+        "`roles`: the staff roles it applies to.",
     request_body: S.body(S.item_body([:amount_cents, :kind, :name, :roles, :unit])),
     responses: [created: {"Item", "application/json", S.one(:item, S.item())}]
   )

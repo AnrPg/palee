@@ -1,20 +1,28 @@
 import { cache } from "react";
 
-import type { PublicSite, SiteFaqEntry } from "@/api/box-site";
+import type { PublicSite } from "@/api/box-site";
+import type { PublicBoxPage } from "@/api/social";
+import { SUPPORTED_LOCALES } from "@/i18n/locales";
 import { apiOriginForProxy } from "@/lib/organization-slug-alias";
+import { siteTextFor } from "@/lib/site-translations";
 
 /**
  * The box's website (ADR-352..354, ADR-388): server read, language rules,
  * and the small pure helpers its pages share.
  */
 
-/** The cookie that remembers a visitor's EL/EN choice on box websites. */
+/** The cookie that remembers a visitor's language choice on box websites. */
 export const SITE_LANGUAGE_COOKIE = "palee_site_lang";
 
-/** Server read of a box's website; null when the box has none (or it fails: the box page still renders). */
-export const loadPublicSite = cache(async (slug: string): Promise<PublicSite | null> => {
+/**
+ * Server read of a box's website, in one of its translations when `lang` is
+ * given (ADR-520); null when the box has none (or it fails: the box page
+ * still renders).
+ */
+export const loadPublicSite = cache(async (slug: string, lang?: string | null): Promise<PublicSite | null> => {
   try {
-    const response = await fetch(`${apiOriginForProxy()}/api/public/sites/${encodeURIComponent(slug)}`, {
+    const query = lang ? `?lang=${encodeURIComponent(lang)}` : "";
+    const response = await fetch(`${apiOriginForProxy()}/api/public/sites/${encodeURIComponent(slug)}${query}`, {
       headers: { accept: "application/json" },
       next: { revalidate: 60 },
     });
@@ -32,7 +40,7 @@ export function rememberedSiteLanguage(cookieValue: string | undefined, slug: st
   return owner === slug && code ? code : null;
 }
 
-/** The cookie that remembers a visitor's EL/EN choice for one site. */
+/** The cookie that remembers a visitor's language choice for one site. */
 export function siteLanguageCookie(slug: string, code: string, secure: boolean) {
   return `${SITE_LANGUAGE_COOKIE}=${encodeURIComponent(`${slug}:${code}`)}; Path=/; Max-Age=31536000; SameSite=Lax${secure ? "; Secure" : ""}`;
 }
@@ -55,41 +63,79 @@ export function preferredLanguage(acceptLanguage: string | null | undefined): st
 }
 
 /**
- * ADR-388: whether a visit to the box-language page should go to `/en`.
- * Only a first visit (no choice remembered, no app language chosen) whose
- * browser prefers another language than the box's; English boxes never redirect.
+ * ADR-388/500: the translation a first visit to the box-language page goes
+ * to, or null to stay. Only a first visit (no choice remembered, no app
+ * language chosen) whose browser prefers another language than the box's:
+ * that language when the box shows it, otherwise English when it does.
  */
-export function shouldOpenEnglish({
+export function preferredSiteLanguage({
   boxLanguage,
+  languages,
   acceptLanguage,
   siteChoice,
   appLocaleChosen,
 }: {
   boxLanguage: string;
+  languages: string[];
   acceptLanguage: string | null | undefined;
   siteChoice: string | null | undefined;
   appLocaleChosen: boolean;
-}) {
-  if (boxLanguage === "en" || siteChoice || appLocaleChosen) return false;
+}): string | null {
+  if (siteChoice || appLocaleChosen) return null;
   const preferred = preferredLanguage(acceptLanguage);
-  return preferred !== null && preferred !== boxLanguage;
+  if (preferred === null || preferred === baseLanguage(boxLanguage)) return null;
+  const translations = languages.filter((code) => baseLanguage(code) !== baseLanguage(boxLanguage));
+  return translations.find((code) => baseLanguage(code) === preferred) ?? translations.find((code) => code === "en") ?? null;
 }
 
-export type SiteLanguage = "box" | "en";
+/** "box" for the box's own language, or a translation's code ("en", "de", "pt-PT"). */
+export type SiteLanguage = "box" | (string & {});
 
-/** A box text in the page's language: the English version on `/en` when the box wrote one. */
-export function siteText(language: SiteLanguage, original: string | null | undefined, english: string | null | undefined) {
-  if (language === "en" && english && english.trim()) return english;
-  return original ?? "";
+function baseLanguage(code: string) {
+  return code.split("-")[0]!.toLowerCase();
 }
 
-/** FAQ entries in the page's language (ADR-388: both English halves, else the original). */
-export function faqFor(language: SiteLanguage, entries: SiteFaqEntry[]) {
-  return entries.map((entry) =>
-    language === "en" && entry.question_en && entry.answer_en
-      ? { question: entry.question_en, answer: entry.answer_en }
-      : { question: entry.question, answer: entry.answer },
-  );
+/** The app locale a path segment names ("pt-pt" → "pt-PT"), or null. */
+export function siteLanguageFromSegment(segment: string | null | undefined): string | null {
+  if (!segment) return null;
+  const wanted = segment.toLowerCase();
+  return SUPPORTED_LOCALES.find((code) => code.toLowerCase() === wanted) ?? null;
+}
+
+/** The path of the site in a language: the box's own at the base, a translation at `/<code>`. */
+export function siteLanguagePath(basePath: string, language: SiteLanguage) {
+  if (language === "box") return basePath || "/";
+  return `${basePath}/${language.toLowerCase()}`;
+}
+
+/** The code a page's language stands for (the box's own for "box"). */
+export function siteLanguageCode(language: SiteLanguage, boxLanguage: string) {
+  return language === "box" ? boxLanguage : language;
+}
+
+/**
+ * ADR-520: the box page with the owner's translations in it (about, rooms,
+ * locations, the class names its coaches teach), so the sections render
+ * as they are. The box's own text stays where nothing is translated.
+ */
+export function translatedPage(page: PublicBoxPage, site: PublicSite): PublicBoxPage {
+  if (!site.translation) return page;
+  const texts = site.texts ?? {};
+  const names = site.class_type_names ?? {};
+  return {
+    ...page,
+    profile: {
+      ...page.profile,
+      about: site.about?.trim() ? site.about : page.profile.about,
+      coaches: page.profile.coaches.map((coach) => ({ ...coach, class_types: coach.class_types.map((name) => names[name] ?? name) })),
+    },
+    rooms: (page.rooms ?? []).map((room) => ({
+      ...room,
+      name: siteTextFor(texts, "space", room.id, "name", room.name),
+      description: room.description ? siteTextFor(texts, "space", room.id, "description", room.description) : room.description,
+    })),
+    locations: page.locations.map((location) => ({ ...location, name: siteTextFor(texts, "location", location.id, "name", location.name) })),
+  };
 }
 
 /** «Κινητό ή email» in one field: an address goes as `email`, anything else as `phone`. */

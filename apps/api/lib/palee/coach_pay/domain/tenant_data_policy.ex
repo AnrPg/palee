@@ -17,6 +17,7 @@ defmodule Palee.CoachPay.Domain.TenantDataPolicy do
             basis:
               "Coach pay statements are the basis of payroll and commissions, which tax and labour law ask the business to keep; the rules, periods and the catalogue of overtime and allowances explain them.",
             tables: [
+              %{table: "coach_pay_item_skips"},
               %{table: "coach_pay_lines"},
               %{table: "coach_pay_statements"},
               %{table: "coach_pay_periods"},

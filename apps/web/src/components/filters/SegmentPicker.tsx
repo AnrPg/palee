@@ -57,6 +57,17 @@ const DROPDOWN_STYLE = {
   "--select-chevron": "var(--primary-contrast)",
 } as CSSProperties;
 
+// ANR 2026-11-04: a switch nested inside another switch's panel (sub-tabs)
+// folds into an Ink dropdown, so the two levels never look alike. Ink is the
+// colour of a selected chip, so the folded and unfolded forms match.
+const SUB_DROPDOWN_STYLE = {
+  background: "var(--text)",
+  border: "1px solid var(--text)",
+  color: "var(--bg)",
+  boxShadow: "var(--shadow-sm)",
+  "--select-chevron": "var(--bg)",
+} as CSSProperties;
+
 function Badge({ selected, children }: { selected: boolean; children: ReactNode }) {
   return (
     <span
@@ -84,6 +95,7 @@ export function SegmentPicker<T extends string>({
   stretch = false,
   className = "",
   guide,
+  level = "page",
 }: {
   options: SegmentOption<T>[];
   value: T;
@@ -102,6 +114,8 @@ export function SegmentPicker<T extends string>({
   className?: string;
   /** A walkthrough anchor (ADR-193); each chip also carries `data-segment`. */
   guide?: GuideAnchor;
+  /** `sub`: tabs inside another switch's panel; their dropdown is Ink, not Dojo. */
+  level?: "page" | "sub";
 }) {
   const container = useRef<HTMLDivElement>(null);
   const measurer = useRef<HTMLDivElement>(null);
@@ -191,9 +205,9 @@ export function SegmentPicker<T extends string>({
           value={value}
           onValueChange={(value) => onChange(value as T)}
           aria-controls={panelId}
-          data-segment-dropdown=""
+          data-segment-dropdown={level}
           className="min-h-11 w-full rounded-xl px-3.5 text-sm font-bold"
-          style={DROPDOWN_STYLE}
+          style={level === "sub" ? SUB_DROPDOWN_STYLE : DROPDOWN_STYLE}
         >
           {options.map((option) => (
             <option key={option.value} value={option.value} disabled={option.disabled}>

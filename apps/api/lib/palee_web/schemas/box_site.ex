@@ -30,18 +30,13 @@ defmodule PaleeWeb.Schemas.BoxSite do
       title: "SiteFaqEntry",
       type: :object,
       properties: %{
-        question: %Schema{type: :string, maxLength: 200},
-        answer: %Schema{type: :string, maxLength: 1000},
-        question_en: %Schema{
+        id: %Schema{
           type: :string,
-          maxLength: 200,
-          description: "Optional English text (ADR-388)"
+          format: :uuid,
+          description: "Stable id (ADR-520); a new entry gets one when saved"
         },
-        answer_en: %Schema{
-          type: :string,
-          maxLength: 1000,
-          description: "Optional English text (ADR-388)"
-        }
+        question: %Schema{type: :string, maxLength: 200},
+        answer: %Schema{type: :string, maxLength: 1000}
       },
       required: [:answer, :question]
     }
@@ -74,8 +69,9 @@ defmodule PaleeWeb.Schemas.BoxSite do
         hidden_sections: sections(),
         public_schedule: @bool,
         public_wod: %Schema{type: :boolean, description: "«WOD της ημέρας» on the site (ADR-388)"},
-        about_en: %Schema{type: :string, nullable: true, maxLength: 4000},
         faq: faq(),
+        translation_locales: locales("Languages the box translates its texts into (ADR-520)"),
+        visible_locales: locales("Translations visitors can pick on the site (ADR-520)"),
         forms_enabled: @bool,
         meta_pixel_id: @text,
         ga4_measurement_id: @text,
@@ -89,7 +85,6 @@ defmodule PaleeWeb.Schemas.BoxSite do
         lock_version: @int
       },
       required: [
-        :about_en,
         :banner_version,
         :conversions_api_enabled,
         :faq,
@@ -102,8 +97,19 @@ defmodule PaleeWeb.Schemas.BoxSite do
         :meta_pixel_id,
         :public_schedule,
         :public_wod,
-        :section_order
+        :section_order,
+        :translation_locales,
+        :visible_locales
       ]
+    }
+  end
+
+  defp locales(description) do
+    %Schema{
+      type: :array,
+      maxItems: 11,
+      items: %Schema{type: :string, maxLength: 10},
+      description: description
     }
   end
 
@@ -116,8 +122,10 @@ defmodule PaleeWeb.Schemas.BoxSite do
         hidden_sections: sections(),
         public_schedule: @bool,
         public_wod: @bool,
-        about_en: %Schema{type: :string, nullable: true, maxLength: 4000},
         faq: faq(),
+        translation_locales: locales("Languages to translate into; the box's own is left out"),
+        visible_locales:
+          locales("Translations visitors can pick; a subset of translation_locales"),
         forms_enabled: @bool,
         meta_pixel_id: @text,
         ga4_measurement_id: @text,
@@ -208,9 +216,10 @@ defmodule PaleeWeb.Schemas.BoxSite do
       properties: %{
         settings: settings(),
         section_keys: sections(),
-        domains: %Schema{type: :array, items: domain()}
+        domains: %Schema{type: :array, items: domain()},
+        languages: site_languages()
       },
-      required: [:domains, :section_keys, :settings]
+      required: [:domains, :languages, :section_keys, :settings]
     }
   end
 
@@ -218,8 +227,170 @@ defmodule PaleeWeb.Schemas.BoxSite do
     %Schema{
       title: "SiteSettingsResponse",
       type: :object,
-      properties: %{settings: settings()},
-      required: [:settings]
+      properties: %{settings: settings(), languages: site_languages()},
+      required: [:languages, :settings]
+    }
+  end
+
+  # ── Translations (ADR-520) ───────────────────────────────────────────────
+
+  @translation_statuses ~w(missing stale machine ok)
+  @translation_groups ~w(about rooms faq packages classes events locations)
+  @translation_kinds ~w(box_profile class_type event location package site_faq space)
+
+  defp status_counts do
+    %Schema{
+      title: "SiteTranslationCounts",
+      type: :object,
+      properties: Map.new(@translation_statuses, &{String.to_atom(&1), @int}),
+      required: Enum.map(@translation_statuses, &String.to_atom/1)
+    }
+  end
+
+  defp site_languages do
+    %Schema{
+      title: "SiteLanguages",
+      type: :object,
+      description: "The site's own language, the ones it can add and each translation's progress",
+      properties: %{
+        source: %Schema{type: :string, description: "The box's own language (the source)"},
+        available: %Schema{type: :array, items: %Schema{type: :string}},
+        machine_available: @bool,
+        progress: %Schema{
+          type: :array,
+          items: %Schema{
+            title: "SiteLanguageProgress",
+            type: :object,
+            properties: %{
+              locale: %Schema{type: :string},
+              counts: status_counts(),
+              total: @int
+            },
+            required: [:counts, :locale, :total]
+          }
+        }
+      },
+      required: [:available, :machine_available, :progress, :source]
+    }
+  end
+
+  defp translation_item do
+    %Schema{
+      title: "SiteTranslationItem",
+      type: :object,
+      properties: %{
+        key: %Schema{type: :string, description: "kind:id:field"},
+        kind: %Schema{type: :string, enum: @translation_kinds},
+        id: @uuid,
+        field: %Schema{type: :string},
+        group: %Schema{type: :string, enum: @translation_groups},
+        label: %Schema{
+          type: :string,
+          nullable: true,
+          description: "What the text belongs to (a package's name, an FAQ number)"
+        },
+        source: %Schema{type: :string, description: "The box's own text"},
+        text: %Schema{type: :string, nullable: true, description: "The translation"},
+        status: %Schema{type: :string, enum: @translation_statuses},
+        origin: %Schema{type: :string, enum: ~w(manual machine), nullable: true},
+        updated_at: @time
+      },
+      required: [
+        :field,
+        :group,
+        :id,
+        :key,
+        :kind,
+        :label,
+        :origin,
+        :source,
+        :status,
+        :text,
+        :updated_at
+      ]
+    }
+  end
+
+  def translations_response do
+    %Schema{
+      title: "SiteTranslationsResponse",
+      type: :object,
+      properties: %{
+        locale: %Schema{type: :string},
+        source_language: %Schema{type: :string},
+        machine_available: @bool,
+        counts: status_counts(),
+        total: @int,
+        written: %Schema{type: :integer, description: "Texts the machine wrote (machine only)"},
+        items: %Schema{type: :array, items: translation_item()}
+      },
+      required: [:counts, :items, :locale, :machine_available, :source_language, :total]
+    }
+  end
+
+  def translations_save_request do
+    %Schema{
+      title: "SiteTranslationsSave",
+      type: :object,
+      properties: %{
+        locale: %Schema{type: :string, maxLength: 10},
+        entries: %Schema{
+          type: :array,
+          minItems: 1,
+          maxItems: 200,
+          items: %Schema{
+            title: "SiteTranslationEdit",
+            type: :object,
+            properties: %{
+              kind: %Schema{type: :string, enum: @translation_kinds},
+              id: @uuid,
+              field: %Schema{type: :string, maxLength: 40},
+              text: %Schema{
+                type: :string,
+                nullable: true,
+                maxLength: 4000,
+                description: "Empty or null removes the translation"
+              }
+            },
+            required: [:field, :id, :kind, :text]
+          }
+        }
+      },
+      required: [:entries, :locale]
+    }
+  end
+
+  def translations_keep_request do
+    %Schema{
+      title: "SiteTranslationsKeep",
+      type: :object,
+      properties: %{
+        locale: %Schema{type: :string, maxLength: 10},
+        keys: %Schema{
+          type: :array,
+          minItems: 1,
+          maxItems: 500,
+          items: %Schema{type: :string, maxLength: 200}
+        }
+      },
+      required: [:keys, :locale]
+    }
+  end
+
+  def translations_machine_request do
+    %Schema{
+      title: "SiteTranslationsMachine",
+      type: :object,
+      properties: %{locale: %Schema{type: :string, maxLength: 10}},
+      required: [:locale]
+    }
+  end
+
+  def translation_locale do
+    %Schema{
+      type: :string,
+      maxLength: 10,
+      description: "A language of the app, e.g. en, de, pt-PT"
     }
   end
 
@@ -328,10 +499,29 @@ defmodule PaleeWeb.Schemas.BoxSite do
         languages: %Schema{
           type: :array,
           items: %Schema{type: :string},
-          description: "The site's languages: the box's own and English"
+          description: "The site's languages: the box's own first, then its visible translations"
+        },
+        translation: %Schema{
+          type: :string,
+          nullable: true,
+          description: "The translation this answer is in (ADR-520), null for the box's own"
         },
         time_zone: %Schema{type: :string},
-        about_en: %Schema{type: :string, nullable: true},
+        about: %Schema{
+          type: :string,
+          nullable: true,
+          description: "The translated «Σχετικά», null when there is none"
+        },
+        texts: %Schema{
+          type: :object,
+          additionalProperties: %Schema{type: :string},
+          description: "Translations of texts served by other reads, keyed kind:id:field"
+        },
+        class_type_names: %Schema{
+          type: :object,
+          additionalProperties: %Schema{type: :string},
+          description: "Translated class names by the box's own name"
+        },
         events: %Schema{type: :array, items: BoxReviews.site_event()},
         wod: %Schema{type: :array, items: BoxReviews.site_wod()},
         tracking: %Schema{
@@ -368,8 +558,9 @@ defmodule PaleeWeb.Schemas.BoxSite do
         }
       },
       required: [
-        :about_en,
+        :about,
         :canonical_url,
+        :class_type_names,
         :events,
         :faq,
         :forms,
@@ -379,9 +570,11 @@ defmodule PaleeWeb.Schemas.BoxSite do
         :reviews,
         :sections,
         :slug,
+        :texts,
         :time_zone,
         :timetable,
         :tracking,
+        :translation,
         :wod
       ]
     }

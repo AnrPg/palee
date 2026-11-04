@@ -148,6 +148,7 @@ defmodule Mix.Tasks.Palee.Architecture do
     personal_data/export_store
     personal_data/record_source
     box_site/box_site_store
+    content_translations/translation_store
     review_asks/review_ask_store
 
     box_data/export_store

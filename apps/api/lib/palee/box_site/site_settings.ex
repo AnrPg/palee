@@ -11,7 +11,7 @@ defmodule Palee.BoxSite.SiteSettings do
 
   @primary_key {:id, :binary_id, autogenerate: true}
 
-  @fields ~w(section_order hidden_sections public_schedule public_wod about_en faq forms_enabled meta_pixel_id
+  @fields ~w(section_order hidden_sections public_schedule public_wod faq translation_locales visible_locales forms_enabled meta_pixel_id
              ga4_measurement_id gtm_container_id banner_version conversions_api_enabled
              conversions_api_token updated_by_id)a
 
@@ -21,7 +21,8 @@ defmodule Palee.BoxSite.SiteSettings do
     field :hidden_sections, {:array, :string}, default: []
     field :public_schedule, :boolean, default: false
     field :public_wod, :boolean, default: false
-    field :about_en, :string
+    field :translation_locales, {:array, :string}, default: ["en"]
+    field :visible_locales, {:array, :string}, default: ["en"]
     field :faq, :map, default: %{"entries" => []}
     field :forms_enabled, :boolean, default: true
     field :meta_pixel_id, :string
@@ -43,7 +44,7 @@ defmodule Palee.BoxSite.SiteSettings do
       &if(&1.data.__meta__.state == :loaded, do: optimistic_lock(&1, :lock_version), else: &1)
     )
     |> check_constraint(:meta_pixel_id, name: :box_site_settings_check)
-    |> check_constraint(:about_en, name: :box_site_settings_about_en_check)
+    |> check_constraint(:visible_locales, name: :box_site_settings_locales_check)
     |> unique_constraint(:organization_id)
   end
 end

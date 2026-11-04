@@ -10,7 +10,8 @@ import { fetchPublicPackages, publicPackagesKey } from "@/api/my-payments";
 import type { PublicBoxPage } from "@/api/social";
 import { AboutTab, type AboutPart } from "@/components/box-page/AboutTab";
 import { GoogleReviews, ReviewItem, ReviewSummary } from "@/components/reviews/ReviewParts";
-import { faqFor, siteText, timetableByDay, type SiteLanguage } from "@/lib/public-site";
+import { timetableByDay, type SiteLanguage } from "@/lib/public-site";
+import { siteTextFor } from "@/lib/site-translations";
 import { FRESHNESS } from "@/lib/query-policy";
 import { formatCents } from "@/lib/solo-coach";
 
@@ -45,7 +46,7 @@ export function SiteSections({
   const render = (key: SiteSection): ReactNode => {
     const part = ABOUT_PARTS[key];
     if (part) {
-      return <AboutTab key={key} page={page} onOpenPhoto={onOpenPhoto} parts={[part]} enquiry={false} aboutText={part === "about" ? siteText(language, page.profile.about, site.about_en) || undefined : undefined} />;
+      return <AboutTab key={key} page={page} onOpenPhoto={onOpenPhoto} parts={[part]} enquiry={false} />;
     }
     switch (key) {
       case "schedule":
@@ -55,11 +56,11 @@ export function SiteSections({
       case "wod":
         return <WodSection key={key} site={site} />;
       case "packages":
-        return <PackagesSection key={key} slug={site.slug} basePath={basePath} />;
+        return <PackagesSection key={key} site={site} basePath={basePath} />;
       case "reviews":
         return <ReviewsSection key={key} site={site} boxName={page.box.name} />;
       case "faq":
-        return <FaqSection key={key} site={site} language={language} />;
+        return <FaqSection key={key} site={site} />;
       case "trial_form":
         return site.forms.trial ? (
           <RequestCard key={key} title={t("sections.trial_form")} text={t("trialCardText")} action={t("bookTrial")} onClick={() => onRequest("trial")} testId="site-trial-card" />
@@ -78,7 +79,7 @@ export function SiteSections({
     <div className="flex flex-col gap-9" data-testid="site-sections">
       {site.sections.map((key) => render(key))}
       <footer className="flex flex-wrap gap-x-5 gap-y-2 pt-4 text-sm" style={{ borderTop: "1px solid var(--border)", color: "var(--text-soft)" }}>
-        <Link href={`${basePath}/privacy${language === "en" ? "?lang=en" : ""}`} className="font-semibold">
+        <Link href={`${basePath}/privacy${language === "box" ? "" : `?lang=${encodeURIComponent(language)}`}`} className="font-semibold">
           {t("privacy")}
         </Link>
         {site.tracking.consent_required ? (
@@ -182,7 +183,8 @@ function WodSection({ site }: { site: PublicSite }) {
   );
 }
 
-function PackagesSection({ slug, basePath }: { slug: string; basePath: string }) {
+function PackagesSection({ site, basePath }: { site: PublicSite; basePath: string }) {
+  const slug = site.slug;
   const t = useTranslations("BoxSite");
   const locale = useLocale();
   const query = useQuery({ queryKey: publicPackagesKey(slug), queryFn: () => fetchPublicPackages(slug), staleTime: FRESHNESS.reference, retry: false });
@@ -194,9 +196,13 @@ function PackagesSection({ slug, basePath }: { slug: string; basePath: string })
       <ul className="grid gap-3 sm:grid-cols-2">
         {packages.map((item) => (
           <li key={item.id} className="flex flex-col gap-1 rounded-2xl p-4" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
-            <b className="text-sm" style={{ color: "var(--text)" }}>{item.name}</b>
+            <b className="text-sm" style={{ color: "var(--text)" }}>{siteTextFor(site.texts, "package", item.id, "name", item.name)}</b>
             <span className="text-lg font-extrabold" style={{ color: "var(--text)" }}>{formatCents(item.base_price_cents, item.currency, locale)}</span>
-            {item.description ? <span className="line-clamp-2 text-sm" style={{ color: "var(--text-soft)" }}>{item.description}</span> : null}
+            {item.description ? (
+              <span className="line-clamp-2 text-sm" style={{ color: "var(--text-soft)" }}>
+                {siteTextFor(site.texts, "package", item.id, "description", item.description)}
+              </span>
+            ) : null}
           </li>
         ))}
       </ul>
@@ -231,9 +237,10 @@ function ReviewsSection({ site, boxName }: { site: PublicSite; boxName: string }
   );
 }
 
-function FaqSection({ site, language }: { site: PublicSite; language: SiteLanguage }) {
+function FaqSection({ site }: { site: PublicSite }) {
   const t = useTranslations("BoxSite");
-  const entries = faqFor(language, site.faq);
+  // ADR-520: the API answers the FAQ already in the page's language.
+  const entries = site.faq;
   if (entries.length === 0) return null;
   return (
     <section className="flex flex-col gap-3" data-testid="site-faq">
