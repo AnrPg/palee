@@ -62,12 +62,16 @@ export async function fetchDayAssignmentTags(token: string, from: string, to: st
   return response.days ?? [];
 }
 
-export async function previewDayWorkout(token: string, request: DayWorkoutRequest) {
-  return apiRequest<DayWorkoutPreview>("/admin/schedule/day-workouts/preview", {
+export async function previewDayWorkout(token: string, request: DayWorkoutRequest): Promise<DayWorkoutPreview> {
+  const response = await apiRequest<Partial<DayWorkoutPreview> | null>("/admin/schedule/day-workouts/preview", {
     method: "POST",
     token,
     body: request,
   });
+  // A partial answer must not break the dialog that shows it: a missing
+  // list is an empty one.
+  const list = (value: unknown) => (Array.isArray(value) ? (value as DayWorkoutClass[]) : []);
+  return { inherit: list(response?.inherit), own: list(response?.own), started: list(response?.started) };
 }
 
 export async function setDayWorkout(token: string, request: DayWorkoutRequest) {
