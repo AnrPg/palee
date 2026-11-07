@@ -26,6 +26,7 @@ export function FollowButton({
   followsMe = false,
   buddy = false,
   wide = false,
+  quiet = false,
 }: {
   targetType: FollowTargetType;
   targetId: string;
@@ -33,6 +34,8 @@ export function FollowButton({
   followsMe?: boolean;
   buddy?: boolean;
   wide?: boolean;
+  /** Outlined instead of filled, where another action is the page's main one. */
+  quiet?: boolean;
 }) {
   const t = useTranslations("Social");
   const tUi = useUiTranslations();
@@ -113,7 +116,11 @@ export function FollowButton({
           type="button"
           disabled={busy || !token}
           className={base}
-          style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}
+          style={
+            quiet
+              ? { border: "1px solid var(--border)", color: "var(--text)" }
+              : { background: "var(--primary)", color: "var(--primary-contrast)" }
+          }
           onClick={() => void run(() => follow(token!, targetType, targetId))}
         >
           {followsMe ? t("followBack") : t("follow")}

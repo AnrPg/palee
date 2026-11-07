@@ -112,6 +112,19 @@ defmodule PaleeWeb.Schemas.Social do
         profile: profile(),
         published_at: %Schema{type: :string, format: :"date-time", nullable: true},
         followers_count: %Schema{type: :integer},
+        joining: %Schema{
+          type: :object,
+          description:
+            "Where «Γίνε μέλος» leads for a non-member: packages, else the member join link, else a message",
+          properties: %{
+            packages: %Schema{
+              type: :boolean,
+              description: "The box lists packages people can buy or ask for"
+            },
+            join_link: %Schema{type: :boolean, description: "The member join link is on"}
+          },
+          required: [:packages, :join_link]
+        },
         time_zone: %Schema{
           type: :string,
           description: "ADR-179: the gym's IANA zone; its classes show on this clock"
@@ -150,7 +163,7 @@ defmodule PaleeWeb.Schemas.Social do
           }
         }
       },
-      required: [:box, :profile, :followers_count, :locations, :open_clubs, :rooms]
+      required: [:box, :profile, :followers_count, :joining, :locations, :open_clubs, :rooms]
     }
   end
 

@@ -6699,6 +6699,7 @@
     "guestTitle": "You're a guest of {box}",
     "guestBody": "You pay at the front desk whenever you come. Become a box member to book classes and see the workouts.",
     "guestAction": "Become a box member",
+    "joinBox": "Become a box member",
     "messageBox": "Message the box",
     "rooms": "Rooms"
   },
@@ -6752,6 +6753,7 @@
     "followUpDismiss": "Not now",
     "homeEyebrow": "Your trials",
     "joinDraft": "Hi! I came for a trial and I'd like to join. What are my options?",
+    "memberDraft": "Hi! I'd like to become a member. How do I sign up?",
     "chatSubtitle": "Messages with the box",
     "chatUnavailable": "You can't message this box right now.",
     "chatEmpty": "No messages yet. Say hi.",

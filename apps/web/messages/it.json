@@ -6699,6 +6699,7 @@
     "guestTitle": "Sei ospite di {box}",
     "guestBody": "Paghi alla reception ogni volta che vieni. Diventa socio del box per prenotare le lezioni e vedere gli allenamenti.",
     "guestAction": "Diventa socio del box",
+    "joinBox": "Diventa socio del box",
     "messageBox": "Scrivi al box",
     "rooms": "Sale"
   },
@@ -6752,6 +6753,7 @@
     "followUpDismiss": "Non ora",
     "homeEyebrow": "Le tue prove",
     "joinDraft": "Ciao! Sono venuto per una prova e vorrei iscrivermi. Quali sono le opzioni?",
+    "memberDraft": "Ciao! Vorrei diventare socio. Come mi iscrivo?",
     "chatSubtitle": "Messaggi con il box",
     "chatUnavailable": "Al momento non puoi scrivere a questo box.",
     "chatEmpty": "Ancora nessun messaggio. Saluta.",

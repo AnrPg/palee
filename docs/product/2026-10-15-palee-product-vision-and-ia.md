@@ -147,7 +147,7 @@ Messages live top-right in the Feed. `Box › Coach` opens the same inbox filter
 ├─ ⊕ Νέα ανάρτηση (audience: club›channel | followers | public; attach workout from journal)
 ├─ top bar: Ειδοποιήσεις (bell) · bottom bar: Μηνύματα (Όλα | Coach | Clubs | Partners)
 ├─ Club bar → Club page (member):  Ροή · Κανάλια · Events · Μέλη
-├─ Box page (non-member):          Σχετικά · Πρόγραμμα(read-only, trial slots) · Events · Δημόσια · [Ζήτα δοκιμαστικό] [Ακολούθησε]
+├─ Box page (non-member):          Σχετικά · Πρόγραμμα(read-only, trial slots) · Events · Δημόσια · [Γίνε μέλος box] [Ζήτα δοκιμαστικό] [Ακολούθησε]
 └─ Γύρω μου: events · open clubs · boxes with trials · public posts · «Συναθλητές κοντά σου» (→ Partners deck, ADR-280) · Φίλτρα(n) · saved filters
 
 Box   (title ▾ switches provider: gym or independent coach)
@@ -204,7 +204,7 @@ Legend: **[EXISTS]** reuse as-is, only needs a new home · **[PARTIAL]** data/ba
 - **Post format** (Instagram-like): optional media, text, **optional workout attachment from the journal**. Text-only posts allowed (announcements, questions).
 - **Audience picker** on compose: club › channel | followers | public.
 - **Club page (member):** `Ροή` (pinned announcement → WOD card with leaderboard → challenges → PR celebrations (opt-in) → events → member posts), `Κανάλια`, `Events`, `Μέλη` (coaches, members; Partners moved to Γύρω μου, ADR-280).
-- **Box page (non-member):** `Σχετικά` (photos, disciplines, coaches, locations, hours), `Πρόγραμμα` (read-only, "Κλείσε με δοκιμαστικό" where the owner allotted trial slots), `Events` (open), `Δημόσια`. CTAs: **Ζήτα δοκιμαστικό**, **Ακολούθησε**.
+- **Box page (non-member):** `Σχετικά` (photos, disciplines, coaches, locations, hours), `Πρόγραμμα` (read-only, "Κλείσε με δοκιμαστικό" where the owner allotted trial slots), `Events` (open), `Δημόσια`. CTAs: **Γίνε μέλος box** (always shown, the main one; leads to packages, else the member join link, else a ready message to the box, ADR-552), then **Ζήτα δοκιμαστικό** and **Ακολούθησε** (outlined). Following never makes anyone a box member.
 
 **Channel governance**
 | Channel | Created by | Who writes | Who's in |

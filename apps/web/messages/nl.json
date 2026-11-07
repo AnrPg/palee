@@ -6699,6 +6699,7 @@
     "guestTitle": "Je bent gast van {box}",
     "guestBody": "Je betaalt bij de receptie wanneer je komt. Word boxlid om lessen te boeken en de workouts te zien.",
     "guestAction": "Word boxlid",
+    "joinBox": "Word boxlid",
     "messageBox": "De box een bericht sturen",
     "rooms": "Ruimtes"
   },
@@ -6752,6 +6753,7 @@
     "followUpDismiss": "Nu niet",
     "homeEyebrow": "Jouw proeflessen",
     "joinDraft": "Hoi! Ik ben op proefles geweest en wil graag lid worden. Wat zijn mijn opties?",
+    "memberDraft": "Hoi! Ik wil graag lid worden. Hoe schrijf ik me in?",
     "chatSubtitle": "Berichten met de box",
     "chatUnavailable": "Je kunt deze box nu geen bericht sturen.",
     "chatEmpty": "Nog geen berichten. Zeg hoi.",
