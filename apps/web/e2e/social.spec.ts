@@ -220,6 +220,8 @@ test.describe("social on a narrow phone", () => {
     const state = await stub(page);
     state.requests = 0;
     await page.context().addCookies([{ name: "palee_locale", value: "el", url: "http://127.0.0.1" }]);
+    // The signed-in person's own language wins over the cookie.
+    await page.route("**/api/auth/me", (route) => route.fulfill(json({ ...user, preferred_locale: "el" })));
     await page.route("**/api/me/buddies-list**", (route) => route.fulfill(json({ entries: [], next_cursor: null })));
     await page.route("**/api/me/follows/user/person-3", (route) => route.fulfill(json({ status: "active" })));
     await page.goto("/me/connections?tab=following");

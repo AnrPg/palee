@@ -274,7 +274,8 @@ test.describe("public box page", () => {
       return route.fulfill(json({ request: mine() }));
     });
     await page.goto(`/b/${box.slug}`);
-    await page.getByTestId("box-page-join").first().click();
+    // The desktop and the phone layouts each hold the action; click the one on screen.
+    await page.getByTestId("box-page-join").locator("visible=true").first().click();
     const sheet = page.getByTestId("box-join-ask");
     await sheet.getByTestId("box-join-send").click();
     await expect(sheet.getByTestId("box-join-pending")).toHaveText("Waiting for the box to accept");
