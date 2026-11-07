@@ -140,7 +140,7 @@ export function OwnEmailSettings({ token }: { token: string }) {
             {field("from_name", t("smtpFromName"))}
           </div>
           {save.isError && Object.keys(errors).length === 0 ? <ErrorNotice variant="field">{t("errors.generic")}</ErrorNotice> : null}
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <button type="button" className="rounded-full px-4 py-2 text-sm font-semibold" style={{ color: "var(--text)" }} onClick={() => setEditing(false)}>{t("cancel")}</button>
             <button
               type="button"

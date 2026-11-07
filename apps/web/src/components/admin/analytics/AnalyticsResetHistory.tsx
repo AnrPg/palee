@@ -123,7 +123,7 @@ export function AnalyticsResetHistory() {
       )}
 
       {pages > 1 ? (
-        <nav className="flex items-center justify-between gap-3 text-sm" aria-label={t("history.title")}>
+        <nav className="flex flex-wrap items-center justify-between gap-3 text-sm" aria-label={t("history.title")}>
           <button type="button" disabled={page <= 1} onClick={() => setPage((current) => current - 1)} className="min-h-9 rounded-full px-3 font-semibold disabled:opacity-40" style={{ color: "var(--primary-strong)" }}>
             {t("history.previous")}
           </button>

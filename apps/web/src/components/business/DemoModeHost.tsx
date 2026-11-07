@@ -173,7 +173,7 @@ function DemoButton({
             confirmRemove ? (
               <div className="flex flex-col gap-2 rounded-2xl p-3" style={{ background: "var(--panel-raised)" }}>
                 <p className="text-sm" style={{ color: "var(--text)" }}>{t("demo.removeConfirm")}</p>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <DialogButton tone="danger" disabled={busy} onClick={() => remove.mutate()}>
                     {t("demo.removeYes")}
                   </DialogButton>

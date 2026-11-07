@@ -10,6 +10,7 @@ import { clientErrorMessage } from "@/components/client/errors";
 import { useSession } from "@/components/session-provider";
 import { useUiTranslations } from "@/i18n/ui";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { InlineConfirm } from "@/components/ui/InlineConfirm";
 
 /**
  * Follow a person or a box (plan §5a Q9): «Ακολούθησε» → «Εκκρεμεί» →
@@ -17,7 +18,8 @@ import { ErrorNotice } from "@/components/ui/ErrorNotice";
  * (ADR-193 §2) and a box are followed at once, so the API answers `active`
  * and the button skips «Εκκρεμεί». It always shows what the API answered.
  * Unfollowing, or withdrawing a request, asks first; unfollowing a Buddy
- * says the Buddy status ends with it.
+ * says the Buddy status ends with it. The question is a `ui/InlineConfirm`,
+ * so a host row built with `ui/rows` gives it the whole line on a phone.
  */
 export function FollowButton({
   targetType,
@@ -73,41 +75,30 @@ export function FollowButton({
 
   if (confirming) {
     return (
-      <div className={`flex flex-col gap-2 ${wide ? "w-full" : ""}`}>
-        <p className="text-sm" style={{ color: "var(--text-soft)" }}>
-          {current === "requested"
-            ? t("withdrawConfirm")
-            : targetType === "organization"
-              ? t("unfollowBoxConfirm")
-              : buddy
-                ? t("unfollowBuddyConfirm")
-                : t("unfollowConfirm")}
-        </p>
-        <div className="flex gap-2">
-          <button
-            type="button"
-            className={`${base} flex-1`}
-            style={{ border: "1px solid var(--border)", color: "var(--text)" }}
-            onClick={() => setConfirming(false)}
-          >
-            {t("keep")}
-          </button>
-          <button
-            type="button"
-            disabled={busy}
-            className={`${base} flex-1`}
-            style={{ background: "var(--danger)", color: "var(--danger-contrast)" }}
-            onClick={() => void run(() => unfollow(token!, targetType, targetId))}
-          >
-            {current === "requested" ? t("withdraw") : t("unfollow")}
-          </button>
-        </div>
+      <div className={`flex w-full min-w-0 flex-col gap-1 ${wide ? "" : "max-w-md"}`}>
+        <InlineConfirm
+          question={
+            current === "requested"
+              ? t("withdrawConfirm")
+              : targetType === "organization"
+                ? t("unfollowBoxConfirm")
+                : buddy
+                  ? t("unfollowBuddyConfirm")
+                  : t("unfollowConfirm")
+          }
+          cancelLabel={t("keep")}
+          confirmLabel={current === "requested" ? t("withdraw") : t("unfollow")}
+          busy={busy}
+          onCancel={() => setConfirming(false)}
+          onConfirm={() => void run(() => unfollow(token!, targetType, targetId))}
+        />
+        {error ? <ErrorNotice>{error}</ErrorNotice> : null}
       </div>
     );
   }
 
   return (
-    <div className={`flex flex-col gap-1 ${wide ? "w-full" : ""}`}>
+    <div className={`flex min-w-0 max-w-full flex-col gap-1 ${wide ? "w-full" : ""}`}>
       {current === "none" ? (
         <button
           type="button"

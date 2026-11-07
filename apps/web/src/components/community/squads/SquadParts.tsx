@@ -27,6 +27,7 @@ import { PersonAvatar } from "@/components/social/PersonAvatar";
 import { useUiTranslations } from "@/i18n/ui";
 
 import { invitableClients, matchesQuery, squadHref } from "./squads";
+import { itemRow, itemRowActions, itemRowMain } from "@/components/ui/rows";
 
 /** The person's squads in one gym (ADR-168). */
 export function useSquads(slug: string | null | undefined) {
@@ -108,16 +109,20 @@ export function InvitationRow({ squad, slug }: { squad: PtSquad; slug: string })
   });
   return (
     <li className="flex flex-col gap-1 py-2" data-testid="squad-invite">
-      <div className="flex min-h-14 items-center gap-3">
-        <PersonAvatar name={squad.coach.nickname} url={squad.coach.avatar_url} />
-        <div className="min-w-0 grow">
-          <span className="block truncate font-bold" style={{ color: "var(--text)" }}>{squad.name}</span>
-          <span className="block truncate text-xs" style={{ color: "var(--dim)" }}>
-            {t("invitedBy", { coach: squad.coach.nickname ?? "?" })}
-          </span>
+      <div className={`${itemRow} min-h-14`}>
+        <div className={itemRowMain}>
+          <PersonAvatar name={squad.coach.nickname} url={squad.coach.avatar_url} />
+          <div className="min-w-0 grow">
+            <span className="block truncate font-bold" style={{ color: "var(--text)" }}>{squad.name}</span>
+            <span className="block truncate text-xs" style={{ color: "var(--dim)" }}>
+              {t("invitedBy", { coach: squad.coach.nickname ?? "?" })}
+            </span>
+          </div>
         </div>
-        <SmallAction disabled={answer.isPending} onClick={() => answer.mutate(false)}>{t("decline")}</SmallAction>
-        <SmallAction primary disabled={answer.isPending} onClick={() => answer.mutate(true)}>{t("accept")}</SmallAction>
+        <div className={itemRowActions}>
+          <SmallAction disabled={answer.isPending} onClick={() => answer.mutate(false)}>{t("decline")}</SmallAction>
+          <SmallAction primary disabled={answer.isPending} onClick={() => answer.mutate(true)}>{t("accept")}</SmallAction>
+        </div>
       </div>
       <ErrorLine message={answer.error ? clientErrorMessage(answer.error, tUi) : null} />
     </li>

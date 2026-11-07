@@ -193,7 +193,7 @@ function RecipeEditor({ recipe, list, onClose }: { recipe: Recipe; list: RecipeL
           >
             {t("resetText")}
           </DialogButton>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <DialogButton tone="ghost" onClick={onClose}>
               {t("cancel")}
             </DialogButton>

@@ -36,7 +36,7 @@ export function EventPostCard({ event }: { event: CommunityEvent }) {
           {event.cancelled ? t("pillCancelled") : line}
         </span>
       </Link>
-      <div className="shrink-0">
+      <div className="min-w-0 max-w-full shrink-0">
         <RsvpButton event={event} compact />
       </div>
     </div>

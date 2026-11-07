@@ -52,7 +52,7 @@ export function BookingSharingOffer() {
     <section className="flex flex-col gap-3 rounded-3xl p-4" style={{ background: "var(--panel-raised)", border: "1px solid var(--border)" }}>
       <h2 className="font-bold" style={{ color: "var(--text)" }}>{t("bookingSharingTitle")}</h2>
       <p className="text-sm" style={{ color: "var(--text-soft)" }}>{t("bookingSharingBody")}</p>
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         <button
           type="button"
           disabled={busy}

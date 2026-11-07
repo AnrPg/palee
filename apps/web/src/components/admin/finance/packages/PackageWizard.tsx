@@ -239,7 +239,7 @@ export function PackageWizard({
             <p className="text-sm" style={{ color: "var(--text)" }}>
               {t("pkgResumeDraft", { name: resumable.draft.name || t("pkgUntitled") })}
             </p>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <button type="button" className="rounded-full px-4 py-2 text-sm font-semibold" style={{ background: "var(--text)", color: "var(--bg)" }} onClick={() => { setDraft(resumable.draft); setStepIndex(resumable.step); setResumable(null); }}>
                 {t("pkgResumeContinue")}
               </button>

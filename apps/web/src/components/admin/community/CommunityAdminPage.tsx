@@ -172,7 +172,7 @@ function StaffGroupRow({ group, mode }: { group: StaffGroup; mode: "pending" | "
           <p className="text-xs" style={{ color: "var(--dim)" }}>{detail.join(" · ")}</p>
         </div>
         {mode === "pending" ? (
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <SmallButton disabled={act.isPending} onClick={() => act.mutate("decline")}>{t("decline")}</SmallButton>
             <SmallButton primary disabled={act.isPending} onClick={() => act.mutate("approve")}>{t("approve")}</SmallButton>
           </div>

@@ -125,7 +125,7 @@ export function BodySettingsPage() {
             <div className="flex flex-col gap-2" role="group" aria-label={t("deleteAllTitle")}>
               <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>{t("deleteAllTitle")}</p>
               <p className="text-sm" style={{ color: "var(--muted)" }}>{t("deleteAllBody")}</p>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <PillButton onClick={() => setConfirmDelete(false)}>{t("cancel")}</PillButton>
                 <PillButton danger disabled={deleteAll.isPending} onClick={() => deleteAll.mutate()}>{t("deleteAllConfirm")}</PillButton>
               </div>

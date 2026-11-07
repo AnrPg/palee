@@ -472,7 +472,7 @@ function ModificationsEditorStep({
 
   return (
     <div className="flex h-dvh flex-col" style={{ background: "var(--bg)", color: "var(--text)" }}>
-      <div className="flex items-center justify-between px-5 pt-8 pb-2">
+      <div className="flex flex-wrap items-center justify-between px-5 pt-8 pb-2">
         <BackButton type="button" onClick={onBack} className="text-sm" style={{ color: "var(--dim)" }}>{i18n("backc32ae9f")}</BackButton>
         <button type="button" onClick={onSkip} className="text-sm font-semibold" style={{ color: "var(--dim)" }}>
           {i18n("skip10b7bbe")}
@@ -714,7 +714,7 @@ function FreeTextCommentsStep({
 
   return (
     <div className="flex h-dvh flex-col" style={{ background: "var(--bg)", color: "var(--text)" }}>
-      <div className="flex items-center justify-between px-5 pt-8 pb-2">
+      <div className="flex flex-wrap items-center justify-between px-5 pt-8 pb-2">
         <BackButton type="button" onClick={onBack} className="text-sm" style={{ color: "var(--dim)" }}>{i18n("backc32ae9f")}</BackButton>
         <button type="button" onClick={onSkip} className="text-sm font-semibold" style={{ color: "var(--dim)" }}>
           {i18n("skip10b7bbe")}

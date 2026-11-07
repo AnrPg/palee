@@ -122,7 +122,7 @@ export function BoxChat({
   return (
     // Full screen (lib/bottom-nav.ts hides the bars here, ANR 2026-11-02 mockup alt B).
     <main className="mx-auto flex h-[calc(100dvh-var(--safe-top,0px))] w-full max-w-xl flex-col">
-      <header className="flex items-center gap-1 py-2 pe-4 ps-1" style={{ borderBottom: "1px solid var(--border)" }}>
+      <header className="flex flex-wrap items-center gap-1 py-2 pe-4 ps-1" style={{ borderBottom: "1px solid var(--border)" }}>
         <BackButton
           onClick={() => {
             // Back where the chat was opened from; a chat opened from a link goes to its box.

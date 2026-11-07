@@ -177,7 +177,7 @@ export function TrainingLogEntryCard({
           ) : null}
         </div>
         {!voided ? (
-          <div className="flex shrink-0 gap-2">
+          <div className="flex flex-wrap shrink-0 gap-2">
             <button
               type="button"
               className="rounded-full px-3 py-1.5 text-sm font-semibold"

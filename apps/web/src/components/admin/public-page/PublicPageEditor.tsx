@@ -667,7 +667,7 @@ function PhotosStep({
           <div className="relative overflow-hidden rounded-3xl" style={{ border: "1px solid var(--border)" }}>
             {/* eslint-disable-next-line @next/next/no-img-element -- media URLs come from object storage */}
             <img src={draft.cover.url} alt={t("cover")} className="aspect-[2/1] w-full object-cover" />
-            <div className="absolute bottom-3 right-3 flex gap-2">
+            <div className="absolute bottom-3 right-3 flex flex-wrap gap-2">
               <button
                 type="button"
                 onClick={() => coverInput.current?.click()}

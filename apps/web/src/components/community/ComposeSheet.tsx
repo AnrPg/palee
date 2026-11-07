@@ -203,7 +203,7 @@ export function ComposeSheet({
         size="md"
         bodyClassName="flex flex-col gap-4"
         footer={
-        <div className="flex w-full gap-2">
+        <div className="flex flex-wrap w-full gap-2">
           <button
             type="button"
             onClick={cancel}

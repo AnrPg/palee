@@ -892,7 +892,7 @@ export function WorkoutAdminConsole() {
               void addFolder();
             }}
           footer={
-            <div className="w-full flex justify-end gap-2">
+            <div className="w-full flex flex-wrap justify-end gap-2">
               <button type="button" className="rounded-full px-4 py-2 text-sm font-semibold" style={{ background: "var(--border)", color: "var(--text-soft)" }} onClick={() => setFolderModalOpen(false)}>
                 {i18n("cancel77dfd21")}
               </button>

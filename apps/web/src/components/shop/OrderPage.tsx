@@ -173,7 +173,7 @@ function OrderBody({ order, slug, locale }: { order: ShopOrder; slug: string; lo
           size="sm"
           dismissible={!cancel.isPending}
           footer={
-            <div className="flex w-full gap-2">
+            <div className="flex flex-wrap w-full gap-2">
               <DialogButton onClick={() => setConfirming(false)}>{t("keepOrder")}</DialogButton>
               <DialogButton
                 tone="danger"

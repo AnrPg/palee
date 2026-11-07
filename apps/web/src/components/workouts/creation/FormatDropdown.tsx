@@ -143,7 +143,7 @@ export function FormatDropdown({ value, onChange }: FormatDropdownProps) {
             {/* Tooltip — rendered as sibling so it never clips */}
             {tooltip ? (
               <div
-                className="pointer-events-none ms-2 w-[240px] shrink-0 self-start rounded-xl p-4 text-xs"
+                className="pointer-events-none ms-2 hidden w-[240px] shrink-0 self-start rounded-xl p-4 text-xs sm:block"
                 style={{
                   background: "var(--panel)",
                   border: "1px solid var(--dim)",

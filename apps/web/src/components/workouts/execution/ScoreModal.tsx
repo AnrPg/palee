@@ -67,7 +67,7 @@ export function ScoreModal({
       titleId={titleId}
       size="sm"
       footer={
-        <div className="flex w-full gap-3">
+        <div className="flex flex-wrap w-full gap-3">
           <button
             onClick={onClose}
             disabled={isSaving}

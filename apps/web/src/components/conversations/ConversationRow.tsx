@@ -147,7 +147,7 @@ export function RequestRow({
 export function RequestButtons({ onAccept, onDecline, busy }: { onAccept: () => void; onDecline: () => void; busy?: boolean }) {
   const t = useTranslations("Conversations");
   return (
-    <div className="flex gap-2">
+    <div className="flex flex-wrap gap-2">
       <ActionButton onClick={onDecline} disabled={busy}>
         {t("decline")}
       </ActionButton>

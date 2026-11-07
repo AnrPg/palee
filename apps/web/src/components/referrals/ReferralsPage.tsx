@@ -354,7 +354,7 @@ function NewLink({ slug }: { slug: string }) {
       {confirming ? (
         <div className="flex flex-col gap-2">
           <p className="text-sm" style={{ color: "var(--text-soft)" }}>{t("newLink.confirm")}</p>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <SheetButton primary disabled={rotate.isPending} onClick={() => rotate.mutate()}>{t("newLink.yes")}</SheetButton>
             <SheetButton onClick={() => setConfirming(false)}>{t("newLink.no")}</SheetButton>
           </div>

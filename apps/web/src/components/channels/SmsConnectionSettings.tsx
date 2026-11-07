@@ -631,7 +631,7 @@ function OwnAccount({ token, settings }: { token: string; settings: ChannelSetti
           })}
           <p className="text-xs" style={{ color: "var(--dim)" }}>{t("brevoKeyHint")}</p>
           {otherError ? <ErrorNotice variant="field">{otherError}</ErrorNotice> : null}
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <button type="button" className="rounded-full px-4 py-2 text-sm font-semibold" style={{ color: "var(--text)" }} onClick={cancel}>{t("cancel")}</button>
             <button
               type="button"

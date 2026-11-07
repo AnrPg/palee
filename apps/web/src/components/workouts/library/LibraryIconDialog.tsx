@@ -60,7 +60,7 @@ export function LibraryIconDialog({
           >
             {i18n("featureAutomaticIcon", { icon: automaticIcon })}
           </button>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <button type="button" className="rounded-full px-4 py-2 text-sm font-semibold" style={{ background: "var(--border)", color: "var(--text-soft)" }} onClick={onCancel}>
               {i18n("cancel77dfd21")}
             </button>

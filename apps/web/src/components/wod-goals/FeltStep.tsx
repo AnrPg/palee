@@ -107,7 +107,7 @@ function FeltForm({
           {save.isError ? (
             <ErrorNotice>{t("felt.error")}</ErrorNotice>
           ) : null}
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <button
               type="button"
               onClick={() => onDone(false)}

@@ -966,7 +966,7 @@ export function ExecutionMode() {
           <div
             role="timer"
             aria-label={i18n("setRestLabel")}
-            className="mb-3 flex items-center justify-between gap-3 rounded-2xl px-4 py-3"
+            className="mb-3 flex flex-wrap items-center justify-between gap-3 rounded-2xl px-4 py-3"
             style={{
               background: `color-mix(in srgb, ${PHASE_COLORS.rest} 16%, var(--bg))`,
               border: `1px solid color-mix(in srgb, ${PHASE_COLORS.rest} 45%, transparent)`,
@@ -982,7 +982,7 @@ export function ExecutionMode() {
                 {formatClock(setRestRemaining)}
               </div>
             </div>
-            <div className="flex shrink-0 items-center gap-2">
+            <div className="flex flex-wrap shrink-0 items-center gap-2">
               <button
                 type="button"
                 onClick={() => setSetRest((rest) => (rest ? { ...rest, endsAt: rest.endsAt + 15_000, total: rest.total + 15 } : rest))}
@@ -1122,7 +1122,7 @@ export function ExecutionMode() {
             {i18n("resumeb3bd0b5")}
           </button>
           {adjustableClock ? (
-            <div className="flex w-full max-w-xs items-center justify-between gap-2" role="group" aria-label={i18n("adjustTimeLabel")}>
+            <div className="flex w-full max-w-xs flex-wrap items-center justify-between gap-2" role="group" aria-label={i18n("adjustTimeLabel")}>
               <button
                 type="button"
                 onClick={() => handleAdjustTime(-30)}
@@ -1145,7 +1145,7 @@ export function ExecutionMode() {
             </div>
           ) : null}
           {repeatable ? (
-            <div className="flex w-full max-w-xs items-center justify-between gap-2" role="group" aria-label={i18n("adjustRoundsLabel")}>
+            <div className="flex w-full max-w-xs flex-wrap items-center justify-between gap-2" role="group" aria-label={i18n("adjustRoundsLabel")}>
               <button
                 type="button"
                 onClick={handleRemoveRound}

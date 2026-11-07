@@ -28,6 +28,7 @@ import { useUiTranslations } from "@/i18n/ui";
 import { BoxPhotoUploadError, uploadBoxPhoto } from "@/lib/box-photo-upload";
 import { useSelectedMembershipRole } from "@/lib/membership-role";
 import { can } from "@/lib/role-navigation";
+import { itemRow, itemRowActions, itemRowMain } from "@/components/ui/rows";
 
 /**
  * Ανοιχτά clubs (board 7 Q6): clubs the box runs that anyone who follows or
@@ -155,11 +156,15 @@ function ClubDetail({ clubId, manage, onEdit }: { clubId: string; manage: boolea
           </p>
           <ul className="flex flex-col">
             {requests.map((row) => (
-              <li key={row.person.id} className="flex min-h-12 items-center gap-3 py-1">
-                <PersonAvatar name={row.person.nickname} url={row.person.avatar_url} size={32} />
-                <span className="min-w-0 grow truncate text-sm font-bold" style={{ color: "var(--text)" }}>{row.person.nickname ?? "?"}</span>
-                <SmallButton disabled={act.isPending} onClick={() => act.mutate({ userId: row.person.id, action: "decline" })}>{t("decline")}</SmallButton>
-                <SmallButton primary disabled={act.isPending} onClick={() => act.mutate({ userId: row.person.id, action: "approve" })}>{t("approve")}</SmallButton>
+              <li key={row.person.id} className={`${itemRow} min-h-12 py-1`}>
+                <span className={itemRowMain}>
+                  <PersonAvatar name={row.person.nickname} url={row.person.avatar_url} size={32} />
+                  <span className="min-w-0 truncate text-sm font-bold" style={{ color: "var(--text)" }}>{row.person.nickname ?? "?"}</span>
+                </span>
+                <span className={itemRowActions}>
+                  <SmallButton disabled={act.isPending} onClick={() => act.mutate({ userId: row.person.id, action: "decline" })}>{t("decline")}</SmallButton>
+                  <SmallButton primary disabled={act.isPending} onClick={() => act.mutate({ userId: row.person.id, action: "approve" })}>{t("approve")}</SmallButton>
+                </span>
               </li>
             ))}
           </ul>

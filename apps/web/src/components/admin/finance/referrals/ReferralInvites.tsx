@@ -286,7 +286,7 @@ function InvitePanel({ invite, onClose }: { invite: StaffReferralInvite; onClose
               onChange={(userId) => setNewReferrer(userId)}
               excludeUserId={invite.friend.id}
             />
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <PanelButton primary disabled={!newReferrer || action.isPending} onClick={() => action.mutate("reassign")}>
                 {t("staff.reassignSave")}
               </PanelButton>
