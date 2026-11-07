@@ -79,7 +79,6 @@ export function PlanExecutionMode({ executionId }: { executionId: string }) {
   useEffect(() => {
     loadedRef.current = loaded;
   }, [loaded]);
-  const track = useExecutionInteractions(executionId, tokens?.access_token, (now) => planClosedMetadata(now));
   function planPosition(sectionIndex: number): ExecutionInteractionMetadata {
     const section = loadedRef.current?.sections[sectionIndex];
     const metadata: ExecutionInteractionMetadata = { segment_index: Math.max(0, sectionIndex) };
@@ -98,6 +97,7 @@ export function PlanExecutionMode({ executionId }: { executionId: string }) {
     if (planned !== null) metadata.remaining_ms = Math.max(0, planned - elapsedMs);
     return metadata;
   }
+  const track = useExecutionInteractions(executionId, tokens?.access_token, (now) => planClosedMetadata(now));
 
   function saveSnapshot(sectionIndex: number, snapshot: PlanRunSnapshot) {
     if (sectionIndex !== baseRef.current.index) return;

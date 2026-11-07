@@ -524,7 +524,8 @@ defmodule PaleeWeb.FallbackController do
     too_many_rows: {:unprocessable_entity, "The file has too many rows"},
     # ADR-346: automations.
     unknown_recipe: {:not_found, "Unknown recipe"},
-    # ADR-552: «Ζήτα να γίνεις μέλος».
+    # ADR-552: «Ζήτα να γίνεις μέλος». Also the trials' refusal (ADR-144): being
+    # a member already is a conflict with the box's state, like trial_already_used.
     already_member: {:conflict, "You are already a member of this box"},
     join_request_closed: {:conflict, "This request was already answered"},
     join_request_conflict: {:conflict, "This request is being saved; try again"},
@@ -3565,7 +3566,7 @@ defmodule PaleeWeb.FallbackController do
     beyond_trial_horizon: {:unprocessable_entity, "Trials can't be booked this far ahead"},
     no_trial_seats: {:conflict, "No trial seats left in this class"},
     weekly_trial_limit_reached: {:conflict, "This week's trials are full"},
-    already_member: {:unprocessable_entity, "You're already a member of this box"},
+    # `already_member` is answered by the ADR-552 entry above (409): one code, one status.
     trial_for_first_timers_only:
       {:unprocessable_entity, "Trials here are for people who were never members"},
     trial_already_used: {:conflict, "You've already had your trial here"},

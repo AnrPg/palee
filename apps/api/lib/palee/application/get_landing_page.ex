@@ -177,7 +177,7 @@ defmodule Palee.Application.GetLandingPage do
 
   defp training_quote(user) do
     Date.utc_today()
-    |> Gamification.get_training_quote(user.id)
+    |> Gamification.get_training_quote(user.id, Map.get(user, :preferred_locale))
     |> case do
       nil -> nil
       q -> %{"body" => q.body, "author" => q.author}

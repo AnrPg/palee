@@ -31,7 +31,10 @@ defmodule PaleeWeb.TrialController do
   @refused [
     not_found: {"No such box, class or trial", "application/json", %Schema{type: :object}},
     unprocessable_entity:
-      {"The box can't take this trial", "application/json", %Schema{type: :object}}
+      {"The box can't take this trial", "application/json", %Schema{type: :object}},
+    conflict:
+      {"Already a member, no seats left, or a trial already used or open", "application/json",
+       %Schema{type: :object}}
   ]
 
   operation(:create,

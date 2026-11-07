@@ -77,6 +77,7 @@ defmodule Palee.PersonalData.Domain.Catalog do
         drop: ~w(device_hash)
       ),
       account("profile", "organization_memberships", @me, drop: ~w(invited_by_user_id)),
+      account("profile", "organization_join_requests", @me),
       account("profile", "account_interests", @me),
       account("profile", "community_social_settings", @me),
       account("profile", "notification_preferences", @me),

@@ -111,7 +111,11 @@ defmodule Palee.Gamification do
     as: :annotate
 
   defdelegate refresh_leaderboard(), to: RefreshLeaderboard, as: :call
-  defdelegate get_training_quote(date, subject_id), to: GetTrainingQuote, as: :for_subject
+
+  defdelegate get_training_quote(date, subject_id, locale \\ nil),
+    to: GetTrainingQuote,
+    as: :for_subject
+
   defdelegate increment_advancement(user_id, occurred_at), to: IncrementAdvancement, as: :call
 
   defdelegate get_user_preferences(user_id), to: GamificationStore

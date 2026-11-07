@@ -207,7 +207,7 @@ defmodule Palee.Web.TrialsControllerTest do
       slot = ctx.slot.(24, %{})
       policy!(ctx, %{seats_per_class: 1})
 
-      assert %{"code" => "already_member"} = ask(ctx, ctx.member, slot) |> json_response(422)
+      assert %{"code" => "already_member"} = ask(ctx, ctx.member, slot) |> json_response(409)
       assert ask(ctx, ctx.visitor, slot) |> json_response(201)
       assert %{"code" => "no_trial_seats"} = ask(ctx, ctx.other, slot) |> json_response(409)
     end

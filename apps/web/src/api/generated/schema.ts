@@ -62650,6 +62650,15 @@ export interface operations {
                     "application/json": Record<string, never>;
                 };
             };
+            /** @description Already a member, no seats left, or a trial already used or open */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
             /** @description The box can't take this trial */
             422: {
                 headers: {
@@ -81281,6 +81290,15 @@ export interface operations {
                     "application/json": Record<string, never>;
                 };
             };
+            /** @description Already a member, no seats left, or a trial already used or open */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
             /** @description The box can't take this trial */
             422: {
                 headers: {
@@ -81387,6 +81405,15 @@ export interface operations {
             };
             /** @description No such box, class or trial */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Already a member, no seats left, or a trial already used or open */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -81558,6 +81585,15 @@ export interface operations {
             };
             /** @description No such box, class or trial */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Already a member, no seats left, or a trial already used or open */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };

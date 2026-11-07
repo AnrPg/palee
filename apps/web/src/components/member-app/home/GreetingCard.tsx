@@ -54,6 +54,10 @@ export function GreetingCard({ nickname, quote }: { nickname: string; quote: Tra
     return pool[Math.floor(Math.random() * pool.length)]!;
   });
 
+  // One sentence per line: the pieces are glued without a space after the
+  // full stop, so break after . ! ? … when a new capital letter follows.
+  const greetingLines = greeting.split(/(?<=[.!?…])\s*(?=\p{Lu})/u).filter(Boolean);
+
   return (
     <section className="rounded-3xl p-5" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
       <style>{`
@@ -70,8 +74,10 @@ export function GreetingCard({ nickname, quote }: { nickname: string; quote: Tra
       `}</style>
 
       {/* Welcome */}
-      <p className="text-sm font-semibold" style={{ color: "var(--muted)" }}>
-        {greeting}
+      <p className="text-sm font-semibold leading-relaxed" style={{ color: "var(--muted)" }}>
+        {greetingLines.map((line, i) => (
+          <span key={i} className="block">{line}</span>
+        ))}
       </p>
 
       {/* Quote */}
