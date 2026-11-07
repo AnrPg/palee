@@ -75,7 +75,7 @@ function JoinRequestRow({ request, onAccepted }: { request: StaffJoinRequest; on
           </span>
         </span>
       </span>
-      <span className="flex gap-2">
+      <span className="flex flex-wrap justify-end gap-2">
         <button
           type="button"
           disabled={decide.isPending}
