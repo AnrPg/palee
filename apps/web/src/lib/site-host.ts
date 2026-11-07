@@ -1,5 +1,5 @@
 import { SUPPORTED_LOCALES } from "@/i18n/locales";
-import { apiOriginForProxy } from "@/lib/organization-slug-alias";
+import { apiOriginForProxy, INTERNAL_API_HEADERS } from "@/lib/organization-slug-alias";
 
 /**
  * A box's website on its own domain (ADR-354, ADR-388). The proxy asks the
@@ -76,7 +76,7 @@ export async function lookupSiteHost(
   if (cached && cached.expiresAt > now()) return cached.value;
   let value: SiteHost | null = null;
   try {
-    const response = await fetchImpl(`${apiOrigin}/api/public/sites/by-host/${encodeURIComponent(key)}`, { headers: { accept: "application/json" } });
+    const response = await fetchImpl(`${apiOrigin}/api/public/sites/by-host/${encodeURIComponent(key)}`, { headers: INTERNAL_API_HEADERS });
     if (response.ok) {
       const body = (await response.json()) as { slug: string; primary: boolean; primary_host: string | null };
       value = { slug: body.slug, primary: body.primary, primaryHost: body.primary_host };

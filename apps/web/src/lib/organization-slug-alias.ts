@@ -40,6 +40,15 @@ export function apiOriginForProxy(env: Record<string, string | undefined> = proc
   return (env.API_PROXY_TARGET ?? "http://127.0.0.1:4000").replace(/\/+$/, "");
 }
 
+/**
+ * Headers for server-side calls to the API over the cluster network. The
+ * request reached the web server over https, but this hop is plain http, and
+ * the API's force-ssl (rewrite_on x-forwarded-proto) would answer it with a
+ * 301 to https://palee-api, which nothing listens on: the fetch then hangs
+ * until the connect timeout and the page fails with a 500.
+ */
+export const INTERNAL_API_HEADERS = { accept: "application/json", "x-forwarded-proto": "https" } as const;
+
 export async function lookupCanonicalOrganizationSlug(
   slug: string,
   { apiOrigin = apiOriginForProxy(), fetchImpl = fetch, now = Date.now, cache = defaultCache }: SlugAliasLookupOptions = {},
@@ -51,7 +60,7 @@ export async function lookupCanonicalOrganizationSlug(
 
   try {
     const response = await fetchImpl(`${apiOrigin}/api/organization-slug-aliases/${encodeURIComponent(slug)}`, {
-      headers: { accept: "application/json" },
+      headers: INTERNAL_API_HEADERS,
       cache: "no-store",
       // A redirect here means the lookup is misrouted (e.g. an https upgrade on
       // the cluster network); following it only adds latency to the page.

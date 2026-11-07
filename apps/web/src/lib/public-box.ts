@@ -1,7 +1,7 @@
 import { cache } from "react";
 
 import type { PublicBoxPage } from "@/api/social";
-import { apiOriginForProxy } from "@/lib/organization-slug-alias";
+import { apiOriginForProxy, INTERNAL_API_HEADERS } from "@/lib/organization-slug-alias";
 
 /** The product name on link previews of gyms without a page. */
 export const BRAND_NAME = "Palee";
@@ -13,7 +13,7 @@ export const BRAND_NAME = "Palee";
  */
 export const loadPublicBox = cache(async (slug: string): Promise<PublicBoxPage | null> => {
   const response = await fetch(`${apiOriginForProxy()}/api/public/boxes/${encodeURIComponent(slug)}`, {
-    headers: { accept: "application/json" },
+    headers: INTERNAL_API_HEADERS,
     next: { revalidate: 60 },
   });
   if (response.status === 404) return null;

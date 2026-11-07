@@ -4,7 +4,7 @@ import type { PublicSite } from "@/api/box-site";
 import type { PublicPackages } from "@/api/my-payments";
 import type { PublicBoxPage } from "@/api/social";
 import { SUPPORTED_LOCALES } from "@/i18n/locales";
-import { apiOriginForProxy } from "@/lib/organization-slug-alias";
+import { apiOriginForProxy, INTERNAL_API_HEADERS } from "@/lib/organization-slug-alias";
 import { siteTextFor } from "@/lib/site-translations";
 
 /**
@@ -24,7 +24,7 @@ export const loadPublicSite = cache(async (slug: string, lang?: string | null): 
   try {
     const query = lang ? `?lang=${encodeURIComponent(lang)}` : "";
     const response = await fetch(`${apiOriginForProxy()}/api/public/sites/${encodeURIComponent(slug)}${query}`, {
-      headers: { accept: "application/json" },
+      headers: INTERNAL_API_HEADERS,
       next: { revalidate: 60 },
     });
     if (!response.ok) return null;
@@ -41,7 +41,7 @@ export const loadPublicSite = cache(async (slug: string, lang?: string | null): 
 export const loadPublicPackages = cache(async (slug: string): Promise<PublicPackages | null> => {
   try {
     const response = await fetch(`${apiOriginForProxy()}/api/public/boxes/${encodeURIComponent(slug)}/packages`, {
-      headers: { accept: "application/json" },
+      headers: INTERNAL_API_HEADERS,
       next: { revalidate: 60 },
     });
     if (!response.ok) return null;
