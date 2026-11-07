@@ -12,12 +12,16 @@ defmodule Palee.Application.JoinOrganizationByLink do
 
   def call(%{id: user_id} = user, link) do
     with {:ok, result} <- Organizations.join_by_link(link, user_id),
-         {:ok, _user} <- maybe_align_role(user, result) do
+         {:ok, _user} <- align_role(user, result) do
       {:ok, result}
     end
   end
 
-  defp maybe_align_role(user, %{created: true, membership: membership}) do
+  @doc """
+  A client account that had no organization yet gets its account role
+  aligned with the client role it joined with (also used by ADR-552).
+  """
+  def align_role(user, %{created: true, membership: membership}) do
     role = membership.role
 
     if user.role in [:member, :athlete] and user.role != role and only_membership?(user.id) do
@@ -27,7 +31,7 @@ defmodule Palee.Application.JoinOrganizationByLink do
     end
   end
 
-  defp maybe_align_role(user, _result), do: {:ok, user}
+  def align_role(user, _result), do: {:ok, user}
 
   defp only_membership?(user_id) do
     user_id |> Organizations.list_memberships() |> length() <= 1

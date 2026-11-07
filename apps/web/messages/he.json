@@ -5337,7 +5337,14 @@
       "roles": "תפקידים"
     },
     "importLink": "ייבוא",
-    "atRiskLink": "בסיכון"
+    "atRiskLink": "בסיכון",
+    "joinRequestsTitle": "{count, plural, one {אדם אחד מבקש להצטרף} other {# אנשים מבקשים להצטרף}}",
+    "joinRequestsSomeone": "מישהו",
+    "joinRequestsAsked": "ביקש/ה ב-{date}",
+    "joinRequestsAccept": "אישור",
+    "joinRequestsDecline": "דחייה",
+    "joinRequestsAcceptNamed": "אישור {name} כחבר/ה",
+    "joinRequestsDeclineNamed": "דחיית {name}"
   },
   "Onboarding": {
     "popupEyebrow": "ההגדרה לא הושלמה",
@@ -6701,7 +6708,15 @@
     "guestAction": "הצטרף כחבר ב-Box",
     "joinBox": "הצטרף כחבר ב-Box",
     "messageBox": "הודעה לבוקס",
-    "rooms": "חללים"
+    "rooms": "חללים",
+    "joinWaiting": "מחכה לאישור ה-Box",
+    "joinAskTitle": "הצטרפות ל-{box}",
+    "joinAskBody": "{box} מקבל חברים חדשים אחרי שהצוות בודק. שלח/י בקשה והתשובה תגיע לכאן.",
+    "joinSend": "בקש/י להצטרף",
+    "joinSentBody": "הבקשה שלך הגיעה ל-{box}. תקבל/י התראה כשיענו.",
+    "joinCancel": "ביטול הבקשה",
+    "joinDeclinedBody": "{box} לא קיבל/ה את הבקשה האחרונה שלך. אפשר לבקש שוב או לכתוב ל-Box.",
+    "joinAskAgain": "בקש/י שוב"
   },
   "Trials": {
     "ask": "בקשת שיעור ניסיון",
@@ -6753,7 +6768,6 @@
     "followUpDismiss": "לא עכשיו",
     "homeEyebrow": "שיעורי הניסיון שלך",
     "joinDraft": "היי! הגעתי לשיעור ניסיון ואשמח להצטרף. מה האפשרויות שלי?",
-    "memberDraft": "היי! אשמח להצטרף כחבר. איך נרשמים?",
     "chatSubtitle": "הודעות עם הבוקס",
     "chatUnavailable": "אי אפשר לשלוח הודעה לבוקס הזה כרגע.",
     "chatEmpty": "אין הודעות עדיין. תגידו שלום.",
@@ -13359,15 +13373,18 @@
     "signInToBuy": "כדי לקנות, התחבר או צור חשבון Palee.",
     "signIn": "התחברות",
     "signUp": "יצירת חשבון",
-    "joinFirst": "קודם הצטרף ל-{box} כחבר, ואז קנה כאן.",
-    "join": "הצטרפות",
     "salesTitle": "חבילות מנוי · {box}",
     "surchargeLine": "תוספת כרטיס",
     "surchargeLinePercent": "תוספת כרטיס ({percent})",
     "surchargeNone": "ללא תוספת",
     "surchargeTotal": "סה״כ",
     "surchargeNote": "המקום מוסיף תוספת בכרטיסים שהחוק מתיר. בכרטיס אחר אין תוספת.",
-    "programmeStarts": "תוכנית האימון „{name}” שלך: אימוני ה-WOD שלה מופיעים בימים שלהם."
+    "programmeStarts": "תוכנית האימון „{name}” שלך: אימוני ה-WOD שלה מופיעים בימים שלהם.",
+    "joinToBuyBody": "עם הרכישה את/ה נעשה/ית חבר/ה ב-{box}.",
+    "joinToHoldBody": "עם הבקשה את/ה נעשה/ית חבר/ה ב-{box}, כדי שהקבלה תראה אותה.",
+    "joinToBuyContinue": "המשך",
+    "joinToBuyRefused": "היית חבר/ה ב-{box} בעבר. כדי לחזור, כתוב/כתבי ל-Box.",
+    "joinToBuyMessage": "כתיבה ל-Box"
   },
   "CsvImport": {
     "crumbLabel": "נתיב",
@@ -15347,8 +15364,6 @@
     "signUp": "יצירת חשבון",
     "signIn": "התחברות",
     "loading": "טוען…",
-    "joinToHold": "הצטרף/י קודם ל-{box}, כדי שהקבלה תראה את הבקשה שלך.",
-    "join": "הצטרפות לבוקס",
     "heldTitle": "ממתין לתשלום",
     "heldBody": "הקבלה רואה עכשיו את הבקשה שלך. שלם/י שם והחבילה מתחילה מיד.",
     "heldUntil": "נשמור אותה {days, plural, one {יום אחד} other {# ימים}}, עד {date}.",

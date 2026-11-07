@@ -18,7 +18,6 @@ import { BOTTOM_NAV_SPACE, useBottomTabBarVisible } from "@/components/nav/Botto
 import { useSession } from "@/components/session-provider";
 import { FollowButton } from "@/components/social/FollowButton";
 import { TrialButton } from "@/components/trials/TrialButton";
-import { SPARK_GO_STYLE } from "@/lib/spark";
 import { mapsUrl, readApple, serverApple, subscribeNever } from "@/lib/maps";
 import { siteBasePath, type SiteLanguage } from "@/lib/public-site";
 
@@ -26,7 +25,7 @@ import { AboutTab, OpeningHours } from "./AboutTab";
 import { BoxEvents } from "./BoxEvents";
 import { BoxPosts } from "./BoxPosts";
 import { GuestBanner } from "./GuestBanner";
-import { joinBoxHref } from "./join-box";
+import { JoinBoxAction } from "./JoinBoxAction";
 import { boxChatHref } from "@/components/trials/box-chat-links";
 
 import { Icon } from "./Icon";
@@ -388,7 +387,7 @@ function Actions({
     );
   return (
     <div className="flex flex-col gap-2">
-      <JoinBoxLink page={page} signedIn={signedIn} />
+      <JoinBoxAction page={page} signedIn={signedIn} />
       <div className="flex items-start gap-2">
         {!signedIn && onGuestTrial ? (
           <button
@@ -419,20 +418,6 @@ function Actions({
         {message}
       </div>
     </div>
-  );
-}
-
-function JoinBoxLink({ page, signedIn }: { page: PublicBoxPage; signedIn: boolean }) {
-  const t = useTranslations("BoxPage");
-  return (
-    <Link
-      href={joinBoxHref(page, signedIn)}
-      className="flex min-h-12 w-full items-center justify-center rounded-2xl px-4 text-base font-extrabold"
-      style={SPARK_GO_STYLE}
-      data-testid="box-page-join"
-    >
-      {t("joinBox")}
-    </Link>
   );
 }
 

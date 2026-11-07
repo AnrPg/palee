@@ -5337,7 +5337,14 @@
       "roles": "Роли"
     },
     "importLink": "Импорт",
-    "atRiskLink": "В риск"
+    "atRiskLink": "В риск",
+    "joinRequestsTitle": "{count, plural, one {# човек иска да стане член} other {# души искат да станат членове}}",
+    "joinRequestsSomeone": "Някой",
+    "joinRequestsAsked": "поиска на {date}",
+    "joinRequestsAccept": "Приеми",
+    "joinRequestsDecline": "Откажи",
+    "joinRequestsAcceptNamed": "Приеми {name} за член",
+    "joinRequestsDeclineNamed": "Откажи на {name}"
   },
   "Onboarding": {
     "popupEyebrow": "Настройката не е завършена",
@@ -6701,7 +6708,15 @@
     "guestAction": "Стани член на box-а",
     "joinBox": "Стани член на box-а",
     "messageBox": "Съобщение до бокса",
-    "rooms": "Зали"
+    "rooms": "Зали",
+    "joinWaiting": "Чака одобрение от box-а",
+    "joinAskTitle": "Стани член на {box}",
+    "joinAskBody": "{box} приема нови членове след преглед от екипа. Изпрати заявка и ще получиш отговор тук.",
+    "joinSend": "Поискай членство",
+    "joinSentBody": "Заявката ти стигна до {box}. Ще получиш известие, когато отговорят.",
+    "joinCancel": "Оттегли заявката",
+    "joinDeclinedBody": "{box} не прие последната ти заявка. Можеш да поискаш отново или да пишеш на box-а.",
+    "joinAskAgain": "Поискай отново"
   },
   "Trials": {
     "ask": "Заяви пробна тренировка",
@@ -6753,7 +6768,6 @@
     "followUpDismiss": "Не сега",
     "homeEyebrow": "Твоите проби",
     "joinDraft": "Здравей! Бях на пробна тренировка и искам да се присъединя. Какви са опциите ми?",
-    "memberDraft": "Здравей! Искам да стана член. Как да се запиша?",
     "chatSubtitle": "Съобщения със залата",
     "chatUnavailable": "В момента не можеш да пишеш на тази зала.",
     "chatEmpty": "Още няма съобщения. Кажи здрасти.",
@@ -13359,15 +13373,18 @@
     "signInToBuy": "Влез или създай профил в Palee, за да купиш.",
     "signIn": "Вход",
     "signUp": "Създай профил",
-    "joinFirst": "Първо стани член на {box}, после купи тук.",
-    "join": "Стани член",
     "salesTitle": "Абонаментни пакети · {box}",
     "surchargeLine": "Надбавка за карта",
     "surchargeLinePercent": "Надбавка за карта ({percent})",
     "surchargeNone": "Без надбавка",
     "surchargeTotal": "Общо",
     "surchargeNote": "Боксът добавя надбавка за карти, при които законът позволява. С друга карта не плащаш надбавка.",
-    "programmeStarts": "Тренировъчната програма „{name}“ е твоя: нейните WOD се появяват в своите дни."
+    "programmeStarts": "Тренировъчната програма „{name}“ е твоя: нейните WOD се появяват в своите дни.",
+    "joinToBuyBody": "С покупката ставаш член на {box}.",
+    "joinToHoldBody": "Със заявката ставаш член на {box}, за да я види рецепцията.",
+    "joinToBuyContinue": "Продължи",
+    "joinToBuyRefused": "Вече си бил/а член на {box}. За да се върнеш, пиши на box-а.",
+    "joinToBuyMessage": "Пиши на box-а"
   },
   "CsvImport": {
     "crumbLabel": "Път",
@@ -15347,8 +15364,6 @@
     "signUp": "Създай профил",
     "signIn": "Вход",
     "loading": "Зареждане…",
-    "joinToHold": "Първо стани член на {box}, за да вижда рецепцията заявката ти.",
-    "join": "Стани член",
     "heldTitle": "Чака плащане",
     "heldBody": "Рецепцията вече вижда заявката ти. Плати там и пакетът започва веднага.",
     "heldUntil": "Пазим го {days, plural, one {# ден} other {# дни}}, до {date}.",

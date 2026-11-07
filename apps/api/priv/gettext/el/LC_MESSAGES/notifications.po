@@ -883,3 +883,21 @@ msgstr "Η ιστοσελίδα σου πήρε νέα όψη"
 
 msgid "It now uses the Arena template. See it, pick another one or publish it as it is."
 msgstr "Είναι πλέον στο πρότυπο «Αρένα». Δες την, διάλεξε άλλο πρότυπο ή δημοσίευσέ την όπως είναι."
+
+msgid "Asks to join the box"
+msgstr "Θέλει να γίνει μέλος"
+
+msgid "%{nickname} asks to become a box member."
+msgstr "Ο/Η %{nickname} ζητά να γίνει μέλος του box."
+
+msgid "You are a box member"
+msgstr "Είσαι μέλος box"
+
+msgid "%{box} accepted you as a box member."
+msgstr "Το %{box} σε δέχτηκε ως μέλος box."
+
+msgid "Your request to join"
+msgstr "Το αίτημά σου για εγγραφή"
+
+msgid "%{box} did not accept your request. You can write to the box."
+msgstr "Το %{box} δεν δέχτηκε το αίτημά σου. Μπορείς να του γράψεις."

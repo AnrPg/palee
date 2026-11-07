@@ -25,6 +25,7 @@ import { renewalPackages } from "./checkout-flow";
 import { holdDateLabel } from "./desk-payment";
 import { money } from "./PackageCheckout";
 import { usePayError } from "./PayParts";
+import { JoinToBuy } from "./JoinToBuy";
 
 /*
  * ADR-291 (mockup «Πληρωμή στην υποδοχή», option 1C): a box that takes no
@@ -142,12 +143,7 @@ export function DeskRequestDialog({
         ) : status !== "authenticated" || memberships.isPending ? (
           <p className="text-sm" style={{ color: "var(--dim)" }}>{t("loading")}</p>
         ) : (
-          <>
-            <p className="text-sm" style={{ color: "var(--text-soft)" }}>{t("joinToHold", { box: boxName })}</p>
-            <Actions>
-              <AuthLink href={`/join/${encodeURIComponent(slug)}`} primary testId="desk-join">{t("join")}</AuthLink>
-            </Actions>
-          </>
+          <JoinToBuy slug={slug} boxName={boxName} packageId={pkg.id} desk />
         )}
       </div>
     </Dialog>

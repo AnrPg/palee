@@ -1013,6 +1013,37 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
     }
   end
 
+  # ADR-552.
+  def build("join_requested", payload, localize) do
+    %{
+      title: localize.("Asks to join the box", %{}),
+      body:
+        localize.("%{nickname} asks to become a box member.", %{
+          nickname: payload["person_nickname"]
+        }),
+      url: payload["url"] || "/admin/users"
+    }
+  end
+
+  def build("join_request_accepted", payload, localize) do
+    %{
+      title: localize.("You are a box member", %{}),
+      body: localize.("%{box} accepted you as a box member.", %{box: payload["box_name"]}),
+      url: payload["url"] || "/box"
+    }
+  end
+
+  def build("join_request_declined", payload, localize) do
+    %{
+      title: localize.("Your request to join", %{}),
+      body:
+        localize.("%{box} did not accept your request. You can write to the box.", %{
+          box: payload["box_name"]
+        }),
+      url: payload["url"] || "/"
+    }
+  end
+
   # ADR-220.
   def build("member_leaving", payload, localize) do
     bindings = %{nickname: payload["person_nickname"], date: payload["leaving_on"]}

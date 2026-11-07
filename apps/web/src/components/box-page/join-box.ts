@@ -1,16 +1,19 @@
 import type { PublicBoxPage } from "@/api/social";
 
+export type JoinBoxTarget = { kind: "link"; href: string } | { kind: "ask" };
+
 /**
- * ANR 2026-11-07: «Γίνε μέλος box» is on every box page, always the main
- * action for someone who is not a box member yet. It leads to the box's
- * packages when it lists any, else to its member join link when that is on,
- * else to the chat with the box with a «how do I join» message ready, so it
- * never ends in a dead end. Following stays a separate, quieter action.
+ * ANR 2026-11-07 (ADR-552): «Γίνε μέλος box» is on every box page, always the
+ * main action for someone who is not a box member yet, and never a dead end.
+ * It leads to the box's packages when it lists any (buying makes you a box
+ * member), else to its member join link when that is on, else to
+ * «Ζήτα να γίνεις μέλος», which the box's staff accept (after signing in).
+ * Following stays a separate, quieter action.
  */
-export function joinBoxHref(page: Pick<PublicBoxPage, "box" | "joining">, signedIn: boolean) {
+export function joinBoxTarget(page: Pick<PublicBoxPage, "box" | "joining">, signedIn: boolean): JoinBoxTarget {
   const slug = encodeURIComponent(page.box.slug);
-  if (page.joining?.packages) return `/b/${slug}/packages`;
-  if (page.joining?.join_link) return `/join/${slug}`;
-  const chat = `/b/${slug}/chat?draft=member`;
-  return signedIn ? chat : `/login?next=${encodeURIComponent(chat)}`;
+  if (page.joining?.packages) return { kind: "link", href: `/b/${slug}/packages` };
+  if (page.joining?.join_link) return { kind: "link", href: `/join/${slug}` };
+  if (signedIn) return { kind: "ask" };
+  return { kind: "link", href: `/login?next=${encodeURIComponent(`/b/${slug}?join=1`)}` };
 }

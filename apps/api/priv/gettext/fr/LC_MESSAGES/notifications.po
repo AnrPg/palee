@@ -883,3 +883,21 @@ msgstr "Ton site a un nouveau look"
 
 msgid "It now uses the Arena template. See it, pick another one or publish it as it is."
 msgstr "Il utilise maintenant le modèle Arena. Regarde-le, choisis-en un autre ou publie-le tel quel."
+
+msgid "Asks to join the box"
+msgstr "Veut devenir membre"
+
+msgid "%{nickname} asks to become a box member."
+msgstr "%{nickname} demande à devenir membre de la box."
+
+msgid "You are a box member"
+msgstr "Tu es membre de la box"
+
+msgid "%{box} accepted you as a box member."
+msgstr "%{box} t’a accepté comme membre."
+
+msgid "Your request to join"
+msgstr "Ta demande d’inscription"
+
+msgid "%{box} did not accept your request. You can write to the box."
+msgstr "%{box} n’a pas accepté ta demande. Tu peux écrire à la box."

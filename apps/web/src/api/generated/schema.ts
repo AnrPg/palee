@@ -833,6 +833,44 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/boxes/{slug}/join-request": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Your latest request to join a published box, or null */
+        get: operations["PaleeWeb.JoinRequestController.show"];
+        put?: never;
+        /**
+         * Ask a published box to take you in as a box member
+         * @description Asking again while a request is open returns it.
+         */
+        post: operations["PaleeWeb.JoinRequestController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/boxes/{slug}/join-request/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Withdraw your open request to join */
+        post: operations["PaleeWeb.JoinRequestController.cancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/boxes/{slug}/posts": {
         parameters: {
             query?: never;
@@ -5183,6 +5221,26 @@ export interface paths {
         put?: never;
         /** Join an organization as an athlete through its athlete join link */
         post: operations["PaleeWeb.OrganizationAccessController.join_as_athlete"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/memberships/join/{slug}/package/{package_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Become a box member to buy a package the box lists to everyone (ADR-552)
+         * @description Works whatever the member join link says. A former member (suspended or revoked) is refused with `membership_unavailable` and asks the box instead.
+         */
+        post: operations["PaleeWeb.OrganizationAccessController.join_to_buy"];
         delete?: never;
         options?: never;
         head?: never;
@@ -10142,6 +10200,57 @@ export interface paths {
         put?: never;
         /** Send a `ping` event to the endpoint now */
         post: operations["PaleeWeb.AdminIntegrationsController.test_webhook"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/join-requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Open requests to join the box, oldest first */
+        get: operations["PaleeWeb.AdminJoinRequestController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/join-requests/{id}/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Accept a request: the person becomes a box member */
+        post: operations["PaleeWeb.AdminJoinRequestController.accept"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/join-requests/{id}/decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Decline a request */
+        post: operations["PaleeWeb.AdminJoinRequestController.decline"];
         delete?: never;
         options?: never;
         head?: never;
@@ -38822,6 +38931,38 @@ export interface components {
             /** @description Weeks the rules look back */
             window_weeks: number;
         };
+        /** MyJoinRequest */
+        MyJoinRequest: {
+            box: {
+                name: string;
+                slug: string;
+            };
+            /** Format: date-time */
+            decided_at: string | null;
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            requested_at: string;
+            /** @enum {string} */
+            status: "requested" | "accepted" | "declined" | "cancelled";
+        };
+        /** MyJoinRequestResponse */
+        MyJoinRequestResponse: {
+            request: {
+                box: {
+                    name: string;
+                    slug: string;
+                };
+                /** Format: date-time */
+                decided_at: string | null;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                requested_at: string;
+                /** @enum {string} */
+                status: "requested" | "accepted" | "declined" | "cancelled";
+            } | null;
+        };
         /** MyProgressResetHistory */
         MyProgressResetHistory: {
             entries: {
@@ -52718,6 +52859,65 @@ export interface components {
                 waitlist_count: number;
             }[];
         };
+        /** StaffJoinRequest */
+        StaffJoinRequest: {
+            /** Format: date-time */
+            decided_at: string | null;
+            /** Format: uuid */
+            id: string;
+            person: {
+                avatar_url: string | null;
+                handle: string | null;
+                /** Format: uuid */
+                id: string;
+                nickname: string;
+            } | null;
+            /** Format: date-time */
+            requested_at: string;
+            /** @enum {string} */
+            status: "requested" | "accepted" | "declined" | "cancelled";
+        };
+        /** StaffJoinRequestList */
+        StaffJoinRequestList: {
+            requests: {
+                /** Format: date-time */
+                decided_at: string | null;
+                /** Format: uuid */
+                id: string;
+                person: {
+                    avatar_url: string | null;
+                    handle: string | null;
+                    /** Format: uuid */
+                    id: string;
+                    nickname: string;
+                } | null;
+                /** Format: date-time */
+                requested_at: string;
+                /** @enum {string} */
+                status: "requested" | "accepted" | "declined" | "cancelled";
+            }[];
+        };
+        /** StaffJoinRequestResponse */
+        StaffJoinRequestResponse: {
+            /** StaffJoinRequest */
+            request: {
+                /** Format: date-time */
+                decided_at: string | null;
+                /** Format: uuid */
+                id: string;
+                person: {
+                    avatar_url: string | null;
+                    handle: string | null;
+                    /** Format: uuid */
+                    id: string;
+                    nickname: string;
+                } | null;
+                /** Format: date-time */
+                requested_at: string;
+                /** @enum {string} */
+                status: "requested" | "accepted" | "declined" | "cancelled";
+            };
+        };
         /** StaffMember */
         StaffMember: {
             nickname?: string | null;
@@ -61674,6 +61874,174 @@ export interface operations {
                             waitlist_count: number;
                         }[];
                     };
+                };
+            };
+        };
+    };
+    "PaleeWeb.JoinRequestController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The box's slug or one of its former slugs */
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Request */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        request: {
+                            box: {
+                                name: string;
+                                slug: string;
+                            };
+                            /** Format: date-time */
+                            decided_at: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            requested_at: string;
+                            /** @enum {string} */
+                            status: "requested" | "accepted" | "declined" | "cancelled";
+                        } | null;
+                    };
+                };
+            };
+            /** @description No such box or request */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Already a box member */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.JoinRequestController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The box's slug or one of its former slugs */
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Request */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        request: {
+                            box: {
+                                name: string;
+                                slug: string;
+                            };
+                            /** Format: date-time */
+                            decided_at: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            requested_at: string;
+                            /** @enum {string} */
+                            status: "requested" | "accepted" | "declined" | "cancelled";
+                        } | null;
+                    };
+                };
+            };
+            /** @description No such box or request */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Already a box member */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.JoinRequestController.cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The box's slug or one of its former slugs */
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Request */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        request: {
+                            box: {
+                                name: string;
+                                slug: string;
+                            };
+                            /** Format: date-time */
+                            decided_at: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            requested_at: string;
+                            /** @enum {string} */
+                            status: "requested" | "accepted" | "declined" | "cancelled";
+                        } | null;
+                    };
+                };
+            };
+            /** @description No such box or request */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Already a box member */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
                 };
             };
         };
@@ -82566,6 +82934,132 @@ export interface operations {
             path: {
                 slug: string;
                 key: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Already a member */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description capability => scope (all, own, status), ADR-099 */
+                        capabilities: {
+                            [key: string]: string;
+                        };
+                        /** @enum {string} */
+                        coach_scope?: "own" | "all";
+                        /**
+                         * Format: uuid
+                         * @description The location this gym opens on for the person (Phase 2)
+                         */
+                        home_location_id?: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        /** @description ADR-186: the branches a staff member works at; all_locations means every branch */
+                        location_scope?: {
+                            all_locations: boolean;
+                            location_ids: string[];
+                        };
+                        /** @description ADR-101 */
+                        notes_visible_to_admins?: boolean;
+                        organization: {
+                            /**
+                             * @description ADR-184 (memberships only): a business in demo mode works on demo data until the platform team activates it
+                             * @enum {string}
+                             */
+                            activation?: "demo" | "active";
+                            /** Format: uuid */
+                            id: string;
+                            name: string;
+                            /** @enum {string} */
+                            provider_kind?: "gym" | "coach" | "organiser";
+                            slug: string;
+                            /** @description ADR-179 (memberships only): the gym's IANA zone; its classes and events show on this clock */
+                            timezone?: string;
+                            /** @description ADR-179 (memberships only): an admin confirmed the zone (else it is a guess or the default) */
+                            timezone_confirmed?: boolean;
+                        };
+                        role: string;
+                        roles: string[];
+                        settings?: {
+                            brand_logo_url?: string | null;
+                            brand_name?: string | null;
+                            brand_primary_color?: string | null;
+                            /** @description ADR-209: the box's language (its emails default to it) */
+                            default_locale?: string | null;
+                        } | null;
+                    };
+                };
+            };
+            /** @description Membership */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description capability => scope (all, own, status), ADR-099 */
+                        capabilities: {
+                            [key: string]: string;
+                        };
+                        /** @enum {string} */
+                        coach_scope?: "own" | "all";
+                        /**
+                         * Format: uuid
+                         * @description The location this gym opens on for the person (Phase 2)
+                         */
+                        home_location_id?: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        /** @description ADR-186: the branches a staff member works at; all_locations means every branch */
+                        location_scope?: {
+                            all_locations: boolean;
+                            location_ids: string[];
+                        };
+                        /** @description ADR-101 */
+                        notes_visible_to_admins?: boolean;
+                        organization: {
+                            /**
+                             * @description ADR-184 (memberships only): a business in demo mode works on demo data until the platform team activates it
+                             * @enum {string}
+                             */
+                            activation?: "demo" | "active";
+                            /** Format: uuid */
+                            id: string;
+                            name: string;
+                            /** @enum {string} */
+                            provider_kind?: "gym" | "coach" | "organiser";
+                            slug: string;
+                            /** @description ADR-179 (memberships only): the gym's IANA zone; its classes and events show on this clock */
+                            timezone?: string;
+                            /** @description ADR-179 (memberships only): an admin confirmed the zone (else it is a guess or the default) */
+                            timezone_confirmed?: boolean;
+                        };
+                        role: string;
+                        roles: string[];
+                        settings?: {
+                            brand_logo_url?: string | null;
+                            brand_name?: string | null;
+                            brand_primary_color?: string | null;
+                            /** @description ADR-209: the box's language (its emails default to it) */
+                            default_locale?: string | null;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.OrganizationAccessController.join_to_buy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+                package_id: string;
             };
             cookie?: never;
         };
@@ -106283,6 +106777,162 @@ export interface operations {
                             status: "pending" | "succeeded" | "failed";
                         };
                     };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminJoinRequestController.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Requests */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        requests: {
+                            /** Format: date-time */
+                            decided_at: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            person: {
+                                avatar_url: string | null;
+                                handle: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                nickname: string;
+                            } | null;
+                            /** Format: date-time */
+                            requested_at: string;
+                            /** @enum {string} */
+                            status: "requested" | "accepted" | "declined" | "cancelled";
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminJoinRequestController.accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Request */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** StaffJoinRequest */
+                        request: {
+                            /** Format: date-time */
+                            decided_at: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            person: {
+                                avatar_url: string | null;
+                                handle: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                nickname: string;
+                            } | null;
+                            /** Format: date-time */
+                            requested_at: string;
+                            /** @enum {string} */
+                            status: "requested" | "accepted" | "declined" | "cancelled";
+                        };
+                    };
+                };
+            };
+            /** @description No such request */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Already answered */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminJoinRequestController.decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Request */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** StaffJoinRequest */
+                        request: {
+                            /** Format: date-time */
+                            decided_at: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            person: {
+                                avatar_url: string | null;
+                                handle: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                nickname: string;
+                            } | null;
+                            /** Format: date-time */
+                            requested_at: string;
+                            /** @enum {string} */
+                            status: "requested" | "accepted" | "declined" | "cancelled";
+                        };
+                    };
+                };
+            };
+            /** @description No such request */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Already answered */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
                 };
             };
         };

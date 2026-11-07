@@ -5337,7 +5337,14 @@
       "roles": "Rôles"
     },
     "importLink": "Importer",
-    "atRiskLink": "À risque"
+    "atRiskLink": "À risque",
+    "joinRequestsTitle": "{count, plural, one {# personne demande à devenir membre} other {# personnes demandent à devenir membres}}",
+    "joinRequestsSomeone": "Quelqu’un",
+    "joinRequestsAsked": "demandé le {date}",
+    "joinRequestsAccept": "Accepter",
+    "joinRequestsDecline": "Refuser",
+    "joinRequestsAcceptNamed": "Accepter {name} comme membre",
+    "joinRequestsDeclineNamed": "Refuser {name}"
   },
   "Onboarding": {
     "popupEyebrow": "Configuration inachevée",
@@ -6701,7 +6708,15 @@
     "guestAction": "Devenir membre de la box",
     "joinBox": "Devenir membre de la box",
     "messageBox": "Écrire à la box",
-    "rooms": "Salles"
+    "rooms": "Salles",
+    "joinWaiting": "En attente de l’accord de la box",
+    "joinAskTitle": "Devenir membre de {box}",
+    "joinAskBody": "{box} accueille de nouveaux membres après validation par son équipe. Envoie une demande, la réponse arrivera ici.",
+    "joinSend": "Demander à rejoindre",
+    "joinSentBody": "Ta demande est arrivée chez {box}. Tu recevras une notification quand ils répondront.",
+    "joinCancel": "Retirer la demande",
+    "joinDeclinedBody": "{box} n’a pas accepté ta dernière demande. Tu peux redemander ou écrire à la box.",
+    "joinAskAgain": "Redemander"
   },
   "Trials": {
     "ask": "Demander un cours d’essai",
@@ -6753,7 +6768,6 @@
     "followUpDismiss": "Pas maintenant",
     "homeEyebrow": "Tes cours d’essai",
     "joinDraft": "Salut ! Je suis venu pour un cours d’essai et j’aimerais m’inscrire. Quelles sont mes options ?",
-    "memberDraft": "Salut ! J’aimerais devenir membre. Comment je m’inscris ?",
     "chatSubtitle": "Messages avec la box",
     "chatUnavailable": "Tu ne peux pas écrire à cette box pour le moment.",
     "chatEmpty": "Pas encore de messages. Dis bonjour.",
@@ -13359,15 +13373,18 @@
     "signInToBuy": "Connecte-toi ou crée un compte Palee pour acheter.",
     "signIn": "Se connecter",
     "signUp": "Créer un compte",
-    "joinFirst": "Deviens d'abord membre de {box}, puis achète ici.",
-    "join": "Devenir membre",
     "salesTitle": "Forfaits d'abonnement · {box}",
     "surchargeLine": "Supplément carte",
     "surchargeLinePercent": "Supplément carte ({percent})",
     "surchargeNone": "Sans supplément",
     "surchargeTotal": "Total",
     "surchargeNote": "La box ajoute un supplément sur les cartes où la loi le permet. Avec une autre carte, vous ne payez pas de supplément.",
-    "programmeStarts": "Le programme d’entraînement « {name} » est à toi : ses WODs apparaissent à leurs jours."
+    "programmeStarts": "Le programme d’entraînement « {name} » est à toi : ses WODs apparaissent à leurs jours.",
+    "joinToBuyBody": "En achetant, tu deviens membre de {box}.",
+    "joinToHoldBody": "En le demandant, tu deviens membre de {box}, pour que l’accueil voie ta demande.",
+    "joinToBuyContinue": "Continuer",
+    "joinToBuyRefused": "Tu as déjà été membre de {box}. Pour revenir, écris à la box.",
+    "joinToBuyMessage": "Écrire à la box"
   },
   "CsvImport": {
     "crumbLabel": "Fil d’Ariane",
@@ -15347,8 +15364,6 @@
     "signUp": "Créer un compte",
     "signIn": "Se connecter",
     "loading": "Chargement…",
-    "joinToHold": "Rejoins d’abord {box} pour que l’accueil voie ta demande.",
-    "join": "Rejoindre la box",
     "heldTitle": "En attente de paiement",
     "heldBody": "L’accueil voit maintenant ta demande. Paie sur place et le forfait commence aussitôt.",
     "heldUntil": "Nous le gardons {days, plural, one {# jour} other {# jours}}, jusqu’au {date}.",

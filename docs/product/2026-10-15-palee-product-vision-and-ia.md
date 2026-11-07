@@ -204,7 +204,7 @@ Legend: **[EXISTS]** reuse as-is, only needs a new home · **[PARTIAL]** data/ba
 - **Post format** (Instagram-like): optional media, text, **optional workout attachment from the journal**. Text-only posts allowed (announcements, questions).
 - **Audience picker** on compose: club › channel | followers | public.
 - **Club page (member):** `Ροή` (pinned announcement → WOD card with leaderboard → challenges → PR celebrations (opt-in) → events → member posts), `Κανάλια`, `Events`, `Μέλη` (coaches, members; Partners moved to Γύρω μου, ADR-280).
-- **Box page (non-member):** `Σχετικά` (photos, disciplines, coaches, locations, hours), `Πρόγραμμα` (read-only, "Κλείσε με δοκιμαστικό" where the owner allotted trial slots), `Events` (open), `Δημόσια`. CTAs: **Γίνε μέλος box** (always shown, the main one; leads to packages, else the member join link, else a ready message to the box, ADR-552), then **Ζήτα δοκιμαστικό** and **Ακολούθησε** (outlined). Following never makes anyone a box member.
+- **Box page (non-member):** `Σχετικά` (photos, disciplines, coaches, locations, hours), `Πρόγραμμα` (read-only, "Κλείσε με δοκιμαστικό" where the owner allotted trial slots), `Events` (open), `Δημόσια`. CTAs: **Γίνε μέλος box** (always shown, the main one; leads to packages, else the member join link, else a request the box's staff accept in Χρήστες; buying a listed package makes the buyer a box member even when the join link is off, ADR-552), then **Ζήτα δοκιμαστικό** and **Ακολούθησε** (outlined). Following never makes anyone a box member.
 
 **Channel governance**
 | Channel | Created by | Who writes | Who's in |

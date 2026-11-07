@@ -9,6 +9,7 @@ defmodule PaleeWeb.OrganizationAccessController do
     InspectRegistrationInvitation,
     InvitationEmails,
     IssueRegistrationInvitation,
+    JoinBox,
     JoinOrganizationByLink,
     ListOrganizationInvitations,
     ListOrganizationMemberships,
@@ -480,6 +481,27 @@ defmodule PaleeWeb.OrganizationAccessController do
     ]
   )
 
+  operation(:join_to_buy,
+    summary: "Become a box member to buy a package the box lists to everyone (ADR-552)",
+    description:
+      "Works whatever the member join link says. A former member (suspended or revoked) " <>
+        "is refused with `membership_unavailable` and asks the box instead.",
+    security: [%{"bearerAuth" => []}],
+    parameters: [
+      @public_slug_parameter,
+      %Parameter{
+        name: :package_id,
+        in: :path,
+        required: true,
+        schema: %Schema{type: :string, format: :uuid}
+      }
+    ],
+    responses: [
+      ok: {"Already a member", "application/json", @membership_schema},
+      created: {"Membership", "application/json", @membership_schema}
+    ]
+  )
+
   operation(:join_as_athlete,
     summary: "Join an organization as an athlete through its athlete join link",
     security: [%{"bearerAuth" => []}],
@@ -559,6 +581,16 @@ defmodule PaleeWeb.OrganizationAccessController do
 
   def join_as_athlete(conn, %{"slug" => slug, "key" => key}),
     do: join_by(conn, %{slug: slug, role: "athlete", key: key})
+
+  def join_to_buy(conn, %{"slug" => slug, "package_id" => package_id}) do
+    user = GuardianPlug.current_resource(conn)
+
+    with {:ok, result} <- JoinBox.for_package(user, slug, package_id) do
+      conn
+      |> put_status(if(result.created, do: :created, else: :ok))
+      |> json(serialize_membership(result))
+    end
+  end
 
   defp join_by(conn, link) do
     user = GuardianPlug.current_resource(conn)

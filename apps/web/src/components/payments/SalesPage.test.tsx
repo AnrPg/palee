@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import el from "../../../messages/el.json";
 
+import { joinToBuy } from "@/api/join-requests";
 import { fetchPackageTerms, fetchPublicPackages, type PublicPackage } from "@/api/my-payments";
 import type { PublicBoxPage } from "@/api/social";
 
@@ -22,9 +23,11 @@ vi.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams(state.search),
 }));
 vi.mock("@/components/session-provider", () => ({
-  useSession: () => ({ tokens: state.status === "guest" ? null : { access_token: "access" }, status: state.status }),
+  useSession: () => ({ tokens: state.status === "guest" ? null : { access_token: "access" }, status: state.status, rotate: async () => undefined }),
 }));
+vi.mock("@/api/join-requests", () => ({ joinToBuy: vi.fn(async () => ({})) }));
 vi.mock("@/lib/organization-slug", () => ({
+  ORGANIZATION_MEMBERSHIPS_KEY: ["organization-memberships"],
   useOrganizationMemberships: () => ({ data: state.memberships, isPending: false }),
 }));
 vi.mock("@/lib/platform", () => ({ nativePlatform: () => state.platform }));
@@ -107,11 +110,14 @@ describe("Σελίδα αγοράς πακέτων (mockup s5 option C)", () => 
     expect(fetchPackageTerms).not.toHaveBeenCalled();
   });
 
-  it("someone not yet in the box joins it first", async () => {
+  it("someone not yet in the box becomes a box member by buying (ADR-552)", async () => {
     state.status = "authenticated";
     state.search = "buy=Unlimited";
     renderPage();
-    expect(await screen.findByTestId("sales-join")).toHaveAttribute("href", "/join/box-kypseli");
+    const dialog = await screen.findByTestId("sales-buy");
+    expect(dialog).toHaveTextContent("Με την αγορά γίνεσαι μέλος box στο Box Κυψέλη.");
+    fireEvent.click(within(dialog).getByTestId("join-to-buy"));
+    await vi.waitFor(() => expect(joinToBuy).toHaveBeenCalledWith("access", "box-kypseli", "Unlimited"));
   });
 
   it("a member of the box gets the app's «Πριν πληρώσεις»", async () => {

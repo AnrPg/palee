@@ -243,10 +243,10 @@ test.describe("public box page", () => {
   test("«Become a box member» is always the main action and never a dead end", async ({ page }) => {
     await asGuest(page);
     await page.goto(`/b/${box.slug}`);
-    // No packages and no open join link: a message to the box, after signing in.
+    // No packages and no open join link: a request to the box, after signing in.
     const join = page.getByTestId("box-page-join").first();
     await expect(join).toHaveText("Become a box member");
-    await expect(join).toHaveAttribute("href", `/login?next=${encodeURIComponent(`/b/${box.slug}/chat?draft=member`)}`);
+    await expect(join).toHaveAttribute("href", `/login?next=${encodeURIComponent(`/b/${box.slug}?join=1`)}`);
 
     await page.goto("/b/kypseli-packages");
     await expect(page.getByTestId("box-page-join").first()).toHaveAttribute("href", "/b/kypseli-packages/packages");
@@ -255,10 +255,39 @@ test.describe("public box page", () => {
     await expect(page.getByTestId("box-page-join").first()).toHaveAttribute("href", "/join/kypseli-link");
   });
 
-  test("signed in, without packages or a join link, «Become a box member» opens the chat with a message ready", async ({ page }) => {
+  test("signed in, without packages or a join link, «Become a box member» asks the box to accept you", async ({ page }) => {
     await signedIn(page);
+    let status: string | null = null;
+    const asked: string[] = [];
+    const mine = () =>
+      status ? { id: "jr-1", status, requested_at: "2026-11-07T10:00:00Z", decided_at: null, box: { slug: box.slug, name: box.name } } : null;
+    await page.route(`**/api/boxes/${box.slug}/join-request`, (route) => {
+      if (route.request().method() === "POST") {
+        asked.push("ask");
+        status = "requested";
+        return route.fulfill(json({ request: mine() }, 201));
+      }
+      return route.fulfill(json({ request: mine() }));
+    });
+    await page.route(`**/api/boxes/${box.slug}/join-request/cancel`, (route) => {
+      status = "cancelled";
+      return route.fulfill(json({ request: mine() }));
+    });
     await page.goto(`/b/${box.slug}`);
-    await expect(page.getByTestId("box-page-join").first()).toHaveAttribute("href", `/b/${box.slug}/chat?draft=member`);
+    await page.getByTestId("box-page-join").first().click();
+    const sheet = page.getByTestId("box-join-ask");
+    await sheet.getByTestId("box-join-send").click();
+    await expect(sheet.getByTestId("box-join-pending")).toHaveText("Waiting for the box to accept");
+    expect(asked).toEqual(["ask"]);
+    await sheet.getByRole("button", { name: "Withdraw request" }).click();
+    await expect(sheet.getByTestId("box-join-send")).toBeVisible();
+  });
+
+  test("coming back from sign-in with ?join=1 opens the request sheet", async ({ page }) => {
+    await signedIn(page);
+    await page.route(`**/api/boxes/${box.slug}/join-request`, (route) => route.fulfill(json({ request: null })));
+    await page.goto(`/b/${box.slug}?join=1`);
+    await expect(page.getByTestId("box-join-ask")).toBeVisible();
   });
 
   test("a guest of the box (ADR-272) sees it, with becoming a box member as the next step", async ({ page }) => {

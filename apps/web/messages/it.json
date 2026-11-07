@@ -5337,7 +5337,14 @@
       "roles": "Ruoli"
     },
     "importLink": "Importa",
-    "atRiskLink": "A rischio"
+    "atRiskLink": "A rischio",
+    "joinRequestsTitle": "{count, plural, one {# persona chiede di diventare socia} other {# persone chiedono di diventare socie}}",
+    "joinRequestsSomeone": "Qualcuno",
+    "joinRequestsAsked": "richiesto il {date}",
+    "joinRequestsAccept": "Accetta",
+    "joinRequestsDecline": "Rifiuta",
+    "joinRequestsAcceptNamed": "Accetta {name} come socio",
+    "joinRequestsDeclineNamed": "Rifiuta {name}"
   },
   "Onboarding": {
     "popupEyebrow": "Configurazione non completata",
@@ -6701,7 +6708,15 @@
     "guestAction": "Diventa socio del box",
     "joinBox": "Diventa socio del box",
     "messageBox": "Scrivi al box",
-    "rooms": "Sale"
+    "rooms": "Sale",
+    "joinWaiting": "In attesa che il box accetti",
+    "joinAskTitle": "Diventa socio di {box}",
+    "joinAskBody": "{box} accoglie nuovi soci dopo che lo staff ha dato un’occhiata. Invia una richiesta e riceverai la risposta qui.",
+    "joinSend": "Chiedi di iscriverti",
+    "joinSentBody": "La tua richiesta è arrivata a {box}. Riceverai una notifica quando rispondono.",
+    "joinCancel": "Ritira la richiesta",
+    "joinDeclinedBody": "{box} non ha accettato la tua ultima richiesta. Puoi chiedere di nuovo o scrivere al box.",
+    "joinAskAgain": "Chiedi di nuovo"
   },
   "Trials": {
     "ask": "Richiedi una prova",
@@ -6753,7 +6768,6 @@
     "followUpDismiss": "Non ora",
     "homeEyebrow": "Le tue prove",
     "joinDraft": "Ciao! Sono venuto per una prova e vorrei iscrivermi. Quali sono le opzioni?",
-    "memberDraft": "Ciao! Vorrei diventare socio. Come mi iscrivo?",
     "chatSubtitle": "Messaggi con il box",
     "chatUnavailable": "Al momento non puoi scrivere a questo box.",
     "chatEmpty": "Ancora nessun messaggio. Saluta.",
@@ -13359,15 +13373,18 @@
     "signInToBuy": "Accedi o crea un account Palee per acquistare.",
     "signIn": "Accedi",
     "signUp": "Crea un account",
-    "joinFirst": "Diventa prima membro di {box}, poi acquista qui.",
-    "join": "Diventa membro",
     "salesTitle": "Pacchetti di abbonamento · {box}",
     "surchargeLine": "Sovrapprezzo carta",
     "surchargeLinePercent": "Sovrapprezzo carta ({percent})",
     "surchargeNone": "Nessun sovrapprezzo",
     "surchargeTotal": "Totale",
     "surchargeNote": "Il box aggiunge un sovrapprezzo sulle carte dove la legge lo consente. Con un'altra carta non paghi sovrapprezzo.",
-    "programmeStarts": "Il programma di allenamento «{name}» è tuo: i suoi WOD compaiono nei loro giorni."
+    "programmeStarts": "Il programma di allenamento «{name}» è tuo: i suoi WOD compaiono nei loro giorni.",
+    "joinToBuyBody": "Con l’acquisto diventi socio di {box}.",
+    "joinToHoldBody": "Chiedendolo diventi socio di {box}, così la reception vede la tua richiesta.",
+    "joinToBuyContinue": "Continua",
+    "joinToBuyRefused": "Sei già stato socio di {box}. Per tornare, scrivi al box.",
+    "joinToBuyMessage": "Scrivi al box"
   },
   "CsvImport": {
     "crumbLabel": "Percorso",
@@ -15347,8 +15364,6 @@
     "signUp": "Crea un account",
     "signIn": "Accedi",
     "loading": "Caricamento…",
-    "joinToHold": "Iscriviti prima a {box}, così la reception vede la tua richiesta.",
-    "join": "Iscriviti al box",
     "heldTitle": "In attesa di pagamento",
     "heldBody": "La reception ora vede la tua richiesta. Paga lì e il pacchetto parte subito.",
     "heldUntil": "Lo teniamo {days, plural, one {# giorno} other {# giorni}}, fino al {date}.",

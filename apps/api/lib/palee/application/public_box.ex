@@ -173,7 +173,8 @@ defmodule Palee.Application.PublicBox do
   defp joining(box, context) do
     %{
       packages: Palee.Application.Payments.OnlineSales.listed_packages(context) != [],
-      join_link: match?({:ok, _}, Organizations.inspect_join_link(%{slug: box.slug, role: "member"}))
+      join_link:
+        match?({:ok, _}, Organizations.inspect_join_link(%{slug: box.slug, role: "member"}))
     }
   end
 

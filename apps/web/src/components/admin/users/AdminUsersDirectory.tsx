@@ -12,6 +12,7 @@ import { SegmentPicker } from "@/components/filters/SegmentPicker";
 import { DocumentsLink } from "@/components/documents/staff/DocumentsConsole";
 import { useDocumentsAccess } from "@/components/documents/use-documents";
 import { InviteClientsButton } from "@/components/invites/InviteClients";
+import { JoinRequestsCard } from "@/components/admin/users/JoinRequestsCard";
 import { PageHeader } from "@/components/PageHeader";
 import { RoleLabel, SemanticLabel } from "@/components/semantic-label";
 import { useSession } from "@/components/session-provider";
@@ -167,6 +168,9 @@ export function AdminUsersDirectory() {
             </>
           }
         />
+
+        {/* ADR-552: people who asked to become box members. */}
+        {can(membership, "manage_memberships") ? <JoinRequestsCard onAccepted={() => void usersQuery.refetch()} /> : null}
 
         <CollapsibleFilterBar
           ariaLabel={t("filters")}

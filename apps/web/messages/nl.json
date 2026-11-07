@@ -5337,7 +5337,14 @@
       "roles": "Rollen"
     },
     "importLink": "Importeren",
-    "atRiskLink": "Risico"
+    "atRiskLink": "Risico",
+    "joinRequestsTitle": "{count, plural, one {# persoon vraagt om boxlid te worden} other {# personen vragen om boxlid te worden}}",
+    "joinRequestsSomeone": "Iemand",
+    "joinRequestsAsked": "gevraagd op {date}",
+    "joinRequestsAccept": "Aannemen",
+    "joinRequestsDecline": "Afwijzen",
+    "joinRequestsAcceptNamed": "{name} als boxlid aannemen",
+    "joinRequestsDeclineNamed": "{name} afwijzen"
   },
   "Onboarding": {
     "popupEyebrow": "Instellen niet afgerond",
@@ -6701,7 +6708,15 @@
     "guestAction": "Word boxlid",
     "joinBox": "Word boxlid",
     "messageBox": "De box een bericht sturen",
-    "rooms": "Ruimtes"
+    "rooms": "Ruimtes",
+    "joinWaiting": "Wacht op akkoord van de box",
+    "joinAskTitle": "Lid worden van {box}",
+    "joinAskBody": "{box} neemt nieuwe boxleden aan na een blik van het team. Stuur een aanvraag, het antwoord komt hier.",
+    "joinSend": "Vraag om lid te worden",
+    "joinSentBody": "Je aanvraag is bij {box} aangekomen. Je krijgt een melding als ze antwoorden.",
+    "joinCancel": "Aanvraag intrekken",
+    "joinDeclinedBody": "{box} heeft je laatste aanvraag niet aangenomen. Je kunt het opnieuw vragen of de box een bericht sturen.",
+    "joinAskAgain": "Opnieuw vragen"
   },
   "Trials": {
     "ask": "Vraag een proefles aan",
@@ -6753,7 +6768,6 @@
     "followUpDismiss": "Nu niet",
     "homeEyebrow": "Jouw proeflessen",
     "joinDraft": "Hoi! Ik ben op proefles geweest en wil graag lid worden. Wat zijn mijn opties?",
-    "memberDraft": "Hoi! Ik wil graag lid worden. Hoe schrijf ik me in?",
     "chatSubtitle": "Berichten met de box",
     "chatUnavailable": "Je kunt deze box nu geen bericht sturen.",
     "chatEmpty": "Nog geen berichten. Zeg hoi.",
@@ -13359,15 +13373,18 @@
     "signInToBuy": "Log in of maak een Palee-account aan om te kopen.",
     "signIn": "Inloggen",
     "signUp": "Account aanmaken",
-    "joinFirst": "Word eerst lid van {box} en koop dan hier.",
-    "join": "Lid worden",
     "salesTitle": "Abonnementspakketten · {box}",
     "surchargeLine": "Kaarttoeslag",
     "surchargeLinePercent": "Kaarttoeslag ({percent})",
     "surchargeNone": "Geen toeslag",
     "surchargeTotal": "Totaal",
     "surchargeNote": "De box rekent een toeslag op kaarten waar de wet dat toestaat. Met een andere kaart betaal je geen toeslag.",
-    "programmeStarts": "Het trainingsprogramma ‘{name}’ is van jou: de WODs verschijnen op hun dagen."
+    "programmeStarts": "Het trainingsprogramma ‘{name}’ is van jou: de WODs verschijnen op hun dagen.",
+    "joinToBuyBody": "Met deze aankoop word je boxlid bij {box}.",
+    "joinToHoldBody": "Met de aanvraag word je boxlid bij {box}, zodat de balie hem ziet.",
+    "joinToBuyContinue": "Verder",
+    "joinToBuyRefused": "Je was eerder lid van {box}. Stuur de box een bericht om terug te komen.",
+    "joinToBuyMessage": "Bericht aan de box"
   },
   "CsvImport": {
     "crumbLabel": "Kruimelpad",
@@ -15347,8 +15364,6 @@
     "signUp": "Account aanmaken",
     "signIn": "Inloggen",
     "loading": "Laden…",
-    "joinToHold": "Word eerst lid van {box}, zodat de balie je aanvraag ziet.",
-    "join": "Lid worden",
     "heldTitle": "Wacht op betaling",
     "heldBody": "De balie ziet nu je aanvraag. Betaal daar en het pakket start meteen.",
     "heldUntil": "We houden het {days, plural, one {# dag} other {# dagen}} vast, tot {date}.",

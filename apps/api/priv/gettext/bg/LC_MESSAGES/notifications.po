@@ -883,3 +883,21 @@ msgstr "Сайтът ти има нов вид"
 
 msgid "It now uses the Arena template. See it, pick another one or publish it as it is."
 msgstr "Вече използва шаблона Arena. Разгледай го, избери друг или го публикувай както е."
+
+msgid "Asks to join the box"
+msgstr "Иска да стане член"
+
+msgid "%{nickname} asks to become a box member."
+msgstr "%{nickname} иска да стане член на box-а."
+
+msgid "You are a box member"
+msgstr "Вече си член на box-а"
+
+msgid "%{box} accepted you as a box member."
+msgstr "%{box} те прие за член."
+
+msgid "Your request to join"
+msgstr "Заявката ти за членство"
+
+msgid "%{box} did not accept your request. You can write to the box."
+msgstr "%{box} не прие заявката ти. Можеш да пишеш на box-а."

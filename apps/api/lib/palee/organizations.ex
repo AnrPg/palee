@@ -579,6 +579,16 @@ defmodule Palee.Organizations do
       |> Palee.Organizations.Commands.JoinByLink.call(user_id, joined_at)
       |> announce_activation()
 
+  @doc """
+  ADR-552: admits the account as a box member without the join link
+  (`:purchase` or `:accepted_request`, see `Commands.AdmitMember`).
+  """
+  def admit_member(organization_id, user_id, reason, joined_at \\ DateTime.utc_now()),
+    do:
+      organization_id
+      |> Palee.Organizations.Commands.AdmitMember.call(user_id, reason, joined_at)
+      |> announce_activation()
+
   def inspect_invitation(token, now \\ DateTime.utc_now()),
     do: InspectInvitation.call(token, now)
 

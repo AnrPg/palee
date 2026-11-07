@@ -325,6 +325,7 @@ function Faq({ policy }: { policy: RefundPolicy | null }) {
 function BuySheet({ slug, boxName, programme, onClose }: { slug: string; boxName: string; programme: PublicProgramme; onClose: () => void }) {
   const t = useTranslations("Programmes");
   const tPay = useTranslations("Pay");
+  const tBox = useTranslations("BoxPage");
   const { status } = useSession();
   const memberships = useOrganizationMemberships();
   const member = (memberships.data ?? []).some((membership) => membership.organization.slug === slug);
@@ -345,7 +346,8 @@ function BuySheet({ slug, boxName, programme, onClose }: { slug: string; boxName
       ) : !member ? (
         <div className="flex flex-col gap-3">
           <p className="text-sm" style={{ color: "var(--text-soft)" }}>{t("joinFirst", { box: boxName })}</p>
-          <SheetLink href={`/join/${encodeURIComponent(slug)}?next=${encodeURIComponent(here)}`} primary>{tPay("join")}</SheetLink>
+          {/* ADR-552: the box page's «Γίνε μέλος box» is never a dead end. */}
+          <SheetLink href={`/b/${encodeURIComponent(slug)}`} primary>{tBox("joinBox")}</SheetLink>
         </div>
       ) : (
         <Checkout slug={slug} boxName={boxName} programme={programme} />

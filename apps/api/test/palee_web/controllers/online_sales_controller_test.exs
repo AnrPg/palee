@@ -106,6 +106,7 @@ defmodule PaleeWeb.OnlineSalesControllerTest do
              build_conn()
              |> get("/api/public/boxes/#{ctx.organization.slug}")
              |> json_response(200)
+
     assert page["withdrawal_days"] == 14
     refute page["online_payments"]
   end

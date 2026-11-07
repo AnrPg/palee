@@ -524,6 +524,11 @@ defmodule PaleeWeb.FallbackController do
     too_many_rows: {:unprocessable_entity, "The file has too many rows"},
     # ADR-346: automations.
     unknown_recipe: {:not_found, "Unknown recipe"},
+    # ADR-552: «Ζήτα να γίνεις μέλος».
+    already_member: {:conflict, "You are already a member of this box"},
+    join_request_closed: {:conflict, "This request was already answered"},
+    join_request_conflict: {:conflict, "This request is being saved; try again"},
+    invalid_join_request_decision: {:unprocessable_entity, "Unknown decision"},
     # ADR-291: packages waiting to be paid at the front desk.
     package_request_closed: {:conflict, "This request is no longer waiting for payment"},
     package_request_exists: {:conflict, "You have already asked for this package"},

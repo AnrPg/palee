@@ -830,6 +830,39 @@ defmodule Palee.Notifications do
     end)
   end
 
+  # ADR-552: «Ζήτα να γίνεις μέλος». The staff who manage memberships hear
+  # of a new request; the person hears the box's answer.
+  def process_event("join_requested", payload) do
+    organization_id = field(payload, :organization_id)
+    request_id = field(payload, :join_request_id)
+
+    organization_id
+    |> Organizations.list_user_ids_with_capability(:manage_memberships)
+    |> Enum.reduce_while(:ok, fn staff_id, :ok ->
+      case enqueue_simple(:join_requested, %{user_id: staff_id}, %{
+             organization_id: organization_id,
+             join_request_id: request_id,
+             person_nickname: field(payload, :person_nickname),
+             box_name: field(payload, :box_name),
+             dedupe_key: "join_requested:#{request_id}:#{staff_id}",
+             url: "/admin/users?join_requests=1"
+           }) do
+        :ok -> {:cont, :ok}
+        error -> {:halt, error}
+      end
+    end)
+  end
+
+  def process_event(type, payload) when type in ~w(join_request_accepted join_request_declined),
+    do:
+      enqueue_simple(String.to_existing_atom(type), payload, %{
+        organization_id: field(payload, :organization_id),
+        join_request_id: field(payload, :join_request_id),
+        box_name: field(payload, :box_name),
+        dedupe_key: "#{type}:#{field(payload, :join_request_id)}",
+        url: "/b/#{field(payload, :box_slug)}"
+      })
+
   def process_event("workout_rejected", payload), do: enqueue_workout_rejected(payload)
   def process_event("athlete_message_sent", payload), do: enqueue_athlete_message(payload)
   def process_event("chat_message", payload), do: enqueue_chat_message(payload)

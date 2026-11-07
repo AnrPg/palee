@@ -5337,7 +5337,14 @@
       "roles": "Funções"
     },
     "importLink": "Importar",
-    "atRiskLink": "Em risco"
+    "atRiskLink": "Em risco",
+    "joinRequestsTitle": "{count, plural, one {# pessoa pede para se tornar membro} other {# pessoas pedem para se tornar membros}}",
+    "joinRequestsSomeone": "Alguém",
+    "joinRequestsAsked": "pediu a {date}",
+    "joinRequestsAccept": "Aceitar",
+    "joinRequestsDecline": "Recusar",
+    "joinRequestsAcceptNamed": "Aceitar {name} como membro",
+    "joinRequestsDeclineNamed": "Recusar {name}"
   },
   "Onboarding": {
     "popupEyebrow": "Configuração por concluir",
@@ -6701,7 +6708,15 @@
     "guestAction": "Tornar-me membro da box",
     "joinBox": "Tornar-me membro da box",
     "messageBox": "Escrever à box",
-    "rooms": "Salas"
+    "rooms": "Salas",
+    "joinWaiting": "À espera que a box aceite",
+    "joinAskTitle": "Tornar-me membro da {box}",
+    "joinAskBody": "A {box} aceita novos membros depois de a equipa ver o pedido. Envia um pedido e terás a resposta aqui.",
+    "joinSend": "Pedir para entrar",
+    "joinSentBody": "O teu pedido chegou à {box}. Vais receber uma notificação quando responderem.",
+    "joinCancel": "Retirar pedido",
+    "joinDeclinedBody": "A {box} não aceitou o teu último pedido. Podes pedir outra vez ou escrever à box.",
+    "joinAskAgain": "Pedir outra vez"
   },
   "Trials": {
     "ask": "Pedir uma aula experimental",
@@ -6753,7 +6768,6 @@
     "followUpDismiss": "Agora não",
     "homeEyebrow": "As tuas aulas experimentais",
     "joinDraft": "Olá! Vim a uma aula experimental e gostava de me inscrever. Que opções tenho?",
-    "memberDraft": "Olá! Gostava de me tornar membro. Como me inscrevo?",
     "chatSubtitle": "Mensagens com o box",
     "chatUnavailable": "Não podes enviar mensagens a este box neste momento.",
     "chatEmpty": "Ainda sem mensagens. Diz olá.",
@@ -13359,15 +13373,18 @@
     "signInToBuy": "Inicia sessão ou cria uma conta Palee para comprar.",
     "signIn": "Iniciar sessão",
     "signUp": "Criar conta",
-    "joinFirst": "Torna-te primeiro membro de {box} e depois compra aqui.",
-    "join": "Tornar-me membro",
     "salesTitle": "Pacotes de subscrição · {box}",
     "surchargeLine": "Sobretaxa de cartão",
     "surchargeLinePercent": "Sobretaxa de cartão ({percent})",
     "surchargeNone": "Sem sobretaxa",
     "surchargeTotal": "Total",
     "surchargeNote": "A box acrescenta uma sobretaxa nos cartões em que a lei o permite. Com outro cartão não pagas sobretaxa.",
-    "programmeStarts": "O programa de treino «{name}» é teu: os seus WODs aparecem nos respetivos dias."
+    "programmeStarts": "O programa de treino «{name}» é teu: os seus WODs aparecem nos respetivos dias.",
+    "joinToBuyBody": "Ao comprar, tornas-te membro da {box}.",
+    "joinToHoldBody": "Ao pedir, tornas-te membro da {box}, para que a receção veja o pedido.",
+    "joinToBuyContinue": "Continuar",
+    "joinToBuyRefused": "Já foste membro da {box}. Para voltar, escreve à box.",
+    "joinToBuyMessage": "Escrever à box"
   },
   "CsvImport": {
     "crumbLabel": "Caminho",
@@ -15347,8 +15364,6 @@
     "signUp": "Criar conta",
     "signIn": "Iniciar sessão",
     "loading": "A carregar…",
-    "joinToHold": "Junta-te primeiro a {box}, para a receção ver o teu pedido.",
-    "join": "Juntar-me à box",
     "heldTitle": "À espera de pagamento",
     "heldBody": "A receção já vê o teu pedido. Paga lá e o pacote começa logo.",
     "heldUntil": "Guardamos {days, plural, one {# dia} other {# dias}}, até {date}.",

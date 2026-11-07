@@ -22,6 +22,8 @@ defmodule PaleeWeb.RouteCapabilities do
   ]
 
   @controller_defaults %{
+    # ADR-552: answering «Ζήτα να γίνεις μέλος» admits box members.
+    W.AdminJoinRequestController => [:manage_memberships],
     W.AdminWorkoutController => [:manage_workouts],
     # ADR-377: belts and levels; promotions follow the coaching scope (ADR-100).
     # ADR-400 follow-up: ladders are the owner's, admins' and head coaches'

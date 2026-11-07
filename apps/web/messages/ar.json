@@ -5337,7 +5337,14 @@
       "roles": "الأدوار"
     },
     "importLink": "استيراد",
-    "atRiskLink": "معرّضون للخطر"
+    "atRiskLink": "معرّضون للخطر",
+    "joinRequestsTitle": "{count, plural, zero {لا أحد يطلب الانضمام} one {شخص واحد يطلب الانضمام} two {شخصان يطلبان الانضمام} few {# أشخاص يطلبون الانضمام} many {# شخصًا يطلبون الانضمام} other {# شخص يطلبون الانضمام}}",
+    "joinRequestsSomeone": "شخص ما",
+    "joinRequestsAsked": "طلب في {date}",
+    "joinRequestsAccept": "قبول",
+    "joinRequestsDecline": "رفض",
+    "joinRequestsAcceptNamed": "قبول {name} عضوًا",
+    "joinRequestsDeclineNamed": "رفض {name}"
   },
   "Onboarding": {
     "popupEyebrow": "لم يكتمل الإعداد",
@@ -6701,7 +6708,15 @@
     "guestAction": "كن عضوًا في الـBox",
     "joinBox": "كن عضوًا في الـBox",
     "messageBox": "راسل الصالة",
-    "rooms": "المساحات"
+    "rooms": "المساحات",
+    "joinWaiting": "بانتظار قبول الـBox",
+    "joinAskTitle": "انضم إلى {box}",
+    "joinAskBody": "يقبل {box} الأعضاء الجدد بعد مراجعة فريقه. أرسل طلبًا وسيصلك الرد هنا.",
+    "joinSend": "اطلب الانضمام",
+    "joinSentBody": "وصل طلبك إلى {box}. سيصلك إشعار عند الرد.",
+    "joinCancel": "سحب الطلب",
+    "joinDeclinedBody": "لم يقبل {box} طلبك الأخير. يمكنك الطلب مجددًا أو مراسلة الـBox.",
+    "joinAskAgain": "اطلب مجددًا"
   },
   "Trials": {
     "ask": "اطلب حصة تجريبية",
@@ -6753,7 +6768,6 @@
     "followUpDismiss": "ليس الآن",
     "homeEyebrow": "تجاربك",
     "joinDraft": "مرحبًا! جئت لتجربة وأرغب في الانضمام. ما هي الخيارات المتاحة لي؟",
-    "memberDraft": "مرحبًا! أرغب في أن أصبح عضوًا. كيف أسجّل؟",
     "chatSubtitle": "الرسائل مع النادي",
     "chatUnavailable": "لا يمكنك مراسلة هذا النادي الآن.",
     "chatEmpty": "لا رسائل بعد. قل مرحبًا.",
@@ -13359,15 +13373,18 @@
     "signInToBuy": "سجّل الدخول أو أنشئ حساب Palee للشراء.",
     "signIn": "تسجيل الدخول",
     "signUp": "إنشاء حساب",
-    "joinFirst": "انضم أولًا إلى {box} كعضو، ثم اشترِ هنا.",
-    "join": "انضم",
     "salesTitle": "باقات الاشتراك · {box}",
     "surchargeLine": "رسوم البطاقة الإضافية",
     "surchargeLinePercent": "رسوم البطاقة الإضافية ({percent})",
     "surchargeNone": "بدون رسوم إضافية",
     "surchargeTotal": "الإجمالي",
     "surchargeNote": "يضيف المكان رسومًا على البطاقات التي يسمح بها القانون. ببطاقة أخرى لا تدفع رسومًا إضافية.",
-    "programmeStarts": "برنامج التدريب «{name}» أصبح لك: تظهر تمارين WOD الخاصة به في أيامها."
+    "programmeStarts": "برنامج التدريب «{name}» أصبح لك: تظهر تمارين WOD الخاصة به في أيامها.",
+    "joinToBuyBody": "بالشراء تصبح عضوًا في {box}.",
+    "joinToHoldBody": "بالطلب تصبح عضوًا في {box} حتى يراه مكتب الاستقبال.",
+    "joinToBuyContinue": "متابعة",
+    "joinToBuyRefused": "كنت عضوًا في {box} من قبل. للعودة، راسل الـBox.",
+    "joinToBuyMessage": "راسل الـBox"
   },
   "CsvImport": {
     "crumbLabel": "المسار",
@@ -15347,8 +15364,6 @@
     "signUp": "إنشاء حساب",
     "signIn": "تسجيل الدخول",
     "loading": "جارٍ التحميل…",
-    "joinToHold": "انضم أولًا إلى {box} ليرى الاستقبال طلبك.",
-    "join": "الانضمام إلى الصالة",
     "heldTitle": "بانتظار الدفع",
     "heldBody": "يرى الاستقبال الآن طلبك. ادفع هناك وتبدأ الباقة فورًا.",
     "heldUntil": "نحتفظ بها {days, plural, zero {اليوم} one {يومًا واحدًا} two {يومين} few {# أيام} many {# يومًا} other {# يوم}}، حتى {date}.",

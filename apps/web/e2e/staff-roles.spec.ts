@@ -85,6 +85,26 @@ async function pickRole(page: Page, name: RegExp) {
 }
 
 test.describe("box roles in Users (ADR-217)", () => {
+  test("people who ask to become box members wait at the top of Users and the owner accepts them (ADR-552)", async ({ page }) => {
+    await signedInOwner(page);
+    const decided: string[] = [];
+    let open = true;
+    const asking = { id: "jr-1", status: "requested", requested_at: "2026-11-07T10:00:00Z", decided_at: null, person: { id: "u-9", nickname: "Eleni", handle: "eleni", avatar_url: null } };
+    await page.route("**/api/admin/join-requests", (route) => route.fulfill(json({ requests: open ? [asking] : [] })));
+    await page.route("**/api/admin/join-requests/*/accept", (route) => {
+      decided.push(route.request().url());
+      open = false;
+      return route.fulfill(json({ request: { ...asking, status: "accepted" } }));
+    });
+    await page.goto("/admin/users");
+    const card = page.getByTestId("join-requests");
+    await expect(card).toContainText("1 person asks to become a box member", { timeout: 60_000 });
+    await expect(card).toContainText("@eleni");
+    await card.getByRole("button", { name: "Accept Eleni as a box member" }).click();
+    await expect.poll(() => decided.length).toBe(1);
+    await expect(card).toHaveCount(0);
+  });
+
   test("the list shows every role, tints staff and gives staff no membership status", async ({ page }) => {
     await signedInOwner(page);
     await page.goto("/admin/users");

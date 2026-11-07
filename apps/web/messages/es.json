@@ -5337,7 +5337,14 @@
       "roles": "Roles"
     },
     "importLink": "Importar",
-    "atRiskLink": "En riesgo"
+    "atRiskLink": "En riesgo",
+    "joinRequestsTitle": "{count, plural, one {# persona pide hacerse socia} other {# personas piden hacerse socias}}",
+    "joinRequestsSomeone": "Alguien",
+    "joinRequestsAsked": "lo pidió el {date}",
+    "joinRequestsAccept": "Aceptar",
+    "joinRequestsDecline": "Rechazar",
+    "joinRequestsAcceptNamed": "Aceptar a {name} como socio",
+    "joinRequestsDeclineNamed": "Rechazar a {name}"
   },
   "Onboarding": {
     "popupEyebrow": "Configuración sin terminar",
@@ -6701,7 +6708,15 @@
     "guestAction": "Hazte socio del box",
     "joinBox": "Hazte socio del box",
     "messageBox": "Escribir al box",
-    "rooms": "Salas"
+    "rooms": "Salas",
+    "joinWaiting": "Esperando a que el box acepte",
+    "joinAskTitle": "Hazte socio de {box}",
+    "joinAskBody": "{box} admite nuevos socios después de que su equipo lo revise. Envía una solicitud y te responderán aquí.",
+    "joinSend": "Pedir unirme",
+    "joinSentBody": "Tu solicitud llegó a {box}. Recibirás una notificación cuando respondan.",
+    "joinCancel": "Retirar solicitud",
+    "joinDeclinedBody": "{box} no aceptó tu última solicitud. Puedes pedirlo de nuevo o escribir al box.",
+    "joinAskAgain": "Pedirlo de nuevo"
   },
   "Trials": {
     "ask": "Pedir una clase de prueba",
@@ -6753,7 +6768,6 @@
     "followUpDismiss": "Ahora no",
     "homeEyebrow": "Tus clases de prueba",
     "joinDraft": "¡Hola! Vine a una clase de prueba y me gustaría unirme. ¿Qué opciones tengo?",
-    "memberDraft": "¡Hola! Me gustaría hacerme socio. ¿Cómo me apunto?",
     "chatSubtitle": "Mensajes con el box",
     "chatUnavailable": "No puedes escribir a este box ahora mismo.",
     "chatEmpty": "Aún no hay mensajes. Saluda.",
@@ -13359,15 +13373,18 @@
     "signInToBuy": "Inicia sesión o crea una cuenta de Palee para comprar.",
     "signIn": "Iniciar sesión",
     "signUp": "Crear cuenta",
-    "joinFirst": "Hazte primero miembro de {box} y luego compra aquí.",
-    "join": "Hacerse miembro",
     "salesTitle": "Paquetes de suscripción · {box}",
     "surchargeLine": "Recargo por tarjeta",
     "surchargeLinePercent": "Recargo por tarjeta ({percent})",
     "surchargeNone": "Sin recargo",
     "surchargeTotal": "Total",
     "surchargeNote": "El box añade un recargo en las tarjetas donde la ley lo permite. Con otra tarjeta no pagas recargo.",
-    "programmeStarts": "El programa de entrenamiento «{name}» es tuyo: sus WODs aparecen en sus días."
+    "programmeStarts": "El programa de entrenamiento «{name}» es tuyo: sus WODs aparecen en sus días.",
+    "joinToBuyBody": "Al comprar te haces socio de {box}.",
+    "joinToHoldBody": "Al pedirlo te haces socio de {box}, para que recepción vea tu solicitud.",
+    "joinToBuyContinue": "Continuar",
+    "joinToBuyRefused": "Ya fuiste socio de {box}. Para volver, escribe al box.",
+    "joinToBuyMessage": "Escribir al box"
   },
   "CsvImport": {
     "crumbLabel": "Ruta",
@@ -15347,8 +15364,6 @@
     "signUp": "Crear una cuenta",
     "signIn": "Iniciar sesión",
     "loading": "Cargando…",
-    "joinToHold": "Únete primero a {box} para que recepción vea tu solicitud.",
-    "join": "Unirme al box",
     "heldTitle": "Esperando el pago",
     "heldBody": "Recepción ya ve tu solicitud. Paga allí y el paquete empieza enseguida.",
     "heldUntil": "Lo guardamos {days, plural, one {# día} other {# días}}, hasta el {date}.",

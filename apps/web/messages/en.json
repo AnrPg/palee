@@ -5337,7 +5337,14 @@
       "roles": "Roles"
     },
     "importLink": "Import",
-    "atRiskLink": "At risk"
+    "atRiskLink": "At risk",
+    "joinRequestsTitle": "{count, plural, one {# person asks to become a box member} other {# people ask to become box members}}",
+    "joinRequestsSomeone": "Someone",
+    "joinRequestsAsked": "asked {date}",
+    "joinRequestsAccept": "Accept",
+    "joinRequestsDecline": "Decline",
+    "joinRequestsAcceptNamed": "Accept {name} as a box member",
+    "joinRequestsDeclineNamed": "Decline {name}"
   },
   "Onboarding": {
     "popupEyebrow": "Setup not finished",
@@ -6701,7 +6708,15 @@
     "guestAction": "Become a box member",
     "joinBox": "Become a box member",
     "messageBox": "Message the box",
-    "rooms": "Rooms"
+    "rooms": "Rooms",
+    "joinWaiting": "Waiting for the box to accept",
+    "joinAskTitle": "Join {box}",
+    "joinAskBody": "{box} takes in new box members after a look from its staff. Send a request and you'll hear back here.",
+    "joinSend": "Ask to join",
+    "joinSentBody": "Your request reached {box}. You'll get a notification when they answer.",
+    "joinCancel": "Withdraw request",
+    "joinDeclinedBody": "{box} did not accept your last request. You can ask again or write to the box.",
+    "joinAskAgain": "Ask again"
   },
   "Trials": {
     "ask": "Ask for a trial",
@@ -6753,7 +6768,6 @@
     "followUpDismiss": "Not now",
     "homeEyebrow": "Your trials",
     "joinDraft": "Hi! I came for a trial and I'd like to join. What are my options?",
-    "memberDraft": "Hi! I'd like to become a member. How do I sign up?",
     "chatSubtitle": "Messages with the box",
     "chatUnavailable": "You can't message this box right now.",
     "chatEmpty": "No messages yet. Say hi.",
@@ -13359,15 +13373,18 @@
     "signInToBuy": "Sign in or create a Palee account to buy.",
     "signIn": "Sign in",
     "signUp": "Create account",
-    "joinFirst": "First join {box} as a member, then buy here.",
-    "join": "Join the box",
     "salesTitle": "Subscription packages · {box}",
     "surchargeLine": "Card surcharge",
     "surchargeLinePercent": "Card surcharge ({percent})",
     "surchargeNone": "No surcharge",
     "surchargeTotal": "Total",
     "surchargeNote": "The box adds a surcharge on cards the law allows it on. With another card you pay no surcharge.",
-    "programmeStarts": "Your training programme “{name}” is yours: its WODs appear on their days."
+    "programmeStarts": "Your training programme “{name}” is yours: its WODs appear on their days.",
+    "joinToBuyBody": "Buying this package makes you a box member at {box}.",
+    "joinToHoldBody": "Asking for this package makes you a box member at {box}, so the front desk sees your request.",
+    "joinToBuyContinue": "Continue",
+    "joinToBuyRefused": "You were a member of {box} before. To come back, write to the box.",
+    "joinToBuyMessage": "Message the box"
   },
   "CsvImport": {
     "crumbLabel": "Breadcrumb",
@@ -15347,8 +15364,6 @@
     "signUp": "Create an account",
     "signIn": "Sign in",
     "loading": "Loading…",
-    "joinToHold": "Join {box} first, so the front desk sees your request.",
-    "join": "Join the box",
     "heldTitle": "Waiting for payment",
     "heldBody": "The front desk now sees your request. Pay there and the package starts at once.",
     "heldUntil": "We keep it {days, plural, one {# day} other {# days}}, until {date}.",

@@ -119,6 +119,10 @@ defmodule Palee.Notifications.Notification do
     :business_demo_idle,
     :email_key_expiring,
     :member_leaving,
+    # ADR-552: «Ζήτα να γίνεις μέλος».
+    :join_requested,
+    :join_request_accepted,
+    :join_request_declined,
     # ADR-252: documents to sign and health certificates.
     :document_signature_requested,
     :health_certificate_expiring,

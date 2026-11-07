@@ -878,3 +878,21 @@ msgstr ""
 
 msgid "It now uses the Arena template. See it, pick another one or publish it as it is."
 msgstr ""
+
+msgid "Asks to join the box"
+msgstr ""
+
+msgid "%{nickname} asks to become a box member."
+msgstr ""
+
+msgid "You are a box member"
+msgstr ""
+
+msgid "%{box} accepted you as a box member."
+msgstr ""
+
+msgid "Your request to join"
+msgstr ""
+
+msgid "%{box} did not accept your request. You can write to the box."
+msgstr ""

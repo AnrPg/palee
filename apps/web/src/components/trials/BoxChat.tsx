@@ -62,7 +62,7 @@ export function BoxChat({
   const queryClient = useQueryClient();
   const { tokens, currentUser } = useSession();
   const token = tokens?.access_token ?? "";
-  const [body, setBody] = useState(() => (draft === "join" ? t("joinDraft") : draft === "member" ? t("memberDraft") : ""));
+  const [body, setBody] = useState(() => (draft === "join" ? t("joinDraft") : ""));
   const endRef = useRef<HTMLDivElement>(null);
   const lastRead = useRef<string | null>(null);
 

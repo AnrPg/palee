@@ -5337,7 +5337,14 @@
       "roles": "Ρόλοι"
     },
     "importLink": "Εισαγωγή",
-    "atRiskLink": "Σε κίνδυνο"
+    "atRiskLink": "Σε κίνδυνο",
+    "joinRequestsTitle": "{count, plural, one {# άτομο ζητά να γίνει μέλος} other {# άτομα ζητούν να γίνουν μέλη}}",
+    "joinRequestsSomeone": "Κάποιος",
+    "joinRequestsAsked": "ζήτησε {date}",
+    "joinRequestsAccept": "Αποδοχή",
+    "joinRequestsDecline": "Απόρριψη",
+    "joinRequestsAcceptNamed": "Αποδοχή του/της {name} ως μέλος box",
+    "joinRequestsDeclineNamed": "Απόρριψη: {name}"
   },
   "Onboarding": {
     "popupEyebrow": "Η ρύθμιση δεν ολοκληρώθηκε",
@@ -6701,7 +6708,15 @@
     "guestAction": "Γίνε μέλος box",
     "joinBox": "Γίνε μέλος box",
     "messageBox": "Μήνυμα στο box",
-    "rooms": "Χώροι"
+    "rooms": "Χώροι",
+    "joinWaiting": "Περιμένει έγκριση από το box",
+    "joinAskTitle": "Γίνε μέλος στο {box}",
+    "joinAskBody": "Το {box} δέχεται νέα μέλη αφού το δει το staff του. Στείλε αίτημα και θα σου απαντήσουν εδώ.",
+    "joinSend": "Ζήτα να γίνεις μέλος",
+    "joinSentBody": "Το αίτημά σου έφτασε στο {box}. Θα σου έρθει ειδοποίηση όταν απαντήσουν.",
+    "joinCancel": "Ακύρωση αιτήματος",
+    "joinDeclinedBody": "Το {box} δεν δέχτηκε το τελευταίο σου αίτημα. Μπορείς να ζητήσεις ξανά ή να του γράψεις.",
+    "joinAskAgain": "Ζήτα ξανά"
   },
   "Trials": {
     "ask": "Ζήτα δοκιμαστικό",
@@ -6753,7 +6768,6 @@
     "followUpDismiss": "Όχι τώρα",
     "homeEyebrow": "Τα δοκιμαστικά σου",
     "joinDraft": "Γεια! Ήρθα για δοκιμαστικό και θα ήθελα να γραφτώ. Τι επιλογές έχω;",
-    "memberDraft": "Γεια! Θα ήθελα να γίνω μέλος. Πώς γράφομαι;",
     "chatSubtitle": "Μηνύματα με το box",
     "chatUnavailable": "Δεν μπορείς να στείλεις μήνυμα σε αυτό το box τώρα.",
     "chatEmpty": "Κανένα μήνυμα ακόμα. Πες ένα γεια.",
@@ -13359,15 +13373,18 @@
     "signInToBuy": "Για να αγοράσεις, συνδέσου ή φτιάξε λογαριασμό Palee.",
     "signIn": "Σύνδεση",
     "signUp": "Δημιουργία λογαριασμού",
-    "joinFirst": "Γίνε πρώτα μέλος στο {box} και μετά αγόρασε εδώ.",
-    "join": "Γίνε μέλος",
     "salesTitle": "Πακέτα συνδρομής · {box}",
     "surchargeLine": "Επιβάρυνση κάρτας",
     "surchargeLinePercent": "Επιβάρυνση κάρτας ({percent})",
     "surchargeNone": "Χωρίς επιβάρυνση",
     "surchargeTotal": "Σύνολο",
     "surchargeNote": "Το box προσθέτει επιβάρυνση σε κάρτες όπου το επιτρέπει ο νόμος. Με άλλη κάρτα δεν πληρώνεις επιβάρυνση.",
-    "programmeStarts": "Το πρόγραμμα προπόνησης «{name}» είναι δικό σου: τα WOD του μπαίνουν στις ημέρες τους."
+    "programmeStarts": "Το πρόγραμμα προπόνησης «{name}» είναι δικό σου: τα WOD του μπαίνουν στις ημέρες τους.",
+    "joinToBuyBody": "Με την αγορά γίνεσαι μέλος box στο {box}.",
+    "joinToHoldBody": "Με το αίτημα γίνεσαι μέλος box στο {box}, για να το δει η υποδοχή.",
+    "joinToBuyContinue": "Συνέχεια",
+    "joinToBuyRefused": "Ήσουν μέλος στο {box} στο παρελθόν. Για να επιστρέψεις, γράψε στο box.",
+    "joinToBuyMessage": "Στείλε μήνυμα στο box"
   },
   "CsvImport": {
     "crumbLabel": "Διαδρομή",
@@ -15347,8 +15364,6 @@
     "signUp": "Δημιουργία λογαριασμού",
     "signIn": "Σύνδεση",
     "loading": "Φόρτωση…",
-    "joinToHold": "Γίνε πρώτα μέλος στο {box}, για να βλέπει η υποδοχή το αίτημά σου.",
-    "join": "Γίνε μέλος",
     "heldTitle": "Περιμένει πληρωμή",
     "heldBody": "Η υποδοχή βλέπει πλέον το αίτημά σου. Πλήρωσε εκεί και το πακέτο ξεκινά αμέσως.",
     "heldUntil": "Το κρατάμε {days, plural, one {# ημέρα} other {# ημέρες}}, έως {date}.",

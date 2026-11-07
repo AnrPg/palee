@@ -58870,6 +58870,120 @@
         "title": "MyInsights",
         "type": "object"
       },
+      "MyJoinRequest": {
+        "properties": {
+          "box": {
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "slug": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "slug"
+            ],
+            "type": "object"
+          },
+          "decided_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "requested_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "requested",
+              "accepted",
+              "declined",
+              "cancelled"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "box",
+          "decided_at",
+          "id",
+          "requested_at",
+          "status"
+        ],
+        "title": "MyJoinRequest",
+        "type": "object"
+      },
+      "MyJoinRequestResponse": {
+        "properties": {
+          "request": {
+            "allOf": [
+              {
+                "properties": {
+                  "box": {
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "slug": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "slug"
+                    ],
+                    "type": "object"
+                  },
+                  "decided_at": {
+                    "format": "date-time",
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "id": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "requested_at": {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  "status": {
+                    "enum": [
+                      "requested",
+                      "accepted",
+                      "declined",
+                      "cancelled"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "box",
+                  "decided_at",
+                  "id",
+                  "requested_at",
+                  "status"
+                ],
+                "title": "MyJoinRequest",
+                "type": "object"
+              }
+            ],
+            "nullable": true
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "MyJoinRequestResponse",
+        "type": "object"
+      },
       "MyProgressResetHistory": {
         "properties": {
           "entries": {
@@ -105481,6 +105595,213 @@
         "title": "StaffCommunityEventsResponse",
         "type": "object"
       },
+      "StaffJoinRequest": {
+        "properties": {
+          "decided_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "person": {
+            "nullable": true,
+            "properties": {
+              "avatar_url": {
+                "nullable": true,
+                "type": "string"
+              },
+              "handle": {
+                "nullable": true,
+                "type": "string"
+              },
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "nickname": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "avatar_url",
+              "handle",
+              "id",
+              "nickname"
+            ],
+            "type": "object"
+          },
+          "requested_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "requested",
+              "accepted",
+              "declined",
+              "cancelled"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "decided_at",
+          "id",
+          "person",
+          "requested_at",
+          "status"
+        ],
+        "title": "StaffJoinRequest",
+        "type": "object"
+      },
+      "StaffJoinRequestList": {
+        "properties": {
+          "requests": {
+            "items": {
+              "properties": {
+                "decided_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "person": {
+                  "nullable": true,
+                  "properties": {
+                    "avatar_url": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "handle": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "nickname": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "avatar_url",
+                    "handle",
+                    "id",
+                    "nickname"
+                  ],
+                  "type": "object"
+                },
+                "requested_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "requested",
+                    "accepted",
+                    "declined",
+                    "cancelled"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "decided_at",
+                "id",
+                "person",
+                "requested_at",
+                "status"
+              ],
+              "title": "StaffJoinRequest",
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "requests"
+        ],
+        "title": "StaffJoinRequestList",
+        "type": "object"
+      },
+      "StaffJoinRequestResponse": {
+        "properties": {
+          "request": {
+            "properties": {
+              "decided_at": {
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+              },
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "person": {
+                "nullable": true,
+                "properties": {
+                  "avatar_url": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "handle": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "id": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "nickname": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "avatar_url",
+                  "handle",
+                  "id",
+                  "nickname"
+                ],
+                "type": "object"
+              },
+              "requested_at": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "requested",
+                  "accepted",
+                  "declined",
+                  "cancelled"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "decided_at",
+              "id",
+              "person",
+              "requested_at",
+              "status"
+            ],
+            "title": "StaffJoinRequest",
+            "type": "object"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "StaffJoinRequestResponse",
+        "type": "object"
+      },
       "StaffMember": {
         "properties": {
           "nickname": {
@@ -132688,6 +133009,365 @@
         "summary": "A published box's upcoming events open to everyone (its page's Events tab)",
         "tags": [
           "Community events"
+        ]
+      }
+    },
+    "/api/boxes/{slug}/join-request": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.JoinRequestController.show",
+        "parameters": [
+          {
+            "description": "The box's slug or one of its former slugs",
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "maxLength": 120,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "request": {
+                      "allOf": [
+                        {
+                          "properties": {
+                            "box": {
+                              "properties": {
+                                "name": {
+                                  "type": "string"
+                                },
+                                "slug": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "name",
+                                "slug"
+                              ],
+                              "type": "object"
+                            },
+                            "decided_at": {
+                              "format": "date-time",
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "id": {
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "requested_at": {
+                              "format": "date-time",
+                              "type": "string"
+                            },
+                            "status": {
+                              "enum": [
+                                "requested",
+                                "accepted",
+                                "declined",
+                                "cancelled"
+                              ],
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "box",
+                            "decided_at",
+                            "id",
+                            "requested_at",
+                            "status"
+                          ],
+                          "title": "MyJoinRequest",
+                          "type": "object"
+                        }
+                      ],
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "request"
+                  ],
+                  "title": "MyJoinRequestResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such box or request"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Already a box member"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Your latest request to join a published box, or null",
+        "tags": [
+          "Join requests"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "description": "Asking again while a request is open returns it.",
+        "operationId": "PaleeWeb.JoinRequestController.create",
+        "parameters": [
+          {
+            "description": "The box's slug or one of its former slugs",
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "maxLength": 120,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "request": {
+                      "allOf": [
+                        {
+                          "properties": {
+                            "box": {
+                              "properties": {
+                                "name": {
+                                  "type": "string"
+                                },
+                                "slug": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "name",
+                                "slug"
+                              ],
+                              "type": "object"
+                            },
+                            "decided_at": {
+                              "format": "date-time",
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "id": {
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "requested_at": {
+                              "format": "date-time",
+                              "type": "string"
+                            },
+                            "status": {
+                              "enum": [
+                                "requested",
+                                "accepted",
+                                "declined",
+                                "cancelled"
+                              ],
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "box",
+                            "decided_at",
+                            "id",
+                            "requested_at",
+                            "status"
+                          ],
+                          "title": "MyJoinRequest",
+                          "type": "object"
+                        }
+                      ],
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "request"
+                  ],
+                  "title": "MyJoinRequestResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such box or request"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Already a box member"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Ask a published box to take you in as a box member",
+        "tags": [
+          "Join requests"
+        ]
+      }
+    },
+    "/api/boxes/{slug}/join-request/cancel": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.JoinRequestController.cancel",
+        "parameters": [
+          {
+            "description": "The box's slug or one of its former slugs",
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "maxLength": 120,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "request": {
+                      "allOf": [
+                        {
+                          "properties": {
+                            "box": {
+                              "properties": {
+                                "name": {
+                                  "type": "string"
+                                },
+                                "slug": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "name",
+                                "slug"
+                              ],
+                              "type": "object"
+                            },
+                            "decided_at": {
+                              "format": "date-time",
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "id": {
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "requested_at": {
+                              "format": "date-time",
+                              "type": "string"
+                            },
+                            "status": {
+                              "enum": [
+                                "requested",
+                                "accepted",
+                                "declined",
+                                "cancelled"
+                              ],
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "box",
+                            "decided_at",
+                            "id",
+                            "requested_at",
+                            "status"
+                          ],
+                          "title": "MyJoinRequest",
+                          "type": "object"
+                        }
+                      ],
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "request"
+                  ],
+                  "title": "MyJoinRequestResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such box or request"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Already a box member"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Withdraw your open request to join",
+        "tags": [
+          "Join requests"
         ]
       }
     },
@@ -187859,6 +188539,329 @@
           }
         ],
         "summary": "Join an organization as an athlete through its athlete join link",
+        "tags": [
+          "Organizations"
+        ]
+      }
+    },
+    "/api/memberships/join/{slug}/package/{package_id}": {
+      "post": {
+        "callbacks": {},
+        "description": "Works whatever the member join link says. A former member (suspended or revoked) is refused with `membership_unavailable` and asks the box instead.",
+        "operationId": "PaleeWeb.OrganizationAccessController.join_to_buy",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "package_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "capabilities": {
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "description": "capability => scope (all, own, status), ADR-099",
+                      "type": "object"
+                    },
+                    "coach_scope": {
+                      "enum": [
+                        "own",
+                        "all"
+                      ],
+                      "type": "string"
+                    },
+                    "home_location_id": {
+                      "description": "The location this gym opens on for the person (Phase 2)",
+                      "format": "uuid",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "location_scope": {
+                      "description": "ADR-186: the branches a staff member works at; all_locations means every branch",
+                      "properties": {
+                        "all_locations": {
+                          "type": "boolean"
+                        },
+                        "location_ids": {
+                          "items": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "type": "array"
+                        }
+                      },
+                      "required": [
+                        "all_locations",
+                        "location_ids"
+                      ],
+                      "type": "object"
+                    },
+                    "notes_visible_to_admins": {
+                      "description": "ADR-101",
+                      "type": "boolean"
+                    },
+                    "organization": {
+                      "properties": {
+                        "activation": {
+                          "description": "ADR-184 (memberships only): a business in demo mode works on demo data until the platform team activates it",
+                          "enum": [
+                            "demo",
+                            "active"
+                          ],
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "provider_kind": {
+                          "enum": [
+                            "gym",
+                            "coach",
+                            "organiser"
+                          ],
+                          "type": "string"
+                        },
+                        "slug": {
+                          "type": "string"
+                        },
+                        "timezone": {
+                          "description": "ADR-179 (memberships only): the gym's IANA zone; its classes and events show on this clock",
+                          "type": "string"
+                        },
+                        "timezone_confirmed": {
+                          "description": "ADR-179 (memberships only): an admin confirmed the zone (else it is a guess or the default)",
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "slug"
+                      ],
+                      "type": "object"
+                    },
+                    "role": {
+                      "type": "string"
+                    },
+                    "roles": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "settings": {
+                      "nullable": true,
+                      "properties": {
+                        "brand_logo_url": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "brand_name": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "brand_primary_color": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "default_locale": {
+                          "description": "ADR-209: the box's language (its emails default to it)",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "role",
+                    "roles",
+                    "capabilities",
+                    "organization"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Already a member"
+          },
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "capabilities": {
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "description": "capability => scope (all, own, status), ADR-099",
+                      "type": "object"
+                    },
+                    "coach_scope": {
+                      "enum": [
+                        "own",
+                        "all"
+                      ],
+                      "type": "string"
+                    },
+                    "home_location_id": {
+                      "description": "The location this gym opens on for the person (Phase 2)",
+                      "format": "uuid",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "location_scope": {
+                      "description": "ADR-186: the branches a staff member works at; all_locations means every branch",
+                      "properties": {
+                        "all_locations": {
+                          "type": "boolean"
+                        },
+                        "location_ids": {
+                          "items": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "type": "array"
+                        }
+                      },
+                      "required": [
+                        "all_locations",
+                        "location_ids"
+                      ],
+                      "type": "object"
+                    },
+                    "notes_visible_to_admins": {
+                      "description": "ADR-101",
+                      "type": "boolean"
+                    },
+                    "organization": {
+                      "properties": {
+                        "activation": {
+                          "description": "ADR-184 (memberships only): a business in demo mode works on demo data until the platform team activates it",
+                          "enum": [
+                            "demo",
+                            "active"
+                          ],
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "provider_kind": {
+                          "enum": [
+                            "gym",
+                            "coach",
+                            "organiser"
+                          ],
+                          "type": "string"
+                        },
+                        "slug": {
+                          "type": "string"
+                        },
+                        "timezone": {
+                          "description": "ADR-179 (memberships only): the gym's IANA zone; its classes and events show on this clock",
+                          "type": "string"
+                        },
+                        "timezone_confirmed": {
+                          "description": "ADR-179 (memberships only): an admin confirmed the zone (else it is a guess or the default)",
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "slug"
+                      ],
+                      "type": "object"
+                    },
+                    "role": {
+                      "type": "string"
+                    },
+                    "roles": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "settings": {
+                      "nullable": true,
+                      "properties": {
+                        "brand_logo_url": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "brand_name": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "brand_primary_color": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "default_locale": {
+                          "description": "ADR-209: the box's language (its emails default to it)",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "role",
+                    "roles",
+                    "capabilities",
+                    "organization"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Membership"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Become a box member to buy a package the box lists to everyone (ADR-552)",
         "tags": [
           "Organizations"
         ]
@@ -252769,6 +253772,357 @@
         "summary": "Send a `ping` event to the endpoint now",
         "tags": [
           "Integrations"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/join-requests": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminJoinRequestController.index",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "requests": {
+                      "items": {
+                        "properties": {
+                          "decided_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "person": {
+                            "nullable": true,
+                            "properties": {
+                              "avatar_url": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "handle": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "nickname": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "avatar_url",
+                              "handle",
+                              "id",
+                              "nickname"
+                            ],
+                            "type": "object"
+                          },
+                          "requested_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "requested",
+                              "accepted",
+                              "declined",
+                              "cancelled"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "decided_at",
+                          "id",
+                          "person",
+                          "requested_at",
+                          "status"
+                        ],
+                        "title": "StaffJoinRequest",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "requests"
+                  ],
+                  "title": "StaffJoinRequestList",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Requests"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Open requests to join the box, oldest first",
+        "tags": [
+          "Join requests"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/join-requests/{id}/accept": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminJoinRequestController.accept",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "request": {
+                      "properties": {
+                        "decided_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "person": {
+                          "nullable": true,
+                          "properties": {
+                            "avatar_url": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "handle": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "id": {
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "nickname": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "avatar_url",
+                            "handle",
+                            "id",
+                            "nickname"
+                          ],
+                          "type": "object"
+                        },
+                        "requested_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "requested",
+                            "accepted",
+                            "declined",
+                            "cancelled"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "decided_at",
+                        "id",
+                        "person",
+                        "requested_at",
+                        "status"
+                      ],
+                      "title": "StaffJoinRequest",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "request"
+                  ],
+                  "title": "StaffJoinRequestResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such request"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Already answered"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Accept a request: the person becomes a box member",
+        "tags": [
+          "Join requests"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/join-requests/{id}/decline": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminJoinRequestController.decline",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "request": {
+                      "properties": {
+                        "decided_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "person": {
+                          "nullable": true,
+                          "properties": {
+                            "avatar_url": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "handle": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "id": {
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "nickname": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "avatar_url",
+                            "handle",
+                            "id",
+                            "nickname"
+                          ],
+                          "type": "object"
+                        },
+                        "requested_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "requested",
+                            "accepted",
+                            "declined",
+                            "cancelled"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "decided_at",
+                        "id",
+                        "person",
+                        "requested_at",
+                        "status"
+                      ],
+                      "title": "StaffJoinRequest",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "request"
+                  ],
+                  "title": "StaffJoinRequestResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such request"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Already answered"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Decline a request",
+        "tags": [
+          "Join requests"
         ]
       }
     },

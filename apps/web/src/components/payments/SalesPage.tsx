@@ -15,6 +15,7 @@ import { SPARK_GO_STYLE } from "@/lib/spark";
 
 import { useBoxSales } from "./BoxSales";
 import { DeskRequestDialog, WantButton, type DeskPlace } from "./DeskPayment";
+import { JoinToBuy } from "./JoinToBuy";
 import { perLabel } from "./BuyPackageSheet";
 import { providerLabel, salesPageSections } from "./checkout-flow";
 import { BeforePaying, money, usePackageCheckout } from "./PackageCheckout";
@@ -245,10 +246,7 @@ function BuyDialog({ slug, boxName, pkg, onClose }: { slug: string; boxName: str
         ) : status !== "authenticated" || memberships.isPending ? (
           <p className="text-sm" style={{ color: "var(--dim)" }}>{t("loading")}</p>
         ) : !member ? (
-          <>
-            <p className="text-sm" style={{ color: "var(--text-soft)" }}>{t("joinFirst", { box: boxName })}</p>
-            <AuthLink href={`/join/${encodeURIComponent(slug)}`} primary testId="sales-join">{t("join")}</AuthLink>
-          </>
+          <JoinToBuy slug={slug} boxName={boxName} packageId={pkg.id} />
         ) : (
           <MemberCheckout slug={slug} pkg={pkg} />
         )}

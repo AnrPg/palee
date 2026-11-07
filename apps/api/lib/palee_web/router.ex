@@ -699,6 +699,13 @@ defmodule PaleeWeb.Router do
     post("/memberships/redeem", OrganizationAccessController, :redeem)
     post("/memberships/join/:slug", OrganizationAccessController, :join)
     post("/memberships/join/:slug/athlete/:key", OrganizationAccessController, :join_as_athlete)
+    # ADR-552: buying a package the box lists to everyone makes you a box member.
+    post(
+      "/memberships/join/:slug/package/:package_id",
+      OrganizationAccessController,
+      :join_to_buy
+    )
+
     # ADR-204: same as redeem, plus the staff surface role and a new session.
     post("/auth/accept-invitation", AuthController, :accept_invitation)
   end
@@ -1493,6 +1500,10 @@ defmodule PaleeWeb.Router do
     get("/ai-settings", AdminAiSettingsController, :show)
     put("/ai-settings", AdminAiSettingsController, :update)
     get("/branding", AdminBrandingController, :show)
+    # ADR-552: «Ζήτα να γίνεις μέλος», answered by the staff.
+    get("/join-requests", AdminJoinRequestController, :index)
+    post("/join-requests/:id/accept", AdminJoinRequestController, :accept)
+    post("/join-requests/:id/decline", AdminJoinRequestController, :decline)
     get("/trial-policy", AdminTrialController, :policy)
     put("/trial-policy", AdminTrialController, :update_policy)
     get("/trials", AdminTrialController, :queue)
@@ -2648,6 +2659,10 @@ defmodule PaleeWeb.Router do
     get("/boxes/:slug/events", CommunityEventController, :box_events)
     # ADR-156: the friend's side of an invite.
     post("/referrals/claim", ReferralController, :claim)
+    # ADR-552: «Ζήτα να γίνεις μέλος».
+    get("/boxes/:slug/join-request", JoinRequestController, :show)
+    post("/boxes/:slug/join-request", JoinRequestController, :create)
+    post("/boxes/:slug/join-request/cancel", JoinRequestController, :cancel)
     # ADR-144: trials.
     post("/boxes/:slug/trials", TrialController, :create)
     get("/me/trials", TrialController, :index)
