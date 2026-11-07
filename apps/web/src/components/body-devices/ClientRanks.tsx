@@ -304,7 +304,7 @@ function TickSheet({
       size="sm"
       testId="tick-sheet"
       footer={
-        <div className="flex w-full items-center justify-end gap-3">
+        <div className="flex flex-wrap w-full items-center justify-end gap-3">
           {tick.checked ? (
             <button type="button" disabled={pending} onClick={onUntick} className="me-auto text-sm font-semibold" style={{ color: "var(--dim)" }}>
               {t("ranks.tick.untick")}
@@ -412,7 +412,7 @@ export function PromoteSheet({
       size="md"
       testId="promote-sheet"
       footer={
-        <div className="flex w-full items-center justify-end gap-3">
+        <div className="flex flex-wrap w-full items-center justify-end gap-3">
           <button type="button" onClick={onClose} className="text-sm font-semibold" style={{ color: "var(--text-soft)" }}>
             {t("cancel")}
           </button>
@@ -525,7 +525,7 @@ function WithdrawSheet({
       variant="sheet"
       size="sm"
       footer={
-        <div className="flex w-full items-center justify-end gap-3">
+        <div className="flex flex-wrap w-full items-center justify-end gap-3">
           <button type="button" onClick={onClose} className="text-sm font-semibold" style={{ color: "var(--text-soft)" }}>
             {t("cancel")}
           </button>

@@ -86,6 +86,10 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-brand);
+  /* A long e-mail, link or name breaks inside its box instead of pushing the
+     page sideways on a narrow phone (ANR 2026-11-07). Layout sizes are kept:
+     `break-word` does not change min-content widths. */
+  overflow-wrap: break-word;
 }
 
 code,

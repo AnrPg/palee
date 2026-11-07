@@ -992,7 +992,7 @@ export function AssignedWorkoutsConsole({
                           <ScoreTooltip scores={a.execution_scores!} />
                         </div>
                       ) : null}
-                      <div className="flex items-start gap-1">
+                      <div className="flex flex-wrap items-start gap-1">
                         <button
                           className="min-w-0 flex-1 truncate rounded-[0.8rem] px-2 py-1.5 text-start transition-opacity hover:opacity-80"
                           onClick={() => {

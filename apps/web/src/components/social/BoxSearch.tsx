@@ -9,6 +9,7 @@ import { useSession } from "@/components/session-provider";
 import { FollowButton } from "@/components/social/FollowButton";
 import { PersonAvatar } from "@/components/social/PersonAvatar";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { itemRow, itemRowActions, itemRowMain } from "@/components/ui/rows";
 
 import { isPeopleSearch } from "./social-model";
 
@@ -34,8 +35,8 @@ export function BoxResultRow({ box }: { box: BoxSearchResult }) {
   const tProviders = useTranslations("Providers");
   const place = box.neighbourhood || box.city;
   return (
-    <li className="flex items-center gap-3 rounded-3xl p-3" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
-      <Link href={`/b/${encodeURIComponent(box.slug)}`} className="flex min-w-0 flex-1 items-center gap-3">
+    <li className={`${itemRow} rounded-3xl p-3`} style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
+      <Link href={`/b/${encodeURIComponent(box.slug)}`} className={itemRowMain}>
         <PersonAvatar name={box.name} url={box.logo_url} />
         <span className="min-w-0">
           <span className="block truncate font-bold" style={{ color: "var(--text)" }}>{box.name}</span>
@@ -44,7 +45,7 @@ export function BoxResultRow({ box }: { box: BoxSearchResult }) {
           </span>
         </span>
       </Link>
-      <div className="shrink-0">
+      <div className={itemRowActions}>
         <FollowButton targetType="organization" targetId={box.organization_id} initialStatus={box.my_status} />
       </div>
     </li>

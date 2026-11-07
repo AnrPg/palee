@@ -368,7 +368,7 @@ function ManageFilterSheet({ entry, onClose }: { entry: SavedFilter; onClose: ()
         {confirmDelete ? (
           <div className="flex flex-col gap-2">
             <p className="text-sm" style={{ color: "var(--text)" }}>{t("deleteConfirm", { name: entry.name })}</p>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <SheetButton onClick={() => setConfirmDelete(false)}>{t("cancel")}</SheetButton>
               <SheetButton primary disabled={remove.isPending} onClick={() => remove.mutate(entry.id, { onSuccess: onClose })}>
                 {t("delete")}

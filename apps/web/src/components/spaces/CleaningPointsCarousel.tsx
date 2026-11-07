@@ -63,7 +63,7 @@ export function CleaningPointsCarousel({
       </div>
       <p className="text-sm font-semibold" style={{ color: "var(--text)" }} data-testid="cleaning-carousel-instruction">{point.instruction}</p>
 
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         <button
           type="button"
           className="flex-1 rounded-full px-4 py-2.5 text-sm font-semibold"

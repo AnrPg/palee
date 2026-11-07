@@ -360,7 +360,7 @@ function EditorForm({ token, location }: { token: string; location: FacilityLoca
           className="fixed inset-x-0 bottom-0 z-(--z-nav) px-6 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3"
           style={{ background: "color-mix(in srgb, var(--bg) 92%, transparent)", borderTop: "1px solid var(--border)" }}
         >
-          <div className="mx-auto flex max-w-3xl items-center justify-end gap-3">
+          <div className="mx-auto flex flex-wrap max-w-3xl items-center justify-end gap-3">
             {error ? (
               <ErrorNotice variant="text" className="mr-auto">{error}</ErrorNotice>
             ) : (

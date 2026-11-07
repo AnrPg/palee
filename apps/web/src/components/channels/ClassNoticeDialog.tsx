@@ -65,7 +65,7 @@ export function ClassNoticeDialog({ slotId, cancelled, onClose }: { slotId: stri
             </button>
           </div>
         ) : (
-          <div className="flex justify-end gap-2">
+          <div className="flex flex-wrap justify-end gap-2">
             <button type="button" className="rounded-full px-4 py-2 text-sm font-semibold" style={{ color: "var(--text)" }} onClick={onClose}>{t("cancel")}</button>
             <button
               type="button"

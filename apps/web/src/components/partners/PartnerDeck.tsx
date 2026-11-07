@@ -221,7 +221,7 @@ function Deck({
               </div>
             ) : null}
             <SwipeCard key={card.person.id} card={card} km={distance ? km : null} flying={flying} reducedMotion={reducedMotion} onDecide={decide} />
-            <div dir="ltr" className="pointer-events-none absolute inset-x-0 bottom-4 flex justify-center gap-8">
+            <div dir="ltr" className="pointer-events-none absolute inset-x-0 bottom-4 flex flex-wrap justify-center gap-8">
               <RoundButton
                 label={t("passLabel", { name: card.person.nickname ?? t("someone") })}
                 onClick={() => decide("pass")}

@@ -224,7 +224,7 @@ function Invitation({ link }: { link: BuddyLink }) {
     <div className="flex flex-col gap-2 rounded-2xl p-3" style={{ background: "color-mix(in srgb, var(--primary) 8%, var(--panel))", border: "1px solid var(--border)" }}>
       <PersonHeader link={link} chat={false} />
       <p className="text-sm" style={{ color: "var(--text-soft)" }}>{t("invitationBody", { name })}</p>
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         <PillButton disabled={action.isPending} onClick={() => action.mutate({ id: link.id, action: "decline" })}>{t("decline")}</PillButton>
         <PillButton primary disabled={action.isPending} onClick={() => action.mutate({ id: link.id, action: "accept" })}>{t("accept")}</PillButton>
       </div>
@@ -287,7 +287,7 @@ function LeaveControl({
     <div className="flex flex-col gap-2 rounded-2xl p-3" role="group" aria-label={label} style={{ background: "var(--panel-raised)" }}>
       <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>{question}</p>
       <p className="text-xs" style={{ color: "var(--dim)" }}>{t("stopQuiet")}</p>
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         <PillButton onClick={() => setConfirm(false)}>{t("cancel")}</PillButton>
         <PillButton danger disabled={busy} onClick={onConfirm}>{t("stopYes")}</PillButton>
       </div>

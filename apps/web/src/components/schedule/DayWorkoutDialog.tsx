@@ -204,7 +204,7 @@ export function DayWorkoutDialog({
                     className="rounded-2xl px-4 py-3"
                     style={{ background: "var(--panel-muted)", border: "1px solid var(--border)" }}
                   >
-                    <div className="flex items-start justify-between gap-3">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
                       <div className="min-w-0">
                         <p className="text-xs font-semibold uppercase tracking-[0.14em]" style={{ color: "var(--dim)" }}>
                           {scopeName(rule)}
@@ -216,7 +216,7 @@ export function DayWorkoutDialog({
                           {t("dayWodInheritedCount", { count })}
                         </p>
                       </div>
-                      <div className="flex shrink-0 gap-2">
+                      <div className="flex flex-wrap shrink-0 gap-2">
                         <button
                           type="button"
                           className="rounded-full px-3 py-1.5 text-xs font-semibold"

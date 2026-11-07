@@ -157,7 +157,7 @@ function SquadActions({ club, squad }: { club: CommunityClub; squad: PtSquad }) 
           <p className="rounded-2xl px-3 py-2 text-sm" style={{ background: "var(--panel-raised)", color: "var(--text)" }}>
             {t("invitedBanner", { coach: squad.coach.nickname ?? "?" })}
           </p>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <SheetButton disabled={answer.isPending} onClick={() => answer.mutate(false)}>{t("decline")}</SheetButton>
             <SheetButton primary disabled={answer.isPending} onClick={() => answer.mutate(true)}>{t("accept")}</SheetButton>
           </div>

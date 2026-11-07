@@ -237,7 +237,7 @@ function FiltersDialog({ filters, onApply, onClose }: { filters: ShopFilters; on
       variant="sheet"
       size="md"
       footer={
-        <div className="flex w-full gap-2">
+        <div className="flex flex-wrap w-full gap-2">
           <DialogButton onClick={() => setDraft({ ...NO_FILTERS, category: draft.category })}>{t("clearFilters")}</DialogButton>
           <DialogButton
             tone="primary"

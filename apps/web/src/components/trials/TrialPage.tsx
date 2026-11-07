@@ -189,7 +189,7 @@ function CancelTrial({ trial, token }: { trial: MyTrial; token: string }) {
     <div className="flex flex-col gap-2 rounded-2xl p-4" style={{ border: "1px solid var(--danger)" }}>
       <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>{t("cancelConfirm")}</p>
       {cancel.isError ? <ErrorNotice>{t(trialErrorKey(cancel.error))}</ErrorNotice> : null}
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         <button
           type="button"
           disabled={cancel.isPending}
@@ -233,7 +233,7 @@ export function FollowUp({ trial, token, compact }: { trial: MyTrial; token: str
         <p className="text-sm" style={{ color: "var(--text-soft)" }}>{t("followUpBody", { box: trial.box?.name ?? "" })}</p>
       </div>
       {answer.isError ? <ErrorNotice>{t(trialErrorKey(answer.error))}</ErrorNotice> : null}
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         <button
           type="button"
           disabled={answer.isPending}

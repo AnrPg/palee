@@ -252,7 +252,7 @@ export function NotificationCleanup({ categories }: { categories: NotificationCa
           dismissible={!remove.isPending}
           error={remove.isError ? t("deleteManyFailed") : undefined}
           footer={
-            <div className="flex w-full justify-end gap-2">
+            <div className="flex flex-wrap w-full justify-end gap-2">
               <button
                 type="button"
                 className="rounded-full px-4 py-2 text-sm font-semibold"

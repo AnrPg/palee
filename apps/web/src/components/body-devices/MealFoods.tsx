@@ -160,7 +160,7 @@ function BarcodeCard({ onAdd, onCancel }: { onAdd: (food: MealFood) => void; onC
       </label>
       {result?.status === "pending" ? <p className="text-xs" style={{ color: "var(--dim)" }}>{t("foods.pending")}</p> : null}
       {lookup.isError ? <ErrorNotice>{t("errorGeneric")}</ErrorNotice> : null}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <button
           type="button"
           disabled={lookup.isPending || typed.trim() === ""}
@@ -281,7 +281,7 @@ function FoundFood({ lookup, food, onAdd, onCancel }: { lookup: BarcodeLookup; f
           </span>
         )
       ) : null}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <button
           type="button"
           onClick={() =>
@@ -485,7 +485,7 @@ function OwnFoodForm({
       ) : null}
       {shareable && share ? null : <p className="text-xs" style={{ color: "var(--dim)" }}>{t("foods.staysYours")}</p>}
       {save.isError ? <ErrorNotice>{t("errorGeneric")}</ErrorNotice> : null}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <button
           type="button"
           disabled={save.isPending}
@@ -580,7 +580,7 @@ function LabelPhoto({ onRead }: { onRead: (food: FoodLabelPrefill) => void }) {
       ) : message ? (
         <span className="text-xs" style={{ color: "var(--danger)" }}>{message}</span>
       ) : null}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <button
           type="button"
           disabled={read.isPending}

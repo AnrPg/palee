@@ -12,6 +12,7 @@ import { PersonAvatar } from "@/components/social/PersonAvatar";
 import { BuddyBadge } from "./SocialBits";
 import { isPeopleSearch, relationKey } from "./social-model";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { itemRow, itemRowActions, itemRowMain } from "@/components/ui/rows";
 
 /**
  * People search across Palee (ADR-193 §4): from two characters on, ranked by
@@ -80,8 +81,8 @@ export function PersonResultRow({ person }: { person: PeopleSearchPerson }) {
   const relation = relationKey(person);
   const name = person.nickname ?? person.handle ?? "?";
   return (
-    <li className="flex items-center gap-3 rounded-3xl p-3" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
-      <Link href={`/people/${person.id}`} className="flex min-w-0 flex-1 items-center gap-3">
+    <li className={`${itemRow} rounded-3xl p-3`} style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
+      <Link href={`/people/${person.id}`} className={itemRowMain}>
         <PersonAvatar name={name} url={person.avatar_url} />
         <span className="min-w-0">
           <span className="block truncate font-bold" style={{ color: "var(--text)" }}>{name}</span>
@@ -95,7 +96,7 @@ export function PersonResultRow({ person }: { person: PeopleSearchPerson }) {
           </span>
         </span>
       </Link>
-      <div className="shrink-0">
+      <div className={itemRowActions}>
         <FollowButton targetType="user" targetId={person.id} initialStatus={person.my_status} buddy={person.buddy} />
       </div>
     </li>

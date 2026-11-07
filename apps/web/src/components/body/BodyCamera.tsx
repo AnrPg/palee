@@ -186,7 +186,7 @@ export function BodyCamera({
 
       <div className="flex flex-col gap-3 px-4 pb-4 pt-3" style={{ paddingBottom: "calc(1rem + env(safe-area-inset-bottom))" }}>
         {shot ? (
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <button type="button" onClick={() => setShot(null)} className={[control.className, "flex-1"].join(" ")} style={controlStyle}>
               {t("retake")}
             </button>

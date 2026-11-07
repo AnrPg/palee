@@ -99,7 +99,7 @@ export function AdminSlotRoster({
               </div>
 
               {booking.status === "pending" ? (
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <button
                     className="rounded-full px-3 py-2 text-xs font-semibold"
                     style={{ background: "var(--text)", color: "var(--bg)" }}

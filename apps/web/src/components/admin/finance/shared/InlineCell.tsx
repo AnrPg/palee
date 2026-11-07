@@ -259,7 +259,7 @@ function InlineDateEditor({
             );
           })}
         </div>
-        <div className="mt-3 flex justify-between">
+        <div className="mt-3 flex flex-wrap justify-between">
           <button
             className="text-xs font-semibold"
             onMouseDown={(event) => event.preventDefault()}

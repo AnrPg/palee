@@ -243,7 +243,7 @@ export function ClassTypeSettings({ token }: { token: string }) {
           size="lg"
           variant="center"
           footer={
-            <div className="w-full flex justify-end gap-3">
+            <div className="w-full flex flex-wrap justify-end gap-3">
               <button
                 className="rounded-full px-4 py-2 text-sm font-semibold"
                 onClick={() => setArchiveMapping(null)}

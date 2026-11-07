@@ -165,7 +165,7 @@ function CollectDialog({ request, onClose }: { request: DeskPackageRequest; onCl
       error={mutation.isError ? localizeError(mutation.error, i18n) : undefined}
       testId="desk-collect"
       footer={
-        <div className="flex w-full gap-2">
+        <div className="flex flex-wrap w-full gap-2">
           <DialogButton onClick={onClose}>{t("close")}</DialogButton>
           <DialogButton tone="primary" disabled={mutation.isPending} onClick={() => mutation.mutate()} testId="desk-collect-confirm">
             {t("collect", { amount: money(request.price_cents) })}

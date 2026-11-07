@@ -133,7 +133,7 @@ export function AdminReviews() {
             );
           })}
         </section>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between">
           <button
             className="rounded-full border border-[color:var(--border)] px-4 py-2 text-sm font-bold disabled:opacity-40"
             disabled={offset === 0}

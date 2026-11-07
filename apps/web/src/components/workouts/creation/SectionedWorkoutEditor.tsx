@@ -427,7 +427,7 @@ function SectionCard({
       style={{ borderColor: problems.length > 0 ? "var(--danger)" : "var(--dim)", background: "var(--card)" }}
       data-testid="text-section"
     >
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <span className="shrink-0 text-xs font-black tabular-nums" style={{ color: "var(--dim)" }}>
           {number}
         </span>

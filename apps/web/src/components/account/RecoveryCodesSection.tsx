@@ -206,7 +206,7 @@ function RecoveryCodesDialog({ regenerate, onClose }: { regenerate: boolean; onC
       dismissible={!pending}
       onSubmit={(event) => void submit(event)}
       footer={
-        <div className="flex w-full gap-3 sm:w-auto">
+        <div className="flex flex-wrap w-full gap-3 sm:w-auto">
           <button
             type="button"
             onClick={onClose}

@@ -42,7 +42,7 @@ export function GuideOffer() {
         </p>
         <p className="mt-1 text-sm" style={{ color: "var(--text-soft)" }}>{t(`${guide.id}.summary` as never)}</p>
       </div>
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         <DialogButton
           tone="ghost"
           className="flex-1"

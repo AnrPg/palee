@@ -140,7 +140,7 @@ function EditWebhookDialog({ token, hook, onClose }: { token: string; hook: Webh
       onClose={onClose}
       dismissible={!save.isPending}
       footer={
-        <div className="flex justify-end gap-2">
+        <div className="flex flex-wrap justify-end gap-2">
           <TextButton onClick={onClose}>{t("cancel")}</TextButton>
           <PrimaryButton disabled={save.isPending || events.length === 0} onClick={() => save.mutate()}>{t("save")}</PrimaryButton>
         </div>

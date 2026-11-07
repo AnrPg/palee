@@ -92,7 +92,7 @@ export function TypeFilterChips({ classTypes, value, onChange }: TypeFilterChips
             })}
           </div>
 
-          <div className="mt-4 flex gap-2">
+          <div className="mt-4 flex flex-wrap gap-2">
             <button
               className="flex-1 rounded-full px-3 py-2 text-xs font-semibold"
               onClick={() => setPending([])}

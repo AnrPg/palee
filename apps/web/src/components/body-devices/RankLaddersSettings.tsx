@@ -715,7 +715,7 @@ function SkillDetailsSheet({
       size="sm"
       testId="skill-details"
       footer={
-        <div className="flex w-full items-center justify-end gap-3">
+        <div className="flex flex-wrap w-full items-center justify-end gap-3">
           <button type="button" onClick={onClose} className="text-sm font-semibold" style={{ color: "var(--text-soft)" }}>
             {t("cancel")}
           </button>
@@ -739,7 +739,7 @@ function SkillDetailsSheet({
       }
     >
       <div className="flex flex-col gap-3">
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button type="button" disabled={first} onClick={() => onMove(-1)} className="min-h-10 rounded-xl px-3 text-sm font-semibold disabled:opacity-40" style={secondary}>
             {t("ranks.skillRow.up")}
           </button>
