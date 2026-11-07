@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { Suspense, useState } from "react";
 
 import type { OrganizationMembership } from "@/api/organizations";
-import { entitledFeatures } from "@/components/client/entitlement";
+import { entitledFeatures, workoutsClosed } from "@/components/client/entitlement";
 import { useClientEntitlement } from "@/components/client/use-client-entitlement";
 import { aroundKindHref } from "@/components/around/around";
 import { AnnouncementsCard } from "@/components/community/AnnouncementsCard";
@@ -140,18 +140,28 @@ function FindABox() {
 
 function GymActions({ entitlement }: { entitlement: ReturnType<typeof useClientEntitlement>["entitlement"] }) {
   const t = useTranslations("MemberApp");
+  const tNav = useTranslations("Navigation");
   const features = entitledFeatures(entitlement);
+  const closed = workoutsClosed(entitlement);
   const actions = [
-    { href: "/box/schedule", label: t("actionSchedule"), icon: HubIcons.calendar, shown: true },
-    { href: "/box/appointments", label: t("actionAppointments"), icon: HubIcons.clock, shown: features.includes("appointments") },
-    { href: "/box/videos", label: t("actionVideos"), icon: HubIcons.video, shown: features.includes("videos") },
-    { href: "/box/coach", label: t("actionCoach"), icon: HubIcons.chat, shown: features.includes("coaching") },
+    { href: "/box/schedule", label: t("actionSchedule"), icon: HubIcons.calendar, shown: true, locked: false },
+    // ADR-551 (mockups 2 A, 3 B): the programme one tap from Box; locked while access is closed.
+    { href: "/box/workouts", label: tNav("myWorkouts"), icon: HubIcons.dumbbell, shown: true, locked: closed },
+    { href: "/box/appointments", label: t("actionAppointments"), icon: HubIcons.clock, shown: features.includes("appointments"), locked: false },
+    { href: "/box/videos", label: t("actionVideos"), icon: HubIcons.video, shown: features.includes("videos"), locked: false },
+    { href: "/box/coach", label: t("actionCoach"), icon: HubIcons.chat, shown: features.includes("coaching"), locked: false },
   ].filter((action) => action.shown);
 
   return (
-    <nav aria-label={t("boxActions")} className="grid gap-2" style={{ gridTemplateColumns: `repeat(${actions.length}, minmax(0, 1fr))` }}>
+    <nav aria-label={t("boxActions")} className="grid gap-2" style={{ gridTemplateColumns: `repeat(${actions.length > 4 ? 3 : actions.length}, minmax(0, 1fr))` }}>
       {actions.map((action) => (
-        <HubActionTile key={action.href} href={action.href} label={action.label} icon={action.icon} />
+        <HubActionTile
+          key={action.href}
+          href={action.href}
+          label={action.label}
+          icon={action.icon}
+          lockedLabel={action.locked ? t("lockedUntilActive") : undefined}
+        />
       ))}
     </nav>
   );

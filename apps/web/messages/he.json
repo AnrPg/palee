@@ -5604,6 +5604,7 @@
     "cancel": "ביטול",
     "signOut": "התנתקות",
     "todayWorkout": "האימון של היום",
+    "lockedUntilActive": "ייפתח כשהמנוי שלך יהיה פעיל",
     "todaySources": "אימוני היום לפי מקור",
     "classChip": "שיעור {time}",
     "programmeChip": "{title} · מהמאמן",

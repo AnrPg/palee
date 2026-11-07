@@ -186,7 +186,15 @@ export function activeItemId(pathname: string, items: Pick<NavItem, "id" | "matc
   return best?.id ?? null;
 }
 
-export type SectionTab = { id: string; href: string; labelKey: string; match: string[]; scoped?: boolean };
+export type SectionTab = {
+  id: string;
+  href: string;
+  labelKey: string;
+  match: string[];
+  scoped?: boolean;
+  /** ADR-551 (mockup 3 B): shown with a lock and not pressable while the member's access is closed. */
+  locked?: boolean;
+};
 export type SectionGroup = { id: string; tabs: SectionTab[] };
 
 /** The tab strip of the page group `pathname` belongs to, if any. */
@@ -198,7 +206,7 @@ export function sectionGroupFor(
     features: ClientFeature[];
     /** Ρυθμίσεις › Σώμα (ADR-158 §7): a section switched off loses its segment. */
     journalSections?: { body?: boolean; wellness?: boolean } | null;
-    /** ADR-551: false once the member's access has closed (no «Τα workouts μου»). */
+    /** ADR-551: false once the member's access has closed («Τα workouts μου» locked). */
     workoutsOpen?: boolean;
   },
 ): SectionGroup | null {
@@ -230,10 +238,8 @@ export function sectionGroupFor(
         // sub-page, so Check-in, Κατάστημα, Έγγραφα keep only «← Box».
         { id: "boxToday", href: "/box", labelKey: "today", match: [] },
         // ADR-125: members receive personal workouts and class versions too;
-        // ADR-551: not once their access has closed.
-        ...(context.workoutsOpen === false
-          ? []
-          : [{ id: "myWorkouts", href: "/box/workouts", labelKey: "myWorkouts", match: ["/box/workouts"] }]),
+        // ADR-551 (mockup 3 B): locked once their access has closed.
+        { id: "myWorkouts", href: "/box/workouts", labelKey: "myWorkouts", match: ["/box/workouts"], locked: context.workoutsOpen === false },
         { id: "classes", href: "/box/schedule", labelKey: "schedule", match: ["/box/schedule"] },
         ...(feature("appointments") ? [{ id: "appointments", href: "/box/appointments", labelKey: "appointments", match: ["/box/appointments"] }] : []),
         ...(feature("videos") ? [{ id: "videos", href: "/box/videos", labelKey: "videos", match: ["/box/videos"] }] : []),

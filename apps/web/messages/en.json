@@ -5604,6 +5604,7 @@
     "cancel": "Cancel",
     "signOut": "Sign out",
     "todayWorkout": "Today's workout",
+    "lockedUntilActive": "Opens once your membership is active",
     "todaySources": "Today's workouts by source",
     "classChip": "Class {time}",
     "programmeChip": "{title} · from your coach",

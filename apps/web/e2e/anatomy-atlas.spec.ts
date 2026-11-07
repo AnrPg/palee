@@ -192,7 +192,7 @@ test("the goals sheet opens the atlas on a muscle; the panel, breadcrumb, figure
   await requireWebgl(page);
   const atlasRequests = await stubMember(page);
   await page.goto("/box");
-  await page.getByTestId("wod-goals-strip").click();
+  await page.getByTestId("wod-goals-open").click();
   const sheet = page.getByRole("dialog", { name: "Workout goals" });
   await sheet.getByTestId("wod-goals-atlas-link").click();
   // The first visit compiles the route in the dev server.

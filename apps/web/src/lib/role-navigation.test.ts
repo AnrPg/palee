@@ -142,10 +142,11 @@ describe("sectionGroupFor", () => {
     // ADR-164: the anatomy atlas lives under Πρόοδος.
     expect(journal?.tabs.find((tab) => tab.id === "progress")?.match).toContain("/journal/atlas");
     expect(sectionGroupFor("/box", { surface: "member", staffItems: [], features: ["videos"] })).toBeNull();
-    // ADR-551: no «Τα workouts μου» once the member's access has closed.
-    expect(
-      sectionGroupFor("/box/schedule", { surface: "member", staffItems: [], features: [], workoutsOpen: false })?.tabs.map((tab) => tab.id),
-    ).toEqual(["boxToday", "classes"]);
+    // ADR-551 (mockup 3 B): «Τα workouts μου» stays, locked, once the member's access has closed.
+    const closed = sectionGroupFor("/box/schedule", { surface: "member", staffItems: [], features: [], workoutsOpen: false });
+    expect(closed?.tabs.map((tab) => tab.id)).toEqual(["boxToday", "myWorkouts", "classes"]);
+    expect(closed?.tabs.find((tab) => tab.id === "myWorkouts")?.locked).toBe(true);
+    expect(box?.tabs.find((tab) => tab.id === "myWorkouts")?.locked).toBe(false);
     // Box pages that are not a tab (Check-in, Κατάστημα, Έγγραφα) get no strip, and never a lit «Σήμερα».
     for (const path of ["/box/check-in", "/box/shop", "/box/documents", "/box/programmes/p1"]) {
       expect(sectionGroupFor(path, { surface: "member", staffItems: [], features: ["videos"] })).toBeNull();

@@ -5604,6 +5604,7 @@
     "cancel": "إلغاء",
     "signOut": "تسجيل الخروج",
     "todayWorkout": "تمرين اليوم",
+    "lockedUntilActive": "يُفتح عند تفعيل اشتراكك",
     "todaySources": "تمارين اليوم حسب المصدر",
     "classChip": "حصة {time}",
     "programmeChip": "{title} · من مدربك",

@@ -5604,6 +5604,7 @@
     "cancel": "Annuleren",
     "signOut": "Afmelden",
     "todayWorkout": "Training van vandaag",
+    "lockedUntilActive": "Opent zodra je lidmaatschap actief is",
     "todaySources": "Trainingen van vandaag per bron",
     "classChip": "Les {time}",
     "programmeChip": "{title} · van je coach",

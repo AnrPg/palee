@@ -5604,6 +5604,7 @@
     "cancel": "Annuler",
     "signOut": "Se déconnecter",
     "todayWorkout": "Entraînement du jour",
+    "lockedUntilActive": "S'ouvre dès que ton abonnement est actif",
     "todaySources": "Entraînements du jour par origine",
     "classChip": "Cours {time}",
     "programmeChip": "{title} · de ton coach",

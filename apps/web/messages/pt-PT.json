@@ -5604,6 +5604,7 @@
     "cancel": "Cancelar",
     "signOut": "Terminar sessão",
     "todayWorkout": "Treino de hoje",
+    "lockedUntilActive": "Abre quando a tua inscrição estiver ativa",
     "todaySources": "Treinos de hoje por origem",
     "classChip": "Aula {time}",
     "programmeChip": "{title} · do seu coach",

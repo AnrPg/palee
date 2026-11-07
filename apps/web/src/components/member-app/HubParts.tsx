@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+
+import { LockIcon } from "@/components/ui/LockIcon";
 import type { ReactNode } from "react";
 import { TopBarActions } from "@/components/nav/top-bar-slot";
 import type { GuideAnchor } from "@/lib/guides/anchors";
@@ -100,7 +102,26 @@ export function HubButton({ href, children, primary }: { href: string; children:
   );
 }
 
-export function HubActionTile({ href, label, icon }: { href: string; label: string; icon: ReactNode }) {
+export function HubActionTile({ href, label, icon, lockedLabel }: { href: string; label: string; icon: ReactNode; lockedLabel?: string }) {
+  // ADR-551 (mockup 3 B): shown greyed with a lock and not pressable while the member's access is closed.
+  if (lockedLabel) {
+    return (
+      <span
+        role="link"
+        aria-disabled="true"
+        aria-label={`${label}. ${lockedLabel}`}
+        title={lockedLabel}
+        className="flex min-h-20 cursor-not-allowed flex-col items-center justify-center gap-1.5 rounded-2xl px-2 text-xs font-semibold opacity-50"
+        style={{ background: "var(--panel)", border: "1px solid var(--border)", color: "var(--text)" }}
+      >
+        <span style={{ color: "var(--dim)" }}>{icon}</span>
+        <span className="flex items-center gap-1">
+          {label}
+          <LockIcon size={12} />
+        </span>
+      </span>
+    );
+  }
   return (
     <Link
       href={href}

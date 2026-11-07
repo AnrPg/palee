@@ -25,6 +25,12 @@ export function WodGoalsStrip({ workoutId, className = "" }: { workoutId: string
   return <WodGoalsStripView goals={goals.data?.goals ?? null} className={className} />;
 }
 
+/**
+ * ADR-551 (mockup 4 A): a quiet «Στόχοι» block under the WOD, one row per
+ * kind (label left, value right) like rendered markdown; a row without a
+ * value is left out. The small figure opens the sheet with every muscle and
+ * the atlas.
+ */
 export function WodGoalsStripView({ goals, className = "" }: { goals: MemberWorkoutGoals | null; className?: string }) {
   const t = useTranslations("WodGoals");
   const anatomy = useTranslations("Anatomy");
@@ -33,42 +39,44 @@ export function WodGoalsStripView({ goals, className = "" }: { goals: MemberWork
   if (!goals || (goals.muscles.length === 0 && goals.qualities.length === 0 && !goals.stimulus)) return null;
 
   const names = summaryMuscleIds(goals.muscles).map((id) => anatomy(`muscle.${id}`));
+  const rows = [
+    { key: "muscles", label: t("muscles"), value: names.length > 0 ? format.list(names) : null },
+    { key: "qualities", label: t("qualities"), value: goals.qualities.length > 0 ? goals.qualities.map((quality) => anatomy(`quality.${quality}`)).join(" · ") : null },
+    { key: "stimulus", label: t("stimulus"), value: goals.stimulus || null },
+  ].filter((row) => row.value);
+
   return (
-    <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        aria-label={t("strip.open")}
-        data-testid="wod-goals-strip"
-        className={`flex w-full items-center gap-3 rounded-2xl px-3 py-2 text-start ${className}`}
-        style={{ background: "var(--panel-raised, var(--panel))", border: "1px solid var(--border)" }}
-      >
+    <section
+      data-testid="wod-goals-strip"
+      aria-label={t("title")}
+      className={`border-t pt-3 ${className}`}
+      style={{ borderColor: "var(--border)" }}
+    >
+      <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.16em]" style={{ color: "var(--dim)" }}>{t("title")}</p>
+      <div className="flex items-start gap-3">
+        <dl className="m-0 min-w-0 flex-1">
+          {rows.map((row) => (
+            <div key={row.key} className="grid grid-cols-[6rem_minmax(0,1fr)] gap-3 py-1 text-[13px] leading-snug">
+              <dt className="font-semibold" style={{ color: "var(--dim)" }}>{row.label}</dt>
+              <dd className="m-0 break-words" style={{ color: "var(--text-soft)" }}>{row.value}</dd>
+            </div>
+          ))}
+        </dl>
         {goals.muscles.length > 0 ? (
-          <AnatomyThumb highlights={goalHighlights(goals.muscles, ["primary", "secondary"])} view="both" height={56} className="shrink-0" />
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            aria-label={t("strip.open")}
+            title={t("strip.open")}
+            data-testid="wod-goals-open"
+            className="shrink-0 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]"
+          >
+            <AnatomyThumb highlights={goalHighlights(goals.muscles, ["primary", "secondary"])} view="both" height={56} />
+          </button>
         ) : null}
-        <span className="flex min-w-0 flex-1 flex-col gap-1">
-          {names.length > 0 ? (
-            <span className="truncate text-sm font-bold" style={{ color: "var(--text)" }}>
-              {t("strip.summary", { muscles: format.list(names) })}
-            </span>
-          ) : null}
-          {goals.qualities.length > 0 ? (
-            <span className="flex flex-wrap gap-1">
-              {goals.qualities.slice(0, 3).map((quality) => (
-                <span key={quality} className="rounded-full px-2 py-0.5 text-[11px] font-semibold" style={{ background: "var(--bg)", color: "var(--text-soft)" }}>
-                  {anatomy(`quality.${quality}`)}
-                </span>
-              ))}
-            </span>
-          ) : null}
-          {goals.stimulus ? (
-            <span className="truncate text-xs" style={{ color: "var(--text-soft)" }}>{goals.stimulus}</span>
-          ) : null}
-        </span>
-        <span aria-hidden="true" className="shrink-0 text-lg" style={{ color: "var(--dim)" }}>›</span>
-      </button>
+      </div>
       {open ? <WodGoalsSheet goals={goals} onClose={() => setOpen(false)} /> : null}
-    </>
+    </section>
   );
 }
 

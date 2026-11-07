@@ -256,12 +256,13 @@ test.describe("member", () => {
     await expect(page.getByRole("heading", { name: "Fran" })).toBeVisible();
 
     const strip = page.getByTestId("wod-goals-strip");
-    await expect(strip).toContainText("Goals: Quadriceps and Latissimus dorsi");
+    // ADR-551 (mockup 4 A): one quiet row per kind, the figure opens the sheet.
+    await expect(strip).toContainText("Quadriceps and Latissimus dorsi");
     await expect(strip).toContainText("Stamina");
     await expect(strip).toContainText("fast, 3–7′, unbroken thrusters");
     await shot(page, "box-strip");
 
-    await strip.click();
+    await page.getByTestId("wod-goals-open").click();
     const sheet = page.getByRole("dialog", { name: "Workout goals" });
     await expect(sheet).toContainText("Erector spinae");
     await expect(sheet).toContainText("Stabilizing");

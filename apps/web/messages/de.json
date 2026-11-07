@@ -5604,6 +5604,7 @@
     "cancel": "Abbrechen",
     "signOut": "Abmelden",
     "todayWorkout": "Workout des Tages",
+    "lockedUntilActive": "Öffnet sich, sobald deine Mitgliedschaft aktiv ist",
     "todaySources": "Heutige Workouts nach Quelle",
     "classChip": "Kurs {time}",
     "programmeChip": "{title} · von deinem Coach",

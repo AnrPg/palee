@@ -10,7 +10,9 @@ import { listMyExecutions } from "@/api/executions";
 import { fetchSchedule, type ScheduleSlot } from "@/api/schedule";
 import { fetchTrainingLogSources } from "@/api/training-log";
 import { useWorkoutLauncher } from "@/components/client/use-workout-launcher";
+import { workoutsClosed } from "@/components/client/entitlement";
 import { useClientEntitlement } from "@/components/client/use-client-entitlement";
+import { LockIcon } from "@/components/ui/LockIcon";
 import { HubCard } from "@/components/member-app/HubParts";
 import { MyProgrammesCard } from "@/components/programmes/MyProgrammes";
 import { NextBookingActions } from "@/components/member-app/box/NextBookingActions";
@@ -161,10 +163,26 @@ export function BoxToday({
 
   // Nothing today and nothing to resume: no card (vision §4.2).
   const showToday = loading || Boolean(selected) || Boolean(today.resumeExecutionId);
+  // ADR-551 (mockup 3 B): with access closed the server sends no WOD; the card stays, greyed and locked.
+  const lockedToday = workoutsClosed(entitlement) && !selected && !today.resumeExecutionId;
 
   return (
     <>
-      {showToday ? (
+      {lockedToday ? (
+        <div
+          data-testid="box-today-locked"
+          aria-disabled="true"
+          className="rounded-3xl p-5 opacity-50"
+          style={{ background: "var(--panel)", border: "1px solid var(--border)" }}
+        >
+          <p className="mb-2 flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.18em]" style={{ color: "var(--dim)" }}>
+            {t("todayWorkout")}
+            <LockIcon size={12} />
+          </p>
+          <p className="text-sm" style={{ color: "var(--dim)" }}>{t("lockedUntilActive")}</p>
+        </div>
+      ) : null}
+      {showToday && !lockedToday ? (
         <HubCard eyebrow={t("todayWorkout")} highlighted>
           {loading ? (
             <p className="text-sm" style={{ color: "var(--dim)" }}>{t("loading")}</p>

@@ -69,6 +69,15 @@ describe("MemberTopBar", () => {
     expect(screen.getByTestId("member-top-bar").textContent ?? "").not.toMatch(/\p{Extended_Pictographic}/u);
   });
 
+  it("keeps the tab strip in the logo's column on wide screens", () => {
+    render(<MemberTopBar><nav>tabs</nav></MemberTopBar>);
+    const logoColumn = screen.getByRole("link", { name: "brandName" }).parentElement!;
+    const stripColumn = screen.getByText("tabs").parentElement!;
+    expect(logoColumn.className).toContain("max-w-xl");
+    expect(stripColumn.className).toContain("max-w-xl");
+    expect(stripColumn.className).toContain("mx-auto");
+  });
+
   it("puts a page's action next to the bell", () => {
     render(
       <>

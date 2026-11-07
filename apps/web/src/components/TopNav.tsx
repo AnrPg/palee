@@ -101,6 +101,7 @@ export function tenantBrandLogoUrl(
 export function TopNav() {
   const i18n = useUiTranslations();
   const t = useTranslations("Navigation");
+  const tMember = useTranslations("MemberApp");
   const tResets = useTranslations("passwordResets");
   const pathname = usePathname();
   const router = useRouter();
@@ -212,7 +213,7 @@ export function TopNav() {
         <NotificationBell onUnreadChange={setUnreadNotifications} hideTrigger />
         {memberShell ? (
           <MemberTopBar>
-            {sectionGroup ? <SectionTabs group={sectionGroup} pathname={pathname} hrefFor={hrefFor} labelFor={(key) => t(key)} /> : null}
+            {sectionGroup ? <SectionTabs group={sectionGroup} pathname={pathname} hrefFor={hrefFor} labelFor={(key) => t(key)} inset="px-4" lockedLabel={tMember("lockedUntilActive")} /> : null}
           </MemberTopBar>
         ) : null}
       </>

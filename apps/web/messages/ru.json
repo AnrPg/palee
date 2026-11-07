@@ -5604,6 +5604,7 @@
     "cancel": "Отмена",
     "signOut": "Выйти",
     "todayWorkout": "Тренировка дня",
+    "lockedUntilActive": "Откроется, когда абонемент станет активным",
     "todaySources": "Тренировки на сегодня по источнику",
     "classChip": "Занятие {time}",
     "programmeChip": "{title} · от тренера",

@@ -5604,6 +5604,7 @@
     "cancel": "Άκυρο",
     "signOut": "Αποσύνδεση",
     "todayWorkout": "Η προπόνηση της ημέρας",
+    "lockedUntilActive": "Ανοίγει μόλις ενεργοποιηθεί η συνδρομή",
     "todaySources": "Οι σημερινές προπονήσεις ανά πηγή",
     "classChip": "Τμήμα {time}",
     "programmeChip": "{title} · από τον coach",

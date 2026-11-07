@@ -18,7 +18,8 @@ import { useScrollHidden } from "./use-scroll-hidden";
  * logo on the left, the bell on the right, and the page's own action next to
  * the bell (the Feed's ⊕, via <TopBarActions>). It shows wherever the bottom
  * bar does and, like it, slides away while scrolling down and comes back on
- * any scroll up. The page group's tab strip (`children`) rides with it.
+ * any scroll up. The page group's tab strip (`children`) rides with it, in
+ * the same centred column as the logo and the bell.
  */
 export function MemberTopBar({ children }: { children?: ReactNode }) {
   const t = useTranslations("Navigation");
@@ -54,7 +55,7 @@ export function MemberTopBar({ children }: { children?: ReactNode }) {
   if (!visible) {
     return children ? (
       <div className="sticky z-(--z-nav) overflow-x-clip pt-2" style={{ top: "var(--safe-top, 0px)", background: "var(--bg)", borderBottom: "1px solid var(--border)" }}>
-        {children}
+        <div className="mx-auto w-full max-w-xl">{children}</div>
       </div>
     ) : null;
   }
@@ -99,7 +100,8 @@ export function MemberTopBar({ children }: { children?: ReactNode }) {
           </button>
         </div>
       </div>
-      {children ? <div className="pt-1">{children}</div> : null}
+      {/* The strip shares the logo row's column, so on wide screens the first tab sits under the logo. */}
+      {children ? <div className="mx-auto w-full max-w-xl pt-1">{children}</div> : null}
     </header>
   );
 }

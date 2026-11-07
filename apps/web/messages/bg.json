@@ -5604,6 +5604,7 @@
     "cancel": "Отказ",
     "signOut": "Изход",
     "todayWorkout": "Тренировка за деня",
+    "lockedUntilActive": "Отваря се, щом членството ти е активно",
     "todaySources": "Днешните тренировки по източник",
     "classChip": "Занятие {time}",
     "programmeChip": "{title} · от треньора",

@@ -35,9 +35,16 @@ he should not be able to see it." Mockups:
      `GET /community/wod-today` shows no WOD.
    - The member's own results (`/me/executions/:id/workout-snapshot`,
      the training log) stay theirs.
-4. The web app hides what the member cannot use (vision §4 principle 11,
-   ADR-470) and shows one notice with the way out (pay, renew, write to the
-   box) on Box.
+4. The web app (ANR's picks 2026-11-07: 1A, 2A, 3B, 4A) shows what the
+   closed access keeps shut greyed with a line lock and not pressable, with
+   «Ανοίγει μόλις ενεργοποιηθεί η συνδρομή»: the WOD-of-the-day card, the
+   «Τα workouts μου» tile on Box and its tab in the Box strip
+   (`SectionTab.locked`, `HubActionTile lockedLabel`, `ui/LockIcon`).
+   The membership card on Box keeps the notice and the way out (pay, renew).
+5. Around it: the Box strip sits in the logo's centred column (1A); Box has a
+   «Τα workouts μου» tile next to «Πρόγραμμα» (2A); the WOD goals show as a
+   quiet «Στόχοι» block of label/value rows under the WOD, with a small
+   figure that opens the atlas sheet (4A).
 
 ## Consequences
 - A finance-enabled gym's member with no package at all no longer sees the

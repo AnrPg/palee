@@ -123,10 +123,13 @@ describe("WodGoalsStripView", () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it("names the primary muscles and opens the sheet with every role", () => {
+  it("shows one quiet row per kind and opens the sheet with every role", () => {
     wrap(<WodGoalsStripView goals={goals} />);
-    expect(screen.getByText("Goals: Quadriceps")).toBeInTheDocument();
-    expect(screen.getByText("fast, unbroken")).toBeInTheDocument();
+    const block = screen.getByTestId("wod-goals-strip");
+    expect(block).toHaveAccessibleName("Goals");
+    expect(screen.getByText("Muscles").nextElementSibling).toHaveTextContent("Quadriceps");
+    expect(screen.getByText("Qualities").nextElementSibling).toHaveTextContent("Stamina · Power");
+    expect(screen.getByText("Stimulus").nextElementSibling).toHaveTextContent("fast, unbroken");
     fireEvent.click(screen.getByRole("button", { name: "See the goals" }));
     const sheet = screen.getByRole("dialog", { name: "Workout goals" });
     expect(sheet).toHaveTextContent("Erector spinae");
@@ -135,6 +138,14 @@ describe("WodGoalsStripView", () => {
     expect(screen.getByTestId("wod-goals-atlas-link")).toHaveAttribute("href", "/journal/atlas?node=quadriceps");
     fireEvent.click(screen.getByRole("button", { name: "Open Glutes in the atlas" }));
     expect(push).toHaveBeenCalledWith("/journal/atlas?node=glutes");
+  });
+
+  it("leaves out a row without a value, and the figure without muscles", () => {
+    wrap(<WodGoalsStripView goals={{ ...goals, muscles: [], qualities: [], stimulus: "steady" }} />);
+    expect(screen.queryByText("Muscles")).toBeNull();
+    expect(screen.queryByText("Qualities")).toBeNull();
+    expect(screen.getByText("steady")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "See the goals" })).toBeNull();
   });
 });
 
