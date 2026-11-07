@@ -18,6 +18,7 @@ import { BOTTOM_NAV_SPACE, useBottomTabBarVisible } from "@/components/nav/Botto
 import { useSession } from "@/components/session-provider";
 import { FollowButton } from "@/components/social/FollowButton";
 import { TrialButton } from "@/components/trials/TrialButton";
+import { SPARK_GO_STYLE } from "@/lib/spark";
 import { mapsUrl, readApple, serverApple, subscribeNever } from "@/lib/maps";
 import { siteBasePath, type SiteLanguage } from "@/lib/public-site";
 
@@ -25,6 +26,7 @@ import { AboutTab, OpeningHours } from "./AboutTab";
 import { BoxEvents } from "./BoxEvents";
 import { BoxPosts } from "./BoxPosts";
 import { GuestBanner } from "./GuestBanner";
+import { joinBoxHref } from "./join-box";
 import { boxChatHref } from "@/components/trials/box-chat-links";
 
 import { Icon } from "./Icon";
@@ -294,7 +296,7 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
       </div>
 
       {/* Phones: the actions stay in reach above the member tab bar (board 4 Q9). */}
-      <div aria-hidden="true" className="h-24 lg:hidden" />
+      <div aria-hidden="true" className={`${club || standalone ? "h-24" : "h-36"} lg:hidden`} />
       <div
         className="fixed inset-x-0 z-(--z-sticky) px-4 pt-3 lg:hidden"
         style={{
@@ -337,7 +339,8 @@ function Logo({ page, size = 80, className = "" }: { page: PublicBoxPage; size?:
 }
 
 /**
- * Follow and trial (board 4 Q9, board 6 Q1); members open their club instead.
+ * «Γίνε μέλος box» first, then trial and follow (board 4 Q9, board 6 Q1,
+ * ANR 2026-11-07); members open their club instead.
  * Anyone may write to the box (ADR-282): «Μήνυμα» opens the chat, after
  * signing in when needed.
  */
@@ -384,35 +387,52 @@ function Actions({
       </div>
     );
   return (
-    <div className="flex items-start gap-2">
-      <div className="min-w-0 flex-1">
-        {signedIn ? (
-          <FollowButton targetType="organization" targetId={page.box.organization_id} wide />
-        ) : (
-          <Link
-            href={`/login?next=${encodeURIComponent(`/b/${page.box.slug}`)}`}
-            className="flex min-h-11 w-full items-center justify-center rounded-2xl text-sm font-bold"
-            style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}
+    <div className="flex flex-col gap-2">
+      <JoinBoxLink page={page} signedIn={signedIn} />
+      <div className="flex items-start gap-2">
+        {!signedIn && onGuestTrial ? (
+          <button
+            type="button"
+            onClick={onGuestTrial}
+            className="flex min-h-11 flex-1 items-center justify-center rounded-2xl px-3 text-sm font-bold"
+            style={{ border: "1px solid var(--border)", color: "var(--text)" }}
+            data-testid="box-page-site-trial"
           >
-            {tSocial("follow")}
-          </Link>
+            {tTrials("ask")}
+          </button>
+        ) : (
+          <TrialButton page={page} token={token} />
         )}
+        <div className="min-w-0 flex-1">
+          {signedIn ? (
+            <FollowButton targetType="organization" targetId={page.box.organization_id} wide quiet />
+          ) : (
+            <Link
+              href={`/login?next=${encodeURIComponent(`/b/${page.box.slug}`)}`}
+              className="flex min-h-11 w-full items-center justify-center rounded-2xl text-sm font-bold"
+              style={{ border: "1px solid var(--border)", color: "var(--text)" }}
+            >
+              {tSocial("follow")}
+            </Link>
+          )}
+        </div>
+        {message}
       </div>
-      {!signedIn && onGuestTrial ? (
-        <button
-          type="button"
-          onClick={onGuestTrial}
-          className="flex min-h-11 flex-1 items-center justify-center rounded-2xl px-3 text-sm font-bold"
-          style={{ border: "1px solid var(--border)", color: "var(--text)" }}
-          data-testid="box-page-site-trial"
-        >
-          {tTrials("ask")}
-        </button>
-      ) : (
-        <TrialButton page={page} token={token} />
-      )}
-      {message}
     </div>
+  );
+}
+
+function JoinBoxLink({ page, signedIn }: { page: PublicBoxPage; signedIn: boolean }) {
+  const t = useTranslations("BoxPage");
+  return (
+    <Link
+      href={joinBoxHref(page, signedIn)}
+      className="flex min-h-12 w-full items-center justify-center rounded-2xl px-4 text-base font-extrabold"
+      style={SPARK_GO_STYLE}
+      data-testid="box-page-join"
+    >
+      {t("joinBox")}
+    </Link>
   );
 }
 

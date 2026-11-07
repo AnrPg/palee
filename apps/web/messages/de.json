@@ -6699,6 +6699,7 @@
     "guestTitle": "Du bist Gast bei {box}",
     "guestBody": "Du zahlst am Empfang, wann immer du kommst. Werde Mitglied, um Kurse zu buchen und die Workouts zu sehen.",
     "guestAction": "Mitglied werden",
+    "joinBox": "Mitglied werden",
     "messageBox": "Der Box schreiben",
     "rooms": "Räume"
   },
@@ -6752,6 +6753,7 @@
     "followUpDismiss": "Jetzt nicht",
     "homeEyebrow": "Deine Probetrainings",
     "joinDraft": "Hallo! Ich war zum Probetraining da und möchte beitreten. Welche Möglichkeiten habe ich?",
+    "memberDraft": "Hallo! Ich möchte Mitglied werden. Wie melde ich mich an?",
     "chatSubtitle": "Nachrichten mit der Box",
     "chatUnavailable": "Du kannst dieser Box gerade nicht schreiben.",
     "chatEmpty": "Noch keine Nachrichten. Sag Hallo.",

@@ -45618,6 +45618,13 @@ export interface components {
                 slug: string;
             };
             followers_count: number;
+            /** @description Where «Γίνε μέλος» leads for a non-member: packages, else the member join link, else a message */
+            joining: {
+                /** @description The member join link is on */
+                join_link: boolean;
+                /** @description The box lists packages people can buy or ask for */
+                packages: boolean;
+            };
             locations: {
                 accessibility?: string[] | null;
                 address?: string | null;
@@ -163315,6 +163322,13 @@ export interface operations {
                             slug: string;
                         };
                         followers_count: number;
+                        /** @description Where «Γίνε μέλος» leads for a non-member: packages, else the member join link, else a message */
+                        joining: {
+                            /** @description The member join link is on */
+                            join_link: boolean;
+                            /** @description The box lists packages people can buy or ask for */
+                            packages: boolean;
+                        };
                         locations: {
                             accessibility?: string[] | null;
                             address?: string | null;

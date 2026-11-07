@@ -31,6 +31,7 @@ defmodule Palee.Application.PublicBox do
            |> Map.put(:coaches, coaches(context, snapshot["coach_ids"] || [])),
          published_at: profile && profile.published_at,
          followers_count: box_followers(box.organization_id),
+         joining: joining(box, context),
          time_zone: Organizations.organization_timezone(box.organization_id),
          open_clubs: OpenClubs.for_box(context),
          rooms: rooms(context),
@@ -164,6 +165,16 @@ defmodule Palee.Application.PublicBox do
       _unpublished ->
         []
     end
+  end
+
+  # «Γίνε μέλος» is always on the page; this says where it leads: the
+  # packages people can buy or ask for, else the open member join link,
+  # else a message to the box.
+  defp joining(box, context) do
+    %{
+      packages: Palee.Application.Payments.OnlineSales.listed_packages(context) != [],
+      join_link: match?({:ok, _}, Organizations.inspect_join_link(%{slug: box.slug, role: "member"}))
+    }
   end
 
   defp box_followers(organization_id),

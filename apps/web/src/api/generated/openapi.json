@@ -82272,6 +82272,24 @@
           "followers_count": {
             "type": "integer"
           },
+          "joining": {
+            "description": "Where «Γίνε μέλος» leads for a non-member: packages, else the member join link, else a message",
+            "properties": {
+              "join_link": {
+                "description": "The member join link is on",
+                "type": "boolean"
+              },
+              "packages": {
+                "description": "The box lists packages people can buy or ask for",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "packages",
+              "join_link"
+            ],
+            "type": "object"
+          },
           "locations": {
             "items": {
               "properties": {
@@ -82728,6 +82746,7 @@
           "box",
           "profile",
           "followers_count",
+          "joining",
           "locations",
           "open_clubs",
           "rooms"
@@ -419659,6 +419678,24 @@
                     "followers_count": {
                       "type": "integer"
                     },
+                    "joining": {
+                      "description": "Where «Γίνε μέλος» leads for a non-member: packages, else the member join link, else a message",
+                      "properties": {
+                        "join_link": {
+                          "description": "The member join link is on",
+                          "type": "boolean"
+                        },
+                        "packages": {
+                          "description": "The box lists packages people can buy or ask for",
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "packages",
+                        "join_link"
+                      ],
+                      "type": "object"
+                    },
                     "locations": {
                       "items": {
                         "properties": {
@@ -420115,6 +420152,7 @@
                     "box",
                     "profile",
                     "followers_count",
+                    "joining",
                     "locations",
                     "open_clubs",
                     "rooms"

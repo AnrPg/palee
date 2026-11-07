@@ -101,6 +101,11 @@ defmodule PaleeWeb.OnlineSalesControllerTest do
       |> json_response(200)
 
     assert [%{"name" => "Μηνιαίο απεριόριστο", "base_price_cents" => 6_000}] = page["packages"]
+
+    assert %{"joining" => %{"packages" => true}} =
+             build_conn()
+             |> get("/api/public/boxes/#{ctx.organization.slug}")
+             |> json_response(200)
     assert page["withdrawal_days"] == 14
     refute page["online_payments"]
   end

@@ -101,6 +101,20 @@ defmodule Palee.Web.SocialControllerTest do
 
       assert coach_id == ctx.coach.id
 
+      # «Γίνε μέλος» always shows; `joining` says where it leads.
+      assert %{"joining" => %{"packages" => false, "join_link" => false}} =
+               ctx.anonymous |> get("/api/public/boxes/#{slug}") |> json_response(200)
+
+      ctx.anonymous
+      |> recycle()
+      |> put_bearer_token(ctx.owner)
+      |> put_req_header("content-type", "application/json")
+      |> put("/api/org/#{slug}/join-link", Jason.encode!(%{role: "member", enabled: true}))
+      |> json_response(200)
+
+      assert %{"joining" => %{"join_link" => true}} =
+               build_conn() |> get("/api/public/boxes/#{slug}") |> json_response(200)
+
       # A draft edit stays off the page until published.
       {:ok, _draft} = UpdateBoxPublicProfile.call(ctx.owner_context, %{"about" => "Draft"})
 

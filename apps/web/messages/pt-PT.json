@@ -6699,6 +6699,7 @@
     "guestTitle": "És visitante da {box}",
     "guestBody": "Pagas na receção sempre que vens. Torna-te membro da box para reservar aulas e ver os treinos.",
     "guestAction": "Tornar-me membro da box",
+    "joinBox": "Tornar-me membro da box",
     "messageBox": "Escrever à box",
     "rooms": "Salas"
   },
@@ -6752,6 +6753,7 @@
     "followUpDismiss": "Agora não",
     "homeEyebrow": "As tuas aulas experimentais",
     "joinDraft": "Olá! Vim a uma aula experimental e gostava de me inscrever. Que opções tenho?",
+    "memberDraft": "Olá! Gostava de me tornar membro. Como me inscrevo?",
     "chatSubtitle": "Mensagens com o box",
     "chatUnavailable": "Não podes enviar mensagens a este box neste momento.",
     "chatEmpty": "Ainda sem mensagens. Diz olá.",

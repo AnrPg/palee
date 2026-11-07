@@ -18,6 +18,7 @@ const box = { organization_id: "org-1", slug: "crossfit-kypseli", name: "CrossFi
 const publicBox = {
   box,
   followers_count: 12,
+  joining: { packages: false, join_link: false },
   profile: {
     about: "A friendly box in Kypseli.\nCoaches who know your name.",
     disciplines: ["crossfit", "olympic_lifting", "yoga", "pilates", "hyrox", "gymnastics", "running", "mobility"],
@@ -48,6 +49,11 @@ const publicBox = {
   ],
 };
 
+const joinVariants: Record<string, { packages: boolean; join_link: boolean }> = {
+  "kypseli-packages": { packages: true, join_link: false },
+  "kypseli-link": { packages: false, join_link: true },
+};
+
 let server: Server;
 
 test.beforeAll(async () => {
@@ -56,6 +62,13 @@ test.beforeAll(async () => {
     if (match && (match[1] === box.slug || match[1] === "kypseli-old")) {
       response.writeHead(200, { "content-type": "application/json" });
       response.end(JSON.stringify(publicBox));
+      return;
+    }
+    // ANR 2026-11-07: where «Become a box member» leads, per box.
+    const joining = match ? joinVariants[match[1]] : undefined;
+    if (joining) {
+      response.writeHead(200, { "content-type": "application/json" });
+      response.end(JSON.stringify({ ...publicBox, box: { ...box, slug: match![1] }, joining }));
       return;
     }
     response.writeHead(404, { "content-type": "application/json" });
@@ -224,6 +237,28 @@ test.describe("public box page", () => {
     await page.goto(`/b/${box.slug}`);
     await expect(page.getByRole("link", { name: "Member · Open the club" }).first()).toHaveAttribute("href", "/clubs/club-1");
     await expect(page.getByTestId("box-guest-banner")).toHaveCount(0);
+    await expect(page.getByTestId("box-page-join")).toHaveCount(0);
+  });
+
+  test("«Become a box member» is always the main action and never a dead end", async ({ page }) => {
+    await asGuest(page);
+    await page.goto(`/b/${box.slug}`);
+    // No packages and no open join link: a message to the box, after signing in.
+    const join = page.getByTestId("box-page-join").first();
+    await expect(join).toHaveText("Become a box member");
+    await expect(join).toHaveAttribute("href", `/login?next=${encodeURIComponent(`/b/${box.slug}/chat?draft=member`)}`);
+
+    await page.goto("/b/kypseli-packages");
+    await expect(page.getByTestId("box-page-join").first()).toHaveAttribute("href", "/b/kypseli-packages/packages");
+
+    await page.goto("/b/kypseli-link");
+    await expect(page.getByTestId("box-page-join").first()).toHaveAttribute("href", "/join/kypseli-link");
+  });
+
+  test("signed in, without packages or a join link, «Become a box member» opens the chat with a message ready", async ({ page }) => {
+    await signedIn(page);
+    await page.goto(`/b/${box.slug}`);
+    await expect(page.getByTestId("box-page-join").first()).toHaveAttribute("href", `/b/${box.slug}/chat?draft=member`);
   });
 
   test("a guest of the box (ADR-272) sees it, with becoming a box member as the next step", async ({ page }) => {
