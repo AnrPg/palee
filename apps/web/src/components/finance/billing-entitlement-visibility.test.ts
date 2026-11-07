@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  channelsWithoutAllowance,
   shouldShowAllowanceQuota,
   visibleBillingAllowances,
   visibleBillingChannels,
@@ -40,5 +41,15 @@ describe("customer billing entitlement visibility", () => {
         { starts_on: "2026-08-01", cancelled_at: null },
       ]).map((freeze) => freeze.starts_on),
     ).toEqual(["2026-08-01", "2026-03-01"]);
+  });
+
+  it("drops a channel its allowance tile already tells, keeps the rest", () => {
+    expect(
+      channelsWithoutAllowance(
+        ["in_person", "facility", "events", "personal_training", "nutrition"],
+        ["class_visits:abc", "open_gym_visits", "pt_sessions"],
+      ),
+    ).toEqual(["events", "nutrition"]);
+    expect(channelsWithoutAllowance(["in_person"], [])).toEqual(["in_person"]);
   });
 });
