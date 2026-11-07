@@ -583,7 +583,7 @@ function JoinLinkCard({
             confirmRotate ? (
               <div role="group" aria-label={t("rotateKey")} className="space-y-2 rounded-xl p-3" style={{ background: "var(--panel-muted, var(--bg))" }}>
                 <p className="text-xs leading-5" style={{ color: "var(--text-soft)" }}>{t("rotateKeyHint")}</p>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <button
                     type="button"
                     disabled={save.isPending}
@@ -674,7 +674,7 @@ function PendingInvitations({ t, slug, token }: { t: Translate; slug: string; to
             </p>
           </div>
           {confirming === invitation.id ? (
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <button type="button" onClick={() => revoke.mutate(invitation.id)} disabled={revoke.isPending} className="rounded-lg px-3 py-1.5 text-xs font-semibold" style={{ background: "var(--danger)", color: "var(--danger-contrast)" }}>
                 {t("confirmRevoke")}
               </button>

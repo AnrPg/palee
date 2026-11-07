@@ -382,7 +382,7 @@ export function ReferralsTab({ locationIds }: { locationIds?: string } = {}) {
           subtitle={i18n("referrals2b0e3a3")}
           onClose={() => setParam({ new: null })}
           footer={
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
               <button
                 className="rounded-full px-5 py-2 text-sm font-semibold disabled:opacity-50"
                 style={{ background: "var(--text)", color: "var(--bg)" }}

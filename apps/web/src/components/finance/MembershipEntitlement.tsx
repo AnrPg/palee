@@ -1,5 +1,7 @@
 "use client";
 
+import { useId, useState } from "react";
+
 import { useUiLocale } from "@/i18n/use-ui-locale";
 import { useUiTranslations } from "@/i18n/ui";
 import type { EffectiveEntitlement } from "@/api/my-finance";
@@ -7,6 +9,7 @@ import { SemanticLabel } from "@/components/semantic-label";
 import { allowanceAmount, allowanceLabel } from "@/i18n/presentation";
 import { SPARK_ACTIVE_STYLE } from "@/lib/spark";
 import {
+  channelsWithoutAllowance,
   shouldShowAllowanceQuota,
   visibleBillingAllowances,
   visibleBillingChannels,
@@ -90,16 +93,37 @@ export function AccessNotice({ entitlement }: { entitlement: EffectiveEntitlemen
 export function EntitlementCard({ entitlement }: { entitlement: EffectiveEntitlement | null }) {
   const uiLocale = useUiLocale();
   const i18n = useUiTranslations();
+  // Closed until asked for (ANR 2026-11-07): the title and status say enough.
+  const [open, setOpen] = useState(false);
+  const panelId = useId();
   if (!entitlement?.plan) return null;
-  const allowanceEntries = visibleBillingAllowances(entitlement.allowances);
-  const channels = visibleBillingChannels(entitlement.plan.channels);
+  const allowanceEntries = visibleBillingAllowances(entitlement.allowances).filter(
+    (entry): entry is [string, NonNullable<(typeof entry)[1]>] => Boolean(entry[1]),
+  );
+  // Each benefit once, as text (ANR 2026-11-07): a channel already told by an
+  // allowance tile is not repeated; one without a tile gets its own row.
+  const includedChannels = channelsWithoutAllowance(
+    visibleBillingChannels(entitlement.plan.channels),
+    allowanceEntries.map(([key]) => key),
+  );
   const freezes = visibleBillingFreezes(entitlement.freezes ?? []);
   return (
     <section className="rounded-2xl p-5" style={{ background: "var(--panel-muted)", border: "1px solid var(--border)" }}>
-      <div className="flex items-start justify-between gap-3">
-        <h2 className="min-w-0 text-sm font-medium" style={{ color: "var(--text-soft)" }}>{i18n("yourPackageBenefitsb75c7f4")}</h2>
-        <StatusBadge status={entitlement.status} />
-      </div>
+      <h2 className="min-w-0">
+        <button
+          type="button"
+          aria-expanded={open}
+          aria-controls={panelId}
+          onClick={() => setOpen((value) => !value)}
+          className="flex w-full items-start justify-between gap-3 text-start"
+        >
+          <span className="min-w-0 text-sm font-medium" style={{ color: "var(--text-soft)" }}>{i18n("yourPackageBenefitsb75c7f4")}</span>
+          <span className="flex shrink-0 items-center gap-2">
+            <StatusBadge status={entitlement.status} />
+            <span aria-hidden="true" className={`text-sm transition-transform ${open ? "rotate-180" : ""}`} style={{ color: "var(--dim)" }}>▾</span>
+          </span>
+        </button>
+      </h2>
       {entitlement.frozen_until ? (
         <div
           className="mt-4 rounded-xl px-4 py-3"
@@ -111,20 +135,23 @@ export function EntitlementCard({ entitlement }: { entitlement: EffectiveEntitle
           <p className="mt-0.5 text-xs" style={{ color: "var(--muted)" }}>{i18n("mbPausedExplainer")}</p>
         </div>
       ) : null}
-      {channels.length > 0 ? <div className="mt-4 flex flex-wrap gap-2">
-        {channels.map((channel) => <span key={channel} className="rounded-full px-3 py-1 text-xs font-semibold" style={{ background: "var(--border)", color: "var(--text-soft)" }}><SemanticLabel value={channel} /></span>)}
-      </div> : null}
-      {/* Limits as tiles on the chips' left edge (ANR 2026-11-02, mockup alt A). */}
-      {allowanceEntries.length > 0 ? (
+      <div id={panelId} hidden={!open}>
+      {allowanceEntries.length + includedChannels.length > 0 ? (
         <ul className="mt-4 grid gap-2 sm:grid-cols-2" data-testid="entitlement-allowances">
-          {allowanceEntries.map(([key, usage]) => usage ? (
+          {allowanceEntries.map(([key, usage]) => (
             <li key={key} className="flex min-w-0 flex-col rounded-xl px-3 py-2.5" style={{ background: "var(--panel)" }}>
               <p className="text-sm font-semibold" style={{ color: "var(--text-soft)" }}>{allowanceLabel(key, i18n, entitlement.class_type_names)}</p>
               <p className="mt-0.5 text-xl font-bold tabular-nums" style={{ color: "var(--primary)" }}>{allowanceAmount(usage.remaining, i18n)}</p>
               {shouldShowAllowanceQuota(usage) ? <p className="text-xs" style={{ color: "var(--dim)" }}>{i18n("allowanceLeftOfLimitResets", { remaining: usage.remaining, limit: usage.limit, date: formatDate(uiLocale, usage.period_end) })}</p> : null}
               {usage.extensions > 0 ? <p className="mt-1 text-xs" style={{ color: "var(--success)" }}>{i18n("allowanceIncludesExtensions", { count: usage.extensions })}</p> : null}
             </li>
-          ) : null)}
+          ))}
+          {includedChannels.map((channel) => (
+            <li key={channel} className="flex min-w-0 flex-col rounded-xl px-3 py-2.5" style={{ background: "var(--panel)" }}>
+              <p className="text-sm font-semibold" style={{ color: "var(--text-soft)" }}><SemanticLabel value={channel} /></p>
+              <p className="mt-0.5 text-xl font-bold" style={{ color: "var(--primary)" }}>{i18n("pkgIncluded")}</p>
+            </li>
+          ))}
         </ul>
       ) : null}
       {freezes.length > 0 ? (
@@ -146,6 +173,7 @@ export function EntitlementCard({ entitlement }: { entitlement: EffectiveEntitle
           </ul>
         </div>
       ) : null}
+      </div>
     </section>
   );
 }

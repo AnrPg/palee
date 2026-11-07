@@ -289,7 +289,7 @@ export function ReferralEventWizard({
                       ))}
                     </Select>
 
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       <button
                         type="button"
                         onClick={() => assignMembershipMutation.mutate()}
@@ -424,7 +424,7 @@ export function ReferralEventWizard({
             {i18n("approvingRecordsThisReferralAsValidAndEnablesd66970e")}
           </p>
 
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <button
               className="flex-1 rounded-full py-3 text-sm font-semibold disabled:opacity-50"
               style={{ background: "var(--text)", color: "var(--bg)" }}
@@ -528,7 +528,7 @@ export function ReferralEventWizard({
             {i18n("issueTheRewardNowOrSkipAndCreate614170f")}
           </p>
 
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <button
               className="flex-1 rounded-full py-3 text-sm font-semibold disabled:opacity-50"
               style={{ background: "var(--text)", color: "var(--bg)" }}

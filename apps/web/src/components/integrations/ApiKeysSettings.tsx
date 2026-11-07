@@ -108,12 +108,12 @@ function NewKeyGuide({ token, onClose }: { token: string; onClose: () => void })
 
   const footer =
     step === 1 ? (
-      <div className="flex justify-end gap-2">
+      <div className="flex flex-wrap justify-end gap-2">
         <TextButton onClick={onClose}>{t("cancel")}</TextButton>
         <PrimaryButton onClick={() => { setName((value) => value || t(`purpose.${purpose}.name`)); setStep(2); }} data-testid="api-key-continue">{t("continue")}</PrimaryButton>
       </div>
     ) : step === 2 ? (
-      <div className="flex justify-end gap-2">
+      <div className="flex flex-wrap justify-end gap-2">
         <TextButton onClick={() => setStep(1)}>{t("back")}</TextButton>
         <PrimaryButton disabled={create.isPending || scopes.length === 0} onClick={submit} data-testid="api-key-create">{t("keyCreate")}</PrimaryButton>
       </div>

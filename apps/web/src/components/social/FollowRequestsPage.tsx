@@ -21,6 +21,7 @@ import { BookingSharingOffer } from "@/components/social/BookingSharing";
 import { PersonAvatar } from "@/components/social/PersonAvatar";
 import { useUiTranslations } from "@/i18n/ui";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { itemRow, itemRowActions, itemRowMain } from "@/components/ui/rows";
 
 /** «Αιτήματα ακολούθησης» (plan §5a Q11): accept or decline, newest first. */
 export function FollowRequestsPage() {
@@ -90,29 +91,31 @@ function RequestRow({ entry }: { entry: FollowEntry }) {
 
   return (
     <li className="flex flex-col gap-2 rounded-3xl p-4" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
-      <div className="flex items-center gap-3">
-        <Link href={`/people/${person.id}`} className="flex min-w-0 flex-1 items-center gap-3">
+      <div className={itemRow}>
+        <Link href={`/people/${person.id}`} className={itemRowMain}>
           <PersonAvatar name={person.nickname} url={person.avatar_url} />
           <span className="truncate font-bold" style={{ color: "var(--text)" }}>{person.nickname ?? "?"}</span>
         </Link>
-        <button
-          type="button"
-          disabled={busy}
-          onClick={() => void run(() => declineFollowRequest(token!, entry.follow_id))}
-          className="min-h-11 rounded-2xl px-3 text-sm font-semibold disabled:opacity-50"
-          style={{ border: "1px solid var(--border)", color: "var(--text)" }}
-        >
-          {t("decline")}
-        </button>
-        <button
-          type="button"
-          disabled={busy}
-          onClick={() => void run(() => acceptFollowRequest(token!, entry.follow_id))}
-          className="min-h-11 rounded-2xl px-4 text-sm font-bold disabled:opacity-50"
-          style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}
-        >
-          {t("accept")}
-        </button>
+        <div className={itemRowActions}>
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => void run(() => declineFollowRequest(token!, entry.follow_id))}
+            className="min-h-11 rounded-2xl px-3 text-sm font-semibold disabled:opacity-50"
+            style={{ border: "1px solid var(--border)", color: "var(--text)" }}
+          >
+            {t("decline")}
+          </button>
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => void run(() => acceptFollowRequest(token!, entry.follow_id))}
+            className="min-h-11 rounded-2xl px-4 text-sm font-bold disabled:opacity-50"
+            style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}
+          >
+            {t("accept")}
+          </button>
+        </div>
       </div>
       {error ? <ErrorNotice>{error}</ErrorNotice> : null}
     </li>

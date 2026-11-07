@@ -73,7 +73,7 @@ export function ProviderKindSetting({ token }: { token: string }) {
         <ErrorNotice>{localizeError(save.error, i18n)}</ErrorNotice>
       ) : null}
       {editable && dirty ? (
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button
             type="button"
             onClick={() => save.mutate(kind)}

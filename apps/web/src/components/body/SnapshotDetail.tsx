@@ -164,7 +164,7 @@ export function SnapshotDetail({ snapshotId }: { snapshotId: string }) {
         <Card label={t("deleteTitle")}>
           <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>{t("deleteTitle")}</p>
           <p className="text-sm" style={{ color: "var(--muted)" }}>{t("deleteBody")}</p>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <PillButton onClick={() => setConfirmDelete(false)}>{t("cancel")}</PillButton>
             <PillButton danger disabled={deleting} onClick={() => void remove()}>{t("deleteConfirm")}</PillButton>
           </div>

@@ -144,7 +144,7 @@ function NewDoorDialog({ token, locationId, onClose }: { token: string; location
         create.data ? (
           <div className="flex justify-end"><PrimaryButton onClick={onClose}>{t("done")}</PrimaryButton></div>
         ) : (
-          <div className="flex justify-end gap-2">
+          <div className="flex flex-wrap justify-end gap-2">
             <TextButton onClick={onClose}>{t("cancel")}</TextButton>
             <PrimaryButton
               disabled={create.isPending}
@@ -224,7 +224,7 @@ function RulesDialog({ token, door, onClose }: { token: string; door: Door; onCl
       dismissible={!save.isPending}
       testId="door-rules"
       footer={
-        <div className="flex justify-end gap-2">
+        <div className="flex flex-wrap justify-end gap-2">
           <TextButton onClick={onClose}>{t("cancel")}</TextButton>
           <PrimaryButton disabled={save.isPending || invalid} onClick={() => save.mutate()} data-testid="door-rules-save">{t("saveRules")}</PrimaryButton>
         </div>

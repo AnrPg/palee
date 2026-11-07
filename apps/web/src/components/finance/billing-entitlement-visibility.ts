@@ -5,6 +5,23 @@ export function visibleBillingChannels(channels: string[]): string[] {
   return channels.filter((channel) => !HIDDEN_CUSTOMER_CHANNELS.has(channel));
 }
 
+// A channel whose allowance tile is already shown says nothing new (ANR
+// 2026-11-07: the same benefit once, as text). Channels without a tile stay.
+const CHANNEL_ALLOWANCES: Record<string, (allowance: string) => boolean> = {
+  in_person: (allowance) => allowance === "class_visits" || allowance.startsWith("class_visits:"),
+  facility: (allowance) => allowance === "open_gym_visits",
+  events: (allowance) => allowance === "event_visits",
+  personal_training: (allowance) => allowance === "pt_sessions" || allowance === "assessments",
+};
+
+/** Benefits with no allowance tile of their own: shown as an «included» row. */
+export function channelsWithoutAllowance(channels: string[], allowances: string[]): string[] {
+  return channels.filter((channel) => {
+    const covers = CHANNEL_ALLOWANCES[channel];
+    return !covers || !allowances.some(covers);
+  });
+}
+
 export function visibleBillingAllowances<T>(allowances: Record<string, T>): [string, T][] {
   return Object.entries(allowances).filter(
     ([allowance]) => !HIDDEN_CUSTOMER_ALLOWANCES.has(allowance),

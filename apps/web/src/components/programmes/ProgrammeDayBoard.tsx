@@ -84,7 +84,7 @@ export function ProgrammeDayBoard({
       </div>
 
       <section className="flex min-w-0 flex-col gap-2 lg:col-start-2 lg:row-start-2" data-testid="programme-week">
-        <div className="flex items-center gap-1">
+        <div className="flex flex-wrap items-center gap-1">
           <h2 className="flex-1 text-sm font-bold lg:text-base" style={{ color: "var(--text)" }}>
             {week === current ? t("buyer2.thisWeek") : t("buyer2.week", { week })}
           </h2>

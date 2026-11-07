@@ -180,7 +180,7 @@ export function PersonalRecordsSection({ filter }: { filter: ProgressQuery }) {
           size="sm"
           variant="center"
           footer={
-            <div className="flex w-full gap-3">
+            <div className="flex flex-wrap w-full gap-3">
               <button
                 type="button"
                 disabled={remove.isPending}

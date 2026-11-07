@@ -187,7 +187,7 @@ export function MemberStatusCell({
         ) : save.error ? (
           <ErrorNotice variant="field">{localizeError(save.error, i18n)}</ErrorNotice>
         ) : null}
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button
             type="button"
             onClick={submit}
@@ -290,7 +290,7 @@ export function SubscriptionEndCell({
           style={CONTROL}
         />
         {save.error ? <ErrorNotice variant="field">{localizeError(save.error, i18n)}</ErrorNotice> : null}
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button
             type="button"
             onClick={() => value && save.mutate({ value, reason }, { onSuccess: close })}

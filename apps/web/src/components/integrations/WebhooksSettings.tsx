@@ -109,7 +109,7 @@ export function NewWebhookDialog({ token, onClose }: { token: string; onClose: (
         made ? (
           <div className="flex justify-end"><PrimaryButton onClick={onClose}>{t("done")}</PrimaryButton></div>
         ) : (
-          <div className="flex justify-end gap-2">
+          <div className="flex flex-wrap justify-end gap-2">
             <TextButton onClick={onClose}>{t("cancel")}</TextButton>
             <PrimaryButton disabled={create.isPending} onClick={submit} data-testid="webhook-create">{t("hookCreate")}</PrimaryButton>
           </div>

@@ -118,7 +118,7 @@ function ClassSkillSheet({
       size="md"
       testId="class-skill-sheet"
       footer={
-        <div className="flex w-full items-center justify-end gap-3">
+        <div className="flex flex-wrap w-full items-center justify-end gap-3">
           <button type="button" onClick={onClose} className="text-sm font-semibold" style={{ color: "var(--text-soft)" }}>
             {t("cancel")}
           </button>

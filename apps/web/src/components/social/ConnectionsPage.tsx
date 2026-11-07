@@ -33,6 +33,7 @@ import { useDebounced } from "@/hooks/useDebounced";
 import { useUiTranslations } from "@/i18n/ui";
 import { SegmentPicker } from "@/components/filters/SegmentPicker";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { itemRow, itemRowActions, itemRowMain } from "@/components/ui/rows";
 
 /**
  * Connections (plan §5a Q12, ADR-193 §1), opened from the line under the name
@@ -283,15 +284,15 @@ function Row({
   children?: React.ReactNode;
 }) {
   return (
-    <li className="flex items-center gap-3 rounded-3xl p-3" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
-      <Link href={href} className="flex min-w-0 flex-1 items-center gap-3">
+    <li className={`${itemRow} rounded-3xl p-3`} style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
+      <Link href={href} className={itemRowMain}>
         <PersonAvatar name={name} url={image} />
         <span className="min-w-0">
           <span className="block truncate font-bold" style={{ color: "var(--text)" }}>{name}</span>
           {detail}
         </span>
       </Link>
-      <div className="flex shrink-0 items-center gap-2">{children}</div>
+      <div className={itemRowActions}>{children}</div>
     </li>
   );
 }

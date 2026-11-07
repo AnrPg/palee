@@ -286,7 +286,7 @@ function ItemForm({ item, kind, mode, title, header, onClose }: { item: PayItem 
           ) : (
             <span />
           )}
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <DialogButton tone="ghost" onClick={onClose}>{t("cancel")}</DialogButton>
             <DialogButton type="submit" tone="primary" disabled={save.isPending} testId="pay-item-save">
               {t("saveItem")}

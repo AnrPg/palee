@@ -402,7 +402,7 @@ function Actions({
         ) : (
           <TrialButton page={page} token={token} />
         )}
-        <div className="flex-1">
+        <div className="min-w-0 flex-1">
           {signedIn ? (
             <FollowButton targetType="organization" targetId={page.box.organization_id} wide quiet />
           ) : (

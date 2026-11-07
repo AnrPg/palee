@@ -133,7 +133,7 @@ export function LocationSettings({ token }: { token: string }) {
               ) : null}
             </Link>
 
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <Link
                 href={editorHref(location.id)}
                 className="rounded-full px-4 py-2 text-xs font-semibold"

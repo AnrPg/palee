@@ -70,7 +70,7 @@ export function BoxThreadActions({
           <div className="flex flex-col gap-3 text-sm" style={{ color: "var(--text-soft)" }}>
             <p>{i18n("inboxBlockHint")}</p>
             {block.isError ? <ErrorNotice>{i18n("inboxActionFailed")}</ErrorNotice> : null}
-            <div className="flex justify-end gap-2">
+            <div className="flex flex-wrap justify-end gap-2">
               <button
                 type="button"
                 onClick={() => setConfirmBlock(false)}

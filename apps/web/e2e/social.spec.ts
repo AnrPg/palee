@@ -210,3 +210,35 @@ test.describe("social", () => {
     expect(shape.background).not.toBe("rgba(0, 0, 0, 0)");
   });
 });
+
+// ANR 2026-11-07: on a narrow phone the unfollow confirm («Άκυρο / Άρση
+// ακολούθησης») ran off the screen. In Greek, the longest labels, at 320px.
+test.describe("social on a narrow phone", () => {
+  test.use({ viewport: { width: 320, height: 640 } });
+
+  test("the unfollow confirm drops under the name and stays on screen", async ({ page }) => {
+    const state = await stub(page);
+    state.requests = 0;
+    await page.context().addCookies([{ name: "palee_locale", value: "el", url: "http://127.0.0.1" }]);
+    await page.route("**/api/me/buddies-list**", (route) => route.fulfill(json({ entries: [], next_cursor: null })));
+    await page.route("**/api/me/follows/user/person-3", (route) => route.fulfill(json({ status: "active" })));
+    await page.goto("/me/connections?tab=following");
+    const row = page.getByRole("listitem").filter({ has: page.getByRole("link", { name: /Eleni/ }) });
+    await row.getByRole("button", { name: "Ακολουθείς" }).click();
+
+    const confirm = row.getByRole("group", { name: /Να σταματήσεις να ακολουθείς/ });
+    await expect(confirm).toBeVisible();
+    await expect(row.getByRole("link", { name: /Eleni/ })).toBeVisible();
+    for (const name of ["Άκυρο", "Άρση ακολούθησης"]) {
+      const box = await confirm.getByRole("button", { name }).boundingBox();
+      expect(box, name).not.toBeNull();
+      expect(box!.x).toBeGreaterThanOrEqual(0);
+      expect(box!.x + box!.width).toBeLessThanOrEqual(320);
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320);
+
+    await confirm.getByRole("button", { name: "Άκυρο" }).click();
+    await expect(confirm).toHaveCount(0);
+    await expect(row.getByRole("button", { name: "Ακολουθείς" })).toBeVisible();
+  });
+});

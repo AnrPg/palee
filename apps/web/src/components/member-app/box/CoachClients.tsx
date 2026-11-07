@@ -330,7 +330,7 @@ function RosterRow({ session, person, index }: { session: DeskSession; person: D
   return (
     <li className="flex flex-wrap items-center justify-between gap-2 py-3" style={rowStyle(index)}>
       <span className="min-w-0 flex-1 truncate text-sm font-semibold" style={{ color: "var(--text)" }}>{name}</span>
-      <span role="group" aria-label={t("attendanceOf", { name })} className="flex shrink-0 gap-2">
+      <span role="group" aria-label={t("attendanceOf", { name })} className="flex flex-wrap shrink-0 gap-2">
         <AttendanceButton
           pressed={person.attendance === "attended"}
           busy={mark.isPending}

@@ -176,7 +176,7 @@ function VisibilityPicker({
       ariaLabel={t("whoSees")}
       size="md"
       footer={
-        <div className="w-full flex gap-2">
+        <div className="w-full flex flex-wrap gap-2">
           <button
             type="button"
             onClick={onClose}

@@ -113,7 +113,7 @@ export function ClassTimerControl({ slotId }: { slotId: string }) {
               </p>
               <HelpCaption>{timer.connected ? i18n("classTimerLiveHelp") : i18n("classTimerReconnectingHelp")}</HelpCaption>
             </div>
-            <div className="flex shrink-0 gap-1.5">
+            <div className="flex flex-wrap shrink-0 gap-1.5">
               <IconButton label={i18n("classTimerHelpToggle")} pressed={help} onClick={() => setHelp((value) => !value)} testId="remote-help-toggle">
                 <HelpIcon />
               </IconButton>
@@ -281,7 +281,7 @@ export function ClassTimerControl({ slotId }: { slotId: string }) {
               ) : null}
 
               {!between ? (
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <ControlButton
                     label={first ? i18n("classTimerRestart") : i18n("backc32ae9f")}
                     help={first ? i18n("classTimerRestartHelp") : i18n("classTimerBackHelp")}

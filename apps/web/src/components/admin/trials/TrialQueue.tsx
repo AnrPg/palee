@@ -166,7 +166,7 @@ function TrialRow({ trial, token, stage }: { trial: StaffTrial; token: string; s
               style={{ background: "var(--bg)", border: "1px solid var(--border)", color: "var(--text)" }}
             />
           </label>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <button type="button" disabled={action.isPending} onClick={() => action.mutate("decline")} className={button} style={{ background: "var(--danger)", color: "var(--danger-contrast)" }}>
               {t("decline")}
             </button>

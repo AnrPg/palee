@@ -102,7 +102,7 @@ export function PayRuleForm({ userId, name, rule, onClose }: { userId: string; n
           ) : (
             <span />
           )}
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <DialogButton tone="ghost" onClick={onClose}>{t("cancel")}</DialogButton>
             <DialogButton tone="primary" disabled={save.isPending} onClick={submit} testId="pay-rule-save">
               {t("saveRule")}
