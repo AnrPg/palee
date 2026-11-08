@@ -18,6 +18,9 @@ config :palee, :test_database_admin,
   username: System.get_env("DB_ADMIN_USER") || System.get_env("DB_USER", "postgres"),
   password: System.get_env("DB_ADMIN_PASSWORD") || System.get_env("DB_PASSWORD", "postgres")
 
+# PrivilegeGuard: the owner role bypasses RLS here by design (TD-046), so it logs at info.
+config :palee, :rls_bypass_expected, true
+
 config :palee, Palee.Repo,
   username: "palee_test_owner",
   password: "palee_test_owner_pw",

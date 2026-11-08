@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -36,8 +36,8 @@ describe("PlanNotice and PlanCard", () => {
   it("show nothing for an answer without a plan or usage", async () => {
     fetchAdminPlan.mockResolvedValue({});
     const { container } = render(wrap(<><PlanNotice token="t" /><PlanCard token="t" /></>));
-    await vi.waitFor(() => expect(fetchAdminPlan).toHaveBeenCalled());
-    await vi.waitFor(() => expect(container.textContent).toBe(""));
+    await waitFor(() => expect(fetchAdminPlan).toHaveBeenCalled());
+    await waitFor(() => expect(container.textContent).toBe(""));
   });
 
   it("render a plan whose usage is missing without crashing", async () => {

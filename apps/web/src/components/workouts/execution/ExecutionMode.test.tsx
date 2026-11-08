@@ -346,6 +346,8 @@ describe("ExecutionMode", () => {
     const state = useExecutionStore.getState();
     expect(state.segments[0]!.duration_seconds).toBe(50);
     expect(state.durationAdjustments).toEqual({ "segment:0": 30 });
+    // Let the updates the click scheduled land inside act.
+    await act(async () => {});
   });
 
   it("opens and closes the big-clock display", async () => {

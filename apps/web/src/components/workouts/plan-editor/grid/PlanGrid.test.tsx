@@ -30,6 +30,8 @@ function renderGrid(plan: PlanSection) {
 
 const cell = (row: string, col: number | "same", key: string) => screen.getByTestId(`plan-cell-${row}-${col}-${key}`) as HTMLInputElement;
 const type = (input: HTMLElement, value: string) => fireEvent.change(input, { target: { value } });
+/** Focus moves set React state (the hint line), so it goes through act like any event. */
+const focus = (el: HTMLElement) => act(() => el.focus());
 const hint = () => screen.getByTestId("plan-hint").textContent ?? "";
 const plan = () => readPlan(ID)!;
 
@@ -229,7 +231,7 @@ describe("PlanGrid keyboard", () => {
   it("adds a row on Enter, deletes an empty one on Backspace and moves with the arrows", async () => {
     renderGrid(SAMPLE.differentRounds!);
     const ro = screen.getByTestId("plan-name-ro");
-    ro.focus();
+    focus(ro);
     fireEvent.keyDown(ro, { key: "Enter" });
     const added = plan().blocks[0]![1]!;
     expect(added.name).toBe("");
@@ -240,7 +242,7 @@ describe("PlanGrid keyboard", () => {
     expect(plan().blocks[0]!.map((r) => r.id)).toEqual(["ro", "bu"]);
 
     const dose = cell("ro", "same", "d");
-    dose.focus();
+    focus(dose);
     fireEvent.keyDown(dose, { key: "ArrowDown" });
     expect(document.activeElement).toBe(cell("bu", "same", "d"));
     fireEvent.keyDown(document.activeElement!, { key: "ArrowUp" });
@@ -250,7 +252,7 @@ describe("PlanGrid keyboard", () => {
   it("moves between sets of the Σετ grid in the same column", () => {
     renderGrid(SAMPLE.superset!);
     const from = cell("ke", 2, "d");
-    from.focus();
+    focus(from);
     fireEvent.keyDown(from, { key: "ArrowDown" });
     expect(document.activeElement).toBe(cell("cr", 2, "d"));
   });

@@ -59,10 +59,12 @@ describe("FreeTextExecutionMode", () => {
     expect(await screen.findByRole("button", { name: "pausecd21a1b" })).toBeInTheDocument();
   });
 
-  it("switches to a quick preset", () => {
+  it("switches to a quick preset", async () => {
     render(<FreeTextExecutionMode />);
     fireEvent.click(screen.getByRole("button", { name: "timerPreset_tabata" }));
     expect(screen.getByRole("timer")).toHaveTextContent("0:20");
+    // Let the updates the click scheduled land inside act.
+    await act(async () => {});
   });
 
   it("saves progress with pause and start counters while training", async () => {

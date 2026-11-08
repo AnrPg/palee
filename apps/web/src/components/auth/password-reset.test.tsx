@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ApiError } from "@/api/client";
@@ -76,7 +76,10 @@ describe("ResetPassword (ADR-206)", () => {
   async function fillAndSubmit() {
     fireEvent.change(await screen.findByLabelText("authRecovery.newPasswordLabel"), { target: { value: "new pass" } });
     fireEvent.change(screen.getByLabelText("authRecovery.confirmPasswordLabel"), { target: { value: "new pass" } });
-    fireEvent.click(screen.getByRole("button", { name: "authRecovery.setNewPassword" }));
+    // The reset answers in a microtask; it lands inside act, not before the next findBy.
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "authRecovery.setNewPassword" }));
+    });
   }
 
   it("checks the link from the fragment, hides it from the address bar and spends it only on submit", async () => {

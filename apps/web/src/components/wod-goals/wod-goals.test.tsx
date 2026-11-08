@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NextIntlClientProvider } from "next-intl";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -123,7 +123,7 @@ describe("WodGoalsStripView", () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it("shows one quiet row per kind and opens the sheet with every role", () => {
+  it("shows one quiet row per kind and opens the sheet with every role", async () => {
     wrap(<WodGoalsStripView goals={goals} />);
     const block = screen.getByTestId("wod-goals-strip");
     expect(block).toHaveAccessibleName("Goals");
@@ -138,6 +138,8 @@ describe("WodGoalsStripView", () => {
     expect(screen.getByTestId("wod-goals-atlas-link")).toHaveAttribute("href", "/journal/atlas?node=quadriceps");
     fireEvent.click(screen.getByRole("button", { name: "Open Glutes in the atlas" }));
     expect(push).toHaveBeenCalledWith("/journal/atlas?node=glutes");
+    // The thumbnail turns visible in a microtask; let it inside act.
+    await act(async () => {});
   });
 
   it("leaves out a row without a value, and the figure without muscles", () => {

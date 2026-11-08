@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NextIntlClientProvider } from "next-intl";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -48,7 +48,7 @@ describe("ReviewAskCard", () => {
     wrap();
     fireEvent.click(await screen.findByTestId("review-ask-close"));
     expect(screen.queryByTestId("review-ask-card")).toBeNull();
-    await vi.waitFor(() => expect(api.respondToReviewAsk).toHaveBeenCalledWith("token", "ask-1", "dismissed"));
+    await waitFor(() => expect(api.respondToReviewAsk).toHaveBeenCalledWith("token", "ask-1", "dismissed"));
   });
 
   it("opens the review sheet from «Γράψε κριτική»", async () => {
@@ -56,13 +56,13 @@ describe("ReviewAskCard", () => {
     wrap();
     fireEvent.click(await screen.findByTestId("review-ask-write"));
     expect(screen.getByTestId("review-sheet")).toBeTruthy();
-    await vi.waitFor(() => expect(api.respondToReviewAsk).toHaveBeenCalledWith("token", "ask-1", "opened"));
+    await waitFor(() => expect(api.respondToReviewAsk).toHaveBeenCalledWith("token", "ask-1", "opened"));
   });
 
   it("shows nothing when there is no ask", async () => {
     api.fetchReviewAsk.mockResolvedValue(null);
     wrap();
-    await vi.waitFor(() => expect(api.fetchReviewAsk).toHaveBeenCalled());
+    await waitFor(() => expect(api.fetchReviewAsk).toHaveBeenCalled());
     expect(screen.queryByTestId("review-ask-card")).toBeNull();
   });
 });

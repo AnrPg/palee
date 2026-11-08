@@ -14,7 +14,9 @@ missing_tools =
 # run: it is slow and rate-limited (HTTP 429).
 live_aade = [:aade_live]
 
-ExUnit.start(exclude: missing_tools ++ live_aade)
+# Tests that exercise failure paths (a provider down, a throttled notice) log
+# warnings on purpose; keep each test's log and print it only when it fails.
+ExUnit.start(exclude: missing_tools ++ live_aade, capture_log: true)
 # TD-046: the RLS-enforcing role that ConnCase requests and `:rls_enforced` tests run as.
 Palee.RLSCase.ensure_runtime_role!()
 Ecto.Adapters.SQL.Sandbox.mode(Palee.Repo, :manual)

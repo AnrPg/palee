@@ -71,7 +71,7 @@ function renderPage() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return render(
     <QueryClientProvider client={client}>
-      <NextIntlClientProvider locale="el" messages={el}>
+      <NextIntlClientProvider locale="el" messages={el} timeZone="Europe/Athens">
         <PlatformReviewReportsPage />
       </NextIntlClientProvider>
     </QueryClientProvider>,

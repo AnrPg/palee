@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -69,7 +69,7 @@ describe("DemoModeHost (ADR-184)", () => {
     fireEvent.click(await screen.findByTestId("demo-mode-button"));
     fireEvent.click(screen.getByText("demo.fill.members"));
 
-    await vi.waitFor(() => expect(seedDemoData).toHaveBeenCalledWith("t", "members"));
+    await waitFor(() => expect(seedDemoData).toHaveBeenCalledWith("t", "members"));
     expect(screen.getAllByTestId("demo-mode-button")).toHaveLength(1);
     expect(screen.getByText("activation.pending")).toBeTruthy();
   });
@@ -94,7 +94,7 @@ describe("DemoModeHost (ADR-184)", () => {
     membership = demoMembership(["owner"]);
     pathname = "/box";
     render(wrap(<DemoModeHost />));
-    await vi.waitFor(() => expect(fetchBusinessStatus).toHaveBeenCalled());
+    await waitFor(() => expect(fetchBusinessStatus).toHaveBeenCalled());
     expect(screen.queryByTestId("demo-mode-button")).toBeNull();
     expect(fetchBusinessStatus).toHaveBeenCalledTimes(1);
   });

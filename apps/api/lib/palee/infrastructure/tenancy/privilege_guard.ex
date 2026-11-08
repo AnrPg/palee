@@ -25,11 +25,19 @@ defmodule Palee.Infrastructure.Tenancy.PrivilegeGuard do
           "PrivilegeGuard: runtime DB role #{role} has rolsuper=#{superuser?} " <>
             "rolbypassrls=#{bypassrls?} - Row Level Security is NOT enforced for this connection"
 
-        if prod?() do
-          raise message
-        else
-          Logger.warning(message <> " (allowed outside prod)")
-          :ok
+        cond do
+          prod?() ->
+            raise message
+
+          # The test suite connects as the database owner on purpose (TD-046:
+          # `:rls_enforced` tests switch to the runtime role), so it is no news there.
+          Application.get_env(:palee, :rls_bypass_expected, false) ->
+            Logger.info(message <> " (expected in this environment)")
+            :ok
+
+          true ->
+            Logger.warning(message <> " (allowed outside prod)")
+            :ok
         end
 
       {:error, reason} ->

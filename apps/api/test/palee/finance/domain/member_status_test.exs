@@ -21,7 +21,7 @@ defmodule Palee.Finance.Domain.MemberStatusTest do
     )
   end
 
-  defp facts(overrides \\ %{}) do
+  defp facts(overrides) do
     Map.merge(
       %{
         today: @today,

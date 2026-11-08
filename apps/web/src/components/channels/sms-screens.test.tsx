@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NextIntlClientProvider } from "next-intl";
 import type { ReactNode } from "react";
@@ -220,7 +220,8 @@ describe("Ask once after a booking (W3 screen 2 B)", () => {
     vi.mocked(channels.fetchMyChannels).mockResolvedValue({ channels: ["sms"], contact: null });
     const { container } = wrap(<AfterBookingSmsAsk slug="box3" onDone={vi.fn()} />);
     await waitFor(() => expect(guides.fetchGuideProgress).toHaveBeenCalled());
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    // Let the dismissed answer reach the component inside act.
+    await act(() => new Promise((resolve) => setTimeout(resolve, 0)));
     expect(container.querySelector("[data-testid=after-booking-sms]")).toBeNull();
     expect(channels.fetchMyChannels).not.toHaveBeenCalled();
   });

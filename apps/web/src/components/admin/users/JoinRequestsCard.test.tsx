@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NextIntlClientProvider } from "next-intl";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -44,7 +44,7 @@ describe("JoinRequestsCard (ADR-552)", () => {
   it("is not shown while nobody waits", async () => {
     vi.mocked(fetchStaffJoinRequests).mockResolvedValue({ requests: [] });
     renderCard();
-    await vi.waitFor(() => expect(fetchStaffJoinRequests).toHaveBeenCalled());
+    await waitFor(() => expect(fetchStaffJoinRequests).toHaveBeenCalled());
     expect(screen.queryByTestId("join-requests")).toBeNull();
   });
 
@@ -54,7 +54,7 @@ describe("JoinRequestsCard (ADR-552)", () => {
     expect(await screen.findByText("1 άτομο ζητά να γίνει μέλος")).toBeInTheDocument();
     expect(screen.getByText(/@maria/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Αποδοχή του/της Μαρία ως μέλος box" }));
-    await vi.waitFor(() => expect(decideJoinRequest).toHaveBeenCalledWith("access", "r1", "accept"));
-    await vi.waitFor(() => expect(onAccepted).toHaveBeenCalled());
+    await waitFor(() => expect(decideJoinRequest).toHaveBeenCalledWith("access", "r1", "accept"));
+    await waitFor(() => expect(onAccepted).toHaveBeenCalled());
   });
 });
