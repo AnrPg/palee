@@ -43,7 +43,7 @@ test.describe("business landing", () => {
 
     await expect(page.getByTestId("business-shop")).toContainText("A website and an e-shop, free from day one.");
     await expect(page.getByTestId("business-tile-staffPay")).toBeVisible();
-    await expect(page.getByTestId("business-tile-campaigns")).toContainText("Soon");
+    await expect(page.getByTestId("business-tile-campaigns")).toContainText("Promotion campaigns");
     await expect(page.getByTestId("business-tile-accounting")).toContainText("otherwise one click exports everything for your accountant");
 
     const compare = page.getByTestId("business-compare");

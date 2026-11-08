@@ -86,14 +86,14 @@ const BOX_MANAGEMENT: TileSpec[] = [
   { id: "staffPay", visual: "staffPay" },
   { id: "cleaning", visual: "cleaning" },
   { id: "stock", visual: "stock" },
-  { id: "campaigns", visual: "campaigns", wide: true, soon: true },
+  { id: "campaigns", visual: "campaigns", wide: true },
   { id: "offers", visual: "offer", wide: true },
 ];
 
 const COACH_MANAGEMENT: TileSpec[] = [
   { id: "coachAnalytics", visual: "insights", wide: true, dark: true },
   { id: "coachAccounting", visual: "fiscal", wide: true },
-  { id: "coachCampaigns", visual: "campaigns", wide: true, soon: true },
+  { id: "coachCampaigns", visual: "campaigns", wide: true },
   { id: "coachOffers", visual: "offer", wide: true },
 ];
 

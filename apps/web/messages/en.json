@@ -19659,8 +19659,8 @@
       },
       "campaigns": {
         "kicker": "Marketing",
-        "title": "Campaigns with ads inside the app",
-        "body": "Create the campaign and Palee shows it to your members and to athletes nearby."
+        "title": "Promotion campaigns",
+        "body": "Discount codes with dates, for every branch or just one. Your members find the offer in the app, under Payments › Offers."
       },
       "offers": {
         "kicker": "Partners",
@@ -19679,8 +19679,8 @@
       },
       "coachCampaigns": {
         "kicker": "Marketing",
-        "title": "Campaigns inside the app",
-        "body": "Reach athletes near you who are looking for a coach."
+        "title": "Promotion campaigns",
+        "body": "Discount codes for your packages, shown in your clients' app."
       },
       "coachOffers": {
         "kicker": "Partners",
@@ -19713,6 +19713,7 @@
       "aiApproved": "Coach approved ✓",
       "wodTitle": "Day WOD · Tuesday",
       "wodLines": "AMRAP 20′ | 10 Pull-ups | 15 Push-ups | 20 Air squats",
+      "timerMode": "EMOM",
       "roles": "Owner | Admin | Coach | Head coach | Front desk | Accountant | Cleaning staff",
       "branches": "Kypseli branch | Piraeus branch",
       "clubName": "Eleni",
@@ -19734,9 +19735,9 @@
       "cleaning": "Room 1 · floor | Changing rooms | Rig and bars | Showers",
       "stock": "Protein | Bands | T-shirts | Water",
       "stockLow": "Low",
-      "adSponsored": "Sponsored · Box Kypseli",
-      "adTitle": "Open day on Saturday",
-      "adBody": "Bring a friend and train together for free.",
+      "adSponsored": "Box offer · Box Kypseli",
+      "adTitle": "20% off the 3-month package",
+      "adBody": "Code AUTUMN20 · until 30 November",
       "offerPartner": "Partner · Healthy Bites",
       "offerTitle": "15% off for box members",
       "offerBody": "Show your membership card at the till",

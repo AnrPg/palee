@@ -19659,8 +19659,8 @@
       },
       "campaigns": {
         "kicker": "Marketing",
-        "title": "Campañas con anuncios dentro de la app",
-        "body": "Crea la campaña y Palee la muestra a tus miembros y a atletas cercanos."
+        "title": "Campañas de promoción",
+        "body": "Códigos de descuento con fechas, para todas las sedes o solo una. Tus miembros ven la oferta en la app, en Pagos › Ofertas."
       },
       "offers": {
         "kicker": "Colaboradores",
@@ -19679,8 +19679,8 @@
       },
       "coachCampaigns": {
         "kicker": "Marketing",
-        "title": "Campañas dentro de la app",
-        "body": "Llega a atletas cerca de ti que buscan coach."
+        "title": "Campañas de promoción",
+        "body": "Códigos de descuento para tus paquetes, visibles en la app de tus clientes."
       },
       "coachOffers": {
         "kicker": "Colaboradores",
@@ -19713,6 +19713,7 @@
       "aiApproved": "Aprobado por el coach ✓",
       "wodTitle": "WOD del día · martes",
       "wodLines": "AMRAP 20′ | 10 dominadas | 15 flexiones | 20 sentadillas",
+      "timerMode": "EMOM",
       "roles": "Propietario | Admin | Coach | Head coach | Recepcionista | Contable | Personal de limpieza",
       "branches": "Sede Kypseli | Sede El Pireo",
       "clubName": "Eleni",
@@ -19734,9 +19735,9 @@
       "cleaning": "Sala 1 · suelo | Vestuarios | Rig y barras | Duchas",
       "stock": "Proteína | Gomas | Camisetas | Agua",
       "stockLow": "Poco",
-      "adSponsored": "Patrocinado · Box Kypseli",
-      "adTitle": "Jornada de puertas abiertas el sábado",
-      "adBody": "Trae a un amigo y entrenad juntos gratis.",
+      "adSponsored": "Oferta del box · Box Kypseli",
+      "adTitle": "-20 % en el paquete de 3 meses",
+      "adBody": "Código OTONO20 · hasta el 30 de noviembre",
       "offerPartner": "Colaborador · Healthy Bites",
       "offerTitle": "-15 % para miembros del box",
       "offerBody": "Enseña tu tarjeta de miembro en caja",

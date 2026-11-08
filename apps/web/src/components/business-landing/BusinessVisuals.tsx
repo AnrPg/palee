@@ -201,6 +201,7 @@ function WodVisual() {
 
 /** EMOM on the TV: a ring runs down while the seconds count. */
 function TimerVisual() {
+  const t = useTranslations("BusinessLanding");
   return (
     <div className="grid place-items-center" aria-hidden="true">
       <div className="relative grid size-32 place-items-center">
@@ -209,7 +210,7 @@ function TimerVisual() {
           <circle className="landing-ring" cx="60" cy="60" r="50" fill="none" strokeWidth="9" strokeLinecap="round" stroke="var(--spark)" />
         </svg>
         <b className="text-3xl font-black tabular-nums">00:42</b>
-        <small className="absolute bottom-7 text-[10px] font-extrabold tracking-[0.14em]" style={{ color: "var(--spark)" }}>EMOM</small>
+        <small className="absolute bottom-7 text-[10px] font-extrabold tracking-[0.14em]" style={{ color: "var(--spark)" }}>{t("visual.timerMode")}</small>
       </div>
     </div>
   );

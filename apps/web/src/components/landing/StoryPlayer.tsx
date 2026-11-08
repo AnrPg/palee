@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { useTranslations } from "next-intl";
 
+import { BRAND_NAME } from "@/components/branding/brand";
 import { PaleeMark } from "@/components/branding/PaleeMark";
 import { PaleeTagline } from "@/components/branding/PaleeTagline";
 import {
@@ -110,7 +111,7 @@ export function StoryPlayer({
       brand={
         <span className="flex items-center gap-2 text-lg font-black">
           <PaleeMark className="size-7 [&_path]:stroke-[var(--deep-contrast)]" />
-          Palee
+          {BRAND_NAME}
         </span>
       }
       actions={

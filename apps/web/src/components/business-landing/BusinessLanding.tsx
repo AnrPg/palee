@@ -5,6 +5,7 @@ import { useCallback, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
+import { BRAND_NAME, PALEE_HOST } from "@/components/branding/brand";
 import { PaleeMark } from "@/components/branding/PaleeMark";
 import { BUSINESS_SIGN_UP_HREF } from "@/components/business/BusinessSignUp";
 import { BusinessConsole } from "@/components/business-landing/BusinessConsole";
@@ -214,7 +215,7 @@ export function BusinessLanding({ initialAudience }: { initialAudience: Audience
           <header className="landing-deep sticky top-0 z-(--z-sticky) flex h-16 items-center justify-between gap-4 px-6 lg:px-16" style={{ backgroundImage: "none" }}>
             <Link href="/business" className="flex items-center gap-2 text-xl font-black">
               <PaleeMark className="size-8 [&_path]:stroke-[var(--deep-contrast)]" />
-              Palee
+              {BRAND_NAME}
               <span className="rounded-full px-2.5 py-0.5 text-[11px] font-extrabold uppercase tracking-[0.12em]" style={{ border: "1px solid color-mix(in srgb, var(--deep-contrast) 35%, transparent)" }}>
                 {t("brandTag")}
               </span>
@@ -386,7 +387,7 @@ export function BusinessLanding({ initialAudience }: { initialAudience: Audience
             </section>
 
             <footer className="mx-auto flex max-w-6xl flex-wrap justify-between gap-4 px-6 pb-10 text-sm lg:px-10" style={{ color: "var(--muted)" }}>
-              <span>Palee · palee.app</span>
+              <span>{BRAND_NAME} · {PALEE_HOST}</span>
               <span className="flex flex-wrap gap-4">
                 <Link href="/" className="hover:underline">{t("footer.athletes")}</Link>
                 <Link href="/terms" className="hover:underline">{t("footer.terms")}</Link>

@@ -19659,8 +19659,8 @@
       },
       "campaigns": {
         "kicker": "Marketing",
-        "title": "Kampagnen mit Anzeigen in der App",
-        "body": "Erstelle die Kampagne und Palee zeigt sie deinen Mitgliedern und Athleten in der Nähe."
+        "title": "Aktionskampagnen",
+        "body": "Rabattcodes mit Laufzeit, für alle Standorte oder nur einen. Deine Mitglieder finden das Angebot in der App unter Zahlungen › Angebote."
       },
       "offers": {
         "kicker": "Partner",
@@ -19679,8 +19679,8 @@
       },
       "coachCampaigns": {
         "kicker": "Marketing",
-        "title": "Kampagnen in der App",
-        "body": "Erreiche Athleten in deiner Nähe, die einen Coach suchen."
+        "title": "Aktionskampagnen",
+        "body": "Rabattcodes für deine Pakete, sichtbar in der App deiner Kunden."
       },
       "coachOffers": {
         "kicker": "Partner",
@@ -19713,6 +19713,7 @@
       "aiApproved": "Vom Coach freigegeben ✓",
       "wodTitle": "Tages-WOD · Dienstag",
       "wodLines": "AMRAP 20′ | 10 Klimmzüge | 15 Liegestütze | 20 Kniebeugen",
+      "timerMode": "EMOM",
       "roles": "Inhaber | Admin | Coach | Head Coach | Empfang | Buchhalter | Reinigungskraft",
       "branches": "Standort Kypseli | Standort Piräus",
       "clubName": "Eleni",
@@ -19734,9 +19735,9 @@
       "cleaning": "Raum 1 · Boden | Umkleiden | Rig und Stangen | Duschen",
       "stock": "Protein | Bänder | T-Shirts | Wasser",
       "stockLow": "Knapp",
-      "adSponsored": "Gesponsert · Box Kypseli",
-      "adTitle": "Tag der offenen Tür am Samstag",
-      "adBody": "Bring einen Freund mit und trainiert gemeinsam kostenlos.",
+      "adSponsored": "Box-Angebot · Box Kypseli",
+      "adTitle": "20 % Rabatt auf das 3-Monats-Paket",
+      "adBody": "Code HERBST20 · bis 30. November",
       "offerPartner": "Partnerladen · Healthy Bites",
       "offerTitle": "15 % Rabatt für Box-Mitglieder",
       "offerBody": "Zeig deine Mitgliedskarte an der Kasse",

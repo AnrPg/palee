@@ -2,7 +2,9 @@
  * The Palee tagline (ANR 2026-11-08). It is the same words in every locale:
  * never translated, «πάλι» always in Greek and «(palee)» after it.
  */
-export const PALEE_TAGLINE = "Hey pal, the real PR is coming back πάλι (palee)!";
+import { PALEE_TAGLINE_PARTS } from "@/components/branding/brand";
+
+export { PALEE_TAGLINE } from "@/components/branding/brand";
 
 export function PaleeTagline({
   className = "",
@@ -14,11 +16,11 @@ export function PaleeTagline({
 }) {
   return (
     <p lang="en" dir="ltr" className={`font-semibold tracking-tight ${className}`} data-testid="palee-tagline">
-      Hey pal, the real PR is coming back{" "}
+      {PALEE_TAGLINE_PARTS.lead}{" "}
       <span lang="el" className="font-extrabold" style={{ color: accent }}>
-        πάλι
+        {PALEE_TAGLINE_PARTS.word}
       </span>{" "}
-      <span className="opacity-70">(palee)</span>!
+      <span className="opacity-70">{PALEE_TAGLINE_PARTS.gloss}</span>!
     </p>
   );
 }

@@ -50,6 +50,18 @@ function isUtilityClassList(value) {
   return tokens.length > 1 && tokens.every(isUtilityClassToken);
 }
 
+// Measurements read the same in every language: numbers with units (kg, km,
+// h, min…), optionally after one person's first name ("Eleni, 29 · 3 km").
+// Decimal separators differ but `normalize` drops them, so these stay shared.
+const UNITS = new Set(["kg", "lb", "km", "mi", "m", "cm", "h", "min", "s", "kcal", "bpm", "x"]);
+
+function isMeasurement(value) {
+  const words = value.replace(/[^\p{L}\p{N}]+/gu, " ").trim().split(" ").filter(Boolean);
+  if (!words.some((word) => /^\d+$/.test(word))) return false;
+  const rest = words.filter((word) => !/^\d+$/.test(word) && !UNITS.has(word.toLowerCase()));
+  return rest.length === 0 || (rest.length === 1 && /^\p{Lu}\p{Ll}+$/u.test(rest[0]));
+}
+
 function isAllowedSharedValue(value) {
   const trimmed = value.trim();
 
@@ -63,6 +75,7 @@ function isAllowedSharedValue(value) {
     || /^\/[\w/?=&.-]*$/.test(trimmed)
     || /^[\w.+-]+\/[\w.+-]+$/.test(trimmed)
     || /^\{[^}]+\}$/.test(trimmed)
+    || isMeasurement(trimmed)
     || isUtilityClassList(trimmed);
 }
 

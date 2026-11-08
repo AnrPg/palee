@@ -57,7 +57,12 @@ ANR's comments on the mockup also set:
 - Visuals (`BusinessVisuals.tsx`) are CSS animations with the `landing-`
   prefix in `globals.css`, all off under `prefers-reduced-motion`; colours
   only through theme variables.
-- In-app ad campaigns do not exist yet, so their tiles say «Soon».
+- «Campaigns» are the existing promotion campaigns (Marketing › Box offers,
+  `promotion_campaigns` with codes, shown to members in Payments › Offers when
+  the box marks them visible). ANR (2026-11-08) pointed out they exist; the
+  tile describes only that, with no «Soon». In-feed ads and ads to non-members
+  nearby do not exist and are not advertised. (Seasons, ADR-167, are dated
+  training programmes with places, not campaigns.)
 - All copy is in the `BusinessLanding` namespace in the 12 locales, with
   ontology terms (Box, Independent coach, Class, Subscription package, Box
   club, Coach's group, Online programming, Branch, Front desk, Accountant,
@@ -66,5 +71,8 @@ ANR's comments on the mockup also set:
 ## Consequences
 - Business sign-up still goes to the existing flow (`BUSINESS_SIGN_UP_HREF`);
   the owner card on the athletes' landing now points to `/business` first.
-- When in-app campaigns ship, drop `soon` from their tiles.
+- `soon` on a tile stays available for a feature that is on its way.
+- `npm run i18n:check` passes: numbers with units and one first name
+  («Eleni · 3 km») count as shared values, `t.rich` keys and `@container`
+  classes are not copy, and the brand words live in `branding/brand.ts`.
 - e2e: `e2e/business-landing.spec.ts`.

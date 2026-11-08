@@ -19659,8 +19659,8 @@
       },
       "campaigns": {
         "kicker": "Marketing",
-        "title": "Des campagnes avec publicités dans l’app",
-        "body": "Créez la campagne et Palee la montre à vos membres et aux athlètes proches."
+        "title": "Campagnes promotionnelles",
+        "body": "Des codes de réduction datés, pour tous les établissements ou un seul. Vos membres trouvent l’offre dans l’app, sous Paiements › Offres."
       },
       "offers": {
         "kicker": "Partenaires",
@@ -19679,8 +19679,8 @@
       },
       "coachCampaigns": {
         "kicker": "Marketing",
-        "title": "Des campagnes dans l’app",
-        "body": "Touchez les athlètes proches de vous qui cherchent un coach."
+        "title": "Campagnes promotionnelles",
+        "body": "Des codes de réduction pour vos forfaits, visibles dans l’app de vos clients."
       },
       "coachOffers": {
         "kicker": "Partenaires",
@@ -19713,6 +19713,7 @@
       "aiApproved": "Validé par le coach ✓",
       "wodTitle": "WOD du jour · mardi",
       "wodLines": "AMRAP 20′ | 10 tractions | 15 pompes | 20 squats",
+      "timerMode": "EMOM",
       "roles": "Propriétaire | Admin | Coach | Head coach | Accueil | Comptable | Agent d'entretien",
       "branches": "Établissement Kypseli | Établissement Le Pirée",
       "clubName": "Eleni",
@@ -19734,9 +19735,9 @@
       "cleaning": "Salle 1 · sol | Vestiaires | Rig et barres | Douches",
       "stock": "Protéine | Élastiques | T-shirts | Eau",
       "stockLow": "Bas",
-      "adSponsored": "Sponsorisé · Box Kypseli",
-      "adTitle": "Portes ouvertes samedi",
-      "adBody": "Venez avec un ami et entraînez-vous ensemble gratuitement.",
+      "adSponsored": "Offre de la box · Box Kypseli",
+      "adTitle": "-20 % sur le forfait 3 mois",
+      "adBody": "Code AUTOMNE20 · jusqu’au 30 novembre",
       "offerPartner": "Partenaire · Healthy Bites",
       "offerTitle": "-15 % pour les membres de la box",
       "offerBody": "Montrez votre carte de membre à la caisse",

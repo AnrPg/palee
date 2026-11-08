@@ -19473,7 +19473,7 @@
       "weekWorkouts": "4 van 4 trainingen ✓",
       "weekStreak": "Reeks: 6 weken",
       "weekPr": "1 nieuwe PR gevonden",
-      "weekPrMeta": "Back squat · +2,5 kg",
+      "weekPrMeta": "Back squat · +2,5 kilo",
       "weekInsight": "Meer dan 7 uur slaap?",
       "weekInsightMeta": "Dan til je zwaarder. Dat zagen we in je gegevens."
     },
@@ -19659,8 +19659,8 @@
       },
       "campaigns": {
         "kicker": "Marketing",
-        "title": "Campagnes met advertenties in de app",
-        "body": "Maak de campagne en Palee toont hem aan je leden en aan atleten in de buurt."
+        "title": "Actiecampagnes",
+        "body": "Kortingscodes met data, voor alle vestigingen of één. Je leden vinden de aanbieding in de app, onder Betalingen › Aanbiedingen."
       },
       "offers": {
         "kicker": "Partners",
@@ -19679,8 +19679,8 @@
       },
       "coachCampaigns": {
         "kicker": "Marketing",
-        "title": "Campagnes in de app",
-        "body": "Bereik atleten in je buurt die een coach zoeken."
+        "title": "Actiecampagnes",
+        "body": "Kortingscodes voor je pakketten, zichtbaar in de app van je klanten."
       },
       "coachOffers": {
         "kicker": "Partners",
@@ -19713,6 +19713,7 @@
       "aiApproved": "Goedgekeurd door de coach ✓",
       "wodTitle": "Dag-WOD · dinsdag",
       "wodLines": "AMRAP 20′ | 10 keer optrekken | 15 keer opdrukken | 20 squats",
+      "timerMode": "EMOM",
       "roles": "Eigenaar | Beheerder | Coach | Hoofdcoach | Receptiemedewerker | Boekhouder | Schoonmaakmedewerker",
       "branches": "Vestiging Kypseli | Vestiging Piraeus",
       "clubName": "Eleni",
@@ -19734,9 +19735,9 @@
       "cleaning": "Zaal 1 · vloer | Kleedkamers | Rig en stangen | Douches",
       "stock": "Proteïne | Elastieken | T-shirts | Water",
       "stockLow": "Laag",
-      "adSponsored": "Gesponsord · Box Kypseli",
-      "adTitle": "Open dag op zaterdag",
-      "adBody": "Neem een vriend mee en train samen gratis.",
+      "adSponsored": "Boxaanbieding · Box Kypseli",
+      "adTitle": "20% korting op het 3-maandenpakket",
+      "adBody": "Code HERFST20 · tot 30 november",
       "offerPartner": "Partnerwinkel · Healthy Bites",
       "offerTitle": "15% korting voor boxleden",
       "offerBody": "Laat je ledenpas zien aan de kassa",

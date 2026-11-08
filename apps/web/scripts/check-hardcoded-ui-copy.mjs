@@ -82,6 +82,8 @@ function literalValue(node) {
 function isUtilityClassToken(token) {
   const normalized = token
     .replace(/^(?:sm|md|lg|xl|2xl|hover|focus|focus-visible|active|disabled|group-hover|group-focus-visible|dark|rtl|ltr|motion-safe|motion-reduce):/, "")
+    // Container-query variants (`@xs:`, `@md:`).
+    .replace(/^@\w+:/, "")
     .replace(/^\[[^\]]+\]:/, "");
 
   return /^(?:-)?(?:flex|grid|block|inline|inline-flex|inline-block|inline-grid|hidden|contents|grow|shrink|relative|absolute|fixed|sticky|static|isolate|overflow|truncate|sr-only|not-sr-only|container|border)$/.test(normalized)
@@ -144,7 +146,8 @@ function isTechnicalContext(node, sourceFile) {
     }
     if (ts.isCallExpression(current)) {
       const callee = current.expression.getText(sourceFile).split(".").at(-1);
-      if (technicalCalls.has(callee) || callee === "i18n" || callee === "t") return true;
+      // `t.rich` and `t.markup` take a message key like `t` does.
+      if (technicalCalls.has(callee) || callee === "i18n" || callee === "t" || /^t\.(?:rich|markup|raw|has)$/.test(current.expression.getText(sourceFile))) return true;
     }
     if (ts.isNewExpression(current) && /Intl\.(?:NumberFormat|DateTimeFormat|ListFormat|RelativeTimeFormat)/.test(current.expression.getText(sourceFile))) return true;
     current = current.parent;

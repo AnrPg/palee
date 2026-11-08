@@ -5,6 +5,7 @@ import { useCallback, useRef, useState, useSyncExternalStore, type ReactNode } f
 import { useTranslations } from "next-intl";
 
 import { AuthPanel, type AuthMode } from "@/components/auth-console";
+import { BRAND_NAME } from "@/components/branding/brand";
 import { PaleeMark } from "@/components/branding/PaleeMark";
 import { PaleeTagline } from "@/components/branding/PaleeTagline";
 import { BUSINESS_LANDING_HREF } from "@/components/business-landing/links";
@@ -177,7 +178,7 @@ export function GuestLanding({
             <span className="flex items-center gap-4">
               <span className="flex items-center gap-2 text-xl font-black">
                 <PaleeMark className="size-8 [&_path]:stroke-[var(--deep-contrast)]" />
-                Palee
+                {BRAND_NAME}
               </span>
               {/* ADR-556: the way to the business landing sits with the brand, away from sign in / sign up. */}
               <Link
