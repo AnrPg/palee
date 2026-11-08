@@ -143,10 +143,10 @@ function TimetableSection({ site }: { site: PublicSite }) {
           aria-expanded={expanded}
           aria-controls={listId}
           onClick={() => setExpanded((value) => !value)}
-          className="min-h-11 rounded-2xl px-4 text-sm font-bold"
-          style={{ background: "var(--panel)", border: "1px solid var(--border)", color: "var(--text)" }}
+          className="self-start text-sm font-bold"
+          style={{ color: "var(--primary-strong)" }}
         >
-          {expanded ? t("scheduleLess") : t("scheduleMore", { count: days.length - 1 })}
+          {expanded ? t("scheduleLess") : t("scheduleMore", { count: days.length - 1 })} <span aria-hidden="true">{expanded ? "‹" : "›"}</span>
         </button>
       ) : null}
     </section>
