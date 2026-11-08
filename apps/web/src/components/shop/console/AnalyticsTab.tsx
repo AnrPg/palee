@@ -25,6 +25,7 @@ import {
   weeklyBuckets,
 } from "@/lib/shop/console";
 import { guideAnchor } from "@/lib/guides/anchors";
+import { CHART_FIRST_SIZE } from "@/lib/chart-size";
 
 type Range = "28" | "84" | "365";
 const RANGES: Range[] = ["28", "84", "365"];
@@ -127,7 +128,7 @@ export function AnalyticsTab({ locationIds, branchFilter }: { locationIds?: stri
           <StatusText tone="muted">{t("noSales")}</StatusText>
         ) : (
           <div className="h-56 w-full">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" initialDimension={CHART_FIRST_SIZE}>
               <BarChart data={weeks}>
                 <CartesianGrid stroke="var(--border)" vertical={false} />
                 <XAxis

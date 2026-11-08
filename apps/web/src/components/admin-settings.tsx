@@ -81,11 +81,16 @@ function partShows(levels: SettingLevels, part: Part) {
  * settings. When the other part saves, take the new server values but keep
  * what was typed here and not saved yet.
  */
-export function mergeServerForm<F extends Record<string, unknown>>(form: F, lastServer: F | null, next: F): F {
-  if (!lastServer) return next;
-  const merged = { ...next };
+export function mergeServerForm<F extends Record<string, unknown>>(form: F, lastServer: Partial<F> | null, next: Partial<F>): F {
+  const merged = { ...form };
   for (const key of Object.keys(next) as Array<keyof F>) {
-    if (JSON.stringify(form[key]) !== JSON.stringify(lastServer[key])) merged[key] = form[key];
+    // A field the server left out (an older server, a partial answer) keeps the
+    // form's value, so a controlled input never turns uncontrolled.
+    if (next[key] === undefined) continue;
+    // A field the server left out last time and sends now is taken as it comes.
+    const seen = lastServer?.[key];
+    const editedHere = seen !== undefined && JSON.stringify(form[key]) !== JSON.stringify(seen);
+    if (!editedHere) merged[key] = next[key];
   }
   return merged;
 }
@@ -294,24 +299,23 @@ type GamificationFormState = {
   leaderboardEnabled: boolean;
 };
 
-function formFromSettings(s: GamificationSettings): GamificationFormState {
+// A field missing from the answer stays undefined, so the form keeps its value.
+function formFromSettings(s: GamificationSettings): Partial<GamificationFormState> {
   return {
-    streakShields: String(s.streak_shields),
+    streakShields: s.streak_shields == null ? undefined : String(s.streak_shields),
     streakShieldResetDay: s.streak_shield_reset_day ? String(s.streak_shield_reset_day) : "",
     leaderboardEnabled: s.leaderboard_enabled,
   };
 }
+
+const GAMIFICATION_START: GamificationFormState = { streakShields: "1", streakShieldResetDay: "", leaderboardEnabled: true };
 
 export function GamificationSection({ token, part = "basic" }: { token: string; part?: Part }) {
   const i18n = useUiTranslations();
   const t = useTranslations("TrainingGoal");
   const show = partShows(useSettingLevels(), part);
   const queryClient = useQueryClient();
-  const [form, setForm] = useState<GamificationFormState>({
-    streakShields: "1",
-    streakShieldResetDay: "",
-    leaderboardEnabled: true,
-  });
+  const [form, setForm] = useState<GamificationFormState>(GAMIFICATION_START);
   const [initialized, setInitialized] = useState(false);
   const [activeHelp, setActiveHelp] = useState<string | null>(null);
 
@@ -320,7 +324,7 @@ export function GamificationSection({ token, part = "basic" }: { token: string; 
     queryFn: () => fetchAdminSettings(token),
   });
 
-  const lastServer = useRef<GamificationFormState | null>(null);
+  const lastServer = useRef<Partial<GamificationFormState> | null>(null);
   useEffect(() => {
     if (!settingsQuery.data?.gamification) return;
     const next = formFromSettings(settingsQuery.data.gamification);
@@ -350,7 +354,7 @@ export function GamificationSection({ token, part = "basic" }: { token: string; 
   });
 
   const serverForm = settingsQuery.data?.gamification
-    ? formFromSettings(settingsQuery.data.gamification)
+    ? mergeServerForm(GAMIFICATION_START, null, formFromSettings(settingsQuery.data.gamification))
     : null;
   const dirty = initialized && serverForm !== null && JSON.stringify(form) !== JSON.stringify(serverForm);
 
@@ -620,14 +624,15 @@ export function LevelTaxonomySection({ token }: { token: string }) {
 
 // ── Finance section ──────────────────────────────────────────────────────────
 
+// A field missing from the answer reads as the form's starting value, never "undefined".
 function financeFormFromSettings(s: FinanceSettings) {
   return {
-    paymentReminderIntervalDays: String(s.payment_reminder_interval_days),
+    paymentReminderIntervalDays: String(s.payment_reminder_interval_days ?? 7),
     expiryReminderDays: String(s.subscription_expiry_reminder_days ?? 5),
     endDayReminder: s.subscription_end_day_reminder ?? true,
     dayAfterReminder: s.subscription_day_after_reminder ?? true,
     graceDays: String(s.subscription_grace_days ?? 3),
-    documentMode: s.document_mode,
+    documentMode: s.document_mode ?? "invoice",
     packageModules: [...(s.package_modules ?? DEFAULT_PACKAGE_MODULES)].sort(),
   };
 }
@@ -741,7 +746,7 @@ export function FinanceSection({ token, part = "basic" }: { token: string; part?
 
   const serverModules = [...(settingsQuery.data?.finance?.package_modules ?? DEFAULT_PACKAGE_MODULES)].sort().join(",");
   const serverDays = settingsQuery.data?.finance
-    ? String(settingsQuery.data.finance.payment_reminder_interval_days)
+    ? String(settingsQuery.data.finance.payment_reminder_interval_days ?? 7)
     : "7";
   const serverMode = settingsQuery.data?.finance?.document_mode ?? "invoice";
   const serverForm = settingsQuery.data?.finance ? financeFormFromSettings(settingsQuery.data.finance) : null;
@@ -1165,7 +1170,7 @@ export function SchedulingDefaultsSection({ token, part = "basic" }: { token: st
   const settingsQuery = useQuery({ queryKey: ["admin", "settings"], queryFn: () => fetchAdminSettings(token) });
   const [form, setForm] = useState<SchedulingForm>({ capacity: 12, timeout: 60, autoApprove: false, windowDays: null, cutoffMinutes: null });
 
-  const lastServer = useRef<SchedulingForm | null>(null);
+  const lastServer = useRef<Partial<SchedulingForm> | null>(null);
   useEffect(() => {
     const value = settingsQuery.data?.scheduling;
     if (value) {

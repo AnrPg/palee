@@ -21,8 +21,10 @@ export function joinToBuy(token: string, slug: string, packageId: string) {
   });
 }
 
-export function fetchMyJoinRequest(token: string, slug: string) {
-  return apiRequest<{ request: MyJoinRequest | null }>(`/boxes/${id(slug)}/join-request`, { token });
+/** A malformed answer reads as «no request» (null), never undefined. */
+export async function fetchMyJoinRequest(token: string, slug: string): Promise<{ request: MyJoinRequest | null }> {
+  const body = await apiRequest<{ request?: MyJoinRequest | null } | null>(`/boxes/${id(slug)}/join-request`, { token });
+  return { request: body?.request ?? null };
 }
 
 /** Asks the box; asking again returns the open request. */

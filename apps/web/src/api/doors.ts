@@ -41,7 +41,9 @@ export function fetchDoorCatalog(token: string) {
 
 export async function fetchDoors(token: string, locationId?: string) {
   const query = locationId ? `?location_id=${id(locationId)}` : "";
-  return (await apiRequest<{ doors: Door[] }>(`/admin/doors${query}`, { token })).doors;
+  // A malformed answer reads as an empty list, never undefined query data.
+  const body = await apiRequest<{ doors?: Door[] } | null>(`/admin/doors${query}`, { token });
+  return Array.isArray(body?.doors) ? body.doors : [];
 }
 
 export type DoorBody = {

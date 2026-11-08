@@ -184,12 +184,30 @@ export class WebglUnavailableError extends Error {
   }
 }
 
+let webgl2Probe: boolean | null = null;
+
+/**
+ * Whether this browser can make a WebGL2 context at all (three.js needs one),
+ * probed once on a throwaway canvas that hands its context back at once. Only
+ * a "no" is kept: a GPU-less browser never gets one later.
+ */
+export function webgl2Available(): boolean {
+  if (webgl2Probe === false) return false;
+  if (typeof document === "undefined") return false;
+  const context = document.createElement("canvas").getContext("webgl2");
+  context?.getExtension("WEBGL_lose_context")?.loseContext();
+  webgl2Probe = context ? null : false;
+  return Boolean(context);
+}
+
 /**
  * A WebGL renderer for the figure. Multisampling is the first thing a weak or
  * busy GPU (or a software one) refuses, so a context that cannot be made with
  * it is retried once without it; when that fails too, WebglUnavailableError.
  */
 export function createRenderer(canvas?: HTMLCanvasElement, preserveDrawingBuffer = false): THREE.WebGLRenderer {
+  // three.js logs console errors for every refused context; ask quietly first.
+  if (!webgl2Available()) throw new WebglUnavailableError(new Error("No WebGL2 context"));
   let renderer: THREE.WebGLRenderer;
   try {
     renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer });

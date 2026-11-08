@@ -65,8 +65,9 @@ export const readyRanksKey = (slug: string) => ["body-devices", "ready-ranks", s
 export const clientRanksKey = (slug: string, userId: string) => ["body-devices", "client-ranks", slug, userId] as const;
 
 // ADR-374: race your past self.
-export function fetchPacer(token: string, executionId: string) {
-  return apiRequest<{ pacer: Pacer }>(`/executions/${id(executionId)}/pacer`, { token }).then((body) => body.pacer);
+// A malformed answer reads as «no past self» (null), never undefined query data.
+export function fetchPacer(token: string, executionId: string): Promise<Pacer | null> {
+  return apiRequest<{ pacer?: Pacer | null } | null>(`/executions/${id(executionId)}/pacer`, { token }).then((body) => body?.pacer ?? null);
 }
 
 // ADR-375: the watch (pairing happens in the phone app; the web shows and changes settings).

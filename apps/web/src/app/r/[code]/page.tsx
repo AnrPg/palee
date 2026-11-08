@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
-import { InvitePage } from "@/components/referrals/InvitePage";
+import { InviteNotFound, InvitePage } from "@/components/referrals/InvitePage";
 import { loadReferralInvite } from "@/lib/referral-invite";
 
 type Props = {
@@ -39,7 +38,11 @@ export default async function InviteRoute({ params, searchParams }: Props) {
   const { code } = await params;
   const query = await searchParams;
   const invite = await loadReferralInvite(code);
-  if (!invite) notFound();
+  // A revoked or unknown code, or a member who left the box (ADR-156). Rendered
+  // here, not through notFound(): a streamed page's notFound() sends Next's
+  // default 404 in the HTML and the client then rebuilds the whole document.
+  // generateMetadata keeps it out of search (noindex).
+  if (!invite) return <InviteNotFound />;
   const one = (value: string | string[] | undefined) => (typeof value === "string" ? value : null);
   return <InvitePage invite={invite} via={one(query.via)} eventId={one(query.event)} />;
 }

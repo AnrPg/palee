@@ -21,6 +21,7 @@ import { MetricHelp } from "@/components/admin/analytics/MetricHelp";
 import { useAnalyticsDirectory } from "@/components/admin/analytics/use-analytics-directory";
 import { useAnalyticsFilter } from "@/components/admin/analytics/use-analytics-filter";
 import type { AnalyticsDimension } from "@/lib/analytics-filter";
+import { CHART_FIRST_SIZE } from "@/lib/chart-size";
 import { SemanticLabel } from "@/components/semantic-label";
 import { useSession } from "@/components/session-provider";
 import { useBusinessFeatures } from "@/lib/use-business-features";
@@ -188,7 +189,7 @@ export function FinanceDashboard({ analyticsMode = false }: { analyticsMode?: bo
             {widgetHelp("monthly_revenue", i18n("paidVsPending81799fc"))}
           </div>
           <div className="mt-6 h-64 w-full">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" initialDimension={CHART_FIRST_SIZE}>
               <LineChart data={monthlyRevenue}>
                 <CartesianGrid stroke="var(--border)" vertical={false} />
                 <XAxis
