@@ -616,3 +616,82 @@ html[data-platform]::before {
     transform: translate(-50%, -50%);
   }
 }
+
+/* ADR-555: the guest landing (palee.app for people who are not signed in).
+   Phones play stories; tablets and up open on one dark screen with the
+   animated phone. Every motion stops under prefers-reduced-motion. */
+.landing-deep {
+  background-color: var(--deep);
+  color: var(--deep-contrast);
+  background-image:
+    radial-gradient(circle at 78% 18%, color-mix(in srgb, var(--primary) 55%, transparent), transparent 42%),
+    radial-gradient(circle at 8% 100%, color-mix(in srgb, var(--spark) 14%, transparent), transparent 38%);
+}
+.landing-soft { color: color-mix(in srgb, var(--deep-contrast) 80%, transparent); }
+.landing-em em { font-style: normal; color: var(--spark); }
+@keyframes landing-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+.landing-rise { animation: landing-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.landing-rise-1 { animation-delay: 0.08s; }
+.landing-rise-2 { animation-delay: 0.16s; }
+@keyframes landing-story-fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+.landing-story-fill {
+  --story-duration: 5s;
+  transform-origin: left center;
+  animation: landing-story-fill var(--story-duration, 5s) linear both;
+}
+[dir="rtl"] .landing-story-fill { transform-origin: right center; }
+.landing-story-fill[data-paused="true"] { animation-play-state: paused; }
+@keyframes landing-cue {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, -7px); }
+}
+.landing-cue {
+  transform: translate(-50%, 0);
+  animation: landing-cue 2.2s ease-in-out infinite;
+  box-shadow: 0 12px 34px -8px color-mix(in srgb, var(--spark) 70%, transparent);
+}
+@keyframes landing-line {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+.landing-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: landing-line 1.8s ease-out both;
+}
+@keyframes landing-pop {
+  0%, 60% { opacity: 0; transform: scale(0.6); }
+  100% { opacity: 1; transform: none; }
+}
+.landing-pop { animation: landing-pop 2.1s ease-out both; }
+@keyframes landing-screen {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+.landing-screen { animation: landing-screen 0.45s ease-out both; }
+@keyframes landing-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.landing-marquee { animation: landing-marquee 38s linear infinite; }
+[dir="rtl"] .landing-marquee { animation-direction: reverse; }
+/* The sign-in drawer on tablets and up: a Dojo-blue column, the card centred. */
+@media (min-width: 768px) {
+  .landing-auth-drawer {
+    background-color: var(--primary) !important;
+    background-image:
+      radial-gradient(circle at 85% 8%, color-mix(in srgb, var(--spark) 28%, transparent), transparent 40%),
+      radial-gradient(circle at 10% 95%, color-mix(in srgb, var(--deep) 55%, transparent), transparent 45%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-rise, .landing-screen, .landing-pop, .landing-line { animation: none; }
+  .landing-cue, .landing-marquee { animation: none; }
+  .landing-story-fill { animation: none; transform: scaleX(1); }
+}

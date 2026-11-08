@@ -1,9 +1,8 @@
-
-import { AuthConsole } from "@/components/auth-console";
+import { GuestLanding } from "@/components/landing/GuestLanding";
 
 export const dynamic = "force-dynamic";
 
+/** Sign up (ADR-555): the guest landing with the form already open. */
 export default function RegisterPage() {
-  
-  return <AuthConsole initialMode="register" />;
+  return <GuestLanding initialMode="register" />;
 }

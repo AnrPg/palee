@@ -36,7 +36,8 @@ import { getAvatarUploadUrl, updateAvatar } from "@/api/profile";
 import { useSession } from "@/components/session-provider";
 import { markReferralNewAccount } from "@/lib/referral-claim";
 
-type Mode = "register" | "login";
+export type AuthMode = "register" | "login";
+type Mode = AuthMode;
 
 type RegisterForm = {
   display_name: string;
@@ -92,7 +93,37 @@ function scheduledDeletionOf(error: unknown): string | null {
   return typeof at === "string" ? at : null;
 }
 
+/** The sign-in console as its own page: the centred card. */
 export function AuthConsole({ initialMode = "login" }: { initialMode?: Mode }) {
+  return (
+    <main
+      className="flex min-h-screen items-center justify-center px-6 py-10"
+      style={{ background: "var(--bg)" }}
+    >
+      <div className="w-full max-w-md">
+        <div
+          className="rounded-[2rem] p-7"
+          style={{ background: "var(--panel)", border: "1px solid var(--border)" }}
+        >
+          <AuthPanel initialMode={initialMode} />
+        </div>
+      </div>
+    </main>
+  );
+}
+
+/**
+ * Sign in and sign up: what the card holds. The guest landing (ADR-555)
+ * shows it in its own drawer, the plain page above in a centred card.
+ */
+export function AuthPanel({
+  initialMode = "login",
+  onContinue,
+}: {
+  initialMode?: Mode;
+  /** Called once signing in or up is done, before going to `next`. */
+  onContinue?: () => void;
+}) {
   const i18n = useUiTranslations();
   const t = useTranslations("authRecovery");
   const router = useRouter();
@@ -166,8 +197,9 @@ export function AuthConsole({ initialMode = "login" }: { initialMode?: Mode }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const continueAfterAuth = useCallback(() => {
+    onContinue?.();
     router.replace(searchParams.get("next") || "/");
-  }, [router, searchParams]);
+  }, [onContinue, router, searchParams]);
 
   useEffect(() => {
     if (status !== "authenticated" || registeringRef.current) return;
@@ -241,15 +273,7 @@ export function AuthConsole({ initialMode = "login" }: { initialMode?: Mode }) {
   }
 
   return (
-    <main
-      className="flex min-h-screen items-center justify-center px-6 py-10"
-      style={{ background: "var(--bg)" }}
-    >
-      <div className="w-full max-w-md">
-        <div
-          className="rounded-[2rem] p-7"
-          style={{ background: "var(--panel)", border: "1px solid var(--border)" }}
-        >
+    <div>
           {offerRecoveryCodes ? <RecoveryCodesOffer onSkip={continueAfterAuth} /> : inbox ? (
             <CheckInboxNotice
               email={inbox.email}
@@ -573,8 +597,6 @@ export function AuthConsole({ initialMode = "login" }: { initialMode?: Mode }) {
             </AuthNotice>
           ) : null}
           </>}
-        </div>
-      </div>
-    </main>
+    </div>
   );
 }

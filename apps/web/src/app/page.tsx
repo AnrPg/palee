@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { AuthGuard } from "@/components/auth-guard";
 import { ProductOverview } from "@/components/about/ProductOverview";
 import { Home } from "@/components/home";
+import { GuestHome } from "@/components/landing/GuestHome";
 import { loadSiteFacts } from "@/lib/seo/site-facts";
 
 export const dynamic = "force-dynamic";
@@ -19,9 +20,12 @@ export default async function HomeRoute() {
       <noscript>
         <ProductOverview faq={faq} features={facts.features} />
       </noscript>
-      <AuthGuard roleRedirects={{ admin: "/admin" }}>
-        <Home />
-      </AuthGuard>
+      {/* ADR-555: guests get the landing here instead of a redirect to /login. */}
+      <GuestHome>
+        <AuthGuard roleRedirects={{ admin: "/admin" }}>
+          <Home />
+        </AuthGuard>
+      </GuestHome>
     </>
   );
 }

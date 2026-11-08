@@ -5,6 +5,8 @@ import {useUiTranslations} from "@/i18n/ui";
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
+import { PaleeMark } from "@/components/branding/PaleeMark";
+import { PaleeTagline } from "@/components/branding/PaleeTagline";
 import { useSession } from "@/components/session-provider";
 import { membershipWorkspaceHref } from "@/lib/organization-slug";
 import { useSelectedMembershipRole } from "@/lib/membership-role";
@@ -94,7 +96,10 @@ export function AuthGuard({ children, roles, roleRedirects }: AuthGuardProps) {
     awaitingTenantAdminMembership
   ) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[var(--bg)] px-6">
+      <main className="flex min-h-screen flex-col items-center justify-center gap-5 bg-[var(--bg)] px-6 text-center">
+        <PaleeMark className="size-14" />
+        {/* ANR 2026-11-08: the tagline greets every app start. */}
+        <PaleeTagline className="max-w-xs text-lg text-[var(--text)]" />
         <p className="text-sm font-medium uppercase tracking-[0.24em] text-[var(--dim)]">
           {i18n("restoringSession5a59aa5")}
         </p>

@@ -21,6 +21,7 @@ import { firstStaffRole, usesAppAsAthlete } from "@/lib/athlete-use";
 import { FIRST_RUN, markFirstRunDone, safeNext } from "@/lib/first-run";
 import { useOrganizationMemberships } from "@/lib/membership-role";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { PaleeTagline } from "@/components/branding/PaleeTagline";
 
 const MEMBER_STEPS = ["photo", "interests", "where"] as const;
 // ADR-463: anyone with a staff role is asked first whether they train too.
@@ -78,6 +79,8 @@ export function FirstRun() {
           </button>
         </div>
 
+        {/* ANR 2026-11-08: the tagline welcomes a new account once, on the first step. */}
+        {index === 0 ? <PaleeTagline className="text-lg" /> : null}
         {step === "photo" ? <PhotoStep onNext={next} /> : null}
         {step === "athlete" && staff ? (
           <AthleteStep
