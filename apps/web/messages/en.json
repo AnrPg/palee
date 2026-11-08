@@ -19410,7 +19410,7 @@
       "autoBody": "PRs, streaks and your week come out on their own."
     },
     "whyTitle": "Why you'll open it every day",
-    "marquee": "Kudos · PR · Training partners · Club · Challenges · Journal · Mood · Sleep · Streak · CrossFit · Hyrox · Yoga",
+    "marquee": "Kudos · PR · Training partners · Club · Challenges · Journal · Mood · Sleep · Streak · CrossFit · Hyrox · Boxing · Yoga · Running",
     "tiles": {
       "shareTitle": "Every PR and every photo, with your crew",
       "sharePost": "New PR · Deadlift 140 kg",
@@ -19482,7 +19482,6 @@
       "body": "Bookings, subscription packages, payments and invoices in one place. Your members stay yours: no discount marketplace.",
       "cta": "Business account"
     },
-    "photoAlt": "A gym floor with racks of dumbbells",
-    "photoCaption": "Your box, every day"
+    "photoAlt": "A gym floor with racks of dumbbells"
   }
 }

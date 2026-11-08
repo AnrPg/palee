@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type ReactNode, type RefObject } from "react";
 import { useTranslations } from "next-intl";
 
 import { AuthPanel, type AuthMode } from "@/components/auth-console";
@@ -16,6 +16,7 @@ import {
   PartnerVisual,
   PostVisual,
   ProgressVisual,
+  ClubVisual,
 } from "@/components/landing/LandingVisuals";
 import { PhoneDemo } from "@/components/landing/PhoneDemo";
 import { LANDING_PHOTO, StoryPlayer } from "@/components/landing/StoryPlayer";
@@ -71,27 +72,76 @@ function SparkButton({ onClick, children, className = "" }: { onClick: () => voi
   );
 }
 
-function Pillar({ id }: { id: "crew" | "journal" | "partners" | "auto" }) {
+const PILLAR_ICON = { crew: "🤝", journal: "📓", partners: "🏋️", auto: "⚡" } as const;
+
+function Pillar({ id, index }: { id: keyof typeof PILLAR_ICON; index: number }) {
   const t = useTranslations("Landing");
   return (
-    <article className="rounded-3xl p-5" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
-      <p className="text-xs font-bold uppercase tracking-[0.18em]" style={{ color: "var(--primary)" }}>{t(`pillars.${id}Kicker`)}</p>
-      <h3 className="mt-2 text-xl font-black tracking-tight">{t(`pillars.${id}Title`)}</h3>
-      <p className="mt-1.5 text-sm" style={{ color: "var(--text-soft)" }}>{t(`pillars.${id}Body`)}</p>
+    <article
+      className="landing-reveal landing-lift flex flex-col gap-1.5 rounded-3xl p-5"
+      style={{ background: "var(--panel)", border: "1px solid var(--border)", ["--reveal-delay" as string]: `${index * 0.1}s` }}
+    >
+      <span className="landing-bob grid size-11 place-items-center rounded-2xl text-2xl" style={{ background: "var(--panel-muted)", animationDelay: `${index * -1.4}s` }} aria-hidden="true">
+        {PILLAR_ICON[id]}
+      </span>
+      <p className="mt-2 text-xs font-bold uppercase tracking-[0.18em]" style={{ color: "var(--primary)" }}>{t(`pillars.${id}Kicker`)}</p>
+      <h3 className="text-xl font-black tracking-tight">{t(`pillars.${id}Title`)}</h3>
+      <p className="text-sm" style={{ color: "var(--text-soft)" }}>{t(`pillars.${id}Body`)}</p>
     </article>
   );
 }
 
-function Tile({ title, body, children, wide = false }: { title: string; body?: string; children?: ReactNode; wide?: boolean }) {
+/** A tile of «Why you'll open it every day»: what it is on top, the picture filling the rest. */
+function Tile({ title, body, children, wide = false, full = false, index }: { title: string; body?: string; children?: ReactNode; wide?: boolean; full?: boolean; index: number }) {
   return (
     <article
-      className={`flex min-w-0 flex-col gap-3 rounded-3xl p-5 ${wide ? "lg:col-span-2" : ""}`}
-      style={{ background: "var(--panel-muted)", border: "1px solid var(--border)" }}
+      className={`landing-reveal landing-lift flex min-w-0 flex-col gap-4 rounded-3xl p-5 lg:p-6 ${wide ? "lg:col-span-2" : ""} ${full ? "md:col-span-2" : ""}`}
+      style={{ background: "var(--panel-muted)", border: "1px solid var(--border)", ["--reveal-delay" as string]: `${(index % 3) * 0.12}s` }}
     >
-      <h3 className="text-lg font-black tracking-tight">{title}</h3>
-      {children}
-      {body ? <p className="text-sm" style={{ color: "var(--text-soft)" }}>{body}</p> : null}
+      <header className="grid gap-1.5">
+        <h3 className="text-lg font-black leading-snug tracking-tight lg:text-xl">{title}</h3>
+        {body ? <p className="text-sm" style={{ color: "var(--text-soft)" }}>{body}</p> : null}
+      </header>
+      <div className="flex flex-1 flex-col [&>*]:flex-1">{children}</div>
     </article>
+  );
+}
+
+/** Shows each `.landing-reveal` inside `root` once it scrolls into view. */
+function useReveal(root: RefObject<HTMLElement | null>) {
+  useEffect(() => {
+    const host = root.current;
+    if (!host) return;
+    const targets = Array.from(host.querySelectorAll<HTMLElement>(".landing-reveal"));
+    if (typeof IntersectionObserver === "undefined") {
+      for (const target of targets) target.dataset.shown = "true";
+      return;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          (entry.target as HTMLElement).dataset.shown = "true";
+          observer.unobserve(entry.target);
+        }
+      },
+      { rootMargin: "0px 0px -8% 0px", threshold: 0.12 },
+    );
+    for (const target of targets) observer.observe(target);
+    return () => observer.disconnect();
+  }, [root]);
+}
+
+/** Small notes popping in and out around the hero phone. */
+function HeroChip({ children, className, start }: { children: ReactNode; className: string; start: number }) {
+  return (
+    <span
+      className={`landing-chip absolute whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-extrabold shadow-lg ${className}`}
+      style={{ background: "var(--panel)", color: "var(--text)", animationDelay: `${start}s` }}
+      aria-hidden="true"
+    >
+      {children}
+    </span>
   );
 }
 
@@ -124,6 +174,8 @@ export function GuestLanding({
     () => false,
   );
   const rest = useRef<HTMLDivElement>(null);
+  useReveal(rest);
+  const words = t("marquee").split(" · ");
 
   const open = useCallback(
     (next: AuthMode) => {
@@ -163,18 +215,25 @@ export function GuestLanding({
             </div>
           </header>
 
-          <section className="landing-deep relative grid min-h-[calc(100dvh-4rem)] grid-cols-[minmax(0,1fr)_auto] items-center gap-8 overflow-hidden px-6 pb-24 pt-6 lg:gap-14 lg:px-16 2xl:px-[max(5rem,calc((100%-87.5rem)/2))]">
+          <section className="landing-deep landing-glow relative grid min-h-[calc(100dvh-4rem)] grid-cols-[minmax(0,1fr)_auto] items-center gap-8 overflow-hidden px-6 pb-24 pt-6 lg:gap-14 lg:px-16 2xl:px-[max(5rem,calc((100%-87.5rem)/2))]">
             <div className="grid max-w-2xl gap-5">
               <PaleeTagline className="landing-rise text-base lg:text-lg" accent="var(--spark)" />
               <h1 className="landing-rise landing-rise-1 landing-em text-5xl font-black leading-[1.02] tracking-tight lg:text-6xl 2xl:text-7xl">
                 {t.rich("hero.title", em)}
               </h1>
               <p className="landing-rise landing-rise-2 landing-soft max-w-xl text-lg 2xl:text-xl">{t("hero.lede")}</p>
-              <div className="landing-rise landing-rise-2 flex flex-wrap gap-3">
+              <div className="landing-rise landing-rise-3 flex flex-wrap gap-3">
                 <SparkButton onClick={signUp} className="min-h-12 px-6 text-base">{t("getStarted")}</SparkButton>
               </div>
             </div>
-            <PhoneDemo photo={LANDING_PHOTO} />
+            <div className="landing-rise landing-rise-2 relative">
+              <div className="landing-bob">
+                <PhoneDemo />
+              </div>
+              <HeroChip className="-start-16 top-10" start={0}>🔥 {t("demo.post1Kudos")}</HeroChip>
+              <HeroChip className="-end-6 top-1/2" start={2.5}>🏆 {t("tiles.badge")}</HeroChip>
+              <HeroChip className="-start-10 bottom-16" start={5}>✓ {t("tiles.booked")} · {t("tiles.today")}</HeroChip>
+            </div>
             <button
               type="button"
               onClick={() => rest.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
@@ -190,66 +249,62 @@ export function GuestLanding({
 
           <div ref={rest} className="scroll-mt-16" data-testid="landing-rest">
             <section className="mx-auto grid max-w-6xl gap-4 px-6 py-12 md:grid-cols-2 lg:grid-cols-4 lg:px-10">
-              <Pillar id="crew" />
-              <Pillar id="journal" />
-              <Pillar id="partners" />
-              <Pillar id="auto" />
+              {(["crew", "journal", "partners", "auto"] as const).map((id, index) => (
+                <Pillar key={id} id={id} index={index} />
+              ))}
             </section>
 
-            <div className="overflow-hidden py-4" style={{ background: "var(--primary)", color: "var(--primary-contrast)" }} aria-hidden="true">
-              <p className="landing-marquee flex w-max gap-8 whitespace-nowrap text-lg font-black">
-                <span>{t("marquee")}</span>
-                <span>{t("marquee")}</span>
-              </p>
+            <div className="landing-marquee py-4" aria-hidden="true">
+              <div className="landing-marquee-track flex w-max gap-[1.6rem] whitespace-nowrap text-lg font-extrabold" style={{ color: "var(--text-soft)" }}>
+                {[0, 1].flatMap((copy) =>
+                  words.map((word) => (
+                    <span key={`${copy}-${word}`} className="landing-marquee-word">
+                      {word}
+                    </span>
+                  )),
+                )}
+              </div>
             </div>
 
             <section className="mx-auto max-w-6xl px-6 py-14 lg:px-10">
-              <h2 className="text-3xl font-black tracking-tight lg:text-4xl">{t("whyTitle")}</h2>
+              <h2 className="landing-reveal text-3xl font-black tracking-tight lg:text-4xl">{t("whyTitle")}</h2>
               <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Tile title={t("tiles.shareTitle")} body={t("tiles.shareBody")} wide>
-                  <PostVisual photo={LANDING_PHOTO} />
+                <Tile index={0} title={t("tiles.shareTitle")} body={t("tiles.shareBody")} wide>
+                  <PostVisual />
                 </Tile>
-                <Tile title={t("tiles.journalTitle")} body={t("tiles.journalBody")} wide>
-                  <JournalVisual />
+                <Tile index={1} title={t("tiles.journalTitle")} body={t("tiles.journalBody")} wide>
+                  <JournalVisual week />
                 </Tile>
-                <Tile title={t("tiles.partnersTitle")} body={t("tiles.partnersBody")}>
+                <Tile index={2} title={t("tiles.partnersTitle")} body={t("tiles.partnersBody")}>
                   <PartnerVisual />
                 </Tile>
-                <Tile title={t("tiles.clubTitle")} body={t("tiles.clubBody")} />
-                <Tile title={t("tiles.autoTitle")} wide>
+                <Tile index={3} title={t("tiles.clubTitle")} body={t("tiles.clubBody")}>
+                  <ClubVisual photo={LANDING_PHOTO} />
+                </Tile>
+                <Tile index={4} title={t("tiles.autoTitle")} wide>
                   <AutoVisual />
                 </Tile>
-                <Tile title={t("tiles.progressTitle")} body={t("tiles.progressBody")} wide>
+                <Tile index={5} title={t("tiles.progressTitle")} body={t("tiles.progressBody")} wide>
                   <ProgressVisual />
                 </Tile>
-                <Tile title={t("tiles.boxTitle")} body={t("tiles.boxBody")}>
+                <Tile index={6} title={t("tiles.boxTitle")} body={t("tiles.boxBody")} wide full>
                   <BoxVisual />
                 </Tile>
-                <figure className="relative overflow-hidden rounded-3xl" style={{ border: "1px solid var(--border)" }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={LANDING_PHOTO} alt={t("photoAlt")} className="h-full min-h-56 w-full object-cover" loading="lazy" />
-                  <figcaption
-                    className="absolute bottom-3 start-3 rounded-full px-3 py-1.5 text-sm font-bold"
-                    style={{ background: "var(--deep)", color: "var(--deep-contrast)" }}
-                  >
-                    {t("photoCaption")}
-                  </figcaption>
-                </figure>
               </div>
             </section>
 
             <section className="mx-auto max-w-6xl px-6 pb-16 lg:px-10">
-              <div className="landing-deep grid gap-4 rounded-[2rem] p-8 md:grid-cols-[1fr_auto] md:items-center lg:p-10">
+              <div className="landing-deep landing-glow landing-reveal grid gap-4 rounded-[2rem] p-8 md:grid-cols-[1fr_auto] md:items-center lg:p-10">
                 <div>
                   <h2 className="text-2xl font-black tracking-tight lg:text-3xl">{t("owner.title")}</h2>
                   <p className="landing-soft mt-2 max-w-2xl">{t("owner.body")}</p>
                 </div>
                 <Link
                   href={BUSINESS_SIGN_UP_HREF}
-                  className="inline-flex min-h-12 items-center justify-center rounded-full px-6 font-extrabold"
+                  className="landing-lift inline-flex min-h-12 items-center justify-center rounded-full px-6 font-extrabold"
                   style={{ background: "var(--spark)", color: "var(--spark-contrast)" }}
                 >
-                  {t("owner.cta")}
+                  {t("owner.cta")} →
                 </Link>
               </div>
             </section>

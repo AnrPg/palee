@@ -19410,7 +19410,7 @@
       "autoBody": "Tus PR, rachas y tu semana salen solos."
     },
     "whyTitle": "Por qué lo abrirás cada día",
-    "marquee": "Kudos · PR · Compañeros · Club · Retos · Diario · Ánimo · Sueño · Racha · CrossFit · Hyrox · Yoga",
+    "marquee": "Kudos · PR · Compañeros · Club · Retos · Diario · Ánimo · Sueño · Racha · CrossFit · Hyrox · Boxeo · Yoga · Running",
     "tiles": {
       "shareTitle": "Cada PR y cada foto, con tu pandilla",
       "sharePost": "Nuevo PR · Peso muerto 140 kg",
@@ -19482,7 +19482,6 @@
       "body": "Reservas, paquetes de suscripción, pagos y facturas en un solo lugar. Tus miembros siguen siendo tuyos: sin marketplaces de descuentos.",
       "cta": "Cuenta de empresa"
     },
-    "photoAlt": "Sala de gimnasio con estantes de mancuernas",
-    "photoCaption": "Tu box, cada día"
+    "photoAlt": "Sala de gimnasio con estantes de mancuernas"
   }
 }

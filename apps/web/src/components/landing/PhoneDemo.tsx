@@ -53,7 +53,7 @@ function WeekScreen() {
  * Συναθλητές, Journal, your week). Decoration only: the text beside it says
  * the same, so screen readers skip it. Reduced motion keeps the first screen.
  */
-export function PhoneDemo({ photo }: { photo: string }) {
+export function PhoneDemo() {
   const t = useTranslations("Landing");
   const reduced = useReducedMotion();
   const [index, setIndex] = useState(0);
@@ -79,7 +79,7 @@ export function PhoneDemo({ photo }: { photo: string }) {
         <div key={screen} className="landing-screen min-h-0 flex-1 overflow-hidden p-2.5" style={{ zoom: 0.8 }}>
           {screen === "feed" ? (
             <div className="grid grid-cols-[minmax(0,1fr)] gap-2">
-              <PostVisual photo={photo} />
+              <PostVisual />
               <div className="rounded-xl p-3" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
                 <p className="text-sm font-bold">{t("demo.post2Name")}</p>
                 <p className="text-xs" style={{ color: "var(--text-soft)" }}>{t("demo.post2Text")}</p>

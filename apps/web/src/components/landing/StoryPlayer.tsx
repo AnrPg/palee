@@ -38,8 +38,10 @@ function StorySlide({ story }: { story: Story }) {
           {t.rich("hero.title", em)}
         </h1>
         <p className="landing-rise landing-rise-2 landing-soft text-base">{t("hero.lede")}</p>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={LANDING_PHOTO} alt={t("photoAlt")} className="landing-rise landing-rise-2 aspect-[3/2] w-full rounded-2xl object-cover" />
+        <div className="landing-rise landing-rise-2 overflow-hidden rounded-2xl">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={LANDING_PHOTO} alt={t("photoAlt")} className="landing-kenburns aspect-[3/2] w-full object-cover" />
+        </div>
       </div>
     );
   }
@@ -122,7 +124,7 @@ export function StoryPlayer({
     <section
       aria-roledescription="carousel"
       aria-label={t("stories.label")}
-      className="landing-deep flex min-h-[100dvh] flex-col px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-[max(0.75rem,env(safe-area-inset-top))]"
+      className="landing-deep landing-glow flex min-h-[100dvh] flex-col px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-[max(0.75rem,env(safe-area-inset-top))]"
       data-testid="landing-stories"
     >
       <ol className="flex gap-1" aria-hidden="true">

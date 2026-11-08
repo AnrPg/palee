@@ -19410,7 +19410,7 @@
       "autoBody": "Je PR’s, reeksen en je week komen er vanzelf uit."
     },
     "whyTitle": "Waarom je het elke dag opent",
-    "marquee": "Kudos · PR · Trainingsmaatjes · Club · Challenges · Logboek · Stemming · Slaap · Reeks · CrossFit · Hyrox · Yoga",
+    "marquee": "Kudos · PR · Trainingsmaatjes · Club · Challenges · Logboek · Stemming · Slaap · Reeks · CrossFit · Hyrox · Boksen · Yoga · Hardlopen",
     "tiles": {
       "shareTitle": "Elke PR en elke foto, met je crew",
       "sharePost": "Nieuwe PR · Deadlift 140 kg",
@@ -19482,7 +19482,6 @@
       "body": "Boekingen, abonnementspakketten, betalingen en facturen op één plek. Je leden blijven van jou: geen kortingsmarktplaats.",
       "cta": "Zakelijk account"
     },
-    "photoAlt": "Sportzaal met rekken vol dumbbells",
-    "photoCaption": "Je box, elke dag"
+    "photoAlt": "Sportzaal met rekken vol dumbbells"
   }
 }

@@ -79,3 +79,15 @@ screens too): ANR preferred B and then B+ with the drawer form.
   that name.
 - e2e: `e2e/guest-landing.spec.ts` runs with reduced motion, because the
   bouncing «See more» is never "stable" for Playwright's click.
+- 2026-11-08 (ANR: «go heavy with animations»): every motion of the mockup
+  is in: the drifting glow, a bobbing hero phone with notes popping around it,
+  slow zoom on photos, the double-tap heart and floating hearts on the post,
+  the PR line drawn on a loop with its dot and badge, Journal meters filling
+  and the week growing, the partner card swiped on «yes», «Book» turning into
+  «✓ Booked», automations ticked one by one, club messages popping in, and
+  sections revealed as they scroll in (IntersectionObserver). The words strip
+  sits on the page's own background with ✦ between curated words, 22s a loop.
+  The sample post has its own photo (`public/landing-deadlift.jpg`, Unsplash
+  photo-1517836357463-d25dfeac3438, Unsplash License); the gym floor photo is
+  the hero's and the club tile's. Tiles put title and text on top and let the
+  picture fill the rest.

@@ -19410,7 +19410,7 @@
       "autoBody": "Os teus PR, sequências e a tua semana saem sozinhos."
     },
     "whyTitle": "Porque vais abri-lo todos os dias",
-    "marquee": "Kudos · PR · Parceiros · Club · Desafios · Diário · Humor · Sono · Sequência · CrossFit · Hyrox · Yoga",
+    "marquee": "Kudos · PR · Parceiros · Club · Desafios · Diário · Humor · Sono · Sequência · CrossFit · Hyrox · Boxe · Yoga · Corrida",
     "tiles": {
       "shareTitle": "Cada PR e cada foto, com a tua malta",
       "sharePost": "Novo PR · Peso morto 140 kg",
@@ -19482,7 +19482,6 @@
       "body": "Reservas, pacotes de subscrição, pagamentos e faturas num só sítio. Os teus membros continuam teus: nada de marketplaces de descontos.",
       "cta": "Conta empresarial"
     },
-    "photoAlt": "Ginásio com suportes de halteres",
-    "photoCaption": "A tua box, todos os dias"
+    "photoAlt": "Ginásio com suportes de halteres"
   }
 }

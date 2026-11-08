@@ -619,7 +619,8 @@ html[data-platform]::before {
 
 /* ADR-555: the guest landing (palee.app for people who are not signed in).
    Phones play stories; tablets and up open on one dark screen with the
-   animated phone. Every motion stops under prefers-reduced-motion. */
+   animated phone. Everything moves (ANR 2026-11-08: «go heavy with
+   animations»), and every motion stops under prefers-reduced-motion. */
 .landing-deep {
   background-color: var(--deep);
   color: var(--deep-contrast);
@@ -629,24 +630,65 @@ html[data-platform]::before {
 }
 .landing-soft { color: color-mix(in srgb, var(--deep-contrast) 80%, transparent); }
 .landing-em em { font-style: normal; color: var(--spark); }
+
+/* A blue glow drifting behind the dark screens. */
+.landing-glow { position: relative; isolation: isolate; overflow: hidden; }
+.landing-glow::before,
+.landing-glow::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  border-radius: 9999px;
+  pointer-events: none;
+}
+.landing-glow::before {
+  width: 34rem; height: 34rem; inset-inline-end: -10rem; top: -10rem;
+  background: radial-gradient(circle, color-mix(in srgb, var(--primary) 50%, transparent), transparent 65%);
+  animation: landing-drift 9s ease-in-out infinite alternate;
+}
+.landing-glow::after {
+  width: 26rem; height: 26rem; inset-inline-start: -8rem; bottom: -10rem;
+  background: radial-gradient(circle, color-mix(in srgb, var(--spark) 22%, transparent), transparent 65%);
+  animation: landing-drift 11s ease-in-out -4s infinite alternate-reverse;
+}
+@keyframes landing-drift {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(-3rem, 2.5rem) scale(1.18); }
+}
+
+/* Entrances. */
 @keyframes landing-rise {
-  from { opacity: 0; transform: translateY(14px); }
+  from { opacity: 0; transform: translateY(18px); }
   to { opacity: 1; transform: none; }
 }
-.landing-rise { animation: landing-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
-.landing-rise-1 { animation-delay: 0.08s; }
-.landing-rise-2 { animation-delay: 0.16s; }
+.landing-rise { animation: landing-rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.landing-rise-1 { animation-delay: 0.1s; }
+.landing-rise-2 { animation-delay: 0.22s; }
+.landing-rise-3 { animation-delay: 0.34s; }
+/* Revealed when scrolled to (GuestLanding sets data-shown). */
+.landing-reveal {
+  --reveal-delay: 0s;
+  opacity: 0;
+  transform: translateY(28px) scale(0.98);
+  transition: opacity 0.7s ease-out var(--reveal-delay), transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) var(--reveal-delay);
+}
+.landing-reveal[data-shown="true"] { opacity: 1; transform: none; }
+.landing-lift { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+.landing-lift:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+
+/* Stories. */
 @keyframes landing-story-fill {
   from { transform: scaleX(0); }
   to { transform: scaleX(1); }
 }
 .landing-story-fill {
-  --story-duration: 5s;
   transform-origin: left center;
-  animation: landing-story-fill var(--story-duration, 5s) linear both;
+  animation: landing-story-fill 5s linear both;
 }
 [dir="rtl"] .landing-story-fill { transform-origin: right center; }
 .landing-story-fill[data-paused="true"] { animation-play-state: paused; }
+
+/* The floating «See more». */
 @keyframes landing-cue {
   0%, 100% { transform: translate(-50%, 0); }
   50% { transform: translate(-50%, -7px); }
@@ -656,31 +698,176 @@ html[data-platform]::before {
   animation: landing-cue 2.2s ease-in-out infinite;
   box-shadow: 0 12px 34px -8px color-mix(in srgb, var(--spark) 70%, transparent);
 }
-@keyframes landing-line {
-  from { stroke-dashoffset: 1; }
-  to { stroke-dashoffset: 0; }
+
+/* The hero phone bobs, chips pop around it. */
+@keyframes landing-bob {
+  0%, 100% { transform: translateY(0) rotate(-1.5deg); }
+  50% { transform: translateY(-12px) rotate(1deg); }
 }
-.landing-line {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 0;
-  animation: landing-line 1.8s ease-out both;
+.landing-bob { animation: landing-bob 6s ease-in-out infinite; }
+@keyframes landing-chip {
+  0%, 8% { opacity: 0; transform: translateY(10px) scale(0.85); }
+  14%, 40% { opacity: 1; transform: none; }
+  48%, 100% { opacity: 0; transform: translateY(-8px) scale(0.95); }
 }
-@keyframes landing-pop {
-  0%, 60% { opacity: 0; transform: scale(0.6); }
-  100% { opacity: 1; transform: none; }
-}
-.landing-pop { animation: landing-pop 2.1s ease-out both; }
+.landing-chip { opacity: 0; animation: landing-chip 7.5s ease-in-out infinite; }
 @keyframes landing-screen {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateX(18px); }
   to { opacity: 1; transform: none; }
 }
-.landing-screen { animation: landing-screen 0.45s ease-out both; }
+.landing-screen { animation: landing-screen 0.5s ease-out both; }
+[dir="rtl"] .landing-screen { animation-name: landing-screen-rtl; }
+@keyframes landing-screen-rtl {
+  from { opacity: 0; transform: translateX(-18px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Photos zoom slowly. */
+@keyframes landing-kenburns {
+  from { transform: scale(1); }
+  to { transform: scale(1.12) translate(-2%, -1%); }
+}
+.landing-kenburns { animation: landing-kenburns 14s ease-in-out infinite alternate; }
+
+/* Post: a double-tap heart on the photo, hearts floating from the kudos. */
+@keyframes landing-heart-pop {
+  0%, 55% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+  62% { opacity: 1; transform: translate(-50%, -50%) scale(1.25); }
+  70% { transform: translate(-50%, -50%) scale(0.95); }
+  78% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  90%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.1); }
+}
+.landing-heart-pop { opacity: 0; transform: translate(-50%, -50%); animation: landing-heart-pop 4s ease-out infinite; }
+@keyframes landing-heart-beat {
+  0%, 55%, 100% { transform: scale(1); }
+  62% { transform: scale(1.35); }
+  70% { transform: scale(0.95); }
+}
+.landing-heart-beat { animation: landing-heart-beat 4s ease-out infinite; }
+@keyframes landing-float {
+  0% { opacity: 0; transform: translateY(0) scale(0.6); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-64px) translateX(8px) scale(1.1); }
+}
+.landing-float { opacity: 0; animation: landing-float 2.7s ease-in infinite; }
+
+/* Journal: the meters fill, the week grows, the note is typed. */
+@keyframes landing-fill {
+  0% { transform: scaleX(0); }
+  22%, 100% { transform: scaleX(1); }
+}
+.landing-fill { transform-origin: left center; animation: landing-fill 6s cubic-bezier(0.3, 0.8, 0.3, 1) infinite both; }
+[dir="rtl"] .landing-fill { transform-origin: right center; }
+@keyframes landing-grow {
+  0% { transform: scaleY(0); }
+  20%, 100% { transform: scaleY(1); }
+}
+.landing-grow { transform-origin: bottom center; animation: landing-grow 6s cubic-bezier(0.3, 0.8, 0.3, 1) infinite both; }
+@keyframes landing-type {
+  0%, 30% { clip-path: inset(0 100% 0 0); }
+  60%, 100% { clip-path: inset(0 0 0 0); }
+}
+.landing-type { animation: landing-type 6s steps(28, end) infinite; }
+[dir="rtl"] .landing-type { animation-name: landing-type-rtl; }
+@keyframes landing-type-rtl {
+  0%, 30% { clip-path: inset(0 0 0 100%); }
+  60%, 100% { clip-path: inset(0 0 0 0); }
+}
+
+/* PR: the line is drawn again and again, the dot and the badge pop. */
+@keyframes landing-draw {
+  0% { stroke-dashoffset: 1; }
+  55%, 100% { stroke-dashoffset: 0; }
+}
+.landing-draw { stroke-dasharray: 1; stroke-dashoffset: 0; animation: landing-draw 3.2s ease-out infinite; }
+@keyframes landing-dot {
+  0%, 50% { r: 0; }
+  60% { r: 11px; }
+  70%, 100% { r: 8px; }
+}
+.landing-dot { animation: landing-dot 3.2s ease-out infinite; }
+@keyframes landing-badge {
+  0%, 50% { opacity: 0; transform: scale(0.7); }
+  62% { opacity: 1; transform: scale(1.08); }
+  70%, 100% { opacity: 1; transform: scale(1); }
+}
+.landing-badge { animation: landing-badge 3.2s ease-out infinite; }
+
+/* Training partners: «yes» is pressed and the card slides away. */
+@keyframes landing-swipe {
+  0%, 55% { transform: none; opacity: 1; }
+  72% { transform: translateX(40%) rotate(8deg); opacity: 0; }
+  74% { transform: translateX(-20%); opacity: 0; }
+  90%, 100% { transform: none; opacity: 1; }
+}
+.landing-swipe { animation: landing-swipe 4.5s ease-in-out infinite; }
+@keyframes landing-press {
+  0%, 42%, 56%, 100% { transform: scale(1); }
+  48% { transform: scale(0.9); }
+}
+.landing-press { animation: landing-press 4.5s ease-in-out infinite; }
+
+/* Box: «Book» is tapped and turns into «✓ Booked». */
+@keyframes landing-tap {
+  0%, 45% { background: var(--primary); color: var(--primary-contrast); transform: scale(1); }
+  50% { transform: scale(0.9); }
+  55%, 92% { background: var(--spark); color: var(--spark-contrast); transform: scale(1); }
+  100% { background: var(--primary); color: var(--primary-contrast); }
+}
+.landing-tap { background: var(--primary); color: var(--primary-contrast); animation: landing-tap 4s ease-in-out infinite; }
+@keyframes landing-tap-idle {
+  0%, 50% { opacity: 1; transform: none; }
+  54%, 94% { opacity: 0; transform: translateY(-100%); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes landing-tap-done {
+  0%, 50% { opacity: 0; transform: translateY(100%); }
+  54%, 94% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translateY(100%); }
+}
+.landing-tap-idle { animation: landing-tap-idle 4s ease-in-out infinite; }
+.landing-tap-done { opacity: 0; animation: landing-tap-done 4s ease-in-out infinite; }
+
+/* Automations tick off one by one. */
+@keyframes landing-tick {
+  0% { opacity: 0.3; transform: translateX(-6px); }
+  10%, 100% { opacity: 1; transform: none; }
+}
+.landing-tick { animation: landing-tick 5s ease-out infinite both; }
+@keyframes landing-check {
+  0% { transform: scale(0); }
+  8% { transform: scale(1.3); }
+  14%, 100% { transform: scale(1); }
+}
+.landing-check { animation: landing-check 5s ease-out infinite both; }
+
+/* Club: messages pop in. */
+@keyframes landing-bubble {
+  0%, 6% { opacity: 0; transform: translateY(12px) scale(0.9); }
+  14%, 80% { opacity: 1; transform: none; }
+  90%, 100% { opacity: 0; transform: translateY(-6px); }
+}
+.landing-bubble { opacity: 0; animation: landing-bubble 6s ease-out infinite both; }
+
+/* The words strip: the page's own background, ✦ between words. */
 @keyframes landing-marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
-.landing-marquee { animation: landing-marquee 38s linear infinite; }
-[dir="rtl"] .landing-marquee { animation-direction: reverse; }
+.landing-marquee {
+  overflow: hidden;
+  border-block: 1px solid var(--border);
+  mask-image: linear-gradient(90deg, transparent, var(--text) 8%, var(--text) 92%, transparent);
+}
+.landing-marquee-track { animation: landing-marquee 22s linear infinite; }
+.landing-marquee-track:hover { animation-play-state: paused; }
+[dir="rtl"] .landing-marquee-track { animation-direction: reverse; }
+.landing-marquee-word::before {
+  content: "✦";
+  color: var(--primary);
+  margin-inline-end: 1.6rem;
+}
+
 /* The sign-in drawer on tablets and up: a Dojo-blue column, the card centred. */
 @media (min-width: 768px) {
   .landing-auth-drawer {
@@ -691,7 +878,12 @@ html[data-platform]::before {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .landing-rise, .landing-screen, .landing-pop, .landing-line { animation: none; }
-  .landing-cue, .landing-marquee { animation: none; }
-  .landing-story-fill { animation: none; transform: scaleX(1); }
+  [class*="landing-"],
+  [class*="landing-"]::before,
+  [class*="landing-"]::after { animation: none !important; transition: none !important; }
+  .landing-reveal { opacity: 1; transform: none; }
+  .landing-story-fill { transform: scaleX(1); }
+  .landing-chip, .landing-bubble, .landing-float { opacity: 1; }
+  .landing-float, .landing-heart-pop, .landing-tap-done { display: none; }
+  .landing-tap-idle { opacity: 1; }
 }

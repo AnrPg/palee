@@ -19410,7 +19410,7 @@
       "autoBody": "Tes PR, tes séries et ta semaine sortent toutes seules."
     },
     "whyTitle": "Pourquoi tu l’ouvriras chaque jour",
-    "marquee": "Kudos · PR · Partenaires · Club · Challenges · Journal · Humeur · Sommeil · Série · CrossFit · Hyrox · Yoga",
+    "marquee": "Kudos · PR · Partenaires · Club · Challenges · Journal · Humeur · Sommeil · Série · CrossFit · Hyrox · Boxe · Yoga · Course",
     "tiles": {
       "shareTitle": "Chaque PR et chaque photo, avec ta bande",
       "sharePost": "Nouveau PR · Soulevé de terre 140 kg",
@@ -19482,7 +19482,6 @@
       "body": "Réservations, forfaits d’abonnement, paiements et factures au même endroit. Tes membres restent les tiens : aucune place de marché à prix cassés.",
       "cta": "Compte professionnel"
     },
-    "photoAlt": "Salle de sport avec des râteliers d’haltères",
-    "photoCaption": "Ta box, chaque jour"
+    "photoAlt": "Salle de sport avec des râteliers d’haltères"
   }
 }

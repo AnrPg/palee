@@ -19410,7 +19410,7 @@
       "autoBody": "Τα PR, τα streaks και η εβδομάδα σου βγαίνουν μόνα τους."
     },
     "whyTitle": "Γιατί θα το ανοίγεις κάθε μέρα",
-    "marquee": "Kudos · PR · Συναθλητές · Club · Challenges · Journal · Διάθεση · Ύπνος · Streak · CrossFit · Hyrox · Yoga",
+    "marquee": "Kudos · PR · Συναθλητές · Club · Challenges · Journal · Διάθεση · Ύπνος · Streak · CrossFit · Hyrox · Πυγμαχία · Yoga · Τρέξιμο",
     "tiles": {
       "shareTitle": "Κάθε PR και κάθε φωτογραφία, με την παρέα σου",
       "sharePost": "Νέο PR · Deadlift 140 kg",
@@ -19482,7 +19482,6 @@
       "body": "Κρατήσεις, πακέτα συνδρομής, πληρωμές και myDATA σε ένα σημείο. Τα μέλη σου μένουν δικά σου: κανένα εκπτωτικό marketplace.",
       "cta": "Λογαριασμός επιχείρησης"
     },
-    "photoAlt": "Χώρος γυμναστηρίου με ράφια αλτήρων",
-    "photoCaption": "Το box σου, κάθε μέρα"
+    "photoAlt": "Χώρος γυμναστηρίου με ράφια αλτήρων"
   }
 }
