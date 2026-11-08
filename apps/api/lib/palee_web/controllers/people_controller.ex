@@ -89,6 +89,28 @@ defmodule PaleeWeb.PeopleController do
          do: json(conn, result)
   end
 
+  operation(:workouts,
+    summary: "ADR-554: the «Προπονήσεις» tab, a person's latest workouts you may see",
+    parameters: [@id],
+    responses: [ok: {"Workouts", "application/json", S.profile_workouts_response()}]
+  )
+
+  def workouts(conn, %{id: id}) do
+    with {:ok, result} <- SocialProfile.workouts(conn.assigns.user_context, id),
+         do: json(conn, result)
+  end
+
+  operation(:progress,
+    summary: "ADR-554: the «Πρόοδος» tab, a person's totals you may see",
+    parameters: [@id],
+    responses: [ok: {"Progress", "application/json", S.profile_progress_response()}]
+  )
+
+  def progress(conn, %{id: id}) do
+    with {:ok, result} <- SocialProfile.progress(conn.assigns.user_context, id),
+         do: json(conn, result)
+  end
+
   operation(:update_card,
     summary: "ADR-554: your «Λίγα λόγια» and the optional tabs of your profile",
     request_body: S.body(S.profile_card_request()),

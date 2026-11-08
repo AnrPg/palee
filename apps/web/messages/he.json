@@ -6574,7 +6574,9 @@
       "posts": "פוסטים",
       "media": "מדיה",
       "prs": "שיאים",
-      "badges": "תגים"
+      "badges": "תגים",
+      "workouts": "אימונים",
+      "progress": "התקדמות"
     },
     "personPostsEmpty": "עוד אין פוסטים.",
     "mediaEmpty": "אין עדיין תמונות או סרטונים.",
@@ -6675,7 +6677,26 @@
     "badgesNone": "עדיין אין תגים.",
     "addTabHints": {
       "prs": "השיאים שאתה מציג לעוקבים שלך",
-      "badges": "התגים שלך, למי שעוקב אחריך"
+      "badges": "התגים שלך, למי שעוקב אחריך",
+      "workouts": "האימונים האחרונים שלך, בלי הערות, למי שעוקב אחריך",
+      "progress": "הסיכומים שלך (אימונים, רצפים, שיאים), למי שעוקב אחריך"
+    },
+    "workoutUntitled": "אימון",
+    "workoutLine": "{day} · {duration}",
+    "myWorkoutsNone": "עדיין אין אימונים שהושלמו להצגה. אלה שנשארים „רק אני” לא מופיעים כאן לעולם.",
+    "workoutsNone": "עדיין אין אימונים.",
+    "myProgressNone": "הסיכומים שלך יופיעו כאן אחרי האימון הראשון.",
+    "progressNone": "עדיין אין התקדמות.",
+    "boxLabel": "הבוקס שלך",
+    "boxNone": "אף אחד",
+    "boxHint": "מופיע מתחת לתיאור שלך, רק למי שעוקב אחריך.",
+    "showRank": "החגורה או הרמה שלך",
+    "showRankHint": "מסולם הדרגות של הבוקס",
+    "progressStat": {
+      "totalWorkouts": "{count, plural, one {אימון} other {אימונים}}",
+      "currentStreak": "{count, plural, one {יום ברצף עכשיו} other {ימים ברצף עכשיו}}",
+      "longestStreak": "{count, plural, one {יום, הרצף הארוך ביותר} other {ימים, הרצף הארוך ביותר}}",
+      "totalPrs": "{count, plural, one {שיא} other {שיאים}}"
     }
   },
   "BoxPage": {

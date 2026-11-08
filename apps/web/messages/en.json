@@ -6574,7 +6574,9 @@
       "posts": "Posts",
       "media": "Media",
       "prs": "PRs",
-      "badges": "Badges"
+      "badges": "Badges",
+      "workouts": "Workouts",
+      "progress": "Progress"
     },
     "personPostsEmpty": "No posts yet.",
     "mediaEmpty": "No photos or videos yet.",
@@ -6675,7 +6677,26 @@
     "badgesNone": "No badges yet.",
     "addTabHints": {
       "prs": "The PRs you show the people who follow you",
-      "badges": "Your badges, for the people who follow you"
+      "badges": "Your badges, for the people who follow you",
+      "workouts": "Your latest workouts, without notes, for the people who follow you",
+      "progress": "Your totals (workouts, streaks, PRs), for the people who follow you"
+    },
+    "workoutUntitled": "Workout",
+    "workoutLine": "{day} · {duration}",
+    "myWorkoutsNone": "No finished workouts to show yet. Those you keep “Only me” never show here.",
+    "workoutsNone": "No workouts yet.",
+    "myProgressNone": "Your totals show here after your first workout.",
+    "progressNone": "No progress yet.",
+    "boxLabel": "Your box",
+    "boxNone": "None",
+    "boxHint": "Shows under your bio, only to the people who follow you.",
+    "showRank": "Your belt or level",
+    "showRankHint": "From the box's rank ladder",
+    "progressStat": {
+      "totalWorkouts": "{count, plural, one {workout} other {workouts}}",
+      "currentStreak": "{count, plural, one {day in a row now} other {days in a row now}}",
+      "longestStreak": "{count, plural, one {day, longest streak} other {days, longest streak}}",
+      "totalPrs": "{count, plural, one {PR} other {PRs}}"
     }
   },
   "BoxPage": {

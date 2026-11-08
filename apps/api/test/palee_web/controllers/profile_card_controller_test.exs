@@ -113,4 +113,148 @@ defmodule Palee.Web.ProfileCardControllerTest do
     assert %{"badges" => [], "locked" => true} =
              as.(stranger) |> get("/api/people/#{owner.id}/badges") |> json_response(200)
   end
+
+  # The rows below sit in tables only their owner or the box reads; the test
+  # role bypasses RLS, and the definers decide who gets them.
+  defp box_with_belt!(owner) do
+    {organization, _admin, _context} = Palee.AnalyticsHelpers.organization_fixture()
+    Palee.AnalyticsHelpers.add_membership(organization, owner, :member)
+    org = Ecto.UUID.dump!(organization.id)
+    user = Ecto.UUID.dump!(owner.id)
+    ladder = Ecto.UUID.bingenerate()
+    rank = Ecto.UUID.bingenerate()
+
+    Repo.query!(
+      """
+      INSERT INTO rank_ladders (id, organization_id, name, discipline, inserted_at, updated_at)
+      VALUES ($1, $2, 'BJJ', 'bjj', now(), now())
+      """,
+      [ladder, org]
+    )
+
+    Repo.query!(
+      """
+      INSERT INTO ranks (id, organization_id, ladder_id, position, name, color, max_stripes, inserted_at, updated_at)
+      VALUES ($1, $2, $3, 2, 'Purple', 'purple', 4, now(), now())
+      """,
+      [rank, org, ladder]
+    )
+
+    Repo.query!(
+      """
+      INSERT INTO rank_awards (id, organization_id, ladder_id, rank_id, user_id, stripes, awarded_on,
+                               certificate_number, inserted_at, updated_at)
+      VALUES (gen_random_uuid(), $1, $2, $3, $4, 2, CURRENT_DATE, $5, now(), now())
+      """,
+      [org, ladder, rank, user, "C-#{System.unique_integer([:positive])}"]
+    )
+
+    organization
+  end
+
+  defp workout!(owner, visibility) do
+    Repo.query!(
+      """
+      INSERT INTO workout_executions (id, user_id, source, status, started_at_utc, completed_at_utc,
+                                      completed_at_tz, total_elapsed_ms, journal_visibility, inserted_at)
+      VALUES (gen_random_uuid(), $1, 'self_selected', 'completed', now() - interval '1 hour', now(),
+              'Europe/Athens', 1200000, $2, now())
+      """,
+      [Ecto.UUID.dump!(owner.id), visibility]
+    )
+  end
+
+  test "the box and belt show only once picked, to the owner and followers",
+       %{as: as, owner: owner, follower: follower, stranger: stranger} do
+    organization = box_with_belt!(owner)
+    follow!(as, follower, owner)
+
+    assert %{"box" => nil, "box_id" => nil, "show_rank" => false} =
+             as.(owner) |> get("/api/people/#{owner.id}") |> json_response(200)
+
+    assert %{"box_id" => box_id, "show_rank" => true} =
+             as.(owner)
+             |> put_json("/api/me/profile-card", %{box_id: organization.id, show_rank: true})
+             |> json_response(200)
+
+    assert box_id == organization.id
+
+    for reader <- [owner, follower] do
+      assert %{
+               "box" => %{
+                 "name" => name,
+                 "slug" => slug,
+                 "rank" => %{"name" => "Purple", "color" => "purple", "stripes" => 2}
+               }
+             } = as.(reader) |> get("/api/people/#{owner.id}") |> json_response(200)
+
+      assert {name, slug} == {organization.name, organization.slug}
+    end
+
+    # Others never see the owner's choices, and strangers not the box.
+    assert %{"box_id" => nil, "show_rank" => false} =
+             as.(follower) |> get("/api/people/#{owner.id}") |> json_response(200)
+
+    assert %{"box" => nil} =
+             as.(stranger) |> get("/api/people/#{owner.id}") |> json_response(200)
+
+    as.(owner) |> put_json("/api/me/profile-card", %{show_rank: false}) |> json_response(200)
+
+    assert %{"box" => %{"rank" => nil}} =
+             as.(follower) |> get("/api/people/#{owner.id}") |> json_response(200)
+  end
+
+  test "a box you are not a member of cannot be shown", %{as: as, owner: owner} do
+    {organization, _admin, _context} = Palee.AnalyticsHelpers.organization_fixture()
+
+    assert as.(owner)
+           |> put_json("/api/me/profile-card", %{box_id: organization.id})
+           |> response(422)
+  end
+
+  test "«Προπονήσεις» and «Πρόοδος»: followers see them only while the tab is shown",
+       %{as: as, owner: owner, follower: follower, stranger: stranger} do
+    workout!(owner, "coach_can_view")
+    workout!(owner, "private")
+    follow!(as, follower, owner)
+
+    Repo.query!(
+      """
+      INSERT INTO user_stats (id, user_id, total_workouts, current_streak, longest_streak, total_prs, updated_at)
+      VALUES (gen_random_uuid(), $1, 42, 3, 9, 5, now())
+      """,
+      [Ecto.UUID.dump!(owner.id)]
+    )
+
+    assert %{"workouts" => [], "locked" => false} =
+             as.(follower) |> get("/api/people/#{owner.id}/workouts") |> json_response(200)
+
+    assert %{"progress" => nil} =
+             as.(follower) |> get("/api/people/#{owner.id}/progress") |> json_response(200)
+
+    as.(owner)
+    |> put_json("/api/me/profile-card", %{tabs: ["workouts", "progress"]})
+    |> json_response(200)
+
+    # «Μόνο εγώ» workouts stay off the profile, even for the owner.
+    for reader <- [owner, follower] do
+      assert %{"workouts" => [%{"elapsed_ms" => 1_200_000, "completed_tz" => "Europe/Athens"}]} =
+               as.(reader) |> get("/api/people/#{owner.id}/workouts") |> json_response(200)
+
+      assert %{
+               "progress" => %{
+                 "total_workouts" => 42,
+                 "current_streak" => 3,
+                 "longest_streak" => 9,
+                 "total_prs" => 5
+               }
+             } = as.(reader) |> get("/api/people/#{owner.id}/progress") |> json_response(200)
+    end
+
+    assert %{"workouts" => [], "locked" => true} =
+             as.(stranger) |> get("/api/people/#{owner.id}/workouts") |> json_response(200)
+
+    assert %{"progress" => nil, "locked" => true} =
+             as.(stranger) |> get("/api/people/#{owner.id}/progress") |> json_response(200)
+  end
 end

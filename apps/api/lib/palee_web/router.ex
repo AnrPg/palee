@@ -2659,6 +2659,8 @@ defmodule PaleeWeb.Router do
     get("/people/:id/media", PeopleController, :media)
     # ADR-554: Εγώ as the profile, its «Διακρίσεις» tab and its card.
     get("/people/:id/badges", PeopleController, :badges)
+    get("/people/:id/workouts", PeopleController, :workouts)
+    get("/people/:id/progress", PeopleController, :progress)
     put("/me/profile-card", PeopleController, :update_card)
     # Board 4 D2: only «Σχετικά» is public; the rest of a box page needs sign-in.
     get("/boxes/:slug/schedule", PublicBoxController, :schedule)

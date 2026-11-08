@@ -145,6 +145,16 @@ defmodule Palee.Community.SocialStore do
     do: call(context, :put_profile_card, [user_id, attrs])
 
   @impl true
+  def profile_box(context, owner_id), do: call(context, :profile_box, [owner_id])
+
+  @impl true
+  def profile_workouts(context, owner_id, limit),
+    do: call(context, :profile_workouts, [owner_id, limit])
+
+  @impl true
+  def profile_progress(context, owner_id), do: call(context, :profile_progress, [owner_id])
+
+  @impl true
   def booking_sharer_ids(context), do: call(context, :booking_sharer_ids, [])
 
   @impl true

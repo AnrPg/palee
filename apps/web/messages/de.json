@@ -6574,7 +6574,9 @@
       "posts": "Beiträge",
       "media": "Medien",
       "prs": "PRs",
-      "badges": "Abzeichen"
+      "badges": "Abzeichen",
+      "workouts": "Trainings",
+      "progress": "Fortschritt"
     },
     "personPostsEmpty": "Noch keine Beiträge.",
     "mediaEmpty": "Noch keine Fotos oder Videos.",
@@ -6675,7 +6677,26 @@
     "badgesNone": "Noch keine Abzeichen.",
     "addTabHints": {
       "prs": "Die PRs, die du deinen Followern zeigst",
-      "badges": "Deine Abzeichen, für die Leute, die dir folgen"
+      "badges": "Deine Abzeichen, für die Leute, die dir folgen",
+      "workouts": "Deine letzten Trainings, ohne Notizen, für die Leute, die dir folgen",
+      "progress": "Deine Summen (Trainings, Serien, PRs), für die Leute, die dir folgen"
+    },
+    "workoutUntitled": "Training",
+    "workoutLine": "{day} · {duration}",
+    "myWorkoutsNone": "Noch keine abgeschlossenen Trainings zum Zeigen. Was du „Nur ich“ lässt, erscheint hier nie.",
+    "workoutsNone": "Noch keine Trainings.",
+    "myProgressNone": "Deine Summen erscheinen hier nach deinem ersten Training.",
+    "progressNone": "Noch kein Fortschritt.",
+    "boxLabel": "Deine Box",
+    "boxNone": "Keine",
+    "boxHint": "Erscheint unter deinem Text, nur für die Leute, die dir folgen.",
+    "showRank": "Dein Gürtel oder Level",
+    "showRankHint": "Aus der Graduierungsleiter der Box",
+    "progressStat": {
+      "totalWorkouts": "{count, plural, one {Training} other {Trainings}}",
+      "currentStreak": "{count, plural, one {Tag in Folge} other {Tage in Folge}}",
+      "longestStreak": "{count, plural, one {Tag, längste Serie} other {Tage, längste Serie}}",
+      "totalPrs": "{count, plural, one {PR} other {PRs}}"
     }
   },
   "BoxPage": {

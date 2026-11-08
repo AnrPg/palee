@@ -34,6 +34,10 @@ export type ProfileCard = components["schemas"]["ProfileCard"];
 export type ProfileCardRequest = components["schemas"]["ProfileCardRequest"];
 export type ProfileBadges = components["schemas"]["ProfileBadgesResponse"];
 export type ProfileBadge = ProfileBadges["badges"][number];
+export type ProfileBox = NonNullable<PersonProfile["box"]>;
+export type ProfileWorkouts = components["schemas"]["ProfileWorkoutsResponse"];
+export type ProfileWorkout = ProfileWorkouts["workouts"][number];
+export type ProfileProgressResponse = components["schemas"]["ProfileProgressResponse"];
 
 export const SOCIAL_KEY = ["social"] as const;
 export const SUMMARY_KEY = ["social", "summary"] as const;
@@ -140,6 +144,16 @@ export function fetchPersonMedia(token: string, id: string, cursor: string | nul
 /** ADR-554: the «Διακρίσεις» tab, locked until you follow them. */
 export function fetchPersonBadges(token: string, id: string) {
   return apiRequest<ProfileBadges>(`/people/${id}/badges`, { token });
+}
+
+/** ADR-554: the «Προπονήσεις» tab, locked until you follow them. */
+export function fetchPersonWorkouts(token: string, id: string) {
+  return apiRequest<ProfileWorkouts>(`/people/${id}/workouts`, { token });
+}
+
+/** ADR-554: the «Πρόοδος» tab, locked until you follow them. */
+export function fetchPersonProgress(token: string, id: string) {
+  return apiRequest<ProfileProgressResponse>(`/people/${id}/progress`, { token });
 }
 
 /** ADR-554: change «Λίγα λόγια» or the optional tabs (only what is sent changes). */

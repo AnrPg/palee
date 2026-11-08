@@ -2,12 +2,12 @@ defmodule Palee.Community.Domain.ProfileTabs do
   @moduledoc """
   ADR-554: the tabs of a profile. «Πολυμέσα · Αναρτήσεις» are always there
   and come first; the owner adds the optional ones from their journal with
-  «+ Καρτέλα» (PRs, Διακρίσεις), in the order they added them. Pure rules,
+  «+ Καρτέλα» (PRs, Διακρίσεις, Προπονήσεις, Πρόοδος), in the order they added them. Pure rules,
   no I/O.
   """
 
   @fixed ~w(media posts)
-  @optional ~w(prs badges)
+  @optional ~w(prs badges workouts progress)
   @bio_max 150
 
   def fixed, do: @fixed

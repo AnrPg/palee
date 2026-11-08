@@ -378,7 +378,7 @@ defmodule PaleeWeb.Schemas.Social do
     %Schema{
       type: :array,
       description: "ADR-554: the profile's tabs in order, «Πολυμέσα · Αναρτήσεις» first",
-      items: %Schema{type: :string, enum: ~w(media posts prs badges)}
+      items: %Schema{type: :string, enum: ~w(media posts prs badges workouts progress)}
     }
   end
 
@@ -389,9 +389,11 @@ defmodule PaleeWeb.Schemas.Social do
       description: "ADR-554: «Λίγα λόγια» and the tabs a profile shows",
       properties: %{
         bio: %Schema{type: :string, nullable: true},
-        tabs: profile_tabs()
+        tabs: profile_tabs(),
+        box_id: %{@uuid | nullable: true, description: "Your own choice only; null for others"},
+        show_rank: %Schema{type: :boolean, description: "Your own choice only; false for others"}
       },
-      required: [:tabs]
+      required: [:tabs, :show_rank]
     }
   end
 
@@ -404,10 +406,94 @@ defmodule PaleeWeb.Schemas.Social do
         tabs: %Schema{
           type: :array,
           description: "The optional tabs, in order (the fixed ones are always shown)",
-          items: %Schema{type: :string, enum: ~w(prs badges)},
-          maxItems: 2
-        }
+          items: %Schema{type: :string, enum: ~w(prs badges workouts progress)},
+          maxItems: 4
+        },
+        box_id: %{
+          @uuid
+          | nullable: true,
+            description: "A box you are an active member of, or null to show none"
+        },
+        show_rank: %Schema{type: :boolean, description: "Show your belt or level at that box"}
       }
+    }
+  end
+
+  defp profile_box do
+    %Schema{
+      title: "ProfileBox",
+      type: :object,
+      nullable: true,
+      description:
+        "ADR-554: the box under «Λίγα λόγια», for the owner and their followers, when shown",
+      properties: %{
+        slug: %Schema{type: :string},
+        name: %Schema{type: :string},
+        rank: %Schema{
+          title: "ProfileRank",
+          type: :object,
+          nullable: true,
+          properties: %{
+            name: %Schema{type: :string},
+            color: %Schema{type: :string, nullable: true},
+            style: %Schema{type: :string, enum: ~w(belt level)},
+            stripes: %Schema{type: :integer}
+          },
+          required: [:name, :style, :stripes]
+        }
+      },
+      required: [:slug, :name]
+    }
+  end
+
+  def profile_workouts_response do
+    %Schema{
+      title: "ProfileWorkoutsResponse",
+      type: :object,
+      description: "ADR-554: the «Προπονήσεις» tab; locked until you follow them",
+      properties: %{
+        workouts: %Schema{
+          type: :array,
+          items: %Schema{
+            title: "ProfileWorkout",
+            type: :object,
+            properties: %{
+              id: @uuid,
+              title: %Schema{type: :string, nullable: true},
+              completed_at: %Schema{type: :string, format: :"date-time"},
+              completed_tz: %Schema{type: :string, nullable: true},
+              elapsed_ms: %Schema{type: :integer}
+            },
+            required: [:id, :completed_at, :elapsed_ms]
+          }
+        },
+        locked: %Schema{type: :boolean}
+      },
+      required: [:workouts, :locked]
+    }
+  end
+
+  def profile_progress_response do
+    %Schema{
+      title: "ProfileProgressResponse",
+      type: :object,
+      description: "ADR-554: the «Πρόοδος» tab; locked until you follow them",
+      properties: %{
+        progress: %Schema{
+          title: "ProfileProgress",
+          type: :object,
+          nullable: true,
+          properties: %{
+            total_workouts: %Schema{type: :integer},
+            current_streak: %Schema{type: :integer},
+            longest_streak: %Schema{type: :integer},
+            total_prs: %Schema{type: :integer}
+          },
+          required: [:total_workouts, :current_streak, :longest_streak, :total_prs]
+        },
+        locked: %Schema{type: :boolean}
+      },
+      required: [:progress, :locked]
     }
   end
 
@@ -547,11 +633,15 @@ defmodule PaleeWeb.Schemas.Social do
         follows_me: %Schema{type: :boolean},
         buddy: %Schema{type: :boolean, description: "ADR-193: you follow each other"},
         bio: %Schema{type: :string, nullable: true, description: "ADR-554: «Λίγα λόγια»"},
-        tabs: profile_tabs()
+        tabs: profile_tabs(),
+        box_id: %{@uuid | nullable: true, description: "Your own choice only; null for others"},
+        show_rank: %Schema{type: :boolean, description: "Your own choice only; false for others"},
+        box: profile_box()
       },
       required: [
         :id,
         :tabs,
+        :show_rank,
         :is_me,
         :private,
         :followers_count,

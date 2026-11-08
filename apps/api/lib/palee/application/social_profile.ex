@@ -8,7 +8,7 @@ defmodule Palee.Application.SocialProfile do
   """
 
   alias Palee.Application.PostPresenter
-  alias Palee.{Community, Gamification, Identity, Places}
+  alias Palee.{Community, Gamification, Identity, Organizations, Places}
   alias Palee.Community.Domain.ProfileTabs
 
   @page 20
@@ -139,9 +139,10 @@ defmodule Palee.Application.SocialProfile do
          follow_groups: Community.follow_groups(person.id),
          my_status: my_status,
          follows_me: follows_me,
-         buddy: Community.buddies?(my_status, if(follows_me, do: "active", else: "none"))
+         buddy: Community.buddies?(my_status, if(follows_me, do: "active", else: "none")),
+         box: box(context, person.id)
        }
-       |> Map.merge(card(context, person.id))}
+       |> Map.merge(card(context, person.id, person.id == viewer_id))}
     end
   end
 
@@ -150,13 +151,42 @@ defmodule Palee.Application.SocialProfile do
   Every signed-in session reads the card; what each tab holds keeps its
   own audience rules.
   """
-  def card(context, user_id) do
+  def card(context, user_id, mine \\ true) do
     stored = Community.profile_card(context, user_id)
 
     %{
       bio: stored && stored.bio,
-      tabs: ProfileTabs.shown(stored && stored.tabs)
+      tabs: ProfileTabs.shown(stored && stored.tabs),
+      # The owner's own choices, for «Επεξεργασία προφίλ»; others see the result.
+      box_id: if(mine, do: stored && stored.box_id),
+      show_rank: mine and ((stored && stored.show_rank) || false)
     }
+  end
+
+  @doc """
+  ADR-554 (amended): the box under «Λίγα λόγια», with the belt or level
+  there when the owner shows it. Only the owner and their active followers
+  get it (`palee_profile_box`), and only while the owner is a member.
+  """
+  def box(context, owner_id) do
+    case Community.profile_box(context, owner_id) do
+      nil ->
+        nil
+
+      box ->
+        %{
+          slug: box.slug,
+          name: box.name,
+          rank:
+            box.rank_name &&
+              %{
+                name: box.rank_name,
+                color: box.rank_color,
+                style: box.rank_style,
+                stripes: box.stripes || 0
+              }
+        }
+    end
   end
 
   @doc "ADR-554: the owner changes «Λίγα λόγια» or the optional tabs («+ Καρτέλα»)."
@@ -165,11 +195,26 @@ defmodule Palee.Application.SocialProfile do
       %{}
       |> put_present(attrs, :bio, &ProfileTabs.bio/1)
       |> put_present(attrs, :tabs, &ProfileTabs.normalize/1)
+      |> put_present(attrs, :show_rank, &(&1 == true))
+      |> put_present(attrs, :box_id, & &1)
 
     with true <- changes != %{} || {:error, :bad_request},
+         :ok <- member_of(changes, user_id),
          {:ok, _card} <- Community.put_profile_card(context, user_id, changes),
          do: {:ok, card(context, user_id)}
   end
+
+  # A box can be shown only while the owner is an active member of it.
+  defp member_of(%{box_id: box_id}, user_id) when is_binary(box_id) do
+    with {:ok, box_id} <- Ecto.UUID.cast(box_id),
+         :member <- Organizations.membership_standing(box_id, user_id) do
+      :ok
+    else
+      _other -> {:error, :not_a_member}
+    end
+  end
+
+  defp member_of(_changes, _user_id), do: :ok
 
   defp put_present(changes, attrs, key, fun) do
     case Map.fetch(attrs, key) do
@@ -204,6 +249,35 @@ defmodule Palee.Application.SocialProfile do
        }}
     end
   end
+
+  @doc """
+  ADR-554 (amended): the «Προπονήσεις» tab, the latest completed workouts
+  (title, when, how long; never notes or scores), and «Πρόοδος», the totals.
+  `palee_profile_workouts` / `palee_profile_progress` answer only the owner
+  and active followers while the owner shows the tab.
+  """
+  def workouts(%{user_id: viewer_id} = context, person_id) do
+    with {:ok, person} <- find(person_id, viewer_id) do
+      {:ok,
+       %{
+         workouts: Community.profile_workouts(context, person.id, @page),
+         locked: locked?(context, person.id, viewer_id)
+       }}
+    end
+  end
+
+  def progress(%{user_id: viewer_id} = context, person_id) do
+    with {:ok, person} <- find(person_id, viewer_id) do
+      {:ok,
+       %{
+         progress: Community.profile_progress(context, person.id),
+         locked: locked?(context, person.id, viewer_id)
+       }}
+    end
+  end
+
+  defp locked?(_context, person_id, person_id), do: false
+  defp locked?(context, person_id, _viewer_id), do: not follows?(context, person_id)
 
   defp follows?(context, person_id),
     do: Community.follow_status(context, "user", person_id) == "active"

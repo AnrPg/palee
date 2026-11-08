@@ -6574,7 +6574,9 @@
       "posts": "Post",
       "media": "Media",
       "prs": "PR",
-      "badges": "Badge"
+      "badges": "Badge",
+      "workouts": "Allenamenti",
+      "progress": "Progressi"
     },
     "personPostsEmpty": "Ancora nessun post.",
     "mediaEmpty": "Ancora nessuna foto o video.",
@@ -6675,7 +6677,26 @@
     "badgesNone": "Nessun badge ancora.",
     "addTabHints": {
       "prs": "I PR che mostri a chi ti segue",
-      "badges": "I tuoi badge, per chi ti segue"
+      "badges": "I tuoi badge, per chi ti segue",
+      "workouts": "I tuoi ultimi allenamenti, senza note, per chi ti segue",
+      "progress": "I tuoi totali (allenamenti, serie, PR), per chi ti segue"
+    },
+    "workoutUntitled": "Allenamento",
+    "workoutLine": "{day} · {duration}",
+    "myWorkoutsNone": "Nessun allenamento completato da mostrare. Quelli che tieni «Solo io» non compaiono mai qui.",
+    "workoutsNone": "Ancora nessun allenamento.",
+    "myProgressNone": "I tuoi totali compaiono qui dopo il primo allenamento.",
+    "progressNone": "Ancora nessun progresso.",
+    "boxLabel": "Il tuo box",
+    "boxNone": "Nessuno",
+    "boxHint": "Compare sotto la tua bio, solo per chi ti segue.",
+    "showRank": "La tua cintura o il tuo livello",
+    "showRankHint": "Dalla scala dei gradi del box",
+    "progressStat": {
+      "totalWorkouts": "{count, plural, one {allenamento} other {allenamenti}}",
+      "currentStreak": "{count, plural, one {giorno di fila} other {giorni di fila}}",
+      "longestStreak": "{count, plural, one {giorno, serie più lunga} other {giorni, serie più lunga}}",
+      "totalPrs": "{count, plural, one {PR} other {PR}}"
     }
   },
   "BoxPage": {

@@ -59,11 +59,29 @@ the card is public display data.
 ## Consequences
 - The «Clubs» tab of the old Εγώ is gone; the clubs list stays at
   `/me/clubs`, reached from Ρυθμίσεις.
-- The rank line (ADR-400) stays for the owner under the header until a rank
-  can be shown to others with its own audience.
-- Follow-ups: «Προπονήσεις» and «Πρόοδος» tabs need a reader-scoped endpoint
-  with their own audience; box and belt in the header need an owner choice
-  to show them to others.
+- The rank line (ADR-400) stays for the owner under the header while they
+  don't show their belt in the box line.
+
+## Amendment (2026-11-08): box · belt, «Προπονήσεις», «Πρόοδος»
+
+- **Box line.** In «Επεξεργασία προφίλ» the owner picks one box they are an
+  active member of (none by default) and whether their belt or level there
+  shows with it. One quiet line under «Λίγα λόγια»: the box (linking to its
+  page) · the belt and stripes. The owner's own belt opens «Οι βαθμοί μου».
+- **Two more optional tabs**, added with «+»: «Προπονήσεις» (the latest 20
+  completed workouts: title, day, duration; never notes or scores, never one
+  kept «Μόνο εγώ») and «Πρόοδος» (total workouts, current and longest
+  streak, PRs).
+- **Audience.** Like «Διακρίσεις»: the owner and their active followers,
+  only while the owner shows it. The rows sit in tables only their owner or
+  the box reads, so three definers (`palee_profile_box`,
+  `palee_profile_workouts`, `palee_profile_progress`, migration
+  20271108140000) answer the reader, each checking
+  `palee_profile_reader_admitted` and the owner's card. Another person never
+  gets the owner's choices (`box_id`, `show_rank`), only their result.
+- API: `GET /people/:id/workouts`, `GET /people/:id/progress`; `box` on
+  `PersonProfile`; `box_id` / `show_rank` on `PUT /me/profile-card` (a box
+  the owner isn't a member of is a 422).
 
 ## Amends
 

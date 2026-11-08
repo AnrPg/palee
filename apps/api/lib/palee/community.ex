@@ -409,6 +409,9 @@ defmodule Palee.Community do
   defdelegate put_social_settings(context, user_id, attrs), to: SocialStore
   defdelegate profile_card(context, user_id), to: SocialStore, as: :get_profile_card
   defdelegate put_profile_card(context, user_id, attrs), to: SocialStore
+  defdelegate profile_box(context, owner_id), to: SocialStore
+  defdelegate profile_workouts(context, owner_id, limit), to: SocialStore
+  defdelegate profile_progress(context, owner_id), to: SocialStore
   defdelegate booking_sharer_ids(context), to: SocialStore
   defdelegate hidden_member_ids(ids), to: SocialStore
 

@@ -18916,6 +18916,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/people/{id}/progress": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** ADR-554: the «Πρόοδος» tab, a person's totals you may see */
+        get: operations["PaleeWeb.PeopleController.progress"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/people/{id}/workouts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** ADR-554: the «Προπονήσεις» tab, a person's latest workouts you may see */
+        get: operations["PaleeWeb.PeopleController.workouts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/places/neighbourhoods": {
         parameters: {
             query?: never;
@@ -42268,6 +42302,27 @@ export interface components {
             avatar_url?: string | null;
             /** @description ADR-554: «Λίγα λόγια» */
             bio?: string | null;
+            /**
+             * ProfileBox
+             * @description ADR-554: the box under «Λίγα λόγια», for the owner and their followers, when shown
+             */
+            box?: {
+                name: string;
+                /** ProfileRank */
+                rank?: {
+                    color?: string | null;
+                    name: string;
+                    stripes: number;
+                    /** @enum {string} */
+                    style: "belt" | "level";
+                } | null;
+                slug: string;
+            } | null;
+            /**
+             * Format: uuid
+             * @description Your own choice only; null for others
+             */
+            box_id?: string | null;
             /** @description ADR-193: you follow each other */
             buddy: boolean;
             /**
@@ -42291,8 +42346,10 @@ export interface components {
             nickname?: string | null;
             /** @description ADR-193: following them is a request */
             private: boolean;
+            /** @description Your own choice only; false for others */
+            show_rank: boolean;
             /** @description ADR-554: the profile's tabs in order, «Πολυμέσα · Αναρτήσεις» first */
-            tabs: ("media" | "posts" | "prs" | "badges")[];
+            tabs: ("media" | "posts" | "prs" | "badges" | "workouts" | "progress")[];
         };
         /** PersonRef */
         PersonRef: {
@@ -44274,19 +44331,49 @@ export interface components {
             locked: boolean;
         };
         /**
+         * ProfileBox
+         * @description ADR-554: the box under «Λίγα λόγια», for the owner and their followers, when shown
+         */
+        ProfileBox: {
+            name: string;
+            /** ProfileRank */
+            rank?: {
+                color?: string | null;
+                name: string;
+                stripes: number;
+                /** @enum {string} */
+                style: "belt" | "level";
+            } | null;
+            slug: string;
+        } | null;
+        /**
          * ProfileCard
          * @description ADR-554: «Λίγα λόγια» and the tabs a profile shows
          */
         ProfileCard: {
             bio?: string | null;
+            /**
+             * Format: uuid
+             * @description Your own choice only; null for others
+             */
+            box_id?: string | null;
+            /** @description Your own choice only; false for others */
+            show_rank: boolean;
             /** @description ADR-554: the profile's tabs in order, «Πολυμέσα · Αναρτήσεις» first */
-            tabs: ("media" | "posts" | "prs" | "badges")[];
+            tabs: ("media" | "posts" | "prs" | "badges" | "workouts" | "progress")[];
         };
         /** ProfileCardRequest */
         ProfileCardRequest: {
             bio?: string | null;
+            /**
+             * Format: uuid
+             * @description A box you are an active member of, or null to show none
+             */
+            box_id?: string | null;
+            /** @description Show your belt or level at that box */
+            show_rank?: boolean;
             /** @description The optional tabs, in order (the fixed ones are always shown) */
-            tabs?: ("prs" | "badges")[];
+            tabs?: ("prs" | "badges" | "workouts" | "progress")[];
         };
         /** ProfilePostCreateRequest */
         ProfilePostCreateRequest: {
@@ -44300,6 +44387,61 @@ export interface components {
             client_operation_id?: string;
             /** @description Your uploads (POST /api/me/media/uploads), in order: up to ten photos or one video. They may still be processing. */
             media_ids?: string[];
+        };
+        /** ProfileProgress */
+        ProfileProgress: {
+            current_streak: number;
+            longest_streak: number;
+            total_prs: number;
+            total_workouts: number;
+        } | null;
+        /**
+         * ProfileProgressResponse
+         * @description ADR-554: the «Πρόοδος» tab; locked until you follow them
+         */
+        ProfileProgressResponse: {
+            locked: boolean;
+            /** ProfileProgress */
+            progress: {
+                current_streak: number;
+                longest_streak: number;
+                total_prs: number;
+                total_workouts: number;
+            } | null;
+        };
+        /** ProfileRank */
+        ProfileRank: {
+            color?: string | null;
+            name: string;
+            stripes: number;
+            /** @enum {string} */
+            style: "belt" | "level";
+        } | null;
+        /** ProfileWorkout */
+        ProfileWorkout: {
+            /** Format: date-time */
+            completed_at: string;
+            completed_tz?: string | null;
+            elapsed_ms: number;
+            /** Format: uuid */
+            id: string;
+            title?: string | null;
+        };
+        /**
+         * ProfileWorkoutsResponse
+         * @description ADR-554: the «Προπονήσεις» tab; locked until you follow them
+         */
+        ProfileWorkoutsResponse: {
+            locked: boolean;
+            workouts: {
+                /** Format: date-time */
+                completed_at: string;
+                completed_tz?: string | null;
+                elapsed_ms: number;
+                /** Format: uuid */
+                id: string;
+                title?: string | null;
+            }[];
         };
         /**
          * ProgrammeBehindDay
@@ -80000,8 +80142,15 @@ export interface operations {
             content: {
                 "application/json": {
                     bio?: string | null;
+                    /**
+                     * Format: uuid
+                     * @description A box you are an active member of, or null to show none
+                     */
+                    box_id?: string | null;
+                    /** @description Show your belt or level at that box */
+                    show_rank?: boolean;
                     /** @description The optional tabs, in order (the fixed ones are always shown) */
-                    tabs?: ("prs" | "badges")[];
+                    tabs?: ("prs" | "badges" | "workouts" | "progress")[];
                 };
             };
         };
@@ -80014,8 +80163,15 @@ export interface operations {
                 content: {
                     "application/json": {
                         bio?: string | null;
+                        /**
+                         * Format: uuid
+                         * @description Your own choice only; null for others
+                         */
+                        box_id?: string | null;
+                        /** @description Your own choice only; false for others */
+                        show_rank: boolean;
                         /** @description ADR-554: the profile's tabs in order, «Πολυμέσα · Αναρτήσεις» first */
-                        tabs: ("media" | "posts" | "prs" | "badges")[];
+                        tabs: ("media" | "posts" | "prs" | "badges" | "workouts" | "progress")[];
                     };
                 };
             };
@@ -158527,6 +158683,27 @@ export interface operations {
                         avatar_url?: string | null;
                         /** @description ADR-554: «Λίγα λόγια» */
                         bio?: string | null;
+                        /**
+                         * ProfileBox
+                         * @description ADR-554: the box under «Λίγα λόγια», for the owner and their followers, when shown
+                         */
+                        box?: {
+                            name: string;
+                            /** ProfileRank */
+                            rank?: {
+                                color?: string | null;
+                                name: string;
+                                stripes: number;
+                                /** @enum {string} */
+                                style: "belt" | "level";
+                            } | null;
+                            slug: string;
+                        } | null;
+                        /**
+                         * Format: uuid
+                         * @description Your own choice only; null for others
+                         */
+                        box_id?: string | null;
                         /** @description ADR-193: you follow each other */
                         buddy: boolean;
                         /**
@@ -158550,8 +158727,10 @@ export interface operations {
                         nickname?: string | null;
                         /** @description ADR-193: following them is a request */
                         private: boolean;
+                        /** @description Your own choice only; false for others */
+                        show_rank: boolean;
                         /** @description ADR-554: the profile's tabs in order, «Πολυμέσα · Αναρτήσεις» first */
-                        tabs: ("media" | "posts" | "prs" | "badges")[];
+                        tabs: ("media" | "posts" | "prs" | "badges" | "workouts" | "progress")[];
                     };
                 };
             };
@@ -159203,6 +159382,70 @@ export interface operations {
                                 status: "available" | "sold_out" | "members_only" | "unavailable";
                                 title?: string | null;
                             } | null;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PeopleController.progress": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Progress */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        locked: boolean;
+                        /** ProfileProgress */
+                        progress: {
+                            current_streak: number;
+                            longest_streak: number;
+                            total_prs: number;
+                            total_workouts: number;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PeopleController.workouts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Workouts */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        locked: boolean;
+                        workouts: {
+                            /** Format: date-time */
+                            completed_at: string;
+                            completed_tz?: string | null;
+                            elapsed_ms: number;
+                            /** Format: uuid */
+                            id: string;
+                            title?: string | null;
                         }[];
                     };
                 };

@@ -270,6 +270,44 @@ defmodule Palee.Infrastructure.Community.EctoSocialStore do
     |> Repo.insert_or_update()
   end
 
+  # The definers admit only the owner and their active followers, and only
+  # what the owner shows (ADR-554, migration 20271108140000).
+  @impl true
+  def profile_box(_context, owner_id) do
+    "SELECT organization_id, slug, name, rank_name, rank_color, rank_style, stripes FROM palee_profile_box($1)"
+    |> Repo.query!([Ecto.UUID.dump!(owner_id)])
+    |> rows(~w(organization_id slug name rank_name rank_color rank_style stripes)a)
+    |> List.first()
+    |> case do
+      nil -> nil
+      box -> Map.update!(box, :organization_id, &Ecto.UUID.load!/1)
+    end
+  end
+
+  @impl true
+  def profile_workouts(_context, owner_id, limit) do
+    "SELECT id, title, completed_at, completed_tz, elapsed_ms FROM palee_profile_workouts($1, $2)"
+    |> Repo.query!([Ecto.UUID.dump!(owner_id), limit])
+    |> rows(~w(id title completed_at completed_tz elapsed_ms)a)
+    |> Enum.map(fn row ->
+      %{
+        row
+        | id: Ecto.UUID.load!(row.id),
+          completed_at: DateTime.from_naive!(row.completed_at, "Etc/UTC")
+      }
+    end)
+  end
+
+  @impl true
+  def profile_progress(_context, owner_id) do
+    "SELECT total_workouts, current_streak, longest_streak, total_prs FROM palee_profile_progress($1)"
+    |> Repo.query!([Ecto.UUID.dump!(owner_id)])
+    |> rows(~w(total_workouts current_streak longest_streak total_prs)a)
+    |> List.first()
+  end
+
+  defp rows(%{rows: rows}, keys), do: Enum.map(rows, &(keys |> Enum.zip(&1) |> Map.new()))
+
   @impl true
   def booking_sharer_ids(_context) do
     %{rows: rows} = Repo.query!("SELECT palee_booking_sharers()", [])

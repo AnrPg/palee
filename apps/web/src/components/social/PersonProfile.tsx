@@ -9,7 +9,9 @@ import { useTranslations } from "next-intl";
 import { fetchProfilePRs } from "@/api/gamification";
 import { fetchPRsSharedWithMe } from "@/api/pr-sharing";
 import { fetchPerson, fetchPersonPosts, personKey, type PersonProfile as Person } from "@/api/social";
-import { MyRanksCard } from "@/components/body-devices/MyRanksCard";
+import type { RankColor } from "@/api/body-devices";
+import { Belt } from "@/components/body-devices/Belt";
+import { MY_RANKS_HREF, MyRanksCard } from "@/components/body-devices/MyRanksCard";
 import { PostCard } from "@/components/community/PostCard";
 import { MessageButton } from "@/components/conversations/MessageButton";
 import { MeSheetButton } from "@/components/member-app/me/MeSheet";
@@ -20,6 +22,7 @@ import { MediaGrid } from "@/components/social/MediaGrid";
 import { PersonAvatar } from "@/components/social/PersonAvatar";
 import { AddTabButton, EditProfileButton, ShareProfileButton } from "@/components/social/ProfileActions";
 import { ProfileBadges } from "@/components/social/ProfileBadges";
+import { ProfileProgress, ProfileWorkouts } from "@/components/social/ProfileJournalTabs";
 import { BuddyBadge, LockedNote } from "@/components/social/SocialBits";
 import { countsParts, personTab, postsLockKey, profileTabs, type PersonTab } from "@/components/social/social-model";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
@@ -30,8 +33,8 @@ import { useSelectedMembershipRole } from "@/lib/membership-role";
  * mockup «1A 2A 3C»): an Instagram-like header (avatar, name and three
  * counts, «Λίγα λόγια», two quiet buttons), then the tabs, «Πολυμέσα ·
  * Αναρτήσεις» first and the optional ones the owner added with «+». What you
- * see on your own profile is what others see; only the ☰ (`MeSheet`), the «+»
- * and your own rank line are yours alone.
+ * see on your own profile is what your followers see; only the ☰ (`MeSheet`),
+ * the «+» and, until you show your belt, your own rank line are yours alone.
  */
 export function PersonProfile({ id }: { id: string }) {
   const t = useTranslations("Social");
@@ -70,7 +73,7 @@ function Profile({ profile }: { profile: Person }) {
 
       <ProfileHeader profile={profile} />
 
-      {mine ? <OwnRankLine /> : null}
+      {mine && !profile.box?.rank ? <OwnRankLine /> : null}
 
       <div role="tablist" aria-label={t("profileTabs")} className="mt-3 flex gap-1 px-2">
         {tabs.map((value) => (
@@ -101,6 +104,8 @@ function Profile({ profile }: { profile: Person }) {
         {tab === "posts" ? <Posts profile={profile} /> : null}
         {tab === "prs" ? <Prs profile={profile} /> : null}
         {tab === "badges" ? <ProfileBadges profile={profile} /> : null}
+        {tab === "workouts" ? <ProfileWorkouts profile={profile} /> : null}
+        {tab === "progress" ? <ProfileProgress profile={profile} /> : null}
       </div>
     </main>
   );
@@ -139,6 +144,8 @@ function ProfileHeader({ profile }: { profile: Person }) {
         </p>
       ) : null}
 
+      {profile.box ? <BoxLine profile={profile} /> : null}
+
       <div className="mt-3 grid grid-cols-2 gap-1.5">
         {mine ? (
           <>
@@ -160,6 +167,42 @@ function ProfileHeader({ profile }: { profile: Person }) {
         )}
       </div>
     </header>
+  );
+}
+
+/**
+ * ADR-554 (amended): one quiet line under «Λίγα λόγια», the box the owner
+ * shows · their belt or level there. Your own belt opens your ranks.
+ */
+function BoxLine({ profile }: { profile: Person }) {
+  const tRanks = useTranslations("BodyDevices");
+  const box = profile.box!;
+  const rank = box.rank;
+  const rankText = rank ? (rank.stripes > 0 ? tRanks("ranks.currentLine", { rank: rank.name, stripes: rank.stripes }) : rank.name) : null;
+  const rankBody = rank ? (
+    <>
+      {rank.style === "belt" ? <Belt color={rank.color as RankColor | null} stripes={rank.stripes} className="h-2.5 w-8" /> : null}
+      <span className="break-words">{rankText}</span>
+    </>
+  ) : null;
+  return (
+    <p className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[13px]" style={{ color: "var(--dim)" }} data-testid="profile-box">
+      <Link href={`/b/${box.slug}`} className="font-semibold" style={{ color: "var(--text)" }}>
+        {box.name}
+      </Link>
+      {rank ? (
+        <>
+          <span aria-hidden="true">·</span>
+          {profile.is_me ? (
+            <Link href={MY_RANKS_HREF} className="inline-flex items-center gap-1.5">
+              {rankBody}
+            </Link>
+          ) : (
+            <span className="inline-flex items-center gap-1.5">{rankBody}</span>
+          )}
+        </>
+      ) : null}
+    </p>
   );
 }
 
@@ -323,6 +366,8 @@ const TAB_PATHS: Record<PersonTab, ReactNode> = {
       <path d="M9 3l3 5 3-5" />
     </>
   ),
+  workouts: <path d="M3 9v6M6 6v12M18 6v12M21 9v6M6 12h12" />,
+  progress: <path d="M4 19h16M6 15l4-4 3 3 5-6" />,
 };
 
 function TabIcon({ tab }: { tab: PersonTab }) {

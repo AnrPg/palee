@@ -43,6 +43,9 @@ defmodule Palee.Community.Ports.SocialStore do
   @callback put_social_settings(context(), id(), map()) :: {:ok, map()} | {:error, term()}
   @callback get_profile_card(context(), id()) :: map() | nil
   @callback put_profile_card(context(), id(), map()) :: {:ok, map()} | {:error, term()}
+  @callback profile_box(context(), id()) :: map() | nil
+  @callback profile_workouts(context(), id(), pos_integer()) :: [map()]
+  @callback profile_progress(context(), id()) :: map() | nil
   @callback booking_sharer_ids(context()) :: [id()]
   @callback follower_counts(String.t(), [id()]) :: %{id() => non_neg_integer()}
   @callback following_count(id()) :: non_neg_integer()

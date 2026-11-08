@@ -69880,6 +69880,59 @@
             "nullable": true,
             "type": "string"
           },
+          "box": {
+            "description": "ADR-554: the box under «Λίγα λόγια», for the owner and their followers, when shown",
+            "nullable": true,
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "rank": {
+                "nullable": true,
+                "properties": {
+                  "color": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "stripes": {
+                    "type": "integer"
+                  },
+                  "style": {
+                    "enum": [
+                      "belt",
+                      "level"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "style",
+                  "stripes"
+                ],
+                "title": "ProfileRank",
+                "type": "object"
+              },
+              "slug": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "slug",
+              "name"
+            ],
+            "title": "ProfileBox",
+            "type": "object"
+          },
+          "box_id": {
+            "description": "Your own choice only; null for others",
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
           "buddy": {
             "description": "ADR-193: you follow each other",
             "type": "boolean"
@@ -69941,6 +69994,10 @@
             "description": "ADR-193: following them is a request",
             "type": "boolean"
           },
+          "show_rank": {
+            "description": "Your own choice only; false for others",
+            "type": "boolean"
+          },
           "tabs": {
             "description": "ADR-554: the profile's tabs in order, «Πολυμέσα · Αναρτήσεις» first",
             "items": {
@@ -69948,7 +70005,9 @@
                 "media",
                 "posts",
                 "prs",
-                "badges"
+                "badges",
+                "workouts",
+                "progress"
               ],
               "type": "string"
             },
@@ -69958,6 +70017,7 @@
         "required": [
           "id",
           "tabs",
+          "show_rank",
           "is_me",
           "private",
           "followers_count",
@@ -77162,12 +77222,69 @@
         "title": "ProfileBadgesResponse",
         "type": "object"
       },
+      "ProfileBox": {
+        "description": "ADR-554: the box under «Λίγα λόγια», for the owner and their followers, when shown",
+        "nullable": true,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "rank": {
+            "nullable": true,
+            "properties": {
+              "color": {
+                "nullable": true,
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "stripes": {
+                "type": "integer"
+              },
+              "style": {
+                "enum": [
+                  "belt",
+                  "level"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "style",
+              "stripes"
+            ],
+            "title": "ProfileRank",
+            "type": "object"
+          },
+          "slug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "name"
+        ],
+        "title": "ProfileBox",
+        "type": "object"
+      },
       "ProfileCard": {
         "description": "ADR-554: «Λίγα λόγια» and the tabs a profile shows",
         "properties": {
           "bio": {
             "nullable": true,
             "type": "string"
+          },
+          "box_id": {
+            "description": "Your own choice only; null for others",
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "show_rank": {
+            "description": "Your own choice only; false for others",
+            "type": "boolean"
           },
           "tabs": {
             "description": "ADR-554: the profile's tabs in order, «Πολυμέσα · Αναρτήσεις» first",
@@ -77176,7 +77293,9 @@
                 "media",
                 "posts",
                 "prs",
-                "badges"
+                "badges",
+                "workouts",
+                "progress"
               ],
               "type": "string"
             },
@@ -77184,7 +77303,8 @@
           }
         },
         "required": [
-          "tabs"
+          "tabs",
+          "show_rank"
         ],
         "title": "ProfileCard",
         "type": "object"
@@ -77196,16 +77316,28 @@
             "nullable": true,
             "type": "string"
           },
+          "box_id": {
+            "description": "A box you are an active member of, or null to show none",
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "show_rank": {
+            "description": "Show your belt or level at that box",
+            "type": "boolean"
+          },
           "tabs": {
             "description": "The optional tabs, in order (the fixed ones are always shown)",
             "items": {
               "enum": [
                 "prs",
-                "badges"
+                "badges",
+                "workouts",
+                "progress"
               ],
               "type": "string"
             },
-            "maxItems": 2,
+            "maxItems": 4,
             "type": "array"
           }
         },
@@ -77255,6 +77387,176 @@
           "audience"
         ],
         "title": "ProfilePostCreateRequest",
+        "type": "object"
+      },
+      "ProfileProgress": {
+        "nullable": true,
+        "properties": {
+          "current_streak": {
+            "type": "integer"
+          },
+          "longest_streak": {
+            "type": "integer"
+          },
+          "total_prs": {
+            "type": "integer"
+          },
+          "total_workouts": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "total_workouts",
+          "current_streak",
+          "longest_streak",
+          "total_prs"
+        ],
+        "title": "ProfileProgress",
+        "type": "object"
+      },
+      "ProfileProgressResponse": {
+        "description": "ADR-554: the «Πρόοδος» tab; locked until you follow them",
+        "properties": {
+          "locked": {
+            "type": "boolean"
+          },
+          "progress": {
+            "nullable": true,
+            "properties": {
+              "current_streak": {
+                "type": "integer"
+              },
+              "longest_streak": {
+                "type": "integer"
+              },
+              "total_prs": {
+                "type": "integer"
+              },
+              "total_workouts": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "total_workouts",
+              "current_streak",
+              "longest_streak",
+              "total_prs"
+            ],
+            "title": "ProfileProgress",
+            "type": "object"
+          }
+        },
+        "required": [
+          "progress",
+          "locked"
+        ],
+        "title": "ProfileProgressResponse",
+        "type": "object"
+      },
+      "ProfileRank": {
+        "nullable": true,
+        "properties": {
+          "color": {
+            "nullable": true,
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "stripes": {
+            "type": "integer"
+          },
+          "style": {
+            "enum": [
+              "belt",
+              "level"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "style",
+          "stripes"
+        ],
+        "title": "ProfileRank",
+        "type": "object"
+      },
+      "ProfileWorkout": {
+        "properties": {
+          "completed_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "completed_tz": {
+            "nullable": true,
+            "type": "string"
+          },
+          "elapsed_ms": {
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "completed_at",
+          "elapsed_ms"
+        ],
+        "title": "ProfileWorkout",
+        "type": "object"
+      },
+      "ProfileWorkoutsResponse": {
+        "description": "ADR-554: the «Προπονήσεις» tab; locked until you follow them",
+        "properties": {
+          "locked": {
+            "type": "boolean"
+          },
+          "workouts": {
+            "items": {
+              "properties": {
+                "completed_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "completed_tz": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "elapsed_ms": {
+                  "type": "integer"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "title": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "completed_at",
+                "elapsed_ms"
+              ],
+              "title": "ProfileWorkout",
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "workouts",
+          "locked"
+        ],
+        "title": "ProfileWorkoutsResponse",
         "type": "object"
       },
       "ProgrammeBehindDay": {
@@ -180270,16 +180572,28 @@
                     "nullable": true,
                     "type": "string"
                   },
+                  "box_id": {
+                    "description": "A box you are an active member of, or null to show none",
+                    "format": "uuid",
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "show_rank": {
+                    "description": "Show your belt or level at that box",
+                    "type": "boolean"
+                  },
                   "tabs": {
                     "description": "The optional tabs, in order (the fixed ones are always shown)",
                     "items": {
                       "enum": [
                         "prs",
-                        "badges"
+                        "badges",
+                        "workouts",
+                        "progress"
                       ],
                       "type": "string"
                     },
-                    "maxItems": 2,
+                    "maxItems": 4,
                     "type": "array"
                   }
                 },
@@ -180301,6 +180615,16 @@
                       "nullable": true,
                       "type": "string"
                     },
+                    "box_id": {
+                      "description": "Your own choice only; null for others",
+                      "format": "uuid",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "show_rank": {
+                      "description": "Your own choice only; false for others",
+                      "type": "boolean"
+                    },
                     "tabs": {
                       "description": "ADR-554: the profile's tabs in order, «Πολυμέσα · Αναρτήσεις» first",
                       "items": {
@@ -180308,7 +180632,9 @@
                           "media",
                           "posts",
                           "prs",
-                          "badges"
+                          "badges",
+                          "workouts",
+                          "progress"
                         ],
                         "type": "string"
                       },
@@ -180316,7 +180642,8 @@
                     }
                   },
                   "required": [
-                    "tabs"
+                    "tabs",
+                    "show_rank"
                   ],
                   "title": "ProfileCard",
                   "type": "object"
@@ -406021,6 +406348,59 @@
                       "nullable": true,
                       "type": "string"
                     },
+                    "box": {
+                      "description": "ADR-554: the box under «Λίγα λόγια», for the owner and their followers, when shown",
+                      "nullable": true,
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "rank": {
+                          "nullable": true,
+                          "properties": {
+                            "color": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "stripes": {
+                              "type": "integer"
+                            },
+                            "style": {
+                              "enum": [
+                                "belt",
+                                "level"
+                              ],
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "style",
+                            "stripes"
+                          ],
+                          "title": "ProfileRank",
+                          "type": "object"
+                        },
+                        "slug": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "slug",
+                        "name"
+                      ],
+                      "title": "ProfileBox",
+                      "type": "object"
+                    },
+                    "box_id": {
+                      "description": "Your own choice only; null for others",
+                      "format": "uuid",
+                      "nullable": true,
+                      "type": "string"
+                    },
                     "buddy": {
                       "description": "ADR-193: you follow each other",
                       "type": "boolean"
@@ -406082,6 +406462,10 @@
                       "description": "ADR-193: following them is a request",
                       "type": "boolean"
                     },
+                    "show_rank": {
+                      "description": "Your own choice only; false for others",
+                      "type": "boolean"
+                    },
                     "tabs": {
                       "description": "ADR-554: the profile's tabs in order, «Πολυμέσα · Αναρτήσεις» first",
                       "items": {
@@ -406089,7 +406473,9 @@
                           "media",
                           "posts",
                           "prs",
-                          "badges"
+                          "badges",
+                          "workouts",
+                          "progress"
                         ],
                         "type": "string"
                       },
@@ -406099,6 +406485,7 @@
                   "required": [
                     "id",
                     "tabs",
+                    "show_rank",
                     "is_me",
                     "private",
                     "followers_count",
@@ -408020,6 +408407,162 @@
           }
         ],
         "summary": "A person's followers and public posts you may read",
+        "tags": [
+          "Follows"
+        ]
+      }
+    },
+    "/api/people/{id}/progress": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PeopleController.progress",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "ADR-554: the «Πρόοδος» tab; locked until you follow them",
+                  "properties": {
+                    "locked": {
+                      "type": "boolean"
+                    },
+                    "progress": {
+                      "nullable": true,
+                      "properties": {
+                        "current_streak": {
+                          "type": "integer"
+                        },
+                        "longest_streak": {
+                          "type": "integer"
+                        },
+                        "total_prs": {
+                          "type": "integer"
+                        },
+                        "total_workouts": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "total_workouts",
+                        "current_streak",
+                        "longest_streak",
+                        "total_prs"
+                      ],
+                      "title": "ProfileProgress",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "progress",
+                    "locked"
+                  ],
+                  "title": "ProfileProgressResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Progress"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "ADR-554: the «Πρόοδος» tab, a person's totals you may see",
+        "tags": [
+          "Follows"
+        ]
+      }
+    },
+    "/api/people/{id}/workouts": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PeopleController.workouts",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "ADR-554: the «Προπονήσεις» tab; locked until you follow them",
+                  "properties": {
+                    "locked": {
+                      "type": "boolean"
+                    },
+                    "workouts": {
+                      "items": {
+                        "properties": {
+                          "completed_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "completed_tz": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "elapsed_ms": {
+                            "type": "integer"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "title": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "completed_at",
+                          "elapsed_ms"
+                        ],
+                        "title": "ProfileWorkout",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "workouts",
+                    "locked"
+                  ],
+                  "title": "ProfileWorkoutsResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Workouts"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "ADR-554: the «Προπονήσεις» tab, a person's latest workouts you may see",
         "tags": [
           "Follows"
         ]

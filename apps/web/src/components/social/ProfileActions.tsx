@@ -11,8 +11,10 @@ import { useSession } from "@/components/session-provider";
 import { Switch } from "@/components/body/BodyPreferenceSettings";
 import { OPTIONAL_PROFILE_TABS, toggleProfileTab, type PersonTab } from "@/components/social/social-model";
 import { Dialog } from "@/components/ui/Dialog";
+import { Select } from "@/components/ui/Select";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { useUiTranslations } from "@/i18n/ui";
+import { useSelectedMembershipRole } from "@/lib/membership-role";
 
 /** Instagram-like: short, flat and quiet; the profile's two buttons share one row. */
 export const profileButtonClass =
@@ -20,6 +22,7 @@ export const profileButtonClass =
 const PROFILE_BUTTON_STYLE = { background: "var(--panel-raised)", color: "var(--text)" } as const;
 
 export const BIO_MAX = 150;
+const NO_BOX = "none";
 
 /** ADR-554: change the card (bio, tabs) and refresh your own profile with the answer. */
 function useSaveCard(profile: PersonProfile) {
@@ -35,8 +38,8 @@ function useSaveCard(profile: PersonProfile) {
 }
 
 /**
- * «Επεξεργασία προφίλ»: «Λίγα λόγια» here; name, @handle and photo stay in
- * Ρυθμίσεις, one tap away.
+ * «Επεξεργασία προφίλ»: «Λίγα λόγια», the box you show under it and your belt
+ * or level there; name, @handle and photo stay in Ρυθμίσεις, one tap away.
  */
 export function EditProfileButton({ profile }: { profile: PersonProfile }) {
   const t = useTranslations("Social");
@@ -56,11 +59,25 @@ function EditProfileDialog({ profile, onClose }: { profile: PersonProfile; onClo
   const t = useTranslations("Social");
   const tUi = useUiTranslations();
   const [bio, setBio] = useState(profile.bio ?? "");
+  const { memberships } = useSelectedMembershipRole();
+  const boxes = memberships.map((entry) => entry.organization);
+  const [boxId, setBoxId] = useState(profile.box_id ?? NO_BOX);
+  const [showRank, setShowRank] = useState(profile.show_rank);
   const save = useSaveCard(profile);
+  const queryClient = useQueryClient();
 
   function submit(event?: FormEvent) {
     event?.preventDefault();
-    save.mutate({ bio: bio.trim() || null }, { onSuccess: onClose });
+    const box = boxId === NO_BOX ? null : boxId;
+    const rank = Boolean(box) && showRank;
+    const boxChanged = box !== (profile.box_id ?? null) || rank !== profile.show_rank;
+    save.mutate(boxChanged ? { bio: bio.trim() || null, box_id: box, show_rank: rank } : { bio: bio.trim() || null }, {
+      onSuccess: () => {
+        // The box line comes with the profile: read it again.
+        if (boxChanged) void queryClient.invalidateQueries({ queryKey: personKey(profile.id), exact: true });
+        onClose();
+      },
+    });
   }
 
   return (
@@ -98,6 +115,27 @@ function EditProfileDialog({ profile, onClose }: { profile: PersonProfile; onClo
             {bio.length}/{BIO_MAX}
           </span>
         </label>
+        {boxes.length > 0 ? (
+          <div className="flex flex-col gap-1.5">
+            <span className="text-sm font-semibold" style={{ color: "var(--text)" }}>{t("boxLabel")}</span>
+            <Select
+              aria-label={t("boxLabel")}
+              value={boxId}
+              onValueChange={setBoxId}
+              className="w-full rounded-xl px-3 py-2 text-sm outline-none"
+              style={{ background: "var(--panel-muted)", border: "1px solid var(--border)", color: "var(--text)" }}
+            >
+              <option value={NO_BOX}>{t("boxNone")}</option>
+              {boxes.map((box) => (
+                <option key={box.id} value={box.id}>
+                  {box.name}
+                </option>
+              ))}
+            </Select>
+            <span className="text-xs" style={{ color: "var(--dim)" }}>{t("boxHint")}</span>
+            {boxId !== NO_BOX ? <Switch label={t("showRank")} hint={t("showRankHint")} checked={showRank} onChange={setShowRank} /> : null}
+          </div>
+        ) : null}
         <Link
           href="/me/settings#personal"
           className="flex min-h-11 items-center justify-between rounded-2xl px-4 text-sm font-semibold"

@@ -75,7 +75,7 @@ export function postsLockKey(profile: Pick<PersonProfile, "is_me" | "my_status" 
 
 /** ADR-554: «Πολυμέσα · Αναρτήσεις» always, first; PRs and «Διακρίσεις» when the owner adds them. */
 export const FIXED_PROFILE_TABS = ["media", "posts"] as const;
-export const OPTIONAL_PROFILE_TABS = ["prs", "badges"] as const;
+export const OPTIONAL_PROFILE_TABS = ["prs", "badges", "workouts", "progress"] as const;
 export type OptionalProfileTab = (typeof OPTIONAL_PROFILE_TABS)[number];
 export type PersonTab = (typeof FIXED_PROFILE_TABS)[number] | OptionalProfileTab;
 

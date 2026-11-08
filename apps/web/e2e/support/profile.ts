@@ -18,6 +18,9 @@ export function personProfile(overrides: Record<string, unknown> & { id: string 
     buddy: false,
     bio: null,
     tabs: ["media", "posts"],
+    box_id: null,
+    show_rank: false,
+    box: null,
     ...overrides,
   };
 }

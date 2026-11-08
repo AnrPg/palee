@@ -6574,7 +6574,9 @@
       "posts": "Publications",
       "media": "Médias",
       "prs": "PR",
-      "badges": "Badges"
+      "badges": "Badges",
+      "workouts": "Séances",
+      "progress": "Progrès"
     },
     "personPostsEmpty": "Pas encore de publications.",
     "mediaEmpty": "Pas encore de photos ni de vidéos.",
@@ -6675,7 +6677,26 @@
     "badgesNone": "Pas encore de badges.",
     "addTabHints": {
       "prs": "Les PRs que tu montres à tes abonnés",
-      "badges": "Tes badges, pour les personnes qui te suivent"
+      "badges": "Tes badges, pour les personnes qui te suivent",
+      "workouts": "Tes dernières séances, sans notes, pour les personnes qui te suivent",
+      "progress": "Tes totaux (séances, séries, PR), pour les personnes qui te suivent"
+    },
+    "workoutUntitled": "Séance",
+    "workoutLine": "{day} · {duration}",
+    "myWorkoutsNone": "Aucune séance terminée à montrer pour l’instant. Celles que tu gardes « Moi seul » n’apparaissent jamais ici.",
+    "workoutsNone": "Aucune séance pour l’instant.",
+    "myProgressNone": "Tes totaux s’affichent ici après ta première séance.",
+    "progressNone": "Aucun progrès pour l’instant.",
+    "boxLabel": "Ta box",
+    "boxNone": "Aucune",
+    "boxHint": "S’affiche sous ta bio, seulement pour les personnes qui te suivent.",
+    "showRank": "Ta ceinture ou ton niveau",
+    "showRankHint": "D’après l’échelle de grades de la box",
+    "progressStat": {
+      "totalWorkouts": "{count, plural, one {séance} other {séances}}",
+      "currentStreak": "{count, plural, one {jour d’affilée} other {jours d’affilée}}",
+      "longestStreak": "{count, plural, one {jour, plus longue série} other {jours, plus longue série}}",
+      "totalPrs": "{count, plural, one {PR} other {PR}}"
     }
   },
   "BoxPage": {

@@ -219,6 +219,50 @@ test.describe("social", () => {
     await expect(page.getByRole("tab", { name: "Badges" })).toHaveCount(0);
   });
 
+  test("a followed person's box · belt line and their Workouts and Progress tabs (ADR-554)", async ({ page }) => {
+    await stub(page);
+    await page.route("**/api/people/person-2", (route) =>
+      route.fulfill(
+        json(
+          personProfile({
+            ...nikos,
+            my_status: "active",
+            tabs: ["media", "posts", "workouts", "progress"],
+            box: { slug: "box-kypseli", name: "Box Kypseli", rank: { name: "Purple", color: "purple", style: "belt", stripes: 2 } },
+          }),
+        ),
+      ),
+    );
+    await page.route("**/api/people/person-2/workouts", (route) =>
+      route.fulfill(
+        json({
+          locked: false,
+          workouts: [{ id: "w-1", title: "Murph", completed_at: "2026-11-07T08:30:00Z", completed_tz: "Europe/Athens", elapsed_ms: 2_900_000 }],
+        }),
+      ),
+    );
+    await page.route("**/api/people/person-2/progress", (route) =>
+      route.fulfill(json({ locked: false, progress: { total_workouts: 42, current_streak: 1, longest_streak: 9, total_prs: 5 } })),
+    );
+    await page.goto("/people/person-2");
+
+    const line = page.getByTestId("profile-box");
+    await expect(line.getByRole("link", { name: "Box Kypseli" })).toHaveAttribute("href", "/b/box-kypseli");
+    await expect(line).toContainText("Purple · 2 stripes");
+
+    await page.getByRole("tab", { name: "Workouts" }).click();
+    await expect(page).toHaveURL(/\?tab=workouts$/);
+    await expect(page.getByTestId("profile-workouts")).toContainText("Murph");
+    await expect(page.getByTestId("profile-workouts")).toContainText("48:20");
+
+    await page.getByRole("tab", { name: "Progress" }).click();
+    const progress = page.getByTestId("profile-progress");
+    await expect(progress).toContainText("42");
+    await expect(progress).toContainText("workouts");
+    await expect(progress).toContainText("day in a row now");
+    await expect(progress).toContainText("days, longest streak");
+  });
+
   test("Εγώ is my own profile: handle, counts, Media first, the ☰, a tab added with + and a bio (ADR-554)", async ({ page }) => {
     await stub(page);
     const card: { bio: string | null; tabs: string[] } = { bio: null, tabs: ["media", "posts"] };
@@ -273,7 +317,8 @@ test.describe("social", () => {
     await page.getByTestId("profile-add-tab").click();
     const addTab = page.getByTestId("add-tab-dialog");
     await expect(addTab.getByRole("switch", { name: /^PRs/ })).not.toBeChecked();
-    await addTab.getByRole("switch", { name: /^Badges/ }).check();
+    // The switch follows the saved card, so it turns on once the PUT answers.
+    await addTab.getByRole("switch", { name: /^Badges/ }).click();
     await expect.poll(() => cardPuts).toEqual([{ tabs: ["badges"] }]);
     await expect(addTab.getByRole("switch", { name: /^Badges/ })).toBeChecked();
     await page.keyboard.press("Escape");

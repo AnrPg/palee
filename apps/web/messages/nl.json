@@ -6574,7 +6574,9 @@
       "posts": "Berichten",
       "media": "Media",
       "prs": "PR's",
-      "badges": "Badges"
+      "badges": "Badges",
+      "workouts": "Trainingen",
+      "progress": "Voortgang"
     },
     "personPostsEmpty": "Nog geen berichten.",
     "mediaEmpty": "Nog geen foto's of video's.",
@@ -6675,7 +6677,26 @@
     "badgesNone": "Nog geen badges.",
     "addTabHints": {
       "prs": "De PR's die je je volgers laat zien",
-      "badges": "Je badges, voor wie jou volgt"
+      "badges": "Je badges, voor wie jou volgt",
+      "workouts": "Je laatste trainingen, zonder notities, voor wie je volgt",
+      "progress": "Je totalen (trainingen, reeksen, PR's), voor wie je volgt"
+    },
+    "workoutUntitled": "Training",
+    "workoutLine": "{day} · {duration}",
+    "myWorkoutsNone": "Nog geen afgeronde trainingen om te tonen. Wat je op „Alleen ik” houdt, staat hier nooit.",
+    "workoutsNone": "Nog geen trainingen.",
+    "myProgressNone": "Je totalen staan hier na je eerste training.",
+    "progressNone": "Nog geen voortgang.",
+    "boxLabel": "Je box",
+    "boxNone": "Geen",
+    "boxHint": "Staat onder je bio, alleen voor wie je volgt.",
+    "showRank": "Je band of niveau",
+    "showRankHint": "Uit de gradenladder van de box",
+    "progressStat": {
+      "totalWorkouts": "{count, plural, one {training} other {trainingen}}",
+      "currentStreak": "{count, plural, one {dag op rij} other {dagen op rij}}",
+      "longestStreak": "{count, plural, one {dag, langste reeks} other {dagen, langste reeks}}",
+      "totalPrs": "{count, plural, one {PR} other {PR's}}"
     }
   },
   "BoxPage": {
