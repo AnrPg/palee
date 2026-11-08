@@ -33,7 +33,9 @@ export function useBoxSales(slug: string | null | undefined) {
     staleTime: FRESHNESS.reference,
     retry: false,
   });
-  const data = query.data;
+  // Read the answer defensively: an answer without a list (an old API, a
+  // stub) shows no packages instead of breaking the page.
+  const data = query.data ? { ...query.data, packages: Array.isArray(query.data.packages) ? query.data.packages : [] } : undefined;
   const packages = data?.online_payments ? buyableHere(data.packages, nativePlatform()) : [];
   return {
     packages,
@@ -41,7 +43,7 @@ export function useBoxSales(slug: string | null | undefined) {
     deskPackages: deskPackages(data),
     provider: data?.provider ?? null,
     /** How many packages the box shows this person (none: ask the box). */
-    shownCount: data?.packages?.length ?? null,
+    shownCount: Array.isArray(query.data?.packages) ? query.data.packages.length : null,
     /** The box shows this person only their own packages (ADR-553). */
     ownOnly: Boolean(data?.own_only),
     /** The names of the person's own packages among those shown. */

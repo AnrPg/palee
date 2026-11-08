@@ -18,6 +18,16 @@ export function packageAudience(pkg: { audience?: unknown } | null | undefined):
   return value === "all" || value === "own" || value === "none" ? value : null;
 }
 
+/** The settings as the page uses them, whatever the answer held: a known audience, a list of exceptions with a person. */
+export function normalizeSettings(data: unknown): PackageAudienceSettings {
+  const raw = (data && typeof data === "object" ? data : {}) as Partial<PackageAudienceSettings>;
+  const audience = BOX_AUDIENCES.includes(raw.audience as BoxAudience) ? (raw.audience as BoxAudience) : "all";
+  const exceptions = (Array.isArray(raw.exceptions) ? raw.exceptions : [])
+    .filter((row) => row && typeof row.id === "string" && (row.effect === "show" || row.effect === "hide"))
+    .map((row) => ({ ...row, person: row.person ?? { id: row.id, nickname: null, handle: null, avatar_url: null } }));
+  return { audience, exceptions } as PackageAudienceSettings;
+}
+
 /** The person exceptions of one package, or of the whole box with `null`, «show» first. */
 export function exceptionsFor(settings: PackageAudienceSettings | undefined, packageId: string | null): PackageAudienceException[] {
   const rows = (settings?.exceptions ?? []).filter((row) => (row.package_id ?? null) === packageId);
@@ -34,12 +44,12 @@ export type PersonOption = { id: string; label: string; handle: string | null; m
 export function personOptions(members: AthleteOption[], people: PeopleSearchPerson[], taken: Iterable<string>, limit = 8): PersonOption[] {
   const skip = new Set(taken);
   const out: PersonOption[] = [];
-  for (const member of members) {
+  for (const member of Array.isArray(members) ? members : []) {
     if (skip.has(member.id)) continue;
     skip.add(member.id);
     out.push({ id: member.id, label: member.nickname, handle: null, member: true });
   }
-  for (const person of people) {
+  for (const person of Array.isArray(people) ? people : []) {
     if (skip.has(person.id)) continue;
     skip.add(person.id);
     out.push({ id: person.id, label: person.nickname || (person.handle ? `@${person.handle}` : ""), handle: person.handle ?? null, member: false });
@@ -48,6 +58,7 @@ export function personOptions(members: AthleteOption[], people: PeopleSearchPers
 }
 
 /** How a person in the list is named: their name, else their @handle. */
-export function personName(person: PackageAudienceException["person"]): string | null {
+export function personName(person: PackageAudienceException["person"] | null | undefined): string | null {
+  if (!person) return null;
   return person.nickname || (person.handle ? `@${person.handle}` : null);
 }

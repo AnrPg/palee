@@ -27,7 +27,7 @@ import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { localizeError } from "@/i18n/presentation";
 import { useUiTranslations } from "@/i18n/ui";
 
-import { BOX_AUDIENCES, PACKAGE_AUDIENCES, exceptionsFor, packageAudience, personName, personOptions, type PersonOption } from "./package-audience";
+import { BOX_AUDIENCES, PACKAGE_AUDIENCES, exceptionsFor, normalizeSettings, packageAudience, personName, personOptions, type PersonOption } from "./package-audience";
 
 /**
  * ADR-553 (mockup Q1 option A, ANR 2026-11-08): «Ποιος βλέπει τα πακέτα
@@ -38,7 +38,7 @@ import { BOX_AUDIENCES, PACKAGE_AUDIENCES, exceptionsFor, packageAudience, perso
  */
 
 function useAudienceSettings(token: string) {
-  return useQuery({ queryKey: PACKAGE_AUDIENCE_KEY, queryFn: () => fetchPackageAudience(token), enabled: Boolean(token) });
+  return useQuery({ queryKey: PACKAGE_AUDIENCE_KEY, queryFn: () => fetchPackageAudience(token), enabled: Boolean(token), select: normalizeSettings });
 }
 
 /** The row above the package list, and its sheet. */

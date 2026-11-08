@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { PackageAudienceSettings } from "@/api/package-audience";
 
-import { exceptionsFor, packageAudience, personName, personOptions } from "./package-audience";
+import { exceptionsFor, normalizeSettings, packageAudience, personName, personOptions } from "./package-audience";
 
 const person = (id: string, nickname: string | null = id, handle: string | null = null) => ({ id, nickname, handle, avatar_url: null });
 
@@ -52,5 +52,10 @@ describe("package audience (ADR-553)", () => {
     expect(personName(person("x", "Μαρία"))).toBe("Μαρία");
     expect(personName(person("x", null, "maria"))).toBe("@maria");
     expect(personName(person("x", null, null))).toBeNull();
+  });
+  it("reads an empty or odd answer as «Όλα» with no exceptions", () => {
+    expect(normalizeSettings({})).toEqual({ audience: "all", exceptions: [] });
+    expect(normalizeSettings({ audience: "x", exceptions: "nope" })).toEqual({ audience: "all", exceptions: [] });
+    expect(personOptions({} as never, undefined as never, [])).toEqual([]);
   });
 });
