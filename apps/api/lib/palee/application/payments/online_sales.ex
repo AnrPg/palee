@@ -17,19 +17,26 @@ defmodule Palee.Application.Payments.OnlineSales do
   require Logger
 
   alias Palee.Application.{PublicBox, PublicURL, SubmitBooking}
-  alias Palee.Application.Payments.CardSurcharges
+  alias Palee.Application.Payments.{CardSurcharges, PackageAudience}
   alias Palee.Application.Shop.Checkout
   alias Palee.{Finance, Fiscal, Identity, Organizations, Payments, Shop}
   alias Palee.Payments.Domain.{Consent, PackageSale, Withdrawal}
 
   # ── Packages ────────────────────────────────────────────────────────────
 
-  @doc "The packages a published box sells online, for its public page."
-  def public_packages(slug) do
+  @doc """
+  The packages a published box sells online that `user_id` sees (nil: not
+  signed in), for its public page and website (ADR-553). `own_only`: only
+  the viewer's own packages are shown, others are kept for their holders.
+  """
+  def public_packages(slug, user_id \\ nil) do
     with {:ok, _box, context} <- PublicBox.resolve(slug) do
+      view = PackageAudience.view(context, user_id)
+
       {:ok,
        %{
-         packages: context |> listed_packages() |> Enum.map(&public_package/1),
+         packages: Enum.map(view.packages, &(&1 |> public_package() |> held(view.held))),
+         own_only: view.own_only,
          online_payments: Payments.available?(context, "packages"),
          provider: Payments.provider(context),
          withdrawal_days: if(withdrawal_applies?(context), do: Withdrawal.days())
@@ -139,6 +146,9 @@ defmodule Palee.Application.Payments.OnlineSales do
     ])
     |> Map.put(:services, Map.take(package[:fields] || %{}, @service_fields))
   end
+
+  # ADR-553: the viewer's own package («Ανανέωση», «Το πακέτο συνδρομής σου είναι X»).
+  defp held(package, held_ids), do: Map.put(package, :held, package.id in held_ids)
 
   @doc """
   What buying `package_id` costs and the texts the member agrees to.
@@ -256,7 +266,9 @@ defmodule Palee.Application.Payments.OnlineSales do
       {:ok, id} ->
         case Finance.get_package(context, id) do
           %{active: true, sold_online: true} = package when package.base_price_cents > 0 ->
-            {:ok, package}
+            # ADR-553: what the person does not see they cannot buy.
+            with :ok <- PackageAudience.check(context, package.id, Map.get(context, :user_id)),
+                 do: {:ok, package}
 
           %{} ->
             {:error, :package_not_for_sale}

@@ -506,6 +506,9 @@ defmodule PaleeWeb.FallbackController do
     invoice_not_payable: {:conflict, "This invoice has nothing left to pay"},
     # ADR-248: online sales and withdrawal.
     package_not_for_sale: {:conflict, "This package is not sold online"},
+    # ADR-553: who sees the packages.
+    invalid_audience: {:unprocessable_entity, "Choose who sees the packages"},
+    invalid_effect: {:unprocessable_entity, "Choose to show or to hide"},
     start_now_consent_required:
       {:unprocessable_entity, "Ask for the package to start now to buy it online"},
     withdrawal_period_over: {:conflict, "The 14 days to withdraw have passed"},

@@ -52,6 +52,21 @@ defmodule PaleeWeb.PublicBoxController do
     with {:ok, packages} <- OnlineSales.public_packages(slug), do: json(conn, packages)
   end
 
+  operation(:my_packages,
+    summary: "The packages a published box shows the signed-in person (ADR-553)",
+    parameters: [@slug],
+    responses: [
+      ok: {"Packages", "application/json", PaleeWeb.Schemas.Payments.public_packages()},
+      not_found: {"No published box with this slug", "application/json", %Schema{type: :object}}
+    ]
+  )
+
+  def my_packages(conn, %{slug: slug}) do
+    with {:ok, packages} <-
+           OnlineSales.public_packages(slug, conn.assigns.user_context.user_id),
+         do: json(conn, packages)
+  end
+
   operation(:schedule,
     summary: "A published box's classes in a window (read-only; signed in)",
     parameters: [

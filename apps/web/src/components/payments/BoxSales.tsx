@@ -4,7 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-import { fetchPublicPackages, publicPackagesKey } from "@/api/my-payments";
+import { fetchMyPackages, fetchPublicPackages, myPackagesKey, publicPackagesKey } from "@/api/my-payments";
+import { useSession } from "@/components/session-provider";
 import { nativePlatform } from "@/lib/platform";
 import { FRESHNESS } from "@/lib/query-policy";
 
@@ -21,10 +22,14 @@ import { DeskRenewDialog } from "./DeskPayment";
  * front desk (no store rule applies: nothing is paid in the app).
  */
 export function useBoxSales(slug: string | null | undefined) {
+  // ADR-553: the box chooses who sees its packages; signed in, the API
+  // answers for this person (their own, people always or never shown).
+  const { status } = useSession();
+  const signedIn = status === "authenticated";
   const query = useQuery({
-    queryKey: publicPackagesKey(slug ?? "none"),
-    enabled: Boolean(slug),
-    queryFn: () => fetchPublicPackages(slug!),
+    queryKey: signedIn ? myPackagesKey(slug ?? "none") : publicPackagesKey(slug ?? "none"),
+    enabled: Boolean(slug) && status !== "loading",
+    queryFn: () => (signedIn ? fetchMyPackages(slug!) : fetchPublicPackages(slug!)),
     staleTime: FRESHNESS.reference,
     retry: false,
   });
@@ -35,7 +40,13 @@ export function useBoxSales(slug: string | null | undefined) {
     desk: deskMode(data),
     deskPackages: deskPackages(data),
     provider: data?.provider ?? null,
-    isLoading: query.isLoading,
+    /** How many packages the box shows this person (none: ask the box). */
+    shownCount: data?.packages.length ?? null,
+    /** The box shows this person only their own packages (ADR-553). */
+    ownOnly: Boolean(data?.own_only),
+    /** The names of the person's own packages among those shown. */
+    heldNames: (data?.packages ?? []).filter((item) => item.held).map((item) => item.name),
+    isLoading: query.isLoading || status === "loading",
   };
 }
 

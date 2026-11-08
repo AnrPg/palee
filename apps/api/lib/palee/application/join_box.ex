@@ -15,7 +15,7 @@ defmodule Palee.Application.JoinBox do
   """
 
   alias Palee.Application.{JoinOrganizationByLink, PublicBox}
-  alias Palee.Application.Payments.OnlineSales
+  alias Palee.Application.Payments.PackageAudience
   alias Palee.{Identity, Notifications, Organizations}
   alias Palee.Organizations.Domain.JoinRequestPolicy
   alias Palee.Organizations.JoinRequestStore
@@ -25,15 +25,16 @@ defmodule Palee.Application.JoinBox do
   @doc "Admits the person to buy `package_id`, which the box must list to everyone."
   def for_package(%{id: user_id} = user, slug, package_id) do
     with {:ok, _box, scope} <- PublicBox.resolve(slug),
-         :ok <- listed(scope, package_id),
+         :ok <- listed(scope, package_id, user_id),
          {:ok, result} <- Organizations.admit_member(scope.organization_id, user_id, :purchase),
          {:ok, _user} <- JoinOrganizationByLink.align_role(user, result) do
       {:ok, result}
     end
   end
 
-  defp listed(scope, package_id) do
-    if Enum.any?(OnlineSales.listed_packages(scope), &(&1.id == package_id)),
+  # ADR-553: listed, and shown to this person.
+  defp listed(scope, package_id, user_id) do
+    if Enum.any?(PackageAudience.view(scope, user_id).packages, &(&1.id == package_id)),
       do: :ok,
       else: {:error, :package_not_for_sale}
   end

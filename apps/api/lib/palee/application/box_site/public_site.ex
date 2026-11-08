@@ -24,6 +24,7 @@ defmodule Palee.Application.BoxSite.PublicSite do
 
   alias Palee.Application.{PublicBox, PublicURL}
   alias Palee.Application.BoxSite.{SiteOutbox, SiteProgrammes, SiteTranslations}
+  alias Palee.Application.Payments.PackageAudience
   alias Palee.Application.ReviewAsks.BoxReviews
   alias Palee.{BoxSite, Community, Organizations, Pantheon, ReviewAsks, Scheduling, Workouts}
   alias Palee.Scheduling.DayWorkoutStore
@@ -86,7 +87,9 @@ defmodule Palee.Application.BoxSite.PublicSite do
       reviews?: not is_nil(place_id) or reviews.palee.count > 0,
       photos?: photos != [],
       stats?: stats_shown?(stats),
-      programmes?: programmes != []
+      programmes?: programmes != [],
+      # ADR-553: the website's «Πακέτα» follows who sees the packages.
+      packages?: PackageAudience.view(context, nil).packages != []
     }
 
     sections = BoxSite.visible_sections(settings.section_order, hidden, facts)

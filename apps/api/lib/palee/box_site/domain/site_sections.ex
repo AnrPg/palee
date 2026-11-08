@@ -56,7 +56,7 @@ defmodule Palee.BoxSite.Domain.SiteSections do
   def visible(order, hidden, facts) do
     order
     |> normalize_order()
-    |> Enum.reject(&(&1 in hidden))
+    |> Enum.reject(&(&1 in hidden and &1 != "packages"))
     |> Enum.filter(&available?(&1, facts))
   end
 
@@ -67,6 +67,9 @@ defmodule Palee.BoxSite.Domain.SiteSections do
   defp available?("photos", facts), do: Map.get(facts, :photos?, false)
   defp available?("stats", facts), do: Map.get(facts, :stats?, false)
   defp available?("programmes", facts), do: Map.get(facts, :programmes?, false)
+  # ADR-553: shown when someone not signed in sees a package; the switch is
+  # the box's «Ποιος βλέπει τα πακέτα», so the website never hides it itself.
+  defp available?("packages", facts), do: Map.get(facts, :packages?, true)
 
   defp available?(form, facts) when form in ["trial_form", "contact_form"],
     do: Map.get(facts, :forms_enabled, false)

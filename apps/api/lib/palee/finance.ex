@@ -101,6 +101,54 @@ defmodule Palee.Finance do
   def open_packages_online(context, ids),
     do: scoped(context, fn -> FinanceStore.open_packages_online(ids) end)
 
+  # ── ADR-553: who sees the subscription packages ─────────────────────────
+
+  alias Palee.Finance.Domain.PackageAudience
+  alias Palee.Finance.PackageAudienceStore
+
+  @doc "The box's package audience policy (`PackageAudience`) and the raw exceptions."
+  def package_audience(context) do
+    scoped(context, fn ->
+      stored = PackageAudienceStore.load()
+
+      %{
+        policy: PackageAudience.policy(stored.box, stored.packages, stored.exceptions),
+        exceptions: stored.exceptions
+      }
+    end)
+  end
+
+  @doc "The viewer for `user_id` at the box (nil: not signed in)."
+  def package_viewer(_context, nil), do: PackageAudience.anonymous()
+
+  def package_viewer(context, user_id) do
+    scoped(context, fn ->
+      %{subscriptions: subscriptions, member?: member?} = PackageAudienceStore.holdings(user_id)
+      PackageAudience.viewer(user_id, PackageAudience.holdings(subscriptions, member?))
+    end)
+  end
+
+  def set_box_package_audience(context, audience) do
+    if PackageAudience.valid?(audience),
+      do: scoped(context, fn -> PackageAudienceStore.set_box(audience) end),
+      else: {:error, :invalid_audience}
+  end
+
+  def set_package_audience(context, package_id, audience) do
+    if PackageAudience.valid?(audience, true),
+      do: scoped(context, fn -> PackageAudienceStore.set_package(package_id, audience) end),
+      else: {:error, :invalid_audience}
+  end
+
+  def put_package_audience_exception(context, params) do
+    if params[:effect] in PackageAudience.effects(),
+      do: scoped(context, fn -> PackageAudienceStore.put_exception(params) end),
+      else: {:error, :invalid_effect}
+  end
+
+  def delete_package_audience_exception(context, id),
+    do: scoped(context, fn -> PackageAudienceStore.delete_exception(id) end)
+
   defdelegate upsert_membership(user_id, params), to: UpsertMembership, as: :call
 
   def upsert_membership(context, user_id, params),

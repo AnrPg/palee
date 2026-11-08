@@ -27,8 +27,17 @@ defmodule Palee.Finance.MembershipPackage do
     field :sold_online, :boolean, default: false
     # ADR-271: when the owner switched it on or off (Palee never overrides it).
     field :sold_online_chosen_at, :utc_datetime_usec
+    # ADR-553: who sees it (all, own, none); nil follows the box.
+    field :audience, :string
 
     timestamps(type: :utc_datetime_usec)
+  end
+
+  @doc "ADR-553: who sees the package; nil follows the box."
+  def audience_changeset(package, params) do
+    package
+    |> cast(params, [:audience])
+    |> validate_inclusion(:audience, Palee.Finance.Domain.PackageAudience.audiences())
   end
 
   def changeset(package \\ %__MODULE__{}, params) do

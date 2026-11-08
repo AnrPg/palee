@@ -172,7 +172,8 @@ defmodule Palee.Application.PublicBox do
   # else a message to the box.
   defp joining(box, context) do
     %{
-      packages: Palee.Application.Payments.OnlineSales.listed_packages(context) != [],
+      # ADR-553: what someone not signed in sees; the page asks again when signed in.
+      packages: Palee.Application.Payments.PackageAudience.view(context, nil).packages != [],
       join_link:
         match?({:ok, _}, Organizations.inspect_join_link(%{slug: box.slug, role: "member"}))
     }

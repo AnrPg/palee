@@ -35,6 +35,8 @@ defmodule Palee.Finance.Domain.TenantDataPolicy do
               # ADR-291: desk-pay requests reference packages, subscriptions
               # and payments, so they go before all three.
               %{table: "finance_package_requests"},
+              # ADR-553: people shown or not shown packages; they reference packages.
+              %{table: "finance_package_audience_exceptions"},
               # ADR-098 corporate billing: payments -> invoices -> clients;
               # subscriptions reference corporate clients, so clients follow them.
               %{table: "finance_corporate_payments"},

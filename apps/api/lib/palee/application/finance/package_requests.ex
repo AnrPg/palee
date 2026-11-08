@@ -10,6 +10,7 @@ defmodule Palee.Application.Finance.PackageRequests do
   Prices are the ones the person was shown when asking.
   """
 
+  alias Palee.Application.Payments.PackageAudience
   alias Palee.Application.ReceiveFinancePayment
   alias Palee.Finance
   alias Palee.Finance.Domain.PackageRequestPolicy
@@ -54,7 +55,9 @@ defmodule Palee.Application.Finance.PackageRequests do
          true <- PackageRequestPolicy.requestable?(package) || {:error, :package_not_for_sale},
          true <-
            PackageSale.listed?(package, Payments.package_offer(context)) ||
-             {:error, :package_not_for_sale} do
+             {:error, :package_not_for_sale},
+         # ADR-553: what the person does not see they cannot ask for.
+         :ok <- PackageAudience.check(context, package.id, context.user_id) do
       {:ok, package}
     end
   end

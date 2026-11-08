@@ -491,6 +491,10 @@ defmodule PaleeWeb.Schemas.Payments do
           description:
             "The package's in-person services (ADR-256): the store apps sell only packages with one",
           additionalProperties: true
+        },
+        held: %Schema{
+          type: :boolean,
+          description: "ADR-553: the signed-in viewer holds it (only on the package lists)"
         }
       },
       required: [
@@ -510,6 +514,11 @@ defmodule PaleeWeb.Schemas.Payments do
       type: :object,
       properties: %{
         packages: %Schema{type: :array, items: public_package()},
+        own_only: %Schema{
+          type: :boolean,
+          description:
+            "ADR-553: the viewer sees only packages they hold; the box keeps others for their holders"
+        },
         online_payments: %Schema{type: :boolean},
         provider: %Schema{
           type: :string,
@@ -518,7 +527,7 @@ defmodule PaleeWeb.Schemas.Payments do
         },
         withdrawal_days: %{@int | nullable: true}
       },
-      required: [:online_payments, :packages, :provider, :withdrawal_days]
+      required: [:online_payments, :own_only, :packages, :provider, :withdrawal_days]
     }
   end
 

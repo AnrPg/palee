@@ -56,6 +56,7 @@ type Write = { method: string; path: string; body: unknown };
 
 async function stub(page: Page, writes: Write[]) {
   const packages = PACKAGES.map((pkg) => ({ ...pkg }));
+  let audience = "all";
   let notice: { count: number; opened_at: string } | null = { count: 2, opened_at: "2027-03-10T09:00:00Z" };
   const status = () => ({
     account: {
@@ -97,6 +98,10 @@ async function stub(page: Page, writes: Write[]) {
     if (path === "/api/admin/class-types") return json(route, { class_types: [] });
     if (path === "/api/admin/locations") return json(route, { locations: [] });
     if (path === "/api/staff/members") return json(route, { staff: [] });
+    if (path === "/api/admin/package-audience") {
+      if (method === "PUT") audience = (body as { audience: string }).audience;
+      return json(route, { audience, exceptions: [] });
+    }
     if (path === "/api/admin/finance/package-catalog") return json(route, { version: 2, implemented_phases: [], modules: [], sections: [], fields: [], types: [] });
     if (path === "/api/admin/finance/packages") return json(route, { packages });
     const one = path.match(/^\/api\/admin\/finance\/packages\/([^/]+)$/);
@@ -165,4 +170,18 @@ test("each subscription package says whether it is sold online, and the switch l
   await page.goto("/admin/finance?tab=packages&package=p-trial");
   await page.getByTestId("package-advanced").locator("summary").click();
   await expect(page.getByTestId("sold-online-card").getByRole("switch", { name: "Πωλείται online" })).toBeDisabled();
+});
+
+test("ADR-553: «Ποιος βλέπει τα πακέτα συνδρομής» is one choice above the packages, for Palee and the website", async ({ page }) => {
+  const writes: Write[] = [];
+  await stub(page, writes);
+  await page.goto("/admin/finance?tab=packages");
+
+  const row = page.getByTestId("package-audience-row");
+  await expect(row).toContainText("Ποιος βλέπει τα πακέτα συνδρομής");
+  await expect(page.getByTestId("package-audience-summary")).toHaveText("Όλοι");
+  await row.click();
+  const sheet = page.getByTestId("package-audience-sheet");
+  await sheet.getByRole("radio", { name: /Μόνο το δικό τους/ }).click();
+  await expect.poll(() => writes.find((w) => w.method === "PUT" && w.path === "/api/admin/package-audience")?.body).toEqual({ audience: "own" });
 });

@@ -219,7 +219,7 @@ test("the member sees the card surcharge as a line in the total before paying", 
     if (path === "/api/auth/me") return json(route, MEMBER);
     if (path === "/api/memberships") return json(route, [MEMBER_MEMBERSHIP]);
     if (path.startsWith("/api/notifications")) return json(route, { notifications: [], unread_count: 0 });
-    if (path === "/api/public/boxes/kypseli/packages") return json(route, { packages: [UNLIMITED], online_payments: true, provider: "viva", withdrawal_days: 14 });
+    if (path === "/api/public/boxes/kypseli/packages" || path === "/api/boxes/kypseli/packages") return json(route, { packages: [UNLIMITED], online_payments: true, provider: "viva", withdrawal_days: 14, own_only: false });
     if (path === "/api/me/packages/unl/purchase-terms") {
       return json(route, {
         package: UNLIMITED,

@@ -8,6 +8,7 @@ import { useState, type ReactNode } from "react";
 import type { PublicPackage } from "@/api/my-payments";
 import type { PublicBoxPage } from "@/api/social";
 import { useSession } from "@/components/session-provider";
+import { boxChatHref } from "@/components/trials/box-chat-links";
 import { Dialog } from "@/components/ui/Dialog";
 import { useUiLocale } from "@/i18n/use-ui-locale";
 import { useOrganizationMemberships } from "@/lib/organization-slug";
@@ -37,6 +38,7 @@ export function SalesPage({ page, line }: { page: PublicBoxPage; line: string })
   const searchParams = useSearchParams();
   const slug = page.box.slug;
   const sales = useBoxSales(slug);
+  const { status } = useSession();
   const desk = sales.desk;
   const shown = desk ? sales.deskPackages : sales.packages;
   const { trial, top, more } = salesPageSections(shown);
@@ -57,6 +59,14 @@ export function SalesPage({ page, line }: { page: PublicBoxPage; line: string })
   }
 
   const provider = providerLabel(sales.provider);
+  // ADR-553: the box shows this person only their own package(s): one quiet
+  // line under the button, no button of its own (ANR 2026-11-08).
+  const ownLine = sales.ownOnly && sales.heldNames.length > 0 ? (
+    <p className="text-center text-xs" style={{ color: "var(--dim)" }} data-testid="sales-own-only">
+      {t("ownOnly", { count: sales.heldNames.length, packages: listNames(locale, sales.heldNames) })}
+    </p>
+  ) : null;
+  const ownInCard = ownLine !== null && top.length === 1 && more.length === 0;
 
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-4 pb-10 pt-6" data-testid="sales-page">
@@ -123,12 +133,15 @@ export function SalesPage({ page, line }: { page: PublicBoxPage; line: string })
               {desk ? (
                 <WantButton primary={index === 0} onClick={() => open(pkg)} testId={`sales-want-${pkg.id}`} />
               ) : (
-                <BuyButton primary={index === 0} onClick={() => open(pkg)} />
+                <BuyButton primary={index === 0} renew={pkg.held && sales.ownOnly} onClick={() => open(pkg)} />
               )}
+              {ownInCard ? ownLine : null}
             </article>
           ))}
         </div>
       ) : null}
+
+      {ownInCard ? null : ownLine}
 
       {more.length > 0 ? (
         <section className="rounded-3xl p-4" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
@@ -173,7 +186,20 @@ export function SalesPage({ page, line }: { page: PublicBoxPage; line: string })
         <p className="text-center text-xs" style={{ color: "var(--dim)" }} data-testid="sales-desk-note">{tDesk("pageNote")}</p>
       ) : null}
 
-      {!sales.isLoading && shown.length === 0 ? (
+      {!sales.isLoading && sales.shownCount === 0 && status === "authenticated" ? (
+        // ADR-553: the box shows this person no package; asking it is the way.
+        <section className="flex flex-col gap-3 rounded-3xl p-4" style={{ background: "var(--panel)", border: "1px solid var(--border)" }} data-testid="sales-ask-box">
+          <p className="text-sm" style={{ color: "var(--text-soft)" }}>{t("askBoxForPackages")}</p>
+          <Link
+            href={boxChatHref(slug)}
+            className="flex min-h-11 w-fit items-center justify-center rounded-2xl px-4 text-sm font-bold"
+            style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}
+            data-testid="sales-contact-box"
+          >
+            {t("contactBox")}
+          </Link>
+        </section>
+      ) : !sales.isLoading && shown.length === 0 ? (
         <p className="text-sm" style={{ color: "var(--text-soft)" }}>{desk ? tDesk("nothing") : t("nothingOnline")}</p>
       ) : null}
 
@@ -197,7 +223,7 @@ export function SalesPage({ page, line }: { page: PublicBoxPage; line: string })
   );
 }
 
-function BuyButton({ onClick, primary, small }: { onClick: () => void; primary?: boolean; small?: boolean }) {
+function BuyButton({ onClick, primary, small, renew }: { onClick: () => void; primary?: boolean; small?: boolean; renew?: boolean }) {
   const t = useTranslations("Pay");
   return (
     <button
@@ -210,9 +236,18 @@ function BuyButton({ onClick, primary, small }: { onClick: () => void; primary?:
           : { background: "var(--panel-raised)", color: "var(--text)", border: "1px solid var(--border)" }
       }
     >
-      {t("buy")}
+      {renew ? t("renew") : t("buy")}
     </button>
   );
+}
+
+/** «12 επισκέψεις και Unlimited», in the reader's language. */
+function listNames(locale: string, names: string[]) {
+  try {
+    return new Intl.ListFormat(locale, { style: "long", type: "conjunction" }).format(names);
+  } catch {
+    return names.join(", ");
+  }
 }
 
 /** «Αγορά»: sign in or sign up first, then the app's «Πριν πληρώσεις». */

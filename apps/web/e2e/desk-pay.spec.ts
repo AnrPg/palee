@@ -51,7 +51,7 @@ const PACKAGES = [
   { id: "unl", name: "Unlimited", description: "Απεριόριστες επισκέψεις", package_type: "membership", billing_period: "monthly", base_price_cents: 7500, currency: "EUR", services },
   { id: "v12", name: "12 επισκέψεις", description: "Ισχύει 3 μήνες", package_type: "visit_pack", billing_period: "one_off", base_price_cents: 9000, currency: "EUR", services },
 ];
-const DESK_SALES = { packages: PACKAGES, online_payments: false, provider: null, withdrawal_days: 14 };
+const DESK_SALES = { packages: PACKAGES, online_payments: false, provider: null, withdrawal_days: 14, own_only: false };
 
 const HOLD_UNTIL = "2026-11-14";
 const REQUEST = {
@@ -79,7 +79,7 @@ async function stubMember(page: Page, writes: Write[], requests: Array<typeof RE
     if (path === "/api/auth/me") return json(route, MEMBER);
     if (path === "/api/memberships") return json(route, [MEMBER_MEMBERSHIP]);
     if (path.startsWith("/api/notifications")) return json(route, { notifications: [], unread_count: 0 });
-    if (path === "/api/public/boxes/kypseli/packages") return json(route, DESK_SALES);
+    if (path === "/api/public/boxes/kypseli/packages" || path === "/api/boxes/kypseli/packages") return json(route, DESK_SALES);
     if (path === "/api/me/packages/unl/request") {
       requests.splice(0, requests.length, REQUEST);
       return json(route, { request: REQUEST, created: true }, 201);

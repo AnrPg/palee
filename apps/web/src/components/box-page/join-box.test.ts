@@ -18,4 +18,9 @@ describe("joinBoxTarget", () => {
     expect(joinBoxTarget(none, true)).toEqual({ kind: "ask" });
     expect(joinBoxTarget(none, false)).toEqual({ kind: "link", href: `/login?next=${encodeURIComponent("/b/kypseli?join=1")}` });
   });
+  it("ADR-553: signed in, follows the packages this person sees", () => {
+    const page = { box, joining: { packages: true, join_link: true } };
+    expect(joinBoxTarget(page, true, 0)).toEqual({ kind: "link", href: "/join/kypseli" });
+    expect(joinBoxTarget({ box, joining: { packages: false, join_link: false } }, true, 2)).toEqual({ kind: "link", href: "/b/kypseli/packages" });
+  });
 });

@@ -21,6 +21,8 @@ defmodule Palee.Finance.FinanceSetting do
     field :entitlement_timezone, :string, default: "Europe/Athens"
     field :document_mode, :string, default: "invoice"
     field :package_modules, {:array, :string}, default: ["group_classes", "online_coaching"]
+    # ADR-553: who sees the subscription packages (all, own, none).
+    field :package_audience, :string, default: "all"
 
     timestamps(type: :utc_datetime_usec)
   end
@@ -36,7 +38,8 @@ defmodule Palee.Finance.FinanceSetting do
       :entitlement_enforcement_mode,
       :entitlement_timezone,
       :document_mode,
-      :package_modules
+      :package_modules,
+      :package_audience
     ])
     |> validate_required([
       :payment_reminder_interval_days,
@@ -61,6 +64,7 @@ defmodule Palee.Finance.FinanceSetting do
     |> validate_length(:entitlement_timezone, min: 1, max: 100)
     |> validate_inclusion(:document_mode, ["invoice", "receipt"])
     |> validate_package_modules()
+    |> validate_inclusion(:package_audience, Palee.Finance.Domain.PackageAudience.audiences())
   end
 
   defp validate_package_modules(changeset) do

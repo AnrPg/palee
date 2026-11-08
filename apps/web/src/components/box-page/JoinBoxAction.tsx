@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { askToJoin, cancelJoinRequest, fetchMyJoinRequest, myJoinRequestKey, type MyJoinRequest } from "@/api/join-requests";
 import type { PublicBoxPage } from "@/api/social";
 import { clientErrorMessage } from "@/components/client/errors";
+import { useBoxSales } from "@/components/payments/BoxSales";
 import { useSession } from "@/components/session-provider";
 import { boxChatHref } from "@/components/trials/box-chat-links";
 import { Dialog } from "@/components/ui/Dialog";
@@ -22,7 +23,8 @@ const MAIN = "flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl
 /** «Γίνε μέλος box» (ADR-552): a link, or «Ζήτα να γίνεις μέλος» with its own sheet. */
 export function JoinBoxAction({ page, signedIn }: { page: PublicBoxPage; signedIn: boolean }) {
   const t = useTranslations("BoxPage");
-  const target = joinBoxTarget(page, signedIn);
+  const sales = useBoxSales(signedIn ? page.box.slug : null);
+  const target = joinBoxTarget(page, signedIn, signedIn ? sales.shownCount : null);
   if (target.kind === "link") {
     return (
       <Link href={target.href} className={MAIN} style={SPARK_GO_STYLE} data-testid="box-page-join">

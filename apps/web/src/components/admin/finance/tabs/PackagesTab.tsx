@@ -28,6 +28,7 @@ import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { SoldOnlineBadge } from "@/components/admin/finance/packages/SoldOnlineBadge";
+import { BoxAudienceRow, PackageAudienceBadge } from "@/components/admin/finance/packages/PackageAudience";
 import { salesPageHref, soldOnlineCount } from "@/components/admin/finance/packages/sold-online";
 import { useOrganizationSlug } from "@/lib/organization-slug";
 
@@ -98,6 +99,9 @@ export function PackagesTab({ locationIds }: { locationIds?: string } = {}) {
           {i18n("newPackage909820b")}
         </button>
       </div>
+
+      {/* ADR-553: who sees the packages, on the box's Palee page and website alike. */}
+      <BoxAudienceRow token={token} />
 
       {/* Package list */}
       <div className="overflow-hidden rounded-[2rem]" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
@@ -212,6 +216,7 @@ function PackageRows({
       <div className="flex items-center gap-4">
         <BranchCoverageBadge target={packageCoverage(pkg)} locations={locations} />
         <SoldOnlineBadge pkg={pkg} />
+        <PackageAudienceBadge pkg={pkg} />
         <span className="text-sm font-semibold" style={{ color: "var(--text)" }}>
           {money(uiLocale, pkg.base_price_cents)}
         </span>

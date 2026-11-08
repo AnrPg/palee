@@ -142,7 +142,9 @@ describe("WebsiteSettings (ADR-530)", () => {
     expect(body.hidden_sections).not.toContain("trial_form");
     expect(body.hidden_sections).toEqual(expect.arrayContaining(["photos", "stats", "events", "coaches", "faq", "contact_form"]));
     const sections = screen.getByTestId("website-sections");
-    expect(within(sections).getByRole("switch", { name: "Πακέτα" }).getAttribute("aria-checked")).toBe("true");
+    // ADR-553: «Πακέτα» is no switch here; it follows «Ποιος βλέπει τα πακέτα συνδρομής».
+    expect(within(sections).queryByRole("switch", { name: "Πακέτα" })).toBeNull();
+    expect(within(sections).getByTestId("website-packages-audience")).toHaveTextContent("Ποιος βλέπει τα πακέτα");
     expect(within(sections).getByRole("switch", { name: "Coaches" }).getAttribute("aria-checked")).toBe("false");
     expect(await screen.findByText("Αλλαγές που δεν δημοσιεύτηκαν: ενότητες.")).toBeTruthy();
   });

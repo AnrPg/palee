@@ -24,6 +24,8 @@ defmodule PaleeWeb.RouteCapabilities do
   @controller_defaults %{
     # ADR-552: answering «Ζήτα να γίνεις μέλος» admits box members.
     W.AdminJoinRequestController => [:manage_memberships],
+    # ADR-553: who sees the packages is part of managing them.
+    W.AdminPackageAudienceController => [:manage_packages],
     W.AdminWorkoutController => [:manage_workouts],
     # ADR-377: belts and levels; promotions follow the coaching scope (ADR-100).
     # ADR-400 follow-up: ladders are the owner's, admins' and head coaches'
@@ -493,6 +495,7 @@ defmodule PaleeWeb.RouteCapabilities do
     {W.AdminFinanceController, :cleanup_records} => [:manage_billing],
     {W.AdminFinanceController, :purge_record} => [:manage_billing],
     {W.AdminFinanceController, :packages} => [:view_package_catalog],
+    {W.AdminPackageAudienceController, :show} => [:manage_packages, :view_package_catalog],
     # ADR-370/371: programmes are written from WODs and sold like packages.
     {W.AdminProgrammeController, :index} => [:manage_workouts, :view_package_catalog],
     {W.AdminProgrammeController, :show} => [:manage_workouts, :view_package_catalog],

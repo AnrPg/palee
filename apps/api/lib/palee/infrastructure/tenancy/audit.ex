@@ -22,7 +22,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     finance_document_counters finance_refund_receipts finance_reconciliation_records
     finance_accounting_exports
     finance_entitlement_usage_entries finance_settings finance_subscription_freezes
-    finance_value_overrides finance_package_requests
+    finance_value_overrides finance_package_requests finance_package_audience_exceptions
     leads lead_tasks lead_events
     box_automations automation_deliveries automation_member_preferences
     retention_risks retention_risk_actions

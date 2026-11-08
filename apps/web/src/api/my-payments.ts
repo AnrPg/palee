@@ -41,9 +41,24 @@ const id = (value: string) => encodeURIComponent(value);
 
 export const publicPackagesKey = (slug: string) => ["public", "box", slug, "packages"] as const;
 
-/** The packages a published box sells online, with whether it takes online payments now. */
+/**
+ * The packages a published box sells online that someone not signed in sees
+ * (ADR-553: the box chooses who sees them), with whether it takes online
+ * payments now.
+ */
 export function fetchPublicPackages(slug: string) {
   return apiRequest<PublicPackages>(`/public/boxes/${id(slug)}/packages`, { scope: "account" });
+}
+
+export const myPackagesKey = (slug: string) => ["me", "box", slug, "packages"] as const;
+
+/**
+ * ADR-553: the packages the box shows the signed-in person. `own_only`: the
+ * box keeps its other packages for the people who hold them; `held` marks
+ * the person's own.
+ */
+export function fetchMyPackages(slug: string) {
+  return apiRequest<PublicPackages>(`/boxes/${id(slug)}/packages`, { scope: "account" });
 }
 
 export const packageTermsKey = (slug: string, packageId: string, language: TermsLanguage, slotId: string | null) =>

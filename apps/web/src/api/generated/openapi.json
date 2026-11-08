@@ -62306,6 +62306,254 @@
         "title": "PacerResponse",
         "type": "object"
       },
+      "PackageAudienceBoxRequest": {
+        "properties": {
+          "audience": {
+            "enum": [
+              "all",
+              "own",
+              "none"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "audience"
+        ],
+        "title": "PackageAudienceBoxRequest",
+        "type": "object"
+      },
+      "PackageAudienceException": {
+        "properties": {
+          "effect": {
+            "enum": [
+              "show",
+              "hide"
+            ],
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "package_id": {
+            "description": "The package; null for every package of the box",
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "person": {
+            "properties": {
+              "avatar_url": {
+                "nullable": true,
+                "type": "string"
+              },
+              "handle": {
+                "nullable": true,
+                "type": "string"
+              },
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "nickname": {
+                "nullable": true,
+                "type": "string"
+              }
+            },
+            "required": [
+              "avatar_url",
+              "handle",
+              "id",
+              "nickname"
+            ],
+            "title": "PackageAudiencePerson",
+            "type": "object"
+          }
+        },
+        "required": [
+          "effect",
+          "id",
+          "package_id",
+          "person"
+        ],
+        "title": "PackageAudienceException",
+        "type": "object"
+      },
+      "PackageAudienceExceptionRequest": {
+        "properties": {
+          "effect": {
+            "enum": [
+              "show",
+              "hide"
+            ],
+            "type": "string"
+          },
+          "package_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "user_id": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "effect",
+          "user_id"
+        ],
+        "title": "PackageAudienceExceptionRequest",
+        "type": "object"
+      },
+      "PackageAudiencePackageRequest": {
+        "properties": {
+          "audience": {
+            "description": "null: follows the box",
+            "enum": [
+              "all",
+              "own",
+              "none"
+            ],
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "audience"
+        ],
+        "title": "PackageAudiencePackageRequest",
+        "type": "object"
+      },
+      "PackageAudiencePackageResponse": {
+        "properties": {
+          "audience": {
+            "enum": [
+              "all",
+              "own",
+              "none"
+            ],
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "audience",
+          "id"
+        ],
+        "title": "PackageAudiencePackageResponse",
+        "type": "object"
+      },
+      "PackageAudiencePerson": {
+        "properties": {
+          "avatar_url": {
+            "nullable": true,
+            "type": "string"
+          },
+          "handle": {
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "nickname": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "avatar_url",
+          "handle",
+          "id",
+          "nickname"
+        ],
+        "title": "PackageAudiencePerson",
+        "type": "object"
+      },
+      "PackageAudienceSettings": {
+        "properties": {
+          "audience": {
+            "enum": [
+              "all",
+              "own",
+              "none"
+            ],
+            "type": "string"
+          },
+          "exceptions": {
+            "items": {
+              "properties": {
+                "effect": {
+                  "enum": [
+                    "show",
+                    "hide"
+                  ],
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "package_id": {
+                  "description": "The package; null for every package of the box",
+                  "format": "uuid",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "person": {
+                  "properties": {
+                    "avatar_url": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "handle": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "nickname": {
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "avatar_url",
+                    "handle",
+                    "id",
+                    "nickname"
+                  ],
+                  "title": "PackageAudiencePerson",
+                  "type": "object"
+                }
+              },
+              "required": [
+                "effect",
+                "id",
+                "package_id",
+                "person"
+              ],
+              "title": "PackageAudienceException",
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "audience",
+          "exceptions"
+        ],
+        "title": "PackageAudienceSettings",
+        "type": "object"
+      },
       "PairWatchRequest": {
         "properties": {
           "app_version": {
@@ -133368,6 +133616,124 @@
         "summary": "Withdraw your open request to join",
         "tags": [
           "Join requests"
+        ]
+      }
+    },
+    "/api/boxes/{slug}/packages": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PublicBoxController.my_packages",
+        "parameters": [
+          {
+            "description": "The gym's slug or one of its former slugs",
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "maxLength": 120,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "online_payments": {
+                      "type": "boolean"
+                    },
+                    "own_only": {
+                      "description": "ADR-553: the viewer sees only packages they hold; the box keeps others for their holders",
+                      "type": "boolean"
+                    },
+                    "packages": {
+                      "items": {
+                        "properties": {
+                          "base_price_cents": {
+                            "type": "integer"
+                          },
+                          "billing_period": {
+                            "type": "string"
+                          },
+                          "currency": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "held": {
+                            "description": "ADR-553: the signed-in viewer holds it (only on the package lists)",
+                            "type": "boolean"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "package_type": {
+                            "type": "string"
+                          },
+                          "services": {
+                            "additionalProperties": true,
+                            "description": "The package's in-person services (ADR-256): the store apps sell only packages with one",
+                            "type": "object"
+                          }
+                        },
+                        "required": [
+                          "base_price_cents",
+                          "billing_period",
+                          "currency",
+                          "id",
+                          "name",
+                          "package_type",
+                          "services"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "provider": {
+                      "description": "The provider members pay through, or null when online payment is off",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "withdrawal_days": {
+                      "nullable": true,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "online_payments",
+                    "own_only",
+                    "packages",
+                    "provider",
+                    "withdrawal_days"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Packages"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No published box with this slug"
+          }
+        },
+        "summary": "The packages a published box shows the signed-in person (ADR-553)",
+        "tags": [
+          "Public box page"
         ]
       }
     },
@@ -261483,6 +261849,650 @@
         ]
       }
     },
+    "/api/org/{organization_slug}/admin/package-audience": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminPackageAudienceController.show",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "audience": {
+                      "enum": [
+                        "all",
+                        "own",
+                        "none"
+                      ],
+                      "type": "string"
+                    },
+                    "exceptions": {
+                      "items": {
+                        "properties": {
+                          "effect": {
+                            "enum": [
+                              "show",
+                              "hide"
+                            ],
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "package_id": {
+                            "description": "The package; null for every package of the box",
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "person": {
+                            "properties": {
+                              "avatar_url": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "handle": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "nickname": {
+                                "nullable": true,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "avatar_url",
+                              "handle",
+                              "id",
+                              "nickname"
+                            ],
+                            "title": "PackageAudiencePerson",
+                            "type": "object"
+                          }
+                        },
+                        "required": [
+                          "effect",
+                          "id",
+                          "package_id",
+                          "person"
+                        ],
+                        "title": "PackageAudienceException",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "audience",
+                    "exceptions"
+                  ],
+                  "title": "PackageAudienceSettings",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Settings"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Who sees the box's packages, and the person exceptions",
+        "tags": [
+          "Package audience"
+        ]
+      },
+      "put": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminPackageAudienceController.update",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "audience": {
+                    "enum": [
+                      "all",
+                      "own",
+                      "none"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "audience"
+                ],
+                "title": "PackageAudienceBoxRequest",
+                "type": "object"
+              }
+            }
+          },
+          "description": "Choice",
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "audience": {
+                      "enum": [
+                        "all",
+                        "own",
+                        "none"
+                      ],
+                      "type": "string"
+                    },
+                    "exceptions": {
+                      "items": {
+                        "properties": {
+                          "effect": {
+                            "enum": [
+                              "show",
+                              "hide"
+                            ],
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "package_id": {
+                            "description": "The package; null for every package of the box",
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "person": {
+                            "properties": {
+                              "avatar_url": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "handle": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "nickname": {
+                                "nullable": true,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "avatar_url",
+                              "handle",
+                              "id",
+                              "nickname"
+                            ],
+                            "title": "PackageAudiencePerson",
+                            "type": "object"
+                          }
+                        },
+                        "required": [
+                          "effect",
+                          "id",
+                          "package_id",
+                          "person"
+                        ],
+                        "title": "PackageAudienceException",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "audience",
+                    "exceptions"
+                  ],
+                  "title": "PackageAudienceSettings",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Settings"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such package, person or exception"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invalid choice"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The box's choice: all, own (each person only theirs) or none",
+        "tags": [
+          "Package audience"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/package-audience/exceptions": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminPackageAudienceController.put_exception",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "effect": {
+                    "enum": [
+                      "show",
+                      "hide"
+                    ],
+                    "type": "string"
+                  },
+                  "package_id": {
+                    "format": "uuid",
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "user_id": {
+                    "format": "uuid",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "effect",
+                  "user_id"
+                ],
+                "title": "PackageAudienceExceptionRequest",
+                "type": "object"
+              }
+            }
+          },
+          "description": "Exception",
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "audience": {
+                      "enum": [
+                        "all",
+                        "own",
+                        "none"
+                      ],
+                      "type": "string"
+                    },
+                    "exceptions": {
+                      "items": {
+                        "properties": {
+                          "effect": {
+                            "enum": [
+                              "show",
+                              "hide"
+                            ],
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "package_id": {
+                            "description": "The package; null for every package of the box",
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "person": {
+                            "properties": {
+                              "avatar_url": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "handle": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "nickname": {
+                                "nullable": true,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "avatar_url",
+                              "handle",
+                              "id",
+                              "nickname"
+                            ],
+                            "title": "PackageAudiencePerson",
+                            "type": "object"
+                          }
+                        },
+                        "required": [
+                          "effect",
+                          "id",
+                          "package_id",
+                          "person"
+                        ],
+                        "title": "PackageAudienceException",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "audience",
+                    "exceptions"
+                  ],
+                  "title": "PackageAudienceSettings",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Settings"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such package, person or exception"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invalid choice"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Always show (show) or never show (hide) one person a package or every package",
+        "tags": [
+          "Package audience"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/package-audience/exceptions/{id}": {
+      "delete": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminPackageAudienceController.delete_exception",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "audience": {
+                      "enum": [
+                        "all",
+                        "own",
+                        "none"
+                      ],
+                      "type": "string"
+                    },
+                    "exceptions": {
+                      "items": {
+                        "properties": {
+                          "effect": {
+                            "enum": [
+                              "show",
+                              "hide"
+                            ],
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "package_id": {
+                            "description": "The package; null for every package of the box",
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "person": {
+                            "properties": {
+                              "avatar_url": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "handle": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "nickname": {
+                                "nullable": true,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "avatar_url",
+                              "handle",
+                              "id",
+                              "nickname"
+                            ],
+                            "title": "PackageAudiencePerson",
+                            "type": "object"
+                          }
+                        },
+                        "required": [
+                          "effect",
+                          "id",
+                          "package_id",
+                          "person"
+                        ],
+                        "title": "PackageAudienceException",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "audience",
+                    "exceptions"
+                  ],
+                  "title": "PackageAudienceSettings",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Settings"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such package, person or exception"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invalid choice"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Removes a person exception",
+        "tags": [
+          "Package audience"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/package-audience/packages/{id}": {
+      "put": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminPackageAudienceController.update_package",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "audience": {
+                    "description": "null: follows the box",
+                    "enum": [
+                      "all",
+                      "own",
+                      "none"
+                    ],
+                    "nullable": true,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "audience"
+                ],
+                "title": "PackageAudiencePackageRequest",
+                "type": "object"
+              }
+            }
+          },
+          "description": "Choice",
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "audience": {
+                      "enum": [
+                        "all",
+                        "own",
+                        "none"
+                      ],
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "audience",
+                    "id"
+                  ],
+                  "title": "PackageAudiencePackageResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Package"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such package, person or exception"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invalid choice"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "A package's own choice; null follows the box",
+        "tags": [
+          "Package audience"
+        ]
+      }
+    },
     "/api/org/{organization_slug}/admin/payments": {
       "get": {
         "callbacks": {},
@@ -345845,6 +346855,10 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "held": {
+                          "description": "ADR-553: the signed-in viewer holds it (only on the package lists)",
+                          "type": "boolean"
+                        },
                         "id": {
                           "format": "uuid",
                           "type": "string"
@@ -421752,6 +422766,10 @@
                     "online_payments": {
                       "type": "boolean"
                     },
+                    "own_only": {
+                      "description": "ADR-553: the viewer sees only packages they hold; the box keeps others for their holders",
+                      "type": "boolean"
+                    },
                     "packages": {
                       "items": {
                         "properties": {
@@ -421767,6 +422785,10 @@
                           "description": {
                             "nullable": true,
                             "type": "string"
+                          },
+                          "held": {
+                            "description": "ADR-553: the signed-in viewer holds it (only on the package lists)",
+                            "type": "boolean"
                           },
                           "id": {
                             "format": "uuid",
@@ -421809,6 +422831,7 @@
                   },
                   "required": [
                     "online_payments",
+                    "own_only",
                     "packages",
                     "provider",
                     "withdrawal_days"

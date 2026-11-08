@@ -775,6 +775,43 @@ defmodule PaleeWeb.BoxSiteControllerTest do
              |> json_response(201)
   end
 
+  test "ADR-553: the «Πακέτα» section follows who sees the packages", ctx do
+    {:ok, context} = Organizations.resolve_tenant_context(ctx.owner, ctx.organization.slug)
+    sections = fn -> (build_conn() |> get(ctx.public) |> json_response(200))["sections"] end
+    audience = "/api/org/#{ctx.organization.slug}/admin/package-audience"
+
+    refute "packages" in sections.()
+
+    {:ok, package} =
+      Palee.Finance.create_package(context, %{
+        name: "Μηνιαίο",
+        family: "unlimited",
+        billing_period: "monthly",
+        base_price_cents: 6_000
+      })
+
+    assert "packages" in sections.()
+
+    ctx |> owner_conn() |> put(audience, %{audience: "none"}) |> json_response(200)
+    refute "packages" in sections.()
+
+    ctx
+    |> owner_conn()
+    |> put("#{audience}/packages/#{package.id}", %{audience: "all"})
+    |> json_response(200)
+
+    assert "packages" in sections.()
+
+    # The website no longer hides it by itself: the box's choice decides.
+    ctx
+    |> owner_conn()
+    |> put(ctx.admin, %{lock_version: 0, hidden_sections: ["packages"]})
+    |> json_response(200)
+
+    ctx |> owner_conn() |> post("#{ctx.admin}/publish") |> json_response(200)
+    assert "packages" in sections.()
+  end
+
   test "the public timetable shows classes without people when the owner turns it on", ctx do
     ctx
     |> owner_conn()

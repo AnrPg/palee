@@ -6,7 +6,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import el from "../../../messages/el.json";
 
 import { joinToBuy } from "@/api/join-requests";
-import { fetchPackageTerms, fetchPublicPackages, type PublicPackage } from "@/api/my-payments";
+import { fetchMyPackages, fetchPackageTerms, fetchPublicPackages, type PublicPackage } from "@/api/my-payments";
 import type { PublicBoxPage } from "@/api/social";
 
 import { SalesPage } from "./SalesPage";
@@ -34,6 +34,7 @@ vi.mock("@/lib/platform", () => ({ nativePlatform: () => state.platform }));
 vi.mock("@/api/my-payments", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/api/my-payments")>()),
   fetchPublicPackages: vi.fn(),
+  fetchMyPackages: vi.fn(),
   fetchPackageTerms: vi.fn(),
 }));
 
@@ -76,7 +77,8 @@ beforeEach(() => {
   state.status = "guest";
   state.memberships = [];
   state.platform = null;
-  vi.mocked(fetchPublicPackages).mockResolvedValue({ packages: PACKAGES, online_payments: true, provider: "viva", withdrawal_days: 14 } as never);
+  vi.mocked(fetchPublicPackages).mockResolvedValue({ packages: PACKAGES, online_payments: true, provider: "viva", withdrawal_days: 14, own_only: false } as never);
+  vi.mocked(fetchMyPackages).mockResolvedValue({ packages: PACKAGES, online_payments: true, provider: "viva", withdrawal_days: 14, own_only: false } as never);
 });
 
 describe("Σελίδα αγοράς πακέτων (mockup s5 option C)", () => {
@@ -144,5 +146,31 @@ describe("Σελίδα αγοράς πακέτων (mockup s5 option C)", () => 
     expect(await screen.findByTestId("sales-desk-note")).toHaveTextContent(el.DeskPay.pageNote);
     expect(screen.getAllByRole("button", { name: el.DeskPay.want }).length).toBeGreaterThan(0);
     expect(screen.queryByRole("button", { name: "Αγορά" })).toBeNull();
+  });
+
+  it("ADR-553: a member shown only their own package can renew it, with a quiet line under it", async () => {
+    state.status = "authenticated";
+    state.memberships = [{ organization: { slug: "box-kypseli" } }];
+    vi.mocked(fetchMyPackages).mockResolvedValue({
+      packages: [pkg("12 επισκέψεις/μήνα", { held: true })],
+      online_payments: true,
+      provider: "viva",
+      withdrawal_days: 14,
+      own_only: true,
+    } as never);
+    renderPage();
+    expect(await screen.findByTestId("sales-own-only")).toHaveTextContent(
+      "Το πακέτο συνδρομής σου είναι 12 επισκέψεις/μήνα. Επικοινώνησε με το box για να δεις κι άλλα.",
+    );
+    expect(screen.getByRole("button", { name: "Ανανέωση" })).toBeInTheDocument();
+    expect(fetchPublicPackages).not.toHaveBeenCalled();
+  });
+
+  it("ADR-553: someone shown no packages is asked to contact the box", async () => {
+    state.status = "authenticated";
+    vi.mocked(fetchMyPackages).mockResolvedValue({ packages: [], online_payments: true, provider: "viva", withdrawal_days: 14, own_only: false } as never);
+    renderPage();
+    expect(await screen.findByTestId("sales-ask-box")).toHaveTextContent("Ρώτα το box για τα πακέτα συνδρομής.");
+    expect(screen.getByTestId("sales-contact-box")).toHaveTextContent("Επικοινωνία με το box");
   });
 });

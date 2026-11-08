@@ -1,9 +1,12 @@
 "use client";
 
 import { useId, type CSSProperties, type KeyboardEvent, type ReactNode } from "react";
+import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 
 import type { SiteAppearance, SitePaletteKey, SiteSection, SiteTemplateKey } from "@/api/box-site";
+import { PACKAGES_TAB_HREF } from "@/components/admin/finance/packages/sold-online";
+import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
 
 import { APPEARANCES, PALETTE_KEYS, PALETTES, siteTokens, TEMPLATE_KEYS } from "./templates/palettes";
 import { NEW_SECTIONS, SECTION_GROUPS } from "./templates/site-model";
@@ -74,6 +77,27 @@ function SwitchRow({ label, hint, badge, checked, onChange, disabled, first, tes
         <span id={hintId} className="text-xs" style={{ color: "var(--muted)" }}>{hint}</span>
       </span>
       <SwitchButton checked={checked} onChange={onChange} label={label} describedBy={hintId} disabled={disabled} />
+    </div>
+  );
+}
+
+/**
+ * ADR-553: the website shows the packages the box's «Ποιος βλέπει τα πακέτα
+ * συνδρομής» lets people who are not signed in see; that one choice, set in
+ * Πακέτα συνδρομής, is this section's switch too.
+ */
+function PackagesRow({ label, first }: { label: string; first?: boolean }) {
+  const t = useTranslations("PackageAudience");
+  const slug = useOrganizationSlug();
+  return (
+    <div className="flex min-h-12 items-center gap-3 py-2.5" style={{ borderTop: first ? undefined : "1px solid var(--border)" }} data-testid="website-section-packages">
+      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+        <span className="text-sm font-semibold" style={{ color: "var(--text)" }}>{label}</span>
+        <span className="text-xs" style={{ color: "var(--muted)" }}>{t("websiteHint")}</span>
+      </span>
+      <Link href={adminHref(PACKAGES_TAB_HREF, slug)} className="shrink-0 text-sm font-semibold" style={{ color: "var(--primary-strong)" }} data-testid="website-packages-audience">
+        {t("websiteLink")} ›
+      </Link>
     </div>
   );
 }
@@ -264,7 +288,9 @@ export function SectionsCard({ state, onChange, disabled }: { state: Effective; 
       {SECTION_GROUPS.map((group) => (
         <div key={group.key} className="flex flex-col" role="group" aria-label={t(`groups.${group.key}`)}>
           <h3 className="mt-2 text-xs font-bold" style={subheadStyle}>{t(`groups.${group.key}`)}</h3>
-          {group.sections.map((key: SiteSection, index) => (
+          {group.sections.map((key: SiteSection, index) => key === "packages" ? (
+            <PackagesRow key={key} first={index === 0} label={sections(key)} />
+          ) : (
             <SwitchRow
               key={key}
               first={index === 0}

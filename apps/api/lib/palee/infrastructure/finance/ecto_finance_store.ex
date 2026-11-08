@@ -6448,6 +6448,7 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
       exemption_reason: package.exemption_reason,
       sold_online: package.sold_online,
       sold_online_chosen_at: package.sold_online_chosen_at,
+      audience: package.audience,
       inserted_at: package.inserted_at,
       updated_at: package.updated_at
     }
@@ -7104,7 +7105,8 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
           entitlement_enforcement_mode: "observe",
           entitlement_timezone: "Europe/Athens",
           document_mode: "invoice",
-          package_modules: Palee.Finance.Domain.PackageType.default_modules()
+          package_modules: Palee.Finance.Domain.PackageType.default_modules(),
+          package_audience: "all"
         }
 
       settings ->
@@ -7144,6 +7146,7 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
       entitlement_timezone: s.entitlement_timezone,
       document_mode: s.document_mode,
       package_modules: s.package_modules,
+      package_audience: s.package_audience,
       inserted_at: s.inserted_at,
       updated_at: s.updated_at
     }

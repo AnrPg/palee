@@ -871,6 +871,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/boxes/{slug}/packages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The packages a published box shows the signed-in person (ADR-553) */
+        get: operations["PaleeWeb.PublicBoxController.my_packages"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/boxes/{slug}/posts": {
         parameters: {
             query?: never;
@@ -10613,6 +10630,75 @@ export interface paths {
         put?: never;
         /** Hand ownership to an active member; the former owner stays as admin */
         post: operations["PaleeWeb.OwnerOrganizationController.transfer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/package-audience": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Who sees the box's packages, and the person exceptions */
+        get: operations["PaleeWeb.AdminPackageAudienceController.show"];
+        /** The box's choice: all, own (each person only theirs) or none */
+        put: operations["PaleeWeb.AdminPackageAudienceController.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/package-audience/exceptions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Always show (show) or never show (hide) one person a package or every package */
+        post: operations["PaleeWeb.AdminPackageAudienceController.put_exception"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/package-audience/exceptions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Removes a person exception */
+        delete: operations["PaleeWeb.AdminPackageAudienceController.delete_exception"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/package-audience/packages/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** A package's own choice; null follows the box */
+        put: operations["PaleeWeb.AdminPackageAudienceController.update_package"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -39968,6 +40054,87 @@ export interface components {
                 total_delta_ms?: number | null;
             };
         };
+        /** PackageAudienceBoxRequest */
+        PackageAudienceBoxRequest: {
+            /** @enum {string} */
+            audience: "all" | "own" | "none";
+        };
+        /** PackageAudienceException */
+        PackageAudienceException: {
+            /** @enum {string} */
+            effect: "show" | "hide";
+            /** Format: uuid */
+            id: string;
+            /**
+             * Format: uuid
+             * @description The package; null for every package of the box
+             */
+            package_id: string | null;
+            /** PackageAudiencePerson */
+            person: {
+                avatar_url: string | null;
+                handle: string | null;
+                /** Format: uuid */
+                id: string;
+                nickname: string | null;
+            };
+        };
+        /** PackageAudienceExceptionRequest */
+        PackageAudienceExceptionRequest: {
+            /** @enum {string} */
+            effect: "show" | "hide";
+            /** Format: uuid */
+            package_id?: string | null;
+            /** Format: uuid */
+            user_id: string;
+        };
+        /** PackageAudiencePackageRequest */
+        PackageAudiencePackageRequest: {
+            /**
+             * @description null: follows the box
+             * @enum {string|null}
+             */
+            audience: "all" | "own" | "none" | null;
+        };
+        /** PackageAudiencePackageResponse */
+        PackageAudiencePackageResponse: {
+            /** @enum {string|null} */
+            audience: "all" | "own" | "none" | null;
+            /** Format: uuid */
+            id: string;
+        };
+        /** PackageAudiencePerson */
+        PackageAudiencePerson: {
+            avatar_url: string | null;
+            handle: string | null;
+            /** Format: uuid */
+            id: string;
+            nickname: string | null;
+        };
+        /** PackageAudienceSettings */
+        PackageAudienceSettings: {
+            /** @enum {string} */
+            audience: "all" | "own" | "none";
+            exceptions: {
+                /** @enum {string} */
+                effect: "show" | "hide";
+                /** Format: uuid */
+                id: string;
+                /**
+                 * Format: uuid
+                 * @description The package; null for every package of the box
+                 */
+                package_id: string | null;
+                /** PackageAudiencePerson */
+                person: {
+                    avatar_url: string | null;
+                    handle: string | null;
+                    /** Format: uuid */
+                    id: string;
+                    nickname: string | null;
+                };
+            }[];
+        };
         /** PairWatchRequest */
         PairWatchRequest: {
             app_version?: string;
@@ -62037,6 +62204,61 @@ export interface operations {
             };
             /** @description Already a box member */
             409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicBoxController.my_packages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The gym's slug or one of its former slugs */
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Packages */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        online_payments: boolean;
+                        /** @description ADR-553: the viewer sees only packages they hold; the box keeps others for their holders */
+                        own_only: boolean;
+                        packages: {
+                            base_price_cents: number;
+                            billing_period: string;
+                            currency: string;
+                            description?: string | null;
+                            /** @description ADR-553: the signed-in viewer holds it (only on the package lists) */
+                            held?: boolean;
+                            /** Format: uuid */
+                            id: string;
+                            name: string;
+                            package_type: string;
+                            /** @description The package's in-person services (ADR-256): the store apps sell only packages with one */
+                            services: {
+                                [key: string]: unknown;
+                            };
+                        }[];
+                        /** @description The provider members pay through, or null when online payment is off */
+                        provider: string | null;
+                        withdrawal_days: number | null;
+                    };
+                };
+            };
+            /** @description No published box with this slug */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -109232,6 +109454,306 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminPackageAudienceController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        audience: "all" | "own" | "none";
+                        exceptions: {
+                            /** @enum {string} */
+                            effect: "show" | "hide";
+                            /** Format: uuid */
+                            id: string;
+                            /**
+                             * Format: uuid
+                             * @description The package; null for every package of the box
+                             */
+                            package_id: string | null;
+                            /** PackageAudiencePerson */
+                            person: {
+                                avatar_url: string | null;
+                                handle: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                nickname: string | null;
+                            };
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminPackageAudienceController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Choice */
+        requestBody?: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    audience: "all" | "own" | "none";
+                };
+            };
+        };
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        audience: "all" | "own" | "none";
+                        exceptions: {
+                            /** @enum {string} */
+                            effect: "show" | "hide";
+                            /** Format: uuid */
+                            id: string;
+                            /**
+                             * Format: uuid
+                             * @description The package; null for every package of the box
+                             */
+                            package_id: string | null;
+                            /** PackageAudiencePerson */
+                            person: {
+                                avatar_url: string | null;
+                                handle: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                nickname: string | null;
+                            };
+                        }[];
+                    };
+                };
+            };
+            /** @description No such package, person or exception */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Invalid choice */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminPackageAudienceController.put_exception": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Exception */
+        requestBody?: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    effect: "show" | "hide";
+                    /** Format: uuid */
+                    package_id?: string | null;
+                    /** Format: uuid */
+                    user_id: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        audience: "all" | "own" | "none";
+                        exceptions: {
+                            /** @enum {string} */
+                            effect: "show" | "hide";
+                            /** Format: uuid */
+                            id: string;
+                            /**
+                             * Format: uuid
+                             * @description The package; null for every package of the box
+                             */
+                            package_id: string | null;
+                            /** PackageAudiencePerson */
+                            person: {
+                                avatar_url: string | null;
+                                handle: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                nickname: string | null;
+                            };
+                        }[];
+                    };
+                };
+            };
+            /** @description No such package, person or exception */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Invalid choice */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminPackageAudienceController.delete_exception": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        audience: "all" | "own" | "none";
+                        exceptions: {
+                            /** @enum {string} */
+                            effect: "show" | "hide";
+                            /** Format: uuid */
+                            id: string;
+                            /**
+                             * Format: uuid
+                             * @description The package; null for every package of the box
+                             */
+                            package_id: string | null;
+                            /** PackageAudiencePerson */
+                            person: {
+                                avatar_url: string | null;
+                                handle: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                nickname: string | null;
+                            };
+                        }[];
+                    };
+                };
+            };
+            /** @description No such package, person or exception */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Invalid choice */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminPackageAudienceController.update_package": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description Choice */
+        requestBody?: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description null: follows the box
+                     * @enum {string|null}
+                     */
+                    audience: "all" | "own" | "none" | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Package */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string|null} */
+                        audience: "all" | "own" | "none" | null;
+                        /** Format: uuid */
+                        id: string;
+                    };
+                };
+            };
+            /** @description No such package, person or exception */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Invalid choice */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminPaymentsController.index": {
         parameters: {
             query?: {
@@ -138086,6 +138608,8 @@ export interface operations {
                             billing_period: string;
                             currency: string;
                             description?: string | null;
+                            /** @description ADR-553: the signed-in viewer holds it (only on the package lists) */
+                            held?: boolean;
                             /** Format: uuid */
                             id: string;
                             name: string;
@@ -164232,11 +164756,15 @@ export interface operations {
                 content: {
                     "application/json": {
                         online_payments: boolean;
+                        /** @description ADR-553: the viewer sees only packages they hold; the box keeps others for their holders */
+                        own_only: boolean;
                         packages: {
                             base_price_cents: number;
                             billing_period: string;
                             currency: string;
                             description?: string | null;
+                            /** @description ADR-553: the signed-in viewer holds it (only on the package lists) */
+                            held?: boolean;
                             /** Format: uuid */
                             id: string;
                             name: string;

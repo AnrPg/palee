@@ -55,7 +55,7 @@ const packages = [
   { id: "drop", name: "Μία επίσκεψη", description: null, package_type: "drop_in", billing_period: "one_off", base_price_cents: 1500, currency: "EUR", services },
   { id: "am", name: "Πρωινά", description: "Τμήματα έως τις 12:00", package_type: "membership", billing_period: "monthly", base_price_cents: 5000, currency: "EUR", services },
 ];
-const sales = { packages, online_payments: true, provider: "viva", withdrawal_days: 14 };
+const sales = { packages, online_payments: true, provider: "viva", withdrawal_days: 14, own_only: false };
 
 const intent = (over: Record<string, unknown> = {}) => ({
   id: PAYMENT,
@@ -85,6 +85,8 @@ async function stubMember(page: Page) {
   await page.route("**/api/memberships", (route) => route.fulfill(json([membership])));
   await page.route("**/api/notifications?**", (route) => route.fulfill(json({ notifications: [] })));
   await page.route("**/api/public/boxes/kypseli/packages", (route) => route.fulfill(json(sales)));
+  // ADR-553: signed in, the page asks what this person sees.
+  await page.route("**/api/boxes/kypseli/packages", (route) => route.fulfill(json(sales)));
 }
 
 /** The sandbox checkout: the API answers with a redirect to our own /pay/return. */
@@ -303,5 +305,24 @@ test.describe("the box's sales page (mockup s5 option C)", () => {
     await expect(dialog.getByText("Για να αγοράσεις, συνδέσου ή φτιάξε λογαριασμό Palee.")).toBeVisible();
     await expect(dialog.getByTestId("sales-login")).toHaveAttribute("href", `/login?next=${encodeURIComponent("/b/kypseli/packages?buy=unl")}`);
     await expect(page).toHaveURL(/buy=unl/);
+  });
+
+  test("ADR-553: a box member shown only their own package renews it, with a quiet line under it", async ({ page }) => {
+    await stubMember(page);
+    const own = { ...sales, packages: [{ ...packages[1], held: true }], own_only: true };
+    await page.route("**/api/boxes/kypseli/packages", (route) => route.fulfill(json(own)));
+    await page.goto("/b/kypseli/packages");
+    await expect(page.getByTestId("sales-package-unl")).toBeVisible();
+    await expect(page.getByTestId("sales-package-w3")).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Ανανέωση" })).toBeVisible();
+    await expect(page.getByTestId("sales-own-only")).toHaveText("Το πακέτο συνδρομής σου είναι Unlimited. Επικοινώνησε με το box για να δεις κι άλλα.");
+  });
+
+  test("ADR-553: someone shown no packages is asked to contact the box", async ({ page }) => {
+    await stubMember(page);
+    await page.route("**/api/boxes/kypseli/packages", (route) => route.fulfill(json({ ...sales, packages: [] })));
+    await page.goto("/b/kypseli/packages");
+    await expect(page.getByTestId("sales-ask-box")).toContainText("Ρώτα το box για τα πακέτα συνδρομής.");
+    await expect(page.getByTestId("sales-contact-box")).toBeVisible();
   });
 });

@@ -1504,6 +1504,12 @@ defmodule PaleeWeb.Router do
     get("/join-requests", AdminJoinRequestController, :index)
     post("/join-requests/:id/accept", AdminJoinRequestController, :accept)
     post("/join-requests/:id/decline", AdminJoinRequestController, :decline)
+    # ADR-553: who sees the subscription packages.
+    get("/package-audience", AdminPackageAudienceController, :show)
+    put("/package-audience", AdminPackageAudienceController, :update)
+    post("/package-audience/exceptions", AdminPackageAudienceController, :put_exception)
+    delete("/package-audience/exceptions/:id", AdminPackageAudienceController, :delete_exception)
+    put("/package-audience/packages/:id", AdminPackageAudienceController, :update_package)
     get("/trial-policy", AdminTrialController, :policy)
     put("/trial-policy", AdminTrialController, :update_policy)
     get("/trials", AdminTrialController, :queue)
@@ -2654,6 +2660,8 @@ defmodule PaleeWeb.Router do
     # Board 4 D2: only «Σχετικά» is public; the rest of a box page needs sign-in.
     get("/boxes/:slug/schedule", PublicBoxController, :schedule)
     get("/boxes/:slug/posts", PublicBoxController, :posts)
+    # ADR-553: the packages the box shows this person.
+    get("/boxes/:slug/packages", PublicBoxController, :my_packages)
     # ADR-190: a published box's shop for anyone (signed in).
     get("/boxes/:slug/shop/products", MyShopController, :public_products)
     get("/boxes/:slug/events", CommunityEventController, :box_events)
