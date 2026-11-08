@@ -5621,11 +5621,6 @@
     "actionVideos": "סרטונים",
     "actionCoach": "מאמן",
     "membership": "מנוי",
-    "meProfileTabs": "הפרופיל שלך",
-    "meAllPosts": "כל הפוסטים שלך",
-    "meAllPrs": "כל השיאים",
-    "mePrsWho": "מי רואה אותם: שיתוף ונראות",
-    "meClubsNone": "עדיין אינך באף מועדון.",
     "boxFindTitle": "עדיין אינך חבר/ה באף box",
     "boxFindBody": "מצא/י box או מאמן לידך כדי להזמין שיעורים, לעקוב אחרי ה-WOD ולראות כאן את המנוי שלך.",
     "boxFindAction": "מצא/י box",
@@ -6023,8 +6018,6 @@
     "helpStaffOnly": "לצוות בלבד",
     "settingsUnitsHint": "איך מוצגים משקל, גובה והיקפים.",
     "settingsSectionsHint": "אילו מקטעים יש ביומן שלך ואיך מוצג המשקל.",
-    "mePrsPrivate": "{count, plural, one {שיא אישי נוסף פרטי.} two {עוד שני שיאים אישיים פרטיים.} other {עוד # שיאים אישיים פרטיים.}} בחר אילו מוצגים בשיתוף ונראות.",
-    "mePrsNoneShown": "עדיין אינך מציג שיאים אישיים בפרופיל.",
     "sharing": {
       "coachSeesTitle": "המאמן שלי רואה",
       "coachSeesHint": "מה מגיע למאמנים שלך בלי שתשלח בכל פעם.",
@@ -6047,7 +6040,12 @@
       "saveError": "השינוי לא נשמר. נסה שוב."
     },
     "boxFindByName": "או חפשו לפי שם",
-    "membershipContactBox": "יצירת קשר עם הבוקס"
+    "membershipContactBox": "יצירת קשר עם הבוקס",
+    "meOnlyYou": "רק בשבילך",
+    "meOnlyYouHint": "אף אחד אחר לא רואה את זה.",
+    "meOnlyYouWaiting": "{count, plural, one {רק בשבילך, # ממתין} other {רק בשבילך, # ממתינים}}",
+    "settingsClubNotifications": "התראות לפי box ומועדון",
+    "settingsClubNotificationsHint": "ה-box והמועדונים שלך ומה כל אחד מספר לך"
   },
   "Community": {
     "all": "הכול",
@@ -6576,9 +6574,8 @@
       "posts": "פוסטים",
       "media": "מדיה",
       "prs": "שיאים",
-      "clubs": "מועדונים"
+      "badges": "תגים"
     },
-    "personClubsEmpty": "אין מועדונים משותפים.",
     "personPostsEmpty": "עוד אין פוסטים.",
     "mediaEmpty": "אין עדיין תמונות או סרטונים.",
     "mediaEmptyMine": "תמונות וסרטונים מהפוסטים שלך יופיעו כאן.",
@@ -6589,7 +6586,6 @@
     "mediaPhoto": "תמונה",
     "lockedRequested": "הבקשה שלך ממתינה לאישור. אחר כך תראה גם פוסטים לעוקבים בלבד.",
     "lockedFollow": "עקוב כדי לראות גם פוסטים לעוקבים בלבד.",
-    "myPrsLink": "השיאים שלך נמצאים ב-Journal › התקדמות",
     "prsNotShared": "לא משתף איתך את השיאים שלו.",
     "prsNone": "עוד אין שיאים.",
     "unfollowBoxConfirm": "להפסיק לעקוב אחרי הבוקס? הפוסטים הציבוריים שלו ייעלמו מהפיד שלך.",
@@ -6650,7 +6646,37 @@
     "findClubsBoxesPeople": "חיפוש מועדונים, בוקסים ואנשים",
     "boxesTitle": "בוקסים ומאמנים",
     "boxNoMatch": "לא נמצא בוקס או מאמן בשם הזה. מופיעים רק עסקים שפרסמו את הדף שלהם.",
-    "boxSearchFailed": "החיפוש לא הצליח. נסו שוב."
+    "boxSearchFailed": "החיפוש לא הצליח. נסו שוב.",
+    "stat": {
+      "countBuddies": "{count, plural, one {חבר} other {חבר'ה}}",
+      "countFollowYou": "{count, plural, one {עוקב אחריך} other {עוקבים אחריך}}",
+      "countYouFollow": "במעקב שלך",
+      "countFollowers": "{count, plural, one {עוקב} other {עוקבים}}",
+      "countFollowing": "במעקב"
+    },
+    "profileTabs": "פרופיל",
+    "profileCounts": "חבר'ה ועוקבים",
+    "privateAccount": "חשבון פרטי",
+    "editProfile": "עריכת פרופיל",
+    "editProfileShort": "עריכה",
+    "shareProfile": "שיתוף פרופיל",
+    "shareProfileShort": "שיתוף",
+    "profileLinkCopied": "הקישור הועתק",
+    "bioLabel": "קצת עליך",
+    "bioPlaceholder": "שורה על האימונים שלך",
+    "nameAndPhoto": "שם, ‎@handle ותמונה",
+    "save": "שמירה",
+    "addTab": "הוספת לשונית",
+    "addTabTitle": "לשוניות בפרופיל שלך",
+    "addTabHint": "מדיה ופוסטים תמיד שם. אפשר להוסיף עוד מהיומן; הן מציגות רק מה שכבר בחרת לשתף.",
+    "myPrsNoneShown": "עדיין אינך מציג שיאים בפרופיל.",
+    "myPrsWho": "מי רואה אותם: שיתוף ונראות",
+    "myBadgesNone": "עדיין אין תגים. הם מגיעים עם האימונים, השיאים והרצפים שלך.",
+    "badgesNone": "עדיין אין תגים.",
+    "addTabHints": {
+      "prs": "השיאים שאתה מציג לעוקבים שלך",
+      "badges": "התגים שלך, למי שעוקב אחריך"
+    }
   },
   "BoxPage": {
     "allWeek": "כל השבוע",

@@ -5621,11 +5621,6 @@
     "actionVideos": "Видео",
     "actionCoach": "Тренер",
     "membership": "Абонемент",
-    "meProfileTabs": "Твой профиль",
-    "meAllPosts": "Все твои публикации",
-    "meAllPrs": "Все PR",
-    "mePrsWho": "Кто их видит: Доступ и видимость",
-    "meClubsNone": "Ты пока не в клубе.",
     "boxFindTitle": "Ты пока не в боксе",
     "boxFindBody": "Найди бокс или тренера рядом, чтобы записываться на занятия, следить за WOD и видеть здесь свой абонемент.",
     "boxFindAction": "Найти бокс",
@@ -6023,8 +6018,6 @@
     "helpStaffOnly": "Только для команды",
     "settingsUnitsHint": "Как показываются вес, рост и обхваты.",
     "settingsSectionsHint": "Какие разделы есть в Дневнике и как показывается вес.",
-    "mePrsPrivate": "{count, plural, one {Ещё # PR скрыт.} few {Ещё # PR скрыты.} many {Ещё # PR скрыты.} other {Ещё # PR скрыты.}} Выбери, какие показывать, в разделе «Доступ и видимость».",
-    "mePrsNoneShown": "Ты пока не показываешь PR в профиле.",
     "sharing": {
       "coachSeesTitle": "Мой тренер видит",
       "coachSeesHint": "Что получают твои тренеры без отдельной отправки каждый раз.",
@@ -6047,7 +6040,12 @@
       "saveError": "Не сохранилось. Попробуй ещё раз."
     },
     "boxFindByName": "Или найдите по названию",
-    "membershipContactBox": "Связаться с боксом"
+    "membershipContactBox": "Связаться с боксом",
+    "meOnlyYou": "Только для тебя",
+    "meOnlyYouHint": "Больше никто этого не видит.",
+    "meOnlyYouWaiting": "{count, plural, one {Только для тебя, # ждёт} few {Только для тебя, # ждут} many {Только для тебя, # ждут} other {Только для тебя, # ждут}}",
+    "settingsClubNotifications": "Уведомления по боксам и клубам",
+    "settingsClubNotificationsHint": "Твои боксы и клубы и что каждый тебе сообщает"
   },
   "Community": {
     "all": "Все",
@@ -6576,9 +6574,8 @@
       "posts": "Посты",
       "media": "Медиа",
       "prs": "PR",
-      "clubs": "Клубы"
+      "badges": "Значки"
     },
-    "personClubsEmpty": "Нет общих клубов с тобой.",
     "personPostsEmpty": "Постов пока нет.",
     "mediaEmpty": "Пока нет фото и видео.",
     "mediaEmptyMine": "Здесь появятся фото и видео из твоих публикаций.",
@@ -6589,7 +6586,6 @@
     "mediaPhoto": "Фото",
     "lockedRequested": "Твой запрос ждёт одобрения. После этого ты увидишь и посты для подписчиков.",
     "lockedFollow": "Подпишись, чтобы видеть и посты для подписчиков.",
-    "myPrsLink": "Твои PR — в разделе «Дневник › Прогресс»",
     "prsNotShared": "Не делится с тобой своими PR.",
     "prsNone": "PR пока нет.",
     "unfollowBoxConfirm": "Отписаться от бокса? Его публичные посты исчезнут из твоей ленты.",
@@ -6650,7 +6646,37 @@
     "findClubsBoxesPeople": "Поиск клубов, залов и людей",
     "boxesTitle": "Залы и тренеры",
     "boxNoMatch": "Нет зала или тренера с таким названием. Показываются только те, кто опубликовал свою страницу.",
-    "boxSearchFailed": "Поиск не сработал. Попробуйте ещё раз."
+    "boxSearchFailed": "Поиск не сработал. Попробуйте ещё раз.",
+    "stat": {
+      "countBuddies": "{count, plural, one {Приятель} few {Приятеля} many {Приятелей} other {Приятеля}}",
+      "countFollowYou": "{count, plural, one {Подписан на тебя} few {Подписаны на тебя} many {Подписаны на тебя} other {Подписаны на тебя}}",
+      "countYouFollow": "Твои подписки",
+      "countFollowers": "{count, plural, one {Подписчик} few {Подписчика} many {Подписчиков} other {Подписчика}}",
+      "countFollowing": "Подписки"
+    },
+    "profileTabs": "Профиль",
+    "profileCounts": "Приятели и подписки",
+    "privateAccount": "Закрытый аккаунт",
+    "editProfile": "Редактировать профиль",
+    "editProfileShort": "Изменить",
+    "shareProfile": "Поделиться профилем",
+    "shareProfileShort": "Поделиться",
+    "profileLinkCopied": "Ссылка скопирована",
+    "bioLabel": "О себе",
+    "bioPlaceholder": "Строка о твоих тренировках",
+    "nameAndPhoto": "Имя, @handle и фото",
+    "save": "Сохранить",
+    "addTab": "Добавить вкладку",
+    "addTabTitle": "Вкладки профиля",
+    "addTabHint": "Медиа и Публикации есть всегда. Добавь другие из своего журнала; они показывают только то, чем ты уже решил делиться.",
+    "myPrsNoneShown": "Ты пока не показываешь ни одного PR в профиле.",
+    "myPrsWho": "Кто их видит: Доступ и видимость",
+    "myBadgesNone": "Значков пока нет. Они приходят с тренировками, PR и сериями.",
+    "badgesNone": "Значков пока нет.",
+    "addTabHints": {
+      "prs": "PR, которые ты показываешь подписчикам",
+      "badges": "Твои значки — для тех, кто на тебя подписан"
+    }
   },
   "BoxPage": {
     "allWeek": "Вся неделя",

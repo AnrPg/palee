@@ -1,3 +1,4 @@
+import { stubOwnProfile } from "./support/profile";
 import { expect, test, type Page } from "./support/test";
 
 // Redesign Phase 1 (ADR-137): the member app is four fixed tabs, and Box
@@ -133,6 +134,8 @@ async function stubMemberApi(page: Page) {
       }),
     ),
   );
+  // ADR-554: Me is my own profile, read like anyone's from /api/people/:id.
+  await stubOwnProfile(page, user);
   // ADR-231: Me's «Media» tab reads the same grid as the public profile.
   await page.route("**/api/people/member-1/media**", (route) =>
     route.fulfill(
@@ -563,21 +566,30 @@ test.describe("member app shell", () => {
     await page.screenshot({ path: "test-results/member-app/vault-tree.png", fullPage: true });
   });
 
-  test("Me holds every secondary link, and old URLs land on the new pages", async ({ page }) => {
+  test("Me is my profile with Media first; the ☰ holds the secondary links, and old URLs land on the new pages", async ({ page }) => {
     await stubMemberApi(page);
     await page.goto("/me");
-    await expect(page.getByRole("main").getByText("Maria L")).toBeVisible();
-    await expect(page.getByRole("link", { name: /Payments & receipts/ })).toHaveAttribute("href", "/me/payments");
-    // ADR-196: the fixed §7.11 list; tour and first steps live in Help & tour.
-    await expect(page.getByRole("button", { name: "Take the tour" })).toHaveCount(0);
-    // ADR-231: «Posts · Media · PRs · Clubs»; Media is my photos and videos only.
-    const mediaTab = page.getByRole("tab", { name: /Media/ });
-    await expect(mediaTab).toContainText("1");
-    await mediaTab.click();
+    await expect(page.getByRole("heading", { level: 1, name: "Maria L" })).toBeVisible();
+    // ADR-554: «Media · Posts», Media first and selected; no counts inside the tabs, no Clubs tab.
+    const mediaTab = page.getByRole("tab", { name: "Media" });
+    await expect(mediaTab).toHaveAttribute("aria-selected", "true");
+    await expect(mediaTab).toHaveText("Media");
+    await expect(page.getByRole("tab", { name: "Clubs" })).toHaveCount(0);
     await expect(page.getByTestId("media-grid").getByRole("button", { name: "Photo: Barbell on the floor" })).toBeVisible();
-    await page.getByRole("tab", { name: /Posts/ }).click();
+    await page.getByRole("tab", { name: "Posts", exact: true }).click();
+    await expect(page.getByRole("tab", { name: "Posts", exact: true })).toHaveAttribute("aria-selected", "true");
     await page.screenshot({ path: "test-results/member-app/me.png", fullPage: true });
-    await page.getByRole("link", { name: /Help & tour/ }).click();
+
+    // ADR-196/554: the old list rows live behind the ☰, «Only for you»; tour and first steps live in Help & tour.
+    await expect(page.getByRole("link", { name: /Payments & receipts/ })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Take the tour" })).toHaveCount(0);
+    await page.getByTestId("me-sheet-button").click();
+    const sheet = page.getByTestId("me-sheet");
+    await expect(sheet).toBeVisible();
+    await expect(sheet.getByRole("link", { name: /Payments & receipts/ })).toHaveAttribute("href", "/me/payments");
+    await expect(sheet.getByRole("link", { name: /^Settings/ })).toHaveAttribute("href", "/me/settings");
+    await expect(sheet.getByRole("button", { name: "Sign out" })).toBeVisible();
+    await sheet.getByRole("link", { name: /Help & tour/ }).click();
     await expect(page).toHaveURL(/\/me\/help$/);
     await expect(page.getByRole("button", { name: "How visibility works" })).toBeVisible();
 
@@ -689,7 +701,7 @@ test.describe("member app shell", () => {
     await page.screenshot({ path: "test-results/member-app/progress.png", fullPage: true });
   });
 
-  test("«Εγώ» changes the app language in two presses from the top right (ADR-545)", async ({ page }) => {
+  test("the app language is changed from Settings › Language; Εγώ has no language menu any more (ADR-554)", async ({ page }) => {
     await stubMemberApi(page);
     const patches: unknown[] = [];
     await page.route("**/api/me/profile", async (route) => {
@@ -698,22 +710,28 @@ test.describe("member app shell", () => {
       return route.fulfill(json({ user: { ...user, preferred_locale: "el" } }));
     });
     await page.goto("/me");
+    await expect(page.getByRole("heading", { level: 1, name: "Maria L" })).toBeVisible();
+    await expect(page.getByTestId("app-language-menu")).toHaveCount(0);
 
-    const button = page.getByTestId("app-language-menu");
-    await expect(button).toHaveText(/EN/);
-    await expect(button.locator('img[data-flag="en"]')).toHaveAttribute("src", "/flags/gb.svg");
-    await button.click();
-    const list = page.getByTestId("app-language-menu-list");
-    await expect(list.getByTestId("app-language-menu-option-en")).toHaveAttribute("aria-current", "true");
-    await expect(list.getByTestId("app-language-menu-option-el")).toContainText("Ελληνικά");
-    await expect(list.getByTestId("app-language-menu-option-ar").getByText("العربية")).toHaveAttribute("dir", "rtl");
-    await list.getByTestId("app-language-menu-option-el").click();
+    await page.goto("/me/settings");
+    const language = page.getByRole("combobox", { name: "Application language" });
+    await expect(language).toHaveAttribute("data-value", "en");
+    await language.click();
+    await expect(page.locator('[role="option"][data-value="el"]')).toContainText("Ελληνικά");
+    // Choosing saves it on the account, then the page reloads in it.
+    await page.locator('[role="option"][data-value="el"]').click();
     await expect.poll(() => patches).toEqual([{ preferred_locale: "el" }]);
   });
 
   test("Sharing & visibility groups what the coach sees and the community opt-ins; rest days moved to Settings", async ({ page }) => {
     await stubMemberApi(page);
+    // ADR-554: Sharing & visibility, Connected devices and the per-club notifications moved from Εγώ to Settings.
     await page.goto("/me");
+    await expect(page.getByRole("heading", { level: 1, name: "Maria L" })).toBeVisible();
+    await expect(page.getByRole("link", { name: /Sharing & visibility/ })).toHaveCount(0);
+    await page.goto("/me/settings");
+    await expect(page.getByRole("link", { name: /Connected devices/ })).toHaveAttribute("href", "/me/devices");
+    await expect(page.getByRole("link", { name: /Notifications per box and club/ })).toHaveAttribute("href", "/me/clubs");
     await page.getByRole("link", { name: /Sharing & visibility/ }).click();
     await expect(page).toHaveURL(/\/me\/sharing$/);
     // ADR-286: each injury has its own «Let my box see it» switch; who read them is listed here.

@@ -5621,11 +5621,6 @@
     "actionVideos": "Videos",
     "actionCoach": "Coach",
     "membership": "Mitgliedschaft",
-    "meProfileTabs": "Dein Profil",
-    "meAllPosts": "Alle deine Beiträge",
-    "meAllPrs": "Alle PRs",
-    "mePrsWho": "Wer sie sieht: Teilen & Sichtbarkeit",
-    "meClubsNone": "Du bist noch in keinem Club.",
     "boxFindTitle": "Du bist noch in keiner Box",
     "boxFindBody": "Finde eine Box oder einen Coach in deiner Nähe, um Kurse zu buchen, dem WOD zu folgen und deine Mitgliedschaft hier zu sehen.",
     "boxFindAction": "Box finden",
@@ -6023,8 +6018,6 @@
     "helpStaffOnly": "Nur für das Team",
     "settingsUnitsHint": "Wie Gewicht, Größe und Umfänge angezeigt werden.",
     "settingsSectionsHint": "Welche Bereiche dein Tagebuch hat und wie dein Gewicht erscheint.",
-    "mePrsPrivate": "{count, plural, one {Ein weiterer PR ist privat.} other {Die übrigen # PRs sind privat.}} Wähle unter Teilen & Sichtbarkeit, welche zu sehen sind.",
-    "mePrsNoneShown": "Du zeigst noch keine PRs in deinem Profil.",
     "sharing": {
       "coachSeesTitle": "Mein Coach sieht",
       "coachSeesHint": "Was deine Coaches erreicht, ohne dass du es jedes Mal schickst.",
@@ -6047,7 +6040,12 @@
       "saveError": "Das wurde nicht gespeichert. Versuch es noch einmal."
     },
     "boxFindByName": "Oder nach Namen suchen",
-    "membershipContactBox": "Box kontaktieren"
+    "membershipContactBox": "Box kontaktieren",
+    "meOnlyYou": "Nur für dich",
+    "meOnlyYouHint": "Niemand sonst sieht das.",
+    "meOnlyYouWaiting": "{count, plural, one {Nur für dich, # wartet} other {Nur für dich, # warten}}",
+    "settingsClubNotifications": "Benachrichtigungen pro Box und Club",
+    "settingsClubNotificationsHint": "Deine Boxen und Clubs und was dir jede sagt"
   },
   "Community": {
     "all": "Alle",
@@ -6576,9 +6574,8 @@
       "posts": "Beiträge",
       "media": "Medien",
       "prs": "PRs",
-      "clubs": "Clubs"
+      "badges": "Abzeichen"
     },
-    "personClubsEmpty": "Keine gemeinsamen Clubs.",
     "personPostsEmpty": "Noch keine Beiträge.",
     "mediaEmpty": "Noch keine Fotos oder Videos.",
     "mediaEmptyMine": "Fotos und Videos aus deinen Beiträgen erscheinen hier.",
@@ -6589,7 +6586,6 @@
     "mediaPhoto": "Foto",
     "lockedRequested": "Deine Anfrage wartet auf Bestätigung. Danach siehst du auch Beiträge nur für Follower.",
     "lockedFollow": "Folge, um auch Beiträge nur für Follower zu sehen.",
-    "myPrsLink": "Deine PRs findest du unter Tagebuch › Fortschritt",
     "prsNotShared": "Diese Person teilt ihre PRs nicht mit dir.",
     "prsNone": "Noch keine PRs.",
     "unfollowBoxConfirm": "Dieser Box nicht mehr folgen? Ihre öffentlichen Beiträge verschwinden aus deinem Feed.",
@@ -6650,7 +6646,37 @@
     "findClubsBoxesPeople": "Clubs, Boxen und Personen suchen",
     "boxesTitle": "Boxen und Coaches",
     "boxNoMatch": "Keine Box und kein Coach mit diesem Namen. Es erscheinen nur Betriebe, die ihre Seite veröffentlicht haben.",
-    "boxSearchFailed": "Die Suche hat nicht funktioniert. Versuch es noch einmal."
+    "boxSearchFailed": "Die Suche hat nicht funktioniert. Versuch es noch einmal.",
+    "stat": {
+      "countBuddies": "{count, plural, one {Kumpel} other {Kumpels}}",
+      "countFollowYou": "{count, plural, one {Folgt dir} other {Folgen dir}}",
+      "countYouFollow": "Du folgst",
+      "countFollowers": "{count, plural, one {Follower} other {Follower}}",
+      "countFollowing": "Folgt"
+    },
+    "profileTabs": "Profil",
+    "profileCounts": "Kumpels und Follows",
+    "privateAccount": "Privates Konto",
+    "editProfile": "Profil bearbeiten",
+    "editProfileShort": "Bearbeiten",
+    "shareProfile": "Profil teilen",
+    "shareProfileShort": "Teilen",
+    "profileLinkCopied": "Link kopiert",
+    "bioLabel": "Über dich",
+    "bioPlaceholder": "Eine Zeile über dein Training",
+    "nameAndPhoto": "Name, @handle und Foto",
+    "save": "Speichern",
+    "addTab": "Tab hinzufügen",
+    "addTabTitle": "Tabs in deinem Profil",
+    "addTabHint": "Medien und Beiträge sind immer da. Füge weitere aus deinem Journal hinzu; sie zeigen nur, was du schon teilen wolltest.",
+    "myPrsNoneShown": "Du zeigst noch keinen PR in deinem Profil.",
+    "myPrsWho": "Wer sie sieht: Teilen & Sichtbarkeit",
+    "myBadgesNone": "Noch keine Abzeichen. Sie kommen mit deinen Workouts, PRs und Serien.",
+    "badgesNone": "Noch keine Abzeichen.",
+    "addTabHints": {
+      "prs": "Die PRs, die du deinen Followern zeigst",
+      "badges": "Deine Abzeichen, für die Leute, die dir folgen"
+    }
   },
   "BoxPage": {
     "allWeek": "Ganze Woche",

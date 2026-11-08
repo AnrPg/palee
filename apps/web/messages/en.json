@@ -5621,11 +5621,6 @@
     "actionVideos": "Videos",
     "actionCoach": "Coach",
     "membership": "Membership",
-    "meProfileTabs": "Your profile",
-    "meAllPosts": "All your posts",
-    "meAllPrs": "All PRs",
-    "mePrsWho": "Who sees them: Sharing & visibility",
-    "meClubsNone": "You're not in any club yet.",
     "boxFindTitle": "You're not in a box yet",
     "boxFindBody": "Find a box or a coach near you to book classes, follow the WOD and see your membership here.",
     "boxFindAction": "Find a box",
@@ -6023,8 +6018,6 @@
     "helpStaffOnly": "Staff only",
     "settingsUnitsHint": "How weight, height and girths are shown.",
     "settingsSectionsHint": "Which sections your Journal has and how your weight shows.",
-    "mePrsPrivate": "{count, plural, one {One more PR is private.} other {The other # PRs are private.}} Choose which show in Sharing & visibility.",
-    "mePrsNoneShown": "You don't show any PRs on your profile yet.",
     "sharing": {
       "coachSeesTitle": "My coach sees",
       "coachSeesHint": "What reaches your coaches without you sending it each time.",
@@ -6047,7 +6040,12 @@
       "saveError": "That didn't save. Try again."
     },
     "boxFindByName": "Or search by name",
-    "membershipContactBox": "Contact the box"
+    "membershipContactBox": "Contact the box",
+    "meOnlyYou": "Only for you",
+    "meOnlyYouHint": "Nobody else sees this.",
+    "meOnlyYouWaiting": "{count, plural, one {Only for you, # waiting} other {Only for you, # waiting}}",
+    "settingsClubNotifications": "Notifications per box and club",
+    "settingsClubNotificationsHint": "Your boxes and clubs, and what each one tells you"
   },
   "Community": {
     "all": "All",
@@ -6576,9 +6574,8 @@
       "posts": "Posts",
       "media": "Media",
       "prs": "PRs",
-      "clubs": "Clubs"
+      "badges": "Badges"
     },
-    "personClubsEmpty": "No clubs in common with you.",
     "personPostsEmpty": "No posts yet.",
     "mediaEmpty": "No photos or videos yet.",
     "mediaEmptyMine": "Photos and videos from your posts show here.",
@@ -6589,7 +6586,6 @@
     "mediaPhoto": "Photo",
     "lockedRequested": "Your request is waiting for approval. Then you'll also see followers-only posts.",
     "lockedFollow": "Follow to also see followers-only posts.",
-    "myPrsLink": "Your PRs are in Journal › Progress",
     "prsNotShared": "They don't share their PRs with you.",
     "prsNone": "No PRs yet.",
     "unfollowBoxConfirm": "Stop following this box? Its public posts will leave your feed.",
@@ -6650,7 +6646,37 @@
     "findClubsBoxesPeople": "Search clubs, boxes and people",
     "boxesTitle": "Boxes and coaches",
     "boxNoMatch": "No box or coach by that name. Only businesses that have published their page show up.",
-    "boxSearchFailed": "The search didn't work. Try again."
+    "boxSearchFailed": "The search didn't work. Try again.",
+    "stat": {
+      "countBuddies": "{count, plural, one {Buddy} other {Buddies}}",
+      "countFollowYou": "{count, plural, one {Follows you} other {Follow you}}",
+      "countYouFollow": "You follow",
+      "countFollowers": "{count, plural, one {Follower} other {Followers}}",
+      "countFollowing": "Following"
+    },
+    "profileTabs": "Profile",
+    "profileCounts": "Buddies and follows",
+    "privateAccount": "Private account",
+    "editProfile": "Edit profile",
+    "editProfileShort": "Edit",
+    "shareProfile": "Share profile",
+    "shareProfileShort": "Share",
+    "profileLinkCopied": "Link copied",
+    "bioLabel": "Bio",
+    "bioPlaceholder": "A line about your training",
+    "nameAndPhoto": "Name, @handle and photo",
+    "save": "Save",
+    "addTab": "Add a tab",
+    "addTabTitle": "Tabs on your profile",
+    "addTabHint": "Media and Posts are always there. Add more from your journal; they show only what you already chose to share.",
+    "myPrsNoneShown": "You don't show any PR on your profile yet.",
+    "myPrsWho": "Who sees them: Sharing & visibility",
+    "myBadgesNone": "No badges yet. They come with your workouts, PRs and streaks.",
+    "badgesNone": "No badges yet.",
+    "addTabHints": {
+      "prs": "The PRs you show the people who follow you",
+      "badges": "Your badges, for the people who follow you"
+    }
   },
   "BoxPage": {
     "allWeek": "Whole week",

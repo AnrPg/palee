@@ -69875,6 +69875,11 @@
             "nullable": true,
             "type": "string"
           },
+          "bio": {
+            "description": "ADR-554: «Λίγα λόγια»",
+            "nullable": true,
+            "type": "string"
+          },
           "buddy": {
             "description": "ADR-193: you follow each other",
             "type": "boolean"
@@ -69935,10 +69940,24 @@
           "private": {
             "description": "ADR-193: following them is a request",
             "type": "boolean"
+          },
+          "tabs": {
+            "description": "ADR-554: the profile's tabs in order, «Πολυμέσα · Αναρτήσεις» first",
+            "items": {
+              "enum": [
+                "media",
+                "posts",
+                "prs",
+                "badges"
+              ],
+              "type": "string"
+            },
+            "type": "array"
           }
         },
         "required": [
           "id",
+          "tabs",
           "is_me",
           "private",
           "followers_count",
@@ -77072,6 +77091,125 @@
           "byte_size"
         ],
         "title": "PostMediaUploadRequest",
+        "type": "object"
+      },
+      "ProfileBadge": {
+        "properties": {
+          "badge_key": {
+            "type": "string"
+          },
+          "earned_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "badge_key",
+          "earned_at",
+          "id",
+          "label"
+        ],
+        "title": "ProfileBadge",
+        "type": "object"
+      },
+      "ProfileBadgesResponse": {
+        "description": "ADR-554: the «Διακρίσεις» tab; locked until you follow them",
+        "properties": {
+          "badges": {
+            "items": {
+              "properties": {
+                "badge_key": {
+                  "type": "string"
+                },
+                "earned_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "badge_key",
+                "earned_at",
+                "id",
+                "label"
+              ],
+              "title": "ProfileBadge",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "locked": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "badges",
+          "locked"
+        ],
+        "title": "ProfileBadgesResponse",
+        "type": "object"
+      },
+      "ProfileCard": {
+        "description": "ADR-554: «Λίγα λόγια» and the tabs a profile shows",
+        "properties": {
+          "bio": {
+            "nullable": true,
+            "type": "string"
+          },
+          "tabs": {
+            "description": "ADR-554: the profile's tabs in order, «Πολυμέσα · Αναρτήσεις» first",
+            "items": {
+              "enum": [
+                "media",
+                "posts",
+                "prs",
+                "badges"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "tabs"
+        ],
+        "title": "ProfileCard",
+        "type": "object"
+      },
+      "ProfileCardRequest": {
+        "properties": {
+          "bio": {
+            "maxLength": 150,
+            "nullable": true,
+            "type": "string"
+          },
+          "tabs": {
+            "description": "The optional tabs, in order (the fixed ones are always shown)",
+            "items": {
+              "enum": [
+                "prs",
+                "badges"
+              ],
+              "type": "string"
+            },
+            "maxItems": 2,
+            "type": "array"
+          }
+        },
+        "title": "ProfileCardRequest",
         "type": "object"
       },
       "ProfilePostCreateRequest": {
@@ -180114,6 +180252,88 @@
         "summary": "Update current user profile and language preference",
         "tags": [
           "Me"
+        ]
+      }
+    },
+    "/api/me/profile-card": {
+      "put": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PeopleController.update_card",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "bio": {
+                    "maxLength": 150,
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "tabs": {
+                    "description": "The optional tabs, in order (the fixed ones are always shown)",
+                    "items": {
+                      "enum": [
+                        "prs",
+                        "badges"
+                      ],
+                      "type": "string"
+                    },
+                    "maxItems": 2,
+                    "type": "array"
+                  }
+                },
+                "title": "ProfileCardRequest",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "ADR-554: «Λίγα λόγια» and the tabs a profile shows",
+                  "properties": {
+                    "bio": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "tabs": {
+                      "description": "ADR-554: the profile's tabs in order, «Πολυμέσα · Αναρτήσεις» first",
+                      "items": {
+                        "enum": [
+                          "media",
+                          "posts",
+                          "prs",
+                          "badges"
+                        ],
+                        "type": "string"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "tabs"
+                  ],
+                  "title": "ProfileCard",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Card"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "ADR-554: your «Λίγα λόγια» and the optional tabs of your profile",
+        "tags": [
+          "Follows"
         ]
       }
     },
@@ -405796,6 +406016,11 @@
                       "nullable": true,
                       "type": "string"
                     },
+                    "bio": {
+                      "description": "ADR-554: «Λίγα λόγια»",
+                      "nullable": true,
+                      "type": "string"
+                    },
                     "buddy": {
                       "description": "ADR-193: you follow each other",
                       "type": "boolean"
@@ -405856,10 +406081,24 @@
                     "private": {
                       "description": "ADR-193: following them is a request",
                       "type": "boolean"
+                    },
+                    "tabs": {
+                      "description": "ADR-554: the profile's tabs in order, «Πολυμέσα · Αναρτήσεις» first",
+                      "items": {
+                        "enum": [
+                          "media",
+                          "posts",
+                          "prs",
+                          "badges"
+                        ],
+                        "type": "string"
+                      },
+                      "type": "array"
                     }
                   },
                   "required": [
                     "id",
+                    "tabs",
                     "is_me",
                     "private",
                     "followers_count",
@@ -405883,6 +406122,84 @@
           }
         ],
         "summary": "A person: name, avatar, counts and both follow relationships",
+        "tags": [
+          "Follows"
+        ]
+      }
+    },
+    "/api/people/{id}/badges": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PeopleController.badges",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "ADR-554: the «Διακρίσεις» tab; locked until you follow them",
+                  "properties": {
+                    "badges": {
+                      "items": {
+                        "properties": {
+                          "badge_key": {
+                            "type": "string"
+                          },
+                          "earned_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "label": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "badge_key",
+                          "earned_at",
+                          "id",
+                          "label"
+                        ],
+                        "title": "ProfileBadge",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "locked": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "badges",
+                    "locked"
+                  ],
+                  "title": "ProfileBadgesResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Badges"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "ADR-554: the «Διακρίσεις» tab, a person's badges you may see",
         "tags": [
           "Follows"
         ]

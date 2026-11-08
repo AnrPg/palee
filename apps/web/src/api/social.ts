@@ -29,6 +29,11 @@ export type PeopleRelation = PeopleSearchPerson["relation"];
 /** ADR-221: published, live boxes and independent coaches found by name. */
 export type BoxSearchResponse = components["schemas"]["BoxSearchResponse"];
 export type BoxSearchResult = components["schemas"]["BoxSearchResult"];
+/** ADR-554: «Λίγα λόγια» and the tabs a profile shows. */
+export type ProfileCard = components["schemas"]["ProfileCard"];
+export type ProfileCardRequest = components["schemas"]["ProfileCardRequest"];
+export type ProfileBadges = components["schemas"]["ProfileBadgesResponse"];
+export type ProfileBadge = ProfileBadges["badges"][number];
 
 export const SOCIAL_KEY = ["social"] as const;
 export const SUMMARY_KEY = ["social", "summary"] as const;
@@ -130,6 +135,16 @@ export function fetchPersonPosts(token: string, id: string, cursor: string | nul
 /** ADR-231: the «Πολυμέσα» grid, their posts with photos or a video, by the same audience rules. */
 export function fetchPersonMedia(token: string, id: string, cursor: string | null = null) {
   return apiRequest<PersonPostsPage>(paged(`/people/${id}/media`, cursor), { token });
+}
+
+/** ADR-554: the «Διακρίσεις» tab, locked until you follow them. */
+export function fetchPersonBadges(token: string, id: string) {
+  return apiRequest<ProfileBadges>(`/people/${id}/badges`, { token });
+}
+
+/** ADR-554: change «Λίγα λόγια» or the optional tabs (only what is sent changes). */
+export function updateProfileCard(token: string, body: ProfileCardRequest) {
+  return apiRequest<ProfileCard>("/me/profile-card", { method: "PUT", token, body });
 }
 
 export async function createProfilePost(token: string, body: ProfilePostCreate) {

@@ -147,6 +147,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     native_push_tokens widget_tokens
     community_follows community_profile_posts community_profile_post_reactions
     community_profile_post_comments community_social_settings community_user_blocks
+    community_profile_cards
     user_pr_records user_stats user_achievements user_gamification_preferences
     injury_reports user_pr_share_grants journal_visibility_defaults
     journal_notes journal_comments goal_feedback wellbeing_check_ins wellbeing_check_in_answers

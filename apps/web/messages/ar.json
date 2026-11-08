@@ -5621,11 +5621,6 @@
     "actionVideos": "الفيديوهات",
     "actionCoach": "المدرب",
     "membership": "الاشتراك",
-    "meProfileTabs": "ملفك الشخصي",
-    "meAllPosts": "كل منشوراتك",
-    "meAllPrs": "كل الأرقام القياسية",
-    "mePrsWho": "من يراها: المشاركة والظهور",
-    "meClubsNone": "لست في أي نادٍ بعد.",
     "boxFindTitle": "لست في أي صالة بعد",
     "boxFindBody": "ابحث عن صالة أو مدرب قريب منك لحجز الحصص ومتابعة تمرين اليوم ورؤية اشتراكك هنا.",
     "boxFindAction": "ابحث عن صالة",
@@ -6023,8 +6018,6 @@
     "helpStaffOnly": "للموظفين فقط",
     "settingsUnitsHint": "كيف يُعرض الوزن والطول والمحيطات.",
     "settingsSectionsHint": "الأقسام الموجودة في يومياتك وكيف يظهر وزنك.",
-    "mePrsPrivate": "{count, plural, zero {لا أرقام قياسية خاصة.} one {رقم قياسي آخر خاص.} two {رقمان قياسيان آخران خاصان.} few {# أرقام قياسية أخرى خاصة.} many {# رقمًا قياسيًا آخر خاص.} other {# رقم قياسي آخر خاص.}} اختر ما يظهر من المشاركة والظهور.",
-    "mePrsNoneShown": "لا تعرض أي رقم قياسي في ملفك بعد.",
     "sharing": {
       "coachSeesTitle": "ما يراه مدرّبي",
       "coachSeesHint": "ما يصل إلى مدرّبيك دون أن ترسله في كل مرة.",
@@ -6047,7 +6040,12 @@
       "saveError": "لم يُحفظ ذلك. حاول مرة أخرى."
     },
     "boxFindByName": "أو ابحث بالاسم",
-    "membershipContactBox": "تواصل مع الصالة"
+    "membershipContactBox": "تواصل مع الصالة",
+    "meOnlyYou": "لك وحدك",
+    "meOnlyYouHint": "لا يراه أحد غيرك.",
+    "meOnlyYouWaiting": "{count, plural, zero {لك وحدك} one {لك وحدك، # بانتظارك} two {لك وحدك، # بانتظارك} few {لك وحدك، # بانتظارك} many {لك وحدك، # بانتظارك} other {لك وحدك، # بانتظارك}}",
+    "settingsClubNotifications": "الإشعارات لكل box ونادٍ",
+    "settingsClubNotificationsHint": "صالاتك وأنديتك وما يخبرك به كل منها"
   },
   "Community": {
     "all": "الكل",
@@ -6576,9 +6574,8 @@
       "posts": "المنشورات",
       "media": "الوسائط",
       "prs": "الأرقام القياسية",
-      "clubs": "الأندية"
+      "badges": "الشارات"
     },
-    "personClubsEmpty": "لا توجد أندية مشتركة.",
     "personPostsEmpty": "لا توجد منشورات بعد.",
     "mediaEmpty": "لا توجد صور أو فيديوهات بعد.",
     "mediaEmptyMine": "تظهر هنا الصور والفيديوهات من منشوراتك.",
@@ -6589,7 +6586,6 @@
     "mediaPhoto": "صورة",
     "lockedRequested": "طلبك بانتظار الموافقة. بعدها سترى أيضًا المنشورات المخصّصة للمتابعين.",
     "lockedFollow": "تابِع لترى أيضًا المنشورات المخصّصة للمتابعين.",
-    "myPrsLink": "أرقامك الشخصية في Journal › التقدّم",
     "prsNotShared": "لا يشارك أرقامه القياسية معك.",
     "prsNone": "لا توجد أرقام قياسية بعد.",
     "unfollowBoxConfirm": "إيقاف متابعة هذه الصالة؟ ستختفي منشوراتها العامة من موجزك.",
@@ -6650,7 +6646,37 @@
     "findClubsBoxesPeople": "ابحث عن أندية وصالات وأشخاص",
     "boxesTitle": "الصالات والمدربون",
     "boxNoMatch": "لا توجد صالة أو مدرب بهذا الاسم. تظهر فقط الأعمال التي نشرت صفحتها.",
-    "boxSearchFailed": "لم ينجح البحث. حاول مرة أخرى."
+    "boxSearchFailed": "لم ينجح البحث. حاول مرة أخرى.",
+    "stat": {
+      "countBuddies": "{count, plural, zero {رفاق} one {رفيق} two {رفيقان} few {رفاق} many {رفيقًا} other {رفيق}}",
+      "countFollowYou": "{count, plural, zero {يتابعونك} one {يتابعك} two {يتابعانك} few {يتابعونك} many {يتابعونك} other {يتابعونك}}",
+      "countYouFollow": "تتابعهم",
+      "countFollowers": "{count, plural, zero {متابعين} one {متابع} two {متابعان} few {متابعين} many {متابعًا} other {متابع}}",
+      "countFollowing": "يتابع"
+    },
+    "profileTabs": "الملف الشخصي",
+    "profileCounts": "الرفاق والمتابعات",
+    "privateAccount": "حساب خاص",
+    "editProfile": "تعديل الملف الشخصي",
+    "editProfileShort": "تعديل",
+    "shareProfile": "مشاركة الملف الشخصي",
+    "shareProfileShort": "مشاركة",
+    "profileLinkCopied": "تم نسخ الرابط",
+    "bioLabel": "نبذة",
+    "bioPlaceholder": "سطر عن تدريبك",
+    "nameAndPhoto": "الاسم و@handle والصورة",
+    "save": "حفظ",
+    "addTab": "إضافة تبويب",
+    "addTabTitle": "تبويبات ملفك الشخصي",
+    "addTabHint": "الوسائط والمنشورات موجودة دائمًا. أضف المزيد من يومياتك؛ لا تعرض إلا ما اخترت مشاركته من قبل.",
+    "myPrsNoneShown": "لا تعرض أي رقم قياسي في ملفك الشخصي بعد.",
+    "myPrsWho": "من يراها: المشاركة والظهور",
+    "myBadgesNone": "لا شارات بعد. تأتي مع تمارينك وأرقامك القياسية وسلاسلك.",
+    "badgesNone": "لا شارات بعد.",
+    "addTabHints": {
+      "prs": "الأرقام القياسية التي تعرضها على متابعيك",
+      "badges": "شاراتك، لمن يتابعك"
+    }
   },
   "BoxPage": {
     "allWeek": "الأسبوع كاملًا",

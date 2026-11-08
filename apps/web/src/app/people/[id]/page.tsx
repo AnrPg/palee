@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
 import { AuthGuard } from "@/components/auth-guard";
-import { PersonPage } from "@/components/social/PersonPage";
+import { PersonProfile } from "@/components/social/PersonProfile";
 
 export const dynamic = "force-dynamic";
 
@@ -10,7 +10,7 @@ export default async function PersonRoute({ params }: { params: Promise<{ id: st
   return (
     <AuthGuard roles={["member", "athlete", "admin"]}>
       <Suspense>
-        <PersonPage id={id} />
+        <PersonProfile id={id} />
       </Suspense>
     </AuthGuard>
   );

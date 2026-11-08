@@ -5621,11 +5621,6 @@
     "actionVideos": "Vídeos",
     "actionCoach": "Coach",
     "membership": "Subscrição",
-    "meProfileTabs": "O teu perfil",
-    "meAllPosts": "Todas as tuas publicações",
-    "meAllPrs": "Todos os PR",
-    "mePrsWho": "Quem os vê: Partilha e visibilidade",
-    "meClubsNone": "Ainda não estás em nenhum clube.",
     "boxFindTitle": "Ainda não estás em nenhuma box",
     "boxFindBody": "Encontra uma box ou um coach perto de ti para reservar aulas, acompanhar o WOD e ver aqui a tua inscrição.",
     "boxFindAction": "Encontrar uma box",
@@ -6023,8 +6018,6 @@
     "helpStaffOnly": "Só para a equipa",
     "settingsUnitsHint": "Como são mostrados o peso, a altura e os perímetros.",
     "settingsSectionsHint": "Que secções tem o teu Diário e como aparece o teu peso.",
-    "mePrsPrivate": "{count, plural, one {Mais um PR é privado.} other {Os outros # PRs são privados.}} Escolhe quais aparecem em Partilha e visibilidade.",
-    "mePrsNoneShown": "Ainda não mostras nenhum PR no teu perfil.",
     "sharing": {
       "coachSeesTitle": "O meu coach vê",
       "coachSeesHint": "O que chega aos teus coaches sem o enviares de cada vez.",
@@ -6047,7 +6040,12 @@
       "saveError": "Não foi guardado. Tenta novamente."
     },
     "boxFindByName": "Ou procura pelo nome",
-    "membershipContactBox": "Contactar a box"
+    "membershipContactBox": "Contactar a box",
+    "meOnlyYou": "Só para ti",
+    "meOnlyYouHint": "Mais ninguém vê isto.",
+    "meOnlyYouWaiting": "{count, plural, one {Só para ti, # à espera} other {Só para ti, # à espera}}",
+    "settingsClubNotifications": "Notificações por box e clube",
+    "settingsClubNotificationsHint": "As tuas boxes e clubes e o que cada um te diz"
   },
   "Community": {
     "all": "Tudo",
@@ -6576,9 +6574,8 @@
       "posts": "Publicações",
       "media": "Multimédia",
       "prs": "PRs",
-      "clubs": "Clubes"
+      "badges": "Distintivos"
     },
-    "personClubsEmpty": "Sem clubes em comum.",
     "personPostsEmpty": "Ainda sem publicações.",
     "mediaEmpty": "Ainda não há fotos nem vídeos.",
     "mediaEmptyMine": "As fotos e vídeos das tuas publicações aparecem aqui.",
@@ -6589,7 +6586,6 @@
     "mediaPhoto": "Foto",
     "lockedRequested": "O teu pedido aguarda aprovação. Depois vais ver também as publicações só para seguidores.",
     "lockedFollow": "Segue para ver também as publicações só para seguidores.",
-    "myPrsLink": "Os teus PR estão em Journal › Progresso",
     "prsNotShared": "Não partilha os PRs contigo.",
     "prsNone": "Ainda sem PRs.",
     "unfollowBoxConfirm": "Deixar de seguir esta box? As publicações públicas saem do teu feed.",
@@ -6650,7 +6646,37 @@
     "findClubsBoxesPeople": "Procurar clubes, boxes e pessoas",
     "boxesTitle": "Boxes e treinadores",
     "boxNoMatch": "Nenhuma box ou treinador com esse nome. Só aparecem os negócios que publicaram a sua página.",
-    "boxSearchFailed": "A pesquisa não funcionou. Tenta novamente."
+    "boxSearchFailed": "A pesquisa não funcionou. Tenta novamente.",
+    "stat": {
+      "countBuddies": "{count, plural, one {Amigalhaço} other {Amigalhaços}}",
+      "countFollowYou": "{count, plural, one {Segue-te} other {Seguem-te}}",
+      "countYouFollow": "Segues",
+      "countFollowers": "{count, plural, one {Seguidor} other {Seguidores}}",
+      "countFollowing": "A seguir"
+    },
+    "profileTabs": "Perfil",
+    "profileCounts": "Amigalhaços e seguidores",
+    "privateAccount": "Conta privada",
+    "editProfile": "Editar perfil",
+    "editProfileShort": "Editar",
+    "shareProfile": "Partilhar perfil",
+    "shareProfileShort": "Partilhar",
+    "profileLinkCopied": "Ligação copiada",
+    "bioLabel": "Sobre ti",
+    "bioPlaceholder": "Uma linha sobre o teu treino",
+    "nameAndPhoto": "Nome, @handle e fotografia",
+    "save": "Guardar",
+    "addTab": "Adicionar separador",
+    "addTabTitle": "Separadores do teu perfil",
+    "addTabHint": "Multimédia e Publicações estão sempre lá. Adiciona mais a partir do teu diário; mostram só o que já escolheste partilhar.",
+    "myPrsNoneShown": "Ainda não mostras nenhum PR no teu perfil.",
+    "myPrsWho": "Quem os vê: Partilha e visibilidade",
+    "myBadgesNone": "Ainda sem distintivos. Chegam com os teus treinos, PRs e sequências.",
+    "badgesNone": "Ainda sem distintivos.",
+    "addTabHints": {
+      "prs": "Os PRs que mostras a quem te segue",
+      "badges": "Os teus distintivos, para quem te segue"
+    }
   },
   "BoxPage": {
     "allWeek": "Semana toda",

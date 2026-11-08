@@ -5621,11 +5621,6 @@
     "actionVideos": "Βίντεο",
     "actionCoach": "Coach",
     "membership": "Συνδρομή",
-    "meProfileTabs": "Το προφίλ σου",
-    "meAllPosts": "Όλες οι αναρτήσεις σου",
-    "meAllPrs": "Όλα τα PRs",
-    "mePrsWho": "Ποιος τα βλέπει: Κοινοποίηση & ορατότητα",
-    "meClubsNone": "Δεν είσαι ακόμη σε κάποιο club.",
     "boxFindTitle": "Δεν είσαι ακόμη σε κάποιο box",
     "boxFindBody": "Βρες ένα box ή έναν coach κοντά σου για να κλείνεις τμήματα, να βλέπεις το WOD και τη συνδρομή σου εδώ.",
     "boxFindAction": "Βρες box",
@@ -6023,8 +6018,6 @@
     "helpStaffOnly": "Μόνο για staff",
     "settingsUnitsHint": "Πώς δείχνονται βάρος, ύψος και περίμετροι.",
     "settingsSectionsHint": "Ποιες ενότητες έχει το Ημερολόγιό σου και πώς φαίνεται το βάρος.",
-    "mePrsPrivate": "{count, plural, one {Ένα ακόμα PR είναι ιδιωτικό.} other {Τα υπόλοιπα # PRs είναι ιδιωτικά.}} Ορίζεις ποια φαίνονται από Κοινοποίηση & ορατότητα.",
-    "mePrsNoneShown": "Δεν δείχνεις ακόμα κανένα PR στο προφίλ σου.",
     "sharing": {
       "coachSeesTitle": "Ο coach μου βλέπει",
       "coachSeesHint": "Τι φτάνει στους coaches σου χωρίς να το στείλεις κάθε φορά.",
@@ -6047,7 +6040,12 @@
       "saveError": "Δεν αποθηκεύτηκε. Δοκίμασε ξανά."
     },
     "boxFindByName": "Ή ψάξε με το όνομα",
-    "membershipContactBox": "Επικοινωνία με το box"
+    "membershipContactBox": "Επικοινωνία με το box",
+    "meOnlyYou": "Μόνο για σένα",
+    "meOnlyYouHint": "Κανείς άλλος δεν το βλέπει.",
+    "meOnlyYouWaiting": "{count, plural, one {Μόνο για σένα, # περιμένει} other {Μόνο για σένα, # περιμένουν}}",
+    "settingsClubNotifications": "Ειδοποιήσεις ανά box και club",
+    "settingsClubNotificationsHint": "Τα box και τα clubs σου και τι σου λέει το καθένα"
   },
   "Community": {
     "all": "Όλα",
@@ -6576,9 +6574,8 @@
       "posts": "Αναρτήσεις",
       "media": "Πολυμέσα",
       "prs": "PRs",
-      "clubs": "Clubs"
+      "badges": "Διακρίσεις"
     },
-    "personClubsEmpty": "Δεν έχει κοινά clubs μαζί σου.",
     "personPostsEmpty": "Δεν υπάρχουν αναρτήσεις ακόμα.",
     "mediaEmpty": "Δεν υπάρχουν φωτογραφίες ή βίντεο ακόμα.",
     "mediaEmptyMine": "Οι φωτογραφίες και τα βίντεο των αναρτήσεών σου φαίνονται εδώ.",
@@ -6589,7 +6586,6 @@
     "mediaPhoto": "Φωτογραφία",
     "lockedRequested": "Το αίτημά σου περιμένει έγκριση. Μετά θα βλέπεις και τις αναρτήσεις για ακολούθους.",
     "lockedFollow": "Ακολούθησε για να βλέπεις και τις αναρτήσεις για ακολούθους.",
-    "myPrsLink": "Τα PRs σου είναι στο Journal › Πρόοδος",
     "prsNotShared": "Δεν μοιράζεται τα PRs του μαζί σου.",
     "prsNone": "Δεν έχει PRs ακόμα.",
     "unfollowBoxConfirm": "Να σταματήσεις να ακολουθείς το box; Δεν θα βλέπεις τις δημόσιες αναρτήσεις του στη Ροή.",
@@ -6650,7 +6646,37 @@
     "findClubsBoxesPeople": "Αναζήτηση clubs, box και ατόμων",
     "boxesTitle": "Box και coaches",
     "boxNoMatch": "Δεν βρέθηκε box ή coach με αυτό το όνομα. Εμφανίζονται μόνο όσοι έχουν δημοσιεύσει τη σελίδα τους.",
-    "boxSearchFailed": "Η αναζήτηση δεν έγινε. Δοκίμασε ξανά."
+    "boxSearchFailed": "Η αναζήτηση δεν έγινε. Δοκίμασε ξανά.",
+    "stat": {
+      "countBuddies": "{count, plural, one {Φιλαράκι} other {Φιλαράκια}}",
+      "countFollowYou": "{count, plural, one {Σε ακολουθεί} other {Σε ακολουθούν}}",
+      "countYouFollow": "Ακολουθείς",
+      "countFollowers": "{count, plural, one {Ακόλουθος} other {Ακόλουθοι}}",
+      "countFollowing": "Ακολουθεί"
+    },
+    "profileTabs": "Προφίλ",
+    "profileCounts": "Φιλαράκια και ακόλουθοι",
+    "privateAccount": "Ιδιωτικός λογαριασμός",
+    "editProfile": "Επεξεργασία προφίλ",
+    "editProfileShort": "Επεξεργασία",
+    "shareProfile": "Κοινοποίηση προφίλ",
+    "shareProfileShort": "Κοινοποίηση",
+    "profileLinkCopied": "Ο σύνδεσμος αντιγράφηκε",
+    "bioLabel": "Λίγα λόγια",
+    "bioPlaceholder": "Μια γραμμή για την προπόνησή σου",
+    "nameAndPhoto": "Όνομα, @handle και φωτογραφία",
+    "save": "Αποθήκευση",
+    "addTab": "Πρόσθεσε καρτέλα",
+    "addTabTitle": "Καρτέλες στο προφίλ σου",
+    "addTabHint": "Τα Πολυμέσα και οι Αναρτήσεις είναι πάντα εκεί. Πρόσθεσε κι άλλες από το Journal σου· δείχνουν μόνο ό,τι έχεις ήδη επιλέξει να μοιράζεσαι.",
+    "myPrsNoneShown": "Δεν δείχνεις ακόμα κανένα PR στο προφίλ σου.",
+    "myPrsWho": "Ποιος τα βλέπει: Κοινοποίηση & ορατότητα",
+    "myBadgesNone": "Δεν έχεις διακρίσεις ακόμα. Έρχονται με τις προπονήσεις, τα PRs και τα σερί σου.",
+    "badgesNone": "Δεν έχει διακρίσεις ακόμα.",
+    "addTabHints": {
+      "prs": "Τα PRs που δείχνεις σε όσους σε ακολουθούν",
+      "badges": "Οι διακρίσεις σου, για όσους σε ακολουθούν"
+    }
   },
   "BoxPage": {
     "allWeek": "Όλη η εβδομάδα",

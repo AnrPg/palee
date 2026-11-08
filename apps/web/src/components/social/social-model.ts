@@ -73,12 +73,33 @@ export function postsLockKey(profile: Pick<PersonProfile, "is_me" | "my_status" 
   return profile.private ? "lockedPrivate" : "lockedFollow";
 }
 
-export const PERSON_TABS = ["posts", "media", "prs", "clubs"] as const;
-export type PersonTab = (typeof PERSON_TABS)[number];
+/** ADR-554: «Πολυμέσα · Αναρτήσεις» always, first; PRs and «Διακρίσεις» when the owner adds them. */
+export const FIXED_PROFILE_TABS = ["media", "posts"] as const;
+export const OPTIONAL_PROFILE_TABS = ["prs", "badges"] as const;
+export type OptionalProfileTab = (typeof OPTIONAL_PROFILE_TABS)[number];
+export type PersonTab = (typeof FIXED_PROFILE_TABS)[number] | OptionalProfileTab;
 
-/** An unknown or missing `?tab=` opens the posts, the first tab. */
-export function personTab(requested: string | null | undefined): PersonTab {
-  return PERSON_TABS.includes(requested as PersonTab) ? (requested as PersonTab) : "posts";
+const isPersonTab = (value: unknown): value is PersonTab =>
+  (FIXED_PROFILE_TABS as readonly unknown[]).includes(value) || (OPTIONAL_PROFILE_TABS as readonly unknown[]).includes(value);
+
+/** The tabs a profile shows, in its order; the fixed ones even if the API left them out. */
+export function profileTabs(shown: readonly string[] | null | undefined): PersonTab[] {
+  const known = (shown ?? []).filter(isPersonTab);
+  return [...FIXED_PROFILE_TABS, ...known.filter((tab) => !(FIXED_PROFILE_TABS as readonly string[]).includes(tab))].filter(
+    (tab, index, all) => all.indexOf(tab) === index,
+  );
+}
+
+/** An unknown, missing or hidden `?tab=` opens the photos and videos, the first tab (ADR-554). */
+export function personTab(requested: string | null | undefined, shown: readonly PersonTab[] = FIXED_PROFILE_TABS): PersonTab {
+  return isPersonTab(requested) && shown.includes(requested) ? requested : "media";
+}
+
+/** «+ Καρτέλα»: the optional tabs after switching one on (added last) or off. */
+export function toggleProfileTab(shown: readonly PersonTab[], tab: OptionalProfileTab, on: boolean): OptionalProfileTab[] {
+  const optional = shown.filter((value): value is OptionalProfileTab => (OPTIONAL_PROFILE_TABS as readonly string[]).includes(value));
+  const without = optional.filter((value) => value !== tab);
+  return on ? [...without, tab] : without;
 }
 
 export type MediaTile = {

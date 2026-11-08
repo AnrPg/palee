@@ -8,6 +8,7 @@ defmodule Palee.Infrastructure.Community.EctoSocialStore do
   alias Palee.Community.{
     Follow,
     SocialSettings,
+    ProfileCard,
     ProfilePost,
     ProfilePostComment,
     ProfilePostReaction,
@@ -254,6 +255,18 @@ defmodule Palee.Infrastructure.Community.EctoSocialStore do
   def put_social_settings(_context, user_id, attrs) do
     (Repo.get(SocialSettings, user_id) || %SocialSettings{user_id: user_id})
     |> SocialSettings.changeset(attrs)
+    |> Repo.insert_or_update()
+  end
+
+  # Profile card (ADR-554) ----------------------------------------------------
+
+  @impl true
+  def get_profile_card(_context, user_id), do: Repo.get(ProfileCard, user_id)
+
+  @impl true
+  def put_profile_card(_context, user_id, attrs) do
+    (Repo.get(ProfileCard, user_id) || %ProfileCard{user_id: user_id})
+    |> ProfileCard.changeset(attrs)
     |> Repo.insert_or_update()
   end
 

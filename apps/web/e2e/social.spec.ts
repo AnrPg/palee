@@ -1,3 +1,4 @@
+import { personProfile } from "./support/profile";
 import { expect, test, type Page } from "./support/test";
 
 // ADR-142 (P2-M2): follow requests with the one-time booking-sharing offer
@@ -101,7 +102,8 @@ async function stub(page: Page) {
     route.fulfill(json({ entries: [{ follow_id: "follow-2", status: "active", since, person: { id: "person-3", nickname: "Eleni", avatar_url: null, my_status: "active" } }], next_cursor: null })),
   );
   await page.route("**/api/people/person-2", (route) =>
-    route.fulfill(json({ ...nikos, is_me: false, followers_count: 10, following_count: 4, my_status: "none", follows_me: true })),
+    // ADR-554: Nikos added the PRs tab to his profile.
+    route.fulfill(json(personProfile({ ...nikos, followers_count: 10, following_count: 4, follows_me: true, tabs: ["media", "posts", "prs"] }))),
   );
   await page.route("**/api/people/person-2/posts**", (route) => route.fulfill(json({ posts: [], next_cursor: null })));
   await page.route("**/api/people/person-2/media**", (route) => route.fulfill(json({ posts: nikosMedia, next_cursor: null })));
@@ -162,13 +164,22 @@ test.describe("social", () => {
     await expect(page.getByText("Follows you")).toBeVisible();
     await expect(page.getByRole("button", { name: "Follow back" })).toBeVisible();
     await expect(page.getByText("Follow to also see followers-only posts.")).toBeVisible();
+    // The PRs tab he added: not following yet, so it says what stays hidden.
     await page.getByRole("tab", { name: "PRs" }).click();
-    await expect(page.getByText("They don't share their PRs with you.")).toBeVisible();
+    await expect(page.getByRole("tab", { name: "PRs" })).toHaveAttribute("aria-selected", "true");
+    await expect(page.getByRole("tabpanel").getByText("Follow to also see followers-only posts.")).toBeVisible();
+    // Only the owner adds tabs.
+    await expect(page.getByTestId("profile-add-tab")).toHaveCount(0);
+    await expect(page.getByTestId("me-sheet-button")).toHaveCount(0);
   });
 
   test("a person's Media tab is an Instagram-like grid that opens each post", async ({ page }) => {
     await stub(page);
     await page.goto("/people/person-2");
+    // ADR-554: Media is the first tab and opens by default.
+    await expect(page.getByRole("tab", { name: "Media" })).toHaveAttribute("aria-selected", "true");
+    await page.getByRole("tab", { name: "Posts" }).click();
+    await expect(page).toHaveURL(/tab=posts/);
     await page.getByRole("tab", { name: "Media" }).click();
     await expect(page).toHaveURL(/tab=media/);
     const grid = page.getByTestId("media-grid");
@@ -190,24 +201,97 @@ test.describe("social", () => {
     await expect(page.getByRole("tab", { name: "Media" })).toHaveAttribute("aria-selected", "true");
   });
 
-  test("the selected profile tab is a rounded Spark pill with room around its label", async ({ page }) => {
+  test("a person's tabs are Media · Posts plus the ones they added, with no counts and no Clubs tab", async ({ page }) => {
     await stub(page);
     await page.goto("/people/person-2");
-    const posts = page.getByRole("tab", { name: "Posts" });
-    await expect(posts).toHaveAttribute("aria-selected", "true");
-    const shape = await posts.evaluate((element) => {
-      const style = getComputedStyle(element);
-      return {
-        radius: parseFloat(style.borderTopLeftRadius),
-        paddingLeft: parseFloat(style.paddingLeft),
-        paddingRight: parseFloat(style.paddingRight),
-        background: style.backgroundColor,
-      };
+    const tabs = page.getByRole("tablist", { name: "Profile" }).getByRole("tab");
+    await expect(tabs).toHaveCount(3);
+    await expect(tabs.nth(0)).toHaveAccessibleName("Media");
+    await expect(tabs.nth(1)).toHaveAccessibleName("Posts");
+    await expect(tabs.nth(2)).toHaveAccessibleName("PRs");
+    await expect(tabs.nth(0)).toHaveAttribute("aria-selected", "true");
+    await expect(tabs.nth(1)).toHaveAttribute("aria-selected", "false");
+    await expect(tabs.nth(0)).toHaveText("Media");
+    await expect(page.getByRole("tab", { name: "Clubs" })).toHaveCount(0);
+    // An unknown or hidden ?tab= falls back to Media.
+    await page.goto("/people/person-2?tab=badges");
+    await expect(page.getByRole("tab", { name: "Media" })).toHaveAttribute("aria-selected", "true");
+    await expect(page.getByRole("tab", { name: "Badges" })).toHaveCount(0);
+  });
+
+  test("Εγώ is my own profile: handle, counts, Media first, the ☰, a tab added with + and a bio (ADR-554)", async ({ page }) => {
+    await stub(page);
+    const card: { bio: string | null; tabs: string[] } = { bio: null, tabs: ["media", "posts"] };
+    const cardPuts: unknown[] = [];
+    await page.route("**/api/people/member-1", (route) =>
+      route.fulfill(
+        json(
+          personProfile({
+            id: user.id,
+            nickname: user.nickname,
+            handle: "maria.l",
+            is_me: true,
+            followers_count: 7,
+            following_count: 5,
+            follow_groups: { buddies: 2, followers_only: 5, following_only: 3 },
+            ...card,
+          }),
+        ),
+      ),
+    );
+    await page.route("**/api/people/member-1/media**", (route) => route.fulfill(json({ posts: [], next_cursor: null })));
+    await page.route("**/api/people/member-1/posts**", (route) => route.fulfill(json({ posts: [], next_cursor: null })));
+    await page.route("**/api/people/member-1/badges", (route) =>
+      route.fulfill(json({ badges: [{ id: "badge-1", badge_key: "workouts_10", label: "10 workouts", earned_at: "2026-10-01T10:00:00Z" }], locked: false })),
+    );
+    await page.route("**/api/me/profile-card", (route) => {
+      if (route.request().method() !== "PUT") return route.fallback();
+      const body = route.request().postDataJSON() as { bio?: string | null; tabs?: string[] };
+      cardPuts.push(body);
+      if (body.tabs) card.tabs = ["media", "posts", ...body.tabs];
+      if ("bio" in body) card.bio = body.bio ?? null;
+      return route.fulfill(json(card));
     });
-    expect(shape.radius).toBeGreaterThanOrEqual(8);
-    expect(shape.paddingLeft).toBeGreaterThanOrEqual(8);
-    expect(shape.paddingRight).toBeGreaterThanOrEqual(8);
-    expect(shape.background).not.toBe("rgba(0, 0, 0, 0)");
+
+    await page.goto("/me");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("maria.l");
+    const counts = page.getByRole("list", { name: "Buddies and follows" });
+    await expect(counts.getByRole("listitem")).toHaveText([/2\s*Buddies/, /5\s*Follow you/, /3\s*You follow/]);
+    await expect(counts.getByRole("link").first()).toHaveAttribute("href", "/me/connections?tab=buddies");
+    await expect(page.getByRole("tab", { name: "Media" })).toHaveAttribute("aria-selected", "true");
+    await expect(page.getByRole("tab", { name: "Badges" })).toHaveCount(0);
+
+    // ☰ «Only for you»: what I do rather than show.
+    await page.getByTestId("me-sheet-button").click();
+    const sheet = page.getByTestId("me-sheet");
+    await expect(sheet).toHaveAccessibleName("Only for you");
+    await expect(sheet.getByRole("link", { name: /^Settings/ })).toHaveAttribute("href", "/me/settings");
+    await page.keyboard.press("Escape");
+    await expect(sheet).toHaveCount(0);
+
+    // «+» adds the Badges tab, last.
+    await page.getByTestId("profile-add-tab").click();
+    const addTab = page.getByTestId("add-tab-dialog");
+    await expect(addTab.getByRole("switch", { name: /^PRs/ })).not.toBeChecked();
+    await addTab.getByRole("switch", { name: /^Badges/ }).check();
+    await expect.poll(() => cardPuts).toEqual([{ tabs: ["badges"] }]);
+    await expect(addTab.getByRole("switch", { name: /^Badges/ })).toBeChecked();
+    await page.keyboard.press("Escape");
+    await expect(addTab).toHaveCount(0);
+    await expect(page.getByRole("tablist", { name: "Profile" }).getByRole("tab").last()).toHaveAccessibleName("Badges");
+    await page.getByRole("tab", { name: "Badges" }).click();
+    await expect(page.getByTestId("profile-badges")).toContainText("Completed 10 workouts");
+
+    // Edit profile saves «Bio», which then shows under the header.
+    await expect(page.getByTestId("profile-bio")).toHaveCount(0);
+    await page.getByRole("button", { name: "Edit profile" }).click();
+    const edit = page.getByTestId("edit-profile-dialog");
+    await edit.getByRole("textbox", { name: "Bio" }).fill("Lifting at dawn.");
+    await edit.getByRole("button", { name: "Save" }).click();
+    await expect(edit).toHaveCount(0);
+    expect(cardPuts.at(-1)).toEqual({ bio: "Lifting at dawn." });
+    await expect(page.getByTestId("profile-bio")).toHaveText("Lifting at dawn.");
+    await page.screenshot({ path: "test-results/social/me-profile.png", fullPage: true });
   });
 });
 

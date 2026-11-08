@@ -78,6 +78,7 @@ export function ProfilePage() {
   const tBody = useTranslations("Body");
   const tFirstRun = useTranslations("FirstRun");
   const tGoal = useTranslations("TrainingGoal");
+  const tCheckIn = useTranslations("CheckIn");
   const { tokens, currentUser, signOut } = useSession();
   const selfService = showsTenantSelfServiceSurfaces(currentUser);
   const user = currentUser as CurrentUserWithAvatar | null;
@@ -183,6 +184,10 @@ export function ProfilePage() {
         {/* ADR-463: staff say whether they also train; members never see it. */}
         <AthleteUseSetting />
 
+        {/* ADR-554: moved here from Εγώ, which now shows only the profile and «Μόνο για σένα». */}
+        <SettingsLink href="/me/sharing" title={tMe("meSharing")} hint={tMe("meSharingHint")} />
+        <SettingsLink href="/me/devices" title={tCheckIn("devicesTitle")} hint={tCheckIn("devicesNavHint")} />
+
 
         <CollapsibleSection
           id="language-region"
@@ -233,6 +238,7 @@ export function ProfilePage() {
 
         {/* ADR-199: per-category notifications and push on this device. */}
         <NotificationSettings />
+        <SettingsLink href="/me/clubs" title={tMe("settingsClubNotifications")} hint={tMe("settingsClubNotificationsHint")} />
 
         {/* ADR-346 (W2 p5): the box's automatic messages, one switch and the birthday. */}
         <AutomaticMessagesSettings />

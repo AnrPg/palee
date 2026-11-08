@@ -4481,6 +4481,23 @@ export interface paths {
         patch: operations["PaleeWeb.MeController.update_profile"];
         trace?: never;
     };
+    "/api/me/profile-card": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** ADR-554: your «Λίγα λόγια» and the optional tabs of your profile */
+        put: operations["PaleeWeb.PeopleController.update_card"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/progress": {
         parameters: {
             query?: never;
@@ -18840,6 +18857,23 @@ export interface paths {
         };
         /** A person: name, avatar, counts and both follow relationships */
         get: operations["PaleeWeb.PeopleController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/people/{id}/badges": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** ADR-554: the «Διακρίσεις» tab, a person's badges you may see */
+        get: operations["PaleeWeb.PeopleController.badges"];
         put?: never;
         post?: never;
         delete?: never;
@@ -42232,6 +42266,8 @@ export interface components {
         /** PersonProfile */
         PersonProfile: {
             avatar_url?: string | null;
+            /** @description ADR-554: «Λίγα λόγια» */
+            bio?: string | null;
             /** @description ADR-193: you follow each other */
             buddy: boolean;
             /**
@@ -42255,6 +42291,8 @@ export interface components {
             nickname?: string | null;
             /** @description ADR-193: following them is a request */
             private: boolean;
+            /** @description ADR-554: the profile's tabs in order, «Πολυμέσα · Αναρτήσεις» first */
+            tabs: ("media" | "posts" | "prs" | "badges")[];
         };
         /** PersonRef */
         PersonRef: {
@@ -44210,6 +44248,45 @@ export interface components {
             content_type: "image/heic" | "image/heif" | "image/jpeg" | "image/png" | "image/webp" | "video/mp4" | "video/quicktime" | "video/webm";
             /** @enum {string} */
             purpose: "post_photo" | "post_video";
+        };
+        /** ProfileBadge */
+        ProfileBadge: {
+            badge_key: string;
+            /** Format: date-time */
+            earned_at: string;
+            /** Format: uuid */
+            id: string;
+            label: string;
+        };
+        /**
+         * ProfileBadgesResponse
+         * @description ADR-554: the «Διακρίσεις» tab; locked until you follow them
+         */
+        ProfileBadgesResponse: {
+            badges: {
+                badge_key: string;
+                /** Format: date-time */
+                earned_at: string;
+                /** Format: uuid */
+                id: string;
+                label: string;
+            }[];
+            locked: boolean;
+        };
+        /**
+         * ProfileCard
+         * @description ADR-554: «Λίγα λόγια» and the tabs a profile shows
+         */
+        ProfileCard: {
+            bio?: string | null;
+            /** @description ADR-554: the profile's tabs in order, «Πολυμέσα · Αναρτήσεις» first */
+            tabs: ("media" | "posts" | "prs" | "badges")[];
+        };
+        /** ProfileCardRequest */
+        ProfileCardRequest: {
+            bio?: string | null;
+            /** @description The optional tabs, in order (the fixed ones are always shown) */
+            tabs?: ("prs" | "badges")[];
         };
         /** ProfilePostCreateRequest */
         ProfilePostCreateRequest: {
@@ -79908,6 +79985,38 @@ export interface operations {
                 };
                 content: {
                     "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.PeopleController.update_card": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    bio?: string | null;
+                    /** @description The optional tabs, in order (the fixed ones are always shown) */
+                    tabs?: ("prs" | "badges")[];
+                };
+            };
+        };
+        responses: {
+            /** @description Card */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        bio?: string | null;
+                        /** @description ADR-554: the profile's tabs in order, «Πολυμέσα · Αναρτήσεις» first */
+                        tabs: ("media" | "posts" | "prs" | "badges")[];
+                    };
                 };
             };
         };
@@ -158416,6 +158525,8 @@ export interface operations {
                 content: {
                     "application/json": {
                         avatar_url?: string | null;
+                        /** @description ADR-554: «Λίγα λόγια» */
+                        bio?: string | null;
                         /** @description ADR-193: you follow each other */
                         buddy: boolean;
                         /**
@@ -158439,6 +158550,40 @@ export interface operations {
                         nickname?: string | null;
                         /** @description ADR-193: following them is a request */
                         private: boolean;
+                        /** @description ADR-554: the profile's tabs in order, «Πολυμέσα · Αναρτήσεις» first */
+                        tabs: ("media" | "posts" | "prs" | "badges")[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PeopleController.badges": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Badges */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        badges: {
+                            badge_key: string;
+                            /** Format: date-time */
+                            earned_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            label: string;
+                        }[];
+                        locked: boolean;
                     };
                 };
             };

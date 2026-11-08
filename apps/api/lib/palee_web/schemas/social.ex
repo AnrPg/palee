@@ -374,6 +374,69 @@ defmodule PaleeWeb.Schemas.Social do
     }
   end
 
+  defp profile_tabs do
+    %Schema{
+      type: :array,
+      description: "ADR-554: the profile's tabs in order, «Πολυμέσα · Αναρτήσεις» first",
+      items: %Schema{type: :string, enum: ~w(media posts prs badges)}
+    }
+  end
+
+  def profile_card do
+    %Schema{
+      title: "ProfileCard",
+      type: :object,
+      description: "ADR-554: «Λίγα λόγια» and the tabs a profile shows",
+      properties: %{
+        bio: %Schema{type: :string, nullable: true},
+        tabs: profile_tabs()
+      },
+      required: [:tabs]
+    }
+  end
+
+  def profile_card_request do
+    %Schema{
+      title: "ProfileCardRequest",
+      type: :object,
+      properties: %{
+        bio: %Schema{type: :string, nullable: true, maxLength: 150},
+        tabs: %Schema{
+          type: :array,
+          description: "The optional tabs, in order (the fixed ones are always shown)",
+          items: %Schema{type: :string, enum: ~w(prs badges)},
+          maxItems: 2
+        }
+      }
+    }
+  end
+
+  def profile_badges_response do
+    %Schema{
+      title: "ProfileBadgesResponse",
+      type: :object,
+      description: "ADR-554: the «Διακρίσεις» tab; locked until you follow them",
+      properties: %{
+        badges: %Schema{
+          type: :array,
+          items: %Schema{
+            title: "ProfileBadge",
+            type: :object,
+            properties: %{
+              id: @uuid,
+              badge_key: %Schema{type: :string},
+              label: %Schema{type: :string},
+              earned_at: %Schema{type: :string, format: :"date-time"}
+            },
+            required: [:badge_key, :earned_at, :id, :label]
+          }
+        },
+        locked: %Schema{type: :boolean}
+      },
+      required: [:badges, :locked]
+    }
+  end
+
   def privacy_request do
     %Schema{
       title: "SocialPrivacyRequest",
@@ -482,10 +545,13 @@ defmodule PaleeWeb.Schemas.Social do
         follow_groups: follow_groups(),
         my_status: status(),
         follows_me: %Schema{type: :boolean},
-        buddy: %Schema{type: :boolean, description: "ADR-193: you follow each other"}
+        buddy: %Schema{type: :boolean, description: "ADR-193: you follow each other"},
+        bio: %Schema{type: :string, nullable: true, description: "ADR-554: «Λίγα λόγια»"},
+        tabs: profile_tabs()
       },
       required: [
         :id,
+        :tabs,
         :is_me,
         :private,
         :followers_count,

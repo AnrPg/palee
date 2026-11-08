@@ -407,6 +407,8 @@ defmodule Palee.Community do
   # Social settings (ADR-142 decision 12).
   defdelegate social_settings(context, user_id), to: SocialStore, as: :get_social_settings
   defdelegate put_social_settings(context, user_id, attrs), to: SocialStore
+  defdelegate profile_card(context, user_id), to: SocialStore, as: :get_profile_card
+  defdelegate put_profile_card(context, user_id, attrs), to: SocialStore
   defdelegate booking_sharer_ids(context), to: SocialStore
   defdelegate hidden_member_ids(ids), to: SocialStore
 

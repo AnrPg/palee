@@ -8,7 +8,8 @@ defmodule Palee.Application.SocialProfile do
   """
 
   alias Palee.Application.PostPresenter
-  alias Palee.{Community, Identity, Places}
+  alias Palee.{Community, Gamification, Identity, Places}
+  alias Palee.Community.Domain.ProfileTabs
 
   @page 20
   # Ten rows of the three-wide grid.
@@ -139,9 +140,73 @@ defmodule Palee.Application.SocialProfile do
          my_status: my_status,
          follows_me: follows_me,
          buddy: Community.buddies?(my_status, if(follows_me, do: "active", else: "none"))
+       }
+       |> Map.merge(card(context, person.id))}
+    end
+  end
+
+  @doc """
+  ADR-554: «Λίγα λόγια» and the tabs the profile shows, fixed ones first.
+  Every signed-in session reads the card; what each tab holds keeps its
+  own audience rules.
+  """
+  def card(context, user_id) do
+    stored = Community.profile_card(context, user_id)
+
+    %{
+      bio: stored && stored.bio,
+      tabs: ProfileTabs.shown(stored && stored.tabs)
+    }
+  end
+
+  @doc "ADR-554: the owner changes «Λίγα λόγια» or the optional tabs («+ Καρτέλα»)."
+  def put_card(%{user_id: user_id} = context, attrs) do
+    changes =
+      %{}
+      |> put_present(attrs, :bio, &ProfileTabs.bio/1)
+      |> put_present(attrs, :tabs, &ProfileTabs.normalize/1)
+
+    with true <- changes != %{} || {:error, :bad_request},
+         {:ok, _card} <- Community.put_profile_card(context, user_id, changes),
+         do: {:ok, card(context, user_id)}
+  end
+
+  defp put_present(changes, attrs, key, fun) do
+    case Map.fetch(attrs, key) do
+      {:ok, value} -> Map.put(changes, key, fun.(value))
+      :error -> changes
+    end
+  end
+
+  @doc """
+  ADR-554: the «Διακρίσεις» tab. The reader sees the badges only when it is
+  the owner, or an active follower while the owner shows the tab
+  (`user_achievements_profile_read_policy`); anyone else gets none, `locked`.
+  """
+  def badges(%{user_id: viewer_id} = context, person_id) do
+    with {:ok, person} <- find(person_id, viewer_id) do
+      mine = person.id == viewer_id
+      follower = not mine and follows?(context, person.id)
+      readable = mine or (follower and "badges" in card(context, person.id).tabs)
+
+      badges =
+        if readable,
+          do:
+            Gamification.with_tenant_context(context, fn ->
+              Gamification.list_visible_achievements(person.id)
+            end),
+          else: []
+
+      {:ok,
+       %{
+         badges: Enum.map(badges, &Map.take(&1, [:id, :badge_key, :label, :earned_at])),
+         locked: not mine and not follower
        }}
     end
   end
+
+  defp follows?(context, person_id),
+    do: Community.follow_status(context, "user", person_id) == "active"
 
   @doc "The person's profile posts the viewer may read, newest first."
   def posts(context, person_id, params), do: page(context, person_id, params, @page, false)

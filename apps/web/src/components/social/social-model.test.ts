@@ -9,6 +9,8 @@ import {
   isPeopleSearch,
   mediaTile,
   personTab,
+  profileTabs,
+  toggleProfileTab,
   postsLockKey,
   relationKey,
   socialNotificationText,
@@ -82,10 +84,13 @@ describe("posts lock", () => {
 });
 
 describe("person tabs", () => {
-  it("opens the posts unless a known tab is asked for", () => {
-    expect(personTab("media")).toBe("media");
-    expect(personTab("reels")).toBe("posts");
-    expect(personTab(null)).toBe("posts");
+  it("opens the photos unless a shown tab is asked for", () => {
+    expect(personTab("posts")).toBe("posts");
+    expect(personTab("reels")).toBe("media");
+    expect(personTab(null)).toBe("media");
+    // ADR-554: a tab the owner does not show falls back to the photos.
+    expect(personTab("badges")).toBe("media");
+    expect(personTab("badges", ["media", "posts", "badges"])).toBe("badges");
   });
 });
 
@@ -135,5 +140,19 @@ describe("follow notifications", () => {
     expect(socialNotificationText("follow_accepted", { person_nickname: "Nikos" }, "body", t)).toBe("notifFollowAcceptedBody(name=Nikos)");
     expect(socialNotificationText("follow_requested", {}, "body", t)).toBe("notifFollowRequestedBody(name=—)");
     expect(socialNotificationText("chat_message", {}, "title", t)).toBeNull();
+  });
+});
+
+describe("profile tabs (ADR-554)", () => {
+  it("keeps «Πολυμέσα · Αναρτήσεις» first and drops unknown tabs", () => {
+    expect(profileTabs(undefined)).toEqual(["media", "posts"]);
+    expect(profileTabs(["media", "posts", "badges", "prs"])).toEqual(["media", "posts", "badges", "prs"]);
+    expect(profileTabs(["prs", "clubs", "prs"])).toEqual(["media", "posts", "prs"]);
+  });
+
+  it("adds a switched-on tab last and removes a switched-off one", () => {
+    expect(toggleProfileTab(["media", "posts", "prs"], "badges", true)).toEqual(["prs", "badges"]);
+    expect(toggleProfileTab(["media", "posts", "prs", "badges"], "prs", false)).toEqual(["badges"]);
+    expect(toggleProfileTab(["media", "posts", "badges"], "badges", true)).toEqual(["badges"]);
   });
 });

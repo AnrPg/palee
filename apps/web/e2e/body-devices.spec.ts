@@ -1,3 +1,4 @@
+import { stubOwnProfile } from "./support/profile";
 import { expect, test, type Page, type Request } from "./support/test";
 
 // W9 body and devices (ADR-374..377, ontology §4.27): the watch row in
@@ -53,6 +54,8 @@ async function asMember(page: Page) {
   );
   await page.route("**/api/notifications?**", (route) => route.fulfill(json({ notifications: [] })));
   await page.route("**/api/me/clubs", (route) => route.fulfill(json({ clubs: [] })));
+  // ADR-554: Εγώ is the owner's profile; the rank line shows only on it.
+  await stubOwnProfile(page, user);
 }
 
 async function asOwner(page: Page) {

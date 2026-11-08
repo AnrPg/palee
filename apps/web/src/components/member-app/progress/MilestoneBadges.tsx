@@ -1,8 +1,7 @@
 "use client";
 
 import type { LandingPayload } from "@/api/landing";
-import { badgeTier, TIER_ICON } from "@/components/member-app/progress/badges";
-import { semanticLabel } from "@/i18n/presentation";
+import { badgeDescription, badgeTier, TIER_ICON } from "@/components/member-app/progress/badges";
 import { useUiTranslations } from "@/i18n/ui";
 
 /**
@@ -18,30 +17,10 @@ export function MilestoneBadges({
 }) {
   const i18n = useUiTranslations();
 
-  function getBadgeDescription(badgeKey: string): string {
-    if (badgeKey.startsWith("workouts_")) {
-      const n = badgeKey.split("_")[1];
-      return i18n("completedValue0Workoutsde3ccd4", {value0: n});
-    }
-    if (badgeKey.startsWith("prs_")) {
-      const n = badgeKey.split("_")[1];
-      return i18n("loggedValue0PersonalRecords6eb75e4", {value0: n});
-    }
-    if (badgeKey.startsWith("streak_")) {
-      const n = badgeKey.split("_")[1];
-      return i18n("maintainedAValue0DayTrainingStreak0dbf33c", {value0: n});
-    }
-    if (badgeKey.endsWith("_mastery")) {
-      const type = semanticLabel(badgeKey.replace("_mastery", ""), i18n);
-      return i18n("achievedMasteryInValue01e7e1ec", {value0: type});
-    }
-    return i18n("trainingMilestoneAchieved56dc32b");
-  }
-
   const tieredBadges = badges.map((b, i) => ({
     ...b,
     tier: badgeTier(b.badge_key),
-    description: getBadgeDescription(b.badge_key),
+    description: badgeDescription(b.badge_key, i18n),
     isNewest: i === 0,
   }));
   if (advancementCount <= 0 && tieredBadges.length === 0) return null;

@@ -21,6 +21,9 @@ import { InlineConfirm } from "@/components/ui/InlineConfirm";
  * says the Buddy status ends with it. The question is a `ui/InlineConfirm`,
  * so a host row built with `ui/rows` gives it the whole line on a phone.
  */
+/** ADR-554: the profile header's short, flat button (Instagram). */
+const compactClass = "min-h-8 w-full truncate rounded-lg px-2.5 text-[13px] font-semibold disabled:opacity-50";
+
 export function FollowButton({
   targetType,
   targetId,
@@ -29,6 +32,7 @@ export function FollowButton({
   buddy = false,
   wide = false,
   quiet = false,
+  compact = false,
 }: {
   targetType: FollowTargetType;
   targetId: string;
@@ -38,6 +42,8 @@ export function FollowButton({
   wide?: boolean;
   /** Outlined instead of filled, where another action is the page's main one. */
   quiet?: boolean;
+  /** ADR-554: the profile header's short, flat button (Instagram); fills its grid cell. */
+  compact?: boolean;
 }) {
   const t = useTranslations("Social");
   const tUi = useUiTranslations();
@@ -74,11 +80,14 @@ export function FollowButton({
     }
   }
 
-  const base = `min-h-11 rounded-2xl px-4 text-sm font-bold disabled:opacity-50 ${wide ? "w-full" : ""}`;
+  const base = compact
+    ? `hit-area ${compactClass}`
+    : `min-h-11 rounded-2xl px-4 text-sm font-bold disabled:opacity-50 ${wide ? "w-full" : ""}`;
 
   if (confirming) {
     return (
-      <div className={`flex w-full min-w-0 flex-col gap-1 ${wide ? "" : "max-w-md"}`}>
+      // In the profile header's two-button row the question takes the whole row.
+      <div className={`flex w-full min-w-0 flex-col gap-1 ${wide ? "" : "max-w-md"} ${compact ? "col-span-2" : ""}`}>
         <InlineConfirm
           question={
             current === "requested"
@@ -101,7 +110,7 @@ export function FollowButton({
   }
 
   return (
-    <div className={`flex min-w-0 max-w-full flex-col gap-1 ${wide ? "w-full" : ""}`}>
+    <div className={`flex min-w-0 max-w-full flex-col gap-1 ${wide || compact ? "w-full" : ""}`}>
       {current === "none" ? (
         <button
           type="button"
@@ -122,7 +131,7 @@ export function FollowButton({
           disabled={busy}
           aria-pressed="true"
           className={base}
-          style={{ background: "var(--panel-raised)", color: "var(--text)", border: "1px solid var(--border)" }}
+          style={{ background: "var(--panel-raised)", color: "var(--text)", border: compact ? "none" : "1px solid var(--border)" }}
           onClick={() => setConfirming(true)}
         >
           {current === "requested" ? t("requested") : (

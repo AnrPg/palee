@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "./support/test";
 
+import { stubOwnProfile } from "./support/profile";
 import { chooseOption } from "./support/select";
 
 // Εγώ › Πληρωμές: a member of one box sees its summary and the three
@@ -187,6 +188,8 @@ async function common(page: Page, memberships: unknown[], providers: unknown[], 
   await page.route("**/api/me/billing/transactions**", (route) =>
     route.fulfill(json({ transactions, next_cursor: null, total: transactions.length, kinds: ["invoice", "event_payment", "event_refund"], partial: false })),
   );
+  // ADR-554: Εγώ is the owner's profile; its ☰ «Only for you» holds Payments.
+  await stubOwnProfile(page, me.user);
 }
 
 test.describe("billing", () => {
@@ -199,7 +202,8 @@ test.describe("billing", () => {
     });
 
     await page.goto("/me");
-    await page.getByRole("link", { name: /Payments & receipts/ }).click();
+    await page.getByTestId("me-sheet-button").click();
+    await page.getByTestId("me-sheet").getByRole("link", { name: /Payments & receipts/ }).click();
     await expect(page).toHaveURL(/\/me\/payments/);
 
     await expect(page.getByRole("heading", { name: "Payments" })).toBeVisible();
@@ -403,8 +407,10 @@ test.describe("billing", () => {
     });
 
     await page.goto("/me");
-    await expect(page.getByRole("link", { name: /^Settings/ })).toBeVisible();
-    await expect(page.getByRole("link", { name: /Payments & receipts/ })).toHaveCount(0);
+    await page.getByTestId("me-sheet-button").click();
+    const sheet = page.getByTestId("me-sheet");
+    await expect(sheet.getByRole("link", { name: /^Settings/ })).toBeVisible();
+    await expect(sheet.getByRole("link", { name: /Payments & receipts/ })).toHaveCount(0);
 
     await page.goto("/me/payments");
     await expect(page).toHaveURL(/\/me$/);

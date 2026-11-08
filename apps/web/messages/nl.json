@@ -5621,11 +5621,6 @@
     "actionVideos": "Video’s",
     "actionCoach": "Coach",
     "membership": "Lidmaatschap",
-    "meProfileTabs": "Je profiel",
-    "meAllPosts": "Al je berichten",
-    "meAllPrs": "Alle PR's",
-    "mePrsWho": "Wie ze ziet: Delen & zichtbaarheid",
-    "meClubsNone": "Je zit nog niet bij een club.",
     "boxFindTitle": "Je zit nog niet bij een box",
     "boxFindBody": "Zoek een box of coach bij jou in de buurt om lessen te boeken, de WOD te volgen en je lidmaatschap hier te zien.",
     "boxFindAction": "Zoek een box",
@@ -6023,8 +6018,6 @@
     "helpStaffOnly": "Alleen voor medewerkers",
     "settingsUnitsHint": "Hoe gewicht, lengte en omtrekken worden getoond.",
     "settingsSectionsHint": "Welke onderdelen je Dagboek heeft en hoe je gewicht wordt getoond.",
-    "mePrsPrivate": "{count, plural, one {Nog één PR is privé.} other {De andere # PR’s zijn privé.}} Kies bij Delen en zichtbaarheid welke zichtbaar zijn.",
-    "mePrsNoneShown": "Je toont nog geen PR’s op je profiel.",
     "sharing": {
       "coachSeesTitle": "Mijn coach ziet",
       "coachSeesHint": "Wat je coaches bereikt zonder dat je het elke keer stuurt.",
@@ -6047,7 +6040,12 @@
       "saveError": "Dat is niet opgeslagen. Probeer het opnieuw."
     },
     "boxFindByName": "Of zoek op naam",
-    "membershipContactBox": "Contact met de box"
+    "membershipContactBox": "Contact met de box",
+    "meOnlyYou": "Alleen voor jou",
+    "meOnlyYouHint": "Niemand anders ziet dit.",
+    "meOnlyYouWaiting": "{count, plural, one {Alleen voor jou, # wacht} other {Alleen voor jou, # wachten}}",
+    "settingsClubNotifications": "Meldingen per box en club",
+    "settingsClubNotificationsHint": "Je boxen en clubs, en wat elk je vertelt"
   },
   "Community": {
     "all": "Alles",
@@ -6576,9 +6574,8 @@
       "posts": "Berichten",
       "media": "Media",
       "prs": "PR's",
-      "clubs": "Clubs"
+      "badges": "Badges"
     },
-    "personClubsEmpty": "Geen gezamenlijke clubs.",
     "personPostsEmpty": "Nog geen berichten.",
     "mediaEmpty": "Nog geen foto's of video's.",
     "mediaEmptyMine": "Foto's en video's uit je berichten verschijnen hier.",
@@ -6589,7 +6586,6 @@
     "mediaPhoto": "Foto",
     "lockedRequested": "Je verzoek wacht op goedkeuring. Daarna zie je ook berichten alleen voor volgers.",
     "lockedFollow": "Volg om ook berichten alleen voor volgers te zien.",
-    "myPrsLink": "Je PR's staan in Journal › Voortgang",
     "prsNotShared": "Deelt geen PR's met jou.",
     "prsNone": "Nog geen PR's.",
     "unfollowBoxConfirm": "Deze box niet meer volgen? De openbare berichten verdwijnen uit je feed.",
@@ -6650,7 +6646,37 @@
     "findClubsBoxesPeople": "Clubs, boxen en mensen zoeken",
     "boxesTitle": "Boxen en coaches",
     "boxNoMatch": "Geen box of coach met die naam. Alleen bedrijven die hun pagina hebben gepubliceerd verschijnen.",
-    "boxSearchFailed": "Het zoeken lukte niet. Probeer het opnieuw."
+    "boxSearchFailed": "Het zoeken lukte niet. Probeer het opnieuw.",
+    "stat": {
+      "countBuddies": "{count, plural, one {Maatje} other {Maatjes}}",
+      "countFollowYou": "{count, plural, one {Volgt jou} other {Volgen jou}}",
+      "countYouFollow": "Jij volgt",
+      "countFollowers": "{count, plural, one {Volger} other {Volgers}}",
+      "countFollowing": "Volgend"
+    },
+    "profileTabs": "Profiel",
+    "profileCounts": "Maatjes en volgers",
+    "privateAccount": "Privéaccount",
+    "editProfile": "Profiel bewerken",
+    "editProfileShort": "Bewerken",
+    "shareProfile": "Profiel delen",
+    "shareProfileShort": "Delen",
+    "profileLinkCopied": "Link gekopieerd",
+    "bioLabel": "Bio",
+    "bioPlaceholder": "Een regel over je training",
+    "nameAndPhoto": "Naam, @handle en foto",
+    "save": "Opslaan",
+    "addTab": "Tab toevoegen",
+    "addTabTitle": "Tabs op je profiel",
+    "addTabHint": "Media en Berichten staan er altijd. Voeg er meer toe uit je journal; ze tonen alleen wat je al koos te delen.",
+    "myPrsNoneShown": "Je toont nog geen PR op je profiel.",
+    "myPrsWho": "Wie ze ziet: Delen en zichtbaarheid",
+    "myBadgesNone": "Nog geen badges. Ze komen met je trainingen, PR's en reeksen.",
+    "badgesNone": "Nog geen badges.",
+    "addTabHints": {
+      "prs": "De PR's die je je volgers laat zien",
+      "badges": "Je badges, voor wie jou volgt"
+    }
   },
   "BoxPage": {
     "allWeek": "Hele week",

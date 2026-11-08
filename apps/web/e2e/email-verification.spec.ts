@@ -1,3 +1,4 @@
+import { stubOwnProfile } from "./support/profile";
 import { expect, test, type Page } from "./support/test";
 
 // ADR-213: the "confirm your email" banner for a signed-in, unverified login,
@@ -30,6 +31,8 @@ async function stubSignedIn(page: Page, me: () => Record<string, unknown>) {
   await page.route("**/api/auth/me", (route) => route.fulfill(json(me())));
   await page.route("**/api/memberships", (route) => route.fulfill(json([])));
   await page.route("**/api/notifications?**", (route) => route.fulfill(json({ notifications: [] })));
+  // ADR-554: /me is the owner's profile, read from /api/people/:id.
+  await stubOwnProfile(page, user);
 }
 
 async function stubSignedOut(page: Page) {
@@ -70,6 +73,7 @@ test.describe("email verification banner", () => {
   test("does not show for a verified login", async ({ page }) => {
     await stubSignedIn(page, () => ({ ...user, email_verified: true }));
     await page.goto("/me");
+    await expect(page.getByRole("heading", { level: 1, name: "Maria L" })).toBeVisible();
     await expect(page.getByTestId("email-verification-banner")).toHaveCount(0);
   });
 });

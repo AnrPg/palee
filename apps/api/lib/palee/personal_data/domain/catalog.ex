@@ -80,6 +80,7 @@ defmodule Palee.PersonalData.Domain.Catalog do
       account("profile", "organization_join_requests", @me),
       account("profile", "account_interests", @me),
       account("profile", "community_social_settings", @me),
+      account("profile", "community_profile_cards", @me),
       account("profile", "notification_preferences", @me),
       account("profile", "saved_filters", @me),
       account("profile", "user_home_areas", @me),

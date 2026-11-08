@@ -1,5 +1,8 @@
 defmodule PaleeWeb.PeopleController do
-  @moduledoc "Another person's profile, the posts you may read and its media grid (ADR-142, ADR-231)."
+  @moduledoc """
+  A person's profile, the posts you may read, its media grid and badges
+  (ADR-142, ADR-231, ADR-554), and your own profile card.
+  """
 
   use PaleeWeb, :controller
   use PaleeWeb.ControllerSpecs
@@ -73,5 +76,27 @@ defmodule PaleeWeb.PeopleController do
   def media(conn, %{id: id} = params) do
     with {:ok, page} <- SocialProfile.media(conn.assigns.user_context, id, params),
          do: json(conn, page)
+  end
+
+  operation(:badges,
+    summary: "ADR-554: the «Διακρίσεις» tab, a person's badges you may see",
+    parameters: [@id],
+    responses: [ok: {"Badges", "application/json", S.profile_badges_response()}]
+  )
+
+  def badges(conn, %{id: id}) do
+    with {:ok, result} <- SocialProfile.badges(conn.assigns.user_context, id),
+         do: json(conn, result)
+  end
+
+  operation(:update_card,
+    summary: "ADR-554: your «Λίγα λόγια» and the optional tabs of your profile",
+    request_body: S.body(S.profile_card_request()),
+    responses: [ok: {"Card", "application/json", S.profile_card()}]
+  )
+
+  def update_card(conn, _params) do
+    with {:ok, card} <- SocialProfile.put_card(conn.assigns.user_context, conn.body_params),
+         do: json(conn, card)
   end
 end

@@ -137,6 +137,14 @@ defmodule Palee.Community.SocialStore do
     do: call(context, :put_social_settings, [user_id, attrs])
 
   @impl true
+  def get_profile_card(context, user_id),
+    do: call(context, :get_profile_card, [user_id])
+
+  @impl true
+  def put_profile_card(context, user_id, attrs),
+    do: call(context, :put_profile_card, [user_id, attrs])
+
+  @impl true
   def booking_sharer_ids(context), do: call(context, :booking_sharer_ids, [])
 
   @impl true

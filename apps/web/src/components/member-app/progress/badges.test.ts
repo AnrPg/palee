@@ -19,3 +19,12 @@ describe("badgeTier", () => {
     expect(badgeTier(key)).toBe(tier);
   });
 });
+
+describe("badgeMark (ADR-554)", () => {
+  it("shows a badge's number, or the first letter of a mastery", async () => {
+    const { badgeMark } = await import("./badges");
+    expect(badgeMark("workouts_100")).toBe("100");
+    expect(badgeMark("streak_30")).toBe("30");
+    expect(badgeMark("amrap_mastery")).toBe("A");
+  });
+});
