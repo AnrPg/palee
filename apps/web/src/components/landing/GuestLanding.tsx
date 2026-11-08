@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type ReactNode, type RefObject } from "react";
+import { useCallback, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 
 import { AuthPanel, type AuthMode } from "@/components/auth-console";
 import { PaleeMark } from "@/components/branding/PaleeMark";
 import { PaleeTagline } from "@/components/branding/PaleeTagline";
-import { BUSINESS_SIGN_UP_HREF } from "@/components/business/BusinessSignUp";
+import { BUSINESS_LANDING_HREF } from "@/components/business-landing/links";
 import { Dialog } from "@/components/ui/Dialog";
 import {
   AutoVisual,
@@ -19,6 +19,7 @@ import {
   ClubVisual,
 } from "@/components/landing/LandingVisuals";
 import { PhoneDemo } from "@/components/landing/PhoneDemo";
+import { useReveal } from "@/components/landing/use-reveal";
 import { LANDING_PHOTO, StoryPlayer } from "@/components/landing/StoryPlayer";
 
 const em = { em: (chunks: ReactNode) => <em>{chunks}</em> };
@@ -107,31 +108,6 @@ function Tile({ title, body, children, wide = false, full = false, index }: { ti
   );
 }
 
-/** Shows each `.landing-reveal` inside `root` once it scrolls into view. */
-function useReveal(root: RefObject<HTMLElement | null>) {
-  useEffect(() => {
-    const host = root.current;
-    if (!host) return;
-    const targets = Array.from(host.querySelectorAll<HTMLElement>(".landing-reveal"));
-    if (typeof IntersectionObserver === "undefined") {
-      for (const target of targets) target.dataset.shown = "true";
-      return;
-    }
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          (entry.target as HTMLElement).dataset.shown = "true";
-          observer.unobserve(entry.target);
-        }
-      },
-      { rootMargin: "0px 0px -8% 0px", threshold: 0.12 },
-    );
-    for (const target of targets) observer.observe(target);
-    return () => observer.disconnect();
-  }, [root]);
-}
-
 /** Small notes popping in and out around the hero phone. */
 function HeroChip({ children, className, start }: { children: ReactNode; className: string; start: number }) {
   return (
@@ -198,9 +174,20 @@ export function GuestLanding({
 
         <div className="hidden sm:block" style={{ background: "var(--bg)", color: "var(--text)" }}>
           <header className="landing-deep sticky top-0 z-(--z-sticky) flex h-16 items-center justify-between gap-4 px-6 lg:px-16" style={{ backgroundImage: "none" }}>
-            <span className="flex items-center gap-2 text-xl font-black">
-              <PaleeMark className="size-8 [&_path]:stroke-[var(--deep-contrast)]" />
-              Palee
+            <span className="flex items-center gap-4">
+              <span className="flex items-center gap-2 text-xl font-black">
+                <PaleeMark className="size-8 [&_path]:stroke-[var(--deep-contrast)]" />
+                Palee
+              </span>
+              {/* ADR-556: the way to the business landing sits with the brand, away from sign in / sign up. */}
+              <Link
+                href={BUSINESS_LANDING_HREF}
+                className="landing-soft inline-flex min-h-11 items-center gap-1 border-s ps-4 text-sm font-semibold underline-offset-4 hover:underline"
+                style={{ borderColor: "color-mix(in srgb, var(--deep-contrast) 25%, transparent)" }}
+                data-testid="landing-for-business"
+              >
+                {t("forBusiness")} →
+              </Link>
             </span>
             <div className="flex flex-wrap items-center justify-end gap-2">
               <button
@@ -300,7 +287,7 @@ export function GuestLanding({
                   <p className="landing-soft mt-2 max-w-2xl">{t("owner.body")}</p>
                 </div>
                 <Link
-                  href={BUSINESS_SIGN_UP_HREF}
+                  href={BUSINESS_LANDING_HREF}
                   className="landing-lift inline-flex min-h-12 items-center justify-center rounded-full px-6 font-extrabold"
                   style={{ background: "var(--spark)", color: "var(--spark-contrast)" }}
                 >

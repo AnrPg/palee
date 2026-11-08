@@ -19482,6 +19482,510 @@
       "body": "Reservas, pacotes de subscrição, pagamentos e faturas num só sítio. Os teus membros continuam teus: nada de marketplaces de descontos.",
       "cta": "Conta empresarial"
     },
-    "photoAlt": "Ginásio com suportes de halteres"
+    "photoAlt": "Ginásio com suportes de halteres",
+    "forBusiness": "Para empresas"
+  },
+  "BusinessLanding": {
+    "metaTitle": "Palee para boxes e coaches",
+    "metaDescription": "Aulas, reservas, pagamentos com recibo, site e loja online grátis, equipa e uma comunidade que faz os membros voltar. Experimente tudo grátis em modo demo.",
+    "brandTag": "para empresas",
+    "nav": {
+      "athletes": "Para atletas",
+      "signIn": "Iniciar sessão",
+      "start": "Começar grátis"
+    },
+    "audience": {
+      "label": "Para",
+      "box": "Box",
+      "coach": "Coach independente",
+      "coachShort": "Coach"
+    },
+    "hero": {
+      "box": {
+        "eyebrow": "Para boxes, estúdios e escolas",
+        "title": "A sua box funciona <em>sozinha</em>. Você treina.",
+        "lede": "Um só sistema para <word></word> e uma comunidade que faz os seus membros voltar.",
+        "words": "reservas | pagamentos | myDATA | o seu site"
+      },
+      "coach": {
+        "eyebrow": "Para coaches independentes",
+        "title": "Os seus clientes, <em>em todo o lado</em>. Sem folhas de cálculo.",
+        "lede": "Programação online, pacotes, recibos e a sua própria página. Um só sistema para <word></word>.",
+        "words": "programas | pagamentos | myDATA | clientes"
+      },
+      "cta": "Começar grátis em demo",
+      "how": "Ver como funciona",
+      "seeMore": "Ver mais"
+    },
+    "console": {
+      "box": {
+        "name": "Box Kypseli",
+        "nav": "Hoje | Horário | Clientes | Finanças | Coaching | Estatísticas",
+        "kpis": "reservas | check-ins | receitas",
+        "rows": "07:00 · CrossFit | 18:00 · Força | 19:30 · Open gym",
+        "toasts": "Nova reserva · Maria, 18:00 | Pagamento com cartão · 49,00 € | Recibo enviado para o myDATA | A lista de espera avançou · o Nikos entrou | Check-in · Kostas | Novo membro da box · Dimitra"
+      },
+      "coach": {
+        "name": "Eleni · coach",
+        "nav": "Hoje | Os meus clientes | Programa | Finanças | Grupo do coach | Estatísticas",
+        "kpis": "sessões | vídeos de técnica | receitas",
+        "rows": "Programação online | Treino personalizado | Grupo do coach",
+        "toasts": "A Anna enviou um vídeo de técnica | Pacote de 10 sessões · 250,00 € | Recibo enviado para o myDATA | O Jorge terminou a semana | Nova cliente · Sofia | Sugestão de adaptação para aprovar"
+      },
+      "today": "Hoje, terça-feira",
+      "waitlist": "Lista de espera 2"
+    },
+    "marquee": {
+      "box": "Reservas | Lista de espera | WOD do dia | Pagamentos com cartão | Site grátis | Loja online grátis | myDATA ou exportação num clique | Cronómetro na TV | Check-in com QR | Filiais | Pagamentos à equipa | Clube da box | IA com Claude | Análises",
+      "coach": "Programação online | Os meus clientes | Vídeos de técnica | Pacotes de treino personalizado | Página grátis | Loja online grátis | myDATA ou exportação num clique | Grupo do coach | IA com Claude | Análises"
+    },
+    "features": {
+      "kicker": "Tudo num só",
+      "box": "Menos burocracia. Mais treino.",
+      "coach": "Mais clientes, menos burocracia."
+    },
+    "management": {
+      "kicker": "A gestão",
+      "box": "A gestão da sua box, em piloto automático.",
+      "coach": "O que é aborrecido, em piloto automático.",
+      "lede": "Tudo o que lhe rouba as noites, num só ecrã.",
+      "soon": "Em breve"
+    },
+    "tiles": {
+      "schedule": {
+        "kicker": "Horário",
+        "title": "Aulas que enchem",
+        "body": "Aulas recorrentes, reservas pela app e uma lista de espera que avança sozinha quando alguém cancela."
+      },
+      "payments": {
+        "kicker": "Finanças",
+        "title": "Pagamento e recibo juntos",
+        "body": "Cartão online ou na receção. Se quiser, o recibo segue sozinho para o myDATA; caso contrário, com um clique exporta-o para o seu contabilista."
+      },
+      "checkin": {
+        "kicker": "Receção",
+        "title": "Check-in com QR",
+        "body": "O membro mostra o cartão e a receção digitaliza-o."
+      },
+      "ai": {
+        "kicker": "Funções inteligentes",
+        "title": "IA com a sua própria chave Claude",
+        "body": "Ligue a conta Anthropic da box e ative sugestões de adaptação para atletas lesionados aprovadas pelo coach, registo de treinos por voz e um assistente que transforma o texto de um WOD num WOD estruturado. Paga apenas o que usa."
+      },
+      "wod": {
+        "kicker": "Coaching",
+        "title": "Um WOD do dia para todas as aulas",
+        "body": "Escreva o WOD uma vez. Cada aula do dia recebe-o."
+      },
+      "timer": {
+        "kicker": "Box TV",
+        "title": "Cronómetro na TV",
+        "body": "AMRAP, EMOM e Tabata no ecrã da box, com o telemóvel do coach como comando."
+      },
+      "club": {
+        "kicker": "Comunidade",
+        "title": "Membros que voltam",
+        "body": "O clube da box: PR, fotos e kudos. Os seus membros ficam porque têm grupo."
+      },
+      "staff": {
+        "kicker": "Equipa",
+        "title": "Funções e filiais",
+        "body": "Cada um vê só o que precisa, só nas filiais que lhe atribuir."
+      },
+      "stats": {
+        "kicker": "Estatísticas",
+        "title": "Sabe para onde vai",
+        "body": "Reservas, presenças e receitas, semana a semana."
+      },
+      "clients": {
+        "kicker": "Coaching",
+        "title": "Os meus clientes",
+        "body": "Programa, vídeos de técnica e check-ins numa só lista."
+      },
+      "programming": {
+        "kicker": "Programação online",
+        "title": "Um programa que chega sozinho",
+        "body": "Envia a semana e o cliente vê-a na app."
+      },
+      "coachPayments": {
+        "kicker": "Finanças",
+        "title": "Pacotes e recibos",
+        "body": "Pacotes de treino personalizado pagos com cartão. Os recibos vão para o myDATA se quiser, ou para o seu contabilista num clique."
+      },
+      "squad": {
+        "kicker": "Comunidade",
+        "title": "Grupo do coach",
+        "body": "Um canal privado com até 30 dos seus clientes."
+      },
+      "coachPay": {
+        "kicker": "Pagamentos",
+        "title": "Se também treina numa box",
+        "body": "Os seus pagamentos contados por si, mês a mês."
+      },
+      "coachStats": {
+        "kicker": "Estatísticas",
+        "title": "O seu trabalho em números",
+        "body": "Sessões, clientes e receitas por mês."
+      },
+      "analytics": {
+        "kicker": "Análises",
+        "title": "Gráficos que lhe dizem o que fazer",
+        "body": "Reservas, receitas e presenças por aula e por coach. O Palee deteta o que está a correr mal e que membros podem sair, e diz-lhe porquê."
+      },
+      "accounting": {
+        "kicker": "Contabilidade",
+        "title": "Contabilidade completa, à sua maneira",
+        "body": "Se quiser, recibos e faturas seguem sozinhos para o myDATA; caso contrário, com um clique exporta tudo para o seu contabilista. A função Contabilista vê apenas as finanças."
+      },
+      "machines": {
+        "kicker": "Equipamento",
+        "title": "Manutenção das máquinas",
+        "body": "Cada avaria, reparação e revisão no histórico da máquina."
+      },
+      "staffPay": {
+        "kicker": "Equipa",
+        "title": "Pagamentos e subsídios",
+        "body": "Pagamentos de coaches e equipa, subsídios e descontos, calculados sozinhos."
+      },
+      "cleaning": {
+        "kicker": "Limpeza",
+        "title": "Plano de limpeza",
+        "body": "O que se limpa, quando e por quem, com fotos."
+      },
+      "stock": {
+        "kicker": "Stock",
+        "title": "Armazém e loja online",
+        "body": "Venda na receção ou online. Avisamos quando algo está a acabar."
+      },
+      "campaigns": {
+        "kicker": "Marketing",
+        "title": "Campanhas com anúncios dentro da app",
+        "body": "Crie a campanha e o Palee mostra-a aos seus membros e a atletas próximos."
+      },
+      "offers": {
+        "kicker": "Parceiros",
+        "title": "Ofertas de parceiros para os seus membros",
+        "body": "Faça um acordo com a loja ao lado; os seus membros veem a oferta na app."
+      },
+      "coachAnalytics": {
+        "kicker": "Análises",
+        "title": "Saiba que cliente está a perder o ritmo",
+        "body": "Quem treina, quem parou e porquê, com ideias sobre o que fazer."
+      },
+      "coachAccounting": {
+        "kicker": "Contabilidade",
+        "title": "Recibos e contabilista, sem esforço",
+        "body": "Cada pagamento com recibo: para o myDATA se quiser, ou exportado para o seu contabilista num clique."
+      },
+      "coachCampaigns": {
+        "kicker": "Marketing",
+        "title": "Campanhas dentro da app",
+        "body": "Chegue a atletas perto de si que procuram um coach."
+      },
+      "coachOffers": {
+        "kicker": "Parceiros",
+        "title": "Ofertas para os seus clientes",
+        "body": "Acordos com lojas e nutricionistas, visíveis na app dos seus clientes."
+      }
+    },
+    "visual": {
+      "seats": "{count} lugares",
+      "receiptPackage": "Pacote de subscrição · Mensal",
+      "receiptTotal": "Total",
+      "receiptCard": "Cartão",
+      "receiptStamp": "myDATA ✓",
+      "checkedIn": "Check-in feito ✓",
+      "siteDomain": "boxkypseli.gr",
+      "siteHome": "Box Kypseli",
+      "siteHomeMeta": "CrossFit · Força · Open gym",
+      "siteJoin": "Juntar-me à box",
+      "siteSchedule": "Horário das aulas",
+      "siteScheduleMeta": "Segunda 07:00 · 18:00 · 19:30",
+      "siteBook": "Reservar",
+      "sitePackages": "Pacotes de subscrição",
+      "sitePackagesMeta": "Mensal · 10 visitas · Experiência",
+      "siteBuy": "Comprar",
+      "aiSaid": "«5 rondas, 10 elevações, 20 flexões…»",
+      "aiParsed": "For time · 5 rondas",
+      "aiParsedMeta": "10 elevações · 20 flexões · 30 agachamentos",
+      "aiSuggestion": "Sugestão de adaptação · Jorge (ombro)",
+      "aiSuggestionMeta": "Ring rows em vez de elevações",
+      "aiApproved": "Aprovado pelo coach ✓",
+      "wodTitle": "WOD do dia · terça-feira",
+      "wodLines": "AMRAP 20′ | 10 elevações | 15 flexões | 20 agachamentos",
+      "roles": "Proprietário | Admin | Coach | Head coach | Rececionista | Contabilista | Pessoal de limpeza",
+      "branches": "Filial Kypseli | Filial Pireu",
+      "clubName": "Eleni",
+      "clubWhere": "Clube da box",
+      "clubPr": "Novo PR · 120 kg",
+      "clubKudos": "24 kudos",
+      "clients": "Anna · programa da semana ✓ | Jorge · vídeo de técnica | Sofia · check-in de domingo",
+      "coachPayTitle": "Pagamentos do coach · novembro",
+      "coachPayClasses": "Aulas",
+      "coachPaySessions": "Treino personalizado",
+      "coachPayTotal": "Total",
+      "insightDrop": "As reservas de terça às 07:00 estão a cair",
+      "insightRisk": "Em risco: 3 membros, veja porquê",
+      "fiscal": "Recibo para o myDATA | Fatura de empresa | Exportação para o contabilista | IVA trimestral",
+      "fiscalDone": "✓",
+      "machines": "Passadeira 3 | Remo 2 | Assault bike 1",
+      "machineStates": "Precisa de verificação | Em manutenção | A funcionar",
+      "staffPayLines": "Eleni · coach | Subsídio de transporte | Nikos · receção | Desconto de farda",
+      "cleaning": "Sala 1 · chão | Balneários | Rig e barras | Duches",
+      "stock": "Proteína | Elásticos | T-shirts | Água",
+      "stockLow": "Baixo",
+      "adSponsored": "Patrocinado · Box Kypseli",
+      "adTitle": "Dia aberto no sábado",
+      "adBody": "Traga um amigo e treinem juntos de graça.",
+      "offerPartner": "Parceiro · Healthy Bites",
+      "offerTitle": "-15% para membros da box",
+      "offerBody": "Mostre o cartão de membro na caixa",
+      "shopItems": "Proteína | T-shirt | Elásticos",
+      "shopPrices": "29 € | 18 € | 12 €",
+      "shopAdd": "Adicionar",
+      "shopCart": "Carrinho",
+      "shopTitle": "Loja online"
+    },
+    "steps": {
+      "kicker": "Como começa",
+      "title": "Experimente tudo antes de dizer sim.",
+      "oneTitle": "Crie uma conta de empresa",
+      "oneBody": "Box ou coach independente. Um minuto, sem cartão.",
+      "twoTitle": "Experimente em modo demo",
+      "twoBody": "Tudo funciona com pessoas fictícias: aulas, reservas, pagamentos, site. Nada fica público.",
+      "threeTitle": "A equipa Palee ativa-o",
+      "threeBody": "Quando estiver pronto, convida membros e equipa, e o seu negócio abre."
+    },
+    "compare": {
+      "kicker": "Box ou coach",
+      "title": "O que cada um recebe",
+      "feature": "Função",
+      "yes": "Incluído",
+      "no": "Não incluído",
+      "rows": {
+        "classes": "Aulas, reservas, lista de espera",
+        "packages": "Pacotes de subscrição e de treino personalizado",
+        "programming": "Programação online",
+        "payments": "Pagamentos com cartão e recibos",
+        "accounting": "myDATA se quiser, ou exportação num clique para o contabilista",
+        "website": "Site e loja online grátis com o seu próprio domínio",
+        "ai": "IA com a sua própria chave Claude",
+        "analytics": "Análises com insights e «Em risco»",
+        "offers": "Ofertas de parceiros",
+        "staff": "Equipa, funções, filiais",
+        "staffPay": "Pagamentos e subsídios da equipa",
+        "facility": "Manutenção de máquinas, limpeza, stock",
+        "timer": "Cronómetro na TV",
+        "community": "Clube da box / Grupo do coach"
+      }
+    },
+    "cta": {
+      "box": "A sua box, cheia outra vez.",
+      "coach": "Os seus clientes, mais perto do que nunca.",
+      "body": "Comece hoje em demo. A ativação acontece quando estiver pronto.",
+      "button": "Começar grátis"
+    },
+    "footer": {
+      "athletes": "Para atletas",
+      "terms": "Termos",
+      "privacy": "Privacidade"
+    },
+    "how": {
+      "dialog": "Como funciona",
+      "close": "Fechar",
+      "box": {
+        "title": "Um dia na sua box, com o Palee",
+        "wod": {
+          "time": "06:30",
+          "title": "O WOD do dia está pronto",
+          "body": "Escreve-o uma vez no telemóvel. Cada aula do dia recebe-o e os membros veem-no antes de chegar."
+        },
+        "full": {
+          "time": "07:00",
+          "title": "A aula está cheia, a lista de espera trabalha",
+          "body": "Alguém cancela? A pessoa seguinte na lista de espera entra sozinha e é avisada."
+        },
+        "checkin": {
+          "time": "09:00",
+          "title": "Check-in sem papel",
+          "body": "O membro mostra o cartão no telemóvel e a receção digitaliza-o. A visita é descontada do pacote de subscrição."
+        },
+        "payment": {
+          "time": "13:00",
+          "title": "Pagamento e recibo juntos",
+          "body": "Cartão online ou na receção. Se quiser, o recibo segue sozinho para o myDATA; caso contrário, espera na exportação para o seu contabilista."
+        },
+        "timer": {
+          "time": "18:00",
+          "title": "Cronómetro na TV",
+          "body": "O coach inicia o EMOM no telemóvel. A box inteira vê o tempo."
+        },
+        "club": {
+          "time": "20:30",
+          "title": "PR no clube da box",
+          "body": "Os membros publicam PR e fotos e recebem kudos. A comunidade faz as pessoas ficar."
+        },
+        "close": {
+          "time": "22:00",
+          "title": "O dia fecha sozinho",
+          "body": "As estatísticas, as receitas e os pagamentos dos coaches do dia já estão contados."
+        }
+      },
+      "coach": {
+        "title": "Um dia como coach, com o Palee",
+        "week": {
+          "time": "06:30",
+          "title": "O programa da semana já saiu",
+          "body": "Programação online: escreve a semana e cada cliente vê-a na sua app."
+        },
+        "video": {
+          "time": "09:00",
+          "title": "Um vídeo de técnica da Anna",
+          "body": "Vê-o e responde com notas. Tudo em «Os meus clientes»."
+        },
+        "payment": {
+          "time": "12:00",
+          "title": "Pacote pago, recibo emitido",
+          "body": "Um pacote de treino personalizado pago com cartão. O recibo vai para o myDATA se quiser, ou para a exportação num clique para o seu contabilista."
+        },
+        "scaling": {
+          "time": "15:00",
+          "title": "Uma sugestão de adaptação para o Jorge",
+          "body": "O Jorge tem uma lesão no ombro. A IA sugere uma alteração e você aprova."
+        },
+        "squad": {
+          "time": "19:00",
+          "title": "O grupo do coach ganha vida",
+          "body": "Os seus clientes publicam PR no vosso canal privado."
+        },
+        "insights": {
+          "time": "22:00",
+          "title": "Sabe quem está a perder o ritmo",
+          "body": "Análises com os clientes que pararam e o que lhes dizer."
+        }
+      }
+    },
+    "stories": {
+      "label": "O que o Palee faz pelo seu negócio",
+      "pause": "Pausa",
+      "play": "Reproduzir",
+      "paused": "Em pausa",
+      "previous": "Story anterior",
+      "next": "Story seguinte",
+      "position": "Story {current} de {total}",
+      "box": {
+        "hero": {
+          "kicker": "Para boxes, estúdios e escolas",
+          "title": "A sua box funciona <em>sozinha</em>.",
+          "body": "Você treina. Nós tratamos do resto."
+        },
+        "payments": {
+          "kicker": "Finanças",
+          "title": "Pagamento e <em>recibo</em> juntos",
+          "body": "Para o myDATA se quiser, ou exportação num clique para o contabilista."
+        },
+        "checkin": {
+          "kicker": "Receção",
+          "title": "Check-in com <em>QR</em>",
+          "body": "Sem papel nem listas."
+        },
+        "website": {
+          "kicker": "Grátis, desde o primeiro dia",
+          "title": "Um <em>site</em> grátis",
+          "body": "O seu próprio domínio. Horário, pacotes e «Juntar-me à box» atualizam-se sozinhos."
+        },
+        "shop": {
+          "kicker": "Grátis, desde o primeiro dia",
+          "title": "Uma <em>loja online</em> grátis",
+          "body": "Suplementos, roupa e material. Pagamento online ou levantamento na receção."
+        },
+        "ai": {
+          "kicker": "Funções inteligentes",
+          "title": "IA com a chave <em>Claude</em> da box",
+          "body": "Registo por voz e sugestões de adaptação aprovadas pelo coach."
+        },
+        "timer": {
+          "kicker": "Box TV",
+          "title": "Cronómetro na <em>TV</em>",
+          "body": "O telemóvel do coach é o comando."
+        },
+        "club": {
+          "kicker": "Comunidade",
+          "title": "Membros que <em>voltam</em>",
+          "body": "PR, fotos e kudos no clube da box."
+        },
+        "running": {
+          "kicker": "A gestão",
+          "title": "Máquinas, equipa, <em>limpeza</em>",
+          "body": "Manutenção, pagamentos e plano de limpeza num só ecrã."
+        },
+        "insights": {
+          "kicker": "Análises",
+          "title": "Gráficos que lhe dizem <em>o que fazer</em>",
+          "body": "O Palee deteta que membros podem sair."
+        },
+        "demo": {
+          "kicker": "Começar",
+          "title": "Experimente tudo em <em>demo</em>",
+          "body": "Com pessoas fictícias. Nada fica público até estar pronto."
+        }
+      },
+      "coach": {
+        "hero": {
+          "kicker": "Para coaches independentes",
+          "title": "Os seus clientes, <em>em todo o lado</em>.",
+          "body": "Programação online, pacotes e recibos numa só app."
+        },
+        "programming": {
+          "kicker": "Programação online",
+          "title": "A semana sai <em>sozinha</em>",
+          "body": "O seu cliente vê-a na app."
+        },
+        "payments": {
+          "kicker": "Finanças",
+          "title": "Pacote e <em>recibo</em> juntos",
+          "body": "Para o myDATA se quiser, ou exportação num clique para o contabilista."
+        },
+        "ai": {
+          "kicker": "Funções inteligentes",
+          "title": "IA com a sua chave <em>Claude</em>",
+          "body": "Registo por voz e sugestões de adaptação que você aprova."
+        },
+        "squad": {
+          "kicker": "Comunidade",
+          "title": "O <em>grupo do coach</em>",
+          "body": "Um canal privado com até 30 dos seus clientes."
+        },
+        "insights": {
+          "kicker": "Análises",
+          "title": "Saiba quem <em>está a perder o ritmo</em>",
+          "body": "E o que lhe dizer."
+        },
+        "website": {
+          "kicker": "Grátis, desde o primeiro dia",
+          "title": "Uma <em>página</em> grátis",
+          "body": "O seu próprio domínio e um botão para o reservarem."
+        },
+        "shop": {
+          "kicker": "Grátis, desde o primeiro dia",
+          "title": "Uma <em>loja online</em> grátis",
+          "body": "Programas, material e muito mais. Pagamento online ou em pessoa."
+        },
+        "demo": {
+          "kicker": "Começar",
+          "title": "Experimente tudo em <em>demo</em>",
+          "body": "Com clientes fictícios. Nada fica público até estar pronto."
+        }
+      }
+    },
+    "shop": {
+      "kicker": "Grátis, desde o primeiro dia",
+      "box": "Um site e uma loja online, grátis desde o primeiro dia.",
+      "coach": "A sua página e a sua loja online, grátis desde o primeiro dia.",
+      "body": "O seu próprio domínio, o seu horário e pacotes, os seus produtos. Vêm com o Palee sem custo extra e atualizam-se sozinhos.",
+      "points": "O seu próprio domínio | Horário, pacotes e «Juntar-me à box» | Produtos, stock e encomendas | Pagamento online ou levantamento na receção",
+      "coachPoints": "O seu próprio domínio | Pacotes e um botão para o reservarem | Produtos, stock e encomendas | Pagamento online ou em pessoa",
+      "cta": "Começar grátis"
+    }
   }
 }

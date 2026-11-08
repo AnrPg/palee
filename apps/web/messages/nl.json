@@ -19482,6 +19482,510 @@
       "body": "Boekingen, abonnementspakketten, betalingen en facturen op één plek. Je leden blijven van jou: geen kortingsmarktplaats.",
       "cta": "Zakelijk account"
     },
-    "photoAlt": "Sportzaal met rekken vol dumbbells"
+    "photoAlt": "Sportzaal met rekken vol dumbbells",
+    "forBusiness": "Voor bedrijven"
+  },
+  "BusinessLanding": {
+    "metaTitle": "Palee voor boxen en coaches",
+    "metaDescription": "Lessen, boekingen, betalingen met bon, gratis website en webshop, personeel en een community die leden laat terugkomen. Probeer alles gratis in demomodus.",
+    "brandTag": "voor bedrijven",
+    "nav": {
+      "athletes": "Voor atleten",
+      "signIn": "Inloggen",
+      "start": "Gratis beginnen"
+    },
+    "audience": {
+      "label": "Voor",
+      "box": "Box",
+      "coach": "Personal coach",
+      "coachShort": "Coach"
+    },
+    "hero": {
+      "box": {
+        "eyebrow": "Voor boxen, studio’s en scholen",
+        "title": "Je box draait <em>vanzelf</em>. Jij coacht.",
+        "lede": "Eén systeem voor <word></word>, en een community die je leden laat terugkomen.",
+        "words": "boekingen | betalingen | myDATA | je website"
+      },
+      "coach": {
+        "eyebrow": "Voor zelfstandige coaches",
+        "title": "Je klanten, <em>overal</em>. Zonder spreadsheets.",
+        "lede": "Online programmering, pakketten, bonnen en je eigen pagina. Eén systeem voor <word></word>.",
+        "words": "programma’s | betalingen | myDATA | klanten"
+      },
+      "cta": "Gratis beginnen in demo",
+      "how": "Bekijk hoe het werkt",
+      "seeMore": "Meer zien"
+    },
+    "console": {
+      "box": {
+        "name": "Box Kypseli",
+        "nav": "Vandaag | Rooster | Klanten | Financiën | Coaching | Statistieken",
+        "kpis": "boekingen | check-ins | omzet",
+        "rows": "07:00 · CrossFit | 18:00 · Kracht | 19:30 · Open gym",
+        "toasts": "Nieuwe boeking · Maria, 18:00 | Kaartbetaling · € 49,00 | Bon naar myDATA verstuurd | Wachtlijst schuift door · Nikos is erbij | Check-in · Kostas | Nieuw boxlid · Dimitra"
+      },
+      "coach": {
+        "name": "Eleni · coach",
+        "nav": "Vandaag | Mijn klanten | Programma | Financiën | Coachgroep | Statistieken",
+        "kpis": "sessies | techniekvideo’s | omzet",
+        "rows": "Online programmering | Personal training | Coachgroep",
+        "toasts": "Anna stuurde een techniekvideo | Pakket van 10 sessies · € 250,00 | Bon naar myDATA verstuurd | Joris heeft zijn week afgerond | Nieuwe klant · Sofia | Schaalvoorstel om goed te keuren"
+      },
+      "today": "Vandaag, dinsdag",
+      "waitlist": "Wachtlijst 2"
+    },
+    "marquee": {
+      "box": "Boekingen | Wachtlijst | Dag-WOD | Kaartbetalingen | Gratis website | Gratis webshop | myDATA of export met één klik | Timer op de tv | QR-check-in | Vestigingen | Personeelsbetalingen | Boxclub | AI met Claude | Analyses",
+      "coach": "Online programmering | Mijn klanten | Techniekvideo’s | Personal-trainingpakketten | Gratis pagina | Gratis webshop | myDATA of export met één klik | Coachgroep | AI met Claude | Analyses"
+    },
+    "features": {
+      "kicker": "Alles in één",
+      "box": "Minder administratie. Meer training.",
+      "coach": "Meer klanten, minder administratie."
+    },
+    "management": {
+      "kicker": "Het bedrijf runnen",
+      "box": "Je box runnen, op de automatische piloot.",
+      "coach": "Het saaie werk, op de automatische piloot.",
+      "lede": "Alles wat je avonden opslokt, op één scherm.",
+      "soon": "Binnenkort"
+    },
+    "tiles": {
+      "schedule": {
+        "kicker": "Rooster",
+        "title": "Lessen die vollopen",
+        "body": "Terugkerende lessen, boekingen via de app en een wachtlijst die vanzelf doorschuift als iemand afzegt."
+      },
+      "payments": {
+        "kicker": "Financiën",
+        "title": "Betaling en bon tegelijk",
+        "body": "Kaart online of aan de receptie. Als je wilt gaat de bon vanzelf naar myDATA; anders exporteer je hem met één klik voor je boekhouder."
+      },
+      "checkin": {
+        "kicker": "Receptie",
+        "title": "Inchecken met QR",
+        "body": "Het lid laat zijn kaart zien, de receptie scant hem."
+      },
+      "ai": {
+        "kicker": "Slimme functies",
+        "title": "AI met je eigen Claude-sleutel",
+        "body": "Koppel het Anthropic-account van je box en zet aan: schaalvoorstellen voor geblesseerde atleten die de coach goedkeurt, trainingen inspreken en een assistent die de tekst van een WOD omzet in een gestructureerde WOD. Je betaalt alleen wat je gebruikt."
+      },
+      "wod": {
+        "kicker": "Coaching",
+        "title": "Eén dag-WOD voor alle lessen",
+        "body": "Schrijf de WOD één keer. Elke les van de dag neemt hem over."
+      },
+      "timer": {
+        "kicker": "Box-tv",
+        "title": "Timer op de tv",
+        "body": "AMRAP, EMOM en Tabata op het scherm van de box, met de telefoon van de coach als afstandsbediening."
+      },
+      "club": {
+        "kicker": "Community",
+        "title": "Leden die terugkomen",
+        "body": "De boxclub: PR’s, foto’s en kudos. Je leden blijven omdat ze een crew hebben."
+      },
+      "staff": {
+        "kicker": "Personeel",
+        "title": "Rollen en vestigingen",
+        "body": "Iedereen ziet alleen wat hij nodig heeft, alleen in de vestigingen die jij toewijst."
+      },
+      "stats": {
+        "kicker": "Statistieken",
+        "title": "Je weet waar je heen gaat",
+        "body": "Boekingen, aanwezigheid en omzet, week na week."
+      },
+      "clients": {
+        "kicker": "Coaching",
+        "title": "Mijn klanten",
+        "body": "Programma, techniekvideo’s en check-ins in één lijst."
+      },
+      "programming": {
+        "kicker": "Online programmering",
+        "title": "Een programma dat vanzelf aankomt",
+        "body": "Stuur de week, je klant ziet hem in de app."
+      },
+      "coachPayments": {
+        "kicker": "Financiën",
+        "title": "Pakketten en bonnen",
+        "body": "Personal-trainingpakketten per kaart. Bonnen gaan naar myDATA als je wilt, of met één klik naar je boekhouder."
+      },
+      "squad": {
+        "kicker": "Community",
+        "title": "Coachgroep",
+        "body": "Een privékanaal met maximaal 30 van je klanten."
+      },
+      "coachPay": {
+        "kicker": "Vergoeding",
+        "title": "Als je ook in een box coacht",
+        "body": "Je vergoeding voor je berekend, maand na maand."
+      },
+      "coachStats": {
+        "kicker": "Statistieken",
+        "title": "Je werk in cijfers",
+        "body": "Sessies, klanten en omzet per maand."
+      },
+      "analytics": {
+        "kicker": "Analyses",
+        "title": "Grafieken die zeggen wat je moet doen",
+        "body": "Boekingen, omzet en aanwezigheid per les en per coach. Palee ziet wat er misgaat en welke leden kunnen vertrekken, en vertelt je waarom."
+      },
+      "accounting": {
+        "kicker": "Boekhouding",
+        "title": "Volledige boekhouding, zoals jij wilt",
+        "body": "Als je wilt gaan bonnen en facturen vanzelf naar myDATA; anders exporteer je alles met één klik voor je boekhouder. De rol Boekhouder ziet alleen de financiën."
+      },
+      "machines": {
+        "kicker": "Uitrusting",
+        "title": "Onderhoud van toestellen",
+        "body": "Elke storing, reparatie en onderhoudsbeurt in de geschiedenis van het toestel."
+      },
+      "staffPay": {
+        "kicker": "Personeel",
+        "title": "Loon en toelagen",
+        "body": "Loon van coaches en personeel, toelagen en inhoudingen, vanzelf berekend."
+      },
+      "cleaning": {
+        "kicker": "Schoonmaak",
+        "title": "Schoonmaakrooster",
+        "body": "Wat wordt schoongemaakt, wanneer en door wie, met foto’s."
+      },
+      "stock": {
+        "kicker": "Voorraad",
+        "title": "Opslag en webshop",
+        "body": "Verkoop aan de balie of online. We laten het weten als iets bijna op is."
+      },
+      "campaigns": {
+        "kicker": "Marketing",
+        "title": "Campagnes met advertenties in de app",
+        "body": "Maak de campagne en Palee toont hem aan je leden en aan atleten in de buurt."
+      },
+      "offers": {
+        "kicker": "Partners",
+        "title": "Partneraanbiedingen voor je leden",
+        "body": "Maak een deal met de winkel naast de deur; je leden zien de aanbieding in de app."
+      },
+      "coachAnalytics": {
+        "kicker": "Analyses",
+        "title": "Weet welke klant het ritme verliest",
+        "body": "Wie traint, wie gestopt is en waarom, met ideeën over wat je kunt doen."
+      },
+      "coachAccounting": {
+        "kicker": "Boekhouding",
+        "title": "Bonnen en boekhouder, moeiteloos",
+        "body": "Elke betaling met een bon: naar myDATA als je wilt, anders met één klik geëxporteerd voor je boekhouder."
+      },
+      "coachCampaigns": {
+        "kicker": "Marketing",
+        "title": "Campagnes in de app",
+        "body": "Bereik atleten in je buurt die een coach zoeken."
+      },
+      "coachOffers": {
+        "kicker": "Partners",
+        "title": "Aanbiedingen voor je klanten",
+        "body": "Deals met winkels en voedingsdeskundigen, zichtbaar in de app van je klanten."
+      }
+    },
+    "visual": {
+      "seats": "{count} plekken",
+      "receiptPackage": "Abonnementspakket · Maandelijks",
+      "receiptTotal": "Totaal",
+      "receiptCard": "Kaart",
+      "receiptStamp": "myDATA ✓",
+      "checkedIn": "Ingecheckt ✓",
+      "siteDomain": "boxkypseli.gr",
+      "siteHome": "Box Kypseli",
+      "siteHomeMeta": "CrossFit · Kracht · Open gym",
+      "siteJoin": "Word lid van de box",
+      "siteSchedule": "Lesrooster",
+      "siteScheduleMeta": "Maandag 07:00 · 18:00 · 19:30",
+      "siteBook": "Boeken",
+      "sitePackages": "Abonnementspakketten",
+      "sitePackagesMeta": "Maandelijks · 10 bezoeken · Proefles",
+      "siteBuy": "Kopen",
+      "aiSaid": "“5 rondes, 10 optrekken, 20 opdrukken…”",
+      "aiParsed": "For time · 5 rondes",
+      "aiParsedMeta": "10 keer optrekken · 20 keer opdrukken · 30 squats",
+      "aiSuggestion": "Schaalvoorstel · Joris (schouder)",
+      "aiSuggestionMeta": "Ring rows in plaats van optrekken",
+      "aiApproved": "Goedgekeurd door de coach ✓",
+      "wodTitle": "Dag-WOD · dinsdag",
+      "wodLines": "AMRAP 20′ | 10 keer optrekken | 15 keer opdrukken | 20 squats",
+      "roles": "Eigenaar | Beheerder | Coach | Hoofdcoach | Receptiemedewerker | Boekhouder | Schoonmaakmedewerker",
+      "branches": "Vestiging Kypseli | Vestiging Piraeus",
+      "clubName": "Eleni",
+      "clubWhere": "Boxclub",
+      "clubPr": "Nieuw PR · 120 kg",
+      "clubKudos": "24 kudos",
+      "clients": "Anna · weekprogramma ✓ | Joris · techniekvideo | Sofia · check-in van zondag",
+      "coachPayTitle": "Coachvergoeding · november",
+      "coachPayClasses": "Lessen",
+      "coachPaySessions": "Personal training",
+      "coachPayTotal": "Totaal",
+      "insightDrop": "Boekingen dinsdag 07:00 dalen",
+      "insightRisk": "Risico: 3 leden, bekijk waarom",
+      "fiscal": "Bon naar myDATA | Zakelijke factuur | Export voor je boekhouder | Btw per kwartaal",
+      "fiscalDone": "✓",
+      "machines": "Loopband 3 | Roeitoestel 2 | Assault bike 1",
+      "machineStates": "Controle nodig | In onderhoud | Werkt",
+      "staffPayLines": "Eleni · coach | Reiskostenvergoeding | Nikos · receptie | Inhouding kleding",
+      "cleaning": "Zaal 1 · vloer | Kleedkamers | Rig en stangen | Douches",
+      "stock": "Proteïne | Elastieken | T-shirts | Water",
+      "stockLow": "Laag",
+      "adSponsored": "Gesponsord · Box Kypseli",
+      "adTitle": "Open dag op zaterdag",
+      "adBody": "Neem een vriend mee en train samen gratis.",
+      "offerPartner": "Partnerwinkel · Healthy Bites",
+      "offerTitle": "15% korting voor boxleden",
+      "offerBody": "Laat je ledenpas zien aan de kassa",
+      "shopItems": "Proteïne | T-shirt | Elastieken",
+      "shopPrices": "€ 29 | € 18 | € 12",
+      "shopAdd": "Toevoegen",
+      "shopCart": "Winkelwagen",
+      "shopTitle": "Webshop"
+    },
+    "steps": {
+      "kicker": "Zo begin je",
+      "title": "Probeer alles voordat je ja zegt.",
+      "oneTitle": "Maak een zakelijk account",
+      "oneBody": "Een box of een zelfstandige coach. Eén minuut, zonder kaart.",
+      "twoTitle": "Probeer het in demomodus",
+      "twoBody": "Alles werkt met nepmensen: lessen, boekingen, betalingen, website. Niets wordt openbaar.",
+      "threeTitle": "Het Palee-team activeert je",
+      "threeBody": "Als je klaar bent nodig je leden en personeel uit, en je bedrijf gaat open."
+    },
+    "compare": {
+      "kicker": "Box of coach",
+      "title": "Wat iedereen krijgt",
+      "feature": "Functie",
+      "yes": "Inbegrepen",
+      "no": "Niet inbegrepen",
+      "rows": {
+        "classes": "Lessen, boekingen, wachtlijst",
+        "packages": "Abonnements- en personal-trainingpakketten",
+        "programming": "Online programmering",
+        "payments": "Kaartbetalingen met bonnen",
+        "accounting": "myDATA als je wilt, of export met één klik voor je boekhouder",
+        "website": "Gratis website en webshop met je eigen domein",
+        "ai": "AI met je eigen Claude-sleutel",
+        "analytics": "Analyses met inzichten en ‘Risico’",
+        "offers": "Partneraanbiedingen",
+        "staff": "Personeel, rollen, vestigingen",
+        "staffPay": "Loon en toelagen van personeel",
+        "facility": "Onderhoud van toestellen, schoonmaak, voorraad",
+        "timer": "Timer op de tv",
+        "community": "Boxclub / Coachgroep"
+      }
+    },
+    "cta": {
+      "box": "Je box, weer vol.",
+      "coach": "Je klanten, dichterbij dan ooit.",
+      "body": "Begin vandaag in demo. Activeren gebeurt wanneer jij klaar bent.",
+      "button": "Gratis beginnen"
+    },
+    "footer": {
+      "athletes": "Voor atleten",
+      "terms": "Voorwaarden",
+      "privacy": "Privacy"
+    },
+    "how": {
+      "dialog": "Hoe het werkt",
+      "close": "Sluiten",
+      "box": {
+        "title": "Een dag in je box, met Palee",
+        "wod": {
+          "time": "06:30",
+          "title": "De dag-WOD staat klaar",
+          "body": "Je schrijft hem één keer op je telefoon. Elke les van de dag neemt hem over en leden zien hem voordat ze komen."
+        },
+        "full": {
+          "time": "07:00",
+          "title": "De les is vol, de wachtlijst werkt",
+          "body": "Zegt iemand af? De volgende op de wachtlijst komt er vanzelf in en krijgt een melding."
+        },
+        "checkin": {
+          "time": "09:00",
+          "title": "Check-in zonder papier",
+          "body": "Het lid laat zijn kaart op de telefoon zien, de receptie scant hem. Het bezoek gaat af van het abonnementspakket."
+        },
+        "payment": {
+          "time": "13:00",
+          "title": "Betaling en bon tegelijk",
+          "body": "Kaart online of aan de receptie. Als je wilt gaat de bon vanzelf naar myDATA; anders wacht hij in de export voor je boekhouder."
+        },
+        "timer": {
+          "time": "18:00",
+          "title": "Timer op de tv",
+          "body": "De coach start de EMOM vanaf zijn telefoon. De hele box ziet de klok."
+        },
+        "club": {
+          "time": "20:30",
+          "title": "PR’s in de boxclub",
+          "body": "Leden plaatsen PR’s en foto’s en verzamelen kudos. De community houdt mensen vast."
+        },
+        "close": {
+          "time": "22:00",
+          "title": "De dag sluit zichzelf af",
+          "body": "Statistieken, omzet en coachvergoedingen van de dag zijn al berekend."
+        }
+      },
+      "coach": {
+        "title": "Een dag als coach, met Palee",
+        "week": {
+          "time": "06:30",
+          "title": "Het weekprogramma is verstuurd",
+          "body": "Online programmering: je schrijft de week en elke klant ziet hem in zijn app."
+        },
+        "video": {
+          "time": "09:00",
+          "title": "Een techniekvideo van Anna",
+          "body": "Je bekijkt hem en antwoordt met notities. Alles in ‘Mijn klanten’."
+        },
+        "payment": {
+          "time": "12:00",
+          "title": "Pakket betaald, bon uitgegeven",
+          "body": "Een personal-trainingpakket per kaart betaald. De bon gaat naar myDATA als je wilt, of in de export met één klik voor je boekhouder."
+        },
+        "scaling": {
+          "time": "15:00",
+          "title": "Een schaalvoorstel voor Joris",
+          "body": "Joris heeft een schouderblessure. De AI stelt een aanpassing voor, jij keurt hem goed."
+        },
+        "squad": {
+          "time": "19:00",
+          "title": "De coachgroep komt tot leven",
+          "body": "Je klanten plaatsen PR’s in jullie privékanaal."
+        },
+        "insights": {
+          "time": "22:00",
+          "title": "Je weet wie het ritme verliest",
+          "body": "Analyses met de klanten die gestopt zijn en wat je ze kunt zeggen."
+        }
+      }
+    },
+    "stories": {
+      "label": "Wat Palee voor je bedrijf doet",
+      "pause": "Pauzeren",
+      "play": "Afspelen",
+      "paused": "Gepauzeerd",
+      "previous": "Vorige story",
+      "next": "Volgende story",
+      "position": "Story {current} van {total}",
+      "box": {
+        "hero": {
+          "kicker": "Voor boxen, studio’s en scholen",
+          "title": "Je box draait <em>vanzelf</em>.",
+          "body": "Jij coacht. Wij doen de rest."
+        },
+        "payments": {
+          "kicker": "Financiën",
+          "title": "Betaling en <em>bon</em> tegelijk",
+          "body": "Naar myDATA als je wilt, of export met één klik voor je boekhouder."
+        },
+        "checkin": {
+          "kicker": "Receptie",
+          "title": "Inchecken met <em>QR</em>",
+          "body": "Geen papier, geen lijsten."
+        },
+        "website": {
+          "kicker": "Gratis, meteen inbegrepen",
+          "title": "Een gratis <em>website</em>",
+          "body": "Je eigen domein. Rooster, pakketten en ‘Word lid van de box’ werken zichzelf bij."
+        },
+        "shop": {
+          "kicker": "Gratis, meteen inbegrepen",
+          "title": "Een gratis <em>webshop</em>",
+          "body": "Supplementen, kleding en materiaal. Online betalen of ophalen aan de balie."
+        },
+        "ai": {
+          "kicker": "Slimme functies",
+          "title": "AI met de <em>Claude</em>-sleutel van je box",
+          "body": "Inspreken en schaalvoorstellen die de coach goedkeurt."
+        },
+        "timer": {
+          "kicker": "Box-tv",
+          "title": "Timer op de <em>tv</em>",
+          "body": "De telefoon van de coach is de afstandsbediening."
+        },
+        "club": {
+          "kicker": "Community",
+          "title": "Leden die <em>terugkomen</em>",
+          "body": "PR’s, foto’s en kudos in de boxclub."
+        },
+        "running": {
+          "kicker": "Het bedrijf runnen",
+          "title": "Toestellen, personeel, <em>schoonmaak</em>",
+          "body": "Onderhoud, loon en schoonmaakrooster op één scherm."
+        },
+        "insights": {
+          "kicker": "Analyses",
+          "title": "Grafieken die zeggen <em>wat je moet doen</em>",
+          "body": "Palee ziet welke leden kunnen vertrekken."
+        },
+        "demo": {
+          "kicker": "Beginnen",
+          "title": "Probeer alles in <em>demo</em>",
+          "body": "Met nepmensen. Niets wordt openbaar tot je klaar bent."
+        }
+      },
+      "coach": {
+        "hero": {
+          "kicker": "Voor zelfstandige coaches",
+          "title": "Je klanten, <em>overal</em>.",
+          "body": "Online programmering, pakketten en bonnen in één app."
+        },
+        "programming": {
+          "kicker": "Online programmering",
+          "title": "De week gaat <em>vanzelf</em> de deur uit",
+          "body": "Je klant ziet hem in zijn app."
+        },
+        "payments": {
+          "kicker": "Financiën",
+          "title": "Pakket en <em>bon</em> tegelijk",
+          "body": "Naar myDATA als je wilt, of export met één klik voor je boekhouder."
+        },
+        "ai": {
+          "kicker": "Slimme functies",
+          "title": "AI met je <em>Claude</em>-sleutel",
+          "body": "Inspreken en schaalvoorstellen die jij goedkeurt."
+        },
+        "squad": {
+          "kicker": "Community",
+          "title": "De <em>coachgroep</em>",
+          "body": "Een privékanaal met maximaal 30 van je klanten."
+        },
+        "insights": {
+          "kicker": "Analyses",
+          "title": "Weet wie <em>het ritme verliest</em>",
+          "body": "En wat je hem kunt zeggen."
+        },
+        "website": {
+          "kicker": "Gratis, meteen inbegrepen",
+          "title": "Een gratis <em>pagina</em>",
+          "body": "Je eigen domein en een knop om je te boeken."
+        },
+        "shop": {
+          "kicker": "Gratis, meteen inbegrepen",
+          "title": "Een gratis <em>webshop</em>",
+          "body": "Programma’s, materiaal en meer. Online of persoonlijk betalen."
+        },
+        "demo": {
+          "kicker": "Beginnen",
+          "title": "Probeer alles in <em>demo</em>",
+          "body": "Met nepklanten. Niets wordt openbaar tot je klaar bent."
+        }
+      }
+    },
+    "shop": {
+      "kicker": "Gratis, meteen inbegrepen",
+      "box": "Een website en een webshop, gratis vanaf dag één.",
+      "coach": "Je pagina en je webshop, gratis vanaf dag één.",
+      "body": "Je eigen domein, je rooster en pakketten, je producten. Ze komen zonder meerkosten met Palee en werken zichzelf bij.",
+      "points": "Je eigen domein | Rooster, pakketten en ‘Word lid van de box’ | Producten, voorraad en bestellingen | Online betalen of ophalen aan de balie",
+      "coachPoints": "Je eigen domein | Pakketten en een knop om je te boeken | Producten, voorraad en bestellingen | Online of persoonlijk betalen",
+      "cta": "Gratis beginnen"
+    }
   }
 }

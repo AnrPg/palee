@@ -30,6 +30,7 @@ export const FAQ_KEYS = [
 export const PUBLIC_PAGES = [
   { path: "/about", title: "About Palee" },
   { path: "/register", title: "Create an account" },
+  { path: "/business", title: "Palee for boxes and coaches" },
   { path: "/register/business", title: "Register a gym or coaching business" },
   { path: "/login", title: "Sign in" },
   // ADR-267: the stores and GDPR (articles 13-14) need both public.

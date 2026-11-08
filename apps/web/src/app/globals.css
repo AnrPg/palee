@@ -868,6 +868,141 @@ html[data-platform]::before {
   margin-inline-end: 1.6rem;
 }
 
+/* ADR-556: the business landing (palee.app/business) adds its own motions.
+   Same rules: theme variables only, nothing moves under reduced motion. */
+/* The hero's rotating word. */
+.landing-words { display: inline-grid; vertical-align: bottom; }
+.landing-words > span { grid-area: 1 / 1; opacity: 0; animation: landing-word 12s infinite; }
+@keyframes landing-word {
+  0% { opacity: 0; transform: translateY(0.45em); }
+  4%, 22% { opacity: 1; transform: none; }
+  26%, 100% { opacity: 0; transform: translateY(-0.45em); }
+}
+/* The console: seats fill, notices slide in and out. */
+.landing-seat { transition: background-color 0.3s ease, transform 0.3s ease; }
+.landing-seat[data-on="true"] { transform: scale(1.15); }
+@keyframes landing-toast {
+  0% { opacity: 0; transform: translateX(28px) scale(0.92); }
+  10%, 80% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translateY(-8px); }
+}
+.landing-toast { animation: landing-toast 3.6s ease both; }
+[dir="rtl"] .landing-toast { animation-name: landing-toast-rtl; }
+@keyframes landing-toast-rtl {
+  0% { opacity: 0; transform: translateX(-28px) scale(0.92); }
+  10%, 80% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translateY(-8px); }
+}
+/* Two classes filling slowly (ANR: «too much», two slow bars). */
+@keyframes landing-slow-fill {
+  0% { transform: scaleX(0.05); opacity: 1; }
+  80%, 96% { transform: scaleX(var(--fill, 1)); opacity: 1; }
+  100% { transform: scaleX(var(--fill, 1)); opacity: 0; }
+}
+.landing-slow-fill { --fill: 1; transform-origin: left center; animation: landing-slow-fill 16s cubic-bezier(0.4, 0, 0.2, 1) infinite both; }
+[dir="rtl"] .landing-slow-fill { transform-origin: right center; }
+/* The receipt prints, the myDATA stamp lands. */
+@keyframes landing-print {
+  0% { clip-path: inset(0 0 100% 0); }
+  35%, 85% { clip-path: inset(0 0 0 0); }
+  100% { clip-path: inset(0 0 100% 0); }
+}
+.landing-print { animation: landing-print 5s ease-in-out infinite; }
+@keyframes landing-stamp {
+  0%, 40% { opacity: 0; transform: scale(2.2) rotate(-8deg); }
+  48%, 85% { opacity: 1; transform: scale(1) rotate(-8deg); }
+  100% { opacity: 0; transform: rotate(-8deg); }
+}
+.landing-stamp { opacity: 0; animation: landing-stamp 5s ease infinite; }
+/* QR check-in: a scan line sweeps, the badge pops. */
+@keyframes landing-scan {
+  0%, 100% { top: 8%; }
+  50% { top: 88%; }
+}
+.landing-scan { animation: landing-scan 2.4s ease-in-out infinite; box-shadow: 0 0 14px 4px var(--spark); }
+@keyframes landing-pop {
+  0% { opacity: 0; transform: scale(0.6) translateY(8px); }
+  8%, 85% { opacity: 1; transform: none; }
+  100% { opacity: 0; }
+}
+.landing-pop { opacity: 0; animation: landing-pop 6s ease infinite both; }
+/* Three pages of the box website take turns. */
+@keyframes landing-site {
+  0% { opacity: 0; transform: scale(1.06); }
+  6%, 30% { opacity: 1; transform: none; }
+  36%, 100% { opacity: 0; }
+}
+.landing-site { opacity: 0; animation: landing-site 9s infinite; }
+@keyframes landing-pulse {
+  50% { transform: scale(1.06); }
+}
+.landing-pulse { animation: landing-pulse 1.6s ease-in-out infinite; }
+/* The TV timer's ring runs down. */
+@keyframes landing-ring {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: 314; }
+}
+.landing-ring { stroke-dasharray: 314; animation: landing-ring 10s linear infinite; }
+/* Voice: the wave moves. */
+@keyframes landing-wave {
+  50% { height: 100%; }
+}
+.landing-wave { height: 30%; animation: landing-wave 1s ease-in-out infinite; }
+/* A machine's state, a stock level: they change in turn. */
+@keyframes landing-state {
+  0% { opacity: 0; transform: scale(0.8); }
+  5%, 30% { opacity: 1; transform: none; }
+  36%, 100% { opacity: 0; }
+}
+.landing-state { opacity: 0; animation: landing-state 9s infinite; }
+@keyframes landing-drain {
+  0% { transform: scaleX(var(--from, 1)); }
+  70%, 100% { transform: scaleX(var(--to, 0.3)); }
+}
+.landing-drain { --from: 1; --to: 0.3; transform-origin: left center; animation: landing-drain 10s ease-in-out infinite; }
+[dir="rtl"] .landing-drain { transform-origin: right center; }
+@keyframes landing-low {
+  0%, 60% { opacity: 0; }
+  66%, 100% { opacity: 1; }
+}
+.landing-low { opacity: 0; animation: landing-low 10s infinite; }
+/* The in-app ad slides up the feed; the partner coupon sways. */
+@keyframes landing-feed {
+  0%, 20% { transform: translateY(0); }
+  45%, 85% { transform: translateY(-2.9rem); }
+  100% { transform: translateY(0); }
+}
+.landing-feed { animation: landing-feed 7s ease-in-out infinite; }
+@keyframes landing-sway {
+  50% { transform: rotate(-2deg) translateY(-4px); }
+}
+.landing-sway { animation: landing-sway 4s ease-in-out infinite; }
+/* «How it works»: the step in view lights up, the phone changes screen. */
+.landing-step { opacity: 0.45; transition: opacity 0.4s ease; }
+.landing-step[data-on="true"] { opacity: 1; }
+.landing-step-time { transition: background-color 0.4s ease, color 0.4s ease, transform 0.4s ease; }
+.landing-step[data-on="true"] .landing-step-time { background: var(--spark); color: var(--spark-contrast); border-color: transparent; transform: scale(1.12); }
+.landing-scene { opacity: 0; transform: translateY(30px) scale(0.97); transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.landing-scene[data-on="true"] { opacity: 1; transform: none; }
+/* The audience switch swaps the page with a short blur-in. */
+@keyframes landing-swap {
+  from { opacity: 0; transform: translateY(18px) scale(0.98); filter: blur(4px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+.landing-swap { animation: landing-swap 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+/* A faint grid drifts behind the business hero. */
+@keyframes landing-grid {
+  to { background-position: 48px 48px; }
+}
+.landing-grid {
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--deep-contrast) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--deep-contrast) 7%, transparent) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(circle at 70% 40%, var(--text) 0, transparent 70%);
+  animation: landing-grid 20s linear infinite;
+}
+
 /* The sign-in drawer on tablets and up: a Dojo-blue column, the card centred. */
 @media (min-width: 768px) {
   .landing-auth-drawer {
@@ -886,4 +1021,6 @@ html[data-platform]::before {
   .landing-chip, .landing-bubble, .landing-float { opacity: 1; }
   .landing-float, .landing-heart-pop, .landing-tap-done { display: none; }
   .landing-tap-idle { opacity: 1; }
+  .landing-words > span:first-child, .landing-pop, .landing-site:first-child, .landing-state:first-child, .landing-low, .landing-stamp { opacity: 1; }
+  .landing-step { opacity: 1; }
 }
