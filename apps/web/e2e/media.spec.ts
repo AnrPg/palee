@@ -303,6 +303,9 @@ test.describe("photos and video in posts", () => {
     await expect(counter).toHaveText("3/3");
     await carousel.getByRole("button", { name: "Go to photo 1" }).click();
     await expect(counter).toHaveText("1/3");
+    // The dot scrolls smoothly; let it land before the keys, or a key pressed
+    // mid-way races the scroll it interrupts (seen with google-chrome in CI).
+    await expect.poll(() => carousel.locator(".snap-x").evaluate((track) => Math.round(track.scrollLeft))).toBe(0);
 
     const first = carousel.getByRole("button", { name: /Rowing · Open full screen/ });
     await first.focus();
