@@ -16841,6 +16841,8 @@
     "cookies": "Cookies",
     "poweredBy": "Gemaakt met Palee",
     "minutes": "{count, plural, one {# min} other {# min}}",
+    "scheduleMore": "{count, plural, one {Hele week · # dag meer} other {Hele week · # dagen meer}}",
+    "scheduleLess": "Minder",
     "free": "Gratis",
     "allPackages": "Alle pakketten",
     "languageLabel": "Taal",

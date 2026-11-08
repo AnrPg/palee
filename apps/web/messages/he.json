@@ -16841,6 +16841,8 @@
     "cookies": "עוגיות",
     "poweredBy": "נבנה עם Palee",
     "minutes": "{count, plural, one {דקה אחת} two {שתי דקות} other {# דקות}}",
+    "scheduleMore": "{count, plural, one {כל השבוע · עוד יום אחד} two {כל השבוע · עוד יומיים} other {כל השבוע · עוד # ימים}}",
+    "scheduleLess": "פחות",
     "free": "חינם",
     "allPackages": "כל החבילות",
     "languageLabel": "שפה",

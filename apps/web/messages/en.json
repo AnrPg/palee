@@ -16841,6 +16841,8 @@
     "cookies": "Cookies",
     "poweredBy": "Made with Palee",
     "minutes": "{count, plural, one {# min} other {# min}}",
+    "scheduleMore": "{count, plural, one {Whole week · # more day} other {Whole week · # more days}}",
+    "scheduleLess": "Show less",
     "free": "Free",
     "allPackages": "All packages",
     "languageLabel": "Language",

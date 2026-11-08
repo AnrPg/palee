@@ -16841,6 +16841,8 @@
     "cookies": "Бисквитки",
     "poweredBy": "Създадено с Palee",
     "minutes": "{count, plural, one {# мин} other {# мин}}",
+    "scheduleMore": "{count, plural, one {Цялата седмица · още # ден} other {Цялата седмица · още # дни}}",
+    "scheduleLess": "По-малко",
     "free": "Безплатно",
     "allPackages": "Всички пакети",
     "languageLabel": "Език",

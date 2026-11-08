@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import type { ReactNode } from "react";
+import { useId, useState, type ReactNode } from "react";
 
 import type { PublicSite, SiteSection } from "@/api/box-site";
 import { fetchPublicPackages, publicPackagesKey } from "@/api/my-payments";
@@ -113,12 +113,16 @@ function TimetableSection({ site }: { site: PublicSite }) {
   const t = useTranslations("BoxSite");
   const locale = useLocale();
   const days = timetableByDay(site.timetable, site.time_zone, locale);
+  const [expanded, setExpanded] = useState(false);
+  const listId = useId();
   if (days.length === 0) return null;
+  // One day first (the earliest with classes, usually today); the rest open on request.
+  const shown = expanded ? days : days.slice(0, 1);
   return (
     <section className="flex flex-col gap-3" data-testid="site-schedule">
       <SectionTitle>{t("sections.schedule")}</SectionTitle>
-      <div className="flex flex-col gap-4">
-        {days.map((day) => (
+      <div id={listId} className="flex flex-col gap-4">
+        {shown.map((day) => (
           <div key={day.day} className="flex flex-col gap-1.5">
             <h3 className="text-sm font-bold capitalize" style={{ color: "var(--text-soft)" }}>{day.label}</h3>
             <ul className="flex flex-col">
@@ -133,6 +137,18 @@ function TimetableSection({ site }: { site: PublicSite }) {
           </div>
         ))}
       </div>
+      {days.length > 1 ? (
+        <button
+          type="button"
+          aria-expanded={expanded}
+          aria-controls={listId}
+          onClick={() => setExpanded((value) => !value)}
+          className="min-h-11 rounded-2xl px-4 text-sm font-bold"
+          style={{ background: "var(--panel)", border: "1px solid var(--border)", color: "var(--text)" }}
+        >
+          {expanded ? t("scheduleLess") : t("scheduleMore", { count: days.length - 1 })}
+        </button>
+      ) : null}
     </section>
   );
 }

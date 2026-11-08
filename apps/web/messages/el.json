@@ -16841,6 +16841,8 @@
     "cookies": "Cookies",
     "poweredBy": "Φτιαγμένο με το Palee",
     "minutes": "{count, plural, one {# λεπτό} other {# λεπτά}}",
+    "scheduleMore": "{count, plural, one {Όλη η εβδομάδα · # ακόμα μέρα} other {Όλη η εβδομάδα · # ακόμα μέρες}}",
+    "scheduleLess": "Λιγότερα",
     "free": "Δωρεάν",
     "allPackages": "Όλα τα πακέτα",
     "languageLabel": "Γλώσσα",

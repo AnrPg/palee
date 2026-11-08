@@ -16841,6 +16841,8 @@
     "cookies": "ملفات تعريف الارتباط",
     "poweredBy": "صُنع باستخدام Palee",
     "minutes": "{count, plural, zero {# دقيقة} one {دقيقة واحدة} two {دقيقتان} few {# دقائق} many {# دقيقة} other {# دقيقة}}",
+    "scheduleMore": "{count, plural, zero {الأسبوع كله} one {الأسبوع كله · يوم واحد آخر} two {الأسبوع كله · يومان آخران} few {الأسبوع كله · # أيام أخرى} many {الأسبوع كله · # يومًا آخر} other {الأسبوع كله · # يوم آخر}}",
+    "scheduleLess": "أقل",
     "free": "مجانًا",
     "allPackages": "كل الباقات",
     "languageLabel": "اللغة",
