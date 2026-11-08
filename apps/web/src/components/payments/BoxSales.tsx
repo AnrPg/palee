@@ -41,7 +41,7 @@ export function useBoxSales(slug: string | null | undefined) {
     deskPackages: deskPackages(data),
     provider: data?.provider ?? null,
     /** How many packages the box shows this person (none: ask the box). */
-    shownCount: data?.packages.length ?? null,
+    shownCount: data?.packages?.length ?? null,
     /** The box shows this person only their own packages (ADR-553). */
     ownOnly: Boolean(data?.own_only),
     /** The names of the person's own packages among those shown. */
