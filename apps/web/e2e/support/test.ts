@@ -65,5 +65,11 @@ export const test = base.extend({
       return response;
     };
     await provide(page);
+    // Teardown removes the routes before it closes the page, so a fetch the page fires
+    // in that gap (a poll, a refetch on blur) skips the fallback above and is proxied to
+    // the closed stub port: the "Failed to proxy … ECONNREFUSED 127.0.0.1:18302" noise
+    // in the dev server log. Leaving for about:blank first stops the page's scripts
+    // while the routes still answer.
+    await goto("about:blank").catch(() => undefined);
   },
 });
