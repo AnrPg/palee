@@ -22,8 +22,8 @@ test.describe("business landing", () => {
     await page.goto("/business");
 
     await expect(page.getByRole("heading", { level: 1, name: "Your box runs on its own. You coach." })).toBeVisible();
-    const audience = page.getByTestId("business-audience").first();
-    await audience.getByRole("button", { name: "Independent coach" }).click();
+    // The phones' switch (in the stories) is hidden here; role queries skip hidden elements.
+    await page.getByRole("group", { name: "For" }).getByRole("button", { name: "Independent coach" }).click();
     await expect(page).toHaveURL(/\/business\?for=coach$/);
     await expect(page.getByRole("heading", { level: 1, name: "Your clients, everywhere. No spreadsheets." })).toBeVisible();
 
