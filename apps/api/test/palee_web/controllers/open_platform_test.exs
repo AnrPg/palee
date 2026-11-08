@@ -68,6 +68,12 @@ defmodule PaleeWeb.OpenPlatformTest do
 
   defp api(token), do: build_conn() |> put_req_header("authorization", "Bearer " <> token)
 
+  # A token whose last character differs (a fixed "x" was the same 1 time in 64).
+  defp wrong_last_char(token) do
+    {head, last} = String.split_at(token, -1)
+    head <> if(last == "x", do: "y", else: "x")
+  end
+
   defp problem(conn, status) do
     assert conn.status == status
     assert ["application/problem+json" <> _] = get_resp_header(conn, "content-type")
@@ -160,7 +166,7 @@ defmodule PaleeWeb.OpenPlatformTest do
       for conn <- [
             build_conn(),
             api("palee_test_aaaaaaaaaaaa_" <> String.duplicate("a", 40)),
-            api(String.replace(token, ~r/.$/, "x")),
+            api(wrong_last_char(token)),
             api("nonsense")
           ] do
         conn = get(conn, "/api/public/v1/me")
