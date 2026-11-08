@@ -462,7 +462,9 @@ test.describe("Settings › Website", () => {
     await page.goto("/admin/settings/website");
     const sections = page.getByTestId("website-sections");
     await sections.getByRole("button", { name: "Just the basics" }).click();
-    await expect(sections.getByRole("switch", { name: "Packages" })).toBeChecked();
+    // ADR-553: «Packages» has no switch here; it follows «Who sees the packages».
+    await expect(sections.getByRole("switch", { name: "Packages" })).toHaveCount(0);
+    await expect(sections.getByTestId("website-packages-audience")).toContainText("Who sees the packages");
     await expect(sections.getByRole("switch", { name: "Coaches" })).not.toBeChecked();
     const puts = writes.filter((write) => write.path === "/api/admin/site" && write.method === "PUT");
     expect(puts).toHaveLength(1);
