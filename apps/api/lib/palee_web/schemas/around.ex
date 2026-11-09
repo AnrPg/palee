@@ -137,9 +137,31 @@ defmodule PaleeWeb.Schemas.Around do
         filter: filter(),
         origin: origin_request(),
         cursor: string(nullable: true),
-        limit: integer(minimum: 1, maximum: 50, description: "Default 20")
+        limit: integer(minimum: 1, maximum: 50, description: "Default 20"),
+        fallback: %Schema{
+          type: :boolean,
+          description:
+            "ADR-583: when the first page finds nothing, look at the wider radii " <>
+              "(10, 25, 50 km), then the origin's town. Default false"
+        }
       },
       []
+    )
+  end
+
+  def reach do
+    object(
+      "AroundReach",
+      %{
+        scope: string(enum: ["radius", "town"]),
+        radius_km: number(nullable: true, description: "The radius the page used (scope radius)"),
+        town: string(nullable: true, description: "The origin's town (scope town)"),
+        widened: %Schema{
+          type: :boolean,
+          description: "The page looked further than the filter's radius (ADR-583)"
+        }
+      },
+      [:radius_km, :scope, :town, :widened]
     )
   end
 
@@ -288,9 +310,10 @@ defmodule PaleeWeb.Schemas.Around do
             oneOf: [event_item(), box_item(), club_item(), post_item()]
           }),
         next_cursor: string(nullable: true),
-        placement: placement()
+        placement: placement(),
+        reach: reach()
       },
-      [:kind, :origin, :total, :items, :next_cursor]
+      [:kind, :origin, :total, :items, :next_cursor, :reach]
     )
   end
 

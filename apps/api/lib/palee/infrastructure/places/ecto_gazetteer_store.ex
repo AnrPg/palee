@@ -9,6 +9,8 @@ defmodule Palee.Infrastructure.Places.EctoGazetteerStore do
   alias Palee.Repo
 
   @nearest_reach_m 5_000
+  @town_min_reach_m 6_000
+  @town_max_reach_m 20_000
 
   # Refreshed on a repeat import: what the source says may have improved.
   @refreshed [
@@ -146,6 +148,51 @@ defmodule Palee.Infrastructure.Places.EctoGazetteerStore do
           ^latitude,
           ^longitude
         )
+    )
+    |> limit(1)
+    |> Repo.one()
+    |> normalize()
+  end
+
+  @impl true
+  def get_by_slugs([]), do: []
+
+  def get_by_slugs(slugs) do
+    Neighbourhood
+    |> where([n], n.slug in ^slugs)
+    |> Repo.all()
+    |> Enum.map(&normalize/1)
+  end
+
+  # A town's reach: its own radius, but never less than a small town's
+  # spread, nor more than a big city's; the nearest covering one wins.
+  @impl true
+  def town_at({latitude, longitude}) do
+    Neighbourhood
+    |> where([n], n.kind == "city")
+    |> where(
+      [n],
+      fragment(
+        "ST_DWithin(palee_geo_point(?, ?), palee_geo_point(?::float8, ?::float8), LEAST(GREATEST(COALESCE(?, 0), ?), ?))",
+        n.latitude,
+        n.longitude,
+        ^latitude,
+        ^longitude,
+        n.radius_m,
+        @town_min_reach_m,
+        @town_max_reach_m
+      )
+    )
+    |> order_by([n],
+      asc:
+        fragment(
+          "ST_Distance(palee_geo_point(?, ?), palee_geo_point(?::float8, ?::float8))",
+          n.latitude,
+          n.longitude,
+          ^latitude,
+          ^longitude
+        ),
+      desc_nulls_last: n.population
     )
     |> limit(1)
     |> Repo.one()

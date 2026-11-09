@@ -22681,6 +22681,8 @@ export interface components {
         /** AroundKindRequest */
         AroundKindRequest: {
             cursor?: string | null;
+            /** @description ADR-583: when the first page finds nothing, look at the wider radii (10, 25, 50 km), then the origin's town. Default false */
+            fallback?: boolean;
             /**
              * AroundFilter
              * @description Every field is optional; the response echoes the normalised filter.
@@ -23294,6 +23296,17 @@ export interface components {
              * @enum {string}
              */
             placement?: "category" | "collapsed";
+            /** AroundReach */
+            reach: {
+                /** @description The radius the page used (scope radius) */
+                radius_km: number | null;
+                /** @enum {string} */
+                scope: "radius" | "town";
+                /** @description The origin's town (scope town) */
+                town: string | null;
+                /** @description The page looked further than the filter's radius (ADR-583) */
+                widened: boolean;
+            };
             total: number;
         };
         /**
@@ -24017,6 +24030,17 @@ export interface components {
             next_cursor: string | null;
             total: number;
         } | null;
+        /** AroundReach */
+        AroundReach: {
+            /** @description The radius the page used (scope radius) */
+            radius_km: number | null;
+            /** @enum {string} */
+            scope: "radius" | "town";
+            /** @description The origin's town (scope town) */
+            town: string | null;
+            /** @description The page looked further than the filter's radius (ADR-583) */
+            widened: boolean;
+        };
         /** AroundSearchRequest */
         AroundSearchRequest: {
             /**
@@ -59379,6 +59403,8 @@ export interface operations {
             content: {
                 "application/json": {
                     cursor?: string | null;
+                    /** @description ADR-583: when the first page finds nothing, look at the wider radii (10, 25, 50 km), then the origin's town. Default false */
+                    fallback?: boolean;
                     /**
                      * AroundFilter
                      * @description Every field is optional; the response echoes the normalised filter.
@@ -60000,6 +60026,17 @@ export interface operations {
                          * @enum {string}
                          */
                         placement?: "category" | "collapsed";
+                        /** AroundReach */
+                        reach: {
+                            /** @description The radius the page used (scope radius) */
+                            radius_km: number | null;
+                            /** @enum {string} */
+                            scope: "radius" | "town";
+                            /** @description The origin's town (scope town) */
+                            town: string | null;
+                            /** @description The page looked further than the filter's radius (ADR-583) */
+                            widened: boolean;
+                        };
                         total: number;
                     };
                 };

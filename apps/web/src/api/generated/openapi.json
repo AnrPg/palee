@@ -4946,6 +4946,10 @@
             "nullable": true,
             "type": "string"
           },
+          "fallback": {
+            "description": "ADR-583: when the first page finds nothing, look at the wider radii (10, 25, 50 km), then the origin's town. Default false",
+            "type": "boolean"
+          },
           "filter": {
             "description": "Every field is optional; the response echoes the normalised filter.",
             "properties": {
@@ -6840,6 +6844,39 @@
             ],
             "type": "string"
           },
+          "reach": {
+            "properties": {
+              "radius_km": {
+                "description": "The radius the page used (scope radius)",
+                "nullable": true,
+                "type": "number"
+              },
+              "scope": {
+                "enum": [
+                  "radius",
+                  "town"
+                ],
+                "type": "string"
+              },
+              "town": {
+                "description": "The origin's town (scope town)",
+                "nullable": true,
+                "type": "string"
+              },
+              "widened": {
+                "description": "The page looked further than the filter's radius (ADR-583)",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "radius_km",
+              "scope",
+              "town",
+              "widened"
+            ],
+            "title": "AroundReach",
+            "type": "object"
+          },
           "total": {
             "type": "integer"
           }
@@ -6849,7 +6886,8 @@
           "origin",
           "total",
           "items",
-          "next_cursor"
+          "next_cursor",
+          "reach"
         ],
         "title": "AroundKindResponse",
         "type": "object"
@@ -9091,6 +9129,39 @@
           "next_cursor"
         ],
         "title": "AroundPostsSection",
+        "type": "object"
+      },
+      "AroundReach": {
+        "properties": {
+          "radius_km": {
+            "description": "The radius the page used (scope radius)",
+            "nullable": true,
+            "type": "number"
+          },
+          "scope": {
+            "enum": [
+              "radius",
+              "town"
+            ],
+            "type": "string"
+          },
+          "town": {
+            "description": "The origin's town (scope town)",
+            "nullable": true,
+            "type": "string"
+          },
+          "widened": {
+            "description": "The page looked further than the filter's radius (ADR-583)",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "radius_km",
+          "scope",
+          "town",
+          "widened"
+        ],
+        "title": "AroundReach",
         "type": "object"
       },
       "AroundSearchRequest": {
@@ -126501,6 +126572,10 @@
                     "nullable": true,
                     "type": "string"
                   },
+                  "fallback": {
+                    "description": "ADR-583: when the first page finds nothing, look at the wider radii (10, 25, 50 km), then the origin's town. Default false",
+                    "type": "boolean"
+                  },
                   "filter": {
                     "description": "Every field is optional; the response echoes the normalised filter.",
                     "properties": {
@@ -128403,6 +128478,39 @@
                       ],
                       "type": "string"
                     },
+                    "reach": {
+                      "properties": {
+                        "radius_km": {
+                          "description": "The radius the page used (scope radius)",
+                          "nullable": true,
+                          "type": "number"
+                        },
+                        "scope": {
+                          "enum": [
+                            "radius",
+                            "town"
+                          ],
+                          "type": "string"
+                        },
+                        "town": {
+                          "description": "The origin's town (scope town)",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "widened": {
+                          "description": "The page looked further than the filter's radius (ADR-583)",
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "radius_km",
+                        "scope",
+                        "town",
+                        "widened"
+                      ],
+                      "title": "AroundReach",
+                      "type": "object"
+                    },
                     "total": {
                       "type": "integer"
                     }
@@ -128412,7 +128520,8 @@
                     "origin",
                     "total",
                     "items",
-                    "next_cursor"
+                    "next_cursor",
+                    "reach"
                   ],
                   "title": "AroundKindResponse",
                   "type": "object"

@@ -18,6 +18,21 @@ defmodule Palee.Places.Ports.DiscoveryStore do
               limit :: pos_integer()
             ) :: {[row()], non_neg_integer()}
 
+  @doc """
+  The same town fallback (ADR-583): boxes and open clubs whose location's
+  town is one of `towns`, pinned or not, measured from the nearest of
+  `points` when pinned (nil distance otherwise, listed last). First page
+  only; other kinds have no town and find nothing.
+  """
+  @callback search_town(
+              context :: map(),
+              kind(),
+              points :: [{float(), float()}],
+              towns :: [String.t()],
+              plan :: map(),
+              limit :: pos_integer()
+            ) :: {[row()], non_neg_integer()}
+
   @callback counts(context :: map(), area :: map(), plan :: map(), radii_m :: [float()]) ::
               %{kind() => %{float() => non_neg_integer()}}
 

@@ -15,6 +15,10 @@ defmodule Palee.Places.GazetteerStore do
   @impl true
   def nearest(point), do: adapter().nearest(point)
   @impl true
+  def get_by_slugs(slugs), do: adapter().get_by_slugs(slugs)
+  @impl true
+  def town_at(point), do: adapter().town_at(point)
+  @impl true
   def import(place), do: adapter().import(place)
   @impl true
   def upsert_many(source, places), do: adapter().upsert_many(source, places)

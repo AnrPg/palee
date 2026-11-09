@@ -92,8 +92,8 @@ defmodule PaleeWeb.AroundControllerTest do
         "address" => "Οδός 1",
         "latitude" => latitude,
         "longitude" => longitude,
-        "neighbourhood" => "Κυψέλη",
-        "city" => "Αθήνα"
+        "neighbourhood" => Keyword.get(opts, :neighbourhood, "Κυψέλη"),
+        "city" => Keyword.get(opts, :city, "Αθήνα")
       })
 
     if Keyword.get(opts, :publish, true) do
@@ -190,6 +190,12 @@ defmodule PaleeWeb.AroundControllerTest do
     ctx.as.(user)
     |> send_json(:post, "/api/around/search", Map.put_new(body, :origin, @here))
     |> json_response(status)
+  end
+
+  defp kind_page(ctx, user, kind, body) do
+    ctx.as.(user)
+    |> send_json(:post, "/api/around/search/#{kind}", Map.put_new(body, :origin, @here))
+    |> json_response(200)
   end
 
   defp items(result, kind), do: get_in(result, ["sections", kind, "items"])
@@ -452,6 +458,124 @@ defmodule PaleeWeb.AroundControllerTest do
              })[
                "wider"
              ] == []
+    end
+  end
+
+  # ------------------------------------------------------------ fallback
+
+  describe "nothing near: wider radii, then the same town (ADR-583)" do
+    test "an empty first page widens to the nearest radius that has something", ctx do
+      open_club(ctx.far, "Far lifters")
+      body = %{filter: %{kinds: ["clubs"], radius_km: 3.0}}
+
+      assert %{"items" => [], "reach" => %{"scope" => "radius", "widened" => false}} =
+               kind_page(ctx, ctx.visitor, "clubs", body)
+
+      widened = kind_page(ctx, ctx.visitor, "clubs", Map.put(body, :fallback, true))
+
+      assert %{
+               "reach" => %{"scope" => "radius", "radius_km" => 25.0, "widened" => true},
+               "next_cursor" => nil
+             } = widened
+
+      assert [%{"club" => %{"name" => "Far lifters"}, "distance_km" => distance}] =
+               widened["items"]
+
+      assert distance > 10
+
+      # Something within the radius: no widening.
+      open_club(ctx.alpha, "Alpha runners")
+
+      assert %{
+               "reach" => %{"widened" => false},
+               "items" => [%{"club" => %{"name" => "Alpha runners"}}]
+             } =
+               kind_page(ctx, ctx.visitor, "clubs", Map.put(body, :fallback, true))
+    end
+
+    test "an origin's town: the city itself, a neighbourhood's city, the town around a point",
+         ctx do
+      volos = neighbourhood("volos")
+
+      assert Palee.Places.origin_towns(%{neighbourhood_ids: [volos.id], points: []}) ==
+               ["Βόλος", "Volos"]
+
+      assert Palee.Places.origin_towns(%{neighbourhood_ids: [ctx.kypseli.id], points: []}) ==
+               ["Αθήνα", "Athens"]
+
+      assert Palee.Places.origin_towns(%{neighbourhood_ids: [], points: [{39.36, 22.95}]}) ==
+               ["Βόλος", "Volos"]
+
+      assert Palee.Places.origin_towns(%{neighbourhood_ids: [], points: [{35.0, 30.0}]}) == []
+    end
+
+    test "then the origin's town by the town typed in the address, pinned or not", ctx do
+      volos = neighbourhood("volos")
+      origin = %{type: "place", neighbourhood_id: volos.id}
+
+      unpinned =
+        gym("Volos Unpinned", {nil, nil},
+          city: "ΒΟΛΟΣ",
+          neighbourhood: nil,
+          disciplines: ["crossfit"]
+        )
+
+      _pinned =
+        gym("Volos Pinned", {39.37, 22.95},
+          city: "Volos",
+          neighbourhood: nil,
+          disciplines: ["yoga"]
+        )
+
+      _elsewhere =
+        gym("Larisa Box", {nil, nil},
+          city: "Λάρισα",
+          neighbourhood: nil,
+          disciplines: ["crossfit"]
+        )
+
+      _draft = gym("Volos Draft", {nil, nil}, city: "Βόλος", publish: false)
+
+      open_club(unpinned, "Volos runners")
+
+      # The pinned box is near enough on its own.
+      near = kind_page(ctx, ctx.visitor, "boxes", %{origin: origin, fallback: true})
+      assert %{"reach" => %{"widened" => false}} = near
+      assert Enum.map(near["items"], &hd(String.split(&1["box"]["name"]))) == ["Volos"]
+
+      # Narrowed to what only the unpinned one offers: found by its town.
+      town =
+        kind_page(ctx, ctx.visitor, "boxes", %{
+          origin: origin,
+          fallback: true,
+          filter: %{kinds: ["boxes"], disciplines: ["crossfit"]}
+        })
+
+      assert %{"reach" => %{"scope" => "town", "town" => "Βόλος", "widened" => true}} = town
+
+      assert [%{"box" => %{"organization_id" => id, "city" => "ΒΟΛΟΣ"}, "distance_km" => nil}] =
+               town["items"]
+
+      assert id == unpinned.organization.id
+
+      clubs = kind_page(ctx, ctx.visitor, "clubs", %{origin: origin, fallback: true})
+      assert %{"reach" => %{"scope" => "town"}} = clubs
+      assert [%{"club" => %{"name" => "Volos runners"}, "distance_km" => nil}] = clubs["items"]
+
+      # Your own box is never discovered, by distance or by town.
+      member = user_fixture()
+      add_member(unpinned.organization, member, :member)
+
+      assert %{"items" => []} =
+               kind_page(ctx, member, "boxes", %{
+                 origin: origin,
+                 fallback: true,
+                 filter: %{kinds: ["boxes"], disciplines: ["crossfit"]}
+               })
+
+      # Events and posts have no town fallback.
+      assert %{"items" => [], "reach" => %{"widened" => false}} =
+               kind_page(ctx, ctx.visitor, "events", %{origin: origin, fallback: true})
     end
   end
 

@@ -5,7 +5,10 @@ defmodule Palee.Application.AroundMe do
   * `search/3`: every selected kind's top cards with their totals, the
     origin the search used, and, when little was found, how much there is
     at wider radii. Remembers the filter as the person's last-used one.
-  * `kind/4`: one kind, cursor-paged («Δες όλα»).
+  * `kind/4`: one kind, cursor-paged («Δες όλα»). With `fallback: true`, a
+    first page that finds nothing looks further (ADR-583): the wider radii
+    (10, 25, 50 km) nearest first, then the origin's town by the town typed
+    in a gym's address, pinned or not. `reach` says where the page looked.
   * `pins/3`: map pins inside a viewport («Ψάξε εδώ»), capped.
 
   Discovery across gyms runs through `Places` (definer functions that see
@@ -82,12 +85,20 @@ defmodule Palee.Application.AroundMe do
       plan = Places.plan(filter, viewer(user_id), now, :list)
       area = Places.circle(origin.points, filter.radius_km * 1000)
 
-      page =
-        if kind in plan.kinds,
-          do: section(context, kind, area, plan, cursor, Places.page_limit(body["limit"])),
-          else: empty_section(kind, plan)
+      limit = Places.page_limit(body["limit"])
+      reach = %{scope: "radius", radius_km: filter.radius_km, town: nil, widened: false}
 
-      {:ok, Map.merge(%{kind: kind, origin: Places.present_origin(origin)}, page)}
+      {page, reach} =
+        if kind in plan.kinds do
+          page = section(context, kind, area, plan, cursor, limit)
+          fallback? = body["fallback"] == true and is_nil(cursor) and page.items == []
+
+          (fallback? && fallback(context, kind, origin, filter, plan, limit)) || {page, reach}
+        else
+          {empty_section(kind, plan), reach}
+        end
+
+      {:ok, Map.merge(%{kind: kind, origin: Places.present_origin(origin), reach: reach}, page)}
     end
   end
 
@@ -141,6 +152,59 @@ defmodule Palee.Application.AroundMe do
       next_cursor: if(rest != [] and page != [], do: Places.encode_cursor(kind, List.last(page)))
     }
     |> with_placement(kind, plan)
+  end
+
+  # ADR-583: nothing near the origin. The nearest wider radius that has
+  # something (one count query for all of them), else the same town. The
+  # page is the first and last: a cursor would page the original radius.
+  defp fallback(context, kind, origin, filter, plan, limit) do
+    wider_page(context, kind, origin, filter, plan, limit) ||
+      town_page(context, kind, origin, plan, limit)
+  end
+
+  defp wider_page(context, kind, origin, filter, plan, limit) do
+    case Places.fallback_radii_km(filter.radius_km) do
+      [] ->
+        nil
+
+      radii_km ->
+        radii_m = Enum.map(radii_km, &(&1 * 1000))
+        area = Places.circle(origin.points, Enum.max(radii_m))
+
+        counts =
+          context |> Places.counts(area, %{plan | kinds: [kind]}, radii_m) |> Map.get(kind, %{})
+
+        case Enum.find(radii_km, &(Map.get(counts, &1 * 1000, 0) > 0)) do
+          nil ->
+            nil
+
+          radius_km ->
+            area = Places.circle(origin.points, radius_km * 1000)
+            page = %{section(context, kind, area, plan, nil, limit) | next_cursor: nil}
+            reach = %{scope: "radius", radius_km: radius_km, town: nil, widened: true}
+            if page.items == [], do: nil, else: {page, reach}
+        end
+    end
+  end
+
+  defp town_page(context, kind, origin, plan, limit) do
+    case Places.origin_towns(origin) do
+      [] ->
+        nil
+
+      [town | _rest] = towns ->
+        {rows, total} = Places.search_town(context, kind, origin.points, towns, plan, limit)
+
+        page =
+          with_placement(
+            %{total: total, items: hydrate(context, kind, rows, plan), next_cursor: nil},
+            kind,
+            plan
+          )
+
+        reach = %{scope: "town", radius_km: nil, town: town, widened: true}
+        if page.items == [], do: nil, else: {page, reach}
+    end
   end
 
   defp empty_section(kind, plan),

@@ -91,6 +91,12 @@ defmodule Palee.Places.Domain.SearchArea do
   def distance_km(nil), do: nil
   def distance_km(metres) when is_number(metres), do: Float.round(metres / 1000, 1)
 
+  @doc """
+  Every radius of the ladder wider than `radius_km`, nearest first: where a
+  search that found nothing looks next (ADR-583), before the same town.
+  """
+  def fallback_radii_km(radius_km), do: Enum.filter(@wider_ladder_km, &(&1 > radius_km))
+
   @doc "Up to two radii wider than `radius_km`, from 10, 25, 50 km."
   def wider_radii_km(radius_km),
     do: @wider_ladder_km |> Enum.filter(&(&1 > radius_km)) |> Enum.take(2)

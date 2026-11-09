@@ -41,7 +41,7 @@ export function NearbyEvents() {
   const t = useTranslations("Around");
   const km = useKm();
   const { filter, ready } = useRememberedFilter("events");
-  const list = useAroundKind("events", { filter, enabled: ready, limit: 20 });
+  const list = useAroundKind("events", { filter, enabled: ready, limit: 20, fallback: true });
   const items = (list.data?.pages ?? []).flatMap((page) => page.items as AroundEventItem[]);
   const distances = new Map(items.map((item) => [item.event.id, item.distance_km]));
 
@@ -72,7 +72,7 @@ export function NearbyClubs() {
   const t = useTranslations("Around");
   const km = useKm();
   const { filter, ready } = useRememberedFilter("clubs");
-  const list = useAroundKind("clubs", { filter, enabled: ready, limit: 5 });
+  const list = useAroundKind("clubs", { filter, enabled: ready, limit: 5, fallback: true });
   const items = (list.data?.pages[0]?.items ?? []) as AroundClubItem[];
 
   return (

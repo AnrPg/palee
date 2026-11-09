@@ -24,6 +24,13 @@ defmodule Palee.Places.Ports.GazetteerStore do
   @callback get_many(ids :: [binary()]) :: [place()]
   @doc "The neighbourhood nearest to a point, within its reach (or a few kilometres)."
   @callback nearest({float(), float()}) :: place() | nil
+  @doc "Cities and towns by slug (a neighbourhood names its city by slug)."
+  @callback get_by_slugs(slugs :: [String.t()]) :: [place()]
+  @doc """
+  The city or town a point lies in: the nearest one whose reach (its radius,
+  or a few kilometres for a small town) covers the point; nil when none does.
+  """
+  @callback town_at({float(), float()}) :: place() | nil
   @doc """
   Stores a geocoded place (ADR-188) under its slug and id, or refreshes the
   stored one's names and shape; curated places are never touched.

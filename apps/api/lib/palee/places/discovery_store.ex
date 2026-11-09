@@ -15,6 +15,12 @@ defmodule Palee.Places.DiscoveryStore do
     do: run(context, :search, [kind, area, plan, cursor, limit])
 
   @impl true
+  def search_town(_context, _kind, _points, [], _plan, _limit), do: {[], 0}
+
+  def search_town(context, kind, points, towns, plan, limit),
+    do: run(context, :search_town, [kind, points, towns, plan, limit])
+
+  @impl true
   def counts(context, area, plan, radii_m), do: run(context, :counts, [area, plan, radii_m])
 
   @impl true

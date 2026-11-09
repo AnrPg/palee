@@ -2,7 +2,8 @@ defmodule Palee.Infrastructure.Places.EctoDiscoveryStore do
   @moduledoc """
   Discovery through the `palee_around_*` SECURITY DEFINER functions
   (ADR-154, migration `20261024100000_around_me`; the price range since
-  `20261214100000_around_price_range`, the level since `20261218100000_around_level`). The origin goes in as a
+  `20261214100000_around_price_range`, the level since `20261218100000_around_level`; the same town
+  fallback since `20271110300000_around_town_fallback`, ADR-583). The origin goes in as a
   geography multipoint and the search area's bounding box as an envelope,
   so the spatial predicates in the functions use the GiST indexes.
   """
@@ -78,40 +79,7 @@ defmodule Palee.Infrastructure.Places.EctoDiscoveryStore do
           limit
         ]
     )
-    |> page(fn [
-                 organization_id,
-                 location_id,
-                 latitude,
-                 longitude,
-                 distance,
-                 neighbourhood,
-                 city,
-                 takes_trials,
-                 snapshot,
-                 slug,
-                 title,
-                 logo_url,
-                 primary_color,
-                 rank,
-                 total
-               ] ->
-      {%{
-         organization_id: load(organization_id),
-         location_id: load(location_id),
-         latitude: latitude,
-         longitude: longitude,
-         distance_m: distance,
-         neighbourhood: neighbourhood,
-         city: city,
-         takes_trials: takes_trials,
-         snapshot: snapshot || %{},
-         slug: slug,
-         name: title,
-         logo_url: logo_url,
-         primary_color: primary_color,
-         rank: rank
-       }, total}
-    end)
+    |> page(&box_row/1)
   end
 
   def search(_context, "clubs", area, plan, cursor, limit) do
@@ -134,15 +102,7 @@ defmodule Palee.Infrastructure.Places.EctoDiscoveryStore do
           limit
         ]
     )
-    |> page(fn [id, organization_id, latitude, longitude, distance, total] ->
-      {%{
-         id: load(id),
-         organization_id: load(organization_id),
-         latitude: latitude,
-         longitude: longitude,
-         distance_m: distance
-       }, total}
-    end)
+    |> page(&club_row/1)
   end
 
   def search(_context, "posts", area, plan, cursor, limit) do
@@ -181,6 +141,50 @@ defmodule Palee.Infrastructure.Places.EctoDiscoveryStore do
        }, total}
     end)
   end
+
+  @impl true
+  def search_town(_context, "boxes", points, towns, plan, limit) do
+    """
+    SELECT organization_id, location_id, latitude, longitude, distance_m, neighbourhood, city,
+           takes_trials, snapshot, slug, title, logo_url, primary_color, rank, total
+    FROM palee_around_town_boxes(ST_GeogFromText($1), $2::text[], $3::boolean, $4::uuid[],
+      $5::text[], $6::text[], $7::text[], $8::text[], $9::text[], $10::integer)
+    """
+    |> query([
+      multipoint(points),
+      towns,
+      plan.trial_only,
+      uuids(plan.exclude_ids),
+      plan.disciplines,
+      plan.audiences,
+      plan.languages,
+      plan.amenities,
+      plan.levels,
+      limit
+    ])
+    |> page(&box_row/1)
+  end
+
+  def search_town(_context, "clubs", points, towns, plan, limit) do
+    """
+    SELECT id, organization_id, latitude, longitude, distance_m, total
+    FROM palee_around_town_clubs(ST_GeogFromText($1), $2::text[], $3::text[], $4::text[],
+      $5::text[], $6::text[], $7::text[], $8::integer)
+    """
+    |> query([
+      multipoint(points),
+      towns,
+      plan.disciplines,
+      plan.audiences,
+      plan.languages,
+      plan.amenities,
+      plan.levels,
+      limit
+    ])
+    |> page(&club_row/1)
+  end
+
+  def search_town(_context, _kind, _points, _towns, _plan, _limit), do: {[], 0}
 
   @impl true
   def counts(_context, _area, %{kinds: []}, _radii), do: %{}
@@ -283,6 +287,51 @@ defmodule Palee.Infrastructure.Places.EctoDiscoveryStore do
   end
 
   defp query(sql, params), do: Repo.query!(sql, params).rows
+
+  defp box_row([
+         organization_id,
+         location_id,
+         latitude,
+         longitude,
+         distance,
+         neighbourhood,
+         city,
+         takes_trials,
+         snapshot,
+         slug,
+         title,
+         logo_url,
+         primary_color,
+         rank,
+         total
+       ]) do
+    {%{
+       organization_id: load(organization_id),
+       location_id: load(location_id),
+       latitude: latitude,
+       longitude: longitude,
+       distance_m: distance,
+       neighbourhood: neighbourhood,
+       city: city,
+       takes_trials: takes_trials,
+       snapshot: snapshot || %{},
+       slug: slug,
+       name: title,
+       logo_url: logo_url,
+       primary_color: primary_color,
+       rank: rank
+     }, total}
+  end
+
+  defp club_row([id, organization_id, latitude, longitude, distance, total]) do
+    {%{
+       id: load(id),
+       organization_id: load(organization_id),
+       latitude: latitude,
+       longitude: longitude,
+       distance_m: distance
+     }, total}
+  end
 
   defp page(rows, fun) do
     pairs = Enum.map(rows, fun)

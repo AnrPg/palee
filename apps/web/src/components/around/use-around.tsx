@@ -192,19 +192,28 @@ export function useAroundSearch(limit = 5) {
 }
 
 /** One kind, cursor-paged («Δες όλα»). Without a provider it searches with the defaults. */
-export function useAroundKind(kind: AroundKind, options: { filter?: AroundFilter; origin?: OriginChoice; limit?: number; enabled?: boolean } = {}) {
+/**
+ * One Γύρω μου kind, cursor-paged. `fallback` (ADR-583): an empty first page
+ * looks further (10, 25, 50 km, then the origin's town); `reach` on the page
+ * says where it looked.
+ */
+export function useAroundKind(
+  kind: AroundKind,
+  options: { filter?: AroundFilter; origin?: OriginChoice; limit?: number; enabled?: boolean; fallback?: boolean } = {},
+) {
   const { tokens } = useSession();
   const token = tokens?.access_token ?? null;
   const filter = options.filter ?? DEFAULT_FILTER;
   const origin = options.origin ?? { type: "auto" };
   const limit = options.limit ?? 20;
+  const fallback = options.fallback ?? false;
   return useInfiniteQuery({
-    queryKey: ["around", "kind", kind, filterKey(filter), originKey(origin), limit],
+    queryKey: ["around", "kind", kind, filterKey(filter), originKey(origin), limit, fallback],
     enabled: Boolean(token) && (options.enabled ?? true),
     initialPageParam: null as string | null,
     retry,
     queryFn: ({ pageParam, signal }) =>
-      searchAroundKind(token!, kind, { filter, origin: buildOrigin(origin), cursor: pageParam, limit }, signal),
+      searchAroundKind(token!, kind, { filter, origin: buildOrigin(origin), cursor: pageParam, limit, ...(fallback ? { fallback } : {}) }, signal),
     getNextPageParam: (page) => page.next_cursor ?? undefined,
   });
 }

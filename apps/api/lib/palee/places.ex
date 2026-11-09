@@ -42,6 +42,7 @@ defmodule Palee.Places do
   defdelegate viewport(bbox), to: SearchArea
   defdelegate distance_km(metres), to: SearchArea
   defdelegate wider_radii_km(radius_km), to: SearchArea
+  defdelegate fallback_radii_km(radius_km), to: SearchArea
   defdelegate thin?(total), to: SearchArea
 
   # What the filter asks of each kind.
@@ -78,6 +79,48 @@ defmodule Palee.Places do
 
   defdelegate nearest_neighbourhood(point), to: GazetteerStore, as: :nearest
 
+  @doc """
+  The towns an origin lies in (ADR-583), as the names a location's town is
+  matched by (Greek and English): each origin place's town (itself when it
+  is a city or town, else its city by slug, else the town around it); for a
+  point, the town around it. Empty when the gazetteer knows none.
+  """
+  def origin_towns(%{neighbourhood_ids: ids, points: points}) do
+    towns =
+      case neighbourhoods(ids) do
+        [] -> Enum.map(points, &GazetteerStore.town_at/1)
+        places -> towns_of(places)
+      end
+
+    towns
+    |> Enum.reject(&is_nil/1)
+    |> Enum.uniq_by(& &1.id)
+    |> Enum.flat_map(&[&1.name, &1[:name_en]])
+    |> Enum.reject(&(is_nil(&1) or String.trim(&1) == ""))
+    |> Enum.uniq()
+  end
+
+  defp towns_of(places) do
+    by_slug =
+      places
+      |> Enum.map(& &1[:city_slug])
+      |> Enum.reject(&is_nil/1)
+      |> Enum.uniq()
+      |> GazetteerStore.get_by_slugs()
+      |> Map.new(&{&1.slug, &1})
+
+    Enum.map(places, fn
+      %{kind: "city"} = place -> place
+      place -> Map.get(by_slug, place[:city_slug]) || town_around(place)
+    end)
+  end
+
+  defp town_around(%{latitude: latitude, longitude: longitude})
+       when is_number(latitude) and is_number(longitude),
+       do: GazetteerStore.town_at({latitude, longitude})
+
+  defp town_around(_place), do: nil
+
   # The world beyond the curated gazetteer (ADR-188).
   defdelegate geocoder_layers(), to: WorldPlace, as: :layers
   defdelegate geocoder_area_layers(), to: WorldPlace, as: :area_layers
@@ -113,6 +156,7 @@ defmodule Palee.Places do
 
   # Discovery.
   defdelegate search(context, kind, area, plan, cursor, limit), to: DiscoveryStore
+  defdelegate search_town(context, kind, points, towns, plan, limit), to: DiscoveryStore
   defdelegate counts(context, area, plan, radii_m), to: DiscoveryStore
   defdelegate pins(context, area, plan, limit), to: DiscoveryStore
   defdelegate people_within(context, user_ids, radius_m), to: DiscoveryStore
