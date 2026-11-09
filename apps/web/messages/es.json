@@ -6106,6 +6106,7 @@
     "send": "Enviar",
     "noComments": "Aún no hay comentarios.",
     "pinned": "Fijada",
+    "postBy": "por {name}",
     "hiddenNotice": "Oculta: solo la ves tú y el equipo.",
     "pin": "Fijar",
     "unpin": "Desfijar",

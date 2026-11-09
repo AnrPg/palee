@@ -366,6 +366,47 @@ test.describe("community", () => {
   });
 
   // ADR-221: the same field finds a live, published box or coach by name.
+  test("a followed box shows as a dashed bubble and its posts are headed by the box (ADR-590)", async ({ page }) => {
+    await member(page);
+    const gazi = { organization_id: "org-2", slug: "crossfit-gazi", name: "CrossFit Gazi", logo_url: null };
+    await page.route("**/api/me/following**", (route) =>
+      route.fulfill(
+        json({
+          entries: [
+            { follow_id: "f-1", status: "active", box: gazi },
+            // The box the member belongs to keeps its own club bubble only.
+            { follow_id: "f-2", status: "active", box: { organization_id: "org-1", slug: "kypseli", name: "Box Kypseli", logo_url: null } },
+          ],
+          next_cursor: null,
+        }),
+      ),
+    );
+    const boxPost = {
+      ...post,
+      id: "post-box",
+      audience: "public",
+      author: { id: "coach-9", nickname: "Nikos", avatar_url: null },
+      body: "Open partner WOD on Saturday, bring a friend",
+      channel: null,
+      can_report: false,
+      club: { id: "club-2", kind: "gym", name: "CrossFit Gazi", organization_slug: "crossfit-gazi", logo_url: null },
+    };
+    await page.route("**/api/me/feed**", (route) => route.fulfill(json({ posts: [boxPost, post], pinned: [], next_cursor: null })));
+    await page.goto("/");
+
+    const bubbles = page.getByTestId("club-bar-followed-box");
+    await expect(bubbles).toHaveCount(1);
+    await expect(bubbles).toHaveAttribute("href", "/b/crossfit-gazi");
+
+    const card = page.locator("article", { hasText: "Open partner WOD" });
+    await expect(card.getByTestId("post-box-name")).toHaveText("CrossFit Gazi");
+    await expect(card.getByTestId("post-box-name")).toHaveAttribute("href", "/b/crossfit-gazi");
+    await expect(card.getByRole("link", { name: "by Nikos" })).toHaveAttribute("href", "/people/coach-9");
+    // A member's own post keeps its author on top.
+    const memberCard = page.locator("article", { hasText: "partner WOD?" });
+    await expect(memberCard.getByTestId("post-box-name")).toHaveCount(0);
+  });
+
   test("«Find» finds a box by name and opens its public page", async ({ page }) => {
     await member(page);
     const queries: string[] = [];

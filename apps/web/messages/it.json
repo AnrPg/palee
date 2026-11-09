@@ -6106,6 +6106,7 @@
     "send": "Invia",
     "noComments": "Ancora nessun commento.",
     "pinned": "Fissato",
+    "postBy": "di {name}",
     "hiddenNotice": "Nascosto: lo vedete solo tu e lo staff.",
     "pin": "Fissa",
     "unpin": "Rimuovi",

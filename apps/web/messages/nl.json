@@ -6106,6 +6106,7 @@
     "send": "Versturen",
     "noComments": "Nog geen reacties.",
     "pinned": "Vastgezet",
+    "postBy": "door {name}",
     "hiddenNotice": "Verborgen: alleen jij en het staff zien dit.",
     "pin": "Vastzetten",
     "unpin": "Losmaken",

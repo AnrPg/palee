@@ -58,6 +58,7 @@ export function PostCard({ post }: { post: CommunityPost }) {
   const author = post.author.nickname ?? "?";
   const tMedia = useTranslations("Media");
   const media = post.media ?? [];
+  const box = boxVoice(post);
   useProcessingRefresh(post);
 
   async function run(action: () => Promise<unknown>) {
@@ -86,32 +87,11 @@ export function PostCard({ post }: { post: CommunityPost }) {
         opacity: post.hidden ? 0.7 : 1,
       }}
     >
-      <p className="text-xs font-semibold" style={{ color: "var(--dim)" }}>
-        {origin(post, t)}
-        {post.pinned ? ` · ${t("pinned")}` : ""}
-      </p>
-      <header className="flex items-center gap-3">
-        {post.author.avatar_url ? (
-          // eslint-disable-next-line @next/next/no-img-element -- user-uploaded media origin
-          <img src={post.author.avatar_url} alt="" className="h-10 w-10 shrink-0 rounded-full object-cover" />
-        ) : (
-          <span
-            aria-hidden="true"
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-extrabold"
-            style={{ background: "var(--panel-raised)", color: "var(--text)" }}
-          >
-            {clubInitials(author)}
-          </span>
-        )}
-        <div className="min-w-0 grow">
-          <Link href={`/people/${post.author.id}`} className="block truncate font-bold" style={{ color: "var(--text)" }}>
-            {author}
-          </Link>
-          <p className="text-xs" style={{ color: "var(--dim)" }}>
-            <time dateTime={post.inserted_at}>{formatDateTime(post.inserted_at, locale)}</time>
-          </p>
-        </div>
-      </header>
+      {box ? (
+        <BoxHeader post={post} box={box} author={author} locale={locale} t={t} />
+      ) : (
+        <PersonHeader post={post} author={author} locale={locale} t={t} />
+      )}
 
       {post.hidden ? (
         <p className="text-xs font-semibold" style={{ color: "var(--warning)" }}>{t("hiddenNotice")}</p>
@@ -251,6 +231,97 @@ function useProcessingRefresh(post: CommunityPost) {
     tick();
     return () => window.clearTimeout(timer);
   }, [processing, post.id, queryClient]);
+}
+
+type HeaderProps = {
+  post: CommunityPost;
+  author: string;
+  locale: string;
+  t: ReturnType<typeof useTranslations>;
+};
+
+/** ADR-590: staff speaking for the box (a public club post): the box heads it and opens its page, the coach is the byline. */
+function BoxHeader({ post, box, author, locale, t }: HeaderProps & { box: NonNullable<ReturnType<typeof boxVoice>> }) {
+  return (
+    <>
+      {post.channel || post.pinned ? (
+        <p className="text-xs font-semibold" style={{ color: "var(--dim)" }}>
+          {[post.channel ? `#${channelName(post.channel, t)}` : null, post.pinned ? t("pinned") : null].filter(Boolean).join(" · ")}
+        </p>
+      ) : null}
+      <header className="flex items-center gap-3">
+        <Link href={box.href} tabIndex={-1} aria-hidden="true" className="shrink-0" data-testid="post-box-logo">
+          {box.logo ? (
+            // eslint-disable-next-line @next/next/no-img-element -- gym-uploaded media origin
+            <img src={box.logo} alt="" className="h-10 w-10 rounded-xl object-cover" />
+          ) : (
+            <span
+              className="flex h-10 w-10 items-center justify-center rounded-xl text-sm font-extrabold"
+              style={{ background: "var(--panel-raised)", color: "var(--text)" }}
+            >
+              {clubInitials(box.name)}
+            </span>
+          )}
+        </Link>
+        <div className="min-w-0 grow">
+          <Link href={box.href} className="block truncate font-bold" style={{ color: "var(--text)" }} data-testid="post-box-name">
+            {box.name}
+          </Link>
+          <p className="truncate text-xs" style={{ color: "var(--dim)" }}>
+            <Link href={`/people/${post.author.id}`} className="font-semibold" style={{ color: "var(--text-soft)" }}>
+              {t("postBy", { name: author })}
+            </Link>
+            {" · "}
+            <time dateTime={post.inserted_at}>{formatDateTime(post.inserted_at, locale)}</time>
+          </p>
+        </div>
+      </header>
+    </>
+  );
+}
+
+/** The origin (`Club › #channel` or a profile post's audience), then the author. */
+function PersonHeader({ post, author, locale, t }: HeaderProps) {
+  return (
+    <>
+      <p className="text-xs font-semibold" style={{ color: "var(--dim)" }}>
+        {origin(post, t)}
+        {post.pinned ? ` · ${t("pinned")}` : ""}
+      </p>
+      <header className="flex items-center gap-3">
+        {post.author.avatar_url ? (
+          // eslint-disable-next-line @next/next/no-img-element -- user-uploaded media origin
+          <img src={post.author.avatar_url} alt="" className="h-10 w-10 shrink-0 rounded-full object-cover" />
+        ) : (
+          <span
+            aria-hidden="true"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-extrabold"
+            style={{ background: "var(--panel-raised)", color: "var(--text)" }}
+          >
+            {clubInitials(author)}
+          </span>
+        )}
+        <div className="min-w-0 grow">
+          <Link href={`/people/${post.author.id}`} className="block truncate font-bold" style={{ color: "var(--text)" }}>
+            {author}
+          </Link>
+          <p className="text-xs" style={{ color: "var(--dim)" }}>
+            <time dateTime={post.inserted_at}>{formatDateTime(post.inserted_at, locale)}</time>
+          </p>
+        </div>
+      </header>
+    </>
+  );
+}
+
+/**
+ * ADR-590: a public post in a box's club is staff speaking for the box
+ * (AudiencePolicy), so the box heads it and opens the box page `/b/<slug>`.
+ */
+export function boxVoice(post: Pick<CommunityPost, "origin" | "audience" | "club">) {
+  const club = post.club;
+  if (post.origin !== "club" || post.audience !== "public" || !club || club.kind !== "gym" || !club.organization_slug) return null;
+  return { name: club.name, logo: club.logo_url ?? null, href: `/b/${encodeURIComponent(club.organization_slug)}` };
 }
 
 /** `Club › #channel`, the box alone for its public post, or the audience of a profile post. */

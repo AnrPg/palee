@@ -6106,6 +6106,7 @@
     "send": "Senden",
     "noComments": "Noch keine Kommentare.",
     "pinned": "Angeheftet",
+    "postBy": "von {name}",
     "hiddenNotice": "Ausgeblendet: Nur du und das Team sehen es.",
     "pin": "Anheften",
     "unpin": "Lösen",

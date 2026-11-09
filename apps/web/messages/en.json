@@ -6106,6 +6106,7 @@
     "send": "Send",
     "noComments": "No comments yet.",
     "pinned": "Pinned",
+    "postBy": "by {name}",
     "hiddenNotice": "Hidden: only you and staff can see it.",
     "pin": "Pin",
     "unpin": "Unpin",

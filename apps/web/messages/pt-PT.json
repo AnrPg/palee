@@ -6106,6 +6106,7 @@
     "send": "Enviar",
     "noComments": "Ainda não há comentários.",
     "pinned": "Afixada",
+    "postBy": "por {name}",
     "hiddenNotice": "Oculta: só tu e o staff a veem.",
     "pin": "Afixar",
     "unpin": "Desafixar",

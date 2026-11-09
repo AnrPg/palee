@@ -6106,6 +6106,7 @@
     "send": "Envoyer",
     "noComments": "Pas encore de commentaire.",
     "pinned": "Épinglée",
+    "postBy": "par {name}",
     "hiddenNotice": "Masquée : seuls toi et l’équipe la voient.",
     "pin": "Épingler",
     "unpin": "Désépingler",
