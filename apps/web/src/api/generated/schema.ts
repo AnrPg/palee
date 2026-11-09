@@ -19090,6 +19090,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/platform/exercise-catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The exercise catalog with each exercise's targets (vendors) */
+        get: operations["PaleeWeb.PlatformExerciseCatalogController.exercises"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/platform/exercise-catalog-audit": {
         parameters: {
             query?: never;
@@ -19100,6 +19117,23 @@ export interface paths {
         /** The latest exercise catalog decisions (vendors) */
         get: operations["PaleeWeb.PlatformExerciseCatalogController.audit"];
         put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/platform/exercise-catalog/{id}/targets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Replace the muscles (by role) and qualities an exercise trains (vendors) */
+        put: operations["PaleeWeb.PlatformExerciseCatalogController.set_targets"];
         post?: never;
         delete?: never;
         options?: never;
@@ -28841,6 +28875,75 @@ export interface components {
                 status: "pending" | "approved" | "declined" | "cancelled" | "completed";
             }[];
         };
+        /** CatalogExercise */
+        CatalogExercise: {
+            aliases: string[];
+            /** @enum {string} */
+            category: "strength" | "bodyweight" | "cardio" | "mobility" | "skill";
+            id: string;
+            label: string;
+            muscles: {
+                /** @description Taxonomy group or head id */
+                id: string;
+                /** @enum {string} */
+                role: "primary" | "secondary" | "stabilizer";
+            }[];
+            /** @enum {string} */
+            origin: "builtin" | "reviewed";
+            qualities: string[];
+            search_aliases: string[];
+        };
+        /** CatalogExerciseTargets */
+        CatalogExerciseTargets: {
+            muscles: {
+                /** @description Taxonomy group or head id */
+                id: string;
+                /** @enum {string} */
+                role: "primary" | "secondary" | "stabilizer";
+            }[];
+            qualities: string[];
+        };
+        /** CatalogExerciseUpdated */
+        CatalogExerciseUpdated: {
+            /** CatalogExercise */
+            exercise: {
+                aliases: string[];
+                /** @enum {string} */
+                category: "strength" | "bodyweight" | "cardio" | "mobility" | "skill";
+                id: string;
+                label: string;
+                muscles: {
+                    /** @description Taxonomy group or head id */
+                    id: string;
+                    /** @enum {string} */
+                    role: "primary" | "secondary" | "stabilizer";
+                }[];
+                /** @enum {string} */
+                origin: "builtin" | "reviewed";
+                qualities: string[];
+                search_aliases: string[];
+            };
+        };
+        /** CatalogExercises */
+        CatalogExercises: {
+            exercises: {
+                aliases: string[];
+                /** @enum {string} */
+                category: "strength" | "bodyweight" | "cardio" | "mobility" | "skill";
+                id: string;
+                label: string;
+                muscles: {
+                    /** @description Taxonomy group or head id */
+                    id: string;
+                    /** @enum {string} */
+                    role: "primary" | "secondary" | "stabilizer";
+                }[];
+                /** @enum {string} */
+                origin: "builtin" | "reviewed";
+                qualities: string[];
+                search_aliases: string[];
+            }[];
+        };
         /** CheckInBooking */
         CheckInBooking: {
             duration_minutes?: number | null;
@@ -35578,7 +35681,7 @@ export interface components {
         ExerciseCatalogAudit: {
             events: {
                 /** @enum {string} */
-                action: "approve_entry" | "approve_alias" | "reject";
+                action: "approve_entry" | "approve_alias" | "reject" | "set_targets";
                 /** Format: uuid */
                 actor_user_id?: string | null;
                 /** Format: date-time */
@@ -35590,6 +35693,13 @@ export interface components {
                 id: string;
                 metadata?: Record<string, never>;
             }[];
+        };
+        /** ExerciseMuscleTarget */
+        ExerciseMuscleTarget: {
+            /** @description Taxonomy group or head id */
+            id: string;
+            /** @enum {string} */
+            role: "primary" | "secondary" | "stabilizer";
         };
         /** ExerciseNameCandidate */
         ExerciseNameCandidate: {
@@ -35638,6 +35748,15 @@ export interface components {
             decision: "entry" | "alias" | "reject";
             /** @description Defaults to the typed name */
             label?: string;
+            /** @description For an entry (ADR-560): the muscles it trains, by role */
+            muscles?: {
+                /** @description Taxonomy group or head id */
+                id: string;
+                /** @enum {string} */
+                role: "primary" | "secondary" | "stabilizer";
+            }[];
+            /** @description For an entry (ADR-560): the fitness qualities it develops */
+            qualities?: string[];
         };
         /** ExerciseNameCandidateQueue */
         ExerciseNameCandidateQueue: {
@@ -159950,6 +160069,15 @@ export interface operations {
                     decision: "entry" | "alias" | "reject";
                     /** @description Defaults to the typed name */
                     label?: string;
+                    /** @description For an entry (ADR-560): the muscles it trains, by role */
+                    muscles?: {
+                        /** @description Taxonomy group or head id */
+                        id: string;
+                        /** @enum {string} */
+                        role: "primary" | "secondary" | "stabilizer";
+                    }[];
+                    /** @description For an entry (ADR-560): the fitness qualities it develops */
+                    qualities?: string[];
                 };
             };
         };
@@ -160010,6 +160138,44 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.PlatformExerciseCatalogController.exercises": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Exercises */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        exercises: {
+                            aliases: string[];
+                            /** @enum {string} */
+                            category: "strength" | "bodyweight" | "cardio" | "mobility" | "skill";
+                            id: string;
+                            label: string;
+                            muscles: {
+                                /** @description Taxonomy group or head id */
+                                id: string;
+                                /** @enum {string} */
+                                role: "primary" | "secondary" | "stabilizer";
+                            }[];
+                            /** @enum {string} */
+                            origin: "builtin" | "reviewed";
+                            qualities: string[];
+                            search_aliases: string[];
+                        }[];
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.PlatformExerciseCatalogController.audit": {
         parameters: {
             query?: never;
@@ -160028,7 +160194,7 @@ export interface operations {
                     "application/json": {
                         events: {
                             /** @enum {string} */
-                            action: "approve_entry" | "approve_alias" | "reject";
+                            action: "approve_entry" | "approve_alias" | "reject" | "set_targets";
                             /** Format: uuid */
                             actor_user_id?: string | null;
                             /** Format: date-time */
@@ -160041,6 +160207,77 @@ export interface operations {
                             metadata?: Record<string, never>;
                         }[];
                     };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformExerciseCatalogController.set_targets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    muscles: {
+                        /** @description Taxonomy group or head id */
+                        id: string;
+                        /** @enum {string} */
+                        role: "primary" | "secondary" | "stabilizer";
+                    }[];
+                    qualities: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description Updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** CatalogExercise */
+                        exercise: {
+                            aliases: string[];
+                            /** @enum {string} */
+                            category: "strength" | "bodyweight" | "cardio" | "mobility" | "skill";
+                            id: string;
+                            label: string;
+                            muscles: {
+                                /** @description Taxonomy group or head id */
+                                id: string;
+                                /** @enum {string} */
+                                role: "primary" | "secondary" | "stabilizer";
+                            }[];
+                            /** @enum {string} */
+                            origin: "builtin" | "reviewed";
+                            qualities: string[];
+                            search_aliases: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
                 };
             };
         };

@@ -6,15 +6,6 @@ defmodule Palee.Workouts.Ports.ExerciseCatalogStore do
   decisions.
   """
 
-  @type addition :: %{
-          kind: String.t(),
-          catalog_slug: String.t(),
-          label: String.t(),
-          category: String.t() | nil
-        }
-
-  @callback additions() :: [addition()]
-
   @doc "Counts typed names that matched nothing (`%{name, folded, new_owner?}`), seen at `now`."
   @callback note_candidates([map()], DateTime.t()) :: :ok
 
@@ -28,18 +19,31 @@ defmodule Palee.Workouts.Ports.ExerciseCatalogStore do
   @callback get_candidate(Ecto.UUID.t()) :: map() | nil
 
   @doc """
-  Writes a decision in one transaction: the addition (if any), the candidate's
-  status, and the audit event. Fails when the candidate is no longer pending.
+  Writes a decision in one transaction: the addition (if any) with its
+  reference rows (ADR-560: an entry's exercise and `targets`, an alias's
+  Quick Text alias), the candidate's status, and the audit event. Fails when the candidate is no longer pending.
   """
   @callback record_decision(
               candidate_id :: Ecto.UUID.t(),
               decision :: %{
-                action: String.t(),
-                catalog_slug: String.t() | nil,
-                addition: map() | nil
+                optional(:targets) => map() | nil,
+                required(:action) => String.t(),
+                required(:catalog_slug) => String.t() | nil,
+                required(:addition) => map() | nil
               },
               actor_user_id :: Ecto.UUID.t(),
               metadata :: map(),
+              DateTime.t()
+            ) :: {:ok, map()} | {:error, term()}
+
+  @doc """
+  ADR-560: replaces an exercise's muscle and quality targets and records a
+  `set_targets` audit event (before and after) in one transaction.
+  """
+  @callback replace_exercise_targets(
+              exercise_id :: String.t(),
+              targets :: %{muscles: [%{id: String.t(), role: atom()}], qualities: [String.t()]},
+              actor_user_id :: Ecto.UUID.t(),
               DateTime.t()
             ) :: {:ok, map()} | {:error, term()}
 

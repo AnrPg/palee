@@ -26431,6 +26431,314 @@
         "title": "BusinessRequests",
         "type": "object"
       },
+      "CatalogExercise": {
+        "properties": {
+          "aliases": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "category": {
+            "enum": [
+              "strength",
+              "bodyweight",
+              "cardio",
+              "mobility",
+              "skill"
+            ],
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "muscles": {
+            "items": {
+              "properties": {
+                "id": {
+                  "description": "Taxonomy group or head id",
+                  "type": "string"
+                },
+                "role": {
+                  "enum": [
+                    "primary",
+                    "secondary",
+                    "stabilizer"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "role"
+              ],
+              "title": "ExerciseMuscleTarget",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "origin": {
+            "enum": [
+              "builtin",
+              "reviewed"
+            ],
+            "type": "string"
+          },
+          "qualities": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "search_aliases": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "aliases",
+          "category",
+          "id",
+          "label",
+          "muscles",
+          "origin",
+          "qualities",
+          "search_aliases"
+        ],
+        "title": "CatalogExercise",
+        "type": "object"
+      },
+      "CatalogExerciseTargets": {
+        "properties": {
+          "muscles": {
+            "items": {
+              "properties": {
+                "id": {
+                  "description": "Taxonomy group or head id",
+                  "type": "string"
+                },
+                "role": {
+                  "enum": [
+                    "primary",
+                    "secondary",
+                    "stabilizer"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "role"
+              ],
+              "title": "ExerciseMuscleTarget",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "qualities": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "muscles",
+          "qualities"
+        ],
+        "title": "CatalogExerciseTargets",
+        "type": "object"
+      },
+      "CatalogExerciseUpdated": {
+        "properties": {
+          "exercise": {
+            "properties": {
+              "aliases": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "category": {
+                "enum": [
+                  "strength",
+                  "bodyweight",
+                  "cardio",
+                  "mobility",
+                  "skill"
+                ],
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "muscles": {
+                "items": {
+                  "properties": {
+                    "id": {
+                      "description": "Taxonomy group or head id",
+                      "type": "string"
+                    },
+                    "role": {
+                      "enum": [
+                        "primary",
+                        "secondary",
+                        "stabilizer"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "role"
+                  ],
+                  "title": "ExerciseMuscleTarget",
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "origin": {
+                "enum": [
+                  "builtin",
+                  "reviewed"
+                ],
+                "type": "string"
+              },
+              "qualities": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "search_aliases": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "aliases",
+              "category",
+              "id",
+              "label",
+              "muscles",
+              "origin",
+              "qualities",
+              "search_aliases"
+            ],
+            "title": "CatalogExercise",
+            "type": "object"
+          }
+        },
+        "required": [
+          "exercise"
+        ],
+        "title": "CatalogExerciseUpdated",
+        "type": "object"
+      },
+      "CatalogExercises": {
+        "properties": {
+          "exercises": {
+            "items": {
+              "properties": {
+                "aliases": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "category": {
+                  "enum": [
+                    "strength",
+                    "bodyweight",
+                    "cardio",
+                    "mobility",
+                    "skill"
+                  ],
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "muscles": {
+                  "items": {
+                    "properties": {
+                      "id": {
+                        "description": "Taxonomy group or head id",
+                        "type": "string"
+                      },
+                      "role": {
+                        "enum": [
+                          "primary",
+                          "secondary",
+                          "stabilizer"
+                        ],
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "role"
+                    ],
+                    "title": "ExerciseMuscleTarget",
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "origin": {
+                  "enum": [
+                    "builtin",
+                    "reviewed"
+                  ],
+                  "type": "string"
+                },
+                "qualities": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "search_aliases": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": [
+                "aliases",
+                "category",
+                "id",
+                "label",
+                "muscles",
+                "origin",
+                "qualities",
+                "search_aliases"
+              ],
+              "title": "CatalogExercise",
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "exercises"
+        ],
+        "title": "CatalogExercises",
+        "type": "object"
+      },
       "CheckInBooking": {
         "properties": {
           "duration_minutes": {
@@ -47296,7 +47604,8 @@
                   "enum": [
                     "approve_entry",
                     "approve_alias",
-                    "reject"
+                    "reject",
+                    "set_targets"
                   ],
                   "type": "string"
                 },
@@ -47340,6 +47649,28 @@
           "events"
         ],
         "title": "ExerciseCatalogAudit",
+        "type": "object"
+      },
+      "ExerciseMuscleTarget": {
+        "properties": {
+          "id": {
+            "description": "Taxonomy group or head id",
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "primary",
+              "secondary",
+              "stabilizer"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "role"
+        ],
+        "title": "ExerciseMuscleTarget",
         "type": "object"
       },
       "ExerciseNameCandidate": {
@@ -47482,6 +47813,39 @@
           "label": {
             "description": "Defaults to the typed name",
             "type": "string"
+          },
+          "muscles": {
+            "description": "For an entry (ADR-560): the muscles it trains, by role",
+            "items": {
+              "properties": {
+                "id": {
+                  "description": "Taxonomy group or head id",
+                  "type": "string"
+                },
+                "role": {
+                  "enum": [
+                    "primary",
+                    "secondary",
+                    "stabilizer"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "role"
+              ],
+              "title": "ExerciseMuscleTarget",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "qualities": {
+            "description": "For an entry (ADR-560): the fitness qualities it develops",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
           }
         },
         "required": [
@@ -409907,6 +410271,39 @@
                   "label": {
                     "description": "Defaults to the typed name",
                     "type": "string"
+                  },
+                  "muscles": {
+                    "description": "For an entry (ADR-560): the muscles it trains, by role",
+                    "items": {
+                      "properties": {
+                        "id": {
+                          "description": "Taxonomy group or head id",
+                          "type": "string"
+                        },
+                        "role": {
+                          "enum": [
+                            "primary",
+                            "secondary",
+                            "stabilizer"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "role"
+                      ],
+                      "title": "ExerciseMuscleTarget",
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "qualities": {
+                    "description": "For an entry (ADR-560): the fitness qualities it develops",
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
                   }
                 },
                 "required": [
@@ -410030,6 +410427,125 @@
         ]
       }
     },
+    "/api/platform/exercise-catalog": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformExerciseCatalogController.exercises",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "exercises": {
+                      "items": {
+                        "properties": {
+                          "aliases": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "category": {
+                            "enum": [
+                              "strength",
+                              "bodyweight",
+                              "cardio",
+                              "mobility",
+                              "skill"
+                            ],
+                            "type": "string"
+                          },
+                          "id": {
+                            "type": "string"
+                          },
+                          "label": {
+                            "type": "string"
+                          },
+                          "muscles": {
+                            "items": {
+                              "properties": {
+                                "id": {
+                                  "description": "Taxonomy group or head id",
+                                  "type": "string"
+                                },
+                                "role": {
+                                  "enum": [
+                                    "primary",
+                                    "secondary",
+                                    "stabilizer"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "role"
+                              ],
+                              "title": "ExerciseMuscleTarget",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "origin": {
+                            "enum": [
+                              "builtin",
+                              "reviewed"
+                            ],
+                            "type": "string"
+                          },
+                          "qualities": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "search_aliases": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "required": [
+                          "aliases",
+                          "category",
+                          "id",
+                          "label",
+                          "muscles",
+                          "origin",
+                          "qualities",
+                          "search_aliases"
+                        ],
+                        "title": "CatalogExercise",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "exercises"
+                  ],
+                  "title": "CatalogExercises",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Exercises"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The exercise catalog with each exercise's targets (vendors)",
+        "tags": [
+          "Platform exercise catalog"
+        ]
+      }
+    },
     "/api/platform/exercise-catalog-audit": {
       "get": {
         "callbacks": {},
@@ -410048,7 +410564,8 @@
                             "enum": [
                               "approve_entry",
                               "approve_alias",
-                              "reject"
+                              "reject",
+                              "set_targets"
                             ],
                             "type": "string"
                           },
@@ -410105,6 +410622,199 @@
           }
         ],
         "summary": "The latest exercise catalog decisions (vendors)",
+        "tags": [
+          "Platform exercise catalog"
+        ]
+      }
+    },
+    "/api/platform/exercise-catalog/{id}/targets": {
+      "put": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformExerciseCatalogController.set_targets",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "muscles": {
+                    "items": {
+                      "properties": {
+                        "id": {
+                          "description": "Taxonomy group or head id",
+                          "type": "string"
+                        },
+                        "role": {
+                          "enum": [
+                            "primary",
+                            "secondary",
+                            "stabilizer"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "role"
+                      ],
+                      "title": "ExerciseMuscleTarget",
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "qualities": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "muscles",
+                  "qualities"
+                ],
+                "title": "CatalogExerciseTargets",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "exercise": {
+                      "properties": {
+                        "aliases": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "category": {
+                          "enum": [
+                            "strength",
+                            "bodyweight",
+                            "cardio",
+                            "mobility",
+                            "skill"
+                          ],
+                          "type": "string"
+                        },
+                        "id": {
+                          "type": "string"
+                        },
+                        "label": {
+                          "type": "string"
+                        },
+                        "muscles": {
+                          "items": {
+                            "properties": {
+                              "id": {
+                                "description": "Taxonomy group or head id",
+                                "type": "string"
+                              },
+                              "role": {
+                                "enum": [
+                                  "primary",
+                                  "secondary",
+                                  "stabilizer"
+                                ],
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "role"
+                            ],
+                            "title": "ExerciseMuscleTarget",
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "origin": {
+                          "enum": [
+                            "builtin",
+                            "reviewed"
+                          ],
+                          "type": "string"
+                        },
+                        "qualities": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "search_aliases": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        }
+                      },
+                      "required": [
+                        "aliases",
+                        "category",
+                        "id",
+                        "label",
+                        "muscles",
+                        "origin",
+                        "qualities",
+                        "search_aliases"
+                      ],
+                      "title": "CatalogExercise",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "exercise"
+                  ],
+                  "title": "CatalogExerciseUpdated",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Updated"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Error"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Replace the muscles (by role) and qualities an exercise trains (vendors)",
         "tags": [
           "Platform exercise catalog"
         ]

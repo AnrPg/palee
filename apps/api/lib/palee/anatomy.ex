@@ -1,8 +1,9 @@
 defmodule Palee.Anatomy do
   @moduledoc """
-  Public API of the code-owned anatomy vocabulary (ADR-163): the versioned
-  muscle taxonomy, the ten fitness qualities, deterministic goal suggestion
-  and goal/feedback validation. Pure; no persistence.
+  Public API of the anatomy vocabulary (ADR-163): the versioned muscle
+  taxonomy, the ten fitness qualities, deterministic goal suggestion and
+  goal/feedback validation. ADR-560: the vocabulary is read from the
+  reference catalog tables (`Palee.Catalog`); nothing here writes.
   """
 
   alias Palee.Anatomy.Domain.{
@@ -42,6 +43,9 @@ defmodule Palee.Anatomy do
       roles: Enum.map(ExerciseTargets.roles(), &Atom.to_string/1)
     }
   end
+
+  @doc "ADR-560: an exercise's muscles by role and qualities, or nil when not mapped."
+  def exercise_targets(catalog_id), do: ExerciseTargets.fetch(catalog_id)
 
   @doc "Suggested goals from `[%{exercise_ref, weight}]` (deterministic, ADR-163 D3)."
   def suggest_goals(exercises), do: GoalSuggestion.suggest(exercises)

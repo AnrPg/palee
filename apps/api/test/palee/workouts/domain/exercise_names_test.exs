@@ -63,21 +63,12 @@ defmodule Palee.Workouts.Domain.ExerciseNamesTest do
            ] = ExerciseNames.group(hits, 5)
   end
 
-  test "approved additions join the catalog documents" do
-    additions = [
-      %{
-        kind: "entry",
-        catalog_slug: "sandbag-carry",
-        label: "Sandbag Carry",
-        category: "strength"
-      },
-      %{kind: "alias", catalog_slug: "back-squat", label: "Σκουάτ με μπάρα", category: nil}
-    ]
-
-    docs = ExerciseNames.catalog_documents(additions)
-    assert "sandbag-carry" == hd(slugs("sandbag", docs))
-    assert "Σκουάτ με μπάρα" in Enum.find(docs, &(&1.catalog_slug == "back-squat")).aliases
-    assert ExerciseCatalog.export(additions) |> Enum.any?(&(&1.id == "sandbag-carry"))
+  test "catalog documents carry Quick Text and search-only aliases" do
+    docs = ExerciseNames.catalog_documents()
+    back_squat = Enum.find(docs, &(&1.catalog_slug == "back-squat"))
+    assert "Barbell Back Squat" in back_squat.aliases
+    assert "Σκουάτ πλάτης" in back_squat.aliases
+    assert length(docs) == length(ExerciseCatalog.entries())
   end
 
   describe "review decisions" do

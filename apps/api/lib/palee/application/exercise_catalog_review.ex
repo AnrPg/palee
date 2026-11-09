@@ -8,9 +8,18 @@ defmodule Palee.Application.ExerciseCatalogReview do
   new entry or as an alias of an existing entry, or rejects it; it is
   written with its audit event, and an approval refreshes the «Palee»
   scope of the search index at once.
+
+  ADR-560: the catalog lives in reference tables. A new entry may come with
+  the muscles it trains (by role: primary, secondary, stabilizer) and the
+  qualities it develops, and the team can edit any exercise's targets later
+  (audited). After each write this pod reloads its catalog copy at once; the
+  other pods do so within one revision poll. WOD goals are suggested from
+  these targets, and the coach can change them (ADR-163).
   """
 
+  alias Palee.Anatomy
   alias Palee.Application.ExerciseNameIndex
+  alias Palee.Catalog
   alias Palee.Organizations.PlatformContext
   alias Palee.Workouts
 
@@ -42,20 +51,76 @@ defmodule Palee.Application.ExerciseCatalogReview do
 
   def decide(%PlatformContext{user_id: vendor_id}, candidate_id, params, now) do
     now = now || DateTime.utc_now()
+    params = stringify(params)
 
-    with {:ok, %{candidate: candidate, addition: addition}} <-
-           Workouts.decide_exercise_name_candidate(
-             candidate_id,
-             stringify(params),
-             vendor_id,
-             now
-           ) do
-      if addition, do: ExerciseNameIndex.refresh_catalog(Workouts.exercise_catalog_documents())
+    with {:ok, targets} <- targets(params, :optional),
+         {:ok, %{candidate: candidate, addition: addition}} <-
+           Workouts.decide_exercise_name_candidate(candidate_id, params, targets, vendor_id, now) do
+      if addition, do: catalog_changed()
       {:ok, %{candidate: present_candidate(candidate)}}
     end
   end
 
   def decide(_context, _candidate_id, _params, _now), do: {:error, :vendor_required}
+
+  @doc "ADR-560: every catalog exercise with its aliases and targets (vendor console)."
+  def exercises(%PlatformContext{}) do
+    {:ok, %{exercises: Enum.map(Workouts.exercise_catalog_entries(), &present_exercise/1)}}
+  end
+
+  def exercises(_context), do: {:error, :vendor_required}
+
+  @doc "ADR-560: replaces an exercise's muscles (by role) and qualities, audited."
+  def set_targets(context, exercise_id, params, now \\ nil)
+
+  def set_targets(%PlatformContext{user_id: vendor_id}, exercise_id, params, now) do
+    now = now || DateTime.utc_now()
+
+    with {:ok, targets} <- targets(stringify(params), :required),
+         {:ok, _result} <- Workouts.replace_exercise_targets(exercise_id, targets, vendor_id, now) do
+      catalog_changed()
+      {:ok, %{exercise: exercise_id |> Workouts.exercise_catalog_entry() |> present_exercise()}}
+    end
+  end
+
+  def set_targets(_context, _exercise_id, _params, _now), do: {:error, :vendor_required}
+
+  # Targets are validated like WOD goals (known groups and heads, the three
+  # roles, known qualities); a muscle named twice keeps its strongest role.
+  defp targets(params, mode) do
+    given? = Map.has_key?(params, "muscles") or Map.has_key?(params, "qualities")
+
+    if not given? and mode == :optional do
+      {:ok, nil}
+    else
+      with {:ok, goals} <-
+             Anatomy.normalize_goals(%{
+               "muscles" => Map.get(params, "muscles") || [],
+               "qualities" => Map.get(params, "qualities") || []
+             }),
+           do: {:ok, Map.take(goals, [:muscles, :qualities])}
+    end
+  end
+
+  defp catalog_changed do
+    Catalog.refresh()
+    ExerciseNameIndex.refresh_catalog(Workouts.exercise_catalog_documents())
+  end
+
+  defp present_exercise(exercise) do
+    targets = Anatomy.exercise_targets(exercise.id) || %{muscles: [], qualities: []}
+
+    %{
+      id: exercise.id,
+      label: exercise.label,
+      category: exercise.category,
+      origin: exercise.origin,
+      aliases: exercise.aliases,
+      search_aliases: Workouts.exercise_catalog_search_aliases(exercise.id),
+      muscles: Enum.map(targets.muscles, &%{id: &1.id, role: Atom.to_string(&1.role)}),
+      qualities: targets.qualities
+    }
+  end
 
   def audit(%PlatformContext{}) do
     {:ok,

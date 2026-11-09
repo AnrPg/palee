@@ -725,6 +725,10 @@ config :palee,
 config :palee, :workout_store, Palee.Infrastructure.Workouts.EctoWorkoutStore
 # ADR-461: approved additions to the exercise catalog, candidates, audit trail.
 config :palee, :exercise_catalog_store, Palee.Infrastructure.Workouts.EctoExerciseCatalogStore
+
+# ADR-560: the reference catalog tables, and how often each pod checks them for a change.
+config :palee, :reference_catalog_store, Palee.Infrastructure.Catalog.EctoReferenceStore
+config :palee, :reference_catalog_poll_ms, 30_000
 # ADR-357: WODs as they were when assigned or performed.
 config :palee, :workout_snapshot_store, Palee.Infrastructure.Workouts.EctoWorkoutSnapshotStore
 

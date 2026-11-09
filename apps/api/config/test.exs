@@ -183,3 +183,6 @@ config :palee, :food_label_reader, Palee.FakeFoodLabelReader
 config :palee,
        :content_machine_translator,
        Palee.Infrastructure.ContentTranslations.SandboxMachineTranslator
+
+# ADR-560: tests refresh the reference catalog copy explicitly.
+config :palee, :reference_catalog_poll_ms, nil

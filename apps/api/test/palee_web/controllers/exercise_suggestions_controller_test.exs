@@ -21,6 +21,10 @@ defmodule PaleeWeb.ExerciseSuggestionsControllerTest do
 
   setup do
     MemoryRateLimiter.reset!()
+    # ADR-560: an approval reloads the shared catalog copy; put back the one
+    # this test started with once its sandbox rolls back.
+    reference = Palee.Catalog.reference()
+    on_exit(fn -> Palee.Catalog.put(reference) end)
     :ok
   end
 
@@ -177,9 +181,32 @@ defmodule PaleeWeb.ExerciseSuggestionsControllerTest do
              |> post("/api/platform/exercise-candidates/#{id}/decision", %{
                "decision" => "entry",
                "label" => "Sandbag Shouldering",
-               "category" => "strength"
+               "category" => "strength",
+               "muscles" => [
+                 %{"id" => "gluteus-maximus", "role" => "primary"},
+                 %{"id" => "erector-spinae", "role" => "secondary"},
+                 %{"id" => "obliques", "role" => "stabilizer"}
+               ],
+               "qualities" => ["strength", "power"]
              })
              |> json_response(200)
+
+    # ADR-560: the new exercise is in the catalog tables with its targets,
+    # so Quick Text resolves it and WOD goals are suggested from it.
+    assert {:ok, %{id: "sandbag-shouldering"}, :canonical} =
+             Palee.Workouts.Domain.WorkoutDsl.ExerciseCatalog.resolve("sandbag shouldering")
+
+    assert %{
+             muscles: [
+               %{id: "gluteus-maximus", role: :primary},
+               %{id: "erector-spinae", role: :secondary},
+               %{id: "obliques", role: :stabilizer}
+             ],
+             qualities: ["strength", "power"]
+           } = Palee.Anatomy.exercise_targets("sandbag-shouldering")
+
+    assert %{muscles: [%{id: "gluteus-maximus", role: :primary} | _]} =
+             Palee.Anatomy.suggest_goals([%{exercise_ref: "sandbag-shouldering", weight: 1}])
 
     assert conn
            |> recycle()
@@ -232,5 +259,78 @@ defmodule PaleeWeb.ExerciseSuggestionsControllerTest do
     body = suggest(conn, user, %{"q" => "wal bal"})
     assert "Wall Ball Shot Ladder" in names(body, "mine")
     assert "Wall Ball" in names(body, "palee")
+  end
+
+  describe "ADR-560: exercise targets in the vendor console" do
+    test "vendors list exercises with targets and replace them, audited", %{conn: conn} do
+      vendor = user_fixture()
+      {:ok, _vendor} = Organizations.grant_vendor(vendor.id)
+      athlete = user_fixture()
+      as = fn user -> conn |> recycle() |> put_bearer_token(user) end
+
+      assert as.(athlete) |> get("/api/platform/exercise-catalog") |> json_response(403)
+
+      assert as.(athlete)
+             |> put("/api/platform/exercise-catalog/deadlift/targets", %{
+               "muscles" => [],
+               "qualities" => []
+             })
+             |> json_response(403)
+
+      %{"exercises" => exercises} =
+        as.(vendor) |> get("/api/platform/exercise-catalog") |> json_response(200)
+
+      deadlift = Enum.find(exercises, &(&1["id"] == "deadlift"))
+      assert %{"origin" => "builtin", "category" => "strength"} = deadlift
+      assert %{"id" => "hamstrings", "role" => "primary"} in deadlift["muscles"]
+      assert %{"id" => "forearm-flexors", "role" => "stabilizer"} in deadlift["muscles"]
+      assert "DL" in deadlift["search_aliases"]
+
+      assert %{"exercise" => %{"muscles" => muscles, "qualities" => ["strength", "power"]}} =
+               as.(vendor)
+               |> put("/api/platform/exercise-catalog/deadlift/targets", %{
+                 "muscles" => [
+                   %{"id" => "hamstrings", "role" => "secondary"},
+                   %{"id" => "gluteus-maximus", "role" => "primary"},
+                   %{"id" => "gluteus-maximus", "role" => "stabilizer"}
+                 ],
+                 "qualities" => ["power", "strength"]
+               })
+               |> json_response(200)
+
+      assert muscles == [
+               %{"id" => "gluteus-maximus", "role" => "primary"},
+               %{"id" => "hamstrings", "role" => "secondary"}
+             ]
+
+      assert %{muscles: [%{id: "gluteus-maximus", role: :primary}, %{id: "hamstrings"}]} =
+               Palee.Anatomy.exercise_targets("deadlift")
+
+      assert %{
+               "events" => [
+                 %{"action" => "set_targets", "catalog_slug" => "deadlift"} = event | _
+               ]
+             } =
+               as.(vendor) |> get("/api/platform/exercise-catalog-audit") |> json_response(200)
+
+      assert %{"id" => "forearm-flexors", "role" => "stabilizer"} in event["metadata"]["before"][
+               "muscles"
+             ]
+
+      assert %{"code" => "invalid_goals"} =
+               as.(vendor)
+               |> put("/api/platform/exercise-catalog/deadlift/targets", %{
+                 "muscles" => [%{"id" => "shoulders", "role" => "primary"}],
+                 "qualities" => []
+               })
+               |> json_response(422)
+
+      assert as.(vendor)
+             |> put("/api/platform/exercise-catalog/no-such-move/targets", %{
+               "muscles" => [],
+               "qualities" => []
+             })
+             |> json_response(404)
+    end
   end
 end

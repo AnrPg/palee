@@ -103,23 +103,25 @@ defmodule Palee.Workouts do
     to: Palee.Workouts.Domain.ExerciseNames,
     as: :group
 
-  @doc "ADR-461: the Palee catalog for suggestions (built-in entries and approved additions)."
-  def exercise_catalog_documents,
-    do: Palee.Workouts.Domain.ExerciseNames.catalog_documents(ExerciseCatalogStore.additions())
+  @doc "ADR-461/560: the Palee catalog for suggestions (built-in and approved exercises)."
+  def exercise_catalog_documents, do: Palee.Workouts.Domain.ExerciseNames.catalog_documents()
+
+  @doc "ADR-560: the catalog exercises (`%{id, label, category, origin, aliases, capabilities}`)."
+  def exercise_catalog_entries, do: Palee.Workouts.Domain.WorkoutDsl.ExerciseCatalog.entries()
+
+  def exercise_catalog_entry(id), do: Palee.Workouts.Domain.WorkoutDsl.ExerciseCatalog.fetch(id)
+
+  def exercise_catalog_search_aliases(id),
+    do: Palee.Workouts.Domain.WorkoutDsl.ExerciseCatalog.search_aliases(id)
 
   def exercise_catalog_slug?(slug, docs \\ exercise_catalog_documents()),
     do: is_binary(slug) and Enum.any?(docs, &(&1.catalog_slug == slug))
 
-  @doc "ADR-461: the Quick Text manual with the approved catalog additions in its vocabulary."
-  def dsl_manual_with_additions do
-    manual = Manual.export()
-
-    put_in(
-      manual,
-      [:vocabulary, :exercise_catalog],
-      Palee.Workouts.Domain.WorkoutDsl.ExerciseCatalog.export(ExerciseCatalogStore.additions())
-    )
-  end
+  @doc """
+  ADR-461/560: the Quick Text manual. Its vocabulary reads the reference
+  catalog, so the approved exercises are in it.
+  """
+  def dsl_manual_with_additions, do: Manual.export()
 
   defdelegate exercise_name_entries(rows, catalog),
     to: Palee.Workouts.Domain.ExerciseNames,
@@ -138,7 +140,7 @@ defmodule Palee.Workouts do
   ADR-461: the Palee team's decision on a candidate: checked against the
   current catalog, then written with its audit event in one transaction.
   """
-  def decide_exercise_name_candidate(candidate_id, params, actor_user_id, now) do
+  def decide_exercise_name_candidate(candidate_id, params, targets, actor_user_id, now) do
     with %{} = candidate <-
            ExerciseCatalogStore.get_candidate(candidate_id) || {:error, :not_found},
          {:ok, decision} <-
@@ -149,13 +151,20 @@ defmodule Palee.Workouts do
            ) do
       ExerciseCatalogStore.record_decision(
         candidate.id,
-        decision,
+        if(decision.action == "approve_entry",
+          do: Map.put(decision, :targets, targets),
+          else: decision
+        ),
         actor_user_id,
-        Map.take(params, ["decision", "label", "category", "catalog_slug"]),
+        Map.take(params, ["decision", "label", "category", "catalog_slug", "muscles", "qualities"]),
         now
       )
     end
   end
+
+  @doc "ADR-560: replaces a catalog exercise's muscle and quality targets (audited)."
+  defdelegate replace_exercise_targets(exercise_id, targets, actor_user_id, now),
+    to: ExerciseCatalogStore
 
   defdelegate list_assigned_workouts_for_admin(context, start_date, end_date),
     to: GetAthleteWeekView,
