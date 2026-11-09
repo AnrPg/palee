@@ -30,8 +30,37 @@ const ABOUT_PREVIEW = 320;
  * languages, then locations with the map and opening hours. Only what the
  * owner published.
  */
-export type AboutPart = "about" | "coaches" | "location";
+export type AboutPart = "about" | "intro" | "photos" | "clubs" | "rooms" | "facts" | "coaches" | "location";
 const ALL_PARTS: AboutPart[] = ["about", "coaches", "location"];
+/** «about» is these five; the desktop page shows each as its own card (ANR 2026-11-09). */
+export const ABOUT_GROUP: AboutPart[] = ["intro", "photos", "clubs", "rooms", "facts"];
+
+function includes(parts: AboutPart[], part: AboutPart) {
+  return parts.includes(part) || (ABOUT_GROUP.includes(part) && parts.includes("about"));
+}
+
+/** Whether `part` has anything the owner published, so the page skips an empty card. */
+export function aboutHas(page: PublicBoxPage, part: AboutPart): boolean {
+  const profile = page.profile;
+  switch (part) {
+    case "about":
+      return ABOUT_GROUP.some((each) => aboutHas(page, each));
+    case "intro":
+      return Boolean(profile.about) || profile.disciplines.length + profile.audiences.length + profile.services.length > 0;
+    case "photos":
+      return profile.photos.length > 0;
+    case "clubs":
+      return (page.open_clubs ?? []).length > 0;
+    case "rooms":
+      return (page.rooms ?? []).length > 0;
+    case "facts":
+      return profile.amenities.length + profile.languages.length > 0;
+    case "coaches":
+      return profile.coaches.length > 0;
+    case "location":
+      return page.locations.length > 0;
+  }
+}
 
 /**
  * ADR-388: the box's website shows these parts as its «Σχετικά», «Coaches»
@@ -57,12 +86,14 @@ export function AboutTab({
   const [aboutOpen, setAboutOpen] = useState(false);
   const [allDisciplines, setAllDisciplines] = useState(false);
   const names = useMemo(() => languageNames(locale), [locale]);
-  const show = (part: AboutPart) => parts.includes(part);
-  const about = show("about") ? (profile.about ?? "") : "";
+  const show = (part: AboutPart) => includes(parts, part);
+  const about = show("intro") ? (profile.about ?? "") : "";
   const longAbout = about.length > ABOUT_PREVIEW;
   const photoOffset = profile.cover ? 1 : 0;
   const disciplines = allDisciplines ? profile.disciplines : profile.disciplines.slice(0, SHOWN_DISCIPLINES);
   const hiddenDisciplines = profile.disciplines.length - disciplines.length;
+
+  if (!enquiry && !parts.some((part) => aboutHas(page, part))) return null;
 
   return (
     <div className="flex flex-col gap-7">
@@ -88,16 +119,16 @@ export function AboutTab({
         </section>
       ) : null}
 
-      {show("about") && profile.photos.length > 0 ? (
+      {show("photos") && profile.photos.length > 0 ? (
         <section aria-label={t("photosTitle")}>
-          <ul className="-mx-4 flex snap-x gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:px-0">
+          <ul className="-mx-4 flex snap-x gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:grid lg:grid-cols-2 lg:overflow-visible lg:px-0 lg:pb-0">
             {profile.photos.map((photo, index) => (
               <li key={photo.id} className="shrink-0 snap-start">
                 <button
                   type="button"
                   onClick={() => onOpenPhoto(index + photoOffset)}
                   aria-label={t("photoAlt", { current: index + 1 })}
-                  className="block h-32 w-44 overflow-hidden rounded-2xl"
+                  className="block h-32 w-44 overflow-hidden rounded-2xl lg:aspect-[4/3] lg:h-auto lg:w-full"
                   style={{ background: "var(--panel-raised)" }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element -- media from the gym's storage */}
@@ -109,11 +140,11 @@ export function AboutTab({
         </section>
       ) : null}
 
-      {show("about") && profile.disciplines.length > 0 ? (
+      {show("intro") && profile.disciplines.length > 0 ? (
         <Section title={t("disciplines")}>
           <ul className="flex flex-wrap gap-2">
             {disciplines.map((key) => (
-              <li key={key} className="rounded-full px-3 py-1.5 text-sm font-semibold" style={{ background: "var(--panel-raised)", color: "var(--text)" }}>
+              <li key={key} className="rounded-full px-3 py-1.5 text-sm font-semibold" style={{ background: "var(--panel-muted)", color: "var(--text)" }}>
                 {tags(`discipline.${key}`)}
               </li>
             ))}
@@ -134,13 +165,13 @@ export function AboutTab({
         </Section>
       ) : null}
 
-      {show("about") && profile.audiences.length > 0 ? (
+      {show("intro") && profile.audiences.length > 0 ? (
         <p className="text-[15px]" style={{ color: "var(--text)" }}>
           <span className="font-bold">{t("welcomes")}</span> {profile.audiences.map((key) => tags(`audience.${key}`)).join(", ")}
         </p>
       ) : null}
 
-      {show("about") && profile.services.length > 0 ? (
+      {show("intro") && profile.services.length > 0 ? (
         <Section title={t("services")}>
           <ul className="flex flex-wrap gap-2">
             {profile.services.map((key) => (
@@ -174,7 +205,7 @@ export function AboutTab({
         </Section>
       ) : null}
 
-      {show("about") && (page.open_clubs ?? []).length > 0 ? (
+      {show("clubs") && (page.open_clubs ?? []).length > 0 ? (
         <Section title={t("openClubs")}>
           <ul className="flex flex-col gap-2">
             {page.open_clubs.map((club) => (
@@ -202,7 +233,7 @@ export function AboutTab({
         </Section>
       ) : null}
 
-      {show("about") && (page.rooms ?? []).length > 0 ? (
+      {show("rooms") && (page.rooms ?? []).length > 0 ? (
         // ADR-290: the room photos their uploader chose to show here.
         <Section title={t("rooms")}>
           <ul className="flex flex-col gap-4" data-testid="box-rooms">
@@ -217,7 +248,7 @@ export function AboutTab({
         </Section>
       ) : null}
 
-      {show("about") && profile.amenities.length > 0 ? (
+      {show("facts") && profile.amenities.length > 0 ? (
         <Section title={t("amenities")}>
           <ul className="grid grid-cols-2 gap-x-4 gap-y-3">
             {profile.amenities.map((key) => (
@@ -232,7 +263,7 @@ export function AboutTab({
         </Section>
       ) : null}
 
-      {show("about") && profile.languages.length > 0 ? (
+      {show("facts") && profile.languages.length > 0 ? (
         <Section title={t("languages")}>
           <p className="text-[15px]" style={{ color: "var(--text)" }}>
             {profile.languages.map((code) => names(code).own).join(" · ")}
@@ -255,7 +286,7 @@ export function AboutTab({
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="flex flex-col gap-3">
-      <h2 className="text-xs font-bold uppercase tracking-[0.16em]" style={{ color: "var(--dim)" }}>{title}</h2>
+      <h2 className="text-sm font-bold" style={{ color: "var(--text-soft)" }}>{title}</h2>
       {children}
     </section>
   );

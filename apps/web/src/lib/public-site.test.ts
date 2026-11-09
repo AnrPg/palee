@@ -10,6 +10,7 @@ import {
   siteLanguageCookie,
   siteLanguageFromSegment,
   siteLanguagePath,
+  nextSlotAt,
   timetableByDay,
   translatedPage,
 } from "./public-site";
@@ -104,5 +105,31 @@ describe("timetableByDay", () => {
       ["a", "00:30"],
       ["b", "07:30"],
     ]);
+  });
+});
+
+describe("timetable slots (ANR 2026-11-09)", () => {
+  const row = (id: string, name: string, at: string) => ({ id, name, scheduled_at: at, duration_minutes: 60, class_type_id: null, location_id: null });
+  const classes = [
+    row("c", "Yoga", "2026-11-10T16:30:00Z"),
+    row("a", "WOD", "2026-11-10T08:00:00Z"),
+    row("b", "Barbell", "2026-11-10T16:30:00Z"),
+    row("d", "WOD", "2026-11-11T08:00:00Z"),
+  ];
+
+  it("puts classes that start together in one slot, in time order", () => {
+    const [day] = timetableByDay(classes, "Europe/Athens", "el");
+    expect(day!.slots.map((slot) => [slot.time, slot.classes.map((entry) => entry.name)])).toEqual([
+      ["10:00", ["WOD"]],
+      ["18:30", ["Barbell", "Yoga"]],
+    ]);
+    expect(day!.date).toBe("10");
+  });
+
+  it("finds the next slot that has not started", () => {
+    const days = timetableByDay(classes, "Europe/Athens", "el");
+    expect(nextSlotAt(days, Date.parse("2026-11-10T09:00:00Z"))).toBe("2026-11-10T16:30:00Z");
+    expect(nextSlotAt(days, Date.parse("2026-11-10T16:30:00Z"))).toBe("2026-11-10T16:30:00Z");
+    expect(nextSlotAt(days, Date.parse("2026-11-12T00:00:00Z"))).toBeNull();
   });
 });

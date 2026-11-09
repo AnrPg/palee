@@ -16950,8 +16950,6 @@
     "cookies": "Cookies",
     "poweredBy": "Créé avec Palee",
     "minutes": "{count, plural, one {# min} other {# min}}",
-    "scheduleMore": "{count, plural, one {Toute la semaine · # jour de plus} other {Toute la semaine · # jours de plus}}",
-    "scheduleLess": "Moins",
     "free": "Gratuit",
     "allPackages": "Toutes les formules",
     "languageLabel": "Langue",
@@ -17210,7 +17208,10 @@
       "all": "{count, plural, one {Tous les programmes d’entraînement (#)} other {Tous les programmes d’entraînement (#)}}",
       "nav": "Programmes d’entraînement",
       "settingsHint": "Affiché quand tu as un programme d’entraînement en vente."
-    }
+    },
+    "scheduleDays": "Jours",
+    "nextClass": "Prochain",
+    "featured": "Recommandé"
   },
   "WebsiteLook": {
     "notice": "Ton site a une nouvelle apparence : {template}. Découvre les autres modèles et change-la quand tu veux.",
@@ -19420,7 +19421,10 @@
     "badge_own": "Seulement ceux qui l'ont",
     "badge_none": "Masqué",
     "websiteHint": "Affiche les forfaits d'abonnement visibles par les personnes non connectées.",
-    "websiteLink": "Qui voit les forfaits"
+    "websiteLink": "Qui voit les forfaits",
+    "featuredTitle": "Recommandé sur la page du box",
+    "featuredHint": "Affiché en premier et mis en avant sur la page et le site. Un forfait par box.",
+    "featuredReplaces": "Un autre forfait est recommandé. L’activer ici prend sa place."
   },
   "Landing": {
     "signIn": "Se connecter",

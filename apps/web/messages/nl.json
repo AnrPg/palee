@@ -16950,8 +16950,6 @@
     "cookies": "Cookies",
     "poweredBy": "Gemaakt met Palee",
     "minutes": "{count, plural, one {# min} other {# min}}",
-    "scheduleMore": "{count, plural, one {Hele week · # dag meer} other {Hele week · # dagen meer}}",
-    "scheduleLess": "Minder",
     "free": "Gratis",
     "allPackages": "Alle pakketten",
     "languageLabel": "Taal",
@@ -17210,7 +17208,10 @@
       "all": "{count, plural, one {Alle trainingsprogramma’s (#)} other {Alle trainingsprogramma’s (#)}}",
       "nav": "Trainingsprogramma’s",
       "settingsHint": "Zichtbaar als je een trainingsprogramma te koop hebt."
-    }
+    },
+    "scheduleDays": "Dagen",
+    "nextClass": "Volgende",
+    "featured": "Aanbevolen"
   },
   "WebsiteLook": {
     "notice": "Je website heeft een nieuw uiterlijk: {template}. Bekijk de andere sjablonen en wissel wanneer je wilt.",
@@ -19420,7 +19421,10 @@
     "badge_own": "Alleen wie het heeft",
     "badge_none": "Verborgen",
     "websiteHint": "Toont de abonnementspakketten die wie niet is ingelogd mag zien.",
-    "websiteLink": "Wie de pakketten ziet"
+    "websiteLink": "Wie de pakketten ziet",
+    "featuredTitle": "Aanbevolen op de boxpagina",
+    "featuredHint": "Staat bovenaan en uitgelicht op de pagina en de website. Eén pakket per box.",
+    "featuredReplaces": "Er is nu een ander pakket aanbevolen. Zet je dit aan, dan neemt het die plek in."
   },
   "Landing": {
     "signIn": "Inloggen",

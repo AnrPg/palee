@@ -16950,8 +16950,6 @@
     "cookies": "Cookies",
     "poweredBy": "Made with Palee",
     "minutes": "{count, plural, one {# min} other {# min}}",
-    "scheduleMore": "{count, plural, one {Whole week · # more day} other {Whole week · # more days}}",
-    "scheduleLess": "Show less",
     "free": "Free",
     "allPackages": "All packages",
     "languageLabel": "Language",
@@ -17210,7 +17208,10 @@
       "all": "{count, plural, one {All training programmes (#)} other {All training programmes (#)}}",
       "nav": "Training programmes",
       "settingsHint": "Shown when you have a training programme on sale."
-    }
+    },
+    "scheduleDays": "Days",
+    "nextClass": "Next",
+    "featured": "Recommended"
   },
   "WebsiteLook": {
     "notice": "Your website has a new look: {template}. See the other templates and change it whenever you like.",
@@ -19420,7 +19421,10 @@
     "badge_own": "Only those who have it",
     "badge_none": "Hidden",
     "websiteHint": "Shows the subscription packages that people who are not signed in can see.",
-    "websiteLink": "Who sees the packages"
+    "websiteLink": "Who sees the packages",
+    "featuredTitle": "Recommended on the box page",
+    "featuredHint": "Shown first and highlighted on the page and the website. One package per box.",
+    "featuredReplaces": "Another package is recommended now. Turning this on takes its place."
   },
   "Landing": {
     "signIn": "Sign in",

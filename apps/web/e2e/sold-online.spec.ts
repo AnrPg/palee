@@ -57,6 +57,7 @@ type Write = { method: string; path: string; body: unknown };
 async function stub(page: Page, writes: Write[]) {
   const packages = PACKAGES.map((pkg) => ({ ...pkg }));
   let audience = "all";
+  let featured: string | null = null;
   let notice: { count: number; opened_at: string } | null = { count: 2, opened_at: "2027-03-10T09:00:00Z" };
   const status = () => ({
     account: {
@@ -100,7 +101,11 @@ async function stub(page: Page, writes: Write[]) {
     if (path === "/api/staff/members") return json(route, { staff: [] });
     if (path === "/api/admin/package-audience") {
       if (method === "PUT") audience = (body as { audience: string }).audience;
-      return json(route, { audience, exceptions: [] });
+      return json(route, { audience, exceptions: [], featured_package_id: featured });
+    }
+    if (path === "/api/admin/package-audience/featured" && method === "PUT") {
+      featured = (body as { package_id: string | null }).package_id;
+      return json(route, { audience, exceptions: [], featured_package_id: featured });
     }
     if (path === "/api/admin/finance/package-catalog") return json(route, { version: 2, implemented_phases: [], modules: [], sections: [], fields: [], types: [] });
     if (path === "/api/admin/finance/packages") return json(route, { packages });
@@ -185,3 +190,16 @@ test("ADR-553: «Ποιος βλέπει τα πακέτα συνδρομής» 
   await sheet.getByRole("radio", { name: /Μόνο το δικό τους/ }).click();
   await expect.poll(() => writes.find((w) => w.method === "PUT" && w.path === "/api/admin/package-audience")?.body).toEqual({ audience: "own" });
 });
+
+test("ADR-596: the owner makes one package «Προτεινόμενο» on the box page", async ({ page }) => {
+  const writes: Write[] = [];
+  await stub(page, writes);
+  await page.goto("/admin/finance?tab=packages&package=p-unl");
+  await page.getByTestId("package-advanced").locator("summary").click();
+  const toggle = page.getByTestId("featured-package-card").getByRole("switch", { name: "Προτεινόμενο στη σελίδα του box" });
+  await expect(toggle).toHaveAttribute("aria-checked", "false");
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-checked", "true");
+  expect(writes.find((w) => w.path === "/api/admin/package-audience/featured")?.body).toEqual({ package_id: "p-unl" });
+});
+

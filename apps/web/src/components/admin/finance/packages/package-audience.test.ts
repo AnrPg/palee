@@ -8,6 +8,7 @@ const person = (id: string, nickname: string | null = id, handle: string | null 
 
 const settings: PackageAudienceSettings = {
   audience: "own",
+  featured_package_id: null,
   exceptions: [
     { id: "e1", package_id: null, effect: "hide", person: person("nikos") },
     { id: "e2", package_id: "pkg", effect: "hide", person: person("eleni") },
@@ -54,8 +55,9 @@ describe("package audience (ADR-553)", () => {
     expect(personName(person("x", null, null))).toBeNull();
   });
   it("reads an empty or odd answer as «Όλα» with no exceptions", () => {
-    expect(normalizeSettings({})).toEqual({ audience: "all", exceptions: [] });
-    expect(normalizeSettings({ audience: "x", exceptions: "nope" })).toEqual({ audience: "all", exceptions: [] });
+    expect(normalizeSettings({})).toEqual({ audience: "all", exceptions: [], featured_package_id: null });
+    expect(normalizeSettings({ featured_package_id: "p1" }).featured_package_id).toBe("p1");
+    expect(normalizeSettings({ audience: "x", exceptions: "nope" })).toEqual({ audience: "all", exceptions: [], featured_package_id: null });
     expect(personOptions({} as never, undefined as never, [])).toEqual([]);
   });
 });

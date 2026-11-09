@@ -29,6 +29,11 @@ export function setPackageAudience(token: string, packageId: string, audience: P
   });
 }
 
+/** ADR-596: the package the box's page and website feature («Προτεινόμενο»); null for none. */
+export function setFeaturedPackage(token: string, packageId: string | null) {
+  return apiRequest<PackageAudienceSettings>("/admin/package-audience/featured", { method: "PUT", token, body: { package_id: packageId } });
+}
+
 /** Adds or changes one person's exception, on a package or (null) every package. */
 export function putAudienceException(token: string, body: { user_id: string; effect: AudienceEffect; package_id: string | null }) {
   return apiRequest<PackageAudienceSettings>("/admin/package-audience/exceptions", { method: "POST", token, body });

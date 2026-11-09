@@ -16950,8 +16950,6 @@
     "cookies": "Cookie",
     "poweredBy": "Creato con Palee",
     "minutes": "{count, plural, one {# min} other {# min}}",
-    "scheduleMore": "{count, plural, one {Tutta la settimana · # giorno in più} other {Tutta la settimana · # giorni in più}}",
-    "scheduleLess": "Meno",
     "free": "Gratis",
     "allPackages": "Tutti i pacchetti",
     "languageLabel": "Lingua",
@@ -17210,7 +17208,10 @@
       "all": "{count, plural, one {Tutti i programmi di allenamento (#)} other {Tutti i programmi di allenamento (#)}}",
       "nav": "Programmi di allenamento",
       "settingsHint": "Compare quando hai un programma di allenamento in vendita."
-    }
+    },
+    "scheduleDays": "Giorni",
+    "nextClass": "Prossima",
+    "featured": "Consigliato"
   },
   "WebsiteLook": {
     "notice": "Il tuo sito ha un nuovo aspetto: {template}. Guarda gli altri modelli e cambialo quando vuoi.",
@@ -19420,7 +19421,10 @@
     "badge_own": "Solo chi lo ha",
     "badge_none": "Nascosto",
     "websiteHint": "Mostra i pacchetti di abbonamento visibili a chi non ha effettuato l'accesso.",
-    "websiteLink": "Chi vede i pacchetti"
+    "websiteLink": "Chi vede i pacchetti",
+    "featuredTitle": "Consigliato nella pagina del box",
+    "featuredHint": "Appare per primo ed evidenziato nella pagina e nel sito. Un pacchetto per box.",
+    "featuredReplaces": "Ora è consigliato un altro pacchetto. Attivando questo, prende il suo posto."
   },
   "Landing": {
     "signIn": "Accedi",

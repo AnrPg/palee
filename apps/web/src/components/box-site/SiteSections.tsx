@@ -3,14 +3,15 @@
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { useId, useState, type ReactNode } from "react";
+import { useId, useState, useSyncExternalStore, type ReactNode } from "react";
 
 import type { PublicSite, SiteSection } from "@/api/box-site";
 import { fetchPublicPackages, publicPackagesKey } from "@/api/my-payments";
 import type { PublicBoxPage } from "@/api/social";
-import { AboutTab, type AboutPart } from "@/components/box-page/AboutTab";
+import { ABOUT_GROUP, AboutTab, type AboutPart } from "@/components/box-page/AboutTab";
+import { BoxBento, type BentoItem } from "@/components/box-page/BoxBento";
 import { GoogleReviews, ReviewItem, ReviewSummary } from "@/components/reviews/ReviewParts";
-import { timetableByDay, type SiteLanguage } from "@/lib/public-site";
+import { nextSlotAt, timetableByDay, type SiteLanguage } from "@/lib/public-site";
 import { siteTextFor } from "@/lib/site-translations";
 import { FRESHNESS } from "@/lib/query-policy";
 import { formatCents } from "@/lib/solo-coach";
@@ -18,7 +19,9 @@ import { formatCents } from "@/lib/solo-coach";
 import { useSiteConsent } from "./SiteConsent";
 import { SiteProgrammesSection } from "./SiteProgrammes";
 
-const ABOUT_PARTS: Partial<Record<SiteSection, AboutPart>> = { about: "about", coaches: "coaches", location: "location" };
+const ABOUT_PARTS: Partial<Record<SiteSection, AboutPart>> = { coaches: "coaches", location: "location" };
+/** Desktop (ANR 2026-11-09): these sit in the narrow right column; the rest are wide. */
+const NARROW = new Set<string>(["coaches", "location", "trial_form", "contact_form", "photos", "facts"]);
 
 /**
  * The box's website (ANR s3 A, ADR-388): one page, the sections the owner
@@ -33,6 +36,7 @@ export function SiteSections({
   basePath,
   onOpenPhoto,
   onRequest,
+  aside = null,
 }: {
   page: PublicBoxPage;
   site: PublicSite;
@@ -40,6 +44,8 @@ export function SiteSections({
   basePath: string;
   onOpenPhoto: (index: number) => void;
   onRequest: (kind: "trial" | "contact") => void;
+  /** Desktop: the card on top of the right column (map, address, hours). */
+  aside?: ReactNode;
 }) {
   const t = useTranslations("BoxSite");
   const consent = useSiteConsent();
@@ -47,7 +53,7 @@ export function SiteSections({
   const render = (key: SiteSection): ReactNode => {
     const part = ABOUT_PARTS[key];
     if (part) {
-      return <AboutTab key={key} page={page} onOpenPhoto={onOpenPhoto} parts={[part]} enquiry={false} />;
+      return <AboutTab page={page} onOpenPhoto={onOpenPhoto} parts={[part]} enquiry={false} />;
     }
     switch (key) {
       case "schedule":
@@ -78,9 +84,21 @@ export function SiteSections({
     }
   };
 
+  // «Σχετικά» becomes one card per part on desktop (text, photos, clubs, rooms, facts).
+  const items: BentoItem[] = site.sections.flatMap((key): BentoItem[] => {
+    if (key === "about")
+      return ABOUT_GROUP.map((part) => ({
+        key: part,
+        size: NARROW.has(part) ? "narrow" : "wide",
+        node: <AboutTab page={page} onOpenPhoto={onOpenPhoto} parts={[part]} enquiry={false} />,
+      }));
+    // The desktop info card already shows a single location.
+    return [{ key, size: NARROW.has(key) ? "narrow" : "wide", node: render(key), desktopHidden: key === "location" && page.locations.length <= 1 }];
+  });
+
   return (
     <div className="flex flex-col gap-9" data-testid="site-sections">
-      {site.sections.map((key) => render(key))}
+      <BoxBento items={items} aside={aside} />
       <footer className="flex flex-wrap gap-x-5 gap-y-2 pt-4 text-sm" style={{ borderTop: "1px solid var(--border)", color: "var(--text-soft)" }}>
         <Link href={`${basePath}/privacy${language === "box" ? "" : `?lang=${encodeURIComponent(language)}`}`} className="font-semibold">
           {t("privacy")}
@@ -109,46 +127,91 @@ function SectionTitle({ children }: { children: ReactNode }) {
   );
 }
 
+// «Επόμενο» depends on the visitor's clock: none on the server, then the
+// minute it is in the browser (re-read every minute).
+function subscribeMinute(onChange: () => void) {
+  const timer = window.setInterval(onChange, 60_000);
+  return () => window.clearInterval(timer);
+}
+const readMinute = () => Math.floor(Date.now() / 60_000) * 60_000;
+const serverMinute = () => null;
+
+/**
+ * «Ωρολόγιο» (ANR 2026-11-09): a strip of days, then that day's classes as
+ * rounded tiles in time order, top to bottom. Classes that start together
+ * share one row of fixed width, side by side; the next one to start is
+ * outlined and says «Επόμενο».
+ */
 function TimetableSection({ site }: { site: PublicSite }) {
   const t = useTranslations("BoxSite");
   const locale = useLocale();
   const days = timetableByDay(site.timetable, site.time_zone, locale);
-  const [expanded, setExpanded] = useState(false);
-  const listId = useId();
+  const [picked, setPicked] = useState<string | null>(null);
+  const now = useSyncExternalStore(subscribeMinute, readMinute, serverMinute);
+  const panelId = useId();
   if (days.length === 0) return null;
-  // One day first (the earliest with classes, usually today); the rest open on request.
-  const shown = expanded ? days : days.slice(0, 1);
+  const day = days.find((entry) => entry.day === picked) ?? days[0]!;
+  const next = now === null ? null : nextSlotAt(days, now);
   return (
-    <section className="flex flex-col gap-3" data-testid="site-schedule">
+    <section className="flex flex-col gap-4" data-testid="site-schedule">
       <SectionTitle>{t("sections.schedule")}</SectionTitle>
-      <div id={listId} className="flex flex-col gap-4">
-        {shown.map((day) => (
-          <div key={day.day} className="flex flex-col gap-1.5">
-            <h3 className="text-sm font-bold capitalize" style={{ color: "var(--text-soft)" }}>{day.label}</h3>
-            <ul className="flex flex-col">
-              {day.classes.map((entry) => (
-                <li key={entry.id} className="flex items-center gap-3 py-1.5 text-sm" style={{ borderBottom: "1px solid var(--border)" }}>
-                  <span className="w-12 font-bold tabular-nums" style={{ color: "var(--text)" }}>{entry.time}</span>
-                  <span style={{ color: "var(--text)" }}>{entry.name}</span>
-                  <span className="ms-auto text-xs" style={{ color: "var(--dim)" }}>{t("minutes", { count: entry.minutes })}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
       {days.length > 1 ? (
-        <button
-          type="button"
-          aria-expanded={expanded}
-          aria-controls={listId}
-          onClick={() => setExpanded((value) => !value)}
-          className="self-start text-sm font-bold"
-          style={{ color: "var(--primary-strong)" }}
-        >
-          {expanded ? t("scheduleLess") : t("scheduleMore", { count: days.length - 1 })} <span aria-hidden="true">{expanded ? "‹" : "›"}</span>
-        </button>
-      ) : null}
+        <div role="tablist" aria-label={t("scheduleDays")} className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1">
+          {days.map((entry) => (
+            <button
+              key={entry.day}
+              type="button"
+              role="tab"
+              aria-selected={entry.day === day.day}
+              aria-controls={panelId}
+              aria-label={entry.label}
+              onClick={() => setPicked(entry.day)}
+              className="flex min-h-12 min-w-13 shrink-0 flex-col items-center justify-center rounded-2xl px-2 text-xs leading-tight"
+              style={entry.day === day.day ? undefined : { border: "1px solid var(--border)", color: "var(--dim)" }}
+              data-testid="site-schedule-day"
+            >
+              <span className="capitalize">{entry.weekday}</span>
+              <b className="text-base tabular-nums">{entry.date}</b>
+            </button>
+          ))}
+        </div>
+      ) : (
+        <h3 className="text-sm font-bold capitalize" style={{ color: "var(--text-soft)" }}>{day.label}</h3>
+      )}
+      <ol id={panelId} role={days.length > 1 ? "tabpanel" : undefined} aria-label={day.label} className="flex flex-col gap-2">
+        {day.slots.map((slot) => {
+          const isNext = slot.at === next;
+          return (
+            <li key={slot.at} className="grid grid-cols-[3.25rem_minmax(0,1fr)] items-center gap-3" data-testid="site-schedule-slot">
+              <span className="text-base font-extrabold tabular-nums" style={{ color: "var(--text)" }}>{slot.time}</span>
+              <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${slot.classes.length}, minmax(0, 1fr))` }}>
+                {slot.classes.map((entry) => (
+                  <div
+                    key={entry.id}
+                    className="flex min-w-0 flex-col rounded-2xl px-3 py-2"
+                    style={{
+                      background: "var(--panel)",
+                      border: `1px solid ${isNext ? "var(--text)" : "var(--border)"}`,
+                      boxShadow: isNext ? "inset 0 0 0 1px var(--text)" : undefined,
+                    }}
+                  >
+                    <span className="truncate text-sm font-bold" style={{ color: "var(--text)" }} title={entry.name}>{entry.name}</span>
+                    <span className="truncate text-xs" style={{ color: "var(--dim)" }}>
+                      {t("minutes", { count: entry.minutes })}
+                      {isNext ? (
+                        <>
+                          {" · "}
+                          <b style={{ color: "var(--text)" }}>{t("nextClass")}</b>
+                        </>
+                      ) : null}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </li>
+          );
+        })}
+      </ol>
     </section>
   );
 }
@@ -207,29 +270,48 @@ function PackagesSection({ site, basePath }: { site: PublicSite; basePath: strin
   const t = useTranslations("BoxSite");
   const locale = useLocale();
   const query = useQuery({ queryKey: publicPackagesKey(slug), queryFn: () => fetchPublicPackages(slug), staleTime: FRESHNESS.reference, retry: false });
-  const packages = query.data?.packages.slice(0, 4) ?? [];
+  // ADR-596: the box's «Προτεινόμενο» package comes first and stands out.
+  const packages = featuredFirst(query.data?.packages ?? []).slice(0, 4);
   if (packages.length === 0) return null;
   return (
     <section className="flex flex-col gap-3" data-testid="site-packages">
       <SectionTitle>{t("sections.packages")}</SectionTitle>
       <ul className="grid gap-3 sm:grid-cols-2">
-        {packages.map((item) => (
-          <li key={item.id} className="flex flex-col gap-1 rounded-2xl p-4" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
-            <b className="text-sm" style={{ color: "var(--text)" }}>{siteTextFor(site.texts, "package", item.id, "name", item.name)}</b>
-            <span className="text-lg font-extrabold" style={{ color: "var(--text)" }}>{formatCents(item.base_price_cents, item.currency, locale)}</span>
-            {item.description ? (
-              <span className="line-clamp-2 text-sm" style={{ color: "var(--text-soft)" }}>
-                {siteTextFor(site.texts, "package", item.id, "description", item.description)}
-              </span>
-            ) : null}
-          </li>
-        ))}
+        {packages.map((item) => {
+          const featured = item.featured === true;
+          return (
+            <li
+              key={item.id}
+              className="flex flex-col gap-1 rounded-2xl p-4"
+              style={featured ? { background: "var(--deep)", color: "var(--deep-contrast)" } : { background: "var(--panel)", border: "1px solid var(--border)", color: "var(--text)" }}
+              data-featured={featured || undefined}
+              data-testid="site-package"
+            >
+              {featured ? (
+                <span className="self-start rounded-full px-2.5 py-0.5 text-xs font-bold" style={{ background: "var(--spark)", color: "var(--spark-contrast)" }}>
+                  {t("featured")}
+                </span>
+              ) : null}
+              <b className="text-sm">{siteTextFor(site.texts, "package", item.id, "name", item.name)}</b>
+              <span className="text-2xl font-extrabold tracking-tight">{formatCents(item.base_price_cents, item.currency, locale)}</span>
+              {item.description ? (
+                <span className="line-clamp-2 text-sm" style={{ opacity: 0.75 }}>
+                  {siteTextFor(site.texts, "package", item.id, "description", item.description)}
+                </span>
+              ) : null}
+            </li>
+          );
+        })}
       </ul>
       <Link href={`${basePath || ""}/packages`} className="self-start text-sm font-bold" style={{ color: "var(--primary-strong)" }}>
         {t("allPackages")} ›
       </Link>
     </section>
   );
+}
+
+function featuredFirst<T extends { featured?: boolean }>(packages: T[]): T[] {
+  return [...packages.filter((item) => item.featured === true), ...packages.filter((item) => item.featured !== true)];
 }
 
 function ReviewsSection({ site, boxName }: { site: PublicSite; boxName: string }) {

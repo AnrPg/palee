@@ -16950,8 +16950,6 @@
     "cookies": "Cookies",
     "poweredBy": "Feito com Palee",
     "minutes": "{count, plural, one {# min} other {# min}}",
-    "scheduleMore": "{count, plural, one {Semana toda · mais # dia} other {Semana toda · mais # dias}}",
-    "scheduleLess": "Menos",
     "free": "Grátis",
     "allPackages": "Todos os pacotes",
     "languageLabel": "Idioma",
@@ -17210,7 +17208,10 @@
       "all": "{count, plural, one {Todos os programas de treino (#)} other {Todos os programas de treino (#)}}",
       "nav": "Programas de treino",
       "settingsHint": "Aparece quando tens um programa de treino à venda."
-    }
+    },
+    "scheduleDays": "Dias",
+    "nextClass": "Seguinte",
+    "featured": "Recomendado"
   },
   "WebsiteLook": {
     "notice": "O teu site tem um aspeto novo: {template}. Vê os outros modelos e muda quando quiseres.",
@@ -19420,7 +19421,10 @@
     "badge_own": "Só quem o tem",
     "badge_none": "Oculto",
     "websiteHint": "Mostra os pacotes de subscrição que quem não tem sessão iniciada pode ver.",
-    "websiteLink": "Quem vê os pacotes"
+    "websiteLink": "Quem vê os pacotes",
+    "featuredTitle": "Recomendado na página da box",
+    "featuredHint": "Aparece primeiro e em destaque na página e no site. Um pacote por box.",
+    "featuredReplaces": "Outro pacote está recomendado agora. Ativar este fica no seu lugar."
   },
   "Landing": {
     "signIn": "Iniciar sessão",

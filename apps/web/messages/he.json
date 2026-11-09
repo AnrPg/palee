@@ -16950,8 +16950,6 @@
     "cookies": "עוגיות",
     "poweredBy": "נבנה עם Palee",
     "minutes": "{count, plural, one {דקה אחת} two {שתי דקות} other {# דקות}}",
-    "scheduleMore": "{count, plural, one {כל השבוע · עוד יום אחד} two {כל השבוע · עוד יומיים} other {כל השבוע · עוד # ימים}}",
-    "scheduleLess": "פחות",
     "free": "חינם",
     "allPackages": "כל החבילות",
     "languageLabel": "שפה",
@@ -17210,7 +17208,10 @@
       "all": "{count, plural, one {כל תוכניות האימון (#)} two {כל תוכניות האימון (#)} other {כל תוכניות האימון (#)}}",
       "nav": "תוכניות אימון",
       "settingsHint": "מוצג כשיש לך תוכנית אימון במכירה."
-    }
+    },
+    "scheduleDays": "ימים",
+    "nextClass": "הבא",
+    "featured": "מומלץ"
   },
   "WebsiteLook": {
     "notice": "לאתר שלך יש מראה חדש: {template}. ראה את התבניות האחרות והחלף מתי שתרצה.",
@@ -19420,7 +19421,10 @@
     "badge_own": "רק מי שיש לו",
     "badge_none": "מוסתרת",
     "websiteHint": "מציג את חבילות המנוי שמי שלא מחובר רואה.",
-    "websiteLink": "מי רואה את החבילות"
+    "websiteLink": "מי רואה את החבילות",
+    "featuredTitle": "מומלץ בעמוד ה-box",
+    "featuredHint": "מוצג ראשון ומודגש בעמוד ובאתר. חבילה אחת לכל box.",
+    "featuredReplaces": "חבילה אחרת מומלצת כעת. הפעלה כאן תחליף אותה."
   },
   "Landing": {
     "signIn": "התחברות",

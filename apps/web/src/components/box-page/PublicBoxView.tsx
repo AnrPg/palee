@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode, type RefObject } from "react";
 import { useTranslations } from "next-intl";
 
 import type { PublicSite } from "@/api/box-site";
@@ -21,7 +21,10 @@ import { TrialButton } from "@/components/trials/TrialButton";
 import { mapsUrl, readApple, serverApple, subscribeNever } from "@/lib/maps";
 import { siteBasePath, type SiteLanguage } from "@/lib/public-site";
 
-import { AboutTab, OpeningHours } from "./AboutTab";
+import { EnquiryCard } from "@/components/leads/LeadEnquiryForm";
+
+import { AboutTab, OpeningHours, type AboutPart } from "./AboutTab";
+import { BoxBento, type BentoItem } from "./BoxBento";
 import { BoxEvents } from "./BoxEvents";
 import { BoxPosts } from "./BoxPosts";
 import { FollowerInviteNotice } from "./FollowerInviteNotice";
@@ -52,11 +55,29 @@ const readHash = () => window.location.hash.slice(1);
 const serverHash = () => "";
 
 /**
+ * Whether the box's name and actions have scrolled up out of view, so the
+ * sticky bar carries them on desktop (ANR 2026-11-09). False on the server.
+ */
+function useScrolledPast(ref: RefObject<HTMLElement | null>) {
+  const [past, setPast] = useState(false);
+  useEffect(() => {
+    const node = ref.current;
+    if (!node || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(([entry]) => setPast(Boolean(entry && !entry.isIntersecting && entry.boundingClientRect.top < 0)));
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [ref]);
+  return past;
+}
+
+/**
  * The public box page (ADR-142; plan §5a board 4, board 5 Q1–Q2). Phones:
  * cover, logo and name, sticky tabs, and a fixed bottom bar with the actions.
- * Desktop (board 5 Q1): a full-width cover, content capped at 1200 px, and a
- * sticky card on the right with the actions, the map, the address and the
- * week's hours; the map opens in Google or Apple Maps.
+ * Desktop (ANR 2026-11-09, layout C): the cover inside the page's 1200 px,
+ * rounded; logo, name and the actions in one row under it; a sticky bar with
+ * the tabs that also carries the box and its main action once the header
+ * scrolls away; then «bento» cards in two columns, with the map, address and
+ * hours on top of the right one.
  */
 export function PublicBoxView({
   page,
@@ -88,6 +109,8 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
   const hash = useSyncExternalStore(subscribeHash, readHash, serverHash);
   const tab: Tab = TABS.includes(hash as Tab) ? (hash as Tab) : "about";
   const tabsRef = useRef<HTMLDivElement>(null);
+  const identityRef = useRef<HTMLDivElement>(null);
+  const stuck = useScrolledPast(identityRef);
   const [viewer, setViewer] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
   const [request, setRequest] = useState<"trial" | "contact" | null>(null);
@@ -145,57 +168,75 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
       onGuestTrial={siteTrial}
     />
   );
+  // Desktop: the card on top of the right column (map, address, hours).
+  const info = <InfoCard page={page} apple={apple} pinned={pinned} firstHours={firstHours} onAddress={() => select("about")} />;
   const sections = site ? (
-    <SiteSections page={page} site={site} language={language} basePath={basePath} onOpenPhoto={setViewer} onRequest={setRequest} />
+    <SiteSections page={page} site={site} language={language} basePath={basePath} onOpenPhoto={setViewer} onRequest={setRequest} aside={info} />
   ) : null;
   const roundButtonClass = "grid h-10 w-10 place-items-center rounded-full";
+  const desktopActions = standalone ? (
+    <SiteActions site={site!} onRequest={setRequest} />
+  ) : (
+    <Actions
+      page={page}
+      token={signedIn ? tokens!.access_token : null}
+      loading={status === "loading" || (signedIn && clubs.isPending)}
+      clubId={club?.id ?? null}
+      onGuestTrial={siteTrial}
+      row
+    />
+  );
 
   return (
     <div className="w-full">
       <header className="relative">
-        <div
-          className="relative h-52 w-full overflow-hidden sm:h-64 lg:h-96"
-          style={{ background: "linear-gradient(135deg, var(--deep), var(--primary))" }}
-        >
-          {page.profile.cover ? (
-            <button type="button" onClick={() => setViewer(0)} aria-label={t("openPhotos")} className="block h-full w-full">
-              {/* eslint-disable-next-line @next/next/no-img-element -- media from the gym's storage */}
-              <img src={page.profile.cover.url} alt="" className="h-full w-full object-cover" />
-            </button>
-          ) : null}
-          <div className="absolute inset-x-0 top-0 mx-auto flex max-w-[75rem] justify-between p-3 pt-[max(0.75rem,env(safe-area-inset-top))] lg:px-6 lg:pt-6">
-            {standalone ? (
-              <span />
-            ) : (
-              <button type="button" onClick={back} aria-label={t("back")} className={`${roundButtonClass} rtl:rotate-180`} style={{ background: "var(--media-control)", color: "var(--on-media)" }}>
-                <Icon name="chevron-left" />
+        {/* Phones: the cover runs edge to edge. Desktop (ANR 2026-11-09): it sits inside the page's width, rounded. */}
+        <div className="lg:mx-auto lg:max-w-[75rem] lg:px-6 lg:pt-6">
+          <div
+            className="relative h-52 w-full overflow-hidden sm:h-64 lg:h-80 lg:rounded-[2rem]"
+            style={{ background: "linear-gradient(135deg, var(--deep), var(--primary))" }}
+          >
+            {page.profile.cover ? (
+              <button type="button" onClick={() => setViewer(0)} aria-label={t("openPhotos")} className="block h-full w-full">
+                {/* eslint-disable-next-line @next/next/no-img-element -- media from the gym's storage */}
+                <img src={page.profile.cover.url} alt="" className="h-full w-full object-cover" />
               </button>
-            )}
-            <span className="flex gap-2">
-              {site && (standalone || status === "guest") ? <SiteLanguageSwitch slug={page.box.slug} boxLanguage={site.language} languages={site.languages} language={language} basePath={basePath} /> : null}
-              {photos.length > 1 ? (
-                <button type="button" onClick={() => setViewer(0)} aria-label={t("openPhotos")} className={roundButtonClass} style={{ background: "var(--media-control)", color: "var(--on-media)" }}>
-                  <Icon name="images" />
+            ) : null}
+            <div className="absolute inset-x-0 top-0 flex justify-between p-3 pt-[max(0.75rem,env(safe-area-inset-top))] lg:p-5">
+              {standalone ? (
+                <span />
+              ) : (
+                <button type="button" onClick={back} aria-label={t("back")} className={`${roundButtonClass} rtl:rotate-180`} style={{ background: "var(--media-control)", color: "var(--on-media)" }}>
+                  <Icon name="chevron-left" />
                 </button>
-              ) : null}
-              <button type="button" onClick={() => void share()} aria-label={t("share")} className={roundButtonClass} style={{ background: "var(--media-control)", color: "var(--on-media)" }}>
-                <Icon name={copied ? "check" : "share"} />
-              </button>
-            </span>
+              )}
+              <span className="flex gap-2">
+                {site && (standalone || status === "guest") ? <SiteLanguageSwitch slug={page.box.slug} boxLanguage={site.language} languages={site.languages} language={language} basePath={basePath} /> : null}
+                {photos.length > 1 ? (
+                  <button type="button" onClick={() => setViewer(0)} aria-label={t("openPhotos")} className={roundButtonClass} style={{ background: "var(--media-control)", color: "var(--on-media)" }}>
+                    <Icon name="images" />
+                  </button>
+                ) : null}
+                <button type="button" onClick={() => void share()} aria-label={t("share")} className={roundButtonClass} style={{ background: "var(--media-control)", color: "var(--on-media)" }}>
+                  <Icon name={copied ? "check" : "share"} />
+                </button>
+              </span>
+            </div>
           </div>
         </div>
         <span role="status" className="sr-only">{copied ? t("linkCopied") : ""}</span>
-        <div className="mx-auto flex max-w-[75rem] flex-col gap-1 px-4 lg:flex-row lg:items-end lg:gap-5 lg:px-6">
-          <Logo page={page} className="-mt-10 lg:-mt-14" size={80} />
-          <div className="min-w-0 lg:pb-1">
-            <h1 className="mt-2 text-2xl font-extrabold lg:text-3xl" style={{ color: "var(--text)" }}>{page.box.name}</h1>
-            {line ? <p className="text-sm" style={{ color: "var(--text-soft)" }}>{line}</p> : null}
+        <div ref={identityRef} className="mx-auto flex max-w-[75rem] flex-col gap-1 px-4 lg:flex-row lg:items-end lg:gap-5 lg:px-12">
+          <Logo page={page} className="-mt-10 lg:-mt-16" size={80} desktopSize={120} />
+          <div className="min-w-0 lg:flex-1 lg:pb-2">
+            <h1 className="mt-2 text-2xl font-extrabold lg:text-4xl lg:tracking-tight" style={{ color: "var(--text)" }}>{page.box.name}</h1>
+            {line ? <p className="text-sm lg:mt-1 lg:text-base" style={{ color: "var(--text-soft)" }}>{line}</p> : null}
           </div>
           {standalone || tab === "about" ? (
-            <div className="lg:ms-auto lg:pb-1">
+            <div className="lg:pb-2">
               <SiteProgrammesNavLink site={site} />
             </div>
           ) : null}
+          <div className="hidden lg:block lg:pb-2" data-testid="box-page-header-actions">{desktopActions}</div>
         </div>
       </header>
 
@@ -207,94 +248,81 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
         </div>
       ) : null}
 
-      <div className="mx-auto max-w-[75rem] lg:mt-8 lg:grid lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start lg:gap-10 lg:px-6">
-        <main className="min-w-0">
-          {standalone ? (
-            <section className="px-4 pb-8 pt-5 lg:px-0">{sections}</section>
-          ) : (
+      <div className="mx-auto max-w-[75rem] lg:mt-6 lg:px-6">
+        {standalone ? (
+          <section className="px-4 pb-8 pt-5 lg:px-0">{sections}</section>
+        ) : (
           <>
-          <div
-            ref={tabsRef}
-            role="tablist"
-            aria-label={t("tabsAria")}
-            className="sticky top-(--top-bar-space) z-(--z-sticky) mt-4 flex gap-1 transition-[top] duration-300 motion-reduce:transition-none overflow-x-auto px-4 pb-2 pt-[max(0.5rem,env(safe-area-inset-top))] lg:mt-0 lg:px-0"
-            style={{ background: "var(--bg)", borderBottom: "1px solid var(--border)" }}
-          >
-            {TABS.map((value) => (
-              <button
-                key={value}
-                type="button"
-                role="tab"
-                id={`box-tab-${value}`}
-                aria-selected={tab === value}
-                aria-controls="box-tabpanel"
-                onClick={() => select(value)}
-                className="relative flex min-h-11 shrink-0 items-center gap-1.5 px-3 text-sm font-bold"
-                style={{ color: tab === value ? "var(--text)" : "var(--dim)" }}
-              >
-                {t(`tab.${value}`)}
-                {!signedIn && status !== "loading" && value !== "about" ? (
-                  <span style={{ opacity: 0.7 }}>
-                    <Icon name="lock" size={13} />
-                  </span>
-                ) : null}
-                {tab === value ? <span aria-hidden="true" className="absolute inset-x-2 -bottom-2 h-0.5 rounded-full" style={{ background: "var(--primary)" }} /> : null}
-              </button>
-            ))}
-          </div>
-
-          <section id="box-tabpanel" role="tabpanel" aria-labelledby={`box-tab-${tab}`} className="px-4 pb-8 pt-5 lg:px-0">
-            {tab === "about" ? sections ?? <AboutTab page={page} onOpenPhoto={setViewer} /> : null}
-            {tab !== "about" && status === "guest" ? <LockedTab slug={page.box.slug} tab={tab} /> : null}
-            {tab === "schedule" && signedIn ? <VisitorSchedule page={page} token={tokens!.access_token} member={Boolean(club)} /> : null}
-            {tab === "events" && signedIn ? <BoxEvents slug={page.box.slug} token={tokens!.access_token} /> : null}
-            {tab === "posts" && signedIn ? <BoxPosts slug={page.box.slug} token={tokens!.access_token} /> : null}
-          </section>
-          </>
-          )}
-        </main>
-
-        <aside className="hidden lg:sticky lg:top-6 lg:block">
-          <div className="flex flex-col gap-4 rounded-3xl p-5" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
-            {actions}
-            {pinned ? (
-              <a
-                href={mapsUrl({ latitude: pinned.latitude!, longitude: pinned.longitude! }, page.box.name, apple)}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={t("openInMaps")}
-                className="relative block h-40 overflow-hidden rounded-2xl"
-                style={{ border: "1px solid var(--border)" }}
-              >
-                <span aria-hidden="true" className="pointer-events-none block h-full w-full">
-                  <PlacesMap
-                    places={[{ id: pinned.id, name: page.box.name, latitude: pinned.latitude!, longitude: pinned.longitude!, selected: true }]}
-                    ariaLabel={t("mapAria")}
-                    onBoundsChange={() => undefined}
-                    onSelect={() => undefined}
-                  />
+            {/* Sticky bar: the tabs; on desktop, once the header scrolls away, also the
+                box's logo and name and its main action (ANR 2026-11-09, Q2). */}
+            <div
+              ref={tabsRef}
+              className="sticky top-(--top-bar-space) z-(--z-sticky) mt-4 flex items-center gap-3 px-4 pb-2 pt-[max(0.5rem,env(safe-area-inset-top))] transition-[top] duration-300 motion-reduce:transition-none lg:mt-0 lg:px-0"
+              style={{ background: "var(--bg)", borderBottom: stuck ? "1px solid var(--border)" : "1px solid transparent" }}
+              data-stuck={stuck || undefined}
+            >
+              {stuck ? (
+                <span className="hidden min-w-0 shrink items-center gap-2.5 lg:flex" data-testid="box-page-bar-identity">
+                  <Logo page={page} size={32} bare />
+                  <b className="truncate text-sm" style={{ color: "var(--text)" }}>{page.box.name}</b>
                 </span>
-                <span
-                  className="absolute start-2 top-2 rounded-full px-3 py-1 text-xs font-bold"
-                  style={{ background: "var(--panel)", color: "var(--text)", border: "1px solid var(--border)" }}
-                >
-                  {t("openInMaps")}
-                </span>
-              </a>
-            ) : null}
-            {page.locations[0]?.address ? (
-              <button type="button" onClick={() => select("about")} className="flex items-start gap-3 text-start text-sm" style={{ color: "var(--text-soft)" }}>
-                <Icon name="map-pin" />
-                <span>{[page.locations[0].address, page.locations[0].neighbourhood].filter(Boolean).join(", ")}</span>
-              </button>
-            ) : null}
-            {firstHours ? (
-              <div className="pt-4" style={{ borderTop: "1px solid var(--border)" }}>
-                <OpeningHours spans={(firstHours.opening_hours ?? []) as { weekday: number; opens: string; closes: string }[]} />
+              ) : null}
+              <div role="tablist" aria-label={t("tabsAria")} className="flex min-w-0 gap-1 overflow-x-auto">
+                {TABS.map((value) => (
+                  <button
+                    key={value}
+                    type="button"
+                    role="tab"
+                    id={`box-tab-${value}`}
+                    aria-selected={tab === value}
+                    aria-controls="box-tabpanel"
+                    onClick={() => select(value)}
+                    className="flex min-h-10 shrink-0 items-center gap-1.5 rounded-full px-4 text-sm font-bold"
+                    style={tab === value ? undefined : { color: "var(--dim)" }}
+                  >
+                    {t(`tab.${value}`)}
+                    {!signedIn && status !== "loading" && value !== "about" ? (
+                      <span style={{ opacity: 0.7 }}>
+                        <Icon name="lock" size={13} />
+                      </span>
+                    ) : null}
+                  </button>
+                ))}
               </div>
-            ) : null}
-          </div>
-        </aside>
+              {stuck ? (
+                <div className="ms-auto hidden shrink-0 lg:block" data-testid="box-page-bar-action">
+                  <BarAction page={page} signedIn={signedIn} clubId={club?.id ?? null} loading={status === "loading" || (signedIn && clubs.isPending)} />
+                </div>
+              ) : null}
+            </div>
+
+            <section id="box-tabpanel" role="tabpanel" aria-labelledby={`box-tab-${tab}`} className="px-4 pb-8 pt-5 lg:px-0 lg:pt-6">
+              {tab === "about" ? (
+                (sections ?? <AboutBento page={page} onOpenPhoto={setViewer} aside={info} />)
+              ) : (
+                <BoxBento
+                  testId="box-tab-bento"
+                  aside={info}
+                  items={[
+                    {
+                      key: tab,
+                      size: "wide",
+                      plain: true,
+                      node: (
+                        <>
+                          {status === "guest" ? <LockedTab slug={page.box.slug} tab={tab} /> : null}
+                          {tab === "schedule" && signedIn ? <VisitorSchedule page={page} token={tokens!.access_token} member={Boolean(club)} /> : null}
+                          {tab === "events" && signedIn ? <BoxEvents slug={page.box.slug} token={tokens!.access_token} /> : null}
+                          {tab === "posts" && signedIn ? <BoxPosts slug={page.box.slug} token={tokens!.access_token} /> : null}
+                        </>
+                      ),
+                    },
+                  ]}
+                />
+              )}
+            </section>
+          </>
+        )}
       </div>
 
       {/* Phones: the actions stay in reach above the member tab bar (board 4 Q9). */}
@@ -318,22 +346,124 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
   );
 }
 
-function Logo({ page, size = 80, className = "" }: { page: PublicBoxPage; size?: number; className?: string }) {
+/** «Σχετικά» of a box without a website: one card per part on desktop (ANR 2026-11-09). */
+function AboutBento({ page, onOpenPhoto, aside }: { page: PublicBoxPage; onOpenPhoto: (index: number) => void; aside: ReactNode }) {
+  const part = (key: AboutPart, size: "wide" | "narrow", desktopHidden = false): BentoItem => ({
+    key,
+    size,
+    desktopHidden,
+    node: <AboutTab page={page} onOpenPhoto={onOpenPhoto} parts={[key]} enquiry={false} />,
+  });
+  return (
+    <BoxBento
+      aside={aside}
+      items={[
+        part("intro", "wide"),
+        part("photos", "narrow"),
+        part("coaches", "narrow"),
+        part("clubs", "wide"),
+        part("rooms", "wide"),
+        part("facts", "narrow"),
+        // The info card already shows a single location on desktop.
+        part("location", "wide", page.locations.length <= 1),
+        // ADR-345 (W2 p6): an enquiry from a visitor without an account becomes a lead.
+        { key: "enquiry", size: "narrow", plain: true, node: <EnquiryCard slug={page.box.slug} boxName={page.box.name} /> },
+      ]}
+    />
+  );
+}
+
+/** Desktop, top of the right column: the map (opens Google or Apple Maps), the address and the week's hours. */
+function InfoCard({
+  page,
+  apple,
+  pinned,
+  firstHours,
+  onAddress,
+}: {
+  page: PublicBoxPage;
+  apple: boolean;
+  pinned: PublicBoxPage["locations"][number] | undefined;
+  firstHours: PublicBoxPage["locations"][number] | undefined;
+  onAddress: () => void;
+}) {
+  const t = useTranslations("BoxPage");
+  const address = page.locations[0]?.address;
+  if (!pinned && !address && !firstHours) return null;
+  return (
+    <div className="hidden flex-col gap-4 rounded-3xl p-5 lg:flex" style={{ background: "var(--panel)", border: "1px solid var(--border)" }} data-testid="box-page-info">
+      {pinned ? (
+        <a
+          href={mapsUrl({ latitude: pinned.latitude!, longitude: pinned.longitude! }, page.box.name, apple)}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={t("openInMaps")}
+          className="relative block h-44 overflow-hidden rounded-2xl"
+          style={{ border: "1px solid var(--border)" }}
+        >
+          <span aria-hidden="true" className="pointer-events-none block h-full w-full">
+            <PlacesMap
+              places={[{ id: pinned.id, name: page.box.name, latitude: pinned.latitude!, longitude: pinned.longitude!, selected: true }]}
+              ariaLabel={t("mapAria")}
+              onBoundsChange={() => undefined}
+              onSelect={() => undefined}
+            />
+          </span>
+          <span className="absolute start-2 top-2 rounded-full px-3 py-1 text-xs font-bold" style={{ background: "var(--panel)", color: "var(--text)", border: "1px solid var(--border)" }}>
+            {t("openInMaps")}
+          </span>
+        </a>
+      ) : null}
+      {address ? (
+        <button type="button" onClick={onAddress} className="flex items-start gap-3 text-start text-sm" style={{ color: "var(--text-soft)" }}>
+          <Icon name="map-pin" />
+          <span>{[address, page.locations[0]!.neighbourhood].filter(Boolean).join(", ")}</span>
+        </button>
+      ) : null}
+      {firstHours ? (
+        <div className={address || pinned ? "pt-4" : ""} style={address || pinned ? { borderTop: "1px solid var(--border)" } : undefined}>
+          <OpeningHours spans={(firstHours.opening_hours ?? []) as { weekday: number; opens: string; closes: string }[]} />
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+/** The sticky bar's one action on desktop: «Γίνε μέλος box», or the club for members. */
+function BarAction({ page, signedIn, clubId, loading }: { page: PublicBoxPage; signedIn: boolean; clubId: string | null; loading: boolean }) {
+  const t = useTranslations("BoxPage");
+  if (loading) return null;
+  if (clubId)
+    return (
+      <Link href={`/clubs/${clubId}`} className="flex min-h-11 items-center gap-2 whitespace-nowrap rounded-2xl px-4 text-sm font-bold" style={{ background: "var(--panel-raised)", border: "1px solid var(--border)", color: "var(--text)" }}>
+        <Icon name="check" size={16} />
+        {t("memberOpenClub")}
+      </Link>
+    );
+  return <JoinBoxAction page={page} signedIn={signedIn} compact />;
+}
+
+function Logo({ page, size = 80, desktopSize, bare = false, className = "" }: { page: PublicBoxPage; size?: number; desktopSize?: number; bare?: boolean; className?: string }) {
   const initials = page.box.name
     .split(/\s+/)
     .slice(0, 2)
     .map((word) => word[0])
     .join("")
     .toUpperCase();
-  const style = { width: size, height: size, border: "4px solid var(--bg)" };
+  // Sized through CSS variables so the desktop size can differ (ANR 2026-11-09).
+  const style = {
+    "--logo-size": `${size}px`,
+    "--logo-size-lg": `${desktopSize ?? size}px`,
+    border: bare ? "1px solid var(--border)" : "4px solid var(--bg)",
+  } as CSSProperties;
   return page.box.logo_url ? (
     // eslint-disable-next-line @next/next/no-img-element -- media from the gym's storage
-    <img src={page.box.logo_url} alt="" className={`relative shrink-0 rounded-full object-cover ${className}`} style={{ ...style, background: "var(--panel)" }} />
+    <img src={page.box.logo_url} alt="" className={`relative shrink-0 rounded-full object-cover size-(--logo-size) text-[length:calc(var(--logo-size)/2.6)] lg:size-(--logo-size-lg) lg:text-[length:calc(var(--logo-size-lg)/2.6)] ${className}`} style={{ ...style, background: "var(--panel)" }} />
   ) : (
     <span
       aria-hidden="true"
-      className={`relative grid shrink-0 place-items-center rounded-full font-extrabold ${className}`}
-      style={{ ...style, background: "var(--primary)", color: "var(--primary-contrast)", fontSize: size / 2.6 }}
+      className={`relative grid shrink-0 place-items-center rounded-full font-extrabold size-(--logo-size) text-[length:calc(var(--logo-size)/2.6)] lg:size-(--logo-size-lg) lg:text-[length:calc(var(--logo-size-lg)/2.6)] ${className}`}
+      style={{ ...style, background: "var(--primary)", color: "var(--primary-contrast)" }}
     >
       {initials}
     </span>
@@ -352,6 +482,7 @@ function Actions({
   loading,
   clubId,
   onGuestTrial,
+  row = false,
 }: {
   page: PublicBoxPage;
   token: string | null;
@@ -359,12 +490,14 @@ function Actions({
   clubId: string | null;
   /** ADR-388: a signed-out visitor asks through the website's request form instead of signing in first. */
   onGuestTrial: (() => void) | null;
+  /** Desktop header (ANR 2026-11-09): one row beside the box's name. */
+  row?: boolean;
 }) {
   const signedIn = Boolean(token);
   const t = useTranslations("BoxPage");
   const tSocial = useTranslations("Social");
   const tTrials = useTranslations("Trials");
-  if (loading) return <div className="h-11 animate-pulse rounded-2xl" style={{ background: "var(--panel-raised)" }} />;
+  if (loading) return <div className={`h-11 animate-pulse rounded-2xl ${row ? "w-96" : ""}`} style={{ background: "var(--panel-raised)" }} />;
   const chat = boxChatHref(page.box.slug);
   const message = (
     <Link
@@ -389,9 +522,9 @@ function Actions({
       </div>
     );
   return (
-    <div className="flex flex-col gap-2">
-      <JoinBoxAction page={page} signedIn={signedIn} />
-      <div className="flex items-start gap-2">
+    <div className={row ? "flex items-start gap-2" : "flex flex-col gap-2"}>
+      <JoinBoxAction page={page} signedIn={signedIn} compact={row} />
+      <div className={`flex items-start gap-2 ${row ? "w-80" : ""}`}>
         {!signedIn && onGuestTrial ? (
           <button
             type="button"
