@@ -3,7 +3,7 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { parseElixirTaxonomy } from "./elixir-taxonomy";
+import { type ReferenceSeed, taxonomyFromSeed } from "./seed-taxonomy";
 import { FITNESS_QUALITIES } from "./qualities";
 import {
   MUSCLE_NODES,
@@ -15,23 +15,24 @@ import {
   muscleNode,
 } from "./taxonomy";
 
-const domainDir = path.resolve(__dirname, "../../../../api/lib/palee/anatomy/domain");
-const taxonomySource = path.join(domainDir, "muscle_taxonomy.ex");
-const qualitiesSource = path.join(domainDir, "fitness_qualities.ex");
+// ADR-560: the API's reference tables start from this seed.
+const referenceDir = path.resolve(__dirname, "../../../../api/priv/repo/reference");
+const seedFile = fs.existsSync(referenceDir)
+  ? fs.readdirSync(referenceDir).filter((name) => /^exercise_catalog_seed_.*\.json$/.test(name)).sort().at(-1)
+  : undefined;
+const seed = seedFile ? (JSON.parse(fs.readFileSync(path.join(referenceDir, seedFile), "utf8")) as ReferenceSeed) : null;
 const atlasIndex = path.resolve(__dirname, "../../../public/anatomy/v1/index.json");
 
 describe("muscle taxonomy mirror", () => {
   // The web image is built without the API sources; the monorepo checkout (CI) has them.
-  it.skipIf(!fs.existsSync(taxonomySource))("matches the API module (tree and version)", () => {
-    const { version, tree } = parseElixirTaxonomy(fs.readFileSync(taxonomySource, "utf8"));
+  it.skipIf(!seed)("matches the API's reference seed (tree and version)", () => {
+    const { version, tree } = taxonomyFromSeed(seed!);
     expect(TAXONOMY_VERSION).toBe(version);
     expect(TAXONOMY_TREE).toEqual(tree);
   });
 
-  it.skipIf(!fs.existsSync(qualitiesSource))("lists the API's ten fitness qualities in order", () => {
-    const source = fs.readFileSync(qualitiesSource, "utf8");
-    const block = /@qualities \[([\s\S]*?)\]/.exec(source)?.[1] ?? "";
-    expect([...FITNESS_QUALITIES]).toEqual([...block.matchAll(/"([^"]+)"/g)].map((match) => match[1]));
+  it.skipIf(!seed)("lists the API's ten fitness qualities in order", () => {
+    expect([...FITNESS_QUALITIES]).toEqual(taxonomyFromSeed(seed!).qualities);
   });
 
   it("has unique ids and parents that exist", () => {
