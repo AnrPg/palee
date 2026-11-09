@@ -4,6 +4,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 import Underline from "@tiptap/extension-underline";
 import { EditorContent, useEditor, type JSONContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState, type MutableRefObject } from "react";
 
@@ -11,6 +12,8 @@ import { ApiError } from "@/api/client";
 import {
   createDraftWorkout,
   fetchAdminWorkout,
+  fetchFrequentTimers,
+  FREQUENT_TIMERS_KEY,
   publishWorkoutDraft,
   type WorkoutRecord,
 } from "@/api/workouts";
@@ -25,8 +28,8 @@ import {
   freeTextLimitMs,
   buildFreeTextSegments,
   parseFreeTextTimerPreset,
-  QUICK_PRESETS,
 } from "@/lib/free-text-timer";
+import { FRESHNESS } from "@/lib/query-policy";
 import {
   describePreset,
   emptySection,
@@ -44,7 +47,7 @@ import { AssistantSwitch } from "./AssistantSwitch";
 import { DraftConflictNotice } from "./DraftConflictNotice";
 import { EditorTabs } from "./EditorTabs";
 import { SectionScoringField } from "./SectionScoringField";
-import { FreeTextTimerFields } from "./FreeTextTimerFields";
+import { TimerChips } from "./TimerChips";
 import { WorkoutTypeSelect } from "@/components/workouts/WorkoutTypeSelect";
 import { isWorkoutType } from "@/lib/workout-types";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
@@ -76,6 +79,22 @@ export function SectionedWorkoutEditor({ draftId, folderId = null, onDraftReady,
   const { tokens } = useSession();
   const accessToken = tokens?.access_token;
   const formatLabels = useMemo(() => getFormatLabels(i18n), [i18n]);
+  const queryClient = useQueryClient();
+  // ADR-571: the coach's three most used timers, as chips on every section.
+  const frequentTimersQuery = useQuery({
+    queryKey: FREQUENT_TIMERS_KEY,
+    enabled: Boolean(accessToken),
+    queryFn: () => fetchFrequentTimers(accessToken!),
+    staleTime: FRESHNESS.reference,
+  });
+  const frequentTimers = useMemo(
+    () =>
+      (frequentTimersQuery.data?.presets ?? []).flatMap((chip) => {
+        const preset = parseFreeTextTimerPreset(chip.preset);
+        return preset && preset.format !== "untimed" ? [preset] : [];
+      }),
+    [frequentTimersQuery.data],
+  );
 
   const [title, setTitle] = useState("");
   const [type, setType] = useState<WorkoutType | "">("");
@@ -245,6 +264,8 @@ export function SectionedWorkoutEditor({ draftId, folderId = null, onDraftReady,
           throw error;
         }
       });
+      // This workout's timers now count among the coach's most used.
+      void queryClient.invalidateQueries({ queryKey: FREQUENT_TIMERS_KEY });
       onPublished(draftId);
     } catch (error) {
       const details = error instanceof ApiError ? (error.payload?.details as { sections?: SectionProblem[] } | undefined) : undefined;
@@ -341,6 +362,7 @@ export function SectionedWorkoutEditor({ draftId, folderId = null, onDraftReady,
             autoFocus={focusKey === section.key}
             problems={visibleProblems.filter((problem) => problem.section === index + 1).map((problem) => problem.problem)}
             formatLabels={formatLabels}
+            frequentTimers={frequentTimers}
             onChange={(patch) => updateSection(section.key, patch)}
             onMove={(offset) => moveSection(index, offset)}
             onRemove={() => removeSection(section.key)}
@@ -392,6 +414,7 @@ function SectionCard({
   autoFocus,
   problems,
   formatLabels,
+  frequentTimers,
   onChange,
   onMove,
   onRemove,
@@ -403,6 +426,7 @@ function SectionCard({
   autoFocus: boolean;
   problems: string[];
   formatLabels: Record<SectionFormat, string>;
+  frequentTimers: FreeTextTimerPreset[];
   onChange: (patch: Partial<EditorTextSection>) => void;
   onMove: (offset: -1 | 1) => void;
   onRemove: () => void;
@@ -491,14 +515,19 @@ function SectionCard({
             aria-expanded={timerOpen}
             onClick={() => setTimerOpen((open) => !open)}
             className="inline-flex min-h-10 items-center gap-2 rounded-full px-3 text-sm font-bold"
-            style={
-              section.preset
-                ? { background: "var(--panel)", color: "var(--text)", border: "1px solid var(--border)" }
-                : { color: timerMissing ? "var(--danger)" : "var(--primary)", border: `1px dashed ${timerMissing ? "var(--danger)" : "var(--primary)"}` }
-            }
+            style={{
+              background: "var(--panel)",
+              color: "var(--text)",
+              border: `1px solid ${timerMissing ? "var(--danger)" : "var(--border)"}`,
+            }}
           >
             <span aria-hidden="true">⏱</span>
-            {section.preset ? describePreset(section.preset, formatLabels[section.preset.format]) : i18n("chooseSectionTimer")}
+            {section.preset.format === "untimed"
+              ? i18n("timerNoTime")
+              : describePreset(section.preset, formatLabels[section.preset.format])}
+            <svg aria-hidden="true" viewBox="0 0 20 20" className="h-4 w-4 shrink-0" style={{ color: "var(--muted)", transform: timerOpen ? "rotate(180deg)" : undefined, transition: "transform 120ms" }}>
+              <path d="M5 7.5 10 12.5 15 7.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
           </button>
           <button
             type="button"
@@ -526,26 +555,12 @@ function SectionCard({
         ) : null}
         {timerOpen ? (
           <div className="mt-3 rounded-xl border p-3" style={{ borderColor: "var(--border)", background: "var(--panel)" }}>
-            <div className="flex flex-wrap gap-2" role="group" aria-label={i18n("timerPresetsLabel")}>
-              {QUICK_PRESETS.map((quick) => {
-                const active = JSON.stringify(normalizePreset(quick.preset)) === JSON.stringify(section.preset && normalizePreset(section.preset));
-                return (
-                  <button
-                    key={quick.id}
-                    type="button"
-                    aria-pressed={active}
-                    onClick={() => onChange({ preset: quick.preset })}
-                    className="min-h-9 rounded-full px-3 text-xs font-semibold"
-                    style={active ? { background: "var(--primary)", color: "var(--primary-contrast)" } : { border: "1px solid var(--border)", color: "var(--text-soft)" }}
-                  >
-                    {i18n(`timerPreset_${quick.id}`)}
-                  </button>
-                );
-              })}
-            </div>
-            {section.preset ? (
-              <FreeTextTimerFields preset={section.preset} formatLabels={formatLabels} onChange={(preset) => onChange({ preset })} />
-            ) : null}
+            <TimerChips
+              preset={section.preset}
+              frequent={frequentTimers}
+              formatLabels={formatLabels}
+              onChange={(preset) => onChange({ preset })}
+            />
           </div>
         ) : null}
         {scoringOpen || scoringInvalid ? (
@@ -558,10 +573,6 @@ function SectionCard({
       </div>
     </li>
   );
-}
-
-function normalizePreset(preset: FreeTextTimerPreset) {
-  return parseFreeTextTimerPreset(preset);
 }
 
 function SectionTextEditor({

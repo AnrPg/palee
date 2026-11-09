@@ -1,6 +1,6 @@
 import type { JSONContent } from "@tiptap/react";
 
-import { type FreeTextTimerPreset, parseFreeTextTimerPreset } from "@/lib/free-text-timer";
+import { type FreeTextTimerPreset, NO_TIME_PRESET, parseFreeTextTimerPreset } from "@/lib/free-text-timer";
 
 /**
  * Workouts written without the assistant (ADR-180) are a list of text
@@ -220,7 +220,8 @@ export type EditorTextSection = {
   title: string;
   body: string;
   document: JSONContent;
-  preset: FreeTextTimerPreset | null;
+  /** ADR-571: «Χωρίς χρόνο» (`untimed`) until the coach picks another timer. */
+  preset: FreeTextTimerPreset;
   metrics: SectionMetric[];
 };
 
@@ -251,7 +252,7 @@ export function textToDocument(source: string): JSONContent {
 }
 
 export function emptySection(): EditorTextSection {
-  return { key: sectionKey(), title: "", body: "", document: emptyDocument(), preset: null, metrics: [] };
+  return { key: sectionKey(), title: "", body: "", document: emptyDocument(), preset: NO_TIME_PRESET, metrics: [] };
 }
 
 const isDocument = (value: unknown): value is JSONContent =>
@@ -275,21 +276,21 @@ export function editorSectionsFrom(
         title: raw.section_metadata?.untitled === true ? "" : (raw.name ?? ""),
         body,
         document: isDocument(raw.free_text_document) ? raw.free_text_document : textToDocument(body),
-        preset: parseFreeTextTimerPreset(raw.timer_preset),
+        preset: parseFreeTextTimerPreset(raw.timer_preset) ?? NO_TIME_PRESET,
         metrics: readMetrics(raw.score_config),
       };
     });
   }
 
   const body = workout.free_text_body ?? "";
-  if (!body.trim()) return [{ ...emptySection(), preset: wholeWorkoutPreset }];
+  if (!body.trim()) return [{ ...emptySection(), preset: wholeWorkoutPreset ?? NO_TIME_PRESET }];
   return [
     {
       key: sectionKey(),
       title: "",
       body,
       document: isDocument(workout.free_text_document) ? workout.free_text_document : textToDocument(body),
-      preset: wholeWorkoutPreset,
+      preset: wholeWorkoutPreset ?? NO_TIME_PRESET,
       metrics: [],
     },
   ];
@@ -344,7 +345,6 @@ export function sectionProblems(sections: EditorTextSection[]): SectionProblem[]
     if (!body) problems.push({ section: number, problem: "text_required" });
     if (encoder.encode(body).length > MAX_SECTION_BODY_BYTES) problems.push({ section: number, problem: "text_too_long" });
     if (section.title.trim().length > 120) problems.push({ section: number, problem: "title_too_long" });
-    if (!section.preset) problems.push({ section: number, problem: "timer_required" });
     const keys = section.metrics.map((metric) => metricKey(metric.label, metric.kind));
     if (
       section.metrics.length > MAX_SECTION_METRICS ||

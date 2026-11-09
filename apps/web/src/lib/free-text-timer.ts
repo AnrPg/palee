@@ -35,6 +35,89 @@ export const QUICK_PRESETS: { id: string; preset: FreeTextTimerPreset }[] = [
   { id: "stopwatch", preset: { format: "untimed" } },
 ];
 
+/** ADR-571: «Χωρίς χρόνο», the default timer of a text section. */
+export const NO_TIME_PRESET: FreeTextTimerPreset = { format: "untimed" };
+
+/**
+ * A preset reduced to the fields its format runs on, with the timer
+ * engine's values for missing ones. Mirrors the API's
+ * `FrequentTimerPresets.canonical/1`, so a chip and the section's own
+ * timer compare equal however each was written.
+ */
+export function canonicalTimerPreset(value: unknown): FreeTextTimerPreset | null {
+  const preset = parseFreeTextTimerPreset(value);
+  if (!preset) return null;
+  switch (preset.format) {
+    case "amrap":
+      return { format: "amrap", duration_seconds: preset.duration_seconds ?? 720 };
+    case "for_time":
+      return preset.duration_seconds ? { format: "for_time", duration_seconds: preset.duration_seconds } : { format: "for_time" };
+    case "emom":
+      return { format: "emom", interval_seconds: preset.interval_seconds ?? 60, rounds: preset.rounds ?? 10 };
+    case "death_by":
+      return preset.rounds
+        ? { format: "death_by", interval_seconds: preset.interval_seconds ?? 60, rounds: preset.rounds }
+        : { format: "death_by", interval_seconds: preset.interval_seconds ?? 60 };
+    case "tabata":
+    case "custom_hiit": {
+      const rest = preset.rest_seconds ?? (preset.format === "tabata" ? 10 : null);
+      return {
+        format: preset.format,
+        work_seconds: preset.work_seconds ?? 20,
+        ...(rest ? { rest_seconds: rest } : {}),
+        rounds: preset.rounds ?? 8,
+      };
+    }
+    default:
+      return NO_TIME_PRESET;
+  }
+}
+
+/** Whether two presets run the same timer. */
+export function sameTimerPreset(a: unknown, b: unknown) {
+  const left = canonicalTimerPreset(a);
+  const right = canonicalTimerPreset(b);
+  if (!left || !right) return false;
+  const keys = new Set([...Object.keys(left), ...Object.keys(right)]) as Set<keyof FreeTextTimerPreset>;
+  return [...keys].every((key) => left[key] === right[key]);
+}
+
+/** Whole minutes as a number, anything else as m:ss. */
+function minutes(seconds: number) {
+  if (seconds % 60 === 0) return String(seconds / 60);
+  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
+}
+
+/**
+ * The short name of a timer chip, the way coaches say it: «AMRAP 10»,
+ * «EMOM 4», «E2MOM 20», «For Time 12′», «Tabata 20/10 × 8». The format
+ * names come from the locale; the numbers are minutes (or m:ss).
+ */
+export function timerChipLabel(preset: FreeTextTimerPreset, formatLabel: string): string {
+  const timer = canonicalTimerPreset(preset) ?? NO_TIME_PRESET;
+  switch (timer.format) {
+    case "amrap":
+      return `${formatLabel} ${minutes(timer.duration_seconds!)}`;
+    case "for_time":
+      return timer.duration_seconds ? `${formatLabel} ${minutes(timer.duration_seconds)}′` : formatLabel;
+    case "emom": {
+      const interval = timer.interval_seconds!;
+      const rounds = timer.rounds!;
+      if (interval === 60) return `${formatLabel} ${rounds}`;
+      // «E2MOM 20»: every 2 minutes, 20 minutes in all (only where the name is EMOM itself).
+      if (interval % 60 === 0 && formatLabel === "EMOM") return `E${interval / 60}MOM ${(interval / 60) * rounds}`;
+      return `${formatLabel} ${rounds} × ${minutes(interval)}`;
+    }
+    case "death_by":
+      return timer.interval_seconds === 60 ? formatLabel : `${formatLabel} ${minutes(timer.interval_seconds!)}`;
+    case "tabata":
+    case "custom_hiit":
+      return `${formatLabel} ${timer.work_seconds}${timer.rest_seconds ? `/${timer.rest_seconds}` : ""} × ${timer.rounds}`;
+    default:
+      return formatLabel;
+  }
+}
+
 const positive = (value: unknown, fallback: number | null = null) =>
   typeof value === "number" && Number.isFinite(value) && value > 0 ? Math.round(value) : fallback;
 

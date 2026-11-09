@@ -52511,6 +52511,77 @@
         "title": "FreeTextWorkoutBody",
         "type": "object"
       },
+      "FrequentTimerPresets": {
+        "properties": {
+          "presets": {
+            "description": "Most used first: the acting coach's own timers, then the gym's, then stock ones",
+            "items": {
+              "properties": {
+                "preset": {
+                  "description": "A timer preset in its canonical form: format plus only the numbers that format runs on",
+                  "properties": {
+                    "duration_seconds": {
+                      "type": "integer"
+                    },
+                    "format": {
+                      "enum": [
+                        "untimed",
+                        "for_time",
+                        "amrap",
+                        "emom",
+                        "tabata",
+                        "custom_hiit",
+                        "death_by"
+                      ],
+                      "type": "string"
+                    },
+                    "interval_seconds": {
+                      "type": "integer"
+                    },
+                    "rest_seconds": {
+                      "type": "integer"
+                    },
+                    "rounds": {
+                      "type": "integer"
+                    },
+                    "work_seconds": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "format"
+                  ],
+                  "type": "object"
+                },
+                "source": {
+                  "enum": [
+                    "author",
+                    "gym",
+                    "stock"
+                  ],
+                  "type": "string"
+                },
+                "uses": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "preset",
+                "source",
+                "uses"
+              ],
+              "type": "object"
+            },
+            "maxItems": 3,
+            "type": "array"
+          }
+        },
+        "required": [
+          "presets"
+        ],
+        "title": "FrequentTimerPresets",
+        "type": "object"
+      },
       "GarminConnectRequest": {
         "properties": {
           "backfill_days": {
@@ -310336,6 +310407,102 @@
           }
         ],
         "summary": "Read a free-text workout into the canonical schema with actionable issues",
+        "tags": [
+          "Admin Workouts"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/workouts/frequent-timers": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminWorkoutFreeTextController.frequent_timers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "presets": {
+                      "description": "Most used first: the acting coach's own timers, then the gym's, then stock ones",
+                      "items": {
+                        "properties": {
+                          "preset": {
+                            "description": "A timer preset in its canonical form: format plus only the numbers that format runs on",
+                            "properties": {
+                              "duration_seconds": {
+                                "type": "integer"
+                              },
+                              "format": {
+                                "enum": [
+                                  "untimed",
+                                  "for_time",
+                                  "amrap",
+                                  "emom",
+                                  "tabata",
+                                  "custom_hiit",
+                                  "death_by"
+                                ],
+                                "type": "string"
+                              },
+                              "interval_seconds": {
+                                "type": "integer"
+                              },
+                              "rest_seconds": {
+                                "type": "integer"
+                              },
+                              "rounds": {
+                                "type": "integer"
+                              },
+                              "work_seconds": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "format"
+                            ],
+                            "type": "object"
+                          },
+                          "source": {
+                            "enum": [
+                              "author",
+                              "gym",
+                              "stock"
+                            ],
+                            "type": "string"
+                          },
+                          "uses": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "preset",
+                          "source",
+                          "uses"
+                        ],
+                        "type": "object"
+                      },
+                      "maxItems": 3,
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "presets"
+                  ],
+                  "title": "FrequentTimerPresets",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Frequent timers"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The timer chips the text-section editor offers next to «No time» (ADR-571)",
         "tags": [
           "Admin Workouts"
         ]

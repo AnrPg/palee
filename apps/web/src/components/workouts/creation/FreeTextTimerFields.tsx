@@ -13,33 +13,37 @@ type Props = {
   preset: FreeTextTimerPreset;
   formatLabels: Record<SectionFormat, string>;
   onChange: (preset: FreeTextTimerPreset) => void;
+  /** False when the host shows the format itself (the text-section chips, ADR-571). */
+  showFormat?: boolean;
 };
 
 /** Format plus the few numbers each free-text timer format needs. */
-export function FreeTextTimerFields({ preset, formatLabels, onChange }: Props) {
+export function FreeTextTimerFields({ preset, formatLabels, onChange, showFormat = true }: Props) {
   const i18n = useUiTranslations();
   const set = (patch: Partial<FreeTextTimerPreset>) => onChange({ ...preset, ...patch });
   const { format } = preset;
 
   return (
-    <div className="mt-4 space-y-3">
-      <label className="block">
-        <span className="text-xs font-bold uppercase tracking-[0.18em]" style={{ color: "var(--dim)" }}>
-          {i18n("timerFormatLabel")}
-        </span>
-        <Select
-          value={format}
-          onValueChange={(value) => onChange({ format: value as FreeTextTimerFormat })}
-          className="mt-2 w-full rounded-xl border px-3 py-2 text-sm"
-          style={{ background: "var(--card)", borderColor: "var(--border)", color: "var(--text)" }}
-        >
-          {FREE_TEXT_TIMER_FORMATS.map((item) => (
-            <option key={item} value={item}>
-              {formatLabels[item]}
-            </option>
-          ))}
-        </Select>
-      </label>
+    <div className={showFormat ? "mt-4 space-y-3" : "space-y-3 empty:hidden [&:not(:empty)]:mt-3"}>
+      {showFormat ? (
+        <label className="block">
+          <span className="text-xs font-bold uppercase tracking-[0.18em]" style={{ color: "var(--dim)" }}>
+            {i18n("timerFormatLabel")}
+          </span>
+          <Select
+            value={format}
+            onValueChange={(value) => onChange({ format: value as FreeTextTimerFormat })}
+            className="mt-2 w-full rounded-xl border px-3 py-2 text-sm"
+            style={{ background: "var(--card)", borderColor: "var(--border)", color: "var(--text)" }}
+          >
+            {FREE_TEXT_TIMER_FORMATS.map((item) => (
+              <option key={item} value={item}>
+                {formatLabels[item]}
+              </option>
+            ))}
+          </Select>
+        </label>
+      ) : null}
 
       {format === "amrap" || format === "for_time" ? (
         <Row label={format === "amrap" ? i18n("timerDurationLabel") : i18n("timeCap42f692a")}>

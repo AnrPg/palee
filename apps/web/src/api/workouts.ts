@@ -321,6 +321,15 @@ export function fetchWorkoutAuthoringSettings(token: string) {
   return apiRequest<WodAssistantAvailability>("/admin/workouts/authoring-settings", { token });
 }
 
+/** ADR-571: the timer chips the text-section editor offers next to «Χωρίς χρόνο». */
+export type FrequentTimerPresets = components["schemas"]["FrequentTimerPresets"];
+
+export const FREQUENT_TIMERS_KEY = ["admin", "workouts", "frequent-timers"] as const;
+
+export function fetchFrequentTimers(token: string) {
+  return apiRequest<FrequentTimerPresets>("/admin/workouts/frequent-timers", { token });
+}
+
 export function analyzeFreeTextWorkout(token: string, text: string, locale: string) {
   return apiRequest<FreeTextWorkoutAnalysis>("/admin/workouts/free-text/analyze", {
     method: "POST",

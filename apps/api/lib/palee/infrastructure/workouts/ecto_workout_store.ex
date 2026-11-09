@@ -306,6 +306,47 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
     ids |> Enum.uniq() |> Enum.flat_map(&List.wrap(Map.get(by_id, &1)))
   end
 
+  @impl true
+  def timer_preset_usage(author_id) do
+    workouts =
+      MasterWorkout
+      |> scoped_to_tenant()
+      |> where([workout], workout.status == :published)
+      |> filter_author(author_id)
+
+    section_rows =
+      workouts
+      |> join(:inner, [workout], section in WorkoutSection,
+        on: section.master_workout_id == workout.id
+      )
+      |> where([_workout, section], not is_nil(section.timer_preset))
+      |> group_by([_workout, section], section.timer_preset)
+      |> select([workout, section], %{
+        preset: section.timer_preset,
+        uses: count(section.id),
+        last_used_at: max(workout.updated_at)
+      })
+      |> Repo.all()
+
+    attached_rows =
+      workouts
+      |> where([workout], not is_nil(fragment("?->'free_text_timer'", workout.workout_metadata)))
+      |> group_by([workout], fragment("?->'free_text_timer'", workout.workout_metadata))
+      |> select([workout], %{
+        preset: fragment("(?->'free_text_timer')", workout.workout_metadata),
+        uses: count(workout.id),
+        last_used_at: max(workout.updated_at)
+      })
+      |> Repo.all()
+
+    section_rows ++ attached_rows
+  end
+
+  defp filter_author(query, nil), do: query
+
+  defp filter_author(query, author_id),
+    do: where(query, [workout], workout.created_by_id == ^author_id)
+
   defp choice_scope do
     MasterWorkout
     |> scoped_to_tenant()

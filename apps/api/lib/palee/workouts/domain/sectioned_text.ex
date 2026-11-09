@@ -41,7 +41,8 @@ defmodule Palee.Workouts.Domain.SectionedText do
   Errors: `{:error, :no_sections}` or
   `{:error, {:invalid_text_sections, problems}}` where each problem is
   `%{section: index_from_1, problem: code}` and code is one of
-  `text_required`, `text_too_long`, `title_too_long`, `timer_required`,
+  `text_required`, `text_too_long`, `title_too_long`, `timer_required`
+  (a timer that is not a known preset),
   `scoring_invalid`.
   """
   def prepare_publish(%{} = params) do
@@ -84,7 +85,7 @@ defmodule Palee.Workouts.Domain.SectionedText do
   defp normalize_section(%{} = section, index) do
     title = section |> value(:name) |> trimmed()
     body = section |> value(:free_text_body) |> trimmed()
-    preset = TimerPresets.parse(value(section, :timer_preset))
+    preset = section |> value(:timer_preset) |> timer_preset()
     scoring = SectionScoring.normalize(value(section, :score_config))
 
     problems =
@@ -119,6 +120,10 @@ defmodule Palee.Workouts.Domain.SectionedText do
 
   defp normalize_section(_section, index),
     do: {:error, [%{section: index, problem: "text_required"}]}
+
+  # ADR-571: no timer is «Χωρίς χρόνο»; an unknown one stays an error.
+  defp timer_preset(nil), do: TimerPresets.parse(%{"format" => "untimed"})
+  defp timer_preset(raw), do: TimerPresets.parse(raw)
 
   @doc "The workout's plain text: each section's title (when it has one) above its text."
   def compose_body(sections) do

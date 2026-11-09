@@ -37,6 +37,9 @@ defmodule Palee.Workouts.WorkoutStore do
   def workout_choices_by_ids(context, ids),
     do: within_tenant(context, fn -> adapter().workout_choices_by_ids(ids) end)
 
+  def timer_preset_usage(context, author_id),
+    do: within_tenant(context, fn -> adapter().timer_preset_usage(author_id) end)
+
   def get_assigned_workout(context, id),
     do: within_tenant(context, fn -> adapter().get_assigned_workout(id) end)
 

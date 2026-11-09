@@ -1456,6 +1456,8 @@ defmodule PaleeWeb.Router do
     post("/workouts/free-text/analyze", AdminWorkoutFreeTextController, :analyze)
     # ADR-180: whether the editor offers the assistant or text sections.
     get("/workouts/authoring-settings", AdminWorkoutFreeTextController, :authoring_settings)
+    # ADR-571: the coach's most used timers, as chips in the text-section editor.
+    get("/workouts/frequent-timers", AdminWorkoutFreeTextController, :frequent_timers)
     get("/workouts/dsl/manual", AdminWorkoutDslController, :manual)
     get("/workouts/:id/dsl", AdminWorkoutDslController, :show_authoring)
     post("/workouts/:id/dsl/publish", AdminWorkoutDslController, :publish)

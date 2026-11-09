@@ -13817,6 +13817,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/workouts/frequent-timers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The timer chips the text-section editor offers next to «No time» (ADR-571) */
+        get: operations["PaleeWeb.AdminWorkoutFreeTextController.frequent_timers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/workouts/timer-preview": {
         parameters: {
             query?: never;
@@ -37303,6 +37320,25 @@ export interface components {
             timer: {
                 [key: string]: unknown;
             } | null;
+        };
+        /** FrequentTimerPresets */
+        FrequentTimerPresets: {
+            /** @description Most used first: the acting coach's own timers, then the gym's, then stock ones */
+            presets: {
+                /** @description A timer preset in its canonical form: format plus only the numbers that format runs on */
+                preset: {
+                    duration_seconds?: number;
+                    /** @enum {string} */
+                    format: "untimed" | "for_time" | "amrap" | "emom" | "tabata" | "custom_hiit" | "death_by";
+                    interval_seconds?: number;
+                    rest_seconds?: number;
+                    rounds?: number;
+                    work_seconds?: number;
+                };
+                /** @enum {string} */
+                source: "author" | "gym" | "stock";
+                uses: number;
+            }[];
         };
         /** GarminConnectRequest */
         GarminConnectRequest: {
@@ -126861,6 +126897,43 @@ export interface operations {
                     "application/json": {
                         code: string;
                         error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminWorkoutFreeTextController.frequent_timers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Frequent timers */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Most used first: the acting coach's own timers, then the gym's, then stock ones */
+                        presets: {
+                            /** @description A timer preset in its canonical form: format plus only the numbers that format runs on */
+                            preset: {
+                                duration_seconds?: number;
+                                /** @enum {string} */
+                                format: "untimed" | "for_time" | "amrap" | "emom" | "tabata" | "custom_hiit" | "death_by";
+                                interval_seconds?: number;
+                                rest_seconds?: number;
+                                rounds?: number;
+                                work_seconds?: number;
+                            };
+                            /** @enum {string} */
+                            source: "author" | "gym" | "stock";
+                            uses: number;
+                        }[];
                     };
                 };
             };

@@ -4,6 +4,7 @@ defmodule PaleeWeb.AdminWorkoutFreeTextController do
 
   alias Palee.Application.AnalyzeFreeTextWorkout
   alias Palee.Organizations
+  alias Palee.Workouts
   alias OpenApiSpex.{MediaType, RequestBody, Schema}
 
   tags(["Admin Workouts"])
@@ -181,6 +182,58 @@ defmodule PaleeWeb.AdminWorkoutFreeTextController do
          }}
     ]
   )
+
+  @preset_schema %Schema{
+    type: :object,
+    description:
+      "A timer preset in its canonical form: format plus only the numbers that format runs on",
+    properties: %{
+      format: %Schema{
+        type: :string,
+        enum: ~w(untimed for_time amrap emom tabata custom_hiit death_by)
+      },
+      duration_seconds: %Schema{type: :integer},
+      rounds: %Schema{type: :integer},
+      work_seconds: %Schema{type: :integer},
+      rest_seconds: %Schema{type: :integer},
+      interval_seconds: %Schema{type: :integer}
+    },
+    required: [:format]
+  }
+
+  operation(:frequent_timers,
+    summary: "The timer chips the text-section editor offers next to «No time» (ADR-571)",
+    responses: [
+      ok:
+        {"Frequent timers", "application/json",
+         %Schema{
+           title: "FrequentTimerPresets",
+           type: :object,
+           properties: %{
+             presets: %Schema{
+               type: :array,
+               maxItems: 3,
+               description:
+                 "Most used first: the acting coach's own timers, then the gym's, then stock ones",
+               items: %Schema{
+                 type: :object,
+                 properties: %{
+                   preset: @preset_schema,
+                   source: %Schema{type: :string, enum: ["author", "gym", "stock"]},
+                   uses: %Schema{type: :integer}
+                 },
+                 required: [:preset, :source, :uses]
+               }
+             }
+           },
+           required: [:presets]
+         }}
+    ]
+  )
+
+  def frequent_timers(conn, _params) do
+    json(conn, %{presets: Workouts.frequent_timer_presets(conn.assigns.tenant_context)})
+  end
 
   def authoring_settings(conn, _params) do
     context = conn.assigns.tenant_context

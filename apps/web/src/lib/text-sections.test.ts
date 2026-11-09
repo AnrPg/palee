@@ -45,13 +45,11 @@ describe("text sections (ADR-180)", () => {
 
   it("checks the same publish rules as the API", () => {
     const ready = { ...emptySection(), body: "Run 5k", preset: { format: "untimed" as const } };
+    // ADR-571: a new section runs «No time» until the coach picks a timer.
     const noTimer = { ...emptySection(), body: "Row" };
     const empty = emptySection();
-    expect(sectionProblems([ready, noTimer, empty])).toEqual([
-      { section: 2, problem: "timer_required" },
-      { section: 3, problem: "text_required" },
-      { section: 3, problem: "timer_required" },
-    ]);
+    expect(noTimer.preset).toEqual({ format: "untimed" });
+    expect(sectionProblems([ready, noTimer, empty])).toEqual([{ section: 3, problem: "text_required" }]);
     expect(sectionsPayload([ready])).toEqual([
       expect.objectContaining({ name: "", order: 1, exercises: [], free_text_body: "Run 5k", timer_preset: { format: "untimed" } }),
     ]);

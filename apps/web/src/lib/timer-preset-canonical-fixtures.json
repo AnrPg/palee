@@ -1,0 +1,17 @@
+{
+  "_comment": "ADR-571: a timer preset and its canonical form (the fields its format runs on, with the engine's values for missing ones). Checked by free-text-timer.test.ts (web canonicalTimerPreset) and frequent_timer_presets_test.exs (API canonical/1), so a chip and a section's timer compare the same on both sides.",
+  "cases": [
+    { "preset": { "format": "untimed", "rounds": 3 }, "canonical": { "format": "untimed" } },
+    { "preset": { "format": "amrap" }, "canonical": { "format": "amrap", "duration_seconds": 720 } },
+    { "preset": { "format": "amrap", "duration_seconds": 600, "rounds": 4 }, "canonical": { "format": "amrap", "duration_seconds": 600 } },
+    { "preset": { "format": "for_time" }, "canonical": { "format": "for_time" } },
+    { "preset": { "format": "for_time", "duration_seconds": 900 }, "canonical": { "format": "for_time", "duration_seconds": 900 } },
+    { "preset": { "format": "emom", "rest_seconds": 20 }, "canonical": { "format": "emom", "interval_seconds": 60, "rounds": 10 } },
+    { "preset": { "format": "emom", "interval_seconds": 120, "rounds": 10 }, "canonical": { "format": "emom", "interval_seconds": 120, "rounds": 10 } },
+    { "preset": { "format": "death_by" }, "canonical": { "format": "death_by", "interval_seconds": 60 } },
+    { "preset": { "format": "death_by", "rounds": 15 }, "canonical": { "format": "death_by", "interval_seconds": 60, "rounds": 15 } },
+    { "preset": { "format": "tabata" }, "canonical": { "format": "tabata", "work_seconds": 20, "rest_seconds": 10, "rounds": 8 } },
+    { "preset": { "format": "custom_hiit", "work_seconds": 40 }, "canonical": { "format": "custom_hiit", "work_seconds": 40, "rounds": 8 } },
+    { "preset": { "format": "rocket" }, "canonical": null }
+  ]
+}

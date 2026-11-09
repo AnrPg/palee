@@ -188,6 +188,17 @@ defmodule Palee.Workouts do
   def search_workout_choices(context, opts),
     do: Palee.Workouts.WorkoutStore.search_workout_choices(context, opts)
 
+  @doc """
+  ADR-571: the three timer chips the text-section editor offers next to
+  «Χωρίς χρόνο»: the acting coach's most used timers, topped up with the
+  gym's and then the stock ones.
+  """
+  def frequent_timer_presets(context) do
+    author_usage = Palee.Workouts.WorkoutStore.timer_preset_usage(context, context.user_id)
+    gym_usage = Palee.Workouts.WorkoutStore.timer_preset_usage(context, nil)
+    Palee.Workouts.Domain.FrequentTimerPresets.choose(author_usage, gym_usage)
+  end
+
   @doc "Summaries of published library WODs, in the order of `ids`."
   def workout_choices_by_ids(context, ids),
     do: Palee.Workouts.WorkoutStore.workout_choices_by_ids(context, ids)

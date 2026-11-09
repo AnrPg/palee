@@ -32,6 +32,14 @@ defmodule Palee.Workouts.Ports.WorkoutStore do
   @callback list_folders() :: [map()]
   @callback search_workout_choices(keyword()) :: %{workouts: [map()], has_more: boolean()}
   @callback workout_choices_by_ids([Ecto.UUID.t()]) :: [map()]
+  @doc """
+  ADR-571: how often each timer preset appears in the tenant's published
+  workouts (a text section's timer or a free-text workout's attached one),
+  limited to one author's workouts when an author id is given.
+  """
+  @callback timer_preset_usage(Ecto.UUID.t() | nil) :: [
+              %{preset: map(), uses: non_neg_integer(), last_used_at: NaiveDateTime.t() | nil}
+            ]
   @callback create_folder(binary(), map()) :: {:ok, map()} | {:error, term()}
   @callback update_folder(binary(), map()) :: {:ok, map()} | {:error, term()}
   @callback find_filed_copy(binary(), binary()) :: binary() | nil

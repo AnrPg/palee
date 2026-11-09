@@ -65,14 +65,14 @@ defmodule Palee.Workouts.Domain.SectionedTextTest do
     assert prepared["free_text_document"] == document
   end
 
-  test "names every section that lacks its text or a timer" do
+  test "names every section that lacks its text or has an unknown timer" do
     assert {:error, {:invalid_text_sections, problems}} =
              SectionedText.prepare_publish(
                params([
                  section(%{}),
                  section(%{"free_text_body" => "  "}),
-                 section(%{"timer_preset" => nil}),
-                 section(%{"timer_preset" => %{"format" => "rocket"}})
+                 section(%{"timer_preset" => %{"format" => "rocket"}}),
+                 section(%{"timer_preset" => "amrap"})
                ])
              )
 
@@ -81,6 +81,19 @@ defmodule Palee.Workouts.Domain.SectionedTextTest do
              %{section: 3, problem: "timer_required"},
              %{section: 4, problem: "timer_required"}
            ]
+  end
+
+  test "ADR-571: a section without a timer runs «Χωρίς χρόνο»" do
+    assert {:ok, %{"sections" => [first, second]}} =
+             SectionedText.prepare_publish(
+               params([
+                 section(%{"timer_preset" => nil}),
+                 section(%{}) |> Map.delete("timer_preset")
+               ])
+             )
+
+    assert first["timer_preset"]["format"] == "untimed"
+    assert second["timer_preset"]["format"] == "untimed"
   end
 
   test "the stopwatch counts as a timer" do

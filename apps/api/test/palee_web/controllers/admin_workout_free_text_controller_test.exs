@@ -176,6 +176,117 @@ defmodule PaleeWeb.AdminWorkoutFreeTextControllerTest do
     end
   end
 
+  describe "ADR-571: frequent timers" do
+    test "a coach with no history gets the stock chips", %{conn: conn} do
+      {conn, organization} = authenticate(conn, "frequent_timers_new", :owner)
+
+      assert %{"presets" => presets} =
+               conn
+               |> get("/api/org/#{organization.slug}/admin/workouts/frequent-timers")
+               |> json_response(200)
+
+      assert Enum.map(presets, & &1["source"]) == ["stock", "stock", "stock"]
+      assert Enum.map(presets, & &1["preset"]["format"]) == ["amrap", "emom", "for_time"]
+    end
+
+    test "the coach's own most used timers come first, then the gym's", %{conn: conn} do
+      {owner_conn, organization} = authenticate(conn, "frequent_timers_owner", :owner)
+      coach_conn = join_as(build_conn(), organization, "frequent_timers_coach", :owner)
+
+      emom4 = %{format: "emom", interval_seconds: 60, rounds: 4}
+      amrap10 = %{format: "amrap", duration_seconds: 600}
+      amrap20 = %{format: "amrap", duration_seconds: 1200}
+
+      # The coach: EMOM 4 three times, AMRAP 10 once, «No time» (never a chip).
+      publish_sectioned(coach_conn, organization, [emom4, emom4, nil])
+      publish_sectioned(coach_conn, organization, [Map.put(emom4, :rest_seconds, 30), amrap10])
+      # Another coach of the gym: AMRAP 20 twice; it tops up the third chip.
+      publish_sectioned(owner_conn, organization, [amrap20, amrap20])
+
+      assert %{"presets" => presets} =
+               coach_conn
+               |> get("/api/org/#{organization.slug}/admin/workouts/frequent-timers")
+               |> json_response(200)
+
+      assert [
+               %{
+                 "source" => "author",
+                 "uses" => 3,
+                 "preset" => %{"format" => "emom", "rounds" => 4, "interval_seconds" => 60}
+               },
+               %{
+                 "source" => "author",
+                 "uses" => 1,
+                 "preset" => %{"format" => "amrap", "duration_seconds" => 600}
+               },
+               %{
+                 "source" => "gym",
+                 "uses" => 2,
+                 "preset" => %{"format" => "amrap", "duration_seconds" => 1200}
+               }
+             ] = presets
+
+      # The EMOM's stray rest is not part of an EMOM: one chip, not two.
+      refute Map.has_key?(hd(presets)["preset"], "rest_seconds")
+    end
+  end
+
+  defp publish_sectioned(conn, organization, timers) do
+    base = "/api/org/#{organization.slug}/admin/workouts"
+    draft_id = conn |> recycle() |> post(base) |> json_response(201) |> get_in(["draft", "id"])
+
+    sections =
+      timers
+      |> Enum.with_index(1)
+      |> Enum.map(fn {timer, order} ->
+        %{
+          name: "",
+          order: order,
+          exercises: [],
+          free_text_body: "Part #{order}",
+          timer_preset: timer
+        }
+      end)
+
+    conn
+    |> recycle()
+    |> put_req_header("content-type", "application/json")
+    |> post(
+      "#{base}/#{draft_id}/publish",
+      Jason.encode!(%{
+        title: "Timers #{System.unique_integer([:positive])}",
+        type: "crossfit",
+        authoring_mode: "sectioned_text",
+        expected_source_revision: 0,
+        sections: sections
+      })
+    )
+    |> json_response(200)
+  end
+
+  defp join_as(conn, organization, nickname, membership_role) do
+    {:ok, user} =
+      Identity.register(%{
+        nickname: nickname,
+        password: "S3cur3P@ss!42",
+        role: :member,
+        email: "u#{System.unique_integer([:positive])}@placeholder.invalid"
+      })
+
+    {:ok, user} = Identity.update_role(user, :admin)
+
+    {:ok, _membership} =
+      Organizations.add_membership(%{
+        organization_id: organization.id,
+        user_id: user.id,
+        role: membership_role,
+        status: :active,
+        joined_at: DateTime.utc_now()
+      })
+
+    put_bearer_token(conn, user)
+  end
+
   defp authenticate(conn, nickname, membership_role) do
     {:ok, user} =
       Identity.register(%{

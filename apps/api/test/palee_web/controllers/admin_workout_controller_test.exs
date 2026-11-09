@@ -293,16 +293,22 @@ defmodule PaleeWeb.AdminWorkoutControllerTest do
       |> patch("#{base}/#{draft_id}/draft", Jason.encode!(draft_payload))
       |> json_response(200)
 
-      # The second section has no timer yet: publishing names it.
+      # The second section has no text: publishing names it. (Its missing
+      # timer is fine: ADR-571, it runs «No time».)
+      untexted = List.update_at(sections, 1, &Map.put(&1, :free_text_body, "  "))
+
       rejected =
         admin_conn
         |> recycle()
         |> put_req_header("content-type", "application/json")
-        |> post("#{base}/#{draft_id}/publish", Jason.encode!(%{expected_source_revision: 1}))
+        |> post(
+          "#{base}/#{draft_id}/publish",
+          Jason.encode!(%{expected_source_revision: 1, sections: untexted})
+        )
         |> json_response(422)
 
       assert rejected["code"] == "invalid_text_sections"
-      assert rejected["details"]["sections"] == [%{"section" => 2, "problem" => "timer_required"}]
+      assert rejected["details"]["sections"] == [%{"section" => 2, "problem" => "text_required"}]
 
       timed =
         List.update_at(
