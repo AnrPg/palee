@@ -202,7 +202,7 @@ function CardRow({ people, seedName }: { people: FollowSuggestion[]; seedName: s
  * one column (phone), a list in the right column on wide screens, where a
  * card row would show one and a half cards.
  */
-export function HomeFollowSuggestions({ layout = "row" }: { layout?: "row" | "list" }) {
+export function HomeFollowSuggestions({ list = false }: { list?: boolean }) {
   const t = useTranslations("FollowSuggestions");
   const tUi = useUiTranslations();
   const { tokens } = useSession();
@@ -218,7 +218,7 @@ export function HomeFollowSuggestions({ layout = "row" }: { layout?: "row" | "li
   const people = suggestions.data?.people ?? [];
   if (!shown || people.length === 0) return null;
   const header = (
-    <div className={`${layout === "list" ? "mb-2" : "mb-3"} flex items-center justify-between gap-2`}>
+    <div className={`${list ? "mb-2" : "mb-3"} flex items-center justify-between gap-2`}>
       <h2 id="follow-suggestions-title" className="font-bold" style={{ color: "var(--text)" }}>{t("title")}</h2>
       <div className="flex shrink-0 items-center gap-1">
         <Link href="/clubs/find" className="min-h-11 content-center px-1 text-sm font-semibold" style={{ color: "var(--primary)" }}>
@@ -229,7 +229,7 @@ export function HomeFollowSuggestions({ layout = "row" }: { layout?: "row" | "li
     </div>
   );
   const error = hide.error ? <ErrorNotice>{clientErrorMessage(hide.error, tUi)}</ErrorNotice> : null;
-  if (layout === "list") {
+  if (list) {
     // No outer card: each row is its own card, as in «+ Βρες».
     return (
       <section aria-labelledby="follow-suggestions-title" data-follow-suggestions="home" data-layout="list">

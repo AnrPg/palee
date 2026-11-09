@@ -17,13 +17,13 @@ const texts = (root: ParentNode) => Array.from(root.querySelectorAll("p"), (p) =
 
 describe("HomeColumns", () => {
   it("keeps the phone's one column in the given order", () => {
-    const { container } = render(<HomeColumns cards={cards} wide={false} />);
+    const { container } = render(<HomeColumns cards={cards} layout="one" />);
     expect(container.querySelector("[data-home-columns]")).toBeNull();
     expect(texts(container)).toEqual(["clubs", "greeting", "wod", "events", "suggestions", "posts"]);
   });
 
   it("puts reminders left, the feed in the middle and people right, each in order", () => {
-    const { container } = render(<HomeColumns cards={cards} wide />);
+    const { container } = render(<HomeColumns cards={cards} layout="three" />);
     const column = (name: string) => container.querySelector(`[data-home-column="${name}"]`)!;
     expect(texts(column("reminders"))).toEqual(["greeting", "events"]);
     expect(texts(column("feed"))).toEqual(["clubs", "wod", "posts"]);
@@ -32,12 +32,19 @@ describe("HomeColumns", () => {
     expect(texts(container)).toEqual(["greeting", "events", "clubs", "wod", "posts", "suggestions"]);
   });
 
+  it("keeps the reminders above the feed and puts people right in two columns", () => {
+    const { container } = render(<HomeColumns cards={cards} layout="two" />);
+    expect(container.querySelector('[data-home-column="reminders"]')).toBeNull();
+    expect(texts(container.querySelector('[data-home-column="feed"]')!)).toEqual(["clubs", "greeting", "wod", "events", "posts"]);
+    expect(texts(container.querySelector('[data-home-column="people"]')!)).toEqual(["suggestions"]);
+  });
+
   it("keeps the side columns in view while the feed scrolls", () => {
-    const { container } = render(<HomeColumns cards={cards} wide />);
+    const { container } = render(<HomeColumns cards={cards} layout="three" />);
     for (const name of ["reminders", "people"]) {
       const side = container.querySelector(`[data-home-column="${name}"]`)!;
       expect(side.className).toContain("sticky");
-      expect(side.className).toContain("overflow-y-auto");
+      expect((side as HTMLElement).style.overflowY).toBe("auto");
     }
   });
 });
