@@ -85,12 +85,18 @@ async function stub(page: Page, { partners = false }: { partners?: boolean } = {
       }),
     ),
   );
-  // Each card's button reads its own follow status.
-  await page.route("**/api/me/follows/user/*", (route) => route.fulfill(json({ status: "none" })));
+  // Each card's button reads its own follow status; a follow sticks, as on the
+  // server, so the refetch after it (the whole social cache) still says so.
+  const following = new Set<string>();
+  await page.route("**/api/me/follows/user/*", (route) => {
+    const id = new URL(route.request().url()).pathname.split("/").pop()!;
+    return route.fulfill(json({ status: following.has(id) ? "active" : "none" }));
+  });
   await page.route("**/api/me/follow-suggestions?**", (route) => route.fulfill(json({ people: suggestions })));
   await page.route("**/api/me/follow-suggestions", (route) => route.fulfill(json({ people: suggestions })));
   await page.route("**/api/me/follow-suggestions/*/follow", (route) => {
     calls.followed.push(route.request().postDataJSON());
+    following.add(new URL(route.request().url()).pathname.split("/").at(-2)!);
     return route.fulfill(json({ status: "active" }));
   });
   await page.route("**/api/me/follow-suggestions/*/dismiss", (route) => {
