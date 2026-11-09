@@ -85,6 +85,8 @@ async function stub(page: Page, { partners = false }: { partners?: boolean } = {
       }),
     ),
   );
+  // Each card's button reads its own follow status.
+  await page.route("**/api/me/follows/user/*", (route) => route.fulfill(json({ status: "none" })));
   await page.route("**/api/me/follow-suggestions?**", (route) => route.fulfill(json({ people: suggestions })));
   await page.route("**/api/me/follow-suggestions", (route) => route.fulfill(json({ people: suggestions })));
   await page.route("**/api/me/follow-suggestions/*/follow", (route) => {
@@ -105,6 +107,10 @@ async function stub(page: Page, { partners = false }: { partners?: boolean } = {
 test("Home suggests people with a reason; follow, ✕ with undo and hide", async ({ page }) => {
   const calls = await stub(page);
   await page.goto("/");
+  // A member of one box opens on the Box tab (W7 screen 12); Feed is one tap away.
+  await expect(page).toHaveURL(/\/box$/);
+  await page.getByRole("link", { name: "Feed", exact: true }).first().click();
+  await expect(page).toHaveURL(/\/$/);
 
   const card = page.locator('[data-follow-suggestions="home"]');
   await expect(card.getByRole("heading", { name: "People you may know" })).toBeVisible();

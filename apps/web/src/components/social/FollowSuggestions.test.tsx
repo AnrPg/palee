@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { FollowSuggestion } from "@/api/follow-suggestions";
 
-import { FindFollowSuggestions } from "./FollowSuggestions";
+import { FindFollowSuggestions, HomeFollowSuggestions } from "./FollowSuggestions";
 
 const api = vi.hoisted(() => ({
   fetchFollowSuggestions: vi.fn(),
@@ -24,6 +24,8 @@ vi.mock("@/i18n/ui", () => ({ useUiTranslations: () => (key: string) => key }));
 vi.mock("@/components/session-provider", () => ({
   useSession: () => ({ status: "authenticated", tokens: { access_token: "tok" }, currentUser: { id: "me" } }),
 }));
+const summary = vi.hoisted(() => ({ current: { data: undefined as unknown } }));
+vi.mock("./use-social", () => ({ useSocialSummary: () => summary.current }));
 vi.mock("@/api/follow-suggestions", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/api/follow-suggestions")>()),
   ...api,
@@ -89,5 +91,29 @@ describe("FindFollowSuggestions", () => {
     const { container } = render(<FindFollowSuggestions />, { wrapper });
     await waitFor(() => expect(api.fetchFollowSuggestions).toHaveBeenCalled());
     expect(container.querySelector("[data-follow-suggestions]")).toBeNull();
+  });
+});
+
+describe("HomeFollowSuggestions", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    api.fetchFollowSuggestions.mockResolvedValue({ people });
+  });
+
+  it("shows nothing, and does not crash, when the summary has no privacy yet", async () => {
+    for (const data of [undefined, {}, { privacy: { private_account: false, searchable: true } }]) {
+      summary.current = { data };
+      const { container, unmount } = render(<HomeFollowSuggestions />, { wrapper });
+      expect(container.querySelector("[data-follow-suggestions]")).toBeNull();
+      unmount();
+    }
+    expect(api.fetchFollowSuggestions).not.toHaveBeenCalled();
+  });
+
+  it("shows the row when the person keeps suggestions on", async () => {
+    summary.current = { data: { privacy: { private_account: false, searchable: true, show_follow_suggestions: true } } };
+    render(<HomeFollowSuggestions />, { wrapper });
+    expect(await screen.findByText("title")).toBeTruthy();
+    expect(screen.getByText("reason.box:Milos method")).toBeTruthy();
   });
 });

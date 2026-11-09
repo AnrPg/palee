@@ -13,7 +13,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     exercise_variations assigned_workouts assigned_workout_athletes scale_levels
     workout_snapshots
     content_translations
-    workout_goals
+    workout_goals exercise_match_memories
     membership_packages memberships membership_package_subscriptions
     membership_payments promotion_campaigns promotion_codes promotion_redemptions
     referral_programs referral_events referral_rewards finance_invoices

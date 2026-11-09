@@ -13,7 +13,7 @@ import {
   undismissSuggestion,
   type FollowSuggestion,
 } from "@/api/follow-suggestions";
-import { followKey, setSocialPrivacy, SUMMARY_KEY, type SocialSummary } from "@/api/social";
+import { fetchFollowStatus, followKey, setSocialPrivacy, SUMMARY_KEY, type SocialSummary } from "@/api/social";
 import { clientErrorMessage } from "@/components/client/errors";
 import { HubCard } from "@/components/member-app/HubParts";
 import { useSession } from "@/components/session-provider";
@@ -204,7 +204,7 @@ export function HomeFollowSuggestions() {
   const { tokens } = useSession();
   const queryClient = useQueryClient();
   const summary = useSocialSummary();
-  const shown = summary.data?.privacy.show_follow_suggestions ?? false;
+  const shown = summary.data?.privacy?.show_follow_suggestions ?? false;
   const suggestions = useFollowSuggestions(null, shown);
   const hide = useMutation({
     mutationFn: () => setSocialPrivacy(tokens!.access_token, { show_follow_suggestions: false }),
@@ -259,7 +259,14 @@ export function FindFollowSuggestions() {
  */
 export function AfterFollowSuggestions({ personId, personName }: { personId: string; personName: string | null }) {
   const t = useTranslations("FollowSuggestions");
-  const status = useQuery<string>({ queryKey: followKey("user", personId), enabled: false });
+  const { tokens } = useSession();
+  const token = tokens?.access_token ?? null;
+  // The same query as the profile's FollowButton, so both read one cached status.
+  const status = useQuery({
+    queryKey: followKey("user", personId),
+    enabled: Boolean(token),
+    queryFn: () => fetchFollowStatus(token!, "user", personId),
+  });
   // What the button said when the profile first showed it.
   const [startedAs, setStartedAs] = useState<string | null>(status.data ?? null);
   if (startedAs === null && status.data) setStartedAs(status.data);
