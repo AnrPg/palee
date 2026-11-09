@@ -197,8 +197,12 @@ function CardRow({ people, seedName }: { people: FollowSuggestion[]; seedName: s
   );
 }
 
-/** Αρχική: the row, hidden when empty or when the person hid it. */
-export function HomeFollowSuggestions() {
+/**
+ * Αρχική: hidden when empty or when the person hid it. A row of cards in the
+ * one column (phone), a list in the right column on wide screens, where a
+ * card row would show one and a half cards.
+ */
+export function HomeFollowSuggestions({ layout = "row" }: { layout?: "row" | "list" }) {
   const t = useTranslations("FollowSuggestions");
   const tUi = useUiTranslations();
   const { tokens } = useSession();
@@ -213,20 +217,38 @@ export function HomeFollowSuggestions() {
   });
   const people = suggestions.data?.people ?? [];
   if (!shown || people.length === 0) return null;
+  const header = (
+    <div className={`${layout === "list" ? "mb-2" : "mb-3"} flex items-center justify-between gap-2`}>
+      <h2 id="follow-suggestions-title" className="font-bold" style={{ color: "var(--text)" }}>{t("title")}</h2>
+      <div className="flex shrink-0 items-center gap-1">
+        <Link href="/clubs/find" className="min-h-11 content-center px-1 text-sm font-semibold" style={{ color: "var(--primary)" }}>
+          {t("seeAll")}
+        </Link>
+        <MoreMenu label={t("more")} items={[{ label: t("hide"), onSelect: () => hide.mutate() }]} />
+      </div>
+    </div>
+  );
+  const error = hide.error ? <ErrorNotice>{clientErrorMessage(hide.error, tUi)}</ErrorNotice> : null;
+  if (layout === "list") {
+    // No outer card: each row is its own card, as in «+ Βρες».
+    return (
+      <section aria-labelledby="follow-suggestions-title" data-follow-suggestions="home" data-layout="list">
+        {header}
+        <ul className="flex flex-col gap-2">
+          {people.map((person) => (
+            <SuggestionRow key={person.id} person={person} />
+          ))}
+        </ul>
+        {error}
+      </section>
+    );
+  }
   return (
     <HubCard>
-      <section aria-labelledby="follow-suggestions-title" data-follow-suggestions="home">
-        <div className="mb-3 flex items-center justify-between gap-2">
-          <h2 id="follow-suggestions-title" className="font-bold" style={{ color: "var(--text)" }}>{t("title")}</h2>
-          <div className="flex shrink-0 items-center gap-1">
-            <Link href="/clubs/find" className="min-h-11 content-center px-1 text-sm font-semibold" style={{ color: "var(--primary)" }}>
-              {t("seeAll")}
-            </Link>
-            <MoreMenu label={t("more")} items={[{ label: t("hide"), onSelect: () => hide.mutate() }]} />
-          </div>
-        </div>
+      <section aria-labelledby="follow-suggestions-title" data-follow-suggestions="home" data-layout="row">
+        {header}
         <CardRow people={people} seedName={null} />
-        {hide.error ? <ErrorNotice>{clientErrorMessage(hide.error, tUi)}</ErrorNotice> : null}
+        {error}
       </section>
     </HubCard>
   );

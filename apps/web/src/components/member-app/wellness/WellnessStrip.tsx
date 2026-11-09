@@ -38,13 +38,13 @@ export function WellnessStrip() {
   return (
     <section
       aria-label={t("eyebrow")}
-      className="flex items-center gap-3 rounded-3xl px-4 py-3"
+      className="flex flex-wrap items-center gap-3 rounded-3xl px-4 py-3"
       style={{ background: "var(--panel)", border: "1px solid var(--border)" }}
       data-testid="wellness-strip"
     >
       {water ? (
         <>
-          <Link href="/journal/wellbeing#today" className="min-w-0 grow">
+          <Link href="/journal/wellbeing#today" className="min-w-[min(100%,8rem)] grow">
             <span className="block text-xs font-bold uppercase tracking-[0.14em]" style={{ color: "var(--dim)" }}>{t("item.water")}</span>
             <span className="block text-sm font-extrabold tabular-nums" style={{ color: "var(--text)" }}>
               {t("water.glasses", { filled, goal })}
