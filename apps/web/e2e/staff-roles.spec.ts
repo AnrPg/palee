@@ -118,6 +118,72 @@ test.describe("box roles in Users (ADR-217)", () => {
     await expect(card).toHaveCount(0);
   });
 
+  test("followers who are not box members wait in a card in Users; the owner invites one, then many (ADR-580)", async ({ page }) => {
+    await signedInOwner(page);
+    await page.route("**/api/memberships", (route) =>
+      route.fulfill(
+        json([
+          {
+            role: "owner",
+            roles: ["owner"],
+            capabilities: { manage_memberships: true },
+            organization: { id: "org-1", slug: "kypseli", name: "Box Kypseli" },
+            settings: { brand_name: "Box Kypseli", brand_logo_url: null, brand_primary_color: null },
+          },
+        ]),
+      ),
+    );
+    const follower = (id: string, nickname: string) => ({
+      person: { id, nickname, handle: null, avatar_url: null },
+      followed_at: "2026-10-12T10:00:00Z",
+      former_member: false,
+      had_trial: false,
+      invite: null,
+      invitable: true,
+    });
+    const counts = { listed: 2, invitable: 2, trial: 0, former: 0 };
+    const sent: unknown[] = [];
+    await page.route("**/api/org/*/admin/follower-invites/summary", (route) => route.fulfill(json({ counts })));
+    await page.route(
+      (url) => url.pathname.endsWith("/admin/follower-invites"),
+      (route) => {
+        if (route.request().method() === "POST") {
+          const body = route.request().postDataJSON() as { user_ids: string[] };
+          sent.push(body);
+          return route.fulfill(json({ sent: body.user_ids.length, skipped: [] }, 201));
+        }
+        return route.fulfill(
+          json({
+            followers: [follower("u-1", "Maria"), follower("u-2", "Nikos")],
+            next_cursor: null,
+            counts,
+            offer: { packages: [], trial_available: false },
+          }),
+        );
+      },
+    );
+    await page.goto("/admin/users");
+    const card = page.getByTestId("follower-invites");
+    await expect(card).toContainText("2 followers are not members yet", { timeout: 60_000 });
+    await card.getByTestId("follower-invites-toggle").click();
+
+    await card.getByRole("button", { name: "Invite Maria" }).click();
+    let sheet = page.getByTestId("follower-invite-sheet");
+    await sheet.getByTestId("follower-invite-message").fill("Come and train with us!");
+    await sheet.getByTestId("follower-invite-send").click();
+    await expect(card.getByTestId("follower-invites-result")).toContainText("1 invitation sent.");
+
+    await card.getByTestId("follower-invites-all").click();
+    await card.getByTestId("follower-invites-many").click();
+    sheet = page.getByTestId("follower-invite-sheet");
+    await sheet.getByTestId("follower-invite-send").click();
+    await expect(card.getByTestId("follower-invites-result")).toContainText("2 invitations sent.");
+    expect(sent).toEqual([
+      { user_ids: ["u-1"], message: "Come and train with us!", package_id: null, offer_trial: false },
+      { user_ids: ["u-1", "u-2"], message: null, package_id: null, offer_trial: false },
+    ]);
+  });
+
   test("the list shows every role, tints staff and gives staff no membership status", async ({ page }) => {
     await signedInOwner(page);
     await page.goto("/admin/users");

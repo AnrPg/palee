@@ -302,4 +302,34 @@ test.describe("public box page", () => {
     await expect(banner).toContainText("Become a box member to book classes and see the workouts.");
     await expect(banner.getByRole("link", { name: "Become a box member" })).toHaveAttribute("href", `/b/${box.slug}/packages`);
   });
+
+  test("a follower the box invited (ADR-580) sees the invitation and can say no, thanks", async ({ page }) => {
+    await signedIn(page);
+    let invite: Record<string, unknown> | null = {
+      id: "fi-1",
+      status: "sent",
+      sent_at: "2026-11-09T10:00:00Z",
+      message: "Come and train with us!",
+      offer_trial: false,
+      package: { id: "p-1", name: "Unlimited", price_cents: 7500, currency: "EUR", billing_period: "monthly" },
+      box: { slug: box.slug, name: box.name },
+    };
+    const declined: string[] = [];
+    await page.route(`**/api/boxes/${box.slug}/follower-invite`, (route) => route.fulfill(json({ invite })));
+    await page.route(`**/api/boxes/${box.slug}/follower-invite/decline`, (route) => {
+      declined.push("decline");
+      invite = null;
+      return route.fulfill(json({ invite: null }));
+    });
+    await page.goto(`/b/${box.slug}`);
+    const notice = page.getByTestId("box-follower-invite");
+    await expect(notice.getByRole("heading", { name: `${box.name} invites you to become a member` })).toBeVisible();
+    await expect(notice).toContainText("«Come and train with us!»");
+    await expect(notice.getByTestId("box-follower-invite-package")).toContainText("Unlimited");
+    // «Become a box member» stays the page's own action (ADR-552).
+    await expect(page.getByTestId("box-page-join").first()).toBeVisible();
+    await notice.getByTestId("box-follower-invite-decline").click();
+    await expect(notice).toBeHidden();
+    expect(declined).toEqual(["decline"]);
+  });
 });

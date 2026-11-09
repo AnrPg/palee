@@ -24,6 +24,7 @@ import { siteBasePath, type SiteLanguage } from "@/lib/public-site";
 import { AboutTab, OpeningHours } from "./AboutTab";
 import { BoxEvents } from "./BoxEvents";
 import { BoxPosts } from "./BoxPosts";
+import { FollowerInviteNotice } from "./FollowerInviteNotice";
 import { GuestBanner } from "./GuestBanner";
 import { JoinBoxAction } from "./JoinBoxAction";
 import { boxChatHref } from "@/components/trials/box-chat-links";
@@ -200,6 +201,8 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
 
       {!standalone && signedIn && !club && !clubs.isPending ? (
         <div className="mx-auto max-w-[75rem] lg:mt-6 lg:px-6">
+          {/* ADR-580: the box invited this follower to become a box member. */}
+          <FollowerInviteNotice token={tokens!.access_token} slug={page.box.slug} />
           <GuestBanner token={tokens!.access_token} box={page.box} />
         </div>
       ) : null}

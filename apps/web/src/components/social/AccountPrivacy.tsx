@@ -17,7 +17,9 @@ import { ErrorNotice } from "@/components/ui/ErrorNotice";
  * αναζήτηση» (ADR-193 §2, amended 2026-10-25). Public and searchable are the
  * default; a private account makes every follow a request. Searchable also
  * puts you in others' «Ίσως γνωρίζεις»; the third switch brings that card
- * back to your own Αρχική after «Κρύψε τις προτάσεις» (ADR-561).
+ * back to your own Αρχική after «Κρύψε τις προτάσεις» (ADR-561). The fourth
+ * lets boxes you follow see you and invite you to become a box member
+ * (ADR-580, on by default).
  * Going public accepts the requests that are waiting, so with any waiting it
  * asks first; going private again keeps current followers.
  */
@@ -31,6 +33,7 @@ export function AccountPrivacySetting() {
   const privateAccount = privacy?.private_account ?? false;
   const searchable = privacy?.searchable ?? true;
   const suggestions = privacy?.show_follow_suggestions ?? true;
+  const boxInvites = privacy?.box_invites ?? true;
   const waiting = summary.data?.requests_count ?? 0;
   const [confirmingPublic, setConfirmingPublic] = useState(false);
 
@@ -116,6 +119,18 @@ export function AccountPrivacySetting() {
         />
         <p id="follow-suggestions-state" className="text-sm" style={{ color: "var(--muted)" }}>
           {suggestions ? t("suggestionsOn") : t("suggestionsOff")}
+        </p>
+      </div>
+      <div className="space-y-2">
+        <Switch
+          id="box-invites"
+          label={t("boxInvitesToggle")}
+          checked={boxInvites}
+          disabled={disabled}
+          onToggle={() => save.mutate({ box_invites: !boxInvites })}
+        />
+        <p id="box-invites-state" className="text-sm" style={{ color: "var(--muted)" }}>
+          {boxInvites ? t("boxInvitesOn") : t("boxInvitesOff")}
         </p>
       </div>
       {save.error ? (
