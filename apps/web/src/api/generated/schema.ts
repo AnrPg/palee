@@ -30586,6 +30586,8 @@ export interface components {
         };
         /** CommunityClub */
         CommunityClub: {
+            /** @description ADR-590: a box's club whose box page /b/<slug> is published; the club opens there (tab «Club») */
+            box_page: boolean;
             channels: {
                 /** @description You are an admin of this member group */
                 admin?: boolean;
@@ -30658,6 +30660,8 @@ export interface components {
         /** CommunityClubsResponse */
         CommunityClubsResponse: {
             clubs: {
+                /** @description ADR-590: a box's club whose box page /b/<slug> is published; the club opens there (tab «Club») */
+                box_page: boolean;
                 channels: {
                     /** @description You are an admin of this member group */
                     admin?: boolean;
@@ -69310,6 +69314,8 @@ export interface operations {
                 content: {
                     "application/json": {
                         clubs: {
+                            /** @description ADR-590: a box's club whose box page /b/<slug> is published; the club opens there (tab «Club») */
+                            box_page: boolean;
                             channels: {
                                 /** @description You are an admin of this member group */
                                 admin?: boolean;

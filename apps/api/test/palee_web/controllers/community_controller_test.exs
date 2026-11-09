@@ -42,6 +42,29 @@ defmodule PaleeWeb.CommunityControllerTest do
 
   defp channel(club, kind), do: Enum.find(club["channels"], &(&1["kind"] == kind))
 
+  test "a box's club says whether its box page is published, so it opens there (ADR-590)", ctx do
+    assert club(ctx.as, ctx.member)["box_page"] == false
+
+    owner = user_fixture()
+    {:ok, _} = Organizations.ensure_legacy_membership_for_migration(owner, :owner)
+
+    {:ok, context} =
+      Organizations.resolve_tenant_context(owner, Organizations.legacy_organization_slug())
+
+    {:ok, profile} =
+      Palee.Application.UpdateBoxPublicProfile.call(context, %{
+        "about" => "Καλώς ήρθες.",
+        "disciplines" => ["crossfit"]
+      })
+
+    {:ok, _profile} =
+      Palee.Application.PublishBoxPublicProfile.publish(context, %{
+        "lock_version" => profile.lock_version
+      })
+
+    assert club(ctx.as, ctx.member)["box_page"] == true
+  end
+
   test "a gym's club is provisioned on first read with its built-in channels", ctx do
     club = club(ctx.as, ctx.member)
 

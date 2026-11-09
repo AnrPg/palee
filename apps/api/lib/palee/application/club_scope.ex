@@ -34,6 +34,7 @@ defmodule Palee.Application.ClubScope do
       channel_memberships = Community.channel_memberships_of(context, user_id, channel_ids)
       levels = Community.notify_levels(context, user_id, Enum.map(clubs, & &1.id))
       boxes = boxes(open_clubs, by_organization)
+      published = published(gym_clubs)
       coaches = squad_coaches(context, gym_clubs, channel_memberships)
       seen = {user_id, channel_memberships, coaches}
 
@@ -41,7 +42,15 @@ defmodule Palee.Application.ClubScope do
         Enum.map(gym_clubs, fn club ->
           membership = by_organization[club.organization_id]
           role = Community.club_role(membership.membership)
-          present(club, role, gym_face(club, membership), seen, levels)
+
+          face =
+            Map.put(
+              gym_face(club, membership),
+              :box_page,
+              MapSet.member?(published, club.organization_id)
+            )
+
+          present(club, role, face, seen, levels)
         end) ++
           Enum.map(open_clubs, fn club ->
             present(
@@ -175,6 +184,16 @@ defmodule Palee.Application.ClubScope do
     end)
   end
 
+  # ADR-590: the gyms whose box page is published, so their club opens there.
+  defp published([]), do: MapSet.new()
+
+  defp published(gym_clubs) do
+    gym_clubs
+    |> Enum.map(& &1.organization_id)
+    |> Organizations.public_boxes()
+    |> MapSet.new(& &1.organization_id)
+  end
+
   defp gym_face(club, membership) do
     settings = (membership.settings && membership.settings.settings) || %{}
 
@@ -253,7 +272,9 @@ defmodule Palee.Application.ClubScope do
       |> Enum.map(&present_channel(&1, role, Map.get(channel_memberships, &1.id)))
       |> Enum.filter(&visible?(&1, role, user_id))
 
-    Map.merge(face, %{
+    face
+    |> Map.put_new(:box_page, false)
+    |> Map.merge(%{
       id: club.id,
       organization_id: club.organization_id,
       kind: club.kind,

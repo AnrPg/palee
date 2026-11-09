@@ -41,7 +41,7 @@ const TABS: ClubTab[] = ["feed", "channels", "events", "members"];
 const TAB_KEYS: Record<ClubTab, string> = { feed: "tabFeed", channels: "tabChannels", events: "tabEvents", members: "tabMembers" };
 
 /**
- * A club's page (vision §7.1, mockup «club», board 7): Ροή (`ClubFeed`:
+ * A club's page (vision §7.1, mockup «club», board 7), its `ClubSpace`: Ροή (`ClubFeed`:
  * pinned announcement → WOD and leaderboard → challenges → PR celebrations →
  * events → members' posts; with a filter (channel, type, coaches only, §7.2)
  * the matching posts, newest first), Κανάλια (the box's channels, member groups, class groups
@@ -50,27 +50,10 @@ const TAB_KEYS: Record<ClubTab, string> = { feed: "tabFeed", channels: "tabChann
  */
 export function ClubPage({ clubId, channelId = null }: { clubId: string; channelId?: string | null }) {
   const t = useTranslations("Community");
-  const tClubs = useTranslations("Clubs");
   const clubs = useMyClubs();
   useClubRealtime(clubs.data);
-  const [tab, setTab] = useState<ClubTab>("feed");
   const club = clubs.data?.find((entry) => entry.id === clubId);
-  // The Ροή's filter, remembered per club; a channel link (or Κανάλια) picks the channel.
-  const remembered = useListFilter("club", CLUB_POSTS_SHAPE, clubId);
-  const [linkedChannelId, setLinkedChannelId] = useState<string | null>(channelId);
-  const posts =
-    remembered.filter && linkedChannelId ? { ...remembered.filter, channel: [linkedChannelId] } : remembered.filter;
-  const openChannel = club?.channels.find((channel) => channel.id === posts?.channel[0]) ?? null;
-
-  function changePosts(next: typeof remembered.empty) {
-    setLinkedChannelId(null);
-    remembered.setFilter(next);
-  }
-
-  function showChannel(id: string) {
-    changePosts({ ...(posts ?? remembered.empty), channel: [id] });
-    setTab("feed");
-  }
+  const space = useClubSpace(clubId, club, channelId);
 
   if (clubs.isPending) return <HubPage title={t("clubTitle")}><p style={{ color: "var(--dim)" }}>{t("loading")}</p></HubPage>;
   if (!club)
@@ -91,11 +74,58 @@ export function ClubPage({ clubId, channelId = null }: { clubId: string; channel
       actions={
         <div className="flex items-center gap-1">
           {club.kind === "open" && club.role !== "staff" ? <LeaveOpenClub club={club} /> : null}
-          <ComposeButton clubs={clubs.data ?? []} clubId={club.id} channelId={openChannel?.id} />
+          <ComposeButton clubs={clubs.data ?? []} clubId={club.id} channelId={space.openChannel?.id} />
         </div>
       }
     >
       <ClubBar clubs={clubs.data ?? []} activeClubId={club.id} />
+      <ClubSpace club={club} clubs={clubs.data ?? []} space={space} />
+    </HubPage>
+  );
+}
+
+export type ClubSpaceState = ReturnType<typeof useClubSpace>;
+
+/**
+ * The state of a club's space: its open tab and the Ροή's filter, remembered
+ * per club; a channel link (or Κανάλια) picks the channel. Shared by the club
+ * page and the box page's «Club» tab (ADR-590).
+ */
+export function useClubSpace(clubId: string, club: CommunityClub | undefined, channelId: string | null) {
+  const [tab, setTab] = useState<ClubTab>("feed");
+  const remembered = useListFilter("club", CLUB_POSTS_SHAPE, clubId);
+  const [linkedChannelId, setLinkedChannelId] = useState<string | null>(channelId);
+  const posts =
+    remembered.filter && linkedChannelId ? { ...remembered.filter, channel: [linkedChannelId] } : remembered.filter;
+  const openChannel = club?.channels.find((channel) => channel.id === posts?.channel[0]) ?? null;
+
+  function changePosts(next: typeof remembered.empty) {
+    setLinkedChannelId(null);
+    remembered.setFilter(next);
+  }
+
+  function showChannel(id: string) {
+    changePosts({ ...(posts ?? remembered.empty), channel: [id] });
+    setTab("feed");
+  }
+
+  return { tab, setTab, posts, openChannel, changePosts, showChannel };
+}
+
+/**
+ * A club's space (vision §7.1, mockup «club», board 7) under its header: the
+ * viewer's role, then Ροή (`ClubFeed`: pinned announcement → WOD and
+ * leaderboard → challenges → PR celebrations → events → members' posts; with a
+ * filter (channel, type, coaches only, §7.2) the matching posts, newest
+ * first), Κανάλια (the box's channels, member groups, class groups with the
+ * ones offered to the member first), Events (ADR-153) and Μέλη.
+ */
+export function ClubSpace({ club, clubs, space }: { club: CommunityClub; clubs: CommunityClub[]; space: ClubSpaceState }) {
+  const t = useTranslations("Community");
+  const tClubs = useTranslations("Clubs");
+  const { tab, setTab, posts, openChannel, changePosts, showChannel } = space;
+  return (
+    <>
       <p className="text-sm" style={{ color: "var(--dim)" }}>
         {club.kind === "open" ? `${tClubs("openClub")} · ` : ""}
         {club.role === "staff" ? t("roleStaff") : t("roleMember")}
@@ -137,18 +167,18 @@ export function ClubPage({ clubId, channelId = null }: { clubId: string; channel
         <p className="text-sm" style={{ color: "var(--dim)" }}>{t("loading")}</p>
       ) : (
         <>
-          <PostFilters shape={CLUB_POSTS_SHAPE} filter={posts} onChange={changePosts} clubs={clubs.data ?? []} clubId={club.id} />
+          <PostFilters shape={CLUB_POSTS_SHAPE} filter={posts} onChange={changePosts} clubs={clubs} clubId={club.id} />
           {narrowsPosts(posts) ? (
             <>
               {openChannel?.kind === "wod" ? <WodCard club={club} showOrigin={false} /> : null}
-              <FeedList filter={postsFeedFilter(posts, clubs.data ?? [], club.id)} empty={t("postsNoMatch")} />
+              <FeedList filter={postsFeedFilter(posts, clubs, club.id)} empty={t("postsNoMatch")} />
             </>
           ) : (
             <ClubFeed club={club} onShowEvents={() => setTab("events")} />
           )}
         </>
       )}
-    </HubPage>
+    </>
   );
 }
 

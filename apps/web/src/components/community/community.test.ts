@@ -19,6 +19,7 @@ const club = (id: string, channels: CommunityClub["channels"]): CommunityClub =>
   id,
   organization_id: `org-${id}`,
   organization_slug: id,
+  box_page: false,
   kind: "gym",
   name: `Club ${id}`,
   role: "member",

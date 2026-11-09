@@ -31242,6 +31242,10 @@
       },
       "CommunityClub": {
         "properties": {
+          "box_page": {
+            "description": "ADR-590: a box's club whose box page /b/<slug> is published; the club opens there (tab «Club»)",
+            "type": "boolean"
+          },
           "channels": {
             "items": {
               "properties": {
@@ -31428,6 +31432,7 @@
           "id",
           "organization_id",
           "organization_slug",
+          "box_page",
           "kind",
           "name",
           "role",
@@ -31477,6 +31482,10 @@
           "clubs": {
             "items": {
               "properties": {
+                "box_page": {
+                  "description": "ADR-590: a box's club whose box page /b/<slug> is published; the club opens there (tab «Club»)",
+                  "type": "boolean"
+                },
                 "channels": {
                   "items": {
                     "properties": {
@@ -31663,6 +31672,7 @@
                 "id",
                 "organization_id",
                 "organization_slug",
+                "box_page",
                 "kind",
                 "name",
                 "role",
@@ -151847,6 +151857,10 @@
                     "clubs": {
                       "items": {
                         "properties": {
+                          "box_page": {
+                            "description": "ADR-590: a box's club whose box page /b/<slug> is published; the club opens there (tab «Club»)",
+                            "type": "boolean"
+                          },
                           "channels": {
                             "items": {
                               "properties": {
@@ -152033,6 +152047,7 @@
                           "id",
                           "organization_id",
                           "organization_slug",
+                          "box_page",
                           "kind",
                           "name",
                           "role",

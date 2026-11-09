@@ -67,6 +67,11 @@ defmodule PaleeWeb.Schemas.Community do
           description: "Null for an open club of a gym you can't see"
         },
         organization_name: %Schema{type: :string, nullable: true},
+        box_page: %Schema{
+          type: :boolean,
+          description:
+            "ADR-590: a box's club whose box page /b/<slug> is published; the club opens there (tab «Club»)"
+        },
         kind: %Schema{type: :string, enum: ~w(gym open member_group pt_squad season)},
         name: %Schema{type: :string},
         description: %Schema{type: :string, nullable: true},
@@ -81,6 +86,7 @@ defmodule PaleeWeb.Schemas.Community do
         :id,
         :organization_id,
         :organization_slug,
+        :box_page,
         :kind,
         :name,
         :role,
