@@ -7098,7 +7098,6 @@
     "findTitle": "Clubs, boxen en mensen vinden",
     "findOpenClubs": "Open clubs",
     "findGroups": "Groepen in je boxen",
-    "findNoClubs": "De boxen waar je lid van bent of die je volgt hebben nog geen open clubs.",
     "findNoMatch": "Niets gevonden voor deze zoekopdracht.",
     "visibilityTitle": "Ledenlijsten",
     "visibilityHint": "Of andere leden je zien in het tabblad Leden van hun clubs.",
@@ -7151,7 +7150,9 @@
     "notif_event_cohost_answered_removed_body": "{box} organiseert „{event}” niet meer mee.",
     "filterKind": "Soort",
     "filterBox": "Box",
-    "findFiltersTitle": "Zoekfilters"
+    "findFiltersTitle": "Zoekfilters",
+    "findStaffNoClubs": "{box} heeft nog geen open clubs. Een open club brengt leden en niet-leden samen rond iets wat ze delen, zoals hardlopen.",
+    "findCreateClub": "Open club maken"
   },
   "CommunityAdmin": {
     "title": "Community",
@@ -7741,7 +7742,9 @@
     "priceFrom": "Laagste prijs",
     "priceTo": "Hoogste prijs",
     "sectionLevel": "Niveau",
-    "levelHint": "Boxen met lessen op dit niveau"
+    "levelHint": "Boxen met lessen op dit niveau",
+    "nearUpTo": "Tot {km} km",
+    "nearInTown": "In jouw stad · {town}"
   },
   "CheckIn": {
     "loading": "Laden…",
@@ -20135,5 +20138,10 @@
     "answerFor": "Antwoord voor «{typed}»",
     "answerAll": "Beantwoord elke regel om te publiceren.",
     "failed": "Je antwoorden zijn niet opgeslagen. Probeer het opnieuw."
+  },
+  "BoxOnMap": {
+    "title": "Je box staat niet in In de buurt",
+    "body": "Zonder adres en plaats vindt niemand in de buurt hem in In de buurt of Vinden. Voeg ze toe bij Locaties.",
+    "action": "Adres toevoegen"
   }
 }

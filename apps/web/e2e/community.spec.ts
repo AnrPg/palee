@@ -365,6 +365,32 @@ test.describe("community", () => {
     expect(calls.joins).toEqual(["open-1"]);
   });
 
+  // ADR-583: an empty «Open clubs» card is hidden; staff get a way to make one. «Near me»
+  // names how far it looked, and disappears when there is no open club anywhere.
+  test("«Find» hides empty cards, offers staff an open club and says how far «Near me» looked", async ({ page }) => {
+    await member(page);
+    await page.route("**/api/me/clubs", (route) => route.fulfill(json({ clubs: [{ ...gymClub, role: "staff" }] })));
+    await page.route("**/api/me/community/discover**", (route) => route.fulfill(json({ clubs: [], groups: [] })));
+    let nearby: { items: unknown[]; reach: unknown } = { items: [], reach: { scope: "radius", radius_km: 50, town: null, widened: false } };
+    await page.route("**/api/around/search/clubs", (route) =>
+      route.fulfill(json({ kind: "clubs", total: nearby.items.length, next_cursor: null, origin: { type: "area", label: "Βόλος", latitude: 39.36, longitude: 22.94, neighbourhood_ids: [] }, ...nearby })),
+    );
+    await page.goto("/");
+    await page.goto("/clubs/find");
+
+    await expect(page.getByText("Box Kypseli has no open clubs yet.", { exact: false })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Create an open club" })).toHaveAttribute("href", "/org/kypseli/admin/community?tab=clubs");
+    await expect(page.getByText("Near me", { exact: true })).toHaveCount(0);
+
+    nearby = {
+      items: [{ distance_km: 18.4, club: { ...openClub, membership: "none" } }],
+      reach: { scope: "radius", radius_km: 25, town: null, widened: true },
+    };
+    await page.reload();
+    await expect(page.getByText("Up to 25 km")).toBeVisible();
+    await expect(page.getByRole("link", { name: /Hyrox crew/ })).toBeVisible();
+  });
+
   // ADR-221: the same field finds a live, published box or coach by name.
   test("a followed box shows as a dashed bubble and its posts are headed by the box (ADR-590)", async ({ page }) => {
     await member(page);
