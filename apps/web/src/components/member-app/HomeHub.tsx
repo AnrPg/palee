@@ -25,6 +25,7 @@ import { SupportInbox } from "@/components/buddy/SupportRequestCard";
 import { MyEventsCard } from "@/components/events/MyEventsCard";
 import { ChallengesCard } from "@/components/member-app/home/ChallengesCard";
 import { GreetingCard } from "@/components/member-app/home/GreetingCard";
+import { HOME_COLUMNS_QUERY, HomeColumns } from "@/components/member-app/home/HomeColumns";
 import { LeaderboardCard } from "@/components/member-app/home/LeaderboardCard";
 import { FeedPage } from "@/components/member-app/HubParts";
 import { WellnessStrip } from "@/components/member-app/wellness/WellnessStrip";
@@ -34,6 +35,7 @@ import { HomeFollowSuggestions } from "@/components/social/FollowSuggestions";
 import { ReviewAskCard } from "@/components/reviews/ReviewAskCard";
 import { MyTrialsCard } from "@/components/trials/MyTrialsCard";
 import { useSelectedMembershipRole } from "@/lib/membership-role";
+import { useMediaQuery } from "@/lib/use-media-query";
 
 /**
  * Αρχική (brief §6.1, §7.1): what is happening at my gym. Fixed order:
@@ -48,6 +50,10 @@ import { useSelectedMembershipRole } from "@/lib/membership-role";
  * principle 2): no WOD, no events, no challenges or no posts means no card,
  * and the gym's cards need a gym. The order of the cards that are shown never
  * changes.
+ *
+ * On wide screens (ANR 2026-11-09, `home/HomeColumns`) the reminders and the
+ * quote move to a left column and «Ίσως γνωρίζεις» to a right one, both
+ * staying in view while the feed in the middle scrolls.
  */
 export function HomeHub() {
   const t = useTranslations("MemberApp");
@@ -60,6 +66,7 @@ export function HomeHub() {
   const gymClub = gymClubFor(clubs.data ?? [], membership?.organization.id);
   const router = useRouter();
   const scope = useHomeScope();
+  const wide = useMediaQuery(HOME_COLUMNS_QUERY);
   // «Remember the last choice» (vision §7.1): Αρχική opens in Γύρω μου when that was it.
   const openAround = scope.settled && scope.scope === "around";
   useEffect(() => {
@@ -70,28 +77,37 @@ export function HomeHub() {
     <FeedPage
       title={t("homeTitle")}
       action={<ComposeButton clubs={clubs.data ?? []} />}
+      wide={wide}
     >
-      {/* Always there, so «+ Βρες» is reachable before the first club (vision §6.1). */}
-      <ClubBar clubs={clubs.data ?? []} />
-      <ScopeToggle current="clubs" />
-      <GreetingCard
-        nickname={currentUser?.nickname ?? ""}
-        quote={landing.data?.quote}
+      <HomeColumns
+        wide={wide}
+        cards={[
+          // Always there, so «+ Βρες» is reachable before the first club (vision §6.1).
+          { key: "clubs", column: "feed", node: <ClubBar clubs={clubs.data ?? []} /> },
+          { key: "scope", column: "feed", node: <ScopeToggle current="clubs" /> },
+          {
+            key: "greeting",
+            column: "reminders",
+            node: <GreetingCard nickname={currentUser?.nickname ?? ""} quote={landing.data?.quote} compact={wide} />,
+          },
+          { key: "support", column: "feed", node: <SupportInbox /> },
+          { key: "wellness", column: "reminders", node: <WellnessStrip /> },
+          { key: "trials", column: "reminders", node: <MyTrialsCard /> },
+          // ADR-386: after the 10th, 50th or 100th class only, once.
+          { key: "review", column: "reminders", node: <ReviewAskCard /> },
+          { key: "wod", column: "feed", node: gymClub ? <WodCard club={gymClub} /> : null },
+          { key: "events", column: "reminders", node: <MyEventsCard /> },
+          { key: "challenges", column: "feed", node: <ChallengesCard challenges={gamification?.active_challenges ?? []} /> },
+          {
+            key: "leaderboard",
+            column: "feed",
+            node: gamification && membership ? <LeaderboardCard leaderboard={gamification.leaderboard} /> : null,
+          },
+          // ADR-561: «Ίσως γνωρίζεις», right above the posts (on the right on wide screens).
+          { key: "suggestions", column: "people", node: <HomeFollowSuggestions layout={wide ? "list" : "row"} /> },
+          { key: "posts", column: "feed", node: <ClubPosts clubs={clubs.data ?? []} /> },
+        ]}
       />
-      <SupportInbox />
-      <WellnessStrip />
-      <MyTrialsCard />
-      {/* ADR-386: after the 10th, 50th or 100th class only, once. */}
-      <ReviewAskCard />
-      {gymClub ? <WodCard club={gymClub} /> : null}
-      <MyEventsCard />
-      <ChallengesCard challenges={gamification?.active_challenges ?? []} />
-      {gamification && membership ? (
-        <LeaderboardCard leaderboard={gamification.leaderboard} />
-      ) : null}
-      {/* ADR-561: «Ίσως γνωρίζεις», right above the posts. */}
-      <HomeFollowSuggestions />
-      <ClubPosts clubs={clubs.data ?? []} />
     </FeedPage>
   );
 }

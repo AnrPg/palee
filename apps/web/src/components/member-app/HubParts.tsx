@@ -20,14 +20,17 @@ import type { GuideAnchor } from "@/lib/guides/anchors";
 export function FeedPage({
   title,
   action,
+  wide = false,
   children,
 }: {
   title: string;
   action: ReactNode;
+  /** Αρχική's three columns (`home/HomeColumns`) need the whole width. */
+  wide?: boolean;
   children: ReactNode;
 }) {
   return (
-    <main className="mx-auto flex w-full max-w-xl flex-col gap-4 px-4 pb-6 pt-4">
+    <main className={`mx-auto flex w-full ${wide ? "max-w-7xl" : "max-w-xl"} flex-col gap-4 px-4 pb-6 pt-4`}>
       <h1 className="sr-only">{title}</h1>
       <TopBarActions>{action}</TopBarActions>
       {children}

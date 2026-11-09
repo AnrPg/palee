@@ -115,5 +115,17 @@ describe("HomeFollowSuggestions", () => {
     render(<HomeFollowSuggestions />, { wrapper });
     expect(await screen.findByText("title")).toBeTruthy();
     expect(screen.getByText("reason.box:Milos method")).toBeTruthy();
+    expect(document.querySelector("[data-suggestion-row]")).toBeTruthy();
+  });
+
+  it("lists one person per line in Αρχική's right column on wide screens", async () => {
+    summary.current = { data: { privacy: { private_account: false, searchable: true, show_follow_suggestions: true } } };
+    render(<HomeFollowSuggestions layout="list" />, { wrapper });
+    expect(await screen.findByText("title")).toBeTruthy();
+    const section = document.querySelector('[data-follow-suggestions="home"]')!;
+    expect(section.getAttribute("data-layout")).toBe("list");
+    expect(section.querySelector("[data-suggestion-row]")).toBeNull();
+    expect(section.querySelectorAll("li[data-suggestion]").length).toBe(people.length);
+    expect(screen.getByText("seeAll")).toBeTruthy();
   });
 });

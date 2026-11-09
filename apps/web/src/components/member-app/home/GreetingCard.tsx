@@ -9,7 +9,16 @@ import { useUiTranslations } from "@/i18n/ui";
  * Αρχική's opening card: a time-of-day greeting and the gym's quote of the
  * day. Streak and badges live in Ημερολόγιο › Πρόοδος (ADR-137).
  */
-export function GreetingCard({ nickname, quote }: { nickname: string; quote: TrainingQuote | null | undefined }) {
+export function GreetingCard({
+  nickname,
+  quote,
+  compact = false,
+}: {
+  nickname: string;
+  quote: TrainingQuote | null | undefined;
+  /** In Αρχική's narrow left column on wide screens: a smaller quote. */
+  compact?: boolean;
+}) {
   const i18n = useUiTranslations();
 
   const [greeting] = useState(() => {
@@ -89,7 +98,7 @@ export function GreetingCard({ nickname, quote }: { nickname: string; quote: Tra
         }}
       >
         <p
-          className="text-3xl font-bold leading-snug tracking-tight md:text-4xl"
+          className={`${compact ? "text-2xl" : "text-3xl md:text-4xl"} font-bold leading-snug tracking-tight`}
           style={{ color: "var(--primary)", fontStyle: "italic" }}
         >
           {quote?.body ?? i18n("yourTrainingIsInMotioncfd94f0")}
