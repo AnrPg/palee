@@ -455,7 +455,8 @@ test.describe("who will see it", () => {
     await expect(reach.getByText("In the #wod-today channel")).toBeVisible();
     await expect(reach.getByRole("listitem").filter({ hasText: "On your profile" })).toContainText("Not:");
 
-    await picker.getByRole("radio", { name: /Public/ }).last().check();
+    // A pick closes the sheet, so tap it: check() would wait for a radio that is gone.
+    await picker.getByRole("radio", { name: /Public/ }).last().click();
     await expect(picker).toBeHidden();
     await compose.getByRole("button", { name: /Who will see it/ }).click();
     await expect(reach.getByText("On your profile, for everyone on Palee")).toBeVisible();
