@@ -155,6 +155,9 @@ defmodule Palee.Application.JournalComments do
 
   # The client's time (offline writes keep when they were written), never
   # in the future.
+  defp written_at(%DateTime{} = at, now),
+    do: if(DateTime.compare(at, now) == :gt, do: now, else: at)
+
   defp written_at(value, now) when is_binary(value) do
     case DateTime.from_iso8601(value) do
       {:ok, at, _offset} -> if DateTime.compare(at, now) == :gt, do: now, else: at

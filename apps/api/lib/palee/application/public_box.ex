@@ -337,6 +337,10 @@ defmodule Palee.Application.PublicBox do
     end
   end
 
+  # The controller's CastAndValidate turns a `date-time` query param into a
+  # DateTime before it gets here; direct callers may still pass ISO 8601.
+  defp datetime(%DateTime{} = value), do: {:ok, value}
+
   defp datetime(value) when is_binary(value) do
     case DateTime.from_iso8601(value) do
       {:ok, datetime, _offset} -> {:ok, datetime}

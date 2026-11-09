@@ -109,6 +109,47 @@ defmodule Palee.Web.TrialsControllerTest do
   defp drain, do: Oban.drain_queue(queue: :notifications, with_safety: false)
   defp types(user), do: Notifications.list_for_user(user.id) |> Enum.map(&to_string(&1.type))
 
+  describe "the box page's week" do
+    # The web asks for the shown week exactly like this (toISOString: with
+    # milliseconds and Z). CastAndValidate hands the application DateTimes.
+    test "answers the window the box page asks for", ctx do
+      inside = ctx.slot.(24 * 3, %{capacity: 10})
+      outside = ctx.slot.(24 * 10, %{capacity: 10})
+
+      start_at = DateTime.utc_now() |> DateTime.truncate(:millisecond)
+      end_at = DateTime.add(start_at, 7 * 86_400, :second)
+
+      query =
+        URI.encode_query(%{
+          "start_at" => DateTime.to_iso8601(start_at),
+          "end_at" => DateTime.to_iso8601(end_at)
+        })
+
+      assert %{"slots" => slots, "start_at" => _from, "end_at" => _to} =
+               ctx.as.(ctx.visitor)
+               |> get("/api/boxes/#{ctx.slug}/schedule?#{query}")
+               |> json_response(200)
+
+      ids = Enum.map(slots, & &1["id"])
+      assert inside.id in ids
+      refute outside.id in ids
+    end
+
+    test "refuses a malformed, backwards or too long window", ctx do
+      ask = fn query ->
+        ctx.as.(ctx.visitor) |> get("/api/boxes/#{ctx.slug}/schedule?#{query}")
+      end
+
+      assert ask.("start_at=nope&end_at=2026-11-15T22:00:00.000Z") |> response(422)
+
+      assert ask.("start_at=2026-11-15T22:00:00.000Z&end_at=2026-11-08T22:00:00.000Z")
+             |> response(400)
+
+      assert ask.("start_at=2026-01-01T00:00:00Z&end_at=2026-03-01T00:00:00Z") |> response(400)
+      assert ask.("start_at=2026-11-08T22:00:00.000Z") |> response(400)
+    end
+  end
+
   describe "the offer on the box page" do
     test "is off until the owner opens trials, then shows seats per class", ctx do
       open = ctx.slot.(24, %{capacity: 10})
