@@ -1,6 +1,6 @@
 # ADR-163: WOD goals, «τι ένιωσες» feedback and the anatomy taxonomy
 Date: 2026-10-21
-Status: Accepted
+Status: Accepted (D1–D2 storage superseded by ADR-560: the taxonomy and exercise targets are reference tables)
 
 ## Context
 Vision §7.6 and Phase 3 milestone P3-M1 ask for goals on a workout: the muscles it

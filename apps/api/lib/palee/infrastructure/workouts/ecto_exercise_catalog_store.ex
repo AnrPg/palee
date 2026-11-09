@@ -1,5 +1,13 @@
 defmodule Palee.Infrastructure.Workouts.EctoExerciseCatalogStore do
-  @moduledoc "Postgres store of the exercise catalog's additions, candidates and audit trail (ADR-461)."
+  @moduledoc """
+  Postgres store of the exercise catalog's additions, candidates and audit
+  trail (ADR-461), and the writer of the reference catalog tables the Palee
+  team's decisions change (ADR-560): an approved entry becomes an exercise
+  (with the targets given), an approved alias a Quick Text alias, and a
+  target edit replaces an exercise's targets, each with its audit event in
+  the same transaction. Readers notice through the revision the tables'
+  trigger bumps.
+  """
 
   @behaviour Palee.Workouts.Ports.ExerciseCatalogStore
 
@@ -7,15 +15,6 @@ defmodule Palee.Infrastructure.Workouts.EctoExerciseCatalogStore do
 
   alias Palee.Repo
   alias Palee.Workouts.{ExerciseCatalogAddition, ExerciseCatalogAuditEvent, ExerciseNameCandidate}
-
-  @impl true
-  def additions do
-    from(a in ExerciseCatalogAddition,
-      order_by: [asc: a.inserted_at],
-      select: %{kind: a.kind, catalog_slug: a.catalog_slug, label: a.label, category: a.category}
-    )
-    |> Repo.all()
-  end
 
   @impl true
   def note_candidates([], _now), do: :ok
@@ -86,6 +85,7 @@ defmodule Palee.Infrastructure.Workouts.EctoExerciseCatalogStore do
         ) || Repo.rollback(:exercise_candidate_already_decided)
 
       addition = insert_addition(decision.addition, candidate, actor_user_id, now)
+      insert_reference(decision.addition, Map.get(decision, :targets), now)
 
       status = if decision.action == "reject", do: "rejected", else: "approved"
 
@@ -138,6 +138,134 @@ defmodule Palee.Infrastructure.Workouts.EctoExerciseCatalogStore do
       {:error, _changeset} -> Repo.rollback(:exercise_already_in_catalog)
     end
   end
+
+  @impl true
+  def replace_exercise_targets(exercise_id, targets, actor_user_id, now) do
+    Repo.transaction(fn ->
+      %{num_rows: found} =
+        Repo.query!("SELECT 1 FROM exercises WHERE id = $1 FOR UPDATE", [exercise_id])
+
+      if found == 0, do: Repo.rollback(:not_found)
+
+      before = current_targets(exercise_id)
+      Repo.query!("DELETE FROM exercise_muscle_targets WHERE exercise_id = $1", [exercise_id])
+      Repo.query!("DELETE FROM exercise_quality_targets WHERE exercise_id = $1", [exercise_id])
+      insert_targets(exercise_id, targets)
+      Repo.query!("UPDATE exercises SET updated_at = $2 WHERE id = $1", [exercise_id, now])
+
+      Repo.insert!(%ExerciseCatalogAuditEvent{
+        action: "set_targets",
+        actor_user_id: actor_user_id,
+        catalog_slug: exercise_id,
+        metadata: %{"before" => before, "after" => plain_targets(targets)},
+        inserted_at: now
+      })
+
+      %{exercise_id: exercise_id, targets: targets}
+    end)
+  end
+
+  # ADR-560: the reference rows of an approved decision.
+  defp insert_reference(nil, _targets, _now), do: :ok
+
+  defp insert_reference(%{kind: "entry"} = addition, targets, now) do
+    case Repo.query(
+           """
+           INSERT INTO exercises (id, label, normalized, category, origin, inserted_at, updated_at)
+           VALUES ($1, $2, $3, $4, 'reviewed', $5, $5)
+           """,
+           [
+             addition.catalog_slug,
+             addition.label,
+             normalized(addition.label),
+             addition.category,
+             now
+           ]
+         ) do
+      {:ok, _result} ->
+        insert_targets(addition.catalog_slug, targets || %{muscles: [], qualities: []})
+
+      {:error, %Postgrex.Error{postgres: %{code: :unique_violation}}} ->
+        Repo.rollback(:exercise_already_in_catalog)
+    end
+  end
+
+  defp insert_reference(%{kind: "alias"} = addition, _targets, now) do
+    case Repo.query(
+           """
+           INSERT INTO exercise_aliases (id, exercise_id, alias, normalized, kind, position, inserted_at)
+           SELECT $1, e.id, $3, $4, 'resolve',
+             coalesce((SELECT max(a.position) + 1 FROM exercise_aliases a
+                       WHERE a.exercise_id = e.id AND a.kind = 'resolve'), 0), $5
+           FROM exercises e WHERE e.id = $2
+           """,
+           [
+             Ecto.UUID.bingenerate(),
+             addition.catalog_slug,
+             addition.label,
+             normalized(addition.label),
+             now
+           ]
+         ) do
+      {:ok, %{num_rows: 1}} ->
+        :ok
+
+      {:ok, %{num_rows: 0}} ->
+        Repo.rollback(:unknown_exercise_catalog_slug)
+
+      {:error, %Postgrex.Error{postgres: %{code: :unique_violation}}} ->
+        Repo.rollback(:exercise_already_in_catalog)
+    end
+  end
+
+  defp insert_targets(exercise_id, %{muscles: muscles, qualities: qualities}) do
+    Enum.each(muscles, fn %{id: muscle_id, role: role} ->
+      %{num_rows: 1} =
+        Repo.query!(
+          """
+          INSERT INTO exercise_muscle_targets (exercise_id, muscle_id, muscle_kind, role)
+          SELECT $1, m.id, m.kind, $3 FROM muscles m
+          WHERE m.id = $2 AND m.kind IN ('group', 'head')
+          """,
+          [exercise_id, muscle_id, to_string(role)]
+        )
+    end)
+
+    Enum.each(qualities, fn quality_id ->
+      Repo.query!(
+        "INSERT INTO exercise_quality_targets (exercise_id, quality_id) VALUES ($1, $2)",
+        [exercise_id, quality_id]
+      )
+    end)
+  end
+
+  defp current_targets(exercise_id) do
+    %{rows: muscles} =
+      Repo.query!(
+        "SELECT muscle_id, role FROM exercise_muscle_targets WHERE exercise_id = $1 ORDER BY muscle_id",
+        [exercise_id]
+      )
+
+    %{rows: qualities} =
+      Repo.query!(
+        "SELECT quality_id FROM exercise_quality_targets WHERE exercise_id = $1 ORDER BY quality_id",
+        [exercise_id]
+      )
+
+    %{
+      "muscles" => Enum.map(muscles, fn [id, role] -> %{"id" => id, "role" => role} end),
+      "qualities" => List.flatten(qualities)
+    }
+  end
+
+  defp plain_targets(%{muscles: muscles, qualities: qualities}) do
+    %{
+      "muscles" => Enum.map(muscles, &%{"id" => &1.id, "role" => to_string(&1.role)}),
+      "qualities" => qualities
+    }
+  end
+
+  defp normalized(label), do: Palee.Catalog.Domain.Reference.normalize_name(label)
 
   @impl true
   def audit_events(limit) do

@@ -1,0 +1,6523 @@
+{
+  "muscles": [
+    {
+      "id": "neck",
+      "name": "Neck",
+      "position": 0,
+      "kind": "region",
+      "ta2_ids": [],
+      "parent_id": null
+    },
+    {
+      "id": "sternocleidomastoid",
+      "name": "Sternocleidomastoid",
+      "position": 1,
+      "kind": "group",
+      "ta2_ids": [
+        "2156"
+      ],
+      "parent_id": "neck"
+    },
+    {
+      "id": "scalenes",
+      "name": "Scalenes",
+      "position": 2,
+      "kind": "group",
+      "ta2_ids": [
+        "2152",
+        "2153",
+        "2154"
+      ],
+      "parent_id": "neck"
+    },
+    {
+      "id": "splenius",
+      "name": "Splenius",
+      "position": 3,
+      "kind": "group",
+      "ta2_ids": [
+        "2273",
+        "2274"
+      ],
+      "parent_id": "neck"
+    },
+    {
+      "id": "shoulders",
+      "name": "Shoulders",
+      "position": 4,
+      "kind": "region",
+      "ta2_ids": [],
+      "parent_id": null
+    },
+    {
+      "id": "deltoid",
+      "name": "Deltoid",
+      "position": 5,
+      "kind": "group",
+      "ta2_ids": [],
+      "parent_id": "shoulders"
+    },
+    {
+      "id": "deltoid-anterior",
+      "name": "Anterior deltoid",
+      "position": 6,
+      "kind": "head",
+      "ta2_ids": [
+        "2453"
+      ],
+      "parent_id": "deltoid"
+    },
+    {
+      "id": "deltoid-lateral",
+      "name": "Lateral deltoid",
+      "position": 7,
+      "kind": "head",
+      "ta2_ids": [
+        "2454"
+      ],
+      "parent_id": "deltoid"
+    },
+    {
+      "id": "deltoid-posterior",
+      "name": "Posterior deltoid",
+      "position": 8,
+      "kind": "head",
+      "ta2_ids": [
+        "2455"
+      ],
+      "parent_id": "deltoid"
+    },
+    {
+      "id": "rotator-cuff",
+      "name": "Rotator cuff",
+      "position": 9,
+      "kind": "group",
+      "ta2_ids": [],
+      "parent_id": "shoulders"
+    },
+    {
+      "id": "supraspinatus",
+      "name": "Supraspinatus",
+      "position": 10,
+      "kind": "head",
+      "ta2_ids": [
+        "2457"
+      ],
+      "parent_id": "rotator-cuff"
+    },
+    {
+      "id": "infraspinatus",
+      "name": "Infraspinatus",
+      "position": 11,
+      "kind": "head",
+      "ta2_ids": [
+        "2458"
+      ],
+      "parent_id": "rotator-cuff"
+    },
+    {
+      "id": "teres-minor",
+      "name": "Teres minor",
+      "position": 12,
+      "kind": "head",
+      "ta2_ids": [
+        "2459"
+      ],
+      "parent_id": "rotator-cuff"
+    },
+    {
+      "id": "subscapularis",
+      "name": "Subscapularis",
+      "position": 13,
+      "kind": "head",
+      "ta2_ids": [
+        "2460"
+      ],
+      "parent_id": "rotator-cuff"
+    },
+    {
+      "id": "chest",
+      "name": "Chest",
+      "position": 14,
+      "kind": "region",
+      "ta2_ids": [],
+      "parent_id": null
+    },
+    {
+      "id": "pectoralis-major",
+      "name": "Pectoralis major",
+      "position": 15,
+      "kind": "group",
+      "ta2_ids": [],
+      "parent_id": "chest"
+    },
+    {
+      "id": "pectoralis-major-clavicular",
+      "name": "Clavicular head",
+      "position": 16,
+      "kind": "head",
+      "ta2_ids": [
+        "2302"
+      ],
+      "parent_id": "pectoralis-major"
+    },
+    {
+      "id": "pectoralis-major-sternocostal",
+      "name": "Sternocostal head",
+      "position": 17,
+      "kind": "head",
+      "ta2_ids": [
+        "2303"
+      ],
+      "parent_id": "pectoralis-major"
+    },
+    {
+      "id": "pectoralis-major-abdominal",
+      "name": "Abdominal head",
+      "position": 18,
+      "kind": "head",
+      "ta2_ids": [
+        "2304"
+      ],
+      "parent_id": "pectoralis-major"
+    },
+    {
+      "id": "pectoralis-minor",
+      "name": "Pectoralis minor",
+      "position": 19,
+      "kind": "group",
+      "ta2_ids": [
+        "2305"
+      ],
+      "parent_id": "chest"
+    },
+    {
+      "id": "serratus-anterior",
+      "name": "Serratus anterior",
+      "position": 20,
+      "kind": "group",
+      "ta2_ids": [
+        "2307"
+      ],
+      "parent_id": "chest"
+    },
+    {
+      "id": "upper-back",
+      "name": "Upper back",
+      "position": 21,
+      "kind": "region",
+      "ta2_ids": [],
+      "parent_id": null
+    },
+    {
+      "id": "trapezius",
+      "name": "Trapezius",
+      "position": 22,
+      "kind": "group",
+      "ta2_ids": [],
+      "parent_id": "upper-back"
+    },
+    {
+      "id": "trapezius-upper",
+      "name": "Upper trapezius",
+      "position": 23,
+      "kind": "head",
+      "ta2_ids": [
+        "2227"
+      ],
+      "parent_id": "trapezius"
+    },
+    {
+      "id": "trapezius-middle",
+      "name": "Middle trapezius",
+      "position": 24,
+      "kind": "head",
+      "ta2_ids": [
+        "2228"
+      ],
+      "parent_id": "trapezius"
+    },
+    {
+      "id": "trapezius-lower",
+      "name": "Lower trapezius",
+      "position": 25,
+      "kind": "head",
+      "ta2_ids": [
+        "2229"
+      ],
+      "parent_id": "trapezius"
+    },
+    {
+      "id": "rhomboids",
+      "name": "Rhomboids",
+      "position": 26,
+      "kind": "group",
+      "ta2_ids": [
+        "2232",
+        "2233"
+      ],
+      "parent_id": "upper-back"
+    },
+    {
+      "id": "levator-scapulae",
+      "name": "Levator scapulae",
+      "position": 27,
+      "kind": "group",
+      "ta2_ids": [
+        "2234"
+      ],
+      "parent_id": "upper-back"
+    },
+    {
+      "id": "latissimus-dorsi",
+      "name": "Latissimus dorsi",
+      "position": 28,
+      "kind": "group",
+      "ta2_ids": [
+        "2231"
+      ],
+      "parent_id": "upper-back"
+    },
+    {
+      "id": "teres-major",
+      "name": "Teres major",
+      "position": 29,
+      "kind": "group",
+      "ta2_ids": [
+        "2462"
+      ],
+      "parent_id": "upper-back"
+    },
+    {
+      "id": "lower-back",
+      "name": "Lower back",
+      "position": 30,
+      "kind": "region",
+      "ta2_ids": [],
+      "parent_id": null
+    },
+    {
+      "id": "erector-spinae",
+      "name": "Erector spinae",
+      "position": 31,
+      "kind": "group",
+      "ta2_ids": [],
+      "parent_id": "lower-back"
+    },
+    {
+      "id": "iliocostalis",
+      "name": "Iliocostalis",
+      "position": 32,
+      "kind": "head",
+      "ta2_ids": [
+        "2258",
+        "2260",
+        "2261"
+      ],
+      "parent_id": "erector-spinae"
+    },
+    {
+      "id": "longissimus",
+      "name": "Longissimus",
+      "position": 33,
+      "kind": "head",
+      "ta2_ids": [
+        "2263",
+        "2265",
+        "2266"
+      ],
+      "parent_id": "erector-spinae"
+    },
+    {
+      "id": "spinalis",
+      "name": "Spinalis",
+      "position": 34,
+      "kind": "head",
+      "ta2_ids": [
+        "2268",
+        "2269",
+        "2270"
+      ],
+      "parent_id": "erector-spinae"
+    },
+    {
+      "id": "multifidus",
+      "name": "Multifidus",
+      "position": 35,
+      "kind": "group",
+      "ta2_ids": [
+        "2277",
+        "2278",
+        "2279"
+      ],
+      "parent_id": "lower-back"
+    },
+    {
+      "id": "quadratus-lumborum",
+      "name": "Quadratus lumborum",
+      "position": 36,
+      "kind": "group",
+      "ta2_ids": [
+        "2382"
+      ],
+      "parent_id": "lower-back"
+    },
+    {
+      "id": "arms",
+      "name": "Arms",
+      "position": 37,
+      "kind": "region",
+      "ta2_ids": [],
+      "parent_id": null
+    },
+    {
+      "id": "biceps-brachii",
+      "name": "Biceps",
+      "position": 38,
+      "kind": "group",
+      "ta2_ids": [],
+      "parent_id": "arms"
+    },
+    {
+      "id": "biceps-brachii-long",
+      "name": "Long head",
+      "position": 39,
+      "kind": "head",
+      "ta2_ids": [
+        "2465"
+      ],
+      "parent_id": "biceps-brachii"
+    },
+    {
+      "id": "biceps-brachii-short",
+      "name": "Short head",
+      "position": 40,
+      "kind": "head",
+      "ta2_ids": [
+        "2466"
+      ],
+      "parent_id": "biceps-brachii"
+    },
+    {
+      "id": "brachialis",
+      "name": "Brachialis",
+      "position": 41,
+      "kind": "group",
+      "ta2_ids": [
+        "2469"
+      ],
+      "parent_id": "arms"
+    },
+    {
+      "id": "triceps-brachii",
+      "name": "Triceps",
+      "position": 42,
+      "kind": "group",
+      "ta2_ids": [],
+      "parent_id": "arms"
+    },
+    {
+      "id": "triceps-brachii-long",
+      "name": "Long head",
+      "position": 43,
+      "kind": "head",
+      "ta2_ids": [
+        "2472"
+      ],
+      "parent_id": "triceps-brachii"
+    },
+    {
+      "id": "triceps-brachii-lateral",
+      "name": "Lateral head",
+      "position": 44,
+      "kind": "head",
+      "ta2_ids": [
+        "2473"
+      ],
+      "parent_id": "triceps-brachii"
+    },
+    {
+      "id": "triceps-brachii-medial",
+      "name": "Medial head",
+      "position": 45,
+      "kind": "head",
+      "ta2_ids": [
+        "2474"
+      ],
+      "parent_id": "triceps-brachii"
+    },
+    {
+      "id": "forearms",
+      "name": "Forearms",
+      "position": 46,
+      "kind": "region",
+      "ta2_ids": [],
+      "parent_id": null
+    },
+    {
+      "id": "brachioradialis",
+      "name": "Brachioradialis",
+      "position": 47,
+      "kind": "group",
+      "ta2_ids": [
+        "2496"
+      ],
+      "parent_id": "forearms"
+    },
+    {
+      "id": "forearm-flexors",
+      "name": "Wrist and finger flexors",
+      "position": 48,
+      "kind": "group",
+      "ta2_ids": [
+        "2481",
+        "2482",
+        "2484",
+        "2485",
+        "2487",
+        "2488",
+        "2491",
+        "2492"
+      ],
+      "parent_id": "forearms"
+    },
+    {
+      "id": "forearm-extensors",
+      "name": "Wrist and finger extensors",
+      "position": 49,
+      "kind": "group",
+      "ta2_ids": [
+        "2497",
+        "2499",
+        "2500",
+        "2506",
+        "2508",
+        "2509",
+        "2515"
+      ],
+      "parent_id": "forearms"
+    },
+    {
+      "id": "core",
+      "name": "Core",
+      "position": 50,
+      "kind": "region",
+      "ta2_ids": [],
+      "parent_id": null
+    },
+    {
+      "id": "rectus-abdominis",
+      "name": "Rectus abdominis",
+      "position": 51,
+      "kind": "group",
+      "ta2_ids": [
+        "2357"
+      ],
+      "parent_id": "core"
+    },
+    {
+      "id": "obliques",
+      "name": "Obliques",
+      "position": 52,
+      "kind": "group",
+      "ta2_ids": [],
+      "parent_id": "core"
+    },
+    {
+      "id": "obliques-external",
+      "name": "External oblique",
+      "position": 53,
+      "kind": "head",
+      "ta2_ids": [
+        "2364"
+      ],
+      "parent_id": "obliques"
+    },
+    {
+      "id": "obliques-internal",
+      "name": "Internal oblique",
+      "position": 54,
+      "kind": "head",
+      "ta2_ids": [
+        "2373"
+      ],
+      "parent_id": "obliques"
+    },
+    {
+      "id": "transversus-abdominis",
+      "name": "Transversus abdominis",
+      "position": 55,
+      "kind": "group",
+      "ta2_ids": [
+        "2375"
+      ],
+      "parent_id": "core"
+    },
+    {
+      "id": "diaphragm",
+      "name": "Diaphragm",
+      "position": 56,
+      "kind": "group",
+      "ta2_ids": [
+        "2327"
+      ],
+      "parent_id": "core"
+    },
+    {
+      "id": "hips",
+      "name": "Hips and glutes",
+      "position": 57,
+      "kind": "region",
+      "ta2_ids": [],
+      "parent_id": null
+    },
+    {
+      "id": "glutes",
+      "name": "Glutes",
+      "position": 58,
+      "kind": "group",
+      "ta2_ids": [],
+      "parent_id": "hips"
+    },
+    {
+      "id": "gluteus-maximus",
+      "name": "Gluteus maximus",
+      "position": 59,
+      "kind": "head",
+      "ta2_ids": [
+        "2598"
+      ],
+      "parent_id": "glutes"
+    },
+    {
+      "id": "gluteus-medius",
+      "name": "Gluteus medius",
+      "position": 60,
+      "kind": "head",
+      "ta2_ids": [
+        "2599"
+      ],
+      "parent_id": "glutes"
+    },
+    {
+      "id": "gluteus-minimus",
+      "name": "Gluteus minimus",
+      "position": 61,
+      "kind": "head",
+      "ta2_ids": [
+        "2600"
+      ],
+      "parent_id": "glutes"
+    },
+    {
+      "id": "hip-flexors",
+      "name": "Hip flexors",
+      "position": 62,
+      "kind": "group",
+      "ta2_ids": [],
+      "parent_id": "hips"
+    },
+    {
+      "id": "iliopsoas",
+      "name": "Iliopsoas",
+      "position": 63,
+      "kind": "head",
+      "ta2_ids": [
+        "2594",
+        "2595"
+      ],
+      "parent_id": "hip-flexors"
+    },
+    {
+      "id": "tensor-fasciae-latae",
+      "name": "Tensor fasciae latae",
+      "position": 64,
+      "kind": "head",
+      "ta2_ids": [
+        "2602"
+      ],
+      "parent_id": "hip-flexors"
+    },
+    {
+      "id": "sartorius",
+      "name": "Sartorius",
+      "position": 65,
+      "kind": "head",
+      "ta2_ids": [
+        "2610"
+      ],
+      "parent_id": "hip-flexors"
+    },
+    {
+      "id": "hip-rotators",
+      "name": "Deep hip rotators",
+      "position": 66,
+      "kind": "group",
+      "ta2_ids": [
+        "2604",
+        "2605",
+        "2606",
+        "2607",
+        "2608",
+        "2636"
+      ],
+      "parent_id": "hips"
+    },
+    {
+      "id": "thighs",
+      "name": "Thighs",
+      "position": 67,
+      "kind": "region",
+      "ta2_ids": [],
+      "parent_id": null
+    },
+    {
+      "id": "quadriceps",
+      "name": "Quadriceps",
+      "position": 68,
+      "kind": "group",
+      "ta2_ids": [],
+      "parent_id": "thighs"
+    },
+    {
+      "id": "rectus-femoris",
+      "name": "Rectus femoris",
+      "position": 69,
+      "kind": "head",
+      "ta2_ids": [
+        "2614"
+      ],
+      "parent_id": "quadriceps"
+    },
+    {
+      "id": "vastus-lateralis",
+      "name": "Vastus lateralis",
+      "position": 70,
+      "kind": "head",
+      "ta2_ids": [
+        "2618"
+      ],
+      "parent_id": "quadriceps"
+    },
+    {
+      "id": "vastus-intermedius",
+      "name": "Vastus intermedius",
+      "position": 71,
+      "kind": "head",
+      "ta2_ids": [
+        "2619"
+      ],
+      "parent_id": "quadriceps"
+    },
+    {
+      "id": "vastus-medialis",
+      "name": "Vastus medialis",
+      "position": 72,
+      "kind": "head",
+      "ta2_ids": [
+        "2620"
+      ],
+      "parent_id": "quadriceps"
+    },
+    {
+      "id": "hamstrings",
+      "name": "Hamstrings",
+      "position": 73,
+      "kind": "group",
+      "ta2_ids": [],
+      "parent_id": "thighs"
+    },
+    {
+      "id": "biceps-femoris-long",
+      "name": "Biceps femoris, long head",
+      "position": 74,
+      "kind": "head",
+      "ta2_ids": [
+        "2639"
+      ],
+      "parent_id": "hamstrings"
+    },
+    {
+      "id": "biceps-femoris-short",
+      "name": "Biceps femoris, short head",
+      "position": 75,
+      "kind": "head",
+      "ta2_ids": [
+        "2640"
+      ],
+      "parent_id": "hamstrings"
+    },
+    {
+      "id": "semitendinosus",
+      "name": "Semitendinosus",
+      "position": 76,
+      "kind": "head",
+      "ta2_ids": [
+        "2641"
+      ],
+      "parent_id": "hamstrings"
+    },
+    {
+      "id": "semimembranosus",
+      "name": "Semimembranosus",
+      "position": 77,
+      "kind": "head",
+      "ta2_ids": [
+        "2642"
+      ],
+      "parent_id": "hamstrings"
+    },
+    {
+      "id": "adductors",
+      "name": "Adductors",
+      "position": 78,
+      "kind": "group",
+      "ta2_ids": [],
+      "parent_id": "thighs"
+    },
+    {
+      "id": "adductor-magnus",
+      "name": "Adductor magnus",
+      "position": 79,
+      "kind": "head",
+      "ta2_ids": [
+        "2630"
+      ],
+      "parent_id": "adductors"
+    },
+    {
+      "id": "adductor-longus",
+      "name": "Adductor longus",
+      "position": 80,
+      "kind": "head",
+      "ta2_ids": [
+        "2628"
+      ],
+      "parent_id": "adductors"
+    },
+    {
+      "id": "adductor-brevis",
+      "name": "Adductor brevis",
+      "position": 81,
+      "kind": "head",
+      "ta2_ids": [
+        "2629"
+      ],
+      "parent_id": "adductors"
+    },
+    {
+      "id": "gracilis",
+      "name": "Gracilis",
+      "position": 82,
+      "kind": "head",
+      "ta2_ids": [
+        "2635"
+      ],
+      "parent_id": "adductors"
+    },
+    {
+      "id": "pectineus",
+      "name": "Pectineus",
+      "position": 83,
+      "kind": "head",
+      "ta2_ids": [
+        "2627"
+      ],
+      "parent_id": "adductors"
+    },
+    {
+      "id": "lower-legs",
+      "name": "Lower legs",
+      "position": 84,
+      "kind": "region",
+      "ta2_ids": [],
+      "parent_id": null
+    },
+    {
+      "id": "calves",
+      "name": "Calves",
+      "position": 85,
+      "kind": "group",
+      "ta2_ids": [],
+      "parent_id": "lower-legs"
+    },
+    {
+      "id": "gastrocnemius-medial",
+      "name": "Gastrocnemius, medial head",
+      "position": 86,
+      "kind": "head",
+      "ta2_ids": [
+        "2659"
+      ],
+      "parent_id": "calves"
+    },
+    {
+      "id": "gastrocnemius-lateral",
+      "name": "Gastrocnemius, lateral head",
+      "position": 87,
+      "kind": "head",
+      "ta2_ids": [
+        "2658"
+      ],
+      "parent_id": "calves"
+    },
+    {
+      "id": "soleus",
+      "name": "Soleus",
+      "position": 88,
+      "kind": "head",
+      "ta2_ids": [
+        "2660"
+      ],
+      "parent_id": "calves"
+    },
+    {
+      "id": "tibialis-anterior",
+      "name": "Tibialis anterior",
+      "position": 89,
+      "kind": "group",
+      "ta2_ids": [
+        "2644"
+      ],
+      "parent_id": "lower-legs"
+    },
+    {
+      "id": "fibularis",
+      "name": "Fibularis",
+      "position": 90,
+      "kind": "group",
+      "ta2_ids": [
+        "2652",
+        "2653"
+      ],
+      "parent_id": "lower-legs"
+    }
+  ],
+  "exercises": [
+    {
+      "id": "air-squat",
+      "label": "Air Squat",
+      "position": 0,
+      "aliases": [
+        "Bodyweight Squat"
+      ],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "adductor-magnus",
+          "role": "secondary"
+        },
+        {
+          "id": "erector-spinae",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Σκουάτ",
+        "Καθίσματα",
+        "Squat"
+      ],
+      "qualities": [
+        "stamina",
+        "flexibility"
+      ]
+    },
+    {
+      "id": "back-squat",
+      "label": "Back Squat",
+      "position": 1,
+      "aliases": [
+        "Barbell Back Squat"
+      ],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "secondary"
+        },
+        {
+          "id": "adductor-magnus",
+          "role": "secondary"
+        },
+        {
+          "id": "erector-spinae",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Σκουάτ πλάτης",
+        "Πίσω σκουάτ",
+        "BS"
+      ],
+      "qualities": [
+        "strength"
+      ]
+    },
+    {
+      "id": "front-squat",
+      "label": "Front Squat",
+      "position": 2,
+      "aliases": [
+        "Barbell Front Squat"
+      ],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "adductor-magnus",
+          "role": "secondary"
+        },
+        {
+          "id": "trapezius-upper",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rhomboids",
+          "role": "stabilizer"
+        },
+        {
+          "id": "erector-spinae",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Μπροστινό σκουάτ",
+        "FS"
+      ],
+      "qualities": [
+        "strength"
+      ]
+    },
+    {
+      "id": "overhead-squat",
+      "label": "Overhead Squat",
+      "position": 3,
+      "aliases": [
+        "OHS"
+      ],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid",
+          "role": "secondary"
+        },
+        {
+          "id": "adductor-magnus",
+          "role": "secondary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "trapezius",
+          "role": "stabilizer"
+        },
+        {
+          "id": "erector-spinae",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Σκουάτ πάνω από το κεφάλι"
+      ],
+      "qualities": [
+        "strength",
+        "flexibility",
+        "coordination",
+        "balance"
+      ]
+    },
+    {
+      "id": "goblet-squat",
+      "label": "Goblet Squat",
+      "position": 4,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "adductor-magnus",
+          "role": "secondary"
+        },
+        {
+          "id": "erector-spinae",
+          "role": "stabilizer"
+        },
+        {
+          "id": "biceps-brachii",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength",
+        "flexibility"
+      ]
+    },
+    {
+      "id": "box-squat",
+      "label": "Box Squat",
+      "position": 5,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "secondary"
+        },
+        {
+          "id": "adductor-magnus",
+          "role": "secondary"
+        },
+        {
+          "id": "erector-spinae",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength",
+        "power"
+      ]
+    },
+    {
+      "id": "split-squat",
+      "label": "Split Squat",
+      "position": 6,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "adductors",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "gluteus-medius",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength",
+        "balance"
+      ]
+    },
+    {
+      "id": "bulgarian-split-squat",
+      "label": "Bulgarian Split Squat",
+      "position": 7,
+      "aliases": [
+        "Rear-foot Elevated Split Squat"
+      ],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "secondary"
+        },
+        {
+          "id": "adductors",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "gluteus-medius",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength",
+        "balance"
+      ]
+    },
+    {
+      "id": "pistol-squat",
+      "label": "Pistol Squat",
+      "position": 8,
+      "aliases": [
+        "Pistol"
+      ],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "adductors",
+          "role": "secondary"
+        },
+        {
+          "id": "calves",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "gluteus-medius",
+          "role": "stabilizer"
+        },
+        {
+          "id": "tibialis-anterior",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength",
+        "flexibility",
+        "coordination",
+        "balance"
+      ]
+    },
+    {
+      "id": "wall-sit",
+      "label": "Wall Sit",
+      "position": 9,
+      "aliases": [],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "stamina"
+      ]
+    },
+    {
+      "id": "deadlift",
+      "label": "Deadlift",
+      "position": 10,
+      "aliases": [
+        "Conventional Deadlift"
+      ],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "erector-spinae",
+          "role": "primary"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "secondary"
+        },
+        {
+          "id": "adductor-magnus",
+          "role": "secondary"
+        },
+        {
+          "id": "trapezius",
+          "role": "stabilizer"
+        },
+        {
+          "id": "latissimus-dorsi",
+          "role": "stabilizer"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Άρσεις θανάτου",
+        "Ντεντλιφτ",
+        "DL"
+      ],
+      "qualities": [
+        "strength"
+      ]
+    },
+    {
+      "id": "sumo-deadlift",
+      "label": "Sumo Deadlift",
+      "position": 11,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "adductors",
+          "role": "primary"
+        },
+        {
+          "id": "erector-spinae",
+          "role": "secondary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "secondary"
+        },
+        {
+          "id": "trapezius",
+          "role": "stabilizer"
+        },
+        {
+          "id": "latissimus-dorsi",
+          "role": "stabilizer"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Σούμο ντεντλιφτ",
+        "SDL"
+      ],
+      "qualities": [
+        "strength"
+      ]
+    },
+    {
+      "id": "romanian-deadlift",
+      "label": "Romanian Deadlift",
+      "position": 12,
+      "aliases": [
+        "RDL"
+      ],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "primary"
+        },
+        {
+          "id": "erector-spinae",
+          "role": "secondary"
+        },
+        {
+          "id": "adductor-magnus",
+          "role": "secondary"
+        },
+        {
+          "id": "trapezius-middle",
+          "role": "stabilizer"
+        },
+        {
+          "id": "latissimus-dorsi",
+          "role": "stabilizer"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Ρουμανικές άρσεις"
+      ],
+      "qualities": [
+        "strength",
+        "flexibility"
+      ]
+    },
+    {
+      "id": "stiff-leg-deadlift",
+      "label": "Stiff-leg Deadlift",
+      "position": 13,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "primary"
+        },
+        {
+          "id": "erector-spinae",
+          "role": "secondary"
+        },
+        {
+          "id": "latissimus-dorsi",
+          "role": "stabilizer"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength",
+        "flexibility"
+      ]
+    },
+    {
+      "id": "single-leg-deadlift",
+      "label": "Single-leg Deadlift",
+      "position": 14,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "primary"
+        },
+        {
+          "id": "erector-spinae",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "gluteus-medius",
+          "role": "stabilizer"
+        },
+        {
+          "id": "calves",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength",
+        "balance"
+      ]
+    },
+    {
+      "id": "clean",
+      "label": "Clean",
+      "position": 15,
+      "aliases": [
+        "Squat Clean"
+      ],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "primary"
+        },
+        {
+          "id": "trapezius-upper",
+          "role": "secondary"
+        },
+        {
+          "id": "erector-spinae",
+          "role": "secondary"
+        },
+        {
+          "id": "calves",
+          "role": "secondary"
+        },
+        {
+          "id": "deltoid",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rhomboids",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Κλιν"
+      ],
+      "qualities": [
+        "strength",
+        "power",
+        "speed",
+        "coordination"
+      ]
+    },
+    {
+      "id": "power-clean",
+      "label": "Power Clean",
+      "position": 16,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "trapezius-upper",
+          "role": "primary"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "primary"
+        },
+        {
+          "id": "erector-spinae",
+          "role": "secondary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "secondary"
+        },
+        {
+          "id": "calves",
+          "role": "secondary"
+        },
+        {
+          "id": "deltoid",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rhomboids",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "PC"
+      ],
+      "qualities": [
+        "power",
+        "speed",
+        "coordination"
+      ]
+    },
+    {
+      "id": "hang-clean",
+      "label": "Hang Clean",
+      "position": 17,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "trapezius-upper",
+          "role": "primary"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "primary"
+        },
+        {
+          "id": "erector-spinae",
+          "role": "secondary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "secondary"
+        },
+        {
+          "id": "deltoid",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rhomboids",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "power",
+        "speed",
+        "coordination"
+      ]
+    },
+    {
+      "id": "clean-and-jerk",
+      "label": "Clean and Jerk",
+      "position": 18,
+      "aliases": [
+        "C&J"
+      ],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "deltoid-anterior",
+          "role": "primary"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "primary"
+        },
+        {
+          "id": "trapezius-upper",
+          "role": "secondary"
+        },
+        {
+          "id": "erector-spinae",
+          "role": "secondary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "secondary"
+        },
+        {
+          "id": "calves",
+          "role": "secondary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "CJ",
+        "C and J",
+        "Κλιν εν τζερκ",
+        "Ζετέ"
+      ],
+      "qualities": [
+        "strength",
+        "power",
+        "speed",
+        "coordination",
+        "balance"
+      ]
+    },
+    {
+      "id": "snatch",
+      "label": "Snatch",
+      "position": 19,
+      "aliases": [
+        "Squat Snatch"
+      ],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "trapezius-upper",
+          "role": "primary"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid",
+          "role": "secondary"
+        },
+        {
+          "id": "erector-spinae",
+          "role": "secondary"
+        },
+        {
+          "id": "calves",
+          "role": "secondary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Αρασέ",
+        "Σνατς"
+      ],
+      "qualities": [
+        "flexibility",
+        "power",
+        "speed",
+        "coordination",
+        "balance",
+        "accuracy"
+      ]
+    },
+    {
+      "id": "power-snatch",
+      "label": "Power Snatch",
+      "position": 20,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "trapezius-upper",
+          "role": "primary"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid",
+          "role": "secondary"
+        },
+        {
+          "id": "erector-spinae",
+          "role": "secondary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "secondary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "PS"
+      ],
+      "qualities": [
+        "power",
+        "speed",
+        "coordination",
+        "accuracy"
+      ]
+    },
+    {
+      "id": "hang-snatch",
+      "label": "Hang Snatch",
+      "position": 21,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "trapezius-upper",
+          "role": "primary"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid",
+          "role": "secondary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "secondary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "power",
+        "speed",
+        "coordination",
+        "accuracy"
+      ]
+    },
+    {
+      "id": "muscle-snatch",
+      "label": "Muscle Snatch",
+      "position": 22,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "deltoid",
+          "role": "primary"
+        },
+        {
+          "id": "trapezius-upper",
+          "role": "primary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "secondary"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "secondary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "secondary"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "flexibility",
+        "power",
+        "coordination"
+      ]
+    },
+    {
+      "id": "jerk",
+      "label": "Jerk",
+      "position": 23,
+      "aliases": [
+        "Split Jerk"
+      ],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "deltoid-anterior",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "calves",
+          "role": "secondary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "trapezius-upper",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Τζερκ"
+      ],
+      "qualities": [
+        "power",
+        "speed",
+        "coordination",
+        "balance"
+      ]
+    },
+    {
+      "id": "push-jerk",
+      "label": "Push Jerk",
+      "position": 24,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "deltoid-anterior",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "secondary"
+        },
+        {
+          "id": "calves",
+          "role": "secondary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "trapezius-upper",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "power",
+        "speed",
+        "coordination"
+      ]
+    },
+    {
+      "id": "push-press",
+      "label": "Push Press",
+      "position": 25,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "deltoid-anterior",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid-lateral",
+          "role": "secondary"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "secondary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "trapezius-upper",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "PP"
+      ],
+      "qualities": [
+        "strength",
+        "power"
+      ]
+    },
+    {
+      "id": "strict-press",
+      "label": "Strict Press",
+      "position": 26,
+      "aliases": [
+        "Shoulder Press",
+        "Overhead Press"
+      ],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "deltoid-anterior",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid-lateral",
+          "role": "secondary"
+        },
+        {
+          "id": "pectoralis-major-clavicular",
+          "role": "secondary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "trapezius-upper",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Πιέσεις ώμων",
+        "OHP"
+      ],
+      "qualities": [
+        "strength"
+      ]
+    },
+    {
+      "id": "bench-press",
+      "label": "Bench Press",
+      "position": 27,
+      "aliases": [
+        "Barbell Bench Press"
+      ],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "pectoralis-major",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid-anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rhomboids",
+          "role": "stabilizer"
+        },
+        {
+          "id": "latissimus-dorsi",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Πιέσεις πάγκου",
+        "Πάγκος",
+        "BP"
+      ],
+      "qualities": [
+        "strength"
+      ]
+    },
+    {
+      "id": "incline-bench-press",
+      "label": "Incline Bench Press",
+      "position": 28,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "deltoid-anterior",
+          "role": "primary"
+        },
+        {
+          "id": "pectoralis-major-clavicular",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "pectoralis-major-sternocostal",
+          "role": "secondary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rhomboids",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength"
+      ]
+    },
+    {
+      "id": "floor-press",
+      "label": "Floor Press",
+      "position": 29,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "pectoralis-major",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid-anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength"
+      ]
+    },
+    {
+      "id": "dumbbell-bench-press",
+      "label": "Dumbbell Bench Press",
+      "position": 30,
+      "aliases": [
+        "DB Bench Press"
+      ],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "pectoralis-major",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid-anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength",
+        "balance"
+      ]
+    },
+    {
+      "id": "dumbbell-row",
+      "label": "Dumbbell Row",
+      "position": 31,
+      "aliases": [
+        "One-arm Dumbbell Row"
+      ],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "trapezius-middle",
+          "role": "primary"
+        },
+        {
+          "id": "rhomboids",
+          "role": "primary"
+        },
+        {
+          "id": "latissimus-dorsi",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid-posterior",
+          "role": "secondary"
+        },
+        {
+          "id": "biceps-brachii",
+          "role": "secondary"
+        },
+        {
+          "id": "brachialis",
+          "role": "secondary"
+        },
+        {
+          "id": "erector-spinae",
+          "role": "stabilizer"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Κωπηλατική με αλτήρα"
+      ],
+      "qualities": [
+        "strength"
+      ]
+    },
+    {
+      "id": "barbell-row",
+      "label": "Barbell Row",
+      "position": 32,
+      "aliases": [
+        "Bent-over Row"
+      ],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "trapezius-middle",
+          "role": "primary"
+        },
+        {
+          "id": "rhomboids",
+          "role": "primary"
+        },
+        {
+          "id": "latissimus-dorsi",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid-posterior",
+          "role": "secondary"
+        },
+        {
+          "id": "teres-major",
+          "role": "secondary"
+        },
+        {
+          "id": "biceps-brachii",
+          "role": "secondary"
+        },
+        {
+          "id": "erector-spinae",
+          "role": "stabilizer"
+        },
+        {
+          "id": "multifidus",
+          "role": "stabilizer"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        },
+        {
+          "id": "hamstrings",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Κωπηλατική με μπάρα"
+      ],
+      "qualities": [
+        "strength"
+      ]
+    },
+    {
+      "id": "pendlay-row",
+      "label": "Pendlay Row",
+      "position": 33,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "trapezius-middle",
+          "role": "primary"
+        },
+        {
+          "id": "rhomboids",
+          "role": "primary"
+        },
+        {
+          "id": "latissimus-dorsi",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid-posterior",
+          "role": "secondary"
+        },
+        {
+          "id": "biceps-brachii",
+          "role": "secondary"
+        },
+        {
+          "id": "erector-spinae",
+          "role": "stabilizer"
+        },
+        {
+          "id": "multifidus",
+          "role": "stabilizer"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        },
+        {
+          "id": "hamstrings",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength",
+        "power"
+      ]
+    },
+    {
+      "id": "upright-row",
+      "label": "Upright Row",
+      "position": 34,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "deltoid-lateral",
+          "role": "primary"
+        },
+        {
+          "id": "trapezius-upper",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid-anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "biceps-brachii",
+          "role": "secondary"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength"
+      ]
+    },
+    {
+      "id": "good-morning",
+      "label": "Good Morning",
+      "position": 35,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "erector-spinae",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "primary"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "secondary"
+        },
+        {
+          "id": "adductor-magnus",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Γκουντ μόρνινγκ"
+      ],
+      "qualities": [
+        "strength",
+        "flexibility"
+      ]
+    },
+    {
+      "id": "hip-thrust",
+      "label": "Hip Thrust",
+      "position": 36,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "secondary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Γλουτιαία γέφυρα με μπάρα"
+      ],
+      "qualities": [
+        "strength"
+      ]
+    },
+    {
+      "id": "glute-bridge",
+      "label": "Glute Bridge",
+      "position": 37,
+      "aliases": [],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Γέφυρα γλουτών"
+      ],
+      "qualities": [
+        "stamina"
+      ]
+    },
+    {
+      "id": "lunge",
+      "label": "Lunge",
+      "position": 38,
+      "aliases": [
+        "Forward Lunge"
+      ],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "secondary"
+        },
+        {
+          "id": "adductors",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "gluteus-medius",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Προβολές",
+        "Λάντζες"
+      ],
+      "qualities": [
+        "strength",
+        "coordination",
+        "balance"
+      ]
+    },
+    {
+      "id": "reverse-lunge",
+      "label": "Reverse Lunge",
+      "position": 39,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "secondary"
+        },
+        {
+          "id": "adductors",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "gluteus-medius",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength",
+        "balance"
+      ]
+    },
+    {
+      "id": "walking-lunge",
+      "label": "Walking Lunge",
+      "position": 40,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "secondary"
+        },
+        {
+          "id": "adductors",
+          "role": "secondary"
+        },
+        {
+          "id": "calves",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "gluteus-medius",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Προβολές με περπάτημα"
+      ],
+      "qualities": [
+        "stamina",
+        "coordination",
+        "balance"
+      ]
+    },
+    {
+      "id": "step-up",
+      "label": "Step-up",
+      "position": 41,
+      "aliases": [
+        "Box Step-up"
+      ],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "secondary"
+        },
+        {
+          "id": "calves",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "gluteus-medius",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength",
+        "balance"
+      ]
+    },
+    {
+      "id": "calf-raise",
+      "label": "Calf Raise",
+      "position": 42,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "calves",
+          "role": "primary"
+        },
+        {
+          "id": "tibialis-anterior",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Γάμπες"
+      ],
+      "qualities": [
+        "strength",
+        "balance"
+      ]
+    },
+    {
+      "id": "biceps-curl",
+      "label": "Biceps Curl",
+      "position": 43,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "biceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "brachialis",
+          "role": "secondary"
+        },
+        {
+          "id": "brachioradialis",
+          "role": "secondary"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Κάμψεις δικεφάλων"
+      ],
+      "qualities": [
+        "strength"
+      ]
+    },
+    {
+      "id": "triceps-extension",
+      "label": "Triceps Extension",
+      "position": 44,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "triceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength"
+      ]
+    },
+    {
+      "id": "skull-crusher",
+      "label": "Skull Crusher",
+      "position": 45,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "triceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength"
+      ]
+    },
+    {
+      "id": "lateral-raise",
+      "label": "Lateral Raise",
+      "position": 46,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "deltoid-lateral",
+          "role": "primary"
+        },
+        {
+          "id": "supraspinatus",
+          "role": "secondary"
+        },
+        {
+          "id": "trapezius-upper",
+          "role": "secondary"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength"
+      ]
+    },
+    {
+      "id": "front-raise",
+      "label": "Front Raise",
+      "position": 47,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "deltoid-anterior",
+          "role": "primary"
+        },
+        {
+          "id": "pectoralis-major-clavicular",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength"
+      ]
+    },
+    {
+      "id": "face-pull",
+      "label": "Face Pull",
+      "position": 48,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "deltoid-posterior",
+          "role": "primary"
+        },
+        {
+          "id": "trapezius-middle",
+          "role": "primary"
+        },
+        {
+          "id": "infraspinatus",
+          "role": "secondary"
+        },
+        {
+          "id": "teres-minor",
+          "role": "secondary"
+        },
+        {
+          "id": "rhomboids",
+          "role": "secondary"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength",
+        "coordination"
+      ]
+    },
+    {
+      "id": "farmer-carry",
+      "label": "Farmer Carry",
+      "position": 49,
+      "aliases": [
+        "Farmer's Carry"
+      ],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "trapezius-upper",
+          "role": "primary"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "primary"
+        },
+        {
+          "id": "obliques",
+          "role": "secondary"
+        },
+        {
+          "id": "gluteus-medius",
+          "role": "secondary"
+        },
+        {
+          "id": "erector-spinae",
+          "role": "stabilizer"
+        },
+        {
+          "id": "quadratus-lumborum",
+          "role": "stabilizer"
+        },
+        {
+          "id": "calves",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Μεταφορά αγρότη"
+      ],
+      "qualities": [
+        "stamina",
+        "strength"
+      ]
+    },
+    {
+      "id": "front-rack-carry",
+      "label": "Front Rack Carry",
+      "position": 50,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "trapezius-upper",
+          "role": "primary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid-anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "biceps-brachii",
+          "role": "secondary"
+        },
+        {
+          "id": "erector-spinae",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "quadriceps",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "stamina",
+        "strength"
+      ]
+    },
+    {
+      "id": "overhead-carry",
+      "label": "Overhead Carry",
+      "position": 51,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "deltoid",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "trapezius-upper",
+          "role": "secondary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "stamina",
+        "strength",
+        "balance"
+      ]
+    },
+    {
+      "id": "sled-push",
+      "label": "Sled Push",
+      "position": 52,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "secondary"
+        },
+        {
+          "id": "calves",
+          "role": "secondary"
+        },
+        {
+          "id": "deltoid-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "stamina",
+        "strength",
+        "power"
+      ]
+    },
+    {
+      "id": "sled-pull",
+      "label": "Sled Pull",
+      "position": 53,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "primary"
+        },
+        {
+          "id": "latissimus-dorsi",
+          "role": "secondary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "secondary"
+        },
+        {
+          "id": "calves",
+          "role": "secondary"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "stamina",
+        "strength"
+      ]
+    },
+    {
+      "id": "kettlebell-swing",
+      "label": "Kettlebell Swing",
+      "position": 54,
+      "aliases": [
+        "KB Swing"
+      ],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid-anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "erector-spinae",
+          "role": "secondary"
+        },
+        {
+          "id": "latissimus-dorsi",
+          "role": "stabilizer"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Αιωρήσεις",
+        "Σουίνγκ",
+        "KBS"
+      ],
+      "qualities": [
+        "cardiorespiratory-endurance",
+        "stamina",
+        "power"
+      ]
+    },
+    {
+      "id": "american-kettlebell-swing",
+      "label": "American Kettlebell Swing",
+      "position": 55,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid",
+          "role": "secondary"
+        },
+        {
+          "id": "trapezius-upper",
+          "role": "secondary"
+        },
+        {
+          "id": "erector-spinae",
+          "role": "secondary"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "latissimus-dorsi",
+          "role": "stabilizer"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "cardiorespiratory-endurance",
+        "stamina",
+        "flexibility",
+        "power"
+      ]
+    },
+    {
+      "id": "russian-kettlebell-swing",
+      "label": "Russian Kettlebell Swing",
+      "position": 56,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "primary"
+        },
+        {
+          "id": "erector-spinae",
+          "role": "secondary"
+        },
+        {
+          "id": "latissimus-dorsi",
+          "role": "stabilizer"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "stamina",
+        "power"
+      ]
+    },
+    {
+      "id": "turkish-get-up",
+      "label": "Turkish Get-up",
+      "position": 57,
+      "aliases": [
+        "TGU"
+      ],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "deltoid",
+          "role": "primary"
+        },
+        {
+          "id": "obliques",
+          "role": "primary"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "secondary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "secondary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "trapezius",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Τούρκικο σήκωμα"
+      ],
+      "qualities": [
+        "strength",
+        "flexibility",
+        "coordination",
+        "balance"
+      ]
+    },
+    {
+      "id": "thruster",
+      "label": "Thruster",
+      "position": 58,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "deltoid-anterior",
+          "role": "primary"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid-lateral",
+          "role": "secondary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "secondary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "trapezius-upper",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Θράστερ"
+      ],
+      "qualities": [
+        "cardiorespiratory-endurance",
+        "stamina",
+        "power",
+        "coordination"
+      ]
+    },
+    {
+      "id": "wall-ball",
+      "label": "Wall Ball",
+      "position": 59,
+      "aliases": [
+        "Wall Ball Shot"
+      ],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "deltoid-anterior",
+          "role": "primary"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "secondary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "trapezius-upper",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Γουόλ μπολ",
+        "WB"
+      ],
+      "qualities": [
+        "cardiorespiratory-endurance",
+        "stamina",
+        "coordination",
+        "accuracy"
+      ]
+    },
+    {
+      "id": "devil-press",
+      "label": "Devil Press",
+      "position": 60,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "deltoid",
+          "role": "primary"
+        },
+        {
+          "id": "pectoralis-major",
+          "role": "primary"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "secondary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "secondary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "trapezius-upper",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "cardiorespiratory-endurance",
+        "stamina",
+        "power",
+        "coordination"
+      ]
+    },
+    {
+      "id": "man-maker",
+      "label": "Man Maker",
+      "position": 61,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "deltoid",
+          "role": "primary"
+        },
+        {
+          "id": "pectoralis-major",
+          "role": "primary"
+        },
+        {
+          "id": "latissimus-dorsi",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "rhomboids",
+          "role": "secondary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "secondary"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "secondary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "trapezius-upper",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "stamina",
+        "strength",
+        "coordination"
+      ]
+    },
+    {
+      "id": "push-up",
+      "label": "Push-up",
+      "position": 62,
+      "aliases": [
+        "Pushup"
+      ],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "pectoralis-major",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid-anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Κάμψεις",
+        "Πους απ"
+      ],
+      "qualities": [
+        "stamina",
+        "strength"
+      ]
+    },
+    {
+      "id": "hand-release-push-up",
+      "label": "Hand-release Push-up",
+      "position": 63,
+      "aliases": [
+        "HR Push-up"
+      ],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "pectoralis-major",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid-anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "rhomboids",
+          "role": "secondary"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "stamina",
+        "strength"
+      ]
+    },
+    {
+      "id": "diamond-push-up",
+      "label": "Diamond Push-up",
+      "position": 64,
+      "aliases": [],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "pectoralis-major",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid-anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength"
+      ]
+    },
+    {
+      "id": "dip",
+      "label": "Dip",
+      "position": 65,
+      "aliases": [
+        "Parallel Bar Dip"
+      ],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "pectoralis-major-sternocostal",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid-anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "pectoralis-minor",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rhomboids",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Βυθίσεις",
+        "Ντιπς"
+      ],
+      "qualities": [
+        "strength"
+      ]
+    },
+    {
+      "id": "ring-dip",
+      "label": "Ring Dip",
+      "position": 66,
+      "aliases": [],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "pectoralis-major-sternocostal",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid-anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        },
+        {
+          "id": "pectoralis-minor",
+          "role": "stabilizer"
+        },
+        {
+          "id": "biceps-brachii",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength",
+        "coordination",
+        "balance"
+      ]
+    },
+    {
+      "id": "pull-up",
+      "label": "Pull-up",
+      "position": 67,
+      "aliases": [
+        "Pullup"
+      ],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "latissimus-dorsi",
+          "role": "primary"
+        },
+        {
+          "id": "biceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "trapezius-lower",
+          "role": "secondary"
+        },
+        {
+          "id": "rhomboids",
+          "role": "secondary"
+        },
+        {
+          "id": "teres-major",
+          "role": "secondary"
+        },
+        {
+          "id": "brachialis",
+          "role": "secondary"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Έλξεις",
+        "Πουλ απ",
+        "PU"
+      ],
+      "qualities": [
+        "stamina",
+        "strength"
+      ]
+    },
+    {
+      "id": "strict-pull-up",
+      "label": "Strict Pull-up",
+      "position": 68,
+      "aliases": [],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "latissimus-dorsi",
+          "role": "primary"
+        },
+        {
+          "id": "biceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "trapezius-lower",
+          "role": "secondary"
+        },
+        {
+          "id": "rhomboids",
+          "role": "secondary"
+        },
+        {
+          "id": "teres-major",
+          "role": "secondary"
+        },
+        {
+          "id": "brachialis",
+          "role": "secondary"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength"
+      ]
+    },
+    {
+      "id": "chest-to-bar-pull-up",
+      "label": "Chest-to-bar Pull-up",
+      "position": 69,
+      "aliases": [
+        "C2B"
+      ],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "rhomboids",
+          "role": "primary"
+        },
+        {
+          "id": "latissimus-dorsi",
+          "role": "primary"
+        },
+        {
+          "id": "biceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "trapezius-middle",
+          "role": "secondary"
+        },
+        {
+          "id": "trapezius-lower",
+          "role": "secondary"
+        },
+        {
+          "id": "teres-major",
+          "role": "secondary"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "hip-flexors",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "CTB"
+      ],
+      "qualities": [
+        "stamina",
+        "strength",
+        "coordination"
+      ]
+    },
+    {
+      "id": "chin-up",
+      "label": "Chin-up",
+      "position": 70,
+      "aliases": [],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "latissimus-dorsi",
+          "role": "primary"
+        },
+        {
+          "id": "biceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "rhomboids",
+          "role": "secondary"
+        },
+        {
+          "id": "teres-major",
+          "role": "secondary"
+        },
+        {
+          "id": "brachialis",
+          "role": "secondary"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Έλξεις υπτιασμένες"
+      ],
+      "qualities": [
+        "strength"
+      ]
+    },
+    {
+      "id": "ring-row",
+      "label": "Ring Row",
+      "position": 71,
+      "aliases": [],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "trapezius-middle",
+          "role": "primary"
+        },
+        {
+          "id": "rhomboids",
+          "role": "primary"
+        },
+        {
+          "id": "latissimus-dorsi",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid-posterior",
+          "role": "secondary"
+        },
+        {
+          "id": "biceps-brachii",
+          "role": "secondary"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "stamina",
+        "strength"
+      ]
+    },
+    {
+      "id": "muscle-up",
+      "label": "Muscle-up",
+      "position": 72,
+      "aliases": [
+        "Muscle Up"
+      ],
+      "category": "skill",
+      "muscles": [
+        {
+          "id": "pectoralis-major",
+          "role": "primary"
+        },
+        {
+          "id": "latissimus-dorsi",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid-anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "biceps-brachii",
+          "role": "secondary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "hip-flexors",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Μασλ απ",
+        "MU"
+      ],
+      "qualities": [
+        "strength",
+        "power",
+        "coordination",
+        "agility"
+      ]
+    },
+    {
+      "id": "ring-muscle-up",
+      "label": "Ring Muscle-up",
+      "position": 73,
+      "aliases": [
+        "RMU"
+      ],
+      "category": "skill",
+      "muscles": [
+        {
+          "id": "pectoralis-major",
+          "role": "primary"
+        },
+        {
+          "id": "latissimus-dorsi",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid-anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "biceps-brachii",
+          "role": "secondary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "hip-flexors",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength",
+        "power",
+        "coordination",
+        "balance"
+      ]
+    },
+    {
+      "id": "bar-muscle-up",
+      "label": "Bar Muscle-up",
+      "position": 74,
+      "aliases": [
+        "BMU"
+      ],
+      "category": "skill",
+      "muscles": [
+        {
+          "id": "latissimus-dorsi",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid-anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "pectoralis-major",
+          "role": "secondary"
+        },
+        {
+          "id": "biceps-brachii",
+          "role": "secondary"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "hip-flexors",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength",
+        "power",
+        "coordination",
+        "agility"
+      ]
+    },
+    {
+      "id": "rope-climb",
+      "label": "Rope Climb",
+      "position": 75,
+      "aliases": [],
+      "category": "skill",
+      "muscles": [
+        {
+          "id": "latissimus-dorsi",
+          "role": "primary"
+        },
+        {
+          "id": "biceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "primary"
+        },
+        {
+          "id": "rhomboids",
+          "role": "secondary"
+        },
+        {
+          "id": "brachialis",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "quadriceps",
+          "role": "stabilizer"
+        },
+        {
+          "id": "adductors",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Σχοινί",
+        "Αναρρίχηση σχοινιού"
+      ],
+      "qualities": [
+        "strength",
+        "coordination"
+      ]
+    },
+    {
+      "id": "legless-rope-climb",
+      "label": "Legless Rope Climb",
+      "position": 76,
+      "aliases": [],
+      "category": "skill",
+      "muscles": [
+        {
+          "id": "latissimus-dorsi",
+          "role": "primary"
+        },
+        {
+          "id": "biceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "primary"
+        },
+        {
+          "id": "rhomboids",
+          "role": "secondary"
+        },
+        {
+          "id": "teres-major",
+          "role": "secondary"
+        },
+        {
+          "id": "brachialis",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "hip-flexors",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength",
+        "coordination"
+      ]
+    },
+    {
+      "id": "toes-to-bar",
+      "label": "Toes-to-bar",
+      "position": 77,
+      "aliases": [
+        "TTB",
+        "Toes to Bar"
+      ],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "rectus-abdominis",
+          "role": "primary"
+        },
+        {
+          "id": "hip-flexors",
+          "role": "primary"
+        },
+        {
+          "id": "latissimus-dorsi",
+          "role": "secondary"
+        },
+        {
+          "id": "obliques",
+          "role": "secondary"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "T2B"
+      ],
+      "qualities": [
+        "stamina",
+        "flexibility",
+        "coordination"
+      ]
+    },
+    {
+      "id": "knees-to-elbows",
+      "label": "Knees-to-elbows",
+      "position": 78,
+      "aliases": [
+        "K2E"
+      ],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "rectus-abdominis",
+          "role": "primary"
+        },
+        {
+          "id": "hip-flexors",
+          "role": "primary"
+        },
+        {
+          "id": "latissimus-dorsi",
+          "role": "secondary"
+        },
+        {
+          "id": "obliques",
+          "role": "secondary"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "KTE"
+      ],
+      "qualities": [
+        "stamina",
+        "coordination"
+      ]
+    },
+    {
+      "id": "sit-up",
+      "label": "Sit-up",
+      "position": 79,
+      "aliases": [
+        "Situp"
+      ],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "rectus-abdominis",
+          "role": "primary"
+        },
+        {
+          "id": "hip-flexors",
+          "role": "primary"
+        },
+        {
+          "id": "obliques",
+          "role": "secondary"
+        }
+      ],
+      "search_aliases": [
+        "Κοιλιακοί",
+        "Σιτ απ"
+      ],
+      "qualities": [
+        "stamina"
+      ]
+    },
+    {
+      "id": "ghd-sit-up",
+      "label": "GHD Sit-up",
+      "position": 80,
+      "aliases": [
+        "GHD"
+      ],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "rectus-abdominis",
+          "role": "primary"
+        },
+        {
+          "id": "hip-flexors",
+          "role": "primary"
+        },
+        {
+          "id": "obliques",
+          "role": "secondary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "secondary"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "stamina",
+        "strength"
+      ]
+    },
+    {
+      "id": "v-up",
+      "label": "V-up",
+      "position": 81,
+      "aliases": [],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "rectus-abdominis",
+          "role": "primary"
+        },
+        {
+          "id": "hip-flexors",
+          "role": "primary"
+        },
+        {
+          "id": "obliques",
+          "role": "secondary"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "stamina",
+        "coordination"
+      ]
+    },
+    {
+      "id": "hollow-hold",
+      "label": "Hollow Hold",
+      "position": 82,
+      "aliases": [],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "rectus-abdominis",
+          "role": "primary"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "primary"
+        },
+        {
+          "id": "obliques",
+          "role": "secondary"
+        },
+        {
+          "id": "hip-flexors",
+          "role": "secondary"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "stamina"
+      ]
+    },
+    {
+      "id": "arch-hold",
+      "label": "Arch Hold",
+      "position": 83,
+      "aliases": [],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "erector-spinae",
+          "role": "primary"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "trapezius-lower",
+          "role": "secondary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "secondary"
+        },
+        {
+          "id": "multifidus",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "stamina"
+      ]
+    },
+    {
+      "id": "plank",
+      "label": "Plank",
+      "position": 84,
+      "aliases": [
+        "Front Plank"
+      ],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "rectus-abdominis",
+          "role": "primary"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "primary"
+        },
+        {
+          "id": "obliques",
+          "role": "secondary"
+        },
+        {
+          "id": "deltoid-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Σανίδα",
+        "Πλανκ"
+      ],
+      "qualities": [
+        "stamina"
+      ]
+    },
+    {
+      "id": "side-plank",
+      "label": "Side Plank",
+      "position": 85,
+      "aliases": [],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "quadratus-lumborum",
+          "role": "primary"
+        },
+        {
+          "id": "obliques",
+          "role": "primary"
+        },
+        {
+          "id": "gluteus-medius",
+          "role": "secondary"
+        },
+        {
+          "id": "deltoid-lateral",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Πλάγια σανίδα"
+      ],
+      "qualities": [
+        "stamina",
+        "balance"
+      ]
+    },
+    {
+      "id": "pallof-press",
+      "label": "Pallof Press",
+      "position": 86,
+      "aliases": [],
+      "category": "strength",
+      "muscles": [
+        {
+          "id": "obliques",
+          "role": "primary"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "primary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "secondary"
+        },
+        {
+          "id": "deltoid-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "gluteus-medius",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength",
+        "balance"
+      ]
+    },
+    {
+      "id": "back-extension",
+      "label": "Back Extension",
+      "position": 87,
+      "aliases": [
+        "Hip Extension"
+      ],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "erector-spinae",
+          "role": "primary"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "secondary"
+        },
+        {
+          "id": "multifidus",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Ραχιαίοι",
+        "Υπερεκτάσεις"
+      ],
+      "qualities": [
+        "stamina",
+        "strength"
+      ]
+    },
+    {
+      "id": "burpee",
+      "label": "Burpee",
+      "position": 88,
+      "aliases": [],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "pectoralis-major",
+          "role": "primary"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid-anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "secondary"
+        },
+        {
+          "id": "calves",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "hip-flexors",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Μπέρπι",
+        "Μπέρπις"
+      ],
+      "qualities": [
+        "cardiorespiratory-endurance",
+        "stamina",
+        "coordination",
+        "agility"
+      ]
+    },
+    {
+      "id": "burpee-box-jump",
+      "label": "Burpee Box Jump",
+      "position": 89,
+      "aliases": [],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "pectoralis-major",
+          "role": "primary"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "secondary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "secondary"
+        },
+        {
+          "id": "calves",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "hip-flexors",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "cardiorespiratory-endurance",
+        "stamina",
+        "power",
+        "coordination",
+        "agility"
+      ]
+    },
+    {
+      "id": "box-jump",
+      "label": "Box Jump",
+      "position": 90,
+      "aliases": [],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "calves",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Άλματα σε κουτί",
+        "BJ"
+      ],
+      "qualities": [
+        "power",
+        "coordination",
+        "accuracy"
+      ]
+    },
+    {
+      "id": "box-jump-over",
+      "label": "Box Jump-over",
+      "position": 91,
+      "aliases": [],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "calves",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "stamina",
+        "power",
+        "coordination",
+        "agility"
+      ]
+    },
+    {
+      "id": "broad-jump",
+      "label": "Broad Jump",
+      "position": 92,
+      "aliases": [],
+      "category": "bodyweight",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "primary"
+        },
+        {
+          "id": "calves",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Άλμα μήκους"
+      ],
+      "qualities": [
+        "power",
+        "coordination",
+        "balance"
+      ]
+    },
+    {
+      "id": "double-under",
+      "label": "Double-under",
+      "position": 93,
+      "aliases": [
+        "DU",
+        "Double Under"
+      ],
+      "category": "skill",
+      "muscles": [
+        {
+          "id": "calves",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid",
+          "role": "secondary"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "quadriceps",
+          "role": "stabilizer"
+        },
+        {
+          "id": "tibialis-anterior",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Διπλό σχοινάκι",
+        "Ντάμπλ αντερ"
+      ],
+      "qualities": [
+        "cardiorespiratory-endurance",
+        "speed",
+        "coordination",
+        "accuracy"
+      ]
+    },
+    {
+      "id": "single-under",
+      "label": "Single-under",
+      "position": 94,
+      "aliases": [
+        "Single Under"
+      ],
+      "category": "skill",
+      "muscles": [
+        {
+          "id": "calves",
+          "role": "primary"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "secondary"
+        },
+        {
+          "id": "tibialis-anterior",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Σχοινάκι"
+      ],
+      "qualities": [
+        "cardiorespiratory-endurance",
+        "coordination"
+      ]
+    },
+    {
+      "id": "handstand-hold",
+      "label": "Handstand Hold",
+      "position": 95,
+      "aliases": [],
+      "category": "skill",
+      "muscles": [
+        {
+          "id": "deltoid",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "trapezius-upper",
+          "role": "secondary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Κατακόρυφος"
+      ],
+      "qualities": [
+        "strength",
+        "balance"
+      ]
+    },
+    {
+      "id": "handstand-walk",
+      "label": "Handstand Walk",
+      "position": 96,
+      "aliases": [
+        "HS Walk"
+      ],
+      "category": "skill",
+      "muscles": [
+        {
+          "id": "deltoid",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "trapezius-upper",
+          "role": "secondary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Περπάτημα στα χέρια"
+      ],
+      "qualities": [
+        "strength",
+        "coordination",
+        "balance",
+        "accuracy"
+      ]
+    },
+    {
+      "id": "handstand-push-up",
+      "label": "Handstand Push-up",
+      "position": 97,
+      "aliases": [
+        "HSPU"
+      ],
+      "category": "skill",
+      "muscles": [
+        {
+          "id": "deltoid-anterior",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid-lateral",
+          "role": "secondary"
+        },
+        {
+          "id": "pectoralis-major-clavicular",
+          "role": "secondary"
+        },
+        {
+          "id": "trapezius-upper",
+          "role": "secondary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Κατακόρυφες κάμψεις"
+      ],
+      "qualities": [
+        "strength",
+        "balance"
+      ]
+    },
+    {
+      "id": "wall-walk",
+      "label": "Wall Walk",
+      "position": 98,
+      "aliases": [],
+      "category": "skill",
+      "muscles": [
+        {
+          "id": "deltoid",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "pectoralis-major-clavicular",
+          "role": "secondary"
+        },
+        {
+          "id": "trapezius-upper",
+          "role": "secondary"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "strength",
+        "coordination",
+        "balance"
+      ]
+    },
+    {
+      "id": "run",
+      "label": "Run",
+      "position": 99,
+      "aliases": [
+        "Running"
+      ],
+      "category": "cardio",
+      "muscles": [
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "primary"
+        },
+        {
+          "id": "calves",
+          "role": "primary"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "secondary"
+        },
+        {
+          "id": "hip-flexors",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "gluteus-medius",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Τρέξιμο"
+      ],
+      "qualities": [
+        "cardiorespiratory-endurance",
+        "stamina"
+      ]
+    },
+    {
+      "id": "sprint",
+      "label": "Sprint",
+      "position": 100,
+      "aliases": [],
+      "category": "cardio",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "primary"
+        },
+        {
+          "id": "calves",
+          "role": "primary"
+        },
+        {
+          "id": "hip-flexors",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "gluteus-medius",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Σπριντ"
+      ],
+      "qualities": [
+        "power",
+        "speed",
+        "agility"
+      ]
+    },
+    {
+      "id": "row",
+      "label": "Row",
+      "position": 101,
+      "aliases": [
+        "Rower",
+        "Concept2 Row"
+      ],
+      "category": "cardio",
+      "muscles": [
+        {
+          "id": "latissimus-dorsi",
+          "role": "primary"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "rhomboids",
+          "role": "secondary"
+        },
+        {
+          "id": "erector-spinae",
+          "role": "secondary"
+        },
+        {
+          "id": "biceps-brachii",
+          "role": "secondary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "secondary"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Κωπηλατική",
+        "Κωπηλατικό"
+      ],
+      "qualities": [
+        "cardiorespiratory-endurance",
+        "stamina",
+        "power"
+      ]
+    },
+    {
+      "id": "bike",
+      "label": "Bike",
+      "position": 102,
+      "aliases": [
+        "Cycling"
+      ],
+      "category": "cardio",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "secondary"
+        },
+        {
+          "id": "calves",
+          "role": "secondary"
+        },
+        {
+          "id": "hip-flexors",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Ποδήλατο"
+      ],
+      "qualities": [
+        "cardiorespiratory-endurance",
+        "stamina"
+      ]
+    },
+    {
+      "id": "air-bike",
+      "label": "Air Bike",
+      "position": 103,
+      "aliases": [
+        "Assault Bike",
+        "Echo Bike"
+      ],
+      "category": "cardio",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid",
+          "role": "secondary"
+        },
+        {
+          "id": "latissimus-dorsi",
+          "role": "secondary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "secondary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Assault",
+        "Ποδήλατο αέρα"
+      ],
+      "qualities": [
+        "cardiorespiratory-endurance",
+        "stamina",
+        "power"
+      ]
+    },
+    {
+      "id": "ski-erg",
+      "label": "Ski Erg",
+      "position": 104,
+      "aliases": [
+        "SkiErg"
+      ],
+      "category": "cardio",
+      "muscles": [
+        {
+          "id": "latissimus-dorsi",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "primary"
+        },
+        {
+          "id": "teres-major",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "secondary"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "secondary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "secondary"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "forearm-flexors",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "cardiorespiratory-endurance",
+        "stamina",
+        "power"
+      ]
+    },
+    {
+      "id": "swim",
+      "label": "Swim",
+      "position": 105,
+      "aliases": [
+        "Swimming"
+      ],
+      "category": "cardio",
+      "muscles": [
+        {
+          "id": "deltoid",
+          "role": "primary"
+        },
+        {
+          "id": "latissimus-dorsi",
+          "role": "primary"
+        },
+        {
+          "id": "pectoralis-major",
+          "role": "secondary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "secondary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "secondary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Κολύμπι"
+      ],
+      "qualities": [
+        "cardiorespiratory-endurance",
+        "stamina",
+        "coordination"
+      ]
+    },
+    {
+      "id": "stair-climb",
+      "label": "Stair Climb",
+      "position": 106,
+      "aliases": [
+        "Stair Climber"
+      ],
+      "category": "cardio",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "hamstrings",
+          "role": "secondary"
+        },
+        {
+          "id": "calves",
+          "role": "secondary"
+        },
+        {
+          "id": "gluteus-medius",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "cardiorespiratory-endurance",
+        "stamina"
+      ]
+    },
+    {
+      "id": "jumping-jack",
+      "label": "Jumping Jack",
+      "position": 107,
+      "aliases": [],
+      "category": "cardio",
+      "muscles": [
+        {
+          "id": "deltoid-lateral",
+          "role": "primary"
+        },
+        {
+          "id": "calves",
+          "role": "primary"
+        },
+        {
+          "id": "gluteus-medius",
+          "role": "secondary"
+        },
+        {
+          "id": "adductors",
+          "role": "secondary"
+        }
+      ],
+      "search_aliases": [
+        "Αναπηδήσεις"
+      ],
+      "qualities": [
+        "cardiorespiratory-endurance",
+        "coordination"
+      ]
+    },
+    {
+      "id": "mountain-climber",
+      "label": "Mountain Climber",
+      "position": 108,
+      "aliases": [],
+      "category": "cardio",
+      "muscles": [
+        {
+          "id": "rectus-abdominis",
+          "role": "primary"
+        },
+        {
+          "id": "hip-flexors",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid-anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "secondary"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Ορειβάτες"
+      ],
+      "qualities": [
+        "cardiorespiratory-endurance",
+        "stamina",
+        "agility"
+      ]
+    },
+    {
+      "id": "bear-crawl",
+      "label": "Bear Crawl",
+      "position": 109,
+      "aliases": [],
+      "category": "cardio",
+      "muscles": [
+        {
+          "id": "deltoid-anterior",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "triceps-brachii",
+          "role": "secondary"
+        },
+        {
+          "id": "hip-flexors",
+          "role": "secondary"
+        },
+        {
+          "id": "serratus-anterior",
+          "role": "stabilizer"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "stabilizer"
+        },
+        {
+          "id": "obliques",
+          "role": "stabilizer"
+        },
+        {
+          "id": "transversus-abdominis",
+          "role": "stabilizer"
+        }
+      ],
+      "search_aliases": [
+        "Αρκουδάκι"
+      ],
+      "qualities": [
+        "stamina",
+        "coordination",
+        "agility"
+      ]
+    },
+    {
+      "id": "hip-flexor-stretch",
+      "label": "Hip Flexor Stretch",
+      "position": 110,
+      "aliases": [],
+      "category": "mobility",
+      "muscles": [
+        {
+          "id": "hip-flexors",
+          "role": "primary"
+        },
+        {
+          "id": "rectus-femoris",
+          "role": "secondary"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "flexibility"
+      ]
+    },
+    {
+      "id": "hamstring-stretch",
+      "label": "Hamstring Stretch",
+      "position": 111,
+      "aliases": [],
+      "category": "mobility",
+      "muscles": [
+        {
+          "id": "hamstrings",
+          "role": "primary"
+        },
+        {
+          "id": "calves",
+          "role": "secondary"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "flexibility"
+      ]
+    },
+    {
+      "id": "quad-stretch",
+      "label": "Quadriceps Stretch",
+      "position": 112,
+      "aliases": [
+        "Quad Stretch"
+      ],
+      "category": "mobility",
+      "muscles": [
+        {
+          "id": "quadriceps",
+          "role": "primary"
+        },
+        {
+          "id": "hip-flexors",
+          "role": "secondary"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "flexibility"
+      ]
+    },
+    {
+      "id": "calf-stretch",
+      "label": "Calf Stretch",
+      "position": 113,
+      "aliases": [],
+      "category": "mobility",
+      "muscles": [
+        {
+          "id": "calves",
+          "role": "primary"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "flexibility"
+      ]
+    },
+    {
+      "id": "pigeon-stretch",
+      "label": "Pigeon Stretch",
+      "position": 114,
+      "aliases": [],
+      "category": "mobility",
+      "muscles": [
+        {
+          "id": "gluteus-maximus",
+          "role": "primary"
+        },
+        {
+          "id": "hip-rotators",
+          "role": "primary"
+        },
+        {
+          "id": "hip-flexors",
+          "role": "secondary"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "flexibility"
+      ]
+    },
+    {
+      "id": "couch-stretch",
+      "label": "Couch Stretch",
+      "position": 115,
+      "aliases": [],
+      "category": "mobility",
+      "muscles": [
+        {
+          "id": "hip-flexors",
+          "role": "primary"
+        },
+        {
+          "id": "rectus-femoris",
+          "role": "primary"
+        },
+        {
+          "id": "quadriceps",
+          "role": "secondary"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "flexibility"
+      ]
+    },
+    {
+      "id": "child-pose",
+      "label": "Child's Pose",
+      "position": 116,
+      "aliases": [
+        "Child Pose"
+      ],
+      "category": "mobility",
+      "muscles": [
+        {
+          "id": "latissimus-dorsi",
+          "role": "primary"
+        },
+        {
+          "id": "erector-spinae",
+          "role": "primary"
+        },
+        {
+          "id": "gluteus-maximus",
+          "role": "secondary"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "flexibility"
+      ]
+    },
+    {
+      "id": "downward-dog",
+      "label": "Downward Dog",
+      "position": 117,
+      "aliases": [],
+      "category": "mobility",
+      "muscles": [
+        {
+          "id": "hamstrings",
+          "role": "primary"
+        },
+        {
+          "id": "calves",
+          "role": "primary"
+        },
+        {
+          "id": "deltoid",
+          "role": "secondary"
+        },
+        {
+          "id": "latissimus-dorsi",
+          "role": "secondary"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "flexibility"
+      ]
+    },
+    {
+      "id": "cat-cow",
+      "label": "Cat-Cow",
+      "position": 118,
+      "aliases": [],
+      "category": "mobility",
+      "muscles": [
+        {
+          "id": "erector-spinae",
+          "role": "primary"
+        },
+        {
+          "id": "rectus-abdominis",
+          "role": "primary"
+        },
+        {
+          "id": "multifidus",
+          "role": "secondary"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "flexibility",
+        "coordination"
+      ]
+    },
+    {
+      "id": "thoracic-rotation",
+      "label": "Thoracic Rotation",
+      "position": 119,
+      "aliases": [
+        "T-spine Rotation"
+      ],
+      "category": "mobility",
+      "muscles": [
+        {
+          "id": "erector-spinae",
+          "role": "primary"
+        },
+        {
+          "id": "obliques",
+          "role": "primary"
+        },
+        {
+          "id": "rhomboids",
+          "role": "secondary"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "flexibility"
+      ]
+    },
+    {
+      "id": "shoulder-dislocate",
+      "label": "Shoulder Dislocate",
+      "position": 120,
+      "aliases": [
+        "Pass-through"
+      ],
+      "category": "mobility",
+      "muscles": [
+        {
+          "id": "deltoid",
+          "role": "primary"
+        },
+        {
+          "id": "rotator-cuff",
+          "role": "primary"
+        },
+        {
+          "id": "pectoralis-major",
+          "role": "secondary"
+        },
+        {
+          "id": "trapezius",
+          "role": "secondary"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "flexibility"
+      ]
+    },
+    {
+      "id": "band-pull-apart",
+      "label": "Band Pull-apart",
+      "position": 121,
+      "aliases": [],
+      "category": "mobility",
+      "muscles": [
+        {
+          "id": "deltoid-posterior",
+          "role": "primary"
+        },
+        {
+          "id": "trapezius-middle",
+          "role": "primary"
+        },
+        {
+          "id": "rhomboids",
+          "role": "primary"
+        },
+        {
+          "id": "infraspinatus",
+          "role": "secondary"
+        },
+        {
+          "id": "teres-minor",
+          "role": "secondary"
+        }
+      ],
+      "search_aliases": [],
+      "qualities": [
+        "flexibility",
+        "coordination"
+      ]
+    },
+    {
+      "id": "foam-roll",
+      "label": "Foam Roll",
+      "position": 122,
+      "aliases": [
+        "Foam Rolling"
+      ],
+      "category": "mobility",
+      "muscles": [],
+      "search_aliases": [
+        "Ρολό"
+      ],
+      "qualities": [
+        "flexibility"
+      ]
+    }
+  ],
+  "qualities": [
+    {
+      "id": "cardiorespiratory-endurance",
+      "position": 0
+    },
+    {
+      "id": "stamina",
+      "position": 1
+    },
+    {
+      "id": "strength",
+      "position": 2
+    },
+    {
+      "id": "flexibility",
+      "position": 3
+    },
+    {
+      "id": "power",
+      "position": 4
+    },
+    {
+      "id": "speed",
+      "position": 5
+    },
+    {
+      "id": "coordination",
+      "position": 6
+    },
+    {
+      "id": "agility",
+      "position": 7
+    },
+    {
+      "id": "balance",
+      "position": 8
+    },
+    {
+      "id": "accuracy",
+      "position": 9
+    }
+  ],
+  "taxonomy_version": 1
+}

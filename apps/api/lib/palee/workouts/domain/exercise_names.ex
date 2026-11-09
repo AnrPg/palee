@@ -166,40 +166,19 @@ defmodule Palee.Workouts.Domain.ExerciseNames do
   defp same_key(name), do: name |> fold() |> String.replace(~r/[\s_-]+/u, " ")
 
   @doc """
-  The Palee catalog as suggestion documents: the WOD editors' catalog
-  (`ExerciseCatalog`, with its search aliases) plus the additions the Palee
-  team approved (`%{kind: "entry" | "alias", catalog_slug, label, category}`):
-  an approved entry is a new document, an approved alias joins its entry's.
+  The Palee catalog as suggestion documents (ADR-560 reference tables): every
+  exercise, built-in or approved by the Palee team, with its Quick Text
+  aliases and its search-only aliases.
   """
-  def catalog_documents(additions \\ []) do
-    aliases =
-      additions
-      |> Enum.filter(&(&1.kind == "alias"))
-      |> Enum.group_by(& &1.catalog_slug, & &1.label)
-
-    static =
-      Enum.map(ExerciseCatalog.entries(), fn entry ->
-        %{
-          catalog_slug: entry.id,
-          name: entry.label,
-          aliases:
-            entry.aliases ++
-              ExerciseCatalog.search_aliases(entry.id) ++ Map.get(aliases, entry.id, []),
-          category: entry.category
-        }
-      end)
-
-    added =
-      for %{kind: "entry"} = addition <- additions do
-        %{
-          catalog_slug: addition.catalog_slug,
-          name: addition.label,
-          aliases: Map.get(aliases, addition.catalog_slug, []),
-          category: addition.category
-        }
-      end
-
-    static ++ added
+  def catalog_documents do
+    Enum.map(ExerciseCatalog.entries(), fn entry ->
+      %{
+        catalog_slug: entry.id,
+        name: entry.label,
+        aliases: entry.aliases ++ ExerciseCatalog.search_aliases(entry.id),
+        category: entry.category
+      }
+    end)
   end
 
   @doc "Greek ↔ English word synonyms, folded (`%{word => english}`)."

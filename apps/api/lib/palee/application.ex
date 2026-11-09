@@ -13,6 +13,8 @@ defmodule Palee.Application do
       [
         PaleeWeb.Telemetry,
         Palee.Repo,
+        # ADR-560: the reference catalog copy every domain lookup reads.
+        Palee.Catalog.Cache,
         {DNSCluster, query: Application.get_env(:palee, :dns_cluster_query) || :ignore},
         {Phoenix.PubSub, name: Palee.PubSub},
         PaleeWeb.RealtimeEventHandler,

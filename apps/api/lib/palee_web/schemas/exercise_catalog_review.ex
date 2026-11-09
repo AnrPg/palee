@@ -88,6 +88,16 @@ defmodule PaleeWeb.Schemas.ExerciseCatalogReview do
               catalog_slug: %Schema{
                 type: :string,
                 description: "For an alias: the entry it joins"
+              },
+              muscles: %Schema{
+                type: :array,
+                description: "For an entry (ADR-560): the muscles it trains, by role",
+                items: muscle_target()
+              },
+              qualities: %Schema{
+                type: :array,
+                description: "For an entry (ADR-560): the fitness qualities it develops",
+                items: %Schema{type: :string}
               }
             },
             required: [:decision]
@@ -117,7 +127,10 @@ defmodule PaleeWeb.Schemas.ExerciseCatalogReview do
             type: :object,
             properties: %{
               id: %Schema{type: :string, format: :uuid},
-              action: %Schema{type: :string, enum: ["approve_entry", "approve_alias", "reject"]},
+              action: %Schema{
+                type: :string,
+                enum: ["approve_entry", "approve_alias", "reject", "set_targets"]
+              },
               actor_user_id: %Schema{type: :string, format: :uuid, nullable: true},
               candidate_id: %Schema{type: :string, format: :uuid, nullable: true},
               catalog_slug: %Schema{type: :string, nullable: true},
@@ -129,6 +142,78 @@ defmodule PaleeWeb.Schemas.ExerciseCatalogReview do
         }
       },
       required: [:events]
+    }
+  end
+
+  @role %Schema{type: :string, enum: ["primary", "secondary", "stabilizer"]}
+
+  def muscle_target do
+    %Schema{
+      title: "ExerciseMuscleTarget",
+      type: :object,
+      properties: %{
+        id: %Schema{type: :string, description: "Taxonomy group or head id"},
+        role: @role
+      },
+      required: [:id, :role]
+    }
+  end
+
+  def exercise_id,
+    do: %Parameter{name: :id, in: :path, required: true, schema: %Schema{type: :string}}
+
+  def exercise do
+    %Schema{
+      title: "CatalogExercise",
+      type: :object,
+      properties: %{
+        id: %Schema{type: :string},
+        label: %Schema{type: :string},
+        category: %Schema{type: :string, enum: ExerciseCatalogReview.categories()},
+        origin: %Schema{type: :string, enum: ["builtin", "reviewed"]},
+        aliases: %Schema{type: :array, items: %Schema{type: :string}},
+        search_aliases: %Schema{type: :array, items: %Schema{type: :string}},
+        muscles: %Schema{type: :array, items: muscle_target()},
+        qualities: %Schema{type: :array, items: %Schema{type: :string}}
+      },
+      required: [:aliases, :category, :id, :label, :muscles, :origin, :qualities, :search_aliases]
+    }
+  end
+
+  def exercises do
+    %Schema{
+      title: "CatalogExercises",
+      type: :object,
+      properties: %{exercises: %Schema{type: :array, items: exercise()}},
+      required: [:exercises]
+    }
+  end
+
+  def exercise_updated do
+    %Schema{
+      title: "CatalogExerciseUpdated",
+      type: :object,
+      properties: %{exercise: exercise()},
+      required: [:exercise]
+    }
+  end
+
+  def targets_body do
+    %RequestBody{
+      required: true,
+      content: %{
+        "application/json" => %MediaType{
+          schema: %Schema{
+            title: "CatalogExerciseTargets",
+            type: :object,
+            properties: %{
+              muscles: %Schema{type: :array, items: muscle_target()},
+              qualities: %Schema{type: :array, items: %Schema{type: :string}}
+            },
+            required: [:muscles, :qualities]
+          }
+        }
+      }
     }
   end
 end

@@ -2421,6 +2421,9 @@ defmodule PaleeWeb.Router do
     get("/exercise-candidates", PlatformExerciseCatalogController, :index)
     post("/exercise-candidates/:id/decision", PlatformExerciseCatalogController, :decide)
     get("/exercise-catalog-audit", PlatformExerciseCatalogController, :audit)
+    # ADR-560: the catalog's exercises and the muscles/qualities they train.
+    get("/exercise-catalog", PlatformExerciseCatalogController, :exercises)
+    put("/exercise-catalog/:id/targets", PlatformExerciseCatalogController, :set_targets)
   end
 
   scope "/api/me", PaleeWeb do

@@ -75,23 +75,21 @@ defmodule Palee.Anatomy.Domain.CoverageWeighting do
     end
   end
 
-  @reach (for node <- MuscleTaxonomy.nodes(), node.kind in [:group, :head], into: %{} do
-            ancestors =
-              case node.kind do
-                :head -> [node.group_id, node.region_id]
-                :group -> [node.region_id]
-              end
-
-            descendants =
-              if node.kind == :group,
-                do: node.id |> MuscleTaxonomy.children() |> Enum.map(& &1.id),
-                else: []
-
-            {node.id, Enum.uniq([node.id | ancestors] ++ descendants)}
-          end)
-
   @doc "Every node a target (group or head) reaches; `[]` for an unknown id."
-  def reached_nodes(target_id), do: Map.get(@reach, target_id, [])
+  def reached_nodes(target_id) do
+    case MuscleTaxonomy.fetch(target_id) do
+      %{kind: :head} = node ->
+        [node.id, node.group_id, node.region_id]
+
+      %{kind: :group} = node ->
+        Enum.uniq(
+          [node.id, node.region_id] ++ Enum.map(MuscleTaxonomy.children(node.id), & &1.id)
+        )
+
+      _region_or_unknown ->
+        []
+    end
+  end
 
   @doc """
   The weight one set of a catalog exercise adds to each node it reaches:

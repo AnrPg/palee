@@ -47,12 +47,9 @@ defmodule Palee.Anatomy.Domain.CoverageBalance do
   @pull_groups ["latissimus-dorsi", "rhomboids", "biceps-brachii", "brachialis", "teres-major"]
   @pull_heads ["trapezius-middle", "trapezius-lower", "deltoid-posterior"]
 
-  expand = fn groups -> Enum.flat_map(groups, &[&1 | MuscleTaxonomy.heads_of(&1)]) end
-
-  @push MapSet.new(expand.(@push_groups) ++ @push_heads)
-  @pull MapSet.new(expand.(@pull_groups) ++ @pull_heads)
-  @quad MapSet.new(expand.(["quadriceps"]))
-  @ham MapSet.new(expand.(["hamstrings"]))
+  # ADR-560: the heads come from the reference catalog, so the sets are
+  # built per call (a handful of ids).
+  defp expand(groups), do: Enum.flat_map(groups, &[&1 | MuscleTaxonomy.heads_of(&1)])
 
   def major_groups, do: @major_groups
   def ratio_min_sets, do: @ratio_min_sets
@@ -93,12 +90,17 @@ defmodule Palee.Anatomy.Domain.CoverageBalance do
   end
 
   defp balance(exercises) do
+    push_set = MapSet.new(expand(@push_groups) ++ @push_heads)
+    pull_set = MapSet.new(expand(@pull_groups) ++ @pull_heads)
+    quad_set = MapSet.new(expand(["quadriceps"]))
+    ham_set = MapSet.new(expand(["hamstrings"]))
+
     {push, pull, quad, ham} =
       Enum.reduce(exercises, {0.0, 0.0, 0.0, 0.0}, fn exercise, {push, pull, quad, ham} ->
         primary = primary_muscles(Map.get(exercise, :exercise_ref))
         sets = sets(exercise)
-        {p, q} = split(primary, @push, @pull)
-        {qd, hm} = split(primary, @quad, @ham)
+        {p, q} = split(primary, push_set, pull_set)
+        {qd, hm} = split(primary, quad_set, ham_set)
         {push + p * sets, pull + q * sets, quad + qd * sets, ham + hm * sets}
       end)
 

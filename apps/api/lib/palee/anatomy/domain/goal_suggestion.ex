@@ -117,8 +117,7 @@ defmodule Palee.Anatomy.Domain.GoalSuggestion do
   defp stronger(a, b),
     do: if(ExerciseTargets.role_rank(a) >= ExerciseTargets.role_rank(b), do: a, else: b)
 
-  @order MuscleTaxonomy.nodes() |> Enum.with_index() |> Map.new(fn {n, i} -> {n.id, i} end)
-  defp order(id), do: Map.get(@order, id, 10_000)
+  defp order(id), do: MuscleTaxonomy.order(id)
 
   defp weight(exercise) do
     case field(exercise, :weight) do
