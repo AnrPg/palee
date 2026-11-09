@@ -15,7 +15,7 @@ approved from typed names (ADR-461) reached suggestions but never Quick Text, th
 WOD-goal suggestion, coverage or the injury policy, because those read only the code.
 
 ## Decision
-1. **Reference tables** (migration `20271109150000`): `muscles` (region → group → head,
+1. **Reference tables** (migration `20271109160000`): `muscles` (region → group → head,
    own atlas TA2 mesh ids, position), `fitness_qualities`, `exercises` (slug id, label,
    normalised label unique, category, origin `builtin|reviewed`, position),
    `exercise_aliases` (`resolve` = Quick Text resolves it, unique across the catalog;
