@@ -7098,7 +7098,6 @@
     "findTitle": "Βρες clubs, box και άτομα",
     "findOpenClubs": "Ανοιχτά clubs",
     "findGroups": "Ομάδες στα box σου",
-    "findNoClubs": "Τα box όπου είσαι μέλος ή που ακολουθείς δεν έχουν ακόμα ανοιχτά clubs.",
     "findNoMatch": "Τίποτα δεν ταιριάζει με την αναζήτηση.",
     "visibilityTitle": "Λίστες μελών club",
     "visibilityHint": "Αν σε βλέπουν τα άλλα μέλη club στην καρτέλα Μέλη των clubs σου.",
@@ -7151,7 +7150,9 @@
     "notif_event_cohost_answered_removed_body": "Η {box} δεν συνδιοργανώνει πια το «{event}».",
     "filterKind": "Είδος",
     "filterBox": "Box",
-    "findFiltersTitle": "Φίλτρα αναζήτησης"
+    "findFiltersTitle": "Φίλτρα αναζήτησης",
+    "findStaffNoClubs": "Το {box} δεν έχει ακόμα ανοιχτά clubs. Ένα ανοιχτό club μαζεύει μέλη και όχι μέλη γύρω από κάτι κοινό, π.χ. τρέξιμο.",
+    "findCreateClub": "Φτιάξε ανοιχτό club"
   },
   "CommunityAdmin": {
     "title": "Κοινότητα",
@@ -7741,7 +7742,9 @@
     "priceFrom": "Χαμηλότερη τιμή",
     "priceTo": "Υψηλότερη τιμή",
     "sectionLevel": "Επίπεδο",
-    "levelHint": "Box με τμήματα σε αυτό το επίπεδο"
+    "levelHint": "Box με τμήματα σε αυτό το επίπεδο",
+    "nearUpTo": "Έως {km} km",
+    "nearInTown": "Στην πόλη σου · {town}"
   },
   "CheckIn": {
     "loading": "Φόρτωση…",
@@ -20135,5 +20138,10 @@
     "answerFor": "Απάντηση για «{typed}»",
     "answerAll": "Απάντησε σε κάθε γραμμή για να δημοσιεύσεις.",
     "failed": "Δεν αποθηκεύτηκαν οι απαντήσεις σου. Δοκίμασε ξανά."
+  },
+  "BoxOnMap": {
+    "title": "Το box σου δεν φαίνεται στο Γύρω μου",
+    "body": "Χωρίς διεύθυνση και πόλη, κανείς κοντά σου δεν το βρίσκει στο Γύρω μου και στο Βρες. Πρόσθεσέ τες στα Παραρτήματα.",
+    "action": "Πρόσθεσε διεύθυνση"
   }
 }

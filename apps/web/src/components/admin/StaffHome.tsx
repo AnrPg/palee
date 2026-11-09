@@ -29,6 +29,7 @@ import { useSession } from "@/components/session-provider";
 import { CleaningLog } from "@/components/staff/CleaningLog";
 import { SquadsSection } from "@/components/community/squads/SquadsSection";
 import { SetupRecipeCard } from "@/components/admin/setup/SetupRecipeCard";
+import { BoxOnMapCard } from "@/components/admin/setup/BoxOnMapCard";
 import { CollectEntry } from "@/components/admin/collect/CollectEntry";
 import {
   inputClass,
@@ -90,7 +91,13 @@ export function StaffHome() {
     <AdminDashboard
       membership={membership}
       // ADR-255: a new box picks its kind once (mockup s10 A); first while it is to do.
-      setup={<SetupRecipeCard membership={membership} />}
+      setup={
+        <>
+          <SetupRecipeCard membership={membership} />
+          {/* ADR-583 Ε4 A: a box with no town or pin is invisible in Γύρω μου. */}
+          {layout.kind === "admin" ? <BoxOnMapCard /> : null}
+        </>
+      }
       appointments={coach && has("manage_appointments")}
       coachQueues={coach && has("manage_coaching")}
       people={coach ? <PeopleSection membership={membership} /> : null}

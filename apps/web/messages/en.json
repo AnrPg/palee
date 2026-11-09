@@ -7098,7 +7098,6 @@
     "findTitle": "Find clubs, boxes and people",
     "findOpenClubs": "Open clubs",
     "findGroups": "Groups in your boxes",
-    "findNoClubs": "The boxes you belong to or follow have no open clubs yet.",
     "findNoMatch": "Nothing matches that search.",
     "visibilityTitle": "Club member lists",
     "visibilityHint": "Whether other club members see you in their clubs' Members tab.",
@@ -7151,7 +7150,9 @@
     "notif_event_cohost_answered_removed_body": "{box} no longer co-hosts «{event}».",
     "filterKind": "Type",
     "filterBox": "Box",
-    "findFiltersTitle": "Find filters"
+    "findFiltersTitle": "Find filters",
+    "findStaffNoClubs": "{box} has no open clubs yet. An open club brings members and non-members together around something they share, like running.",
+    "findCreateClub": "Create an open club"
   },
   "CommunityAdmin": {
     "title": "Community",
@@ -7741,7 +7742,9 @@
     "priceFrom": "Lowest price",
     "priceTo": "Highest price",
     "sectionLevel": "Level",
-    "levelHint": "Boxes with classes at this level"
+    "levelHint": "Boxes with classes at this level",
+    "nearUpTo": "Up to {km} km",
+    "nearInTown": "In your town · {town}"
   },
   "CheckIn": {
     "loading": "Loading…",
@@ -20135,5 +20138,10 @@
     "answerFor": "Answer for «{typed}»",
     "answerAll": "Answer every row to publish.",
     "failed": "We could not save your answers. Try again."
+  },
+  "BoxOnMap": {
+    "title": "Your box doesn't show in Around me",
+    "body": "Without an address and town, nobody nearby finds it in Around me or Find. Add them under Branches.",
+    "action": "Add an address"
   }
 }

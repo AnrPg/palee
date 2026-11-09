@@ -206,3 +206,19 @@ export function channelSections(channels: CommunityChannel[]) {
   );
   return { box, classes, other };
 }
+
+/**
+ * The boxes whose clubs the person runs as staff (their gym club), for the
+ * «Φτιάξε ανοιχτό club» prompt in Βρες (ADR-583 Ε3 B), once per box.
+ */
+export function staffBoxes<T extends { kind: string; role?: string | null; organization_slug?: string | null; organization_name?: string | null; name: string }>(
+  clubs: readonly T[],
+): { slug: string; name: string }[] {
+  const seen = new Set<string>();
+  return clubs.flatMap((club) => {
+    const slug = club.organization_slug;
+    if (club.kind !== "gym" || club.role !== "staff" || !slug || seen.has(slug)) return [];
+    seen.add(slug);
+    return [{ slug, name: club.organization_name ?? club.name }];
+  });
+}

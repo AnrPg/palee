@@ -7098,7 +7098,6 @@
     "findTitle": "Buscar clubs, boxes y personas",
     "findOpenClubs": "Clubs abiertos",
     "findGroups": "Grupos en tus boxes",
-    "findNoClubs": "Los boxes de los que eres socio o que sigues aún no tienen clubs abiertos.",
     "findNoMatch": "No hay resultados para esta búsqueda.",
     "visibilityTitle": "Listas de miembros",
     "visibilityHint": "Si otros miembros te ven en la pestaña Miembros de sus clubs.",
@@ -7151,7 +7150,9 @@
     "notif_event_cohost_answered_removed_body": "{box} ya no coorganiza «{event}».",
     "filterKind": "Tipo",
     "filterBox": "Box",
-    "findFiltersTitle": "Filtros de búsqueda"
+    "findFiltersTitle": "Filtros de búsqueda",
+    "findStaffNoClubs": "{box} aún no tiene clubs abiertos. Un club abierto reúne a socios y no socios en torno a algo que comparten, como correr.",
+    "findCreateClub": "Crear un club abierto"
   },
   "CommunityAdmin": {
     "title": "Comunidad",
@@ -7741,7 +7742,9 @@
     "priceFrom": "Precio mínimo",
     "priceTo": "Precio máximo",
     "sectionLevel": "Nivel",
-    "levelHint": "Boxes con clases de este nivel"
+    "levelHint": "Boxes con clases de este nivel",
+    "nearUpTo": "Hasta {km} km",
+    "nearInTown": "En tu ciudad · {town}"
   },
   "CheckIn": {
     "loading": "Cargando…",
@@ -20135,5 +20138,10 @@
     "answerFor": "Respuesta para «{typed}»",
     "answerAll": "Responde cada fila para publicar.",
     "failed": "No pudimos guardar tus respuestas. Inténtalo de nuevo."
+  },
+  "BoxOnMap": {
+    "title": "Tu box no aparece en Cerca de mí",
+    "body": "Sin dirección ni ciudad, nadie cerca la encuentra en Cerca de mí ni en Buscar. Añádelas en Sedes.",
+    "action": "Añadir dirección"
   }
 }

@@ -1,6 +1,6 @@
 # ADR-583: «Κοντά μου» looks further when nothing is near: wider radii, then the same town
 Date: 2026-11-09
-Status: Accepted (backend); the screens wait for ANR's picks
+Status: Accepted
 
 ## Context
 ANR (2026-11-09) saw «Κοντά μου» in Βρες empty and asked why Milos method,
@@ -44,6 +44,19 @@ What we found on main e6861f1d:
    How a widened list is labelled, what Βρες shows when no open club exists
    at all, and the empty «Ανοιχτά clubs» card go to mockups first
    (`/mnt/project-files/milos/nearby-fallback/`).
+
+## Screens (ANR picks, 2026-11-09 20:47 UTC)
+Mockups: `/mnt/project-files/milos/nearby-fallback/nearby-fallback-mockups-2026-11-09.html`.
+- Ε1 B: a widened «Κοντά μου» card changes its title: «Έως 25 km», or
+  «Στην πόλη σου · Βόλος» (`nearby.ts` `nearbyEyebrow`). Events too.
+- Ε2 B: Βρες › «Κοντά μου» is hidden when no open club is found even in
+  the town (a missing area still asks for one; errors still show).
+- Ε3 B: Βρες › «Ανοιχτά clubs» is hidden when empty and nothing is typed;
+  staff of a box (its gym club, role staff) see «Το <box> δεν έχει ακόμα
+  ανοιχτά clubs» and «Φτιάξε ανοιχτό club» → Κοινότητα › Ανοιχτά clubs.
+- Ε4 A: the staff admin Αρχική shows «Το box σου δεν φαίνεται στο Γύρω μου ·
+  Πρόσθεσε διεύθυνση» (→ Ρυθμίσεις › Παραρτήματα) while no live branch has
+  a town or a map pin (`BoxOnMapCard`, `boxFindableByPlace`).
 
 ## Consequences
 - A gym still needs a location with at least its town to be found; with
