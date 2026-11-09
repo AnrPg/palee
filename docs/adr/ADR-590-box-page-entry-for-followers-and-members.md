@@ -1,6 +1,6 @@
 # ADR-590: One way into a box: its page, from the feed and the club bar
 Date: 2026-11-09
-Status: Accepted. §2 and §3 built; §1 waits for the desktop box-page layout (same file)
+Status: Accepted, built
 
 ## Context
 ANR (2026-11-09) asked how followers reach a box's public page `/b/<slug>`:
@@ -22,8 +22,16 @@ Q3 A.
 ## Decision
 1. **One box page.** `/b/<slug>` is the box's only destination. Its members
    and staff get a «Club» tab, first and opened by default; everyone else
-   opens on «Σχετικά». The club-bar bubble of the member's own box opens
-   `/b/<slug>`. Open clubs keep `/clubs/<id>`.
+   opens on «Σχετικά» (a `#club` hash falls back to it). The tab holds the
+   club's own space (`ClubSpace`: Ροή, Κανάλια, Events, Μέλη) and «Νέα
+   ανάρτηση»; `?channel=<id>` opens a channel. «Μέλος box · Άνοιξε το club»
+   in the page's actions switches to the tab and hides while it is open.
+   This applies only while the box page is published: `GET /api/me/clubs`
+   says so per club (`box_page`), and `clubHref` sends the club-bar bubble,
+   Εγώ › Clubs and squad back links to `/b/<slug>`; `/clubs/<id>` of such a
+   club (old links, notifications) replaces itself with the box page. An
+   unpublished box keeps `/clubs/<id>`, and so do open clubs. On the box's
+   own domain (the website alone) there is no Club tab.
 2. **Box posts are headed by the box.** A public post in a box's club
    (`origin: club`, `audience: public`, club `kind: gym`) shows the box's
    logo and name on top, both linking to `/b/<slug>`, and «από <coach>»
@@ -38,4 +46,8 @@ Q3 A.
 
 ## Consequences
 - No new endpoint; the bar reuses the follow list.
-- e2e: community.spec «a followed box shows as a dashed bubble…».
+- One more `palee_public_boxes` read per `ClubScope` call (the gyms the
+  person belongs to).
+- e2e: community.spec «a followed box shows as a dashed bubble…»;
+  public-box-page.spec «a member … lands on the «Club» tab», «a box's club
+  link opens the box page», «a visitor never sees the «Club» tab».

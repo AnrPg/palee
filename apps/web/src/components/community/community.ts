@@ -222,3 +222,10 @@ export function staffBoxes<T extends { kind: string; role?: string | null; organ
     return [{ slug, name: club.organization_name ?? club.name }];
   });
 }
+
+/** ADR-590 §1: a box's club lives in its box page (tab «Club») once that page is published. */
+export function clubHref(club: Pick<CommunityClub, "id" | "kind" | "organization_slug" | "box_page">) {
+  return club.kind === "gym" && club.box_page && club.organization_slug
+    ? `/b/${encodeURIComponent(club.organization_slug)}`
+    : `/clubs/${club.id}`;
+}

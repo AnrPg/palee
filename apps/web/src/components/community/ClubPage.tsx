@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
@@ -14,7 +14,7 @@ import {
   type CommunityClub,
 } from "@/api/community";
 import { clientErrorMessage } from "@/components/client/errors";
-import { channelName, channelSections } from "@/components/community/community";
+import { channelName, channelSections, clubHref } from "@/components/community/community";
 import { ClubBar } from "@/components/community/ClubBar";
 import { ClubFeed } from "@/components/community/ClubFeed";
 import { ComposeButton } from "@/components/community/ComposeSheet";
@@ -54,8 +54,15 @@ export function ClubPage({ clubId, channelId = null }: { clubId: string; channel
   useClubRealtime(clubs.data);
   const club = clubs.data?.find((entry) => entry.id === clubId);
   const space = useClubSpace(clubId, club, channelId);
+  const router = useRouter();
+  // ADR-590: a box's club opens in its box page (tab «Club»); old links and notifications land there.
+  const home = club ? clubHref(club) : null;
+  const moved = home !== null && home !== `/clubs/${clubId}`;
+  useEffect(() => {
+    if (moved) router.replace(channelId ? `${home}?channel=${encodeURIComponent(channelId)}` : home);
+  }, [moved, home, channelId, router]);
 
-  if (clubs.isPending) return <HubPage title={t("clubTitle")}><p style={{ color: "var(--dim)" }}>{t("loading")}</p></HubPage>;
+  if (clubs.isPending || moved) return <HubPage title={t("clubTitle")}><p style={{ color: "var(--dim)" }}>{t("loading")}</p></HubPage>;
   if (!club)
     return (
       <OpenClubLanding

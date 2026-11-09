@@ -124,7 +124,7 @@ async function signedIn(page: Page, { member = false } = {}) {
     route.fulfill(
       json({
         clubs: member
-          ? [{ id: "club-1", kind: "gym", name: box.name, organization_id: box.organization_id, organization_slug: box.slug, role: "member", notify_level: "all", logo_url: null, primary_color: null, channels: [] }]
+          ? [{ id: "club-1", kind: "gym", name: box.name, organization_id: box.organization_id, organization_slug: box.slug, box_page: true, role: "member", notify_level: "all", logo_url: null, primary_color: null, channels: [] }]
           : [],
       }),
     ),
@@ -232,12 +232,38 @@ test.describe("public box page", () => {
     await expect.poll(() => follows).toEqual([{ target_type: "organization", target_id: "org-1" }]);
   });
 
-  test("a member of the gym opens the club instead of following", async ({ page }) => {
+  test("a member of the gym lands on the «Club» tab, first, instead of following (ADR-590)", async ({ page }) => {
     await signedIn(page, { member: true });
+    await page.route("**/api/org/*/community/wod-today**", (route) =>
+      route.fulfill(json({ date: "2026-10-20", channel_id: null, classes: [], leaderboard: [], logged_by_me: false, score: null, workout: null })),
+    );
+    await page.route("**/api/me/feed**", (route) => route.fulfill(json({ posts: [], pinned: [], next_cursor: null })));
     await page.goto(`/b/${box.slug}`);
-    await expect(page.getByRole("link", { name: "Member · Open the club" }).first()).toHaveAttribute("href", "/clubs/club-1");
+    const tabs = page.getByRole("tablist", { name: "Page sections" });
+    await expect(tabs.getByRole("tab").first()).toHaveText("Club");
+    await expect(page.getByRole("tab", { name: "Club" })).toHaveAttribute("aria-selected", "true");
+    await expect(page.getByTestId("box-club-tab")).toBeVisible();
     await expect(page.getByTestId("box-guest-banner")).toHaveCount(0);
     await expect(page.getByTestId("box-page-join")).toHaveCount(0);
+
+    // From another tab, the member action brings the club back.
+    await page.getByRole("tab", { name: "About" }).click();
+    await expect(page).toHaveURL(/#about$/);
+    await page.getByRole("button", { name: "Box member · Open the club" }).first().click();
+    await expect(page.getByTestId("box-club-tab")).toBeVisible();
+  });
+
+  test("a box's club link opens the box page when it is published (ADR-590)", async ({ page }) => {
+    await signedIn(page, { member: true });
+    await page.goto("/clubs/club-1?channel=ch-1");
+    await expect(page).toHaveURL(new RegExp(`/b/${box.slug}\\?channel=ch-1$`));
+  });
+
+  test("a visitor never sees the «Club» tab", async ({ page }) => {
+    await signedIn(page);
+    await page.goto(`/b/${box.slug}#club`);
+    await expect(page.getByRole("tab", { name: "Club" })).toHaveCount(0);
+    await expect(page.getByRole("tab", { name: "About" })).toHaveAttribute("aria-selected", "true");
   });
 
   test("«Become a box member» is always the main action and never a dead end", async ({ page }) => {

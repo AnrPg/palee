@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 
 import type { CommunityClub } from "@/api/community";
 import { fetchFollowing, SOCIAL_KEY, type FollowEntry } from "@/api/social";
-import { clubInitials } from "@/components/community/community";
+import { clubHref, clubInitials } from "@/components/community/community";
 import { NavIcon } from "@/components/nav/NavIcons";
 import { useSession } from "@/components/session-provider";
 
@@ -60,7 +60,7 @@ export function ClubBar({
         {clubs.map((club) => (
           <Bubble
             key={club.id}
-            href={`/clubs/${club.id}`}
+            href={clubHref(club)}
             label={club.name}
             initials={clubInitials(club.name)}
             logo={club.logo_url}

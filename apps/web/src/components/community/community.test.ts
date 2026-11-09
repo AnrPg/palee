@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { CommunityClub, CommunityPost } from "@/api/community";
 
-import { channelNameKey, clubInitials, defaultChannelId, feedHasPosts, postableChannels, staffBoxes, withoutPinned } from "./community";
+import { channelNameKey, clubHref, clubInitials, defaultChannelId, feedHasPosts, postableChannels, staffBoxes, withoutPinned } from "./community";
 
 const channel = (id: string, kind: CommunityClub["channels"][number]["kind"], canPost: boolean) => ({
   id,
@@ -185,5 +185,13 @@ describe("staffBoxes (ADR-583 Ε3 B)", () => {
         club("gym", "staff", null),
       ]),
     ).toEqual([{ slug: "milos-method", name: "Box milos-method" }]);
+  });
+});
+
+describe("clubHref (ADR-590)", () => {
+  it("opens a box's club in its published box page, else the club page", () => {
+    expect(clubHref({ id: "c1", kind: "gym", organization_slug: "milos-method", box_page: true })).toBe("/b/milos-method");
+    expect(clubHref({ id: "c1", kind: "gym", organization_slug: "milos-method", box_page: false })).toBe("/clubs/c1");
+    expect(clubHref({ id: "o1", kind: "open", organization_slug: "milos-method", box_page: true })).toBe("/clubs/o1");
   });
 });

@@ -19,6 +19,7 @@ import {
   type PtSquadMember,
 } from "@/api/squads";
 import { clientErrorMessage } from "@/components/client/errors";
+import { clubHref } from "@/components/community/community";
 import { ComposeButton } from "@/components/community/ComposeSheet";
 import { FeedList } from "@/components/community/FeedList";
 import { Badge } from "@/components/community/MembersTab";
@@ -65,7 +66,7 @@ export function SquadPage({ clubId, squadId }: { clubId: string; squadId: string
     return (
       <HubPage title={t("label")}>
         <p className="text-sm" style={{ color: "var(--text-soft)" }}>{t("notFound")}</p>
-        <Link href={club ? `/clubs/${club.id}` : "/"} className="text-sm font-semibold underline" style={{ color: "var(--text)" }}>
+        <Link href={club ? clubHref(club) : "/"} className="text-sm font-semibold underline" style={{ color: "var(--text)" }}>
           {t("backToClub")}
         </Link>
       </HubPage>
@@ -81,7 +82,7 @@ function SquadView({ club, clubs, squad }: { club: CommunityClub; clubs: Communi
 
   return (
     <HubPage title={squad.name} actions={canPost ? <ComposeButton clubs={clubs} clubId={club.id} channelId={squad.id} /> : null}>
-      <BackLink href={`/clubs/${club.id}`} className="text-sm font-semibold" style={{ color: "var(--dim)" }}>{club.name}</BackLink>
+      <BackLink href={clubHref(club)} className="text-sm font-semibold" style={{ color: "var(--dim)" }}>{club.name}</BackLink>
       <HubCard>
         <p className="text-xs font-bold uppercase tracking-[0.18em]" style={{ color: "var(--dim)" }}>
           {t("label")} · {t("members", { count: squad.member_count })}
@@ -138,7 +139,7 @@ function SquadActions({ club, squad }: { club: CommunityClub; squad: PtSquad }) 
   const done = async () => {
     setSheet(null);
     await refresh();
-    router.push(`/clubs/${club.id}`);
+    router.push(clubHref(club));
   };
 
   const answer = useMutation({

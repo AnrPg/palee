@@ -13,7 +13,10 @@ import { SiteLanguageSwitch } from "@/components/box-site/SiteLanguageSwitch";
 import { SiteProgrammesNavLink } from "@/components/box-site/SiteProgrammes";
 import { SiteRequestSheet } from "@/components/box-site/SiteRequestSheet";
 import { SiteSections } from "@/components/box-site/SiteSections";
-import { useMyClubs } from "@/components/community/use-community";
+import type { CommunityClub } from "@/api/community";
+import { ClubSpace, useClubSpace } from "@/components/community/ClubPage";
+import { ComposeButton } from "@/components/community/ComposeSheet";
+import { useClubRealtime, useMyClubs } from "@/components/community/use-community";
 import { BOTTOM_NAV_SPACE, useBottomTabBarVisible } from "@/components/nav/BottomNav";
 import { useSession } from "@/components/session-provider";
 import { FollowButton } from "@/components/social/FollowButton";
@@ -42,8 +45,16 @@ const PlacesMap = dynamic(() => import("@/components/member-app/box/schedule/Pla
   loading: () => <div className="h-full w-full animate-pulse" style={{ background: "var(--panel-raised)" }} />,
 });
 
-const TABS = ["about", "schedule", "events", "posts"] as const;
+// ADR-590: «Club» shows only to the box's members and staff, first, and opens by default for them.
+const TABS = ["club", "about", "schedule", "events", "posts"] as const;
 type Tab = (typeof TABS)[number];
+
+/** The tab the hash names, else the default: the club for its members, «Σχετικά» for everyone else. */
+export function boxTab(hash: string, member: boolean): Tab {
+  const named = TABS.find((value) => value === hash);
+  if (named && (named !== "club" || member)) return named;
+  return member ? "club" : "about";
+}
 
 // The open tab lives in the URL hash (#schedule) so a shared link and the
 // way back from sign-in land on it.
@@ -53,6 +64,9 @@ function subscribeHash(onChange: () => void) {
 }
 const readHash = () => window.location.hash.slice(1);
 const serverHash = () => "";
+// ADR-590: a channel link into the box's club (`/b/<slug>?channel=<id>`).
+const readChannel = () => new URLSearchParams(window.location.search).get("channel");
+const serverChannel = () => null;
 
 /**
  * Whether the box's name and actions have scrolled up out of view, so the
@@ -107,7 +121,6 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
   const clubs = useMyClubs();
   const tabBar = useBottomTabBarVisible();
   const hash = useSyncExternalStore(subscribeHash, readHash, serverHash);
-  const tab: Tab = TABS.includes(hash as Tab) ? (hash as Tab) : "about";
   const tabsRef = useRef<HTMLDivElement>(null);
   const identityRef = useRef<HTMLDivElement>(null);
   const stuck = useScrolledPast(identityRef);
@@ -118,6 +131,9 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
 
   const signedIn = status === "authenticated" && Boolean(tokens?.access_token);
   const club = clubs.data?.find((entry) => entry.kind === "gym" && entry.organization_id === page.box.organization_id) ?? null;
+  const member = Boolean(club) && !standalone;
+  const tab = boxTab(hash, member);
+  const tabs = TABS.filter((value) => value !== "club" || member);
   const photos = [...(page.profile.cover ? [page.profile.cover] : []), ...page.profile.photos];
   const place = page.locations.find((location) => location.neighbourhood || location.city);
   const line = place?.neighbourhood ?? place?.city ?? null;
@@ -126,7 +142,8 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
   const pinned = page.locations.find((location) => location.latitude != null && location.longitude != null);
 
   function select(next: Tab) {
-    window.history.replaceState(null, "", next === "about" ? window.location.pathname : `#${next}`);
+    const fallback = member ? "club" : "about";
+    window.history.replaceState(null, "", next === fallback ? window.location.pathname + window.location.search : `#${next}`);
     window.dispatchEvent(new HashChangeEvent("hashchange"));
     const top = tabsRef.current?.getBoundingClientRect().top ?? 1;
     if (top <= 1) tabsRef.current?.scrollIntoView({ block: "start" });
@@ -165,6 +182,7 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
       token={signedIn ? tokens!.access_token : null}
       loading={status === "loading" || (signedIn && clubs.isPending)}
       clubId={club?.id ?? null}
+      onOpenClub={tab === "club" ? null : () => select("club")}
       onGuestTrial={siteTrial}
     />
   );
@@ -182,6 +200,7 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
       token={signedIn ? tokens!.access_token : null}
       loading={status === "loading" || (signedIn && clubs.isPending)}
       clubId={club?.id ?? null}
+      onOpenClub={tab === "club" ? null : () => select("club")}
       onGuestTrial={siteTrial}
       row
     />
@@ -268,7 +287,7 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
                 </span>
               ) : null}
               <div role="tablist" aria-label={t("tabsAria")} className="flex min-w-0 gap-1 overflow-x-auto">
-                {TABS.map((value) => (
+                {tabs.map((value) => (
                   <button
                     key={value}
                     type="button"
@@ -291,7 +310,7 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
               </div>
               {stuck ? (
                 <div className="ms-auto hidden shrink-0 lg:block" data-testid="box-page-bar-action">
-                  <BarAction page={page} signedIn={signedIn} clubId={club?.id ?? null} loading={status === "loading" || (signedIn && clubs.isPending)} />
+                  <BarAction page={page} signedIn={signedIn} clubId={club?.id ?? null} onOpenClub={tab === "club" ? null : () => select("club")} loading={status === "loading" || (signedIn && clubs.isPending)} />
                 </div>
               ) : null}
             </div>
@@ -310,7 +329,8 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
                       plain: true,
                       node: (
                         <>
-                          {status === "guest" ? <LockedTab slug={page.box.slug} tab={tab} /> : null}
+                          {tab === "club" && club ? <BoxClubTab club={club} clubs={clubs.data ?? []} /> : null}
+                          {status === "guest" && tab !== "club" ? <LockedTab slug={page.box.slug} tab={tab} /> : null}
                           {tab === "schedule" && signedIn ? <VisitorSchedule page={page} token={tokens!.access_token} member={Boolean(club)} /> : null}
                           {tab === "events" && signedIn ? <BoxEvents slug={page.box.slug} token={tokens!.access_token} /> : null}
                           {tab === "posts" && signedIn ? <BoxPosts slug={page.box.slug} token={tokens!.access_token} /> : null}
@@ -430,16 +450,29 @@ function InfoCard({
 }
 
 /** The sticky bar's one action on desktop: «Γίνε μέλος box», or the club for members. */
-function BarAction({ page, signedIn, clubId, loading }: { page: PublicBoxPage; signedIn: boolean; clubId: string | null; loading: boolean }) {
+function BarAction({
+  page,
+  signedIn,
+  clubId,
+  onOpenClub,
+  loading,
+}: {
+  page: PublicBoxPage;
+  signedIn: boolean;
+  clubId: string | null;
+  /** ADR-590: the club is this page's «Club» tab; null while it is open. */
+  onOpenClub: (() => void) | null;
+  loading: boolean;
+}) {
   const t = useTranslations("BoxPage");
   if (loading) return null;
   if (clubId)
-    return (
-      <Link href={`/clubs/${clubId}`} className="flex min-h-11 items-center gap-2 whitespace-nowrap rounded-2xl px-4 text-sm font-bold" style={{ background: "var(--panel-raised)", border: "1px solid var(--border)", color: "var(--text)" }}>
+    return onOpenClub ? (
+      <button type="button" onClick={onOpenClub} className="flex min-h-11 items-center gap-2 whitespace-nowrap rounded-2xl px-4 text-sm font-bold" style={{ background: "var(--panel-raised)", border: "1px solid var(--border)", color: "var(--text)" }}>
         <Icon name="check" size={16} />
         {t("memberOpenClub")}
-      </Link>
-    );
+      </button>
+    ) : null;
   return <JoinBoxAction page={page} signedIn={signedIn} compact />;
 }
 
@@ -481,6 +514,7 @@ function Actions({
   token,
   loading,
   clubId,
+  onOpenClub,
   onGuestTrial,
   row = false,
 }: {
@@ -488,6 +522,8 @@ function Actions({
   token: string | null;
   loading: boolean;
   clubId: string | null;
+  /** ADR-590: the club is this page's «Club» tab; null while it is open. */
+  onOpenClub: (() => void) | null;
   /** ADR-388: a signed-out visitor asks through the website's request form instead of signing in first. */
   onGuestTrial: (() => void) | null;
   /** Desktop header (ANR 2026-11-09): one row beside the box's name. */
@@ -513,11 +549,13 @@ function Actions({
   );
   if (clubId)
     return (
-      <div className="flex items-start gap-2">
-        <Link href={`/clubs/${clubId}`} className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded-2xl text-sm font-bold" style={{ background: "var(--panel-raised)", border: "1px solid var(--border)", color: "var(--text)" }}>
+      <div className={`flex items-start gap-2 ${onOpenClub ? "" : "justify-end"}`}>
+        {onOpenClub ? (
+        <button type="button" onClick={onOpenClub} className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded-2xl text-sm font-bold" style={{ background: "var(--panel-raised)", border: "1px solid var(--border)", color: "var(--text)" }}>
           <Icon name="check" size={16} />
           {t("memberOpenClub")}
-        </Link>
+        </button>
+        ) : null}
         {message}
       </div>
     );
@@ -590,6 +628,25 @@ function SiteActions({ site, onRequest }: { site: PublicSite; onRequest: (kind: 
           <Icon name="message-circle" size={18} />
         </button>
       ) : null}
+    </div>
+  );
+}
+
+/**
+ * ADR-590: the box's club inside its page, for its members and staff: the
+ * same space as the club page (Ροή, Κανάλια, Events, Μέλη) with «Νέα
+ * ανάρτηση». A channel link (`?channel=`) opens that channel.
+ */
+function BoxClubTab({ club, clubs }: { club: CommunityClub; clubs: CommunityClub[] }) {
+  const channel = useSyncExternalStore(subscribeNever, readChannel, serverChannel);
+  useClubRealtime(clubs);
+  const space = useClubSpace(club.id, club, channel);
+  return (
+    <div className="flex flex-col gap-4" data-testid="box-club-tab">
+      <div className="flex justify-end">
+        <ComposeButton clubs={clubs} clubId={club.id} channelId={space.openChannel?.id} />
+      </div>
+      <ClubSpace club={club} clubs={clubs} space={space} />
     </div>
   );
 }

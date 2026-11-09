@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 
 import { CLUBS_KEY, NOTIFY_LEVELS, setNotifyLevel, type CommunityClub, type NotifyLevel } from "@/api/community";
 import { clientErrorMessage } from "@/components/client/errors";
-import { clubInitials } from "@/components/community/community";
+import { clubHref, clubInitials } from "@/components/community/community";
 import { MyGymsCard } from "@/components/community/MyGymsCard";
 import { useMyClubs } from "@/components/community/use-community";
 import { HubCard, HubPage } from "@/components/member-app/HubParts";
@@ -74,7 +74,7 @@ function ClubRow({ club }: { club: CommunityClub }) {
         {clubInitials(club.name)}
       </span>
       <div className="min-w-0 grow">
-        <Link href={`/clubs/${club.id}`} className="block truncate font-bold" style={{ color: "var(--text)" }}>
+        <Link href={clubHref(club)} className="block truncate font-bold" style={{ color: "var(--text)" }}>
           {club.name}
         </Link>
         <label htmlFor={selectId} className="text-xs" style={{ color: "var(--dim)" }}>{t("notifyLabel")}</label>
