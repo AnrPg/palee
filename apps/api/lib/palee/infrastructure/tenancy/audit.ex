@@ -4,7 +4,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
   @ready_tenant_tables ~w(
     class_types scheduling_settings class_series scheduled_classes bookings day_workouts
     scheduling_trial_policies scheduling_trial_requests
-    organization_join_requests
+    organization_join_requests organization_follower_invites
     season_offerings season_enrollments
     referral_codes referral_attributions
     perks perk_versions perk_codes perk_claims
