@@ -51198,6 +51198,440 @@
         "title": "FollowStatusResponse",
         "type": "object"
       },
+      "FollowSuggestion": {
+        "properties": {
+          "avatar_url": {
+            "nullable": true,
+            "type": "string"
+          },
+          "handle": {
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "nickname": {
+            "nullable": true,
+            "type": "string"
+          },
+          "private": {
+            "description": "Following sends a request",
+            "type": "boolean"
+          },
+          "reason": {
+            "description": "The one reason shown: follows_you, via_person, mutual, coach, box, club, sport, nearby, popular, newcomer or for_you",
+            "properties": {
+              "box": {
+                "nullable": true,
+                "properties": {
+                  "id": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "name": {
+                    "nullable": true,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id"
+                ],
+                "title": "FollowSuggestionBox",
+                "type": "object"
+              },
+              "club": {
+                "nullable": true,
+                "properties": {
+                  "id": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "name": {
+                    "nullable": true,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id"
+                ],
+                "title": "FollowSuggestionClub",
+                "type": "object"
+              },
+              "kind": {
+                "enum": [
+                  "follows_you",
+                  "via_person",
+                  "mutual",
+                  "coach",
+                  "box",
+                  "club",
+                  "sport",
+                  "nearby",
+                  "popular",
+                  "newcomer",
+                  "for_you"
+                ],
+                "type": "string"
+              },
+              "mutual_count": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "mutuals": {
+                "description": "Up to two people the viewer follows who follow this person",
+                "items": {
+                  "properties": {
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "nickname": {
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ],
+                  "title": "FollowSuggestionMutual",
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "sport": {
+                "description": "A shared discipline key",
+                "nullable": true,
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "mutual_count",
+              "mutuals"
+            ],
+            "title": "FollowSuggestionReason",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "private",
+          "reason"
+        ],
+        "title": "FollowSuggestion",
+        "type": "object"
+      },
+      "FollowSuggestionAction": {
+        "properties": {
+          "reason": {
+            "enum": [
+              "follows_you",
+              "via_person",
+              "mutual",
+              "coach",
+              "box",
+              "club",
+              "sport",
+              "nearby",
+              "popular",
+              "newcomer",
+              "for_you"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "title": "FollowSuggestionAction",
+        "type": "object"
+      },
+      "FollowSuggestionBox": {
+        "nullable": true,
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "name": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "FollowSuggestionBox",
+        "type": "object"
+      },
+      "FollowSuggestionClub": {
+        "nullable": true,
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "name": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "FollowSuggestionClub",
+        "type": "object"
+      },
+      "FollowSuggestionMutual": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "nickname": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "FollowSuggestionMutual",
+        "type": "object"
+      },
+      "FollowSuggestionReason": {
+        "description": "The one reason shown: follows_you, via_person, mutual, coach, box, club, sport, nearby, popular, newcomer or for_you",
+        "properties": {
+          "box": {
+            "nullable": true,
+            "properties": {
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "name": {
+                "nullable": true,
+                "type": "string"
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "title": "FollowSuggestionBox",
+            "type": "object"
+          },
+          "club": {
+            "nullable": true,
+            "properties": {
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "name": {
+                "nullable": true,
+                "type": "string"
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "title": "FollowSuggestionClub",
+            "type": "object"
+          },
+          "kind": {
+            "enum": [
+              "follows_you",
+              "via_person",
+              "mutual",
+              "coach",
+              "box",
+              "club",
+              "sport",
+              "nearby",
+              "popular",
+              "newcomer",
+              "for_you"
+            ],
+            "type": "string"
+          },
+          "mutual_count": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "mutuals": {
+            "description": "Up to two people the viewer follows who follow this person",
+            "items": {
+              "properties": {
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "nickname": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "title": "FollowSuggestionMutual",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "sport": {
+            "description": "A shared discipline key",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "mutual_count",
+          "mutuals"
+        ],
+        "title": "FollowSuggestionReason",
+        "type": "object"
+      },
+      "FollowSuggestionsResponse": {
+        "properties": {
+          "people": {
+            "items": {
+              "properties": {
+                "avatar_url": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "handle": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "nickname": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "private": {
+                  "description": "Following sends a request",
+                  "type": "boolean"
+                },
+                "reason": {
+                  "description": "The one reason shown: follows_you, via_person, mutual, coach, box, club, sport, nearby, popular, newcomer or for_you",
+                  "properties": {
+                    "box": {
+                      "nullable": true,
+                      "properties": {
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "name": {
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id"
+                      ],
+                      "title": "FollowSuggestionBox",
+                      "type": "object"
+                    },
+                    "club": {
+                      "nullable": true,
+                      "properties": {
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "name": {
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id"
+                      ],
+                      "title": "FollowSuggestionClub",
+                      "type": "object"
+                    },
+                    "kind": {
+                      "enum": [
+                        "follows_you",
+                        "via_person",
+                        "mutual",
+                        "coach",
+                        "box",
+                        "club",
+                        "sport",
+                        "nearby",
+                        "popular",
+                        "newcomer",
+                        "for_you"
+                      ],
+                      "type": "string"
+                    },
+                    "mutual_count": {
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "mutuals": {
+                      "description": "Up to two people the viewer follows who follow this person",
+                      "items": {
+                        "properties": {
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "nickname": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id"
+                        ],
+                        "title": "FollowSuggestionMutual",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "sport": {
+                      "description": "A shared discipline key",
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "mutual_count",
+                    "mutuals"
+                  ],
+                  "title": "FollowSuggestionReason",
+                  "type": "object"
+                }
+              },
+              "required": [
+                "id",
+                "private",
+                "reason"
+              ],
+              "title": "FollowSuggestion",
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "people"
+        ],
+        "title": "FollowSuggestionsResponse",
+        "type": "object"
+      },
       "Food": {
         "properties": {
           "barcode": {
@@ -101394,18 +101828,22 @@
         "type": "object"
       },
       "SocialPrivacy": {
-        "description": "ADR-193: a private account answers follow requests; searchable shows you in people search",
+        "description": "ADR-193: a private account answers follow requests; searchable shows you in people search and (ADR-561) in others' «Ίσως γνωρίζεις»; show_follow_suggestions shows that card on your Αρχική",
         "properties": {
           "private_account": {
             "type": "boolean"
           },
           "searchable": {
             "type": "boolean"
+          },
+          "show_follow_suggestions": {
+            "type": "boolean"
           }
         },
         "required": [
           "private_account",
-          "searchable"
+          "searchable",
+          "show_follow_suggestions"
         ],
         "title": "SocialPrivacy",
         "type": "object"
@@ -101416,6 +101854,9 @@
             "type": "boolean"
           },
           "searchable": {
+            "type": "boolean"
+          },
+          "show_follow_suggestions": {
             "type": "boolean"
           }
         },
@@ -101507,18 +101948,22 @@
             "type": "integer"
           },
           "privacy": {
-            "description": "ADR-193: a private account answers follow requests; searchable shows you in people search",
+            "description": "ADR-193: a private account answers follow requests; searchable shows you in people search and (ADR-561) in others' «Ίσως γνωρίζεις»; show_follow_suggestions shows that card on your Αρχική",
             "properties": {
               "private_account": {
                 "type": "boolean"
               },
               "searchable": {
                 "type": "boolean"
+              },
+              "show_follow_suggestions": {
+                "type": "boolean"
               }
             },
             "required": [
               "private_account",
-              "searchable"
+              "searchable",
+              "show_follow_suggestions"
             ],
             "title": "SocialPrivacy",
             "type": "object"
@@ -169459,6 +169904,379 @@
         ]
       }
     },
+    "/api/me/follow-suggestions": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.FollowSuggestionController.index",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "maximum": 50,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "«Και αυτοί ίσως»: also the people this person follows, when you may see them",
+            "in": "query",
+            "name": "seed",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "people": {
+                      "items": {
+                        "properties": {
+                          "avatar_url": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "handle": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "nickname": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "private": {
+                            "description": "Following sends a request",
+                            "type": "boolean"
+                          },
+                          "reason": {
+                            "description": "The one reason shown: follows_you, via_person, mutual, coach, box, club, sport, nearby, popular, newcomer or for_you",
+                            "properties": {
+                              "box": {
+                                "nullable": true,
+                                "properties": {
+                                  "id": {
+                                    "format": "uuid",
+                                    "type": "string"
+                                  },
+                                  "name": {
+                                    "nullable": true,
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "id"
+                                ],
+                                "title": "FollowSuggestionBox",
+                                "type": "object"
+                              },
+                              "club": {
+                                "nullable": true,
+                                "properties": {
+                                  "id": {
+                                    "format": "uuid",
+                                    "type": "string"
+                                  },
+                                  "name": {
+                                    "nullable": true,
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "id"
+                                ],
+                                "title": "FollowSuggestionClub",
+                                "type": "object"
+                              },
+                              "kind": {
+                                "enum": [
+                                  "follows_you",
+                                  "via_person",
+                                  "mutual",
+                                  "coach",
+                                  "box",
+                                  "club",
+                                  "sport",
+                                  "nearby",
+                                  "popular",
+                                  "newcomer",
+                                  "for_you"
+                                ],
+                                "type": "string"
+                              },
+                              "mutual_count": {
+                                "minimum": 0,
+                                "type": "integer"
+                              },
+                              "mutuals": {
+                                "description": "Up to two people the viewer follows who follow this person",
+                                "items": {
+                                  "properties": {
+                                    "id": {
+                                      "format": "uuid",
+                                      "type": "string"
+                                    },
+                                    "nickname": {
+                                      "nullable": true,
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "id"
+                                  ],
+                                  "title": "FollowSuggestionMutual",
+                                  "type": "object"
+                                },
+                                "type": "array"
+                              },
+                              "sport": {
+                                "description": "A shared discipline key",
+                                "nullable": true,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "kind",
+                              "mutual_count",
+                              "mutuals"
+                            ],
+                            "title": "FollowSuggestionReason",
+                            "type": "object"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "private",
+                          "reason"
+                        ],
+                        "title": "FollowSuggestion",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "people"
+                  ],
+                  "title": "FollowSuggestionsResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Suggestions"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "ADR-561: people to follow, ranked, each with one reason; broad for new people, personal as their network grows",
+        "tags": [
+          "Follows"
+        ]
+      }
+    },
+    "/api/me/follow-suggestions/{id}/dismiss": {
+      "delete": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.FollowSuggestionController.undismiss",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Done"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Undo ✕",
+        "tags": [
+          "Follows"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.FollowSuggestionController.dismiss",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "reason": {
+                    "enum": [
+                      "follows_you",
+                      "via_person",
+                      "mutual",
+                      "coach",
+                      "box",
+                      "club",
+                      "sport",
+                      "nearby",
+                      "popular",
+                      "newcomer",
+                      "for_you"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "reason"
+                ],
+                "title": "FollowSuggestionAction",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Done"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "✕: stop suggesting this person, unless they start following you",
+        "tags": [
+          "Follows"
+        ]
+      }
+    },
+    "/api/me/follow-suggestions/{id}/follow": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.FollowSuggestionController.follow",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "reason": {
+                    "enum": [
+                      "follows_you",
+                      "via_person",
+                      "mutual",
+                      "coach",
+                      "box",
+                      "club",
+                      "sport",
+                      "nearby",
+                      "popular",
+                      "newcomer",
+                      "for_you"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "reason"
+                ],
+                "title": "FollowSuggestionAction",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "enum": [
+                        "none",
+                        "requested",
+                        "active"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "status"
+                  ],
+                  "title": "FollowStatusResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Status"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Follow a suggested person (a request when private), counted for the reason shown",
+        "tags": [
+          "Follows"
+        ]
+      }
+    },
     "/api/me/followers": {
       "get": {
         "callbacks": {},
@@ -182707,18 +183525,22 @@
                       "type": "integer"
                     },
                     "privacy": {
-                      "description": "ADR-193: a private account answers follow requests; searchable shows you in people search",
+                      "description": "ADR-193: a private account answers follow requests; searchable shows you in people search and (ADR-561) in others' «Ίσως γνωρίζεις»; show_follow_suggestions shows that card on your Αρχική",
                       "properties": {
                         "private_account": {
                           "type": "boolean"
                         },
                         "searchable": {
                           "type": "boolean"
+                        },
+                        "show_follow_suggestions": {
+                          "type": "boolean"
                         }
                       },
                       "required": [
                         "private_account",
-                        "searchable"
+                        "searchable",
+                        "show_follow_suggestions"
                       ],
                       "title": "SocialPrivacy",
                       "type": "object"
@@ -182954,6 +183776,9 @@
                   },
                   "searchable": {
                     "type": "boolean"
+                  },
+                  "show_follow_suggestions": {
+                    "type": "boolean"
                   }
                 },
                 "title": "SocialPrivacyRequest",
@@ -182968,18 +183793,22 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "description": "ADR-193: a private account answers follow requests; searchable shows you in people search",
+                  "description": "ADR-193: a private account answers follow requests; searchable shows you in people search and (ADR-561) in others' «Ίσως γνωρίζεις»; show_follow_suggestions shows that card on your Αρχική",
                   "properties": {
                     "private_account": {
                       "type": "boolean"
                     },
                     "searchable": {
                       "type": "boolean"
+                    },
+                    "show_follow_suggestions": {
+                      "type": "boolean"
                     }
                   },
                   "required": [
                     "private_account",
-                    "searchable"
+                    "searchable",
+                    "show_follow_suggestions"
                   ],
                   "title": "SocialPrivacy",
                   "type": "object"

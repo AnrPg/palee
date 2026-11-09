@@ -44,7 +44,8 @@ defmodule Palee.Application.SocialProfile do
 
     %{
       private_account: if(settings, do: settings.private_account, else: false),
-      searchable: if(settings, do: settings.searchable, else: true)
+      searchable: if(settings, do: settings.searchable, else: true),
+      show_follow_suggestions: if(settings, do: settings.show_follow_suggestions, else: true)
     }
   end
 
@@ -52,7 +53,7 @@ defmodule Palee.Application.SocialProfile do
   def set_privacy(%{user_id: user_id} = context, attrs, now \\ DateTime.utc_now()) do
     changes =
       attrs
-      |> Map.take([:private_account, :searchable])
+      |> Map.take([:private_account, :searchable, :show_follow_suggestions])
       |> Enum.filter(fn {_key, value} -> is_boolean(value) end)
       |> Map.new()
 

@@ -6648,7 +6648,7 @@
     "goPublicConfirm": "{count, plural, one {Passer en public ? La # demande en attente sera acceptée maintenant.} other {Passer en public ? Les # demandes en attente seront acceptées maintenant.}}",
     "goPublic": "Passer en public",
     "keepPrivate": "Rester privé",
-    "searchableToggle": "Apparaître dans la recherche",
+    "searchableToggle": "M’afficher dans la recherche et les suggestions",
     "searchableOn": "Tout le monde sur Palee peut te trouver par ton nom ou ton @pseudo.",
     "searchablePrivate": "Les gens de tes clubs et de tes abonnements te trouvent par ton nom ou ton @pseudo. Les autres, quand ton compte sera public.",
     "searchableOff": "Dans la recherche, seules les personnes que tu connais déjà, de tes clubs ou de tes abonnements, te trouvent.",
@@ -6710,7 +6710,10 @@
       "currentStreak": "{count, plural, one {jour d’affilée} other {jours d’affilée}}",
       "longestStreak": "{count, plural, one {jour, plus longue série} other {jours, plus longue série}}",
       "totalPrs": "{count, plural, one {PR} other {PR}}"
-    }
+    },
+    "suggestionsToggle": "«Tu connais peut-être» sur l’Accueil",
+    "suggestionsOn": "L’Accueil te suggère qui suivre, avec la raison pour chacun.",
+    "suggestionsOff": "Masqué sur ton Accueil. «Trouver» garde les suggestions."
   },
   "BoxPage": {
     "allWeek": "Toute la semaine",
@@ -20003,6 +20006,34 @@
       "points": "Votre propre domaine | Planning, forfaits et « Rejoindre la box » | Produits, stock et commandes | Paiement en ligne ou retrait à l’accueil",
       "coachPoints": "Votre propre domaine | Forfaits et un bouton pour vous réserver | Produits, stock et commandes | Paiement en ligne ou en personne",
       "cta": "Commencer gratuitement"
+    }
+  },
+  "FollowSuggestions": {
+    "title": "Tu connais peut-être",
+    "seeAll": "Tout voir",
+    "more": "Plus",
+    "hide": "Masquer les suggestions",
+    "dismiss": "Retirer {name} des suggestions",
+    "dismissed": "Ne sera plus suggéré.",
+    "undo": "Annuler",
+    "forYou": "Suggestions pour toi",
+    "also": "Tu aimeras peut-être aussi",
+    "failed": "Les suggestions n’ont pas chargé.",
+    "reason": {
+      "followsYou": "Te suit",
+      "mutual": "En commun : {names}{more, plural, =0 {} other { et # autres}}",
+      "mutualCount": "{count, plural, one {# abonnement en commun} other {# abonnements en commun}}",
+      "viaPerson": "Suivi par : {name}",
+      "coach": "Coach à {box}",
+      "box": "À {box}",
+      "club": "Dans le club {club}",
+      "sport": "Fait aussi du {sport}",
+      "sports": "Fait les mêmes sports",
+      "nearby": "Près de toi",
+      "popular": "Populaire sur Palee",
+      "newInBox": "Nouveau à {box}",
+      "newOnPalee": "Nouveau sur Palee",
+      "forYou": "Suggéré pour toi"
     }
   }
 }

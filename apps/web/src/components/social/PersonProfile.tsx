@@ -18,6 +18,7 @@ import { MeSheetButton } from "@/components/member-app/me/MeSheet";
 import { SharedPRCard } from "@/components/pantheon/SharedPRsSection";
 import { useSession } from "@/components/session-provider";
 import { FollowButton } from "@/components/social/FollowButton";
+import { AfterFollowSuggestions } from "@/components/social/FollowSuggestions";
 import { MediaGrid } from "@/components/social/MediaGrid";
 import { PersonAvatar } from "@/components/social/PersonAvatar";
 import { AddTabButton, EditProfileButton, ShareProfileButton } from "@/components/social/ProfileActions";
@@ -166,6 +167,7 @@ function ProfileHeader({ profile }: { profile: Person }) {
           </>
         )}
       </div>
+      {mine ? null : <AfterFollowSuggestions personId={profile.id} personName={profile.nickname ?? null} />}
     </header>
   );
 }

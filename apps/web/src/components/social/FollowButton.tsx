@@ -33,6 +33,7 @@ export function FollowButton({
   wide = false,
   quiet = false,
   compact = false,
+  onFollow,
 }: {
   targetType: FollowTargetType;
   targetId: string;
@@ -44,6 +45,8 @@ export function FollowButton({
   quiet?: boolean;
   /** ADR-554: the profile header's short, flat button (Instagram); fills its grid cell. */
   compact?: boolean;
+  /** ADR-561: follow through another endpoint (a suggestion, counted for its reason). */
+  onFollow?: (token: string) => Promise<FollowStatus>;
 }) {
   const t = useTranslations("Social");
   const tUi = useUiTranslations();
@@ -121,7 +124,7 @@ export function FollowButton({
               ? { border: "1px solid var(--border)", color: "var(--text)" }
               : { background: "var(--primary)", color: "var(--primary-contrast)" }
           }
-          onClick={() => void run(() => follow(token!, targetType, targetId))}
+          onClick={() => void run(() => (onFollow ? onFollow(token!) : follow(token!, targetType, targetId)))}
         >
           {followsMe ? t("followBack") : t("follow")}
         </button>

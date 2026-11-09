@@ -943,6 +943,19 @@ defmodule PaleeWeb.FallbackController do
     |> json(%{code: "invalid_follow_target", error: "This cannot be followed"})
   end
 
+  # ADR-561.
+  def call(conn, {:error, :invalid_follow_suggestion_reason}) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> json(%{code: "invalid_follow_suggestion_reason", error: "Unknown suggestion reason"})
+  end
+
+  def call(conn, {:error, :invalid_follow_suggestion_limit}) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> json(%{code: "invalid_follow_suggestion_limit", error: "Invalid limit"})
+  end
+
   def call(conn, {:error, :cannot_follow_self}) do
     conn
     |> put_status(:unprocessable_entity)

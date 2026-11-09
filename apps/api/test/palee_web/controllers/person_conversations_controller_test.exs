@@ -92,7 +92,12 @@ defmodule PaleeWeb.PersonConversationsControllerTest do
 
     summary = json_response(get(ctx.as.(ana), "/api/me/social"), 200)
     assert summary["follow_groups"]["buddies"] == 1
-    assert summary["privacy"] == %{"private_account" => true, "searchable" => true}
+
+    assert summary["privacy"] == %{
+             "private_account" => true,
+             "searchable" => true,
+             "show_follow_suggestions" => true
+           }
 
     buddies = json_response(get(ctx.as.(ana), "/api/me/buddies-list"), 200)["entries"]
     assert [%{"person" => %{"id" => ben_id, "buddy" => true}}] = buddies
@@ -196,7 +201,11 @@ defmodule PaleeWeb.PersonConversationsControllerTest do
     eli = user_fixture()
 
     assert json_response(get(ctx.as.(eli), "/api/me/social"), 200)["privacy"] ==
-             %{"private_account" => false, "searchable" => true}
+             %{
+               "private_account" => false,
+               "searchable" => true,
+               "show_follow_suggestions" => true
+             }
 
     assert json_response(follow!(ctx, dora, eli), 200)["status"] == "active"
     refute json_response(get(ctx.as.(dora), "/api/people/#{eli.id}"), 200)["private"]
@@ -212,7 +221,11 @@ defmodule PaleeWeb.PersonConversationsControllerTest do
     assert json_response(
              ctx.as.(ben) |> send_json(:put, "/api/me/social/privacy", %{private_account: false}),
              200
-           ) == %{"private_account" => false, "searchable" => true}
+           ) == %{
+             "private_account" => false,
+             "searchable" => true,
+             "show_follow_suggestions" => true
+           }
 
     assert json_response(get(ctx.as.(cleo), "/api/me/follows/user/#{ben.id}"), 200)["status"] ==
              "active"

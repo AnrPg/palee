@@ -6648,7 +6648,7 @@
     "goPublicConfirm": "{count, plural, one {Go public? The # waiting request will be accepted now.} other {Go public? The # waiting requests will be accepted now.}}",
     "goPublic": "Go public",
     "keepPrivate": "Keep private",
-    "searchableToggle": "Show me in search",
+    "searchableToggle": "Show me in search and suggestions",
     "searchableOn": "Anyone on Palee can find you by name or @handle.",
     "searchablePrivate": "People from your clubs and your follows can find you by name or @handle. Everyone else will once your account is public.",
     "searchableOff": "Only people you already know, from your clubs or your follows, can find you in search.",
@@ -6710,7 +6710,10 @@
       "currentStreak": "{count, plural, one {day in a row now} other {days in a row now}}",
       "longestStreak": "{count, plural, one {day, longest streak} other {days, longest streak}}",
       "totalPrs": "{count, plural, one {PR} other {PRs}}"
-    }
+    },
+    "suggestionsToggle": "«People you may know» on Home",
+    "suggestionsOn": "Home suggests people to follow, each with why.",
+    "suggestionsOff": "Hidden from your Home. Find still suggests people."
   },
   "BoxPage": {
     "allWeek": "Whole week",
@@ -20003,6 +20006,34 @@
       "points": "Your own domain | Schedule, packages and «Join the box» | Products, stock and orders | Pay online or pick up at the desk",
       "coachPoints": "Your own domain | Packages and a button to book you | Products, stock and orders | Pay online or pick up in person",
       "cta": "Start free"
+    }
+  },
+  "FollowSuggestions": {
+    "title": "People you may know",
+    "seeAll": "See all",
+    "more": "More",
+    "hide": "Hide suggestions",
+    "dismiss": "Remove {name} from suggestions",
+    "dismissed": "Won't be suggested again.",
+    "undo": "Undo",
+    "forYou": "Suggested for you",
+    "also": "You might also like",
+    "failed": "Suggestions didn't load.",
+    "reason": {
+      "followsYou": "Follows you",
+      "mutual": "Mutual: {names}{more, plural, =0 {} other { and # more}}",
+      "mutualCount": "{count, plural, one {# mutual follow} other {# mutual follows}}",
+      "viaPerson": "Followed by {name}",
+      "coach": "Coach at {box}",
+      "box": "At {box}",
+      "club": "In the club {club}",
+      "sport": "Also does {sport}",
+      "sports": "Does the same sports",
+      "nearby": "Near you",
+      "popular": "Popular on Palee",
+      "newInBox": "New at {box}",
+      "newOnPalee": "New on Palee",
+      "forYou": "Suggested for you"
     }
   }
 }

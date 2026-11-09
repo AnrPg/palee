@@ -6648,7 +6648,7 @@
     "goPublicConfirm": "{count, plural, one {Öffentlich machen? Die # wartende Anfrage wird jetzt angenommen.} other {Öffentlich machen? Die # wartenden Anfragen werden jetzt angenommen.}}",
     "goPublic": "Öffentlich machen",
     "keepPrivate": "Privat lassen",
-    "searchableToggle": "In der Suche anzeigen",
+    "searchableToggle": "In Suche und Vorschlägen anzeigen",
     "searchableOn": "Alle auf Palee können dich über deinen Namen oder dein @Handle finden.",
     "searchablePrivate": "Leute aus deinen Clubs und deinen Follows finden dich über Namen oder @Handle. Alle anderen, sobald dein Konto öffentlich ist.",
     "searchableOff": "In der Suche finden dich nur Leute, die du schon kennst – aus deinen Clubs oder deinen Follows.",
@@ -6710,7 +6710,10 @@
       "currentStreak": "{count, plural, one {Tag in Folge} other {Tage in Folge}}",
       "longestStreak": "{count, plural, one {Tag, längste Serie} other {Tage, längste Serie}}",
       "totalPrs": "{count, plural, one {PR} other {PRs}}"
-    }
+    },
+    "suggestionsToggle": "«Vielleicht kennst du» auf der Startseite",
+    "suggestionsOn": "Die Startseite schlägt Leute zum Folgen vor, jeweils mit Grund.",
+    "suggestionsOff": "Auf deiner Startseite ausgeblendet. Unter «Finden» bleiben die Vorschläge."
   },
   "BoxPage": {
     "allWeek": "Ganze Woche",
@@ -20003,6 +20006,34 @@
       "points": "Deine eigene Domain | Plan, Pakete und „Mitglied werden“ | Produkte, Bestand und Bestellungen | Online bezahlen oder am Empfang abholen",
       "coachPoints": "Deine eigene Domain | Pakete und ein Button, um dich zu buchen | Produkte, Bestand und Bestellungen | Online oder persönlich bezahlen",
       "cta": "Kostenlos starten"
+    }
+  },
+  "FollowSuggestions": {
+    "title": "Vielleicht kennst du",
+    "seeAll": "Alle ansehen",
+    "more": "Mehr",
+    "hide": "Vorschläge ausblenden",
+    "dismiss": "{name} aus den Vorschlägen entfernen",
+    "dismissed": "Wird nicht mehr vorgeschlagen.",
+    "undo": "Rückgängig",
+    "forYou": "Vorschläge für dich",
+    "also": "Das könnte dir auch gefallen",
+    "failed": "Die Vorschläge wurden nicht geladen.",
+    "reason": {
+      "followsYou": "Folgt dir",
+      "mutual": "Gemeinsame Kontakte: {names}{more, plural, =0 {} other { und # weitere}}",
+      "mutualCount": "{count, plural, one {# gemeinsamer Kontakt} other {# gemeinsame Kontakte}}",
+      "viaPerson": "Gefolgt von: {name}",
+      "coach": "Coach bei {box}",
+      "box": "Bei {box}",
+      "club": "Im Club {club}",
+      "sport": "Auch {sport}",
+      "sports": "Macht dieselben Sportarten",
+      "nearby": "In deiner Nähe",
+      "popular": "Beliebt auf Palee",
+      "newInBox": "Neu bei {box}",
+      "newOnPalee": "Neu auf Palee",
+      "forYou": "Für dich vorgeschlagen"
     }
   }
 }

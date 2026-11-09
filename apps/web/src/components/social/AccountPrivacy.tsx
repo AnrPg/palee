@@ -15,7 +15,9 @@ import { ErrorNotice } from "@/components/ui/ErrorNotice";
 /**
  * Κοινοποίηση & ορατότητα › «Ιδιωτικός λογαριασμός» and «Εμφάνιση στην
  * αναζήτηση» (ADR-193 §2, amended 2026-10-25). Public and searchable are the
- * default; a private account makes every follow a request.
+ * default; a private account makes every follow a request. Searchable also
+ * puts you in others' «Ίσως γνωρίζεις»; the third switch brings that card
+ * back to your own Αρχική after «Κρύψε τις προτάσεις» (ADR-561).
  * Going public accepts the requests that are waiting, so with any waiting it
  * asks first; going private again keeps current followers.
  */
@@ -28,6 +30,7 @@ export function AccountPrivacySetting() {
   const privacy = summary.data?.privacy;
   const privateAccount = privacy?.private_account ?? false;
   const searchable = privacy?.searchable ?? true;
+  const suggestions = privacy?.show_follow_suggestions ?? true;
   const waiting = summary.data?.requests_count ?? 0;
   const [confirmingPublic, setConfirmingPublic] = useState(false);
 
@@ -101,6 +104,18 @@ export function AccountPrivacySetting() {
         <p id="searchable-state" className="text-sm" style={{ color: "var(--muted)" }}>
           {/* A private account shows up only to people who already know it (ADR-193 §4). */}
           {!searchable ? t("searchableOff") : privateAccount ? t("searchablePrivate") : t("searchableOn")}
+        </p>
+      </div>
+      <div className="space-y-2">
+        <Switch
+          id="follow-suggestions"
+          label={t("suggestionsToggle")}
+          checked={suggestions}
+          disabled={disabled}
+          onToggle={() => save.mutate({ show_follow_suggestions: !suggestions })}
+        />
+        <p id="follow-suggestions-state" className="text-sm" style={{ color: "var(--muted)" }}>
+          {suggestions ? t("suggestionsOn") : t("suggestionsOff")}
         </p>
       </div>
       {save.error ? (
