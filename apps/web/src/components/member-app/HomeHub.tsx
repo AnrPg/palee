@@ -30,6 +30,7 @@ import { FeedPage } from "@/components/member-app/HubParts";
 import { WellnessStrip } from "@/components/member-app/wellness/WellnessStrip";
 import { useLanding } from "@/components/member-app/progress/use-landing";
 import { useSession } from "@/components/session-provider";
+import { HomeFollowSuggestions } from "@/components/social/FollowSuggestions";
 import { ReviewAskCard } from "@/components/reviews/ReviewAskCard";
 import { MyTrialsCard } from "@/components/trials/MyTrialsCard";
 import { useSelectedMembershipRole } from "@/lib/membership-role";
@@ -38,7 +39,7 @@ import { useSelectedMembershipRole } from "@/lib/membership-role";
  * Αρχική (brief §6.1, §7.1): what is happening at my gym. Fixed order:
  * greeting, the gym's WOD of the day, «Τα events μου» (ADR-153), challenges,
  * leaderboard (trials at other boxes and their follow-up after the greeting,
- * board 6), then the feed of the member's clubs (ADR-138) under the club
+ * board 6), «Ίσως γνωρίζεις» (ADR-561), then the feed of the member's clubs (ADR-138) under the club
  * bar, with ⊕ to post and ♡ for notifications and follow requests. The WOD slot is the selected gym club's #wod-σήμερα
  * card with its leaderboard (ADR-138 D6). «Οι δικοί μου | Γύρω μου» switches
  * to /around (ADR-154) and is remembered.
@@ -88,6 +89,8 @@ export function HomeHub() {
       {gamification && membership ? (
         <LeaderboardCard leaderboard={gamification.leaderboard} />
       ) : null}
+      {/* ADR-561: «Ίσως γνωρίζεις», right above the posts. */}
+      <HomeFollowSuggestions />
       <ClubPosts clubs={clubs.data ?? []} />
     </FeedPage>
   );

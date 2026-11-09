@@ -24,6 +24,7 @@ import { useListFilter } from "@/components/filters/use-remembered-filter";
 import { HubCard, HubPage } from "@/components/member-app/HubParts";
 import { useSession } from "@/components/session-provider";
 import { BoxResultRow, useBoxSearch } from "@/components/social/BoxSearch";
+import { FindFollowSuggestions } from "@/components/social/FollowSuggestions";
 import { PersonResultRow, usePeopleSearch } from "@/components/social/PeopleSearch";
 import { isPeopleSearch } from "@/components/social/social-model";
 import { useDebounced } from "@/hooks/useDebounced";
@@ -96,6 +97,8 @@ export function FindPage() {
         className="min-h-11 w-full rounded-2xl px-3 text-sm"
         style={{ background: "var(--panel)", border: "1px solid var(--border)", color: "var(--text)" }}
       />
+      {/* ADR-561: «Προτάσεις για σένα» while nothing is typed. */}
+      {q === "" ? <FindFollowSuggestions /> : null}
       {filter && !found.isPending ? (
         <ListFilters
           shape={FIND_SHAPE}

@@ -6648,7 +6648,7 @@
     "goPublicConfirm": "{count, plural, one {Openbaar maken? Het # wachtende verzoek wordt nu geaccepteerd.} other {Openbaar maken? De # wachtende verzoeken worden nu geaccepteerd.}}",
     "goPublic": "Openbaar maken",
     "keepPrivate": "Privé houden",
-    "searchableToggle": "Toon me in zoekresultaten",
+    "searchableToggle": "Toon me in zoeken en suggesties",
     "searchableOn": "Iedereen op Palee kan je vinden op naam of @handle.",
     "searchablePrivate": "Mensen uit je clubs en je volgrelaties vinden je op naam of @handle. Anderen zodra je account openbaar is.",
     "searchableOff": "In zoekresultaten vinden alleen mensen die je al kent je, uit je clubs of je volgrelaties.",
@@ -6710,7 +6710,10 @@
       "currentStreak": "{count, plural, one {dag op rij} other {dagen op rij}}",
       "longestStreak": "{count, plural, one {dag, langste reeks} other {dagen, langste reeks}}",
       "totalPrs": "{count, plural, one {PR} other {PR's}}"
-    }
+    },
+    "suggestionsToggle": "«Misschien ken je» op Home",
+    "suggestionsOn": "Home stelt mensen voor om te volgen, telkens met de reden.",
+    "suggestionsOff": "Verborgen op je Home. Bij «Zoeken» blijven de suggesties."
   },
   "BoxPage": {
     "allWeek": "Hele week",
@@ -20003,6 +20006,34 @@
       "points": "Je eigen domein | Rooster, pakketten en ‘Word lid van de box’ | Producten, voorraad en bestellingen | Online betalen of ophalen aan de balie",
       "coachPoints": "Je eigen domein | Pakketten en een knop om je te boeken | Producten, voorraad en bestellingen | Online of persoonlijk betalen",
       "cta": "Gratis beginnen"
+    }
+  },
+  "FollowSuggestions": {
+    "title": "Misschien ken je",
+    "seeAll": "Alles zien",
+    "more": "Meer",
+    "hide": "Suggesties verbergen",
+    "dismiss": "{name} uit de suggesties halen",
+    "dismissed": "Wordt niet meer voorgesteld.",
+    "undo": "Ongedaan maken",
+    "forYou": "Suggesties voor jou",
+    "also": "Misschien ook iets voor jou",
+    "failed": "De suggesties zijn niet geladen.",
+    "reason": {
+      "followsYou": "Volgt jou",
+      "mutual": "Gemeenschappelijk: {names}{more, plural, =0 {} other { en # anderen}}",
+      "mutualCount": "{count, plural, one {# gemeenschappelijke volger} other {# gemeenschappelijke volgers}}",
+      "viaPerson": "Gevolgd door: {name}",
+      "coach": "Coach bij {box}",
+      "box": "Bij {box}",
+      "club": "In de club {club}",
+      "sport": "Doet ook {sport}",
+      "sports": "Doet dezelfde sporten",
+      "nearby": "Bij jou in de buurt",
+      "popular": "Populair op Palee",
+      "newInBox": "Nieuw bij {box}",
+      "newOnPalee": "Nieuw op Palee",
+      "forYou": "Voorgesteld voor jou"
     }
   }
 }

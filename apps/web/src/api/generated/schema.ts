@@ -3257,6 +3257,58 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/me/follow-suggestions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** ADR-561: people to follow, ranked, each with one reason; broad for new people, personal as their network grows */
+        get: operations["PaleeWeb.FollowSuggestionController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/follow-suggestions/{id}/dismiss": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** ✕: stop suggesting this person, unless they start following you */
+        post: operations["PaleeWeb.FollowSuggestionController.dismiss"];
+        /** Undo ✕ */
+        delete: operations["PaleeWeb.FollowSuggestionController.undismiss"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/follow-suggestions/{id}/follow": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Follow a suggested person (a request when private), counted for the reason shown */
+        post: operations["PaleeWeb.FollowSuggestionController.follow"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/followers": {
         parameters: {
             query?: never;
@@ -36644,6 +36696,138 @@ export interface components {
             /** @enum {string} */
             status: "none" | "requested" | "active";
         };
+        /** FollowSuggestion */
+        FollowSuggestion: {
+            avatar_url?: string | null;
+            handle?: string | null;
+            /** Format: uuid */
+            id: string;
+            nickname?: string | null;
+            /** @description Following sends a request */
+            private: boolean;
+            /**
+             * FollowSuggestionReason
+             * @description The one reason shown: follows_you, via_person, mutual, coach, box, club, sport, nearby, popular, newcomer or for_you
+             */
+            reason: {
+                /** FollowSuggestionBox */
+                box?: {
+                    /** Format: uuid */
+                    id: string;
+                    name?: string | null;
+                } | null;
+                /** FollowSuggestionClub */
+                club?: {
+                    /** Format: uuid */
+                    id: string;
+                    name?: string | null;
+                } | null;
+                /** @enum {string} */
+                kind: "follows_you" | "via_person" | "mutual" | "coach" | "box" | "club" | "sport" | "nearby" | "popular" | "newcomer" | "for_you";
+                mutual_count: number;
+                /** @description Up to two people the viewer follows who follow this person */
+                mutuals: {
+                    /** Format: uuid */
+                    id: string;
+                    nickname?: string | null;
+                }[];
+                /** @description A shared discipline key */
+                sport?: string | null;
+            };
+        };
+        /** FollowSuggestionAction */
+        FollowSuggestionAction: {
+            /** @enum {string} */
+            reason: "follows_you" | "via_person" | "mutual" | "coach" | "box" | "club" | "sport" | "nearby" | "popular" | "newcomer" | "for_you";
+        };
+        /** FollowSuggestionBox */
+        FollowSuggestionBox: {
+            /** Format: uuid */
+            id: string;
+            name?: string | null;
+        } | null;
+        /** FollowSuggestionClub */
+        FollowSuggestionClub: {
+            /** Format: uuid */
+            id: string;
+            name?: string | null;
+        } | null;
+        /** FollowSuggestionMutual */
+        FollowSuggestionMutual: {
+            /** Format: uuid */
+            id: string;
+            nickname?: string | null;
+        };
+        /**
+         * FollowSuggestionReason
+         * @description The one reason shown: follows_you, via_person, mutual, coach, box, club, sport, nearby, popular, newcomer or for_you
+         */
+        FollowSuggestionReason: {
+            /** FollowSuggestionBox */
+            box?: {
+                /** Format: uuid */
+                id: string;
+                name?: string | null;
+            } | null;
+            /** FollowSuggestionClub */
+            club?: {
+                /** Format: uuid */
+                id: string;
+                name?: string | null;
+            } | null;
+            /** @enum {string} */
+            kind: "follows_you" | "via_person" | "mutual" | "coach" | "box" | "club" | "sport" | "nearby" | "popular" | "newcomer" | "for_you";
+            mutual_count: number;
+            /** @description Up to two people the viewer follows who follow this person */
+            mutuals: {
+                /** Format: uuid */
+                id: string;
+                nickname?: string | null;
+            }[];
+            /** @description A shared discipline key */
+            sport?: string | null;
+        };
+        /** FollowSuggestionsResponse */
+        FollowSuggestionsResponse: {
+            people: {
+                avatar_url?: string | null;
+                handle?: string | null;
+                /** Format: uuid */
+                id: string;
+                nickname?: string | null;
+                /** @description Following sends a request */
+                private: boolean;
+                /**
+                 * FollowSuggestionReason
+                 * @description The one reason shown: follows_you, via_person, mutual, coach, box, club, sport, nearby, popular, newcomer or for_you
+                 */
+                reason: {
+                    /** FollowSuggestionBox */
+                    box?: {
+                        /** Format: uuid */
+                        id: string;
+                        name?: string | null;
+                    } | null;
+                    /** FollowSuggestionClub */
+                    club?: {
+                        /** Format: uuid */
+                        id: string;
+                        name?: string | null;
+                    } | null;
+                    /** @enum {string} */
+                    kind: "follows_you" | "via_person" | "mutual" | "coach" | "box" | "club" | "sport" | "nearby" | "popular" | "newcomer" | "for_you";
+                    mutual_count: number;
+                    /** @description Up to two people the viewer follows who follow this person */
+                    mutuals: {
+                        /** Format: uuid */
+                        id: string;
+                        nickname?: string | null;
+                    }[];
+                    /** @description A shared discipline key */
+                    sport?: string | null;
+                };
+            }[];
+        };
         /** Food */
         Food: {
             barcode?: string | null;
@@ -51434,16 +51618,18 @@ export interface components {
         };
         /**
          * SocialPrivacy
-         * @description ADR-193: a private account answers follow requests; searchable shows you in people search
+         * @description ADR-193: a private account answers follow requests; searchable shows you in people search and (ADR-561) in others' «Ίσως γνωρίζεις»; show_follow_suggestions shows that card on your Αρχική
          */
         SocialPrivacy: {
             private_account: boolean;
             searchable: boolean;
+            show_follow_suggestions: boolean;
         };
         /** SocialPrivacyRequest */
         SocialPrivacyRequest: {
             private_account?: boolean;
             searchable?: boolean;
+            show_follow_suggestions?: boolean;
         };
         /** SocialSummary */
         SocialSummary: {
@@ -51487,11 +51673,12 @@ export interface components {
             posts_count: number;
             /**
              * SocialPrivacy
-             * @description ADR-193: a private account answers follow requests; searchable shows you in people search
+             * @description ADR-193: a private account answers follow requests; searchable shows you in people search and (ADR-561) in others' «Ίσως γνωρίζεις»; show_follow_suggestions shows that card on your Αρχική
              */
             privacy: {
                 private_account: boolean;
                 searchable: boolean;
+                show_follow_suggestions: boolean;
             };
             requests_count: number;
         };
@@ -75793,6 +75980,152 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.FollowSuggestionController.index": {
+        parameters: {
+            query?: {
+                limit?: number;
+                /** @description «Και αυτοί ίσως»: also the people this person follows, when you may see them */
+                seed?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Suggestions */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        people: {
+                            avatar_url?: string | null;
+                            handle?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            nickname?: string | null;
+                            /** @description Following sends a request */
+                            private: boolean;
+                            /**
+                             * FollowSuggestionReason
+                             * @description The one reason shown: follows_you, via_person, mutual, coach, box, club, sport, nearby, popular, newcomer or for_you
+                             */
+                            reason: {
+                                /** FollowSuggestionBox */
+                                box?: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name?: string | null;
+                                } | null;
+                                /** FollowSuggestionClub */
+                                club?: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name?: string | null;
+                                } | null;
+                                /** @enum {string} */
+                                kind: "follows_you" | "via_person" | "mutual" | "coach" | "box" | "club" | "sport" | "nearby" | "popular" | "newcomer" | "for_you";
+                                mutual_count: number;
+                                /** @description Up to two people the viewer follows who follow this person */
+                                mutuals: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    nickname?: string | null;
+                                }[];
+                                /** @description A shared discipline key */
+                                sport?: string | null;
+                            };
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.FollowSuggestionController.dismiss": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    reason: "follows_you" | "via_person" | "mutual" | "coach" | "box" | "club" | "sport" | "nearby" | "popular" | "newcomer" | "for_you";
+                };
+            };
+        };
+        responses: {
+            /** @description Done */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.FollowSuggestionController.undismiss": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Done */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.FollowSuggestionController.follow": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    reason: "follows_you" | "via_person" | "mutual" | "coach" | "box" | "club" | "sport" | "nearby" | "popular" | "newcomer" | "for_you";
+                };
+            };
+        };
+        responses: {
+            /** @description Status */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        status: "none" | "requested" | "active";
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.FollowController.followers": {
         parameters: {
             query?: {
@@ -80812,11 +81145,12 @@ export interface operations {
                         posts_count: number;
                         /**
                          * SocialPrivacy
-                         * @description ADR-193: a private account answers follow requests; searchable shows you in people search
+                         * @description ADR-193: a private account answers follow requests; searchable shows you in people search and (ADR-561) in others' «Ίσως γνωρίζεις»; show_follow_suggestions shows that card on your Αρχική
                          */
                         privacy: {
                             private_account: boolean;
                             searchable: boolean;
+                            show_follow_suggestions: boolean;
                         };
                         requests_count: number;
                     };
@@ -80923,6 +81257,7 @@ export interface operations {
                 "application/json": {
                     private_account?: boolean;
                     searchable?: boolean;
+                    show_follow_suggestions?: boolean;
                 };
             };
         };
@@ -80936,6 +81271,7 @@ export interface operations {
                     "application/json": {
                         private_account: boolean;
                         searchable: boolean;
+                        show_follow_suggestions: boolean;
                     };
                 };
             };

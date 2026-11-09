@@ -6648,7 +6648,7 @@
     "goPublicConfirm": "{count, plural, one {Renderlo pubblico? La # richiesta in attesa verrà accettata ora.} other {Renderlo pubblico? Le # richieste in attesa verranno accettate ora.}}",
     "goPublic": "Rendi pubblico",
     "keepPrivate": "Resta privato",
-    "searchableToggle": "Mostrami nella ricerca",
+    "searchableToggle": "Mostrami nella ricerca e nei suggerimenti",
     "searchableOn": "Chiunque su Palee può trovarti per nome o @handle.",
     "searchablePrivate": "Ti trovano per nome o @handle le persone dei tuoi club e dei tuoi follow. Gli altri, quando l'account sarà pubblico.",
     "searchableOff": "Nella ricerca ti trova solo chi conosci già, dai tuoi club o dai tuoi follow.",
@@ -6710,7 +6710,10 @@
       "currentStreak": "{count, plural, one {giorno di fila} other {giorni di fila}}",
       "longestStreak": "{count, plural, one {giorno, serie più lunga} other {giorni, serie più lunga}}",
       "totalPrs": "{count, plural, one {PR} other {PR}}"
-    }
+    },
+    "suggestionsToggle": "«Forse conosci» nella Home",
+    "suggestionsOn": "La Home ti suggerisce chi seguire, con il motivo per ognuno.",
+    "suggestionsOff": "Nascosto dalla tua Home. In «Trova» i suggerimenti restano."
   },
   "BoxPage": {
     "allWeek": "Tutta la settimana",
@@ -20003,6 +20006,34 @@
       "points": "Il tuo dominio | Orario, pacchetti e «Iscriviti al box» | Prodotti, magazzino e ordini | Pagamento online o ritiro alla reception",
       "coachPoints": "Il tuo dominio | Pacchetti e un pulsante per prenotarti | Prodotti, magazzino e ordini | Pagamento online o di persona",
       "cta": "Inizia gratis"
+    }
+  },
+  "FollowSuggestions": {
+    "title": "Forse conosci",
+    "seeAll": "Vedi tutti",
+    "more": "Altro",
+    "hide": "Nascondi i suggerimenti",
+    "dismiss": "Togli {name} dai suggerimenti",
+    "dismissed": "Non verrà più suggerito.",
+    "undo": "Annulla",
+    "forYou": "Suggeriti per te",
+    "also": "Potrebbero piacerti anche",
+    "failed": "I suggerimenti non si sono caricati.",
+    "reason": {
+      "followsYou": "Ti segue",
+      "mutual": "In comune: {names}{more, plural, =0 {} other { e altri #}}",
+      "mutualCount": "{count, plural, one {# contatto in comune} other {# contatti in comune}}",
+      "viaPerson": "Seguito da: {name}",
+      "coach": "Coach a {box}",
+      "box": "A {box}",
+      "club": "Nel club {club}",
+      "sport": "Fa anche {sport}",
+      "sports": "Fa gli stessi sport",
+      "nearby": "Vicino a te",
+      "popular": "Popolare su Palee",
+      "newInBox": "Nuovo a {box}",
+      "newOnPalee": "Nuovo su Palee",
+      "forYou": "Suggerito per te"
     }
   }
 }
