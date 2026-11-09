@@ -365,12 +365,13 @@ defmodule PaleeWeb.Schemas.Social do
       title: "SocialPrivacy",
       type: :object,
       description:
-        "ADR-193: a private account answers follow requests; searchable shows you in people search",
+        "ADR-193: a private account answers follow requests; searchable shows you in people search and (ADR-561) in others' «Ίσως γνωρίζεις»; show_follow_suggestions shows that card on your Αρχική",
       properties: %{
         private_account: %Schema{type: :boolean},
-        searchable: %Schema{type: :boolean}
+        searchable: %Schema{type: :boolean},
+        show_follow_suggestions: %Schema{type: :boolean}
       },
-      required: [:private_account, :searchable]
+      required: [:private_account, :searchable, :show_follow_suggestions]
     }
   end
 
@@ -529,7 +530,8 @@ defmodule PaleeWeb.Schemas.Social do
       type: :object,
       properties: %{
         private_account: %Schema{type: :boolean},
-        searchable: %Schema{type: :boolean}
+        searchable: %Schema{type: :boolean},
+        show_follow_suggestions: %Schema{type: :boolean}
       }
     }
   end
@@ -555,6 +557,77 @@ defmodule PaleeWeb.Schemas.Social do
       type: :object,
       properties: %{people: %Schema{type: :array, items: person}},
       required: [:people]
+    }
+  end
+
+  # ADR-561: «Ίσως γνωρίζεις».
+  def follow_suggestions_response do
+    named = fn title ->
+      %Schema{
+        title: title,
+        type: :object,
+        nullable: true,
+        properties: %{id: @uuid, name: %Schema{type: :string, nullable: true}},
+        required: [:id]
+      }
+    end
+
+    reason = %Schema{
+      title: "FollowSuggestionReason",
+      type: :object,
+      description:
+        "The one reason shown: follows_you, via_person, mutual, coach, box, club, sport, nearby, popular, newcomer or for_you",
+      properties: %{
+        kind: follow_suggestion_reason(),
+        box: named.("FollowSuggestionBox"),
+        club: named.("FollowSuggestionClub"),
+        sport: %Schema{type: :string, nullable: true, description: "A shared discipline key"},
+        mutual_count: %Schema{type: :integer, minimum: 0},
+        mutuals: %Schema{
+          type: :array,
+          description: "Up to two people the viewer follows who follow this person",
+          items: %Schema{
+            title: "FollowSuggestionMutual",
+            type: :object,
+            properties: %{id: @uuid, nickname: %Schema{type: :string, nullable: true}},
+            required: [:id]
+          }
+        }
+      },
+      required: [:kind, :mutual_count, :mutuals]
+    }
+
+    person = %Schema{
+      title: "FollowSuggestion",
+      type: :object,
+      properties: %{
+        id: @uuid,
+        nickname: %Schema{type: :string, nullable: true},
+        handle: %Schema{type: :string, nullable: true},
+        avatar_url: %Schema{type: :string, nullable: true},
+        private: %Schema{type: :boolean, description: "Following sends a request"},
+        reason: reason
+      },
+      required: [:id, :private, :reason]
+    }
+
+    %Schema{
+      title: "FollowSuggestionsResponse",
+      type: :object,
+      properties: %{people: %Schema{type: :array, items: person}},
+      required: [:people]
+    }
+  end
+
+  def follow_suggestion_reason,
+    do: %Schema{type: :string, enum: Palee.Community.FollowSuggestions.reasons()}
+
+  def follow_suggestion_action do
+    %Schema{
+      title: "FollowSuggestionAction",
+      type: :object,
+      properties: %{reason: follow_suggestion_reason()},
+      required: [:reason]
     }
   end
 

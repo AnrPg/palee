@@ -435,6 +435,10 @@ config :palee,
        Palee.Infrastructure.Community.EctoSocialStore
 
 config :palee,
+       :community_follow_suggestion_store,
+       Palee.Infrastructure.Community.EctoFollowSuggestionStore
+
+config :palee,
        :conversation_store,
        Palee.Infrastructure.Conversations.EctoConversationStore
 

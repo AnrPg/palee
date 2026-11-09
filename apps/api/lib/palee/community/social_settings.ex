@@ -20,6 +20,8 @@ defmodule Palee.Community.SocialSettings do
     field :visible_around, :boolean, default: false
     field :private_account, :boolean, default: false
     field :searchable, :boolean, default: true
+    # ADR-561: the «Ίσως γνωρίζεις» card on the person's own Αρχική.
+    field :show_follow_suggestions, :boolean, default: true
 
     timestamps(type: :utc_datetime_usec)
   end
@@ -33,7 +35,8 @@ defmodule Palee.Community.SocialSettings do
       :hide_from_members,
       :visible_around,
       :private_account,
-      :searchable
+      :searchable,
+      :show_follow_suggestions
     ])
     |> validate_required([:user_id, :share_bookings])
   end

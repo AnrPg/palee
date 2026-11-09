@@ -2635,6 +2635,11 @@ defmodule PaleeWeb.Router do
     get("/me/followers", FollowController, :followers)
     delete("/me/followers/:id", FollowController, :remove)
     get("/me/following", FollowController, :following)
+    # ADR-561: «Ίσως γνωρίζεις».
+    get("/me/follow-suggestions", FollowSuggestionController, :index)
+    post("/me/follow-suggestions/:id/follow", FollowSuggestionController, :follow)
+    post("/me/follow-suggestions/:id/dismiss", FollowSuggestionController, :dismiss)
+    delete("/me/follow-suggestions/:id/dismiss", FollowSuggestionController, :undismiss)
     # ADR-193: Buddies, privacy and person-to-person conversations.
     get("/me/buddies-list", FollowController, :buddies)
     put("/me/social/privacy", FollowController, :privacy)
