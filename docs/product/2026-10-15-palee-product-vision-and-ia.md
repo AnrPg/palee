@@ -202,7 +202,8 @@ Legend: **[EXISTS]** reuse as-is, only needs a new home · **[PARTIAL]** data/ba
 - **Every post shows its origin**: `Box Κυψέλη › #wod-σήμερα`.
 - **Scope toggle** (Twitter-like): `Οι δικοί μου` / "My people" (default; clubs + people you follow, Φιλαράκια included, + boxes you follow; renamed from «Τα clubs μου», ANR 2026-10-24) | `Γύρω μου` (**local**, not global). Newest first, never ranked. Remember the last choice.
 - **Post format** (Instagram-like): optional media, text, **optional workout attachment from the journal**. Text-only posts allowed (announcements, questions).
-- **Audience picker** on compose: club › channel | followers | public.
+- **Audience picker** on compose: club › channel | followers | public. Each choice says where it shows (Feed, channel, profile, Γύρω μου) and «Πού θα φανεί» lists it (ANR 2026-11-09).
+- **Share after a WOD** (ADR-565): the finish screen, a new PR, a Journal workout and a finished challenge offer a share card (Story or square) for Instagram, TikTok, Facebook through the device's share sheet, with «Και στο Palee» on by default. Auto-posting finished WODs on Palee is asked once.
 - **Club page (member):** `Ροή` (pinned announcement → WOD card with leaderboard → challenges → PR celebrations (opt-in) → events → member posts), `Κανάλια`, `Events`, `Μέλη` (coaches, members; Partners moved to Γύρω μου, ADR-280).
 - **Box page (non-member):** `Σχετικά` (photos, disciplines, coaches, locations, hours), `Πρόγραμμα` (read-only, "Κλείσε με δοκιμαστικό" where the owner allotted trial slots), `Events` (open), `Δημόσια`. CTAs: **Γίνε μέλος box** (always shown, the main one; leads to packages, else the member join link, else a request the box's staff accept in Χρήστες; buying a listed package makes the buyer a box member even when the join link is off, ADR-552), then **Ζήτα δοκιμαστικό** and **Ακολούθησε** (outlined). Following never makes anyone a box member.
 

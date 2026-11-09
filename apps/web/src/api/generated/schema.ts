@@ -4740,6 +4740,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/me/social/auto-post": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Put each finished WOD on Palee by itself, or stop (ADR-565) */
+        put: operations["PaleeWeb.FollowController.auto_post"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/social/booking-sharing": {
         parameters: {
             query?: never;
@@ -25282,6 +25299,18 @@ export interface components {
             list_id: string;
             /** @enum {string} */
             provider: "sandbox" | "mailchimp" | "brevo";
+        };
+        /** AutoPostRequest */
+        AutoPostRequest: {
+            enabled: boolean;
+        };
+        /**
+         * AutoPostSetting
+         * @description Whether each finished WOD goes up on Palee by itself
+         */
+        AutoPostSetting: {
+            /** @description null until the person answers the one-time question */
+            enabled: boolean | null;
         };
         /** BarcodeLookup */
         BarcodeLookup: {
@@ -51641,6 +51670,14 @@ export interface components {
                 /** @description Public posts show only once «Η περιοχή μου» is set */
                 has_area: boolean;
                 visible: boolean;
+            };
+            /**
+             * AutoPostSetting
+             * @description Whether each finished WOD goes up on Palee by itself
+             */
+            auto_post: {
+                /** @description null until the person answers the one-time question */
+                enabled: boolean | null;
             };
             /**
              * BookingSharing
@@ -81115,6 +81152,14 @@ export interface operations {
                             visible: boolean;
                         };
                         /**
+                         * AutoPostSetting
+                         * @description Whether each finished WOD goes up on Palee by itself
+                         */
+                        auto_post: {
+                            /** @description null until the person answers the one-time question */
+                            enabled: boolean | null;
+                        };
+                        /**
                          * BookingSharing
                          * @description Whether followers see the classes you book, and whether the one-time offer was answered
                          */
@@ -81183,6 +81228,35 @@ export interface operations {
                         /** @description Public posts show only once «Η περιοχή μου» is set */
                         has_area: boolean;
                         visible: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.FollowController.auto_post": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    enabled: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Setting */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description null until the person answers the one-time question */
+                        enabled: boolean | null;
                     };
                 };
             };

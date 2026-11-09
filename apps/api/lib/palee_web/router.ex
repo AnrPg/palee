@@ -2626,6 +2626,7 @@ defmodule PaleeWeb.Router do
     put("/me/social/booking-sharing", FollowController, :booking_sharing)
     put("/me/social/member-visibility", FollowController, :member_visibility)
     put("/me/social/around-visibility", FollowController, :around_visibility)
+    put("/me/social/auto-post", FollowController, :auto_post)
     post("/me/follows", FollowController, :create)
     get("/me/follows/:target_type/:target_id", FollowController, :show)
     delete("/me/follows/:target_type/:target_id", FollowController, :delete)

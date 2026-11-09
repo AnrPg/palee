@@ -9,11 +9,16 @@ import { ComposeSheet } from "@/components/community/ComposeSheet";
 import { Sheet, SheetButton } from "@/components/community/Sheet";
 import { useMyClubs } from "@/components/community/use-community";
 import { formatScore } from "@/components/pantheon/PantheonCard";
+import { ShareCardPanel } from "@/components/share-card/ShareCardPanel";
+import { usePrCardContent } from "@/components/share-card/subjects";
+import { Dialog } from "@/components/ui/Dialog";
 
 /**
  * After a PR is logged (ADR-157 §8): «Νέο PR!» with «Μοιράσου το», which
- * opens compose with the PR attached, the media picker first and the box's
- * club as the audience. Nothing posts until «Δημοσίευση».
+ * opens the PR's share card (ADR-565): the device's share sheet and, on by
+ * default, a Palee post with the PR attached. «Γράψε ανάρτηση στο Palee»
+ * opens compose instead, the media picker first and the box's club as the
+ * audience. Nothing posts before a tap on «Μοιράσου» or «Δημοσίευση».
  */
 export function PRShareFlow({
   children,
@@ -23,9 +28,10 @@ export function PRShareFlow({
   onClose: () => void;
 }) {
   const [saved, setSaved] = useState<PRRecord | null>(null);
-  const [sharing, setSharing] = useState(false);
-  if (saved && sharing) return <SharePRCompose pr={saved} onClose={onClose} />;
-  if (saved) return <PRLoggedSheet pr={saved} onShare={() => setSharing(true)} onClose={onClose} />;
+  const [mode, setMode] = useState<"logged" | "card" | "compose">("logged");
+  if (saved && mode === "compose") return <SharePRCompose pr={saved} onClose={onClose} />;
+  if (saved && mode === "card") return <SharePRCard pr={saved} onCompose={() => setMode("compose")} onClose={onClose} />;
+  if (saved) return <PRLoggedSheet pr={saved} onShare={() => setMode("card")} onClose={onClose} />;
   return <>{children(setSaved)}</>;
 }
 
@@ -59,4 +65,20 @@ function SharePRCompose({ pr, onClose }: { pr: PRRecord; onClose: () => void }) 
   const list = clubs.data ?? [];
   const club = gymClubFor(list, pr.organization_id ?? null);
   return <ComposeSheet clubs={list} clubId={club?.id ?? null} initialAttachment={{ type: "pr", id: pr.id }} onClose={onClose} />;
+}
+
+function SharePRCard({ pr, onCompose, onClose }: { pr: PRRecord; onCompose: () => void; onClose: () => void }) {
+  const t = useTranslations("ShareCard");
+  const content = usePrCardContent(pr);
+  return (
+    <Dialog onClose={onClose} title={t("title")} size="md">
+      <ShareCardPanel
+        content={content}
+        attachment={{ type: "pr", id: pr.id }}
+        organizationId={pr.organization_id ?? null}
+        onCompose={onCompose}
+        onDone={onClose}
+      />
+    </Dialog>
+  );
 }

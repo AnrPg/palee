@@ -29,6 +29,7 @@ defmodule Palee.Application.SocialProfile do
        booking_sharing: booking_sharing(context, user_id),
        member_visibility: member_visibility(context, user_id),
        around_visibility: around_visibility(context, user_id),
+       auto_post: auto_post(context, user_id),
        privacy: privacy(context, user_id),
        follow_groups: Community.follow_groups(user_id)
      }}
@@ -96,6 +97,22 @@ defmodule Palee.Application.SocialProfile do
     with {:ok, _settings} <-
            Community.put_social_settings(context, user_id, %{visible_around: visible}),
          do: {:ok, around_visibility(context, user_id)}
+  end
+
+  @doc """
+  ADR-565: «Ανέβαζε αυτόματα κάθε WOD στο Palee». `enabled` is `nil` until
+  the person answers the one-time question after a finished WOD, then their
+  answer; they change it in Κοινοποίηση & ορατότητα.
+  """
+  def auto_post(context, user_id) do
+    settings = Community.social_settings(context, user_id)
+    %{enabled: settings && settings.auto_post_workouts}
+  end
+
+  def set_auto_post(%{user_id: user_id} = context, enabled) when is_boolean(enabled) do
+    with {:ok, _settings} <-
+           Community.put_social_settings(context, user_id, %{auto_post_workouts: enabled}),
+         do: {:ok, auto_post(context, user_id)}
   end
 
   @doc """

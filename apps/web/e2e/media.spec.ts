@@ -382,7 +382,7 @@ test.describe("photos and video in posts", () => {
     expect(calls.reports).toEqual([{ target_type: "post", target_id: "post-1", reason: "spam", note: null }]);
   });
 
-  test("after logging a PR, «Share it» opens compose with the PR attached, photos first and the box club as audience", async ({ page }) => {
+  test("after logging a PR, «Share it» opens the share card; «Write a post on Palee» opens compose with the PR attached, photos first and the box club as audience", async ({ page }) => {
     const calls = await stub(page, () => []);
     const pr = {
       id: "pr-9",
@@ -419,6 +419,16 @@ test.describe("photos and video in posts", () => {
     const logged = page.getByRole("dialog", { name: "New PR!" });
     await expect(logged).toBeVisible();
     await logged.getByRole("button", { name: "Share it" }).click();
+
+    // ADR-565: the share card first, Story format, «Also on Palee» on by default; nothing posts yet.
+    const card = page.getByRole("dialog", { name: "Share" });
+    await expect(card.getByTestId("share-card-preview")).toHaveAttribute("data-format", "story");
+    await expect(card.getByRole("checkbox", { name: /Also on Palee/ })).toBeChecked();
+    await expect(card.getByText("Box Kypseli › #wod-today")).toBeVisible();
+    await card.getByRole("button", { name: "Square" }).click();
+    await expect(card.getByTestId("share-card-preview")).toHaveAttribute("data-format", "square");
+    expect(calls.posts).toEqual([]);
+    await card.getByRole("button", { name: "Write a post on Palee" }).click();
 
     const compose = page.getByRole("dialog", { name: "New post" });
     await expect(compose).toBeVisible();

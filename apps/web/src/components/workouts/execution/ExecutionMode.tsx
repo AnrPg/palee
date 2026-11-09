@@ -12,6 +12,7 @@ import {
 } from "@/api/executions";
 import { useSession } from "@/components/session-provider";
 import { PastSelfLane } from "@/components/body-devices/PastSelfLane";
+import { WodShare } from "@/components/share-card/WodShare";
 import { PastSelfResultCard } from "@/components/body-devices/PastSelfResult";
 import { WatchOfferPrompt } from "@/components/body-devices/WatchOfferPrompt";
 import { LocalizedScore } from "@/components/localized-score";
@@ -737,7 +738,7 @@ export function ExecutionMode() {
   if (status === "completed") {
     return (
       <div
-        className="flex h-dvh flex-col items-center justify-center gap-6 p-8"
+        className="flex min-h-dvh flex-col items-center justify-center gap-6 overflow-y-auto p-8"
         style={{ background: "var(--bg)", color: "var(--text)" }}
       >
         <div className="text-5xl">🏁</div>
@@ -770,16 +771,30 @@ export function ExecutionMode() {
             ))}
           </div>
         )}
-        <button
-          onClick={() => {
-            reset();
-            router.push("/");
-          }}
-          className="rounded-2xl px-8 py-3 text-base font-semibold"
-          style={{ background: "var(--accent, var(--primary))", color: "var(--primary-contrast)" }}
-        >
-          {i18n("donee9b450d")}
-        </button>
+        {executionId ? (
+          // ADR-565: the share card, with «Και στο Palee» and the one-time auto-post question.
+          <div className="w-full max-w-sm">
+            <WodShare
+              executionId={executionId}
+              autoPost
+              onDone={() => {
+                reset();
+                router.push("/");
+              }}
+            />
+          </div>
+        ) : (
+          <button
+            onClick={() => {
+              reset();
+              router.push("/");
+            }}
+            className="rounded-2xl px-8 py-3 text-base font-semibold"
+            style={{ background: "var(--accent, var(--primary))", color: "var(--primary-contrast)" }}
+          >
+            {i18n("donee9b450d")}
+          </button>
+        )}
       </div>
     );
   }

@@ -4,8 +4,8 @@ import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 
-import { createPost, FEED_KEY, type AttachmentType, type CommunityClub } from "@/api/community";
-import { createProfilePost, SUMMARY_KEY } from "@/api/social";
+import { FEED_KEY, type AttachmentType, type CommunityClub } from "@/api/community";
+import { SUMMARY_KEY } from "@/api/social";
 import { fetchJournalPage, typedItem, type TypedJournalItem } from "@/api/journal";
 import { fetchPostAttachment, type ShareableAttachmentType } from "@/api/media";
 import { clientErrorMessage } from "@/components/client/errors";
@@ -21,6 +21,14 @@ import {
   type ComposeTarget,
 } from "@/components/community/community";
 import { Attachment } from "@/components/community/PostCard";
+import {
+  publishToTarget,
+  readStored,
+  rememberedTarget,
+  rememberTarget,
+  targetLabel as labelOfTarget,
+  writeStored,
+} from "@/components/community/publish-target";
 import { ComposeMediaPicker } from "@/components/media/ComposeMediaPicker";
 import { useComposeMedia } from "@/components/media/useComposeMedia";
 import { formatScore } from "@/components/pantheon/PantheonCard";
@@ -65,25 +73,7 @@ export function ComposeButton({
 }
 
 const SHAREABLE_KINDS = ["execution", "training_log", "pr"] as const;
-const LAST_TARGET_KEY = "palee:compose-target";
 const PUBLIC_NOTE_KEY = "palee:compose-public-note-seen";
-
-function readStored<T>(key: string): T | null {
-  try {
-    const raw = window.localStorage.getItem(key);
-    return raw ? (JSON.parse(raw) as T) : null;
-  } catch {
-    return null;
-  }
-}
-
-function writeStored(key: string, value: unknown) {
-  try {
-    window.localStorage.setItem(key, JSON.stringify(value));
-  } catch {
-    // Remembering is a convenience; posting works without it.
-  }
-}
 
 function isPublic(target: ComposeTarget) {
   return target.kind === "profile" ? target.audience === "public" : target.public;
@@ -121,7 +111,7 @@ export function ComposeSheet({
   };
   const groups = composeTargetGroups(clubs);
   const [target, setTarget] = useState<ComposeTarget>(() =>
-    initialComposeTarget(clubs, initialAttachment ? null : readStored<ComposeTarget>(LAST_TARGET_KEY), clubId, channelId),
+    initialComposeTarget(clubs, initialAttachment ? null : rememberedTarget(), clubId, channelId),
   );
   const [picking, setPicking] = useState(false);
   const [publicNoteSeen, setPublicNoteSeen] = useState(() => readStored<boolean>(PUBLIC_NOTE_KEY) === true);
@@ -153,13 +143,7 @@ export function ComposeSheet({
   const ready = target.kind === "profile" || Boolean(channelTarget);
   const showPublicNote = isPublic(target) && !publicNoteSeen;
 
-  function targetLabel(value: ComposeTarget) {
-    if (value.kind === "profile") return value.audience === "public" ? t("audiencePublic") : t("audienceFollowers");
-    if (!channelTarget) return "";
-    return value.public
-      ? t("audienceBoxPublic", { club: channelTarget.club.name })
-      : `${channelTarget.club.name} › #${channelName(channelTarget.channel, t)}`;
-  }
+  const targetLabel = (value: ComposeTarget) => labelOfTarget(clubs, value, t);
 
   const hasContent = Boolean(body.trim() || attachment || media.count > 0);
   const canPublish = !busy && ready && hasContent && !media.blocked;
@@ -176,17 +160,9 @@ export function ComposeSheet({
       client_operation_id: operationId,
     };
     try {
-      if (target.kind === "profile") {
-        await createProfilePost(token, { audience: target.audience, ...content });
-        await queryClient.invalidateQueries({ queryKey: SUMMARY_KEY });
-      } else if (channelTarget) {
-        await createPost(token, {
-          channel_id: channelTarget.channel.id,
-          audience: target.public ? "public" : "club_channel",
-          ...content,
-        });
-      }
-      writeStored(LAST_TARGET_KEY, target);
+      await publishToTarget(token, clubs, target, content);
+      if (target.kind === "profile") await queryClient.invalidateQueries({ queryKey: SUMMARY_KEY });
+      rememberTarget(target);
       if (isPublic(target)) writeStored(PUBLIC_NOTE_KEY, true);
       await queryClient.invalidateQueries({ queryKey: FEED_KEY });
       media.release(false);
@@ -346,7 +322,7 @@ function presetLabel(snapshot: Record<string, unknown> | undefined, t: (key: str
  * profile audiences, each saying who sees it and where; under them
  * «Πού θα φανεί» for the chosen one (mockup A, 2026-11-09).
  */
-function AudienceSheet({
+export function AudienceSheet({
   groups,
   selected,
   onPick,

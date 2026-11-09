@@ -204,4 +204,16 @@ defmodule PaleeWeb.FollowController do
            ),
          do: json(conn, setting)
   end
+
+  operation(:auto_post,
+    summary: "Put each finished WOD on Palee by itself, or stop (ADR-565)",
+    request_body: S.body(PaleeWeb.Schemas.Social.auto_post_request()),
+    responses: [ok: {"Setting", "application/json", PaleeWeb.Schemas.Social.auto_post()}]
+  )
+
+  def auto_post(conn, _params) do
+    with {:ok, setting} <-
+           SocialProfile.set_auto_post(conn.assigns.user_context, conn.body_params.enabled),
+         do: json(conn, setting)
+  end
 end

@@ -12,6 +12,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchChallengeLeaderboard, optInChallenge, optOutChallenge } from "@/api/challenges";
 import { useSession } from "@/components/session-provider";
 import type { ChallengeRecord, LastProgressEvent } from "@/api/landing";
+import { ShareCardPanel } from "@/components/share-card/ShareCardPanel";
+import { useChallengeCardContent } from "@/components/share-card/subjects";
+import { Dialog } from "@/components/ui/Dialog";
+import { useTranslations } from "next-intl";
 
 export function ChallengeCard({ challenge }: { challenge: ChallengeRecord }) {
   const i18n = useUiTranslations();
@@ -140,6 +144,8 @@ export function ChallengeCard({ challenge }: { challenge: ChallengeRecord }) {
         </span>
       </div>
 
+      {challenge.completed ? <ShareChallengeButton challenge={challenge} /> : null}
+
       {isCustom && challenge.last_progress_event ? (
         <p className="mt-2 text-xs font-medium" style={{ color: "var(--warning)" }}>
           {progressEventText(challenge.last_progress_event)}
@@ -267,5 +273,34 @@ export function ChallengeCard({ challenge }: { challenge: ChallengeRecord }) {
         </div>
       ) : null}
     </article>
+  );
+}
+
+/** ADR-565: a finished challenge's «Μοιράσου»: its share card, and on Palee the card as a photo. */
+function ShareChallengeButton({ challenge }: { challenge: ChallengeRecord }) {
+  const t = useTranslations("ShareCard");
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="mt-3 min-h-10 rounded-full px-4 text-xs font-bold"
+        style={{ background: "var(--spark)", color: "var(--spark-contrast)" }}
+      >
+        {t("share")}
+      </button>
+      {open ? <ShareChallengeDialog challenge={challenge} onClose={() => setOpen(false)} /> : null}
+    </>
+  );
+}
+
+function ShareChallengeDialog({ challenge, onClose }: { challenge: ChallengeRecord; onClose: () => void }) {
+  const t = useTranslations("ShareCard");
+  const content = useChallengeCardContent(challenge);
+  return (
+    <Dialog onClose={onClose} title={t("title")} size="md">
+      <ShareCardPanel content={content} onDone={onClose} />
+    </Dialog>
   );
 }

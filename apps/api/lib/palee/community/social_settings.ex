@@ -5,7 +5,8 @@ defmodule Palee.Community.SocialSettings do
   show in clubs' «Μέλη» lists (ADR-143, board 7 Q1), and whether their
   public posts show in Γύρω μου at their neighbourhood (ADR-154), and
   (ADR-193) whether the account is private (a follow is then a request; on
-  by default) and whether it shows in people search.
+  by default) and whether it shows in people search, and (ADR-565) whether
+  each finished WOD goes up on Palee by itself (`nil` until asked once).
   """
 
   use Ecto.Schema
@@ -20,6 +21,7 @@ defmodule Palee.Community.SocialSettings do
     field :visible_around, :boolean, default: false
     field :private_account, :boolean, default: false
     field :searchable, :boolean, default: true
+    field :auto_post_workouts, :boolean
     # ADR-561: the «Ίσως γνωρίζεις» card on the person's own Αρχική.
     field :show_follow_suggestions, :boolean, default: true
 
@@ -36,7 +38,8 @@ defmodule Palee.Community.SocialSettings do
       :visible_around,
       :private_account,
       :searchable,
-      :show_follow_suggestions
+      :show_follow_suggestions,
+      :auto_post_workouts
     ])
     |> validate_required([:user_id, :share_bookings])
   end

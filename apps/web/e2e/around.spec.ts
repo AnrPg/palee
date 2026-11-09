@@ -615,4 +615,22 @@ test.describe("Γύρω μου", () => {
     expect(calls.visibility).toEqual([{ visible: true }]);
     await expect(page.getByText(/σε επίπεδο γειτονιάς/)).toBeVisible();
   });
+
+  test("«Ανέβαζε αυτόματα κάθε WOD» in Κοινοποίηση & ορατότητα (ADR-565): unanswered reads as off", async ({ page }) => {
+    await stub(page, { hasArea: true });
+    const saves: unknown[] = [];
+    await page.route("**/api/me/social/auto-post", (route) => {
+      saves.push(route.request().postDataJSON());
+      return route.fulfill(json({ enabled: true }));
+    });
+    await page.route(/\/api(?:\/org\/[^/]+)?\/pr-sharing$/, (route) => route.fulfill(json({ coach_visibility: true, grants: [] })));
+    await page.route(/\/api(?:\/org\/[^/]+)?\/gamification\/preferences$/, (route) => route.fulfill(json({ preferences: { off_days: [0] } })));
+    await page.goto("/me/sharing");
+    const toggle = page.getByRole("switch", { name: "Ανέβαζε αυτόματα κάθε WOD" });
+    await expect(toggle).toHaveAttribute("aria-checked", "false");
+    await toggle.click();
+    await expect(toggle).toHaveAttribute("aria-checked", "true");
+    expect(saves).toEqual([{ enabled: true }]);
+    await expect(page.getByText(/με «Αναίρεση» αμέσως μετά/)).toBeVisible();
+  });
 });

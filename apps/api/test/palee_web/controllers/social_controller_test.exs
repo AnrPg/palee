@@ -395,4 +395,40 @@ defmodule Palee.Web.SocialControllerTest do
       assert %{"posts_count" => 0} = as.(author) |> get("/api/me/social") |> json_response(200)
     end
   end
+
+  describe "auto-post of finished WODs (ADR-565)" do
+    test "is unanswered until the person answers, then keeps the answer", %{
+      as: as,
+      member: member
+    } do
+      assert %{"auto_post" => %{"enabled" => nil}} =
+               as.(member) |> get("/api/me/social") |> json_response(200)
+
+      assert %{"enabled" => true} =
+               as.(member)
+               |> send_json(:put, "/api/me/social/auto-post", %{enabled: true})
+               |> json_response(200)
+
+      assert %{"auto_post" => %{"enabled" => true}} =
+               as.(member) |> get("/api/me/social") |> json_response(200)
+
+      assert %{"enabled" => false} =
+               as.(member)
+               |> send_json(:put, "/api/me/social/auto-post", %{enabled: false})
+               |> json_response(200)
+    end
+
+    test "refuses a missing answer", %{as: as, member: member} do
+      assert as.(member)
+             |> send_json(:put, "/api/me/social/auto-post", %{})
+             |> json_response(422)
+    end
+
+    test "is per person", %{as: as, member: member, coach: coach} do
+      as.(member) |> send_json(:put, "/api/me/social/auto-post", %{enabled: true})
+
+      assert %{"auto_post" => %{"enabled" => nil}} =
+               as.(coach) |> get("/api/me/social") |> json_response(200)
+    end
+  end
 end

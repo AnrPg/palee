@@ -44,6 +44,8 @@ import { FeltLine } from "@/components/wod-goals/FeltLine";
 import { ReviewCard } from "@/components/my-reviews";
 import { formatScore } from "@/components/pantheon/PantheonCard";
 import { InAppShareDialog } from "@/components/share-export/InAppShareDialog";
+import { Dialog } from "@/components/ui/Dialog";
+import { WodShare } from "@/components/share-card/WodShare";
 import { useShareExport } from "@/components/share-export/useShareExport";
 import { TrainingLogDialog, TrainingLogEntryCard, type TrainingLogDialogState } from "@/components/training-log/TrainingLog";
 import { useUiLocale } from "@/i18n/use-ui-locale";
@@ -500,21 +502,33 @@ function ExecutionRow({
   );
 }
 
-/** "Κοινοποίηση στο Palee" of one finished workout, kept from the old landing. */
+/**
+ * «Μοιράσου» of one finished workout (ADR-565): its share card for the
+ * device's share sheet, «Και στο Palee» on by default, and «Στείλε σε άτομο
+ * στο Palee» for a direct message (the old in-app share).
+ */
 function ShareExecution({ token, executionId, onClose }: { token: string; executionId: string; onClose: () => void }) {
   const i18n = useUiTranslations();
+  const t = useTranslations("ShareCard");
   const locale = useUiLocale();
   const shareExport = useShareExport();
+  const [direct, setDirect] = useState(false);
   const execution = useQuery({
     queryKey: ["execution", executionId],
     queryFn: () => fetchExecution(token, executionId),
   });
-  if (!execution.data) return null;
+  if (direct && execution.data) {
+    return (
+      <InAppShareDialog
+        message={renderText(buildExecutionDocument(execution.data, shareExport.labels, locale))}
+        onClose={onClose}
+        title={execution.data.workout_title ?? i18n("workout39463a5")}
+      />
+    );
+  }
   return (
-    <InAppShareDialog
-      message={renderText(buildExecutionDocument(execution.data, shareExport.labels, locale))}
-      onClose={onClose}
-      title={execution.data.workout_title ?? i18n("workout39463a5")}
-    />
+    <Dialog onClose={onClose} title={t("title")} size="md">
+      <WodShare executionId={executionId} onSendInApp={() => setDirect(true)} onDone={onClose} />
+    </Dialog>
   );
 }

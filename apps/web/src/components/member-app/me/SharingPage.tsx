@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { AroundVisibilitySetting } from "@/components/around/AroundSettings";
+import { AutoPostSetting } from "@/components/share-card/AutoPostSetting";
 import { BodyDefaultVisibilitySetting } from "@/components/body/BodyPreferenceSettings";
 import { WellnessSummarySharing } from "@/components/buddy/WellnessSummarySharing";
 import { BlockedPeople, PartnerVisibilitySetting } from "@/components/partners/PartnerSettings";
@@ -40,6 +41,7 @@ export function SharingPage() {
   const tSocial = useTranslations("Social");
   const tClubs = useTranslations("Clubs");
   const tAround = useTranslations("Around");
+  const tShare = useTranslations("ShareCard");
   const tPartners = useTranslations("Partners");
   const i18n = useUiTranslations();
   const { currentUser } = useSession();
@@ -105,6 +107,9 @@ export function SharingPage() {
         </CollapsibleSection>
         <CollapsibleSection id="around-visibility" title={tAround("visibilityTitle")} description={tAround("visibilityHint")} defaultOpen>
           <AroundVisibilitySetting />
+        </CollapsibleSection>
+        <CollapsibleSection id="auto-post" title={tShare("settingTitle")} description={tShare("settingHint")} defaultOpen>
+          <AutoPostSetting />
         </CollapsibleSection>
         <CollapsibleSection id="blocked" title={tPartners("blockedTitle")} description={tPartners("blockedHint")}>
           <BlockedPeople />

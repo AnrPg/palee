@@ -291,8 +291,9 @@ export function setMemberVisibility(token: string, hidden: boolean) {
   return apiRequest<{ hidden: boolean }>("/me/social/member-visibility", { method: "PUT", token, body: { hidden } });
 }
 
-/** The gym's #wod card for the member's local today: WOD, classes, leaderboard (D6). */
-export function fetchWodToday(token: string, slug: string, timezone: string) {
+/** The gym's #wod card for the member's local today (or `date`): WOD, classes, leaderboard (D6). */
+export function fetchWodToday(token: string, slug: string, timezone: string, date?: string) {
   const query = new URLSearchParams({ timezone });
+  if (date) query.set("date", date);
   return apiRequest<WodTodayCard>(`${base(slug)}/wod-today?${query.toString()}`, { token });
 }

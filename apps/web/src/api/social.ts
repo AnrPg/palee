@@ -185,3 +185,10 @@ export type BookingSharing = components["schemas"]["BookingSharing"];
 export function setBookingSharing(token: string, enabled: boolean) {
   return apiRequest<BookingSharing>("/me/social/booking-sharing", { method: "PUT", token, body: { enabled } });
 }
+
+/** ADR-565: «Ανέβαζε αυτόματα κάθε WOD στο Palee»; `enabled` is null until asked once. */
+export type AutoPostSetting = components["schemas"]["AutoPostSetting"];
+
+export function setAutoPost(token: string, enabled: boolean) {
+  return apiRequest<AutoPostSetting>("/me/social/auto-post", { method: "PUT", token, body: { enabled } });
+}

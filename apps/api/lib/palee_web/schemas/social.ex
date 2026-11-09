@@ -311,6 +311,32 @@ defmodule PaleeWeb.Schemas.Social do
     }
   end
 
+  @doc "ADR-565: «Ανέβαζε αυτόματα κάθε WOD στο Palee»."
+  def auto_post do
+    %Schema{
+      title: "AutoPostSetting",
+      type: :object,
+      description: "Whether each finished WOD goes up on Palee by itself",
+      properties: %{
+        enabled: %Schema{
+          type: :boolean,
+          nullable: true,
+          description: "null until the person answers the one-time question"
+        }
+      },
+      required: [:enabled]
+    }
+  end
+
+  def auto_post_request do
+    %Schema{
+      title: "AutoPostRequest",
+      type: :object,
+      properties: %{enabled: %Schema{type: :boolean}},
+      required: [:enabled]
+    }
+  end
+
   def summary_response do
     %Schema{
       title: "SocialSummary",
@@ -327,11 +353,13 @@ defmodule PaleeWeb.Schemas.Social do
         booking_sharing: booking_sharing(),
         member_visibility: member_visibility(),
         around_visibility: PaleeWeb.Schemas.Around.around_visibility(),
+        auto_post: auto_post(),
         privacy: privacy(),
         follow_groups: follow_groups()
       },
       required: [
         :around_visibility,
+        :auto_post,
         :booking_sharing,
         :follow_groups,
         :followers_count,
