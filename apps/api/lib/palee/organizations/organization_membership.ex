@@ -23,6 +23,11 @@ defmodule Palee.Organizations.OrganizationMembership do
     # ADR-186: false when the person works only at the branches listed in
     # membership_location_scopes («Όλα τα καταστήματα» when true).
     field :all_locations, :boolean, default: true
+    # ADR-595: the person left the box (`left_at`, by `member` | `staff`);
+    # the package they kept lets them use it through `access_until`.
+    field :left_at, :utc_datetime_usec
+    field :left_by, :string
+    field :access_until, :date
 
     timestamps(type: :utc_datetime_usec)
   end
@@ -53,6 +58,19 @@ defmodule Palee.Organizations.OrganizationMembership do
     |> foreign_key_constraint(:home_location_id,
       name: :organization_memberships_home_location_fkey
     )
+  end
+
+  @doc """
+  ADR-595: the person stops being a member of the box (`left_at`, `left_by`)
+  and keeps reaching it through `access_until` for the package they kept;
+  all nil when they come back.
+  """
+  def leave_changeset(membership, params) do
+    membership
+    |> cast(params, [:left_at, :left_by, :access_until])
+    |> validate_inclusion(:left_by, ["member", "staff"])
+    |> check_constraint(:left_by, name: :organization_memberships_left_by_check)
+    |> check_constraint(:left_at, name: :organization_memberships_left_check)
   end
 
   @doc "ADR-186: the «Όλα τα καταστήματα» flag; the branches live in their own table."

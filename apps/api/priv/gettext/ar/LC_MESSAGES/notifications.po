@@ -910,3 +910,12 @@ msgstr "اطّلع على باقات الصالة وانضم ببضع نقرات
 
 msgid "%{box} invites you to become a member."
 msgstr "%{box} يدعوك لتصبح عضوًا."
+
+msgid "Your box membership ended"
+msgstr "انتهت عضويتك في الـ box"
+
+msgid "%{box} ended your box membership. Your package stays usable until %{date}."
+msgstr "أنهى %{box} عضويتك في الـ box. تبقى باقتك صالحة حتى %{date}."
+
+msgid "%{box} ended your box membership."
+msgstr "أنهى %{box} عضويتك في الـ box."

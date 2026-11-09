@@ -129,6 +129,8 @@ defmodule Palee.Organizations.Domain.JoinLinkPolicy do
   removed one is never reactivated by a public link.
   """
   def join_decision(nil), do: :create
+  # ADR-595: someone who left the box may join again.
+  def join_decision(%{status: :active, left_at: %DateTime{}}), do: :create
   def join_decision(%{status: :active}), do: :already_member
   def join_decision(_membership), do: {:error, :membership_unavailable}
 

@@ -910,3 +910,12 @@ msgstr "ראה את החבילות של הבוקס והצטרף בכמה נגי�
 
 msgid "%{box} invites you to become a member."
 msgstr "%{box} מזמין אותך להצטרף כחבר/ה."
+
+msgid "Your box membership ended"
+msgstr "החברות שלך ב-box הסתיימה"
+
+msgid "%{box} ended your box membership. Your package stays usable until %{date}."
+msgstr "%{box} סיים את החברות שלך ב-box. החבילה שלך בתוקף עד %{date}."
+
+msgid "%{box} ended your box membership."
+msgstr "%{box} סיים את החברות שלך ב-box."

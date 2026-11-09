@@ -50,31 +50,39 @@ export function validityProgress(startsOn: string | null | undefined, endsOn: st
 type LeaveFacts = {
   actions: { self_service_leave?: boolean };
   membership?: { leaving_on?: string | null; left_by?: string | null; leave_preview_on?: string | null } | null;
+  subscriptions?: { current?: boolean | null; commitment_ends_on?: string | null }[] | null;
+  outstanding_cents?: number | null;
 };
 
 export type LeaveState =
   | { kind: "none" }
-  | { kind: "leaving"; leavingOn: string; byStaff: boolean }
-  | { kind: "can_leave"; previewOn: string | null };
+  | { kind: "left"; packageUntil: string | null; byStaff: boolean }
+  | { kind: "can_leave"; packageUntil: string | null; commitmentUntil: string | null; owedCents: number };
 
 /**
- * ADR-220: where the member stands with leaving this provider: already
- * leaving (on their own or marked by staff), free to leave (with the last
- * day they would keep), or neither (no membership there).
+ * ADR-595: where the member stands with leaving this provider. Leaving is
+ * immediate: they are no longer a member, a package in force stays usable
+ * to its last day (`packageUntil`, also the end of a minimum commitment
+ * whose months stay owed) and money owed stays owed. `today` is the local
+ * calendar day (`YYYY-MM-DD`).
  */
-export function leaveState(provider: LeaveFacts): LeaveState {
+export function leaveState(provider: LeaveFacts, today: string): LeaveState {
   const membership = provider.membership;
+  const current = provider.subscriptions?.find((entry) => entry.current) ?? null;
+  const kept = (day: string | null | undefined) => (current && day && day.slice(0, 10) >= today ? day.slice(0, 10) : null);
+
   if (membership?.leaving_on) {
-    return { kind: "leaving", leavingOn: membership.leaving_on, byStaff: membership.left_by === "staff" };
+    return { kind: "left", packageUntil: kept(membership.leaving_on), byStaff: membership.left_by === "staff" };
   }
   if (provider.actions.self_service_leave && membership) {
-    return { kind: "can_leave", previewOn: membership.leave_preview_on ?? null };
+    const packageUntil = kept(membership.leave_preview_on);
+    const commitment = current?.commitment_ends_on?.slice(0, 10) ?? null;
+    return {
+      kind: "can_leave",
+      packageUntil,
+      commitmentUntil: commitment && commitment >= today ? commitment : null,
+      owedCents: Math.max(provider.outstanding_cents ?? 0, 0),
+    };
   }
   return { kind: "none" };
-}
-
-/** A member can change their mind until their last day has passed (local calendar day). */
-export function canStay(leavingOn: string, now: Date): boolean {
-  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-  return leavingOn.slice(0, 10) >= today;
 }

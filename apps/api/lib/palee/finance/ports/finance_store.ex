@@ -117,6 +117,7 @@ defmodule Palee.Finance.Ports.FinanceStore do
   @doc "ADR-220: the member leaves the box (`by` member) or staff mark them as left."
   @callback leave_membership(Ecto.UUID.t(), map()) :: {:ok, map()} | {:error, term()}
   @callback undo_leave_membership(Ecto.UUID.t(), String.t()) :: {:ok, map()} | {:error, term()}
+  @callback rejoin_after_leaving(Ecto.UUID.t()) :: {:ok, map() | nil} | {:error, term()}
   @doc "Refreshes every snapshot; returns the memberships that lost access."
   @callback refresh_entitlement_snapshots() :: [map()]
   # ADR-274: subscription charges and values staff set by hand.

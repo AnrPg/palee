@@ -22,6 +22,7 @@ import { formatMinorUnits } from "@/lib/finance-accounting";
 import { useOrganizationSlug } from "@/lib/organization-slug";
 import { inboxHref } from "@/components/chat/inbox/inbox-model";
 import { boxChatHref } from "@/components/trials/box-chat-links";
+import { StandingBadge } from "@/components/finance/StandingBadge";
 
 import { billingTab, sessionsLeft, validityProgress, type BillingTab } from "./billing-model";
 import { OffersSegment } from "./OffersSegment";
@@ -294,7 +295,7 @@ function MembershipSegment({
     <>
       {current ? (
         <HubCard>
-          <SubscriptionDetails subscription={current} />
+          <SubscriptionDetails subscription={current} standing={provider.standing} currency={currencyOf(provider)} />
           {/* ADR-220: the member's own choice; otherwise the box arranges it. */}
           {current.can_change_auto_renew ? (
             <RenewalSwitch provider={provider} subscription={current} />
@@ -328,12 +329,27 @@ function MembershipSegment({
   );
 }
 
-function SubscriptionDetails({ subscription }: { subscription: BillingSubscription }) {
+/**
+ * One subscription's details. For the package in force the status is the
+ * member's standing (ADR-595), the same badge and line staff see.
+ */
+function SubscriptionDetails({
+  subscription,
+  standing = null,
+  currency,
+}: {
+  subscription: BillingSubscription;
+  standing?: BillingProvider["standing"];
+  currency?: string;
+}) {
   const t = useTranslations("Billing");
   const locale = useUiLocale();
   return (
     <dl className="flex min-w-0 flex-col gap-2 text-sm">
-      <Detail label={t("status")} value={<StatusBadge status={subscription.status} />} />
+      <Detail
+        label={t("status")}
+        value={standing ? <StandingBadge standing={standing} currency={currency} align="end" /> : <StatusBadge status={subscription.status} />}
+      />
       <Detail label={t("period")} value={`${formatDate(locale, subscription.starts_on)} – ${subscription.ends_on ? formatDate(locale, subscription.ends_on) : t("openEnded")}`} />
       {subscription.billing_period ? <Detail label={t("billing")} value={<SemanticLabel value={subscription.billing_period} />} /> : null}
       {typeof subscription.price_cents === "number" ? <Detail label={t("price")} value={formatMinorUnits(locale, subscription.price_cents)} /> : null}

@@ -1,7 +1,7 @@
 defmodule Palee.Organizations.Domain.MembershipPolicyTest do
   use ExUnit.Case, async: true
 
-  alias Palee.Organizations.Domain.MembershipPolicy
+  alias Palee.Organizations.Domain.{JoinLinkPolicy, JoinRequestPolicy, MembershipPolicy}
 
   test "keeps tenant roles distinct from membership lifecycle" do
     assert MembershipPolicy.roles() == [
@@ -177,6 +177,41 @@ defmodule Palee.Organizations.Domain.MembershipPolicyTest do
                  [:member, :athlete],
                  :self
                )
+    end
+  end
+
+  describe "ADR-595: leaving the box" do
+    @left_at ~U[2026-11-09 18:00:00Z]
+
+    test "a former member is one who left; the box stays reachable while their package lasts" do
+      left = %{left_at: @left_at, access_until: ~D[2026-11-28], roles: [:member]}
+
+      assert MembershipPolicy.former?(left)
+      refute MembershipPolicy.former?(%{left_at: nil, roles: [:member]})
+
+      assert MembershipPolicy.reaches_box?(left, ~D[2026-11-28])
+      refute MembershipPolicy.reaches_box?(left, ~D[2026-11-29])
+      refute MembershipPolicy.reaches_box?(%{left | access_until: nil}, ~D[2026-11-09])
+      assert MembershipPolicy.reaches_box?(%{left_at: nil}, ~D[2030-01-01])
+    end
+
+    test "only a client's membership ends by leaving; staff keep working there" do
+      assert MembershipPolicy.can_leave?(%{left_at: nil, roles: [:member]})
+      assert MembershipPolicy.can_leave?(%{left_at: nil, roles: [:athlete]})
+      refute MembershipPolicy.can_leave?(%{left_at: nil, roles: [:coach, :member]})
+      refute MembershipPolicy.can_leave?(%{left_at: nil, roles: [:guest]})
+      refute MembershipPolicy.can_leave?(%{left_at: @left_at, roles: [:member]})
+    end
+
+    test "someone who left joins again by any way in" do
+      left = %{status: :active, left_at: @left_at}
+
+      assert JoinLinkPolicy.join_decision(left) == :create
+      assert JoinRequestPolicy.admission(left, :purchase) == :create
+      assert JoinRequestPolicy.admission(left, :accepted_request) == :create
+
+      assert JoinRequestPolicy.admission(%{status: :active, left_at: nil}, :purchase) ==
+               :already_member
     end
   end
 end

@@ -104,17 +104,32 @@ defmodule Palee.Finance.Domain.MemberRenewalTest do
       refute MemberRenewal.void_after_leaving?(undated, ~D[2026-03-31])
     end
 
-    test "leaving day and staff limits" do
+    test "leaving day" do
       assert MemberRenewal.leaving_on([], ~D[2026-03-10]) == ~D[2026-03-10]
 
       assert MemberRenewal.leaving_on([~D[2026-03-30], ~D[2026-05-01]], ~D[2026-03-10]) ==
                ~D[2026-05-01]
+    end
 
-      assert {:error, :package_commitment_active} =
-               MemberRenewal.staff_leaving_allowed(~D[2026-03-10], ~D[2026-12-31], nil)
+    test "ADR-595: a period inside a minimum commitment is billed even after leaving" do
+      subscription = %{
+        status: "active",
+        auto_renew: false,
+        commitment_ends_on: ~D[2026-06-30],
+        base_subscription_id: nil,
+        corporate_client_id: nil,
+        params_snapshot: %{}
+      }
 
-      assert :ok = MemberRenewal.staff_leaving_allowed(~D[2026-03-10], ~D[2026-12-31], "Moved")
-      assert :ok = MemberRenewal.staff_leaving_allowed(~D[2026-03-10], nil, nil)
+      left = %{left_at: ~U[2026-03-10 10:00:00Z]}
+
+      assert MemberRenewal.period_billable?(subscription, left, ~D[2026-06-01])
+      assert MemberRenewal.period_billable?(subscription, left, ~D[2026-06-30])
+      refute MemberRenewal.period_billable?(subscription, left, ~D[2026-07-01])
+
+      no_commitment = %{subscription | commitment_ends_on: nil, auto_renew: true}
+      refute MemberRenewal.period_billable?(no_commitment, left, ~D[2026-04-01])
+      assert MemberRenewal.period_billable?(no_commitment, %{left_at: nil}, ~D[2026-04-01])
     end
 
     test "a leave can be undone until the last day passes" do

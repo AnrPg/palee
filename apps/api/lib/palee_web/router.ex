@@ -827,7 +827,6 @@ defmodule PaleeWeb.Router do
     )
 
     post("/membership/leave", MyMembershipController, :leave)
-    delete("/membership/leave", MyMembershipController, :stay)
     # ADR-155: Box › Check-in.
     get("/check-in/code", MyCheckInController, :code)
     post("/check-in/code/reset", MyCheckInController, :reset_code)

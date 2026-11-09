@@ -266,6 +266,7 @@ defmodule PaleeWeb.Schemas.MyBilling do
             }
           ),
         membership: membership(),
+        standing: PaleeWeb.Schemas.MemberStanding.schema(),
         entitlement: %Schema{
           type: :object,
           nullable: true,

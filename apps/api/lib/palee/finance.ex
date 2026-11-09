@@ -550,6 +550,13 @@ defmodule Palee.Finance do
   def undo_leave_membership(context, user_id, by),
     do: scoped(context, fn -> FinanceStore.undo_leave_membership(user_id, by) end)
 
+  @doc """
+  ADR-595: someone who left came back to the box: their profile stops
+  leaving (a package still running renews again), whoever recorded the leave.
+  """
+  def rejoin_after_leaving(context, user_id),
+    do: scoped(context, fn -> FinanceStore.rejoin_after_leaving(user_id) end)
+
   def mark_subscription_notice_sent(context, subscription_id, kind),
     do:
       scoped(context, fn -> FinanceStore.mark_subscription_notice_sent(subscription_id, kind) end)

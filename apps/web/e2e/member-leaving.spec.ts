@@ -1,5 +1,4 @@
 import { expect, test, type Page, type Request } from "./support/test";
-import { chooseOption } from "./support/select";
 
 // ADR-220, staff side: on a box member's profile (Finance tab) staff see the
 // member's own automatic renewal, can change it for them (ADR-276: saved
@@ -53,7 +52,7 @@ async function asOwner(page: Page) {
 }
 
 test.describe("member leaving (staff)", () => {
-  test("staff turn renewal off for a member, mark them as leaving today and undo it", async ({ page }) => {
+  test("staff turn renewal off for a member, end their box membership under the member's rules and undo it", async ({ page }) => {
     const state = { autoRenew: true, changedBy: null as string | null, leavingOn: null as string | null };
     const calls: Array<{ method: string; path: string; body: Record<string, unknown> }> = [];
     await asOwner(page);
@@ -80,7 +79,7 @@ test.describe("member leaving (staff)", () => {
           details: {
             membership: {
               id: "m-2",
-              status: state.leavingOn ? "cancelled" : "active",
+              status: "active",
               starts_on: isoDay(-40),
               expires_on: state.leavingOn,
               leaving_on: state.leavingOn,
@@ -118,7 +117,7 @@ test.describe("member leaving (staff)", () => {
         return route.fulfill(json({ package_subscription: {} }));
       }
       if (request.method() === "POST") {
-        state.leavingOn = isoDay(0);
+        state.leavingOn = isoDay(20);
         state.autoRenew = false;
         return route.fulfill(json({ membership: {}, leaving_on: state.leavingOn, voided_invoice_count: 1, outstanding_cents: 6000 }));
       }
@@ -143,12 +142,13 @@ test.describe("member leaving (staff)", () => {
     expect(calls[0]).toMatchObject({ method: "PUT", path: "/api/org/box1/admin/finance/members/u-2/subscriptions/sub-1/auto-renew", body: { auto_renew: false } });
 
     await card.getByTestId("admin-leave-open").click();
-    await expect(card.getByText("Anything already used stays owed until it is paid.", { exact: false })).toBeVisible();
-    await chooseOption(page, card.getByRole("combobox"), "today");
+    await expect(card.getByText("The member is notified.", { exact: false })).toBeVisible();
+    await expect(card.getByRole("combobox")).toHaveCount(0);
     await card.getByPlaceholder("Reason (optional)").fill("Moved");
     await card.getByTestId("admin-leave-confirm").click();
-    expect(calls[1]).toMatchObject({ method: "POST", path: "/api/org/box1/admin/finance/members/u-2/leave", body: { leaving_on: isoDay(0), reason: "Moved" } });
+    expect(calls[1]).toMatchObject({ method: "POST", path: "/api/org/box1/admin/finance/members/u-2/leave", body: { reason: "Moved" } });
 
+    await expect(card.getByTestId("admin-leaving-on")).toContainText("Left · package valid until");
     await expect(card.getByTestId("admin-leaving-on")).toContainText("marked by staff · Moved");
     await expect(card.getByRole("switch")).toBeDisabled();
 

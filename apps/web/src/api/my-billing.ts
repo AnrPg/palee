@@ -68,18 +68,10 @@ export function setMyAutoRenew(token: string, slug: string, subscriptionId: stri
   );
 }
 
-/** The member leaves the provider: renewals stop, access lasts to the paid end. */
+/** ADR-595: the member leaves the provider now; a package in force stays usable to its last day. */
 export function leaveProvider(token: string, slug: string, reason: string | null) {
   return apiRequest<{ leaving_on: string; voided_invoice_count: number; outstanding_cents: number }>(
     orgPath(slug, "/me/membership/leave"),
     { token, method: "POST", body: { reason } },
   );
-}
-
-/** The member changes their mind before their last day. */
-export function stayWithProvider(token: string, slug: string) {
-  return apiRequest<{ membership: Record<string, unknown> }>(orgPath(slug, "/me/membership/leave"), {
-    token,
-    method: "DELETE",
-  });
 }

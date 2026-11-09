@@ -273,8 +273,8 @@ test.describe("billing", () => {
     });
   }
 
-  // ADR-220: the member decides about renewing and can leave the box.
-  test("a member turns renewal off and leaves the box, then changes their mind", async ({ page }) => {
+  // ADR-220/595: the member decides about renewing and leaves the box at once, keeping the package.
+  test("a member turns renewal off and leaves the box now, keeping the package to its last day", async ({ page }) => {
     const state = { autoRenew: true, endsOn: null as string | null, leavingOn: null as string | null };
     const calls: Array<{ method: string; url: string; body: unknown }> = [];
     const current = () =>
@@ -289,6 +289,13 @@ test.describe("billing", () => {
           left_by: state.leavingOn ? "member" : null,
           leave_reason: null,
           leave_preview_on: state.leavingOn ? null : isoDay(20),
+        },
+        standing: {
+          status: state.leavingOn ? "leaving" : "active",
+          grace_until: null,
+          access_until: state.leavingOn,
+          outstanding_cents: 0,
+          unpaid_since: null,
         },
         subscriptions: [
           {
@@ -323,10 +330,7 @@ test.describe("billing", () => {
         state.endsOn = isoDay(20);
         return route.fulfill(json({ leaving_on: state.leavingOn, voided_invoice_count: 0, outstanding_cents: 4000 }));
       }
-      state.leavingOn = null;
-      state.autoRenew = true;
-      state.endsOn = null;
-      return route.fulfill(json({ membership: { leaving_on: null } }));
+      return route.fulfill(json({}, 404));
     });
 
     await page.goto("/me/payments");
@@ -340,19 +344,22 @@ test.describe("billing", () => {
     expect(calls[0]).toMatchObject({ method: "PUT", body: { auto_renew: false } });
 
     await page.getByTestId("billing-leave").click();
-    const dialog = page.getByRole("dialog", { name: "Leave the box" });
-    await expect(dialog.getByText("anything you have already used and not paid stays owed", { exact: false })).toBeVisible();
+    const dialog = page.getByRole("dialog", { name: "Leave Box Kypseli" });
+    await expect(dialog.getByText("You will no longer be a member of the box.", { exact: false })).toBeVisible();
+    await expect(dialog.getByTestId("billing-leave-stays")).toContainText("Your package stays valid until");
+    await expect(dialog.getByText("If you follow the box, you keep following it.")).toBeVisible();
+    await dialog.getByRole("button", { name: "Want to say why you are leaving?" }).click();
     await dialog.getByRole("textbox").fill("Moving away");
-    await dialog.getByRole("button", { name: "Leave", exact: true }).click();
+    await dialog.getByRole("button", { name: "Leave now" }).click();
     await expect(dialog).toHaveCount(0);
     expect(calls[1]).toMatchObject({ method: "POST", body: { reason: "Moving away" } });
 
-    await expect(page.getByTestId("billing-leaving")).toContainText("Your last day at the box is");
+    await expect(page.getByTestId("billing-leaving")).toContainText("You left the box.");
+    await expect(page.getByTestId("billing-leaving")).toContainText("Your package stays valid until");
+    await expect(page.getByTestId("standing-chip")).toHaveText("Left");
     await expect(page.getByRole("switch", { name: /Automatic renewal/ })).toHaveCount(0);
-
-    await page.getByRole("button", { name: "I'm staying at the box" }).click();
-    await expect(page.getByTestId("billing-leave")).toBeVisible();
-    expect(calls[2]).toMatchObject({ method: "DELETE" });
+    await expect(page.getByTestId("billing-rejoin")).toHaveAttribute("href", "/b/kypseli");
+    expect(calls).toHaveLength(2);
   });
 
   // ADR-205: an email-domain company plan waits for a confirmed email.

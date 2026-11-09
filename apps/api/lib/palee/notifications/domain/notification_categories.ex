@@ -124,7 +124,7 @@ defmodule Palee.Notifications.Domain.NotificationCategories do
         shop_order_ready shop_order_reminder shop_order_cancelled shop_back_in_stock
         document_signature_requested health_certificate_expiring
         box_review_moderated box_review_report_decided
-        join_request_accepted join_request_declined
+        join_request_accepted join_request_declined box_membership_ended
       )
     }
   ]

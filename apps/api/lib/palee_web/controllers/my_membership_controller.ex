@@ -1,5 +1,5 @@
 defmodule PaleeWeb.MyMembershipController do
-  @moduledoc "ADR-220: the member's renewal choice and leaving the box."
+  @moduledoc "ADR-220: the member's renewal choice; ADR-595: leaving the box."
   use PaleeWeb, :controller
   use PaleeWeb.ControllerSpecs
 
@@ -44,7 +44,8 @@ defmodule PaleeWeb.MyMembershipController do
   end
 
   operation(:leave,
-    summary: "Leave the box: renewal stops and access ends with what I paid for",
+    summary:
+      "Leave the box now (ADR-595): no longer a member; a package I have stays usable to its last day, money owed stays owed",
     request_body:
       {"Leave", "application/json",
        %Schema{
@@ -60,20 +61,6 @@ defmodule PaleeWeb.MyMembershipController do
   def leave(conn, _params) do
     with {:ok, result} <- MembershipRenewal.member_leave(conn.assigns.tenant_context, body(conn)) do
       json(conn, result)
-    end
-  end
-
-  operation(:stay,
-    summary: "Change my mind before my last day at the box",
-    responses: [
-      ok: {"Membership", "application/json", @open_object},
-      conflict: {"Not leaving, or the last day has passed", "application/json", @open_object}
-    ]
-  )
-
-  def stay(conn, _params) do
-    with {:ok, membership} <- MembershipRenewal.member_stay(conn.assigns.tenant_context) do
-      json(conn, %{membership: membership})
     end
   end
 

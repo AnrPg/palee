@@ -46,10 +46,24 @@ function matchesQuery(user: AdminUserDirectoryEntry, query: string) {
   return !needle || normalizeSearch(user.nickname).includes(needle);
 }
 
+/**
+ * ADR-595 (3A): someone who left stays in the list while anything is
+ * pending (a package they kept, money owed). Once nothing is, they show
+ * only when staff pick «Πρώην μέλος box» in the status filter.
+ */
+export function hiddenFormerMember(user: Pick<AdminUserDirectoryEntry, "finance_status" | "standing">) {
+  return user.finance_status === "former" && (user.standing?.outstanding_cents ?? 0) <= 0;
+}
+
+function matchesFinance(user: AdminUserDirectoryEntry, finance: string) {
+  if (finance === "all") return !hiddenFormerMember(user);
+  return (user.finance_status ?? "none") === finance;
+}
+
 export function roleCounts(users: AdminUserDirectoryEntry[], query: string): Record<DirectoryRole, number> {
   const counts: Record<DirectoryRole, number> = { all: 0, member: 0, athlete: 0, staff: 0 };
   for (const user of users) {
-    if (!matchesQuery(user, query)) continue;
+    if (!matchesQuery(user, query) || hiddenFormerMember(user)) continue;
     for (const role of ["all", "member", "athlete", "staff"] as const) {
       if (matchesRole(user, role)) counts[role] += 1;
     }
@@ -62,7 +76,7 @@ export function filterDirectory(users: AdminUserDirectoryEntry[], filters: Direc
     (user) =>
       matchesQuery(user, filters.query) &&
       matchesRole(user, filters.role) &&
-      (filters.finance === "all" || (user.finance_status ?? "none") === filters.finance),
+      matchesFinance(user, filters.finance),
   );
 
   const joined = (user: AdminUserDirectoryEntry) => (user.joined_at ? Date.parse(user.joined_at) : 0);

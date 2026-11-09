@@ -267,6 +267,9 @@ defmodule Palee.Finance.FinanceStore do
   def undo_leave_membership(user_id, by), do: adapter().undo_leave_membership(user_id, by)
 
   @impl true
+  def rejoin_after_leaving(user_id), do: adapter().rejoin_after_leaving(user_id)
+
+  @impl true
   def mark_subscription_notice_sent(subscription_id, kind),
     do: adapter().mark_subscription_notice_sent(subscription_id, kind)
 

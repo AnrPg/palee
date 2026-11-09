@@ -1,22 +1,12 @@
-/** ADR-220: staff marking a box member as leaving. */
-
-export type LeaveWhen = "end_of_period" | "today" | "date";
+/** ADR-220/595: staff ending a box membership. */
 
 /**
- * The request body for a leave: no day means "when what they paid for ends"
- * (the API works it out), today, or a chosen day (today at the earliest).
+ * ADR-595: staff end a box membership under the member's own rules: it ends
+ * now, a package in force stays usable to its last day, money owed and a
+ * minimum commitment's months stay owed. Only the reason is staff's to add.
  */
-export function leaveRequest(
-  form: { when: LeaveWhen; date: string; reason: string },
-  today: string,
-  commitmentOverrideReason: string | null,
-): { leaving_on: string | null; reason: string | null; commitment_override_reason: string | null } {
-  const leavingOn = form.when === "today" ? today : form.when === "date" ? form.date || today : null;
-  return {
-    leaving_on: leavingOn,
-    reason: form.reason.trim() || null,
-    commitment_override_reason: commitmentOverrideReason,
-  };
+export function leaveRequest(reason: string): { reason: string | null } {
+  return { reason: reason.trim() || null };
 }
 
 /** Running packages whose renewal is the box member's choice (`auto_renew` is a boolean). */

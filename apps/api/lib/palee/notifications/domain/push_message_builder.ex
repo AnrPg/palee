@@ -1046,6 +1046,30 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
     }
   end
 
+  # ADR-595.
+  def build("box_membership_ended", payload, localize) do
+    box = payload["box_name"]
+
+    %{
+      title: localize.("Your box membership ended", %{}),
+      body:
+        case payload["access_until"] do
+          until when is_binary(until) and until != "" ->
+            localize.(
+              "%{box} ended your box membership. Your package stays usable until %{date}.",
+              %{
+                box: box,
+                date: until
+              }
+            )
+
+          _none ->
+            localize.("%{box} ended your box membership.", %{box: box})
+        end,
+      url: payload["url"] || "/me/payments"
+    }
+  end
+
   def build("join_request_declined", payload, localize) do
     %{
       title: localize.("Your request to join", %{}),

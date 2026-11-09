@@ -910,3 +910,12 @@ msgstr "Δες τα πακέτα του box και γίνε μέλος με λί
 
 msgid "%{box} invites you to become a member."
 msgstr "Το %{box} σε προσκαλεί να γίνεις μέλος."
+
+msgid "Your box membership ended"
+msgstr "Η συμμετοχή σου στο box έληξε"
+
+msgid "%{box} ended your box membership. Your package stays usable until %{date}."
+msgstr "Το %{box} τερμάτισε τη συμμετοχή σου ως μέλος box. Το πακέτο σου ισχύει ως %{date}."
+
+msgid "%{box} ended your box membership."
+msgstr "Το %{box} τερμάτισε τη συμμετοχή σου ως μέλος box."

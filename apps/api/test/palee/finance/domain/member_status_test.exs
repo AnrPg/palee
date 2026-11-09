@@ -103,8 +103,16 @@ defmodule Palee.Finance.Domain.MemberStatusTest do
     assert %{status: "leaving", lifecycle: "active"} =
              derive(%{left_at: left_at, leaving_on: ~D[2026-11-30]})
 
-    assert %{status: "cancelled", lifecycle: "cancelled"} =
-             derive(%{left_at: left_at, leaving_on: @today})
+    # ADR-595: the last day is still theirs; after it they are a former
+    # member («Πρώην μέλος»).
+    assert %{status: "leaving"} = derive(%{left_at: left_at, leaving_on: @today})
+
+    assert %{status: "former", lifecycle: "cancelled"} =
+             derive(%{left_at: left_at, leaving_on: Date.add(@today, -1)})
+
+    # Leaving comes before money: what they owe shows next to it.
+    assert %{status: "leaving"} =
+             derive(%{left_at: left_at, leaving_on: ~D[2026-11-30], unpaid_due_on: @today})
 
     assert %{status: "paused", lifecycle: "paused"} =
              derive(%{subscriptions: [subscription(%{status: "paused"})]})

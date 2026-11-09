@@ -5240,6 +5240,7 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
           entitlement_status: entitlement.status,
           entitlement_source: entitlement.source,
           entitlement_expires_on: entitlement.expires_on,
+          entitlement_grace_until: grace_until(entitlement),
           entitlement_updated_at: utc_now()
         })
         |> Ecto.Changeset.change(status: status, status_shown: shown)
@@ -6472,6 +6473,7 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
       entitlement_status: membership.entitlement_status,
       entitlement_source: membership.entitlement_source,
       entitlement_expires_on: membership.entitlement_expires_on,
+      entitlement_grace_until: membership.entitlement_grace_until,
       entitlement_updated_at: membership.entitlement_updated_at,
       leaving_on: membership.leaving_on,
       left_at: membership.left_at,
@@ -7622,13 +7624,7 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
             left_at: now,
             left_by: by,
             leave_reason: blank_to_nil(params["reason"]),
-            expires_on: earliest_date(membership.expires_on, leaving_on),
-            # Staff marking someone as gone today ends access now.
-            status:
-              if(by == "staff" and Date.compare(leaving_on, today) != :gt,
-                do: "cancelled",
-                else: membership.status
-              )
+            expires_on: earliest_date(membership.expires_on, leaving_on)
           })
           |> Repo.update()
           |> case do
@@ -7659,17 +7655,7 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
     Repo.transaction(fn ->
       with %Membership{} = membership <- locked_membership_for_user(user_id),
            :ok <- undo_open(membership, by, today) do
-        now = DateTime.utc_now()
-
-        MembershipPackageSubscription
-        |> tenant_scope()
-        |> where([subscription], subscription.membership_id == ^membership.id)
-        |> where([subscription], subscription.status == "active")
-        |> where([subscription], subscription.renewal_changed_at == ^membership.left_at)
-        |> lock("FOR UPDATE")
-        |> Repo.all()
-        |> Enum.each(&resume_after_leave!(&1, by, now))
-
+        resume_left_subscriptions!(membership, by, DateTime.utc_now())
         rejoin!(membership)
         refresh_entitlement_snapshot(membership.id)
         normalize_membership(Repo.get!(Membership, membership.id))
@@ -7678,6 +7664,42 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
         {:error, reason} -> Repo.rollback(reason)
       end
     end)
+  end
+
+  @impl true
+  def rejoin_after_leaving(user_id) do
+    today = GymClock.today()
+
+    Repo.transaction(fn ->
+      case locked_membership_for_user(user_id) do
+        %Membership{left_at: %DateTime{}} = membership ->
+          # Back before the last day: what was running renews again.
+          if membership.leaving_on && Date.compare(membership.leaving_on, today) != :lt,
+            do: resume_left_subscriptions!(membership, "member", DateTime.utc_now())
+
+          rejoin!(membership)
+          refresh_entitlement_snapshot(membership.id)
+          normalize_membership(Repo.get!(Membership, membership.id))
+
+        %Membership{} = membership ->
+          normalize_membership(membership)
+
+        nil ->
+          nil
+      end
+    end)
+  end
+
+  # The subscriptions the leave stopped (their renewal changed with it).
+  defp resume_left_subscriptions!(membership, by, now) do
+    MembershipPackageSubscription
+    |> tenant_scope()
+    |> where([subscription], subscription.membership_id == ^membership.id)
+    |> where([subscription], subscription.status == "active")
+    |> where([subscription], subscription.renewal_changed_at == ^membership.left_at)
+    |> lock("FOR UPDATE")
+    |> Repo.all()
+    |> Enum.each(&resume_after_leave!(&1, by, now))
   end
 
   defp membership_for_user(user_id) do
@@ -7814,35 +7836,12 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
   defp undo_open(%Membership{left_by: "staff"}, "member", _today), do: {:error, :left_by_staff}
   defp undo_open(membership, "member", today), do: MemberRenewal.undo_allowed(membership, today)
 
-  # Members keep everything they paid for; staff may name the day, today at
-  # the earliest (what was already used stays owed either way).
-  defp leaving_day("member", _params, subscriptions, today),
+  # ADR-595: staff follow the same rule: the box membership ends now, the
+  # package runs to its natural last day.
+  defp leaving_day(by, _params, subscriptions, today) when by in ["member", "staff"],
     do: {:ok, natural_leaving_day(subscriptions, today)}
 
-  defp leaving_day("staff", params, subscriptions, today) do
-    case params["leaving_on"] do
-      value when value in [nil, ""] ->
-        {:ok, natural_leaving_day(subscriptions, today)}
-
-      value ->
-        with %Date{} = leaving_on <- parse_date(value, {:error, :invalid_leaving_on}),
-             :ok <- not_in_past(leaving_on, today),
-             :ok <-
-               MemberRenewal.staff_leaving_allowed(
-                 leaving_on,
-                 subscriptions |> Enum.map(& &1.commitment_ends_on) |> latest_date(),
-                 params["commitment_override_reason"]
-               ) do
-          {:ok, leaving_on}
-        end
-    end
-  end
-
   defp leaving_day(_by, _params, _subscriptions, _today), do: {:error, :invalid_leave_actor}
-
-  defp not_in_past(leaving_on, today) do
-    if Date.compare(leaving_on, today) == :lt, do: {:error, :invalid_leaving_on}, else: :ok
-  end
 
   # Packages that have not begun yet do not keep the member: they are
   # cancelled with the leave.
@@ -7996,13 +7995,6 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
   defp earliest_date(date, nil), do: date
   defp earliest_date(left, right), do: Enum.min([left, right], Date)
 
-  defp latest_date(dates) do
-    case Enum.reject(dates, &is_nil/1) do
-      [] -> nil
-      dates -> Enum.max(dates, Date)
-    end
-  end
-
   defp blank_to_nil(value) when is_binary(value) do
     case String.trim(value) do
       "" -> nil
@@ -8074,9 +8066,10 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
   end
 
   # ADR-220: a later period is billed only while the member keeps renewal on
-  # and is not leaving before it begins.
+  # and is not leaving before it begins; ADR-595: a period inside a minimum
+  # commitment is billed even after the member left (it stays owed).
   defp renewal_open?(subscription, membership, %Date{} = start) do
-    MemberRenewal.renewal_allowed(subscription, membership) == :ok and
+    MemberRenewal.period_billable?(subscription, membership, start) and
       SubscriptionSelection.renewable?(subscription.params_snapshot || %{}) == :ok and
       add_on_base_active(subscription) == :ok and
       (is_nil(membership.leaving_on) or Date.compare(start, membership.leaving_on) != :gt)
@@ -8267,6 +8260,10 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
 
     :ok
   end
+
+  # ADR-595: the grace a member is in ends on this day.
+  defp grace_until(%{status: "grace", grace_until: %Date{} = until}), do: until
+  defp grace_until(_entitlement), do: nil
 
   @impl true
   def refresh_entitlement_snapshots do

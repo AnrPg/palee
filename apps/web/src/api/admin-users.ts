@@ -1,4 +1,5 @@
 import type { ValueOverride } from "@/components/admin/finance/shared/member-standing";
+import type { Standing } from "@/components/finance/standing";
 import type { DurationAdjustment } from "@/api/executions";
 import { apiRequest } from "@/api/client";
 import type { paths } from "@/api/generated/schema";
@@ -26,6 +27,8 @@ export type AdminUserDirectoryEntry = {
   account_status: string;
   joined_at: string | null;
   finance_status: string | null;
+  /** ADR-595: the status and the line under it, the same the member sees. */
+  standing?: Standing | null;
   attention_count: number;
 };
 

@@ -3,6 +3,7 @@ defmodule Palee.Application.ListAdminUsers do
 
   alias Palee.{Finance, Organizations}
   alias Palee.Application.{AuthorizeClientAccess, TenantUserAccess}
+  alias Palee.Finance.Domain.MemberStatus
   alias Palee.Organizations.Domain.MembershipPolicy
 
   def call(params \\ %{}, tenant_context \\ nil) do
@@ -92,10 +93,24 @@ defmodule Palee.Application.ListAdminUsers do
       client: MembershipPolicy.client?(roles),
       account_status: "active",
       joined_at: timestamp(user.inserted_at),
-      finance_status: if(membership, do: to_string(Map.get(membership, :status)), else: nil),
+      # ADR-595: the status the member sees too (money and leaving folded in).
+      finance_status: if(membership, do: to_string(standing_status(membership)), else: nil),
+      standing:
+        if(membership,
+          do:
+            MemberStatus.standing(
+              membership,
+              profile.outstanding_balance_cents,
+              profile.oldest_unpaid_due_on
+            ),
+          else: nil
+        ),
       attention_count: 0
     }
   end
+
+  defp standing_status(membership),
+    do: Map.get(membership, :status_shown) || Map.get(membership, :status)
 
   defp tenant_roles(%{roles: roles}) when is_list(roles), do: roles
   defp tenant_roles(_facts), do: []

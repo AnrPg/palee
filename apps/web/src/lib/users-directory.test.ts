@@ -36,6 +36,17 @@ describe("users directory", () => {
     expect(filterDirectory(users, { ...base, role: "staff" }).map((entry) => entry.id)).toEqual(["3"]);
   });
 
+  // ADR-595 (3A): a former member shows while something is pending, then only under its filter.
+  it("keeps a former member in the list while they owe, then only under «Πρώην μέλος box»", () => {
+    const standing = { status: "former", grace_until: null, access_until: null, unpaid_since: null };
+    const owes = user({ id: "o", nickname: "Owes", finance_status: "former", standing: { ...standing, outstanding_cents: 5000 } });
+    const settled = user({ id: "s", nickname: "Settled", finance_status: "former", standing: { ...standing, outstanding_cents: 0 } });
+    const base = { query: "", role: "all" as const, finance: "all", sort: "name" as const };
+    expect(filterDirectory([owes, settled], base).map((entry) => entry.id)).toEqual(["o"]);
+    expect(filterDirectory([owes, settled], { ...base, finance: "former" }).map((entry) => entry.id)).toEqual(["o", "s"]);
+    expect(roleCounts([owes, settled], "").all).toBe(1);
+  });
+
   // ADR-217: people are shown by their roles in the box, never the account role.
   it("reads the box roles, marks staff and names head coaches", () => {
     const coachMember = user({ role: "coach", roles: ["member", "coach"], coach_scope: "all", staff: true });

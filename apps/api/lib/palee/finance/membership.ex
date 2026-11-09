@@ -23,6 +23,8 @@ defmodule Palee.Finance.Membership do
     field :entitlement_status, :string, default: "inactive"
     field :entitlement_source, :string
     field :entitlement_expires_on, :date
+    # ADR-595: the last day of a grace the member is in, nil otherwise.
+    field :entitlement_grace_until, :date
     field :entitlement_updated_at, :utc_datetime_usec
     field :last_payment_reminder_sent_at, :utc_datetime_usec
     # ADR-220: the member is leaving (or left) the box on `leaving_on`.
@@ -49,6 +51,7 @@ defmodule Palee.Finance.Membership do
       :entitlement_status,
       :entitlement_source,
       :entitlement_expires_on,
+      :entitlement_grace_until,
       :entitlement_updated_at,
       :last_payment_reminder_sent_at
     ])

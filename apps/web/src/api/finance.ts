@@ -200,7 +200,7 @@ export async function setFinanceMemberAutoRenew(token: string, userId: string, s
 export async function markFinanceMemberLeft(
   token: string,
   userId: string,
-  body: { leaving_on?: string | null; reason?: string | null; commitment_override_reason?: string | null },
+  body: { reason?: string | null },
 ) {
   return apiRequest<{ membership: FinanceRecord; leaving_on: string; voided_invoice_count: number; outstanding_cents: number }>(
     `/admin/finance/members/${userId}/leave`,

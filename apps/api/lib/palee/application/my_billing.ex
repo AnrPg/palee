@@ -23,6 +23,7 @@ defmodule Palee.Application.MyBilling do
 
   alias Palee.Application.{EntitlementClassTypeNames, MemberPerks, MembershipRenewal, MyProviders}
   alias Palee.{Finance, Organizations, Referrals, Seasons, Trials}
+  alias Palee.Finance.Domain.MemberStatus
 
   @client_roles ~w(member athlete)
   @non_draft_statuses ~w(issued partially_paid paid overdue void)
@@ -154,6 +155,7 @@ defmodule Palee.Application.MyBilling do
   defp empty_finance do
     %{
       membership: nil,
+      standing: nil,
       entitlement: nil,
       subscriptions: [],
       invoices: [],
@@ -185,9 +187,14 @@ defmodule Palee.Application.MyBilling do
 
     active_id = profile.active_package_subscription && profile.active_package_subscription.id
     credits = Enum.filter(profile.credit_ledger_entries, &(&1.referral_reward_id != nil))
+    open_invoices = Enum.filter(invoices, &(&1.status in @outstanding_statuses))
+    outstanding_cents = Enum.reduce(open_invoices, 0, &(&1.balance_due_cents + &2))
 
     %{
       membership: present_membership(profile.membership, leave_preview(tenant, profile)),
+      # ADR-595: the same status and line the staff see.
+      standing:
+        MemberStatus.standing(profile.membership, outstanding_cents, unpaid_since(open_invoices)),
       entitlement: entitlement(tenant, user_id),
       subscriptions:
         profile.package_subscriptions
@@ -196,10 +203,7 @@ defmodule Palee.Application.MyBilling do
       invoices: Enum.take(invoices, @history_limit),
       payments: profile.payments |> Enum.take(@history_limit) |> Enum.map(&present_payment/1),
       promotions: promotions(tenant, profile.promotion_redemptions),
-      outstanding_cents:
-        invoices
-        |> Enum.filter(&(&1.status in @outstanding_statuses))
-        |> Enum.reduce(0, &(&1.balance_due_cents + &2)),
+      outstanding_cents: outstanding_cents,
       credit_balance_cents: profile.credit_balance || 0,
       referral_rewards: %{
         credits: Enum.map(credits, &present_credit/1),
@@ -207,6 +211,16 @@ defmodule Palee.Application.MyBilling do
           credits |> Enum.map(&(&1.amount_cents || 0)) |> Enum.filter(&(&1 > 0)) |> Enum.sum()
       }
     }
+  end
+
+  # The oldest charge that fell due and is still open.
+  defp unpaid_since(open_invoices) do
+    today = Date.utc_today()
+
+    open_invoices
+    |> Enum.map(& &1.due_date)
+    |> Enum.filter(&(match?(%Date{}, &1) and Date.compare(&1, today) != :gt))
+    |> Enum.min(Date, fn -> nil end)
   end
 
   defp entitlement(tenant, user_id) do

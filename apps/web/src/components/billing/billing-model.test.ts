@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { billingTab, canStay, leaveState, sessionsLeft, totalsByCurrency, validityProgress } from "./billing-model";
+import { billingTab, leaveState, sessionsLeft, totalsByCurrency, validityProgress } from "./billing-model";
 
 const usage = (limit: number | "unlimited", remaining: number | "unlimited") => ({
   limit,
@@ -58,34 +58,45 @@ describe("validityProgress", () => {
   });
 });
 
-describe("leaveState (ADR-220)", () => {
+describe("leaveState (ADR-595)", () => {
   const actions = (leave: boolean) => ({ self_service_leave: leave });
+  const today = "2026-11-09";
+  const current = [{ current: true, commitment_ends_on: null }];
 
-  it("shows the last day while leaving, telling apart who decided", () => {
-    expect(leaveState({ actions: actions(false), membership: { leaving_on: "2026-11-30", left_by: "member" } })).toEqual({
-      kind: "leaving",
-      leavingOn: "2026-11-30",
-      byStaff: false,
-    });
-    expect(leaveState({ actions: actions(false), membership: { leaving_on: "2026-11-30", left_by: "staff" } })).toMatchObject({ byStaff: true });
+  it("after leaving, keeps the package to its last day and tells apart who ended it", () => {
+    expect(
+      leaveState({ actions: actions(false), subscriptions: current, membership: { leaving_on: "2026-11-30", left_by: "member" } }, today),
+    ).toEqual({ kind: "left", packageUntil: "2026-11-30", byStaff: false });
+    expect(
+      leaveState({ actions: actions(false), subscriptions: current, membership: { leaving_on: "2026-11-30", left_by: "staff" } }, today),
+    ).toMatchObject({ byStaff: true });
   });
 
-  it("offers leaving with the day the member would keep", () => {
-    expect(leaveState({ actions: actions(true), membership: { leaving_on: null, leave_preview_on: "2026-11-27" } })).toEqual({
-      kind: "can_leave",
-      previewOn: "2026-11-27",
+  it("keeps no package once it ended or when there was none", () => {
+    expect(leaveState({ actions: actions(false), subscriptions: current, membership: { leaving_on: "2026-11-01" } }, today)).toMatchObject({
+      packageUntil: null,
     });
+    expect(leaveState({ actions: actions(false), subscriptions: [], membership: { leaving_on: today } }, today)).toMatchObject({
+      packageUntil: null,
+    });
+  });
+
+  it("offers leaving now with what stays: the package, a commitment and money owed", () => {
+    expect(
+      leaveState(
+        {
+          actions: actions(true),
+          outstanding_cents: 5000,
+          subscriptions: [{ current: true, commitment_ends_on: "2027-03-31" }],
+          membership: { leaving_on: null, leave_preview_on: "2027-03-31" },
+        },
+        today,
+      ),
+    ).toEqual({ kind: "can_leave", packageUntil: "2027-03-31", commitmentUntil: "2027-03-31", owedCents: 5000 });
   });
 
   it("offers nothing without a membership", () => {
-    expect(leaveState({ actions: actions(true), membership: null })).toEqual({ kind: "none" });
-    expect(leaveState({ actions: actions(false), membership: { leaving_on: null } })).toEqual({ kind: "none" });
-  });
-
-  it("lets the member stay until the last day has passed", () => {
-    const now = new Date(2026, 10, 30, 23, 0);
-    expect(canStay("2026-11-30", now)).toBe(true);
-    expect(canStay("2026-12-01", now)).toBe(true);
-    expect(canStay("2026-11-29", now)).toBe(false);
+    expect(leaveState({ actions: actions(true), membership: null }, today)).toEqual({ kind: "none" });
+    expect(leaveState({ actions: actions(false), membership: { leaving_on: null } }, today)).toEqual({ kind: "none" });
   });
 });

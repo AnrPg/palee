@@ -910,3 +910,12 @@ msgstr "Bekijk de pakketten van de box en word boxlid in een paar tikken."
 
 msgid "%{box} invites you to become a member."
 msgstr "%{box} nodigt je uit om boxlid te worden."
+
+msgid "Your box membership ended"
+msgstr "Je box-lidmaatschap is beëindigd"
+
+msgid "%{box} ended your box membership. Your package stays usable until %{date}."
+msgstr "%{box} heeft je box-lidmaatschap beëindigd. Je pakket blijft bruikbaar tot %{date}."
+
+msgid "%{box} ended your box membership."
+msgstr "%{box} heeft je box-lidmaatschap beëindigd."

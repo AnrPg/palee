@@ -8,12 +8,13 @@ import type { FinanceRecord } from "@/api/finance";
 
 /** Every status the ledger shows, in the order the server weighs them. */
 export const MEMBER_STATUSES = [
+  "former",
+  "leaving",
   "cancelled",
   "paused",
   "expired",
   "overdue",
   "unpaid",
-  "leaving",
   "expiring",
   "trial",
   "comped",
@@ -23,7 +24,7 @@ export const MEMBER_STATUSES = [
 
 export type MemberStatus = (typeof MEMBER_STATUSES)[number];
 
-/** The statuses staff may set by hand (leaving has its own flow, ADR-220). */
+/** The statuses staff may set by hand (leaving has its own flow, ADR-220/595). */
 export const OVERRIDABLE_STATUSES = ["active", "trial", "comped", "paused", "expired", "cancelled"] as const;
 
 export type StatusTone = "good" | "warn" | "bad" | "info" | "off";
@@ -37,7 +38,8 @@ const TONES: Record<MemberStatus, StatusTone> = {
   comped: "info",
   paused: "off",
   expired: "off",
-  leaving: "off",
+  leaving: "warn",
+  former: "off",
   cancelled: "off",
   no_package: "off",
 };

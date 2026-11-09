@@ -46,7 +46,7 @@ defmodule Palee.Application.AroundMe do
     body = stringify(body)
 
     memberships =
-      user_id |> Organizations.list_memberships() |> Organizations.provider_memberships()
+      user_id |> Organizations.list_memberships() |> Organizations.current_memberships()
 
     with {:ok, filter} <- Places.parse_filter(body["filter"], vocabulary()),
          {:ok, origin} <- origin(context, body["origin"], filter) do
@@ -135,7 +135,7 @@ defmodule Palee.Application.AroundMe do
   def viewer(user_id, memberships \\ nil) do
     memberships =
       memberships ||
-        user_id |> Organizations.list_memberships() |> Organizations.provider_memberships()
+        user_id |> Organizations.list_memberships() |> Organizations.current_memberships()
 
     %{user_id: user_id, organization_ids: Enum.map(memberships, & &1.organization.id)}
   end

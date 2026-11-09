@@ -224,6 +224,7 @@ Terms marked **(proposed)** change today's wording; see §5. Everything else mat
 | Cleaning staff | Προσωπικό καθαριότητας | `janitor` | The cleaning log only. |
 | Client | Πελάτης | member or athlete role | Someone who trains with the business. Umbrella word for the two below. |
 | Box member | Μέλος box | `member` | Client of a box with a membership or package. Where the box is known, name it: "Member of Box Kypseli" / «Μέλος στο Box Kypseli». Never a bare "Member" / «Μέλος». |
+| Former box member | Πρώην μέλος box | `left_at` on `organization_memberships`; status `former` | Someone who left the box (ADR-595). While a package they kept still runs their status reads "Left" / «Αποχώρησε»; once it ended, "Former box member" / «Πρώην μέλος box». They see «Δεν είσαι μέλος» in Box. | Unfollow (leaving does not unfollow); status «Ακυρώθηκε» (a staff override). |
 | Athlete | Αθλητής | `athlete` | Client who gets **personal programming** from a coach. |
 | Guest | Επισκέπτης | `guest` | Someone with a Palee account whom staff made a guest of the box at the desk, so they can buy a membership package, a free sale or a shop order there. The lowest client tier; one person can be a guest of many boxes. Sees no member app of the box, only the public box page with «Γίνε μέλος box». Never self-chosen. (ADR-272) |
 | Personal link | Προσωπικός σύνδεσμος | `registration_invitations` | One-time invitation for one person, any role including staff. |

@@ -17,7 +17,7 @@ defmodule Palee.Application.ClubScope do
 
   def call(%{user_id: user_id} = context) do
     memberships =
-      user_id |> Organizations.list_memberships() |> Organizations.provider_memberships()
+      user_id |> Organizations.list_memberships() |> Organizations.current_memberships()
 
     by_organization = Map.new(memberships, &{&1.organization.id, &1})
     organization_ids = Map.keys(by_organization)

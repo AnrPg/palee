@@ -28,6 +28,8 @@ defmodule Palee.Organizations.Domain.JoinRequestPolicy do
   `:accepted_request`).
   """
   def admission(nil, _reason), do: :create
+  # ADR-595: someone who left the box comes back by any way in, on their own.
+  def admission(%{status: :active, left_at: %DateTime{}}, _reason), do: :create
   def admission(%{status: :active}, _reason), do: :already_member
   def admission(_former, :accepted_request), do: :create
   def admission(_former, :purchase), do: {:error, :membership_unavailable}

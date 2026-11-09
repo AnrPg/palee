@@ -9,10 +9,14 @@ defmodule Palee.Finance.Domain.MemberStatus do
       folded in, so someone who has not paid never shows a green «Ενεργό».
       When several apply, the first one wins:
 
-          cancelled › paused › expired › overdue › unpaid › leaving ›
-          expiring › trial | comped › active
+          former › leaving › cancelled › paused › expired › overdue ›
+          unpaid › expiring › trial | comped › active
 
-      (`no_package` for a finance profile that never held a package);
+      (`no_package` for a finance profile that never held a package).
+      ADR-595: `leaving` («Αποχώρησε») is someone who left the box while a
+      package they kept still runs, `former` («Πρώην μέλος») someone whose
+      last day has passed. Both come first: what they owe shows next to
+      them, not instead of them;
     * `lifecycle`, the membership's stored `status` that access rules,
       reports and queues have always read (`active`, `trial`, `comped`,
       `expiring`, `paused`, `expired`, `cancelled`). Money never changes it:
@@ -27,7 +31,7 @@ defmodule Palee.Finance.Domain.MemberStatus do
   """
 
   @expiring_window_days 30
-  @statuses ~w(active trial comped unpaid overdue leaving expiring paused expired cancelled no_package)
+  @statuses ~w(active trial comped unpaid overdue leaving expiring paused expired cancelled former no_package)
   @lifecycles ~w(active trial comped expiring paused expired cancelled)
   @overridable ~w(active trial comped paused expired cancelled)
 
@@ -65,13 +69,13 @@ defmodule Palee.Finance.Domain.MemberStatus do
 
     status =
       cond do
-        left?(facts, today) -> "cancelled"
+        left?(facts, today) -> "former"
+        leaving?(facts, today) -> "leaving"
         subscriptions == [] -> no_package_status(facts, today)
         current == nil -> "expired"
         current.status == "paused" or Map.get(facts, :frozen?, false) -> "paused"
         blocked_for_money?(facts) -> "overdue"
         match?(%Date{}, Map.get(facts, :unpaid_due_on)) -> "unpaid"
-        leaving?(facts, today) -> "leaving"
         expiring?(current, today) -> "expiring"
         true -> base
       end
@@ -79,10 +83,31 @@ defmodule Palee.Finance.Domain.MemberStatus do
     %{status: status, lifecycle: lifecycle(status, base, current, subscriptions, facts, today)}
   end
 
+  @doc """
+  ADR-595: the one standing the member and the staff both see: the status
+  (`status_shown`) and what the line under it says: the last day of a grace
+  the member is in, the last day of a package kept after leaving, what is
+  owed and since when. `membership` is a normalized finance profile.
+  """
+  def standing(membership, outstanding_cents, unpaid_since) when is_map(membership) do
+    status = Map.get(membership, :status_shown) || Map.get(membership, :status)
+
+    %{
+      status: status,
+      grace_until: Map.get(membership, :entitlement_grace_until),
+      access_until:
+        if(status in ["leaving", "former"], do: Map.get(membership, :leaving_on), else: nil),
+      outstanding_cents: max(outstanding_cents || 0, 0),
+      unpaid_since: unpaid_since
+    }
+  end
+
   @doc "The stored membership status an overridden status gives."
   def lifecycle_of_override(value) when value in @overridable, do: value
 
-  defp lifecycle("cancelled", _base, _current, _subscriptions, _facts, _today), do: "cancelled"
+  defp lifecycle(status, _base, _current, _subscriptions, _facts, _today)
+       when status in ["cancelled", "former"],
+       do: "cancelled"
 
   # A freeze shows as paused but keeps the membership's own state: the
   # freeze itself already moves the subscription's end (ADR-097).
@@ -169,10 +194,11 @@ defmodule Palee.Finance.Domain.MemberStatus do
     end
   end
 
+  # ADR-595: the last day is still theirs (the package lasts through it).
   defp left?(facts, today) do
     match?(%DateTime{}, Map.get(facts, :left_at)) and
       case Map.get(facts, :leaving_on) do
-        %Date{} = leaving_on -> Date.compare(leaving_on, today) != :gt
+        %Date{} = leaving_on -> Date.compare(leaving_on, today) == :lt
         _none -> true
       end
   end
@@ -180,7 +206,7 @@ defmodule Palee.Finance.Domain.MemberStatus do
   defp leaving?(facts, today) do
     match?(%DateTime{}, Map.get(facts, :left_at)) and
       match?(%Date{}, Map.get(facts, :leaving_on)) and
-      Date.compare(Map.get(facts, :leaving_on), today) == :gt
+      Date.compare(Map.get(facts, :leaving_on), today) != :lt
   end
 
   defp blocked_for_money?(facts) do

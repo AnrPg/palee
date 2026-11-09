@@ -910,3 +910,12 @@ msgstr "Mira los paquetes del box y hazte socio en pocos toques."
 
 msgid "%{box} invites you to become a member."
 msgstr "%{box} te invita a hacerte socio."
+
+msgid "Your box membership ended"
+msgstr "Tu membresía del box ha terminado"
+
+msgid "%{box} ended your box membership. Your package stays usable until %{date}."
+msgstr "%{box} ha terminado tu membresía del box. Tu paquete sigue disponible hasta el %{date}."
+
+msgid "%{box} ended your box membership."
+msgstr "%{box} ha terminado tu membresía del box."

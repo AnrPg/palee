@@ -38,6 +38,23 @@ defmodule Palee.Finance.Domain.MemberRenewal do
     if choice_allowed?(subscription), do: field(subscription, :auto_renew) != false, else: nil
   end
 
+  @doc """
+  ADR-595: whether the period starting on `period_start` is billed. A period
+  inside the package's minimum commitment is owed whatever happened since
+  (renewal turned off, the member left the box); after it, only while the
+  member keeps renewal on and has not left (`renewal_allowed/2`).
+  """
+  def period_billable?(subscription, membership, %Date{} = period_start) do
+    committed?(subscription, period_start) or renewal_allowed(subscription, membership) == :ok
+  end
+
+  defp committed?(subscription, period_start) do
+    case field(subscription, :commitment_ends_on) do
+      %Date{} = ends -> Date.compare(period_start, ends) != :gt
+      _none -> false
+    end
+  end
+
   @doc "A renewal invoice may be issued only while the member keeps renewal on."
   def renewal_allowed(subscription, membership) do
     cond do
@@ -133,19 +150,6 @@ defmodule Palee.Finance.Domain.MemberRenewal do
   """
   def leaving_on([], %Date{} = today), do: today
   def leaving_on(last_days, %Date{} = today), do: Enum.max([today | last_days], Date)
-
-  @doc """
-  Staff choosing a last day before a minimum commitment ends need a reason,
-  like cancelling (ADR-097).
-  """
-  def staff_leaving_allowed(%Date{} = leaving_on, commitment_ends_on, override_reason) do
-    cond do
-      is_nil(commitment_ends_on) -> :ok
-      Date.compare(leaving_on, commitment_ends_on) != :lt -> :ok
-      is_binary(override_reason) and String.trim(override_reason) != "" -> :ok
-      true -> {:error, :package_commitment_active}
-    end
-  end
 
   @doc "Whether the leave can still be undone: the last day has not passed."
   def undo_allowed(membership, %Date{} = today) do

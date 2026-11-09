@@ -107,6 +107,9 @@ defmodule Palee.Organizations.Ports.OrganizationStore do
                  event: String.t() | nil
                }}
               | {:error, term()}
+  @doc "ADR-595: writes (or clears, with nils) the person's leave of the box."
+  @callback set_membership_leave(Ecto.UUID.t(), Ecto.UUID.t(), map()) ::
+              {:ok, struct()} | {:error, term()}
   @callback update_membership_status(Ecto.UUID.t(), Ecto.UUID.t(), atom()) ::
               {:ok, OrganizationMembership.t()} | {:error, term()}
   @callback update_membership_role(Ecto.UUID.t(), Ecto.UUID.t(), atom()) ::

@@ -27,6 +27,35 @@ defmodule Palee.Organizations.Domain.MembershipPolicy do
   def authorized_status?(status), do: status == :active
 
   @doc """
+  ADR-595: whether the person left the box. Their membership row stays
+  active (they still reach the box for what they kept), but they are no
+  longer a member of it: no club, channels or groups, and staff see them as
+  «Αποχώρησε» / «Πρώην μέλος».
+  """
+  def former?(%{left_at: %DateTime{}}), do: true
+  def former?(_membership), do: false
+
+  @doc """
+  ADR-595: whether the box is still one of the person's boxes on `today`
+  (the box's own date): always for a member, and for a former member while
+  the package they kept lasts (`access_until`).
+  """
+  def reaches_box?(%{left_at: %DateTime{}, access_until: %Date{} = until}, %Date{} = today),
+    do: Date.compare(today, until) != :gt
+
+  def reaches_box?(%{left_at: %DateTime{}}, _today), do: false
+  def reaches_box?(_membership, _today), do: true
+
+  @doc """
+  ADR-595: whether a membership can be ended by leaving the box: a client's
+  (member or athlete) that has not ended yet. Staff keep working at the box;
+  only their package ends.
+  """
+  def can_leave?(%{left_at: %DateTime{}}), do: false
+  def can_leave?(%{roles: roles}), do: client?(roles) and not staff?(roles)
+  def can_leave?(_membership), do: false
+
+  @doc """
   ADR-217: whether a role set makes someone a client of the business. Only a
   member or athlete role does; staff roles never imply one.
   """

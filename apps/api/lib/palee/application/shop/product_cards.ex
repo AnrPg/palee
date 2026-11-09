@@ -45,7 +45,7 @@ defmodule Palee.Application.Shop.ProductCards do
   def member_organization_ids(user_id) do
     user_id
     |> Organizations.list_memberships()
-    |> Organizations.provider_memberships()
+    |> Organizations.current_memberships()
     |> Enum.map(& &1.organization.id)
   end
 

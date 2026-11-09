@@ -153,6 +153,17 @@ defmodule PaleeWeb.OrganizationAccessController do
         additionalProperties: %Schema{type: :string}
       },
       location_scope: PaleeWeb.Schemas.LocationScope.schema(),
+      left: %Schema{
+        type: :object,
+        nullable: true,
+        description:
+          "ADR-595: the person left this box (no longer a member); they reach it only for the package they kept, through access_until",
+        properties: %{
+          left_at: %Schema{type: :string, format: :"date-time"},
+          access_until: %Schema{type: :string, format: :date, nullable: true}
+        },
+        required: [:access_until, :left_at]
+      },
       organization: @organization_schema,
       settings: @organization_settings_schema
     },
@@ -751,6 +762,7 @@ defmodule PaleeWeb.OrganizationAccessController do
         |> Map.new(fn {capability, scope} -> {to_string(capability), to_string(scope)} end),
       location_scope:
         entry |> Map.get(:location_scope, :all) |> Palee.Organizations.location_scope_payload(),
+      left: left_payload(membership),
       organization: %{
         id: organization.id,
         name: organization.name,
@@ -763,6 +775,11 @@ defmodule PaleeWeb.OrganizationAccessController do
       settings: serialize_settings(Map.get(entry, :settings))
     }
   end
+
+  defp left_payload(%{left_at: %DateTime{} = left_at} = membership),
+    do: %{left_at: left_at, access_until: Map.get(membership, :access_until)}
+
+  defp left_payload(_membership), do: nil
 
   defp role_grants(%{settings: %{"role_grants" => grants}}) when is_map(grants), do: grants
   defp role_grants(_settings), do: %{}

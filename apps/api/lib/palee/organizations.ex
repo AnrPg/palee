@@ -95,7 +95,77 @@ defmodule Palee.Organizations do
   or a club to them: lists of gyms, Box ▾ and the club bar use this.
   """
   def provider_memberships(memberships) when is_list(memberships),
-    do: Enum.reject(memberships, &(hosting_only?(&1) or guest_only?(&1)))
+    do:
+      Enum.reject(
+        memberships,
+        &(hosting_only?(&1) or guest_only?(&1) or not reaches_box?(&1))
+      )
+
+  @doc """
+  ADR-595: the boxes the person is a member of now: `provider_memberships/1`
+  without the boxes they left (which they may still reach for a package they
+  kept). The club, its channels and groups, and «my boxes» lists use this.
+  """
+  def current_memberships(memberships) when is_list(memberships),
+    do: memberships |> provider_memberships() |> Enum.reject(&former_member?/1)
+
+  @doc "ADR-595: whether a membership entry is of a box the person left."
+  def former_member?(%{membership: membership}),
+    do: Palee.Organizations.Domain.MembershipPolicy.former?(membership)
+
+  def former_member?(_entry), do: false
+
+  @doc """
+  ADR-595: whether a membership entry still reaches its box today (the box's
+  own date): a member's always, a former member's while their package lasts.
+  """
+  def reaches_box?(%{membership: membership} = entry),
+    do: Palee.Organizations.Domain.MembershipPolicy.reaches_box?(membership, entry_today(entry))
+
+  def reaches_box?(_entry), do: true
+
+  defp entry_today(entry) do
+    zone = TimeZonePolicy.resolve(Map.get(entry, :settings))
+    Palee.TimeZones.ZonedTime.local_date(DateTime.utc_now(), zone)
+  end
+
+  @doc """
+  ADR-595: the person stops being a member of the box now (`by` is
+  `"member"` or `"staff"`); the package they kept lets them reach it through
+  `access_until`. Runs in the person's own scope: whoever is allowed to end
+  the membership (the person, or staff who manage billing) was checked by
+  the caller. A staff membership is left as it is (only the package ends).
+  """
+  def end_box_membership(organization_id, user_id, by, access_until, now \\ DateTime.utc_now())
+      when by in ["member", "staff"] and (is_nil(access_until) or is_struct(access_until, Date)) do
+    RepoContext.run(%{organization_id: organization_id, user_id: user_id}, fn ->
+      case OrganizationStore.get_membership(organization_id, user_id) do
+        nil ->
+          {:error, :not_found}
+
+        membership ->
+          if Palee.Organizations.Domain.MembershipPolicy.can_leave?(membership),
+            do:
+              OrganizationStore.set_membership_leave(organization_id, user_id, %{
+                left_at: now,
+                left_by: by,
+                access_until: access_until
+              }),
+            else: {:ok, membership}
+      end
+    end)
+  end
+
+  @doc "ADR-595: staff undo a leave they recorded by mistake: the person is a member again."
+  def undo_box_membership_end(organization_id, user_id) do
+    RepoContext.run(%{organization_id: organization_id, user_id: user_id}, fn ->
+      OrganizationStore.set_membership_leave(organization_id, user_id, %{
+        left_at: nil,
+        left_by: nil,
+        access_until: nil
+      })
+    end)
+  end
 
   @doc """
   ADR-272: whether a membership entry only makes the person a guest of the
@@ -322,6 +392,8 @@ defmodule Palee.Organizations do
     # own membership row, whoever is asking.
     RepoContext.run(%{organization_id: organization_id, user_id: user_id}, fn ->
       case OrganizationStore.get_membership(organization_id, user_id) do
+        # ADR-595: someone who left the box is a former member of it.
+        %{status: :active, left_at: %DateTime{}} -> :former
         %{status: :active} -> :member
         %{status: status} when status in [:suspended, :revoked] -> :former
         _none -> :none

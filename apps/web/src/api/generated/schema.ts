@@ -8656,7 +8656,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Mark a member as left the box (ADR-220) */
+        /** End a member's box membership now (ADR-595): the same rules as the member's own leave; they hear of it */
         post: operations["PaleeWeb.AdminFinanceController.mark_member_left"];
         /** Undo a member's leave (ADR-220) */
         delete: operations["PaleeWeb.AdminFinanceController.undo_member_left"];
@@ -15638,10 +15638,9 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Leave the box: renewal stops and access ends with what I paid for */
+        /** Leave the box now (ADR-595): no longer a member; a package I have stays usable to its last day, money owed stays owed */
         post: operations["PaleeWeb.MyMembershipController.leave"];
-        /** Change my mind before my last day at the box */
-        delete: operations["PaleeWeb.MyMembershipController.stay"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -25863,6 +25862,30 @@ export interface components {
                 title: string;
             }[];
             slug: string;
+            /**
+             * MemberStanding
+             * @description ADR-595: the status and the line under it, worked out once and shown alike to the member and the staff
+             */
+            standing?: {
+                /**
+                 * Format: date
+                 * @description Leaving or former: the last day of the package they kept
+                 */
+                access_until: string | null;
+                /**
+                 * Format: date
+                 * @description The last day of the grace the member is in
+                 */
+                grace_until: string | null;
+                outstanding_cents: number;
+                /** @enum {string} */
+                status: "active" | "trial" | "comped" | "unpaid" | "overdue" | "leaving" | "expiring" | "paused" | "expired" | "cancelled" | "former" | "no_package";
+                /**
+                 * Format: date
+                 * @description The due date of the oldest charge still open
+                 */
+                unpaid_since: string | null;
+            } | null;
             subscriptions: {
                 /** @description ADR-220: the member's renewal choice; null when the package does not renew or the choice is not theirs. */
                 auto_renew?: boolean | null;
@@ -39330,6 +39353,30 @@ export interface components {
             };
         };
         /**
+         * MemberStanding
+         * @description ADR-595: the status and the line under it, worked out once and shown alike to the member and the staff
+         */
+        MemberStanding: {
+            /**
+             * Format: date
+             * @description Leaving or former: the last day of the package they kept
+             */
+            access_until: string | null;
+            /**
+             * Format: date
+             * @description The last day of the grace the member is in
+             */
+            grace_until: string | null;
+            outstanding_cents: number;
+            /** @enum {string} */
+            status: "active" | "trial" | "comped" | "unpaid" | "overdue" | "leaving" | "expiring" | "paused" | "expired" | "cancelled" | "former" | "no_package";
+            /**
+             * Format: date
+             * @description The due date of the oldest charge still open
+             */
+            unpaid_since: string | null;
+        } | null;
+        /**
          * MemberVisibility
          * @description Whether you keep out of your clubs' «Μέλη» lists
          */
@@ -39576,6 +39623,30 @@ export interface components {
                     title: string;
                 }[];
                 slug: string;
+                /**
+                 * MemberStanding
+                 * @description ADR-595: the status and the line under it, worked out once and shown alike to the member and the staff
+                 */
+                standing?: {
+                    /**
+                     * Format: date
+                     * @description Leaving or former: the last day of the package they kept
+                     */
+                    access_until: string | null;
+                    /**
+                     * Format: date
+                     * @description The last day of the grace the member is in
+                     */
+                    grace_until: string | null;
+                    outstanding_cents: number;
+                    /** @enum {string} */
+                    status: "active" | "trial" | "comped" | "unpaid" | "overdue" | "leaving" | "expiring" | "paused" | "expired" | "cancelled" | "former" | "no_package";
+                    /**
+                     * Format: date
+                     * @description The due date of the oldest charge still open
+                     */
+                    unpaid_since: string | null;
+                } | null;
                 subscriptions: {
                     /** @description ADR-220: the member's renewal choice; null when the package does not renew or the choice is not theirs. */
                     auto_renew?: boolean | null;
@@ -66630,6 +66701,30 @@ export interface operations {
                                 title: string;
                             }[];
                             slug: string;
+                            /**
+                             * MemberStanding
+                             * @description ADR-595: the status and the line under it, worked out once and shown alike to the member and the staff
+                             */
+                            standing?: {
+                                /**
+                                 * Format: date
+                                 * @description Leaving or former: the last day of the package they kept
+                                 */
+                                access_until: string | null;
+                                /**
+                                 * Format: date
+                                 * @description The last day of the grace the member is in
+                                 */
+                                grace_until: string | null;
+                                outstanding_cents: number;
+                                /** @enum {string} */
+                                status: "active" | "trial" | "comped" | "unpaid" | "overdue" | "leaving" | "expiring" | "paused" | "expired" | "cancelled" | "former" | "no_package";
+                                /**
+                                 * Format: date
+                                 * @description The due date of the oldest charge still open
+                                 */
+                                unpaid_since: string | null;
+                            } | null;
                             subscriptions: {
                                 /** @description ADR-220: the member's renewal choice; null when the package does not renew or the choice is not theirs. */
                                 auto_renew?: boolean | null;
@@ -84427,6 +84522,13 @@ export interface operations {
                         home_location_id?: string | null;
                         /** Format: uuid */
                         id: string;
+                        /** @description ADR-595: the person left this box (no longer a member); they reach it only for the package they kept, through access_until */
+                        left?: {
+                            /** Format: date */
+                            access_until: string | null;
+                            /** Format: date-time */
+                            left_at: string;
+                        } | null;
                         /** @description ADR-186: the branches a staff member works at; all_locations means every branch */
                         location_scope?: {
                             all_locations: boolean;
@@ -84523,6 +84625,13 @@ export interface operations {
                         home_location_id?: string | null;
                         /** Format: uuid */
                         id: string;
+                        /** @description ADR-595: the person left this box (no longer a member); they reach it only for the package they kept, through access_until */
+                        left?: {
+                            /** Format: date */
+                            access_until: string | null;
+                            /** Format: date-time */
+                            left_at: string;
+                        } | null;
                         /** @description ADR-186: the branches a staff member works at; all_locations means every branch */
                         location_scope?: {
                             all_locations: boolean;
@@ -84579,6 +84688,13 @@ export interface operations {
                         home_location_id?: string | null;
                         /** Format: uuid */
                         id: string;
+                        /** @description ADR-595: the person left this box (no longer a member); they reach it only for the package they kept, through access_until */
+                        left?: {
+                            /** Format: date */
+                            access_until: string | null;
+                            /** Format: date-time */
+                            left_at: string;
+                        } | null;
                         /** @description ADR-186: the branches a staff member works at; all_locations means every branch */
                         location_scope?: {
                             all_locations: boolean;
@@ -84649,6 +84765,13 @@ export interface operations {
                         home_location_id?: string | null;
                         /** Format: uuid */
                         id: string;
+                        /** @description ADR-595: the person left this box (no longer a member); they reach it only for the package they kept, through access_until */
+                        left?: {
+                            /** Format: date */
+                            access_until: string | null;
+                            /** Format: date-time */
+                            left_at: string;
+                        } | null;
                         /** @description ADR-186: the branches a staff member works at; all_locations means every branch */
                         location_scope?: {
                             all_locations: boolean;
@@ -84705,6 +84828,13 @@ export interface operations {
                         home_location_id?: string | null;
                         /** Format: uuid */
                         id: string;
+                        /** @description ADR-595: the person left this box (no longer a member); they reach it only for the package they kept, through access_until */
+                        left?: {
+                            /** Format: date */
+                            access_until: string | null;
+                            /** Format: date-time */
+                            left_at: string;
+                        } | null;
                         /** @description ADR-186: the branches a staff member works at; all_locations means every branch */
                         location_scope?: {
                             all_locations: boolean;
@@ -84775,6 +84905,13 @@ export interface operations {
                         home_location_id?: string | null;
                         /** Format: uuid */
                         id: string;
+                        /** @description ADR-595: the person left this box (no longer a member); they reach it only for the package they kept, through access_until */
+                        left?: {
+                            /** Format: date */
+                            access_until: string | null;
+                            /** Format: date-time */
+                            left_at: string;
+                        } | null;
                         /** @description ADR-186: the branches a staff member works at; all_locations means every branch */
                         location_scope?: {
                             all_locations: boolean;
@@ -84831,6 +84968,13 @@ export interface operations {
                         home_location_id?: string | null;
                         /** Format: uuid */
                         id: string;
+                        /** @description ADR-595: the person left this box (no longer a member); they reach it only for the package they kept, through access_until */
+                        left?: {
+                            /** Format: date */
+                            access_until: string | null;
+                            /** Format: date-time */
+                            left_at: string;
+                        } | null;
                         /** @description ADR-186: the branches a staff member works at; all_locations means every branch */
                         location_scope?: {
                             all_locations: boolean;
@@ -84905,6 +85049,13 @@ export interface operations {
                         home_location_id?: string | null;
                         /** Format: uuid */
                         id: string;
+                        /** @description ADR-595: the person left this box (no longer a member); they reach it only for the package they kept, through access_until */
+                        left?: {
+                            /** Format: date */
+                            access_until: string | null;
+                            /** Format: date-time */
+                            left_at: string;
+                        } | null;
                         /** @description ADR-186: the branches a staff member works at; all_locations means every branch */
                         location_scope?: {
                             all_locations: boolean;
@@ -101264,9 +101415,6 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
-                    commitment_override_reason?: string | null;
-                    /** Format: date */
-                    leaving_on?: string | null;
                     reason?: string | null;
                 };
             };
@@ -140076,39 +140224,6 @@ export interface operations {
                 };
             };
             /** @description Already leaving */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
-                };
-            };
-        };
-    };
-    "PaleeWeb.MyMembershipController.stay": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Membership */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
-                };
-            };
-            /** @description Not leaving, or the last day has passed */
             409: {
                 headers: {
                     [name: string]: unknown;

@@ -14827,6 +14827,60 @@
           "slug": {
             "type": "string"
           },
+          "standing": {
+            "description": "ADR-595: the status and the line under it, worked out once and shown alike to the member and the staff",
+            "nullable": true,
+            "properties": {
+              "access_until": {
+                "description": "Leaving or former: the last day of the package they kept",
+                "format": "date",
+                "nullable": true,
+                "type": "string"
+              },
+              "grace_until": {
+                "description": "The last day of the grace the member is in",
+                "format": "date",
+                "nullable": true,
+                "type": "string"
+              },
+              "outstanding_cents": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "status": {
+                "enum": [
+                  "active",
+                  "trial",
+                  "comped",
+                  "unpaid",
+                  "overdue",
+                  "leaving",
+                  "expiring",
+                  "paused",
+                  "expired",
+                  "cancelled",
+                  "former",
+                  "no_package"
+                ],
+                "type": "string"
+              },
+              "unpaid_since": {
+                "description": "The due date of the oldest charge still open",
+                "format": "date",
+                "nullable": true,
+                "type": "string"
+              }
+            },
+            "required": [
+              "status",
+              "grace_until",
+              "access_until",
+              "outstanding_cents",
+              "unpaid_since"
+            ],
+            "title": "MemberStanding",
+            "type": "object"
+          },
           "subscriptions": {
             "items": {
               "properties": {
@@ -58902,6 +58956,60 @@
         "title": "MemberSeasonResponse",
         "type": "object"
       },
+      "MemberStanding": {
+        "description": "ADR-595: the status and the line under it, worked out once and shown alike to the member and the staff",
+        "nullable": true,
+        "properties": {
+          "access_until": {
+            "description": "Leaving or former: the last day of the package they kept",
+            "format": "date",
+            "nullable": true,
+            "type": "string"
+          },
+          "grace_until": {
+            "description": "The last day of the grace the member is in",
+            "format": "date",
+            "nullable": true,
+            "type": "string"
+          },
+          "outstanding_cents": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "trial",
+              "comped",
+              "unpaid",
+              "overdue",
+              "leaving",
+              "expiring",
+              "paused",
+              "expired",
+              "cancelled",
+              "former",
+              "no_package"
+            ],
+            "type": "string"
+          },
+          "unpaid_since": {
+            "description": "The due date of the oldest charge still open",
+            "format": "date",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "grace_until",
+          "access_until",
+          "outstanding_cents",
+          "unpaid_since"
+        ],
+        "title": "MemberStanding",
+        "type": "object"
+      },
       "MemberVisibility": {
         "description": "Whether you keep out of your clubs' «Μέλη» lists",
         "properties": {
@@ -59713,6 +59821,60 @@
                 },
                 "slug": {
                   "type": "string"
+                },
+                "standing": {
+                  "description": "ADR-595: the status and the line under it, worked out once and shown alike to the member and the staff",
+                  "nullable": true,
+                  "properties": {
+                    "access_until": {
+                      "description": "Leaving or former: the last day of the package they kept",
+                      "format": "date",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "grace_until": {
+                      "description": "The last day of the grace the member is in",
+                      "format": "date",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "outstanding_cents": {
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "status": {
+                      "enum": [
+                        "active",
+                        "trial",
+                        "comped",
+                        "unpaid",
+                        "overdue",
+                        "leaving",
+                        "expiring",
+                        "paused",
+                        "expired",
+                        "cancelled",
+                        "former",
+                        "no_package"
+                      ],
+                      "type": "string"
+                    },
+                    "unpaid_since": {
+                      "description": "The due date of the oldest charge still open",
+                      "format": "date",
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "grace_until",
+                    "access_until",
+                    "outstanding_cents",
+                    "unpaid_since"
+                  ],
+                  "title": "MemberStanding",
+                  "type": "object"
                 },
                 "subscriptions": {
                   "items": {
@@ -144387,6 +144549,60 @@
                           "slug": {
                             "type": "string"
                           },
+                          "standing": {
+                            "description": "ADR-595: the status and the line under it, worked out once and shown alike to the member and the staff",
+                            "nullable": true,
+                            "properties": {
+                              "access_until": {
+                                "description": "Leaving or former: the last day of the package they kept",
+                                "format": "date",
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "grace_until": {
+                                "description": "The last day of the grace the member is in",
+                                "format": "date",
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "outstanding_cents": {
+                                "minimum": 0,
+                                "type": "integer"
+                              },
+                              "status": {
+                                "enum": [
+                                  "active",
+                                  "trial",
+                                  "comped",
+                                  "unpaid",
+                                  "overdue",
+                                  "leaving",
+                                  "expiring",
+                                  "paused",
+                                  "expired",
+                                  "cancelled",
+                                  "former",
+                                  "no_package"
+                                ],
+                                "type": "string"
+                              },
+                              "unpaid_since": {
+                                "description": "The due date of the oldest charge still open",
+                                "format": "date",
+                                "nullable": true,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "status",
+                              "grace_until",
+                              "access_until",
+                              "outstanding_cents",
+                              "unpaid_since"
+                            ],
+                            "title": "MemberStanding",
+                            "type": "object"
+                          },
                           "subscriptions": {
                             "items": {
                               "properties": {
@@ -191506,6 +191722,26 @@
                         "format": "uuid",
                         "type": "string"
                       },
+                      "left": {
+                        "description": "ADR-595: the person left this box (no longer a member); they reach it only for the package they kept, through access_until",
+                        "nullable": true,
+                        "properties": {
+                          "access_until": {
+                            "format": "date",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "left_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "access_until",
+                          "left_at"
+                        ],
+                        "type": "object"
+                      },
                       "location_scope": {
                         "description": "ADR-186: the branches a staff member works at; all_locations means every branch",
                         "properties": {
@@ -191734,6 +191970,26 @@
                       "format": "uuid",
                       "type": "string"
                     },
+                    "left": {
+                      "description": "ADR-595: the person left this box (no longer a member); they reach it only for the package they kept, through access_until",
+                      "nullable": true,
+                      "properties": {
+                        "access_until": {
+                          "format": "date",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "left_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "access_until",
+                        "left_at"
+                      ],
+                      "type": "object"
+                    },
                     "location_scope": {
                       "description": "ADR-186: the branches a staff member works at; all_locations means every branch",
                       "properties": {
@@ -191876,6 +192132,26 @@
                     "id": {
                       "format": "uuid",
                       "type": "string"
+                    },
+                    "left": {
+                      "description": "ADR-595: the person left this box (no longer a member); they reach it only for the package they kept, through access_until",
+                      "nullable": true,
+                      "properties": {
+                        "access_until": {
+                          "format": "date",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "left_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "access_until",
+                        "left_at"
+                      ],
+                      "type": "object"
                     },
                     "location_scope": {
                       "description": "ADR-186: the branches a staff member works at; all_locations means every branch",
@@ -192055,6 +192331,26 @@
                       "format": "uuid",
                       "type": "string"
                     },
+                    "left": {
+                      "description": "ADR-595: the person left this box (no longer a member); they reach it only for the package they kept, through access_until",
+                      "nullable": true,
+                      "properties": {
+                        "access_until": {
+                          "format": "date",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "left_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "access_until",
+                        "left_at"
+                      ],
+                      "type": "object"
+                    },
                     "location_scope": {
                       "description": "ADR-186: the branches a staff member works at; all_locations means every branch",
                       "properties": {
@@ -192197,6 +192493,26 @@
                     "id": {
                       "format": "uuid",
                       "type": "string"
+                    },
+                    "left": {
+                      "description": "ADR-595: the person left this box (no longer a member); they reach it only for the package they kept, through access_until",
+                      "nullable": true,
+                      "properties": {
+                        "access_until": {
+                          "format": "date",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "left_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "access_until",
+                        "left_at"
+                      ],
+                      "type": "object"
                     },
                     "location_scope": {
                       "description": "ADR-186: the branches a staff member works at; all_locations means every branch",
@@ -192378,6 +192694,26 @@
                       "format": "uuid",
                       "type": "string"
                     },
+                    "left": {
+                      "description": "ADR-595: the person left this box (no longer a member); they reach it only for the package they kept, through access_until",
+                      "nullable": true,
+                      "properties": {
+                        "access_until": {
+                          "format": "date",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "left_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "access_until",
+                        "left_at"
+                      ],
+                      "type": "object"
+                    },
                     "location_scope": {
                       "description": "ADR-186: the branches a staff member works at; all_locations means every branch",
                       "properties": {
@@ -192520,6 +192856,26 @@
                     "id": {
                       "format": "uuid",
                       "type": "string"
+                    },
+                    "left": {
+                      "description": "ADR-595: the person left this box (no longer a member); they reach it only for the package they kept, through access_until",
+                      "nullable": true,
+                      "properties": {
+                        "access_until": {
+                          "format": "date",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "left_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "access_until",
+                        "left_at"
+                      ],
+                      "type": "object"
                     },
                     "location_scope": {
                       "description": "ADR-186: the branches a staff member works at; all_locations means every branch",
@@ -192702,6 +193058,26 @@
                     "id": {
                       "format": "uuid",
                       "type": "string"
+                    },
+                    "left": {
+                      "description": "ADR-595: the person left this box (no longer a member); they reach it only for the package they kept, through access_until",
+                      "nullable": true,
+                      "properties": {
+                        "access_until": {
+                          "format": "date",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "left_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "access_until",
+                        "left_at"
+                      ],
+                      "type": "object"
                     },
                     "location_scope": {
                       "description": "ADR-186: the branches a staff member works at; all_locations means every branch",
@@ -237151,15 +237527,6 @@
             "application/json": {
               "schema": {
                 "properties": {
-                  "commitment_override_reason": {
-                    "nullable": true,
-                    "type": "string"
-                  },
-                  "leaving_on": {
-                    "format": "date",
-                    "nullable": true,
-                    "type": "string"
-                  },
                   "reason": {
                     "maxLength": 500,
                     "nullable": true,
@@ -237191,7 +237558,7 @@
             "bearerAuth": []
           }
         ],
-        "summary": "Mark a member as left the box (ADR-220)",
+        "summary": "End a member's box membership now (ADR-595): the same rules as the member's own leave; they hear of it",
         "tags": [
           "Admin Finance"
         ]
@@ -350283,44 +350650,6 @@
       }
     },
     "/api/org/{organization_slug}/me/membership/leave": {
-      "delete": {
-        "callbacks": {},
-        "operationId": "PaleeWeb.MyMembershipController.stay",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "additionalProperties": true,
-                  "type": "object"
-                }
-              }
-            },
-            "description": "Membership"
-          },
-          "409": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "additionalProperties": true,
-                  "type": "object"
-                }
-              }
-            },
-            "description": "Not leaving, or the last day has passed"
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "summary": "Change my mind before my last day at the box",
-        "tags": [
-          "Member Finance"
-        ]
-      },
       "post": {
         "callbacks": {},
         "operationId": "PaleeWeb.MyMembershipController.leave",
@@ -350372,7 +350701,7 @@
             "bearerAuth": []
           }
         ],
-        "summary": "Leave the box: renewal stops and access ends with what I paid for",
+        "summary": "Leave the box now (ADR-595): no longer a member; a package I have stays usable to its last day, money owed stays owed",
         "tags": [
           "Member Finance"
         ]

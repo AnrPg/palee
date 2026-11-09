@@ -910,3 +910,12 @@ msgstr "Виж пакетите на бокса и стани член с няк
 
 msgid "%{box} invites you to become a member."
 msgstr "%{box} те кани да станеш член."
+
+msgid "Your box membership ended"
+msgstr "Членството ти в box приключи"
+
+msgid "%{box} ended your box membership. Your package stays usable until %{date}."
+msgstr "%{box} прекрати членството ти в box. Пакетът ти важи до %{date}."
+
+msgid "%{box} ended your box membership."
+msgstr "%{box} прекрати членството ти в box."

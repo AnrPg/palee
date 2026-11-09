@@ -71,8 +71,20 @@ defmodule Palee.Infrastructure.Organizations.EctoOrganizationStore do
     %OrganizationMembership{}
     |> OrganizationMembership.changeset(params)
     |> Repo.insert(
+      # ADR-595: joining again (by any way in) ends a former membership's leave.
       on_conflict:
-        {:replace, [:role, :roles, :status, :joined_at, :invited_by_user_id, :updated_at]},
+        {:replace,
+         [
+           :role,
+           :roles,
+           :status,
+           :joined_at,
+           :invited_by_user_id,
+           :left_at,
+           :left_by,
+           :access_until,
+           :updated_at
+         ]},
       conflict_target: [:organization_id, :user_id],
       returning: true
     )
@@ -1163,6 +1175,19 @@ defmodule Palee.Infrastructure.Organizations.EctoOrganizationStore do
       |> unwrap_or_rollback()
     end)
     |> flatten_transaction()
+  end
+
+  @impl true
+  def set_membership_leave(organization_id, user_id, attrs) do
+    case get_membership(organization_id, user_id) do
+      nil ->
+        {:error, :not_found}
+
+      membership ->
+        membership
+        |> OrganizationMembership.leave_changeset(attrs)
+        |> Repo.update()
+    end
   end
 
   @impl true

@@ -15,7 +15,10 @@ import { InviteClientsButton } from "@/components/invites/InviteClients";
 import { FollowerInvitesCard } from "@/components/admin/users/FollowerInvitesCard";
 import { JoinRequestsCard } from "@/components/admin/users/JoinRequestsCard";
 import { PageHeader } from "@/components/PageHeader";
-import { RoleLabel, SemanticLabel } from "@/components/semantic-label";
+import { MEMBER_STATUSES } from "@/components/admin/finance/shared/member-standing";
+import { useStatusLabel } from "@/components/admin/finance/shared/MemberStandingCells";
+import { StandingChip, StandingLine } from "@/components/finance/StandingBadge";
+import { RoleLabel } from "@/components/semantic-label";
 import { useSession } from "@/components/session-provider";
 import { localizeError } from "@/i18n/presentation";
 import { useUiTranslations } from "@/i18n/ui";
@@ -61,6 +64,9 @@ async function fetchWholeDirectory(token: string) {
 export function AdminUsersDirectory() {
   const t = useTranslations("UsersDirectory");
   const i18n = useUiTranslations();
+  const standingLabel = useStatusLabel();
+  const statusLabel = (status: string) =>
+    (MEMBER_STATUSES as readonly string[]).includes(status) ? standingLabel(status) : status.replaceAll("_", " ");
   const locale = useUiLocale();
   const organizationSlug = useOrganizationSlug();
   const { membership } = useSelectedMembershipRole();
@@ -216,7 +222,7 @@ export function AdminUsersDirectory() {
               <option value="all">{t("financeAll")}</option>
               {financeStatuses.map((status) => (
                 <option key={status} value={status}>
-                  {status === "none" ? i18n("noFinanceProfilef804f44") : status.replaceAll("_", " ")}
+                  {status === "none" ? i18n("noFinanceProfilef804f44") : statusLabel(status)}
                 </option>
               ))}
             </Select>
@@ -302,7 +308,7 @@ export function AdminUsersDirectory() {
                         <span className="mt-0.5 flex flex-wrap items-center gap-x-2 text-xs md:hidden" style={{ color: "var(--muted)" }}>
                           <RoleBadges user={user} />
                           {client ? (
-                            <span>{user.finance_status ? <SemanticLabel value={user.finance_status} /> : i18n("noFinanceProfilef804f44")}</span>
+                            <span>{user.finance_status ? statusLabel(user.finance_status) : i18n("noFinanceProfilef804f44")}</span>
                           ) : null}
                         </span>
                       </span>
@@ -312,7 +318,16 @@ export function AdminUsersDirectory() {
                     </span>
                     <span className="hidden text-sm md:block" style={{ color: "var(--muted)" }}>
                       {client ? (
-                        user.finance_status ? <FinanceBadge status={user.finance_status} /> : <span style={{ color: "var(--dim)" }}>{i18n("noFinanceProfilef804f44")}</span>
+                        user.standing ? (
+                          <span className="flex min-w-0 flex-col items-start gap-1">
+                            <StandingChip status={user.standing.status} />
+                            <StandingLine standing={user.standing} />
+                          </span>
+                        ) : user.finance_status ? (
+                          <StandingChip status={user.finance_status} />
+                        ) : (
+                          <span style={{ color: "var(--dim)" }}>{i18n("noFinanceProfilef804f44")}</span>
+                        )
                       ) : (
                         <span style={{ color: "var(--dim)" }}>—</span>
                       )}
@@ -365,17 +380,6 @@ function RoleBadges({ user }: { user: AdminUserDirectoryEntry }) {
         );
       })}
     </>
-  );
-}
-
-function FinanceBadge({ status }: { status: string }) {
-  const good = ["active", "paid", "current"].includes(status);
-  const bad = ["overdue", "expired", "suspended", "cancelled", "canceled", "frozen"].includes(status);
-  const color = good ? "var(--success)" : bad ? "var(--danger)" : "var(--warning)";
-  return (
-    <span className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-semibold" style={{ background: `color-mix(in srgb, ${color} 14%, transparent)`, color }}>
-      <SemanticLabel value={status} />
-    </span>
   );
 }
 

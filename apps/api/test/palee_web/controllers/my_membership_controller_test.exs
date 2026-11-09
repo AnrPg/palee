@@ -2,7 +2,8 @@ defmodule PaleeWeb.MyMembershipControllerTest do
   @moduledoc """
   ADR-220 over HTTP: the member decides whether their subscription renews
   and can leave the box; staff can do both for them and mark someone as
-  left. Payment reminders only ever ask for what is really owed.
+  left. Payment reminders only ever ask for what is really owed. ADR-595:
+  leaving ends the box membership at once; the package runs to its end.
   """
 
   use PaleeWeb.ConnCase, async: false
@@ -144,9 +145,18 @@ defmodule PaleeWeb.MyMembershipControllerTest do
              invoice.service_period_end
   end
 
-  test "the member leaves: staff hear it, future invoices go, and they can change their mind",
+  test "the member leaves: no longer a box member at once, keeps the package, can come back",
        ctx do
     invoice = next_period_invoice(ctx)
+
+    gym_club? = fn ->
+      %{"clubs" => clubs} =
+        ctx.conn |> authed(ctx.member) |> get("/api/me/clubs") |> json_response(200)
+
+      Enum.any?(clubs, &(&1["organization_id"] == ctx.box.id and &1["kind"] == "gym"))
+    end
+
+    assert gym_club?.()
 
     body =
       ctx.conn
@@ -159,6 +169,7 @@ defmodule PaleeWeb.MyMembershipControllerTest do
     assert body["outstanding_cents"] == 0
     assert body["membership"]["left_by"] == "member"
     assert body["membership"]["leave_reason"] == "Moving to Thessaloniki"
+    assert is_binary(body["box_membership_ended_at"])
     assert invoice_status(ctx, invoice.id) == "void"
     refute reminded?(ctx)
 
@@ -176,11 +187,26 @@ defmodule PaleeWeb.MyMembershipControllerTest do
 
     assert leaving_on == Date.to_iso8601(ctx.period_end)
 
-    # Billing shows the last day and no second «leave».
+    # ADR-595: the box membership ended now; the box stays reachable for the
+    # package, marked as left.
+    assert Organizations.membership_standing(ctx.box.id, ctx.member.id) == :former
+
+    [mine] =
+      ctx.conn |> authed(ctx.member) |> get("/api/memberships") |> json_response(200)
+
+    assert mine["left"]["access_until"] == Date.to_iso8601(ctx.period_end)
+
+    # The club, its channels and groups are for members only.
+    refute gym_club?.()
+
+    # Billing shows the last day, the same standing staff see, and no second «leave».
     billing = ctx.conn |> authed(ctx.member) |> get("/api/me/billing") |> json_response(200)
     [section] = billing["providers"]
     assert section["membership"]["leaving_on"] == Date.to_iso8601(ctx.period_end)
     assert section["actions"]["self_service_leave"] == false
+
+    assert %{"status" => "leaving", "access_until" => access_until} = section["standing"]
+    assert access_until == Date.to_iso8601(ctx.period_end)
 
     assert %{"code" => "member_leaving"} =
              ctx.conn |> authed(ctx.member) |> post("#{me(ctx)}/leave", %{}) |> json_response(409)
@@ -193,14 +219,19 @@ defmodule PaleeWeb.MyMembershipControllerTest do
              })
              |> json_response(409)
 
-    body = ctx.conn |> authed(ctx.member) |> delete("#{me(ctx)}/leave") |> json_response(200)
-    assert body["membership"]["leaving_on"] == nil
+    # No undo: coming back is joining again, by any way in.
+    assert ctx.conn |> authed(ctx.member) |> delete("#{me(ctx)}/leave") |> response(404)
 
+    {:ok, _admitted} = Organizations.admit_member(ctx.box.id, ctx.member.id, :accepted_request)
+
+    assert Organizations.membership_standing(ctx.box.id, ctx.member.id) == :member
     profile = Finance.get_member_profile(ctx.staff, ctx.member.id)
+    assert profile.membership.leaving_on == nil
     assert [%{auto_renew: true, ends_on: nil}] = profile.package_subscriptions
   end
 
-  test "staff mark someone gone today: what they used stays owed and reminded", ctx do
+  test "staff end someone's membership with the member's rules; what they used stays owed",
+       ctx do
     {:ok, invoice} =
       Finance.create_invoice(ctx.staff, ctx.membership.id, %{
         amount_cents: 6_000,
@@ -211,14 +242,7 @@ defmodule PaleeWeb.MyMembershipControllerTest do
     {:ok, _issued} = Finance.issue_invoice(ctx.staff, invoice.id, %{})
     future = next_period_invoice(ctx)
 
-    assert %{"code" => "invalid_leaving_on"} =
-             ctx.conn
-             |> authed(ctx.owner)
-             |> post("#{admin(ctx)}/leave", %{
-               leaving_on: Date.to_iso8601(Date.add(ctx.subscription.starts_on, -1))
-             })
-             |> json_response(422)
-
+    # A day staff name is ignored: the package runs to its natural last day.
     body =
       ctx.conn
       |> authed(ctx.owner)
@@ -228,8 +252,10 @@ defmodule PaleeWeb.MyMembershipControllerTest do
       })
       |> json_response(200)
 
-    assert body["membership"]["status"] == "cancelled"
+    assert body["leaving_on"] == Date.to_iso8601(ctx.period_end)
+    assert body["membership"]["status"] != "cancelled"
     assert body["membership"]["left_by"] == "staff"
+    assert Organizations.membership_standing(ctx.box.id, ctx.member.id) == :former
 
     # The box member's profile shows the leave and the stopped renewal.
     finance =
@@ -251,21 +277,43 @@ defmodule PaleeWeb.MyMembershipControllerTest do
     assert body["outstanding_cents"] == 6_000
     assert reminded?(ctx)
 
-    # Gone today: access ended now and the member heard it.
-    assert bypass_rls(fn ->
+    # The member hears that the box ended it; access is not cut.
+    for job <- all_enqueued(worker: NotificationEventJob),
+        do: perform_job(NotificationEventJob, job.args)
+
+    assert [%{"access_until" => access_until}] =
+             bypass_rls(fn ->
+               Repo.all(
+                 from n in Notification,
+                   where: n.type == :box_membership_ended and n.user_id == ^ctx.member.id,
+                   select: n.payload
+               )
+             end)
+
+    assert access_until == Date.to_iso8601(ctx.period_end)
+
+    refute bypass_rls(fn ->
              Repo.exists?(
                from n in Notification,
                  where: n.type == :access_ended and n.user_id == ^ctx.member.id
              )
            end)
 
-    # Only the box can undo a leave it recorded.
-    assert %{"code" => "left_by_staff"} =
-             ctx.conn |> authed(ctx.member) |> delete("#{me(ctx)}/leave") |> json_response(409)
+    # The staff directory shows the same standing the member sees.
+    %{"users" => users} =
+      ctx.conn
+      |> authed(ctx.owner)
+      |> get("/api/org/#{ctx.box.slug}/admin/users")
+      |> json_response(200)
 
-    # Staff can undo it (they came back).
+    row = Enum.find(users, &(&1["id"] == ctx.member.id))
+    assert row["finance_status"] == "leaving"
+    assert %{"status" => "leaving", "outstanding_cents" => 6_000} = row["standing"]
+
+    # Staff can undo it (a mistake): a box member again.
     body = ctx.conn |> authed(ctx.owner) |> delete("#{admin(ctx)}/leave") |> json_response(200)
-    assert %{"status" => "active", "leaving_on" => nil} = body["membership"]
+    assert %{"leaving_on" => nil} = body["membership"]
+    assert Organizations.membership_standing(ctx.box.id, ctx.member.id) == :member
   end
 
   test "a package that has not started yet is cancelled with its invoice", ctx do
@@ -298,14 +346,14 @@ defmodule PaleeWeb.MyMembershipControllerTest do
     assert Enum.find(profile.package_subscriptions, &(&1.id == later.id)).status == "cancelled"
   end
 
-  test "renewal the member had turned off stays off after leaving and staying", ctx do
+  test "renewal the member had turned off stays off after leaving and coming back", ctx do
     ctx.conn
     |> authed(ctx.member)
     |> put("#{me(ctx)}/subscriptions/#{ctx.subscription.id}/auto-renew", %{auto_renew: false})
     |> json_response(200)
 
     ctx.conn |> authed(ctx.member) |> post("#{me(ctx)}/leave", %{}) |> json_response(200)
-    ctx.conn |> authed(ctx.member) |> delete("#{me(ctx)}/leave") |> json_response(200)
+    {:ok, _admitted} = Organizations.admit_member(ctx.box.id, ctx.member.id, :accepted_request)
 
     profile = Finance.get_member_profile(ctx.staff, ctx.member.id)
 

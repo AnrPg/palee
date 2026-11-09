@@ -214,6 +214,10 @@ defmodule Palee.Organizations.OrganizationStore do
     do: impl().update_membership_settings(organization_id, membership_id, settings)
 
   @impl true
+  def set_membership_leave(organization_id, user_id, attrs),
+    do: impl().set_membership_leave(organization_id, user_id, attrs)
+
+  @impl true
   def update_membership_status(organization_id, membership_id, status),
     do: impl().update_membership_status(organization_id, membership_id, status)
 

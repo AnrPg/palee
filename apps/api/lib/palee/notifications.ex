@@ -876,6 +876,18 @@ defmodule Palee.Notifications do
         url: "/b/#{field(payload, :box_slug)}"
       })
 
+  # ADR-595: the box ended the person's box membership.
+  def process_event("box_membership_ended", payload),
+    do:
+      enqueue_simple(:box_membership_ended, payload, %{
+        organization_id: field(payload, :organization_id),
+        box_name: field(payload, :box_name),
+        access_until: field(payload, :access_until),
+        dedupe_key:
+          "box_membership_ended:#{field(payload, :left_at)}:#{field(payload, :user_id)}",
+        url: "/me/payments?box=#{field(payload, :box_slug)}"
+      })
+
   def process_event("workout_rejected", payload), do: enqueue_workout_rejected(payload)
   def process_event("athlete_message_sent", payload), do: enqueue_athlete_message(payload)
   def process_event("chat_message", payload), do: enqueue_chat_message(payload)

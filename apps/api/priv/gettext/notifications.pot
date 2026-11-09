@@ -905,3 +905,12 @@ msgstr ""
 
 msgid "%{box} invites you to become a member."
 msgstr ""
+
+msgid "Your box membership ended"
+msgstr ""
+
+msgid "%{box} ended your box membership. Your package stays usable until %{date}."
+msgstr ""
+
+msgid "%{box} ended your box membership."
+msgstr ""

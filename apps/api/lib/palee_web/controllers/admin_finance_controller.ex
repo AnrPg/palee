@@ -1087,16 +1087,15 @@ defmodule PaleeWeb.AdminFinanceController do
   end
 
   operation(:mark_member_left,
-    summary: "Mark a member as left the box (ADR-220)",
+    summary:
+      "End a member's box membership now (ADR-595): the same rules as the member's own leave; they hear of it",
     parameters: [@id_parameter],
     request_body:
       {"Leave", "application/json",
        %Schema{
          type: :object,
          properties: %{
-           leaving_on: %Schema{type: :string, format: :date, nullable: true},
-           reason: %Schema{type: :string, maxLength: 500, nullable: true},
-           commitment_override_reason: %Schema{type: :string, nullable: true}
+           reason: %Schema{type: :string, maxLength: 500, nullable: true}
          }
        }},
     responses: [ok: {"Leave result", "application/json", @open_object}]

@@ -11,7 +11,8 @@ import { AnnouncementsCard } from "@/components/community/AnnouncementsCard";
 import { DocumentsBoxCard, DocumentsButton } from "@/components/documents/DocumentsBoxCard";
 import { gymClubFor } from "@/components/community/community";
 import { useMyClubs } from "@/components/community/use-community";
-import { AccessNotice, EntitlementCard } from "@/components/finance/MembershipEntitlement";
+import { statusTone, toneStyle } from "@/components/admin/finance/shared/member-standing";
+import { AccessNotice, EntitlementCard, formatDate } from "@/components/finance/MembershipEntitlement";
 import { BoxToday } from "@/components/member-app/box/BoxToday";
 import { RenewButton } from "@/components/payments/BoxSales";
 import { PendingPackages } from "@/components/payments/DeskPayment";
@@ -28,6 +29,7 @@ import { useHasBillingProviders } from "@/lib/billing-providers";
 import { useSelectedMembershipRole } from "@/lib/membership-role";
 import { boxLayoutFor, boxTitle, type BoxLayout } from "@/lib/solo-coach";
 import { boxChatHref } from "@/components/trials/box-chat-links";
+import { useUiLocale } from "@/i18n/use-ui-locale";
 
 /**
  * Box (brief §6.1, §7.4, mockup 08): "where and with whom do I train?".
@@ -60,9 +62,13 @@ export function BoxHub() {
 
   if (isLoading) return <HubPage title={t("boxTitle")}>{null}</HubPage>;
   if (memberships.length === 0) return <FindABox />;
+  // ADR-595 (2A): someone who left keeps the box here only for the package
+  // they kept: schedule, bookings and the WOD, no member channels or groups.
+  const left = membership?.left ?? null;
 
   return (
     <HubPage title={<ProviderTitle title={title} />}>
+      {membership && left ? <LeftBoxNotice slug={membership.organization.slug} accessUntil={left.access_until} /> : null}
       <TodayAcrossCard />
       {/* ADR-252 (mockup s7 B): only while a mandatory document or the health certificate is missing. */}
       <DocumentsBoxCard />
@@ -97,7 +103,7 @@ export function BoxHub() {
               {t("membershipOpen")}
             </HubButton>
           ) : null}
-          {membership ? (
+          {membership && !left ? (
             <HubButton href={`/me/referrals?box=${encodeURIComponent(membership.organization.slug)}`}>{t("membershipReferral")}</HubButton>
           ) : null}
           {/* ADR-282: write to the box about the membership. */}
@@ -108,10 +114,34 @@ export function BoxHub() {
         </div>
       </HubCard>
 
-      {membership ? <BoxExtensions membership={membership} layout={layout} /> : null}
+      {membership && !left ? <BoxExtensions membership={membership} layout={layout} /> : null}
 
-      {gymClub ? <AnnouncementsCard club={gymClub} /> : null}
+      {gymClub && !left ? <AnnouncementsCard club={gymClub} /> : null}
     </HubPage>
+  );
+}
+
+/** ADR-595: «Δεν είσαι μέλος», what the kept package still allows, and the way back in. */
+function LeftBoxNotice({ slug, accessUntil }: { slug: string; accessUntil: string | null }) {
+  const t = useTranslations("MemberApp");
+  const locale = useUiLocale();
+  return (
+    <HubCard>
+      <div className="flex min-w-0 flex-col gap-2" data-testid="box-left-notice">
+        <span
+          className="self-start rounded-full px-2 py-0.5 text-[11px] font-semibold"
+          style={toneStyle(statusTone("former"))}
+        >
+          {t("boxLeftChip")}
+        </span>
+        <p className="text-sm" style={{ color: "var(--text)" }}>
+          {accessUntil ? t("boxLeftPackage", { date: formatDate(locale, accessUntil) }) : t("boxLeftNoPackage")}
+        </p>
+        <div>
+          <HubButton href={`/b/${encodeURIComponent(slug)}`}>{t("boxRejoin")}</HubButton>
+        </div>
+      </div>
+    </HubCard>
   );
 }
 

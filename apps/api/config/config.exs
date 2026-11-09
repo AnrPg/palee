@@ -484,6 +484,8 @@ config :palee, :perk_store, Palee.Infrastructure.Perks.EctoPerkStore
 # ADR-144: reactions to facts other contexts announce (Palee.DomainEvents).
 config :palee, :domain_event_handlers, %{
   membership_activated: [
+    # ADR-595: coming back to a box ends the leave on the finance side too.
+    Palee.Application.LeaveReactions,
     Palee.Application.TrialReactions,
     Palee.Application.EventReactions,
     Palee.Application.ReferralReactions,
