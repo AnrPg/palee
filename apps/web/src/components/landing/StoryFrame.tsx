@@ -32,6 +32,7 @@ export function StoryFrame({
   count,
   renderSlide,
   brand,
+  subheader,
   headerExtra,
   actions,
   labels,
@@ -41,6 +42,8 @@ export function StoryFrame({
   count: number;
   renderSlide: (index: number) => ReactNode;
   brand: ReactNode;
+  /** Shown centred under the header (the business landing's audience switch). */
+  subheader?: ReactNode;
   headerExtra?: ReactNode;
   actions: ReactNode;
   labels: StoryFrameLabels;
@@ -143,6 +146,7 @@ export function StoryFrame({
           </button>
         </div>
       </header>
+      {subheader ? <div className="mt-3 flex justify-center">{subheader}</div> : null}
 
       <div
         className="relative mt-5 flex flex-1 select-none flex-col justify-center [-webkit-touch-callout:none]"

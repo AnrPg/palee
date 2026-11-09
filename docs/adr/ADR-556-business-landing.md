@@ -76,3 +76,22 @@ ANR's comments on the mockup also set:
   («Eleni · 3 km») count as shared values, `t.rich` keys and `@container`
   classes are not copy, and the brand words live in `branding/brand.ts`.
 - e2e: `e2e/business-landing.spec.ts`.
+
+## Amendment (2026-11-09, ANR's review)
+- One contextual chip beside the logo on both landings (`landing/AudienceChip`):
+  on the athletes' page «For business →», on the business page «For athletes
+  →», on phones too. The separate «For athletes» link next to Sign in is gone.
+- The Box / Independent coach switch sits in the middle of the business top
+  bar (`grid 1fr auto 1fr`); «For:» and the long «Independent coach» show from
+  xl up, «Coach» below. On phones it sits centred under the stories' header
+  (`StoryFrame` `subheader`).
+- Animated cards: the e-shop products are shrinkable columns with the picture
+  inside, the price on one line and a round «+»; the cart badge lands after
+  the tap. Console notices have their own strip under the classes (two at
+  most) instead of covering them. Stock rows are name + «Low» over a full
+  bar. Insight notes sit above the chart, not on its lines. The rotating hero
+  word lays out only the current word, so no gap is left before the comma.
+- Visuals know the audience: the coach's receipt, group, offer and partner
+  coupon speak for the coach, not the box.
+- The athletes' pillar cards have no emojis; a short accent line leads.
+- Greek: «Ανεξάρτητος coach» (masculine) wherever it is the subject.

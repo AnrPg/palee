@@ -19488,7 +19488,6 @@
   "BusinessLanding": {
     "metaTitle": "Palee pour les box et les coachs",
     "metaDescription": "Cours, réservations, paiements avec reçus, site web et e-shop gratuits, personnel et une communauté qui fait revenir les membres. Essayez tout gratuitement en mode démo.",
-    "brandTag": "pour les pros",
     "nav": {
       "athletes": "Pour les athlètes",
       "signIn": "Se connecter",
@@ -19691,6 +19690,7 @@
     "visual": {
       "seats": "{count} places",
       "receiptPackage": "Forfait d’abonnement · Mensuel",
+      "receiptPackageCoach": "Coaching individuel · 8 séances",
       "receiptTotal": "Total",
       "receiptCard": "Carte",
       "receiptStamp": "myDATA ✓",
@@ -19718,6 +19718,7 @@
       "branches": "Établissement Kypseli | Établissement Le Pirée",
       "clubName": "Eleni",
       "clubWhere": "Club de la box",
+      "clubWhereCoach": "Groupe du coach",
       "clubPr": "Nouveau PR · 120 kg",
       "clubKudos": "24 kudos",
       "clients": "Anna · programme de la semaine ✓ | Georges · vidéo technique | Sofia · check-in du dimanche",
@@ -19736,10 +19737,12 @@
       "stock": "Protéine | Élastiques | T-shirts | Eau",
       "stockLow": "Bas",
       "adSponsored": "Offre de la box · Box Kypseli",
+      "adSponsoredCoach": "Offre du coach · Eleni",
       "adTitle": "-20 % sur le forfait 3 mois",
       "adBody": "Code AUTOMNE20 · jusqu’au 30 novembre",
       "offerPartner": "Partenaire · Healthy Bites",
       "offerTitle": "-15 % pour les membres de la box",
+      "offerTitleCoach": "-15 % pour mes clients",
       "offerBody": "Montrez votre carte de membre à la caisse",
       "shopItems": "Protéine | T-shirt | Élastiques",
       "shopPrices": "29 € | 18 € | 12 €",

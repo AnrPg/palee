@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
@@ -12,6 +12,7 @@ import { BusinessConsole } from "@/components/business-landing/BusinessConsole";
 import { BusinessVisual, splitList } from "@/components/business-landing/BusinessVisuals";
 import { COMPARISON, FEATURES, MANAGEMENT, STORIES, type Audience, type TileSpec } from "@/components/business-landing/content";
 import { HowItWorks } from "@/components/business-landing/HowItWorks";
+import { AudienceChip } from "@/components/landing/AudienceChip";
 import { StoryFrame } from "@/components/landing/StoryFrame";
 import { useReveal } from "@/components/landing/use-reveal";
 
@@ -26,18 +27,22 @@ function Arrow() {
   );
 }
 
-/** «For: Box / Independent coach», quiet on purpose: most visitors never touch it. */
+/**
+ * «For: Box / Independent coach», quiet on purpose: most visitors never touch
+ * it. `compact` (phones' stories) drops the «For:» and says «Coach»; in the
+ * top bar the long words show only where they fit (xl and up).
+ */
 function AudienceSwitch({ audience, onChange, compact = false }: { audience: Audience; onChange: (next: Audience) => void; compact?: boolean }) {
   const t = useTranslations("BusinessLanding");
   return (
     <div
       role="group"
       aria-label={t("audience.label")}
-      className="inline-flex items-center gap-1 justify-self-start rounded-full p-1 text-sm"
+      className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full p-1 text-sm"
       style={{ border: "1px solid color-mix(in srgb, var(--deep-contrast) 22%, transparent)" }}
       data-testid="business-audience"
     >
-      {compact ? null : <span className="ps-2 pe-0.5 landing-soft">{t("audience.label")}:</span>}
+      {compact ? null : <span className="hidden ps-2 pe-0.5 landing-soft xl:inline">{t("audience.label")}:</span>}
       {(["box", "coach"] as const).map((option) => (
         <button
           key={option}
@@ -51,27 +56,45 @@ function AudienceSwitch({ audience, onChange, compact = false }: { audience: Aud
               : { color: "color-mix(in srgb, var(--deep-contrast) 65%, transparent)" }
           }
         >
-          {option === "coach" && compact ? t("audience.coachShort") : t(`audience.${option}`)}
+          {option === "box" ? (
+            t("audience.box")
+          ) : compact ? (
+            t("audience.coachShort")
+          ) : (
+            <>
+              <span className="hidden xl:inline">{t("audience.coach")}</span>
+              <span className="xl:hidden">{t("audience.coachShort")}</span>
+            </>
+          )}
         </button>
       ))}
     </div>
   );
 }
 
-/** The hero's word that changes every three seconds. */
+const WORD_MS = 3000;
+
+/**
+ * The hero's word that changes every three seconds. Only the current word
+ * is laid out, so the sentence closes up around it (no gap sized for the
+ * longest word). Under reduced motion it stays on the first word.
+ */
 function RotatingWord({ words }: { words: string[] }) {
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    if (words.length < 2 || window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = setInterval(() => setIndex((current) => (current + 1) % words.length), WORD_MS);
+    return () => clearInterval(timer);
+  }, [words.length]);
+  const word = words[index % words.length] ?? "";
   return (
-    <b className="landing-words" style={{ color: "var(--spark)" }}>
-      {words.map((word, index) => (
-        <span key={word} style={{ animationDelay: `${index * 3}s` }} aria-hidden={index > 0 ? true : undefined}>
-          {word}
-        </span>
-      ))}
+    <b key={word} className="landing-word-in inline-block" style={{ color: "var(--spark)" }}>
+      {word}
     </b>
   );
 }
 
-function Tile({ tile, index }: { tile: TileSpec; index: number }) {
+function Tile({ tile, index, audience }: { tile: TileSpec; index: number; audience: Audience }) {
   const t = useTranslations("BusinessLanding");
   const span = tile.full ? "md:col-span-2 lg:col-span-4" : tile.wide ? "md:col-span-2" : "";
   const surface = tile.dark
@@ -98,18 +121,18 @@ function Tile({ tile, index }: { tile: TileSpec; index: number }) {
         </p>
       </header>
       <div className="mt-auto grid min-h-28 place-items-center">
-        <BusinessVisual id={tile.visual} />
+        <BusinessVisual id={tile.visual} audience={audience} />
       </div>
     </article>
   );
 }
 
 /** One column on phones, two on tablets, four from laptops up; dense, so no holes (see `gridHoles`). */
-function Bento({ tiles }: { tiles: TileSpec[] }) {
+function Bento({ tiles, audience }: { tiles: TileSpec[]; audience: Audience }) {
   return (
     <div className="landing-swap grid grid-flow-row-dense gap-4 md:grid-cols-2 lg:grid-cols-4">
       {tiles.map((tile, index) => (
-        <Tile key={tile.id} tile={tile} index={index} />
+        <Tile key={tile.id} tile={tile} index={index} audience={audience} />
       ))}
     </div>
   );
@@ -174,7 +197,7 @@ export function BusinessLanding({ initialAudience }: { initialAudience: Audience
                   </Heading>
                   <p className="landing-rise landing-rise-1 landing-soft text-base">{t(`stories.${audience}.${story.id}.body`)}</p>
                   <div className="landing-rise landing-rise-2 grid min-h-48 place-items-center">
-                    <BusinessVisual id={story.visual} />
+                    <BusinessVisual id={story.visual} audience={audience} />
                   </div>
                 </div>
               );
@@ -191,20 +214,20 @@ export function BusinessLanding({ initialAudience }: { initialAudience: Audience
             brand={
               <span className="flex min-w-0 items-center gap-2">
                 <PaleeMark className="size-7 shrink-0 [&_path]:stroke-[var(--deep-contrast)]" />
-                <AudienceSwitch audience={audience} onChange={choose} compact />
+                <AudienceChip href="/" label={t("nav.athletes")} testId="business-for-athletes" />
               </span>
             }
+            subheader={<AudienceSwitch audience={audience} onChange={choose} compact />}
             actions={
               <>
                 <Link href={BUSINESS_SIGN_UP_HREF} className="grid min-h-12 place-items-center rounded-full px-5 text-base font-extrabold" style={spark}>
                   {t("hero.cta")}
                 </Link>
-                <div className="flex flex-wrap items-center justify-between gap-2 text-sm font-bold">
+                <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-bold">
                   <Link href="/login" className="inline-flex min-h-11 items-center">{t("nav.signIn")}</Link>
                   <button type="button" onClick={() => setHowOpen(true)} className="inline-flex min-h-11 items-center gap-1.5" style={{ color: "var(--spark)" }}>
                     ▶ {t("hero.how")}
                   </button>
-                  <Link href="/" className="inline-flex min-h-11 items-center">{t("nav.athletes")} →</Link>
                 </div>
               </>
             }
@@ -212,20 +235,25 @@ export function BusinessLanding({ initialAudience }: { initialAudience: Audience
         </div>
 
         <div className="hidden sm:block" style={{ background: "var(--bg)", color: "var(--text)" }}>
-          <header className="landing-deep sticky top-0 z-(--z-sticky) flex h-16 items-center justify-between gap-4 px-6 lg:px-16" style={{ backgroundImage: "none" }}>
-            <Link href="/business" className="flex items-center gap-2 text-xl font-black">
-              <PaleeMark className="size-8 [&_path]:stroke-[var(--deep-contrast)]" />
-              {BRAND_NAME}
-              <span className="rounded-full px-2.5 py-0.5 text-[11px] font-extrabold uppercase tracking-[0.12em]" style={{ border: "1px solid color-mix(in srgb, var(--deep-contrast) 35%, transparent)" }}>
-                {t("brandTag")}
-              </span>
-            </Link>
-            <nav className="flex flex-wrap items-center justify-end gap-2">
-              <Link href="/" className="hidden min-h-11 items-center rounded-full px-3 text-sm font-bold hover:underline md:inline-flex">{t("nav.athletes")}</Link>
-              <Link href="/login" className="inline-flex min-h-11 items-center rounded-full px-4 text-sm font-bold" style={{ border: "1px solid color-mix(in srgb, var(--deep-contrast) 35%, transparent)" }}>
+          {/* Brand with its contextual chip on the left, the audience in the middle, sign in / start on the right. */}
+          <header
+            className="landing-deep sticky top-0 z-(--z-sticky) grid h-16 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3 px-6 lg:gap-4 lg:px-16"
+            style={{ backgroundImage: "none" }}
+            data-testid="business-topbar"
+          >
+            <span className="flex min-w-0 items-center gap-3">
+              <Link href="/business" className="flex shrink-0 items-center gap-2 text-xl font-black" aria-label={BRAND_NAME}>
+                <PaleeMark className="size-8 [&_path]:stroke-[var(--deep-contrast)]" />
+                <span className="hidden lg:inline">{BRAND_NAME}</span>
+              </Link>
+              <AudienceChip href="/" label={t("nav.athletes")} testId="business-for-athletes" />
+            </span>
+            <AudienceSwitch audience={audience} onChange={choose} />
+            <nav className="flex min-w-0 items-center justify-end gap-2">
+              <Link href="/login" className="inline-flex min-h-11 items-center whitespace-nowrap rounded-full px-4 text-sm font-bold" style={{ border: "1px solid color-mix(in srgb, var(--deep-contrast) 35%, transparent)" }}>
                 {t("nav.signIn")}
               </Link>
-              <Link href={BUSINESS_SIGN_UP_HREF} className="inline-flex min-h-11 items-center rounded-full px-5 text-sm font-extrabold" style={spark}>
+              <Link href={BUSINESS_SIGN_UP_HREF} className="inline-flex min-h-11 items-center whitespace-nowrap rounded-full px-5 text-sm font-extrabold" style={spark}>
                 {t("nav.start")}
               </Link>
             </nav>
@@ -234,7 +262,6 @@ export function BusinessLanding({ initialAudience }: { initialAudience: Audience
           <section className="landing-deep landing-glow relative grid min-h-[calc(100dvh-4rem)] items-center gap-10 overflow-hidden px-6 pb-28 pt-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,34rem)] lg:gap-14 lg:px-16 2xl:px-[max(5rem,calc((100%-87.5rem)/2))]">
             <div className="landing-grid pointer-events-none absolute inset-0" aria-hidden="true" />
             <div className="relative grid max-w-2xl gap-5">
-              <AudienceSwitch audience={audience} onChange={choose} />
               <div key={audience} className="landing-swap grid gap-5">
                 <p className="text-xs font-extrabold uppercase tracking-[0.2em]" style={{ color: "var(--spark)" }}>{t(`hero.${audience}.eyebrow`)}</p>
                 <h1 className="landing-em text-5xl font-black leading-[1.02] tracking-tight lg:text-6xl 2xl:text-7xl">{t.rich(`hero.${audience}.title`, em)}</h1>
@@ -299,22 +326,22 @@ export function BusinessLanding({ initialAudience }: { initialAudience: Audience
                     {t("shop.cta")} →
                   </Link>
                 </div>
-                <div className="relative grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-                  <BusinessVisual id="website" />
-                  <BusinessVisual id="shop" />
+                <div className="relative grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+                  <BusinessVisual id="website" audience={audience} />
+                  <BusinessVisual id="shop" audience={audience} />
                 </div>
               </div>
             </section>
 
             <section className="mx-auto max-w-6xl px-6 py-14 lg:px-10">
               <SectionHead kicker={t("features.kicker")} title={t(`features.${audience}`)} />
-              <Bento key={`features-${audience}`} tiles={FEATURES[audience]} />
+              <Bento key={`features-${audience}`} tiles={FEATURES[audience]} audience={audience} />
             </section>
 
             <div style={{ background: "var(--panel-muted)" }}>
               <section className="mx-auto max-w-6xl px-6 py-14 lg:px-10">
                 <SectionHead kicker={t("management.kicker")} title={t(`management.${audience}`)} lede={t("management.lede")} />
-                <Bento key={`management-${audience}`} tiles={MANAGEMENT[audience]} />
+                <Bento key={`management-${audience}`} tiles={MANAGEMENT[audience]} audience={audience} />
               </section>
             </div>
 

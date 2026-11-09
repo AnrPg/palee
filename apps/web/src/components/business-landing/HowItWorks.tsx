@@ -88,7 +88,7 @@ export function HowItWorks({ audience, onClose, onStart }: { audience: Audience;
                 <h3 className="text-2xl font-black tracking-tight lg:text-3xl">{t(`how.${audience}.${step.id}.title`)}</h3>
                 <p className="max-w-[44ch]" style={{ color: "var(--text-soft)" }}>{t(`how.${audience}.${step.id}.body`)}</p>
                 <div className="mt-3 grid max-w-sm md:hidden">
-                  <BusinessVisual id={step.visual} />
+                  <BusinessVisual id={step.visual} audience={audience} />
                 </div>
               </li>
             ))}
@@ -103,7 +103,7 @@ export function HowItWorks({ audience, onClose, onStart }: { audience: Audience;
                     </span>
                     <b className="text-base leading-snug">{t(`how.${audience}.${step.id}.title`)}</b>
                     <div className="mt-6 grid">
-                      <BusinessVisual id={step.visual} />
+                      <BusinessVisual id={step.visual} audience={audience} />
                     </div>
                   </div>
                 ))}

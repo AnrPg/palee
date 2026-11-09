@@ -19488,7 +19488,6 @@
   "BusinessLanding": {
     "metaTitle": "Palee للبوكسات والمدرّبين",
     "metaDescription": "حصص وحجوزات ومدفوعات بإيصالات وموقع ومتجر إلكتروني مجانيان وفريق عمل ومجتمع يُعيد الأعضاء. جرّب كل شيء مجانًا في الوضع التجريبي.",
-    "brandTag": "للأعمال",
     "nav": {
       "athletes": "للرياضيين",
       "signIn": "تسجيل الدخول",
@@ -19691,6 +19690,7 @@
     "visual": {
       "seats": "{count} أماكن",
       "receiptPackage": "باقة الاشتراك · شهرية",
+      "receiptPackageCoach": "تدريب شخصي · 8 جلسات",
       "receiptTotal": "المجموع",
       "receiptCard": "بطاقة",
       "receiptStamp": "myDATA ✓",
@@ -19718,6 +19718,7 @@
       "branches": "فرع كيبسيلي | فرع بيرايوس",
       "clubName": "إيليني",
       "clubWhere": "نادي البوكس",
+      "clubWhereCoach": "مجموعة المدرّبة",
       "clubPr": "رقم قياسي جديد · 120 كغ",
       "clubKudos": "24 إعجابًا",
       "clients": "آنا · برنامج الأسبوع ✓ | جورج · فيديو تقنية | صوفيا · تسجيل حضور الأحد",
@@ -19736,10 +19737,12 @@
       "stock": "بروتين | أشرطة مطاطية | قمصان | ماء",
       "stockLow": "منخفض",
       "adSponsored": "عرض البوكس · بوكس كيبسيلي",
+      "adSponsoredCoach": "عرض المدرّبة · إيليني",
       "adTitle": "خصم 20% على باقة 3 أشهر",
       "adBody": "الرمز AUTUMN20 · حتى 30 نوفمبر",
       "offerPartner": "شريك · Healthy Bites",
       "offerTitle": "خصم 15% لأعضاء البوكس",
+      "offerTitleCoach": "خصم 15% لعملائي",
       "offerBody": "أظهر بطاقة العضوية عند الدفع",
       "shopItems": "بروتين | قميص | أشرطة مطاطية",
       "shopPrices": "29 € | 18 € | 12 €",

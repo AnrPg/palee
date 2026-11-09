@@ -19488,7 +19488,6 @@
   "BusinessLanding": {
     "metaTitle": "Palee für Boxen und Coaches",
     "metaDescription": "Kurse, Buchungen, Zahlungen mit Belegen, kostenlose Website und E-Shop, Personal und eine Community, die Mitglieder wiederkommen lässt. Teste alles kostenlos im Demo-Modus.",
-    "brandTag": "für Unternehmen",
     "nav": {
       "athletes": "Für Athleten",
       "signIn": "Anmelden",
@@ -19691,6 +19690,7 @@
     "visual": {
       "seats": "{count} Plätze",
       "receiptPackage": "Abo-Paket · Monatlich",
+      "receiptPackageCoach": "Personal Training · 8 Einheiten",
       "receiptTotal": "Summe",
       "receiptCard": "Karte",
       "receiptStamp": "myDATA ✓",
@@ -19718,6 +19718,7 @@
       "branches": "Standort Kypseli | Standort Piräus",
       "clubName": "Eleni",
       "clubWhere": "Box-Club",
+      "clubWhereCoach": "Coach-Gruppe",
       "clubPr": "Neuer PR · 120 kg",
       "clubKudos": "24 Kudos",
       "clients": "Anna · Wochenprogramm ✓ | Giorgos · Technikvideo | Sofia · Sonntags-Check-in",
@@ -19736,10 +19737,12 @@
       "stock": "Protein | Bänder | T-Shirts | Wasser",
       "stockLow": "Knapp",
       "adSponsored": "Box-Angebot · Box Kypseli",
+      "adSponsoredCoach": "Coach-Angebot · Eleni",
       "adTitle": "20 % Rabatt auf das 3-Monats-Paket",
       "adBody": "Code HERBST20 · bis 30. November",
       "offerPartner": "Partnerladen · Healthy Bites",
       "offerTitle": "15 % Rabatt für Box-Mitglieder",
+      "offerTitleCoach": "15 % Rabatt für meine Kund:innen",
       "offerBody": "Zeig deine Mitgliedskarte an der Kasse",
       "shopItems": "Protein | T-Shirt | Bänder",
       "shopPrices": "29 € | 18 € | 12 €",

@@ -19488,7 +19488,6 @@
   "BusinessLanding": {
     "metaTitle": "Palee per box e coach",
     "metaDescription": "Corsi, prenotazioni, pagamenti con ricevuta, sito web ed e-shop gratuiti, staff e una community che fa tornare i membri. Prova tutto gratis in modalità demo.",
-    "brandTag": "per le aziende",
     "nav": {
       "athletes": "Per gli atleti",
       "signIn": "Accedi",
@@ -19691,6 +19690,7 @@
     "visual": {
       "seats": "{count} posti",
       "receiptPackage": "Pacchetto di abbonamento · Mensile",
+      "receiptPackageCoach": "Allenamento personale · 8 sessioni",
       "receiptTotal": "Totale",
       "receiptCard": "Carta",
       "receiptStamp": "myDATA ✓",
@@ -19718,6 +19718,7 @@
       "branches": "Sede Kypseli | Sede Pireo",
       "clubName": "Eleni",
       "clubWhere": "Club del box",
+      "clubWhereCoach": "Gruppo del coach",
       "clubPr": "Nuovo PR · 120 kg",
       "clubKudos": "24 kudos",
       "clients": "Anna · programma della settimana ✓ | Giorgio · video di tecnica | Sofia · check-in della domenica",
@@ -19736,10 +19737,12 @@
       "stock": "Proteine | Elastici | Magliette | Acqua",
       "stockLow": "Basso",
       "adSponsored": "Offerta del box · Box Kypseli",
+      "adSponsoredCoach": "Offerta del coach · Eleni",
       "adTitle": "-20% sul pacchetto trimestrale",
       "adBody": "Codice AUTUNNO20 · fino al 30 novembre",
       "offerPartner": "Negozio partner · Healthy Bites",
       "offerTitle": "-15% per i membri del box",
+      "offerTitleCoach": "-15% per i miei clienti",
       "offerBody": "Mostra la tessera alla cassa",
       "shopItems": "Proteine | Maglietta | Elastici",
       "shopPrices": "29 € | 18 € | 12 €",

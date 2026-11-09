@@ -9,7 +9,7 @@
 /** Places in the three classes on the console. */
 export const CONSOLE_CAPACITY = [16, 12, 20] as const;
 /** How many notices show at once. */
-export const MAX_TOASTS = 3;
+export const MAX_TOASTS = 2;
 /** One package payment adds this much to the day's takings. */
 export const PAYMENT_EUROS = 49;
 

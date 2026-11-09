@@ -22,8 +22,10 @@ test.describe("business landing", () => {
     await page.goto("/business");
 
     await expect(page.getByRole("heading", { level: 1, name: "Your box runs on its own. You coach." })).toBeVisible();
-    // The phones' switch (in the stories) is hidden here; role queries skip hidden elements.
-    await page.getByRole("group", { name: "For" }).getByRole("button", { name: "Independent coach" }).click();
+    // The switch sits in the middle of the top bar; the phones' one (in the stories) is hidden here.
+    const audience = page.getByTestId("business-topbar").getByRole("group", { name: "For" });
+    await expect(audience).toBeVisible();
+    await audience.getByRole("button", { name: /coach/i }).click();
     await expect(page).toHaveURL(/\/business\?for=coach$/);
     await expect(page.getByRole("heading", { level: 1, name: "Your clients, everywhere. No spreadsheets." })).toBeVisible();
 
@@ -78,7 +80,7 @@ test.describe("business landing", () => {
     await expect(stories.getByRole("heading", { level: 1, name: "Your clients, everywhere." })).toBeVisible();
   });
 
-  test("links to the business page from the athletes' landing, away from sign in", async ({ page }) => {
+  test("the chip beside the logo always points to the other landing, away from sign in", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await guest(page);
     await page.goto("/");
@@ -86,5 +88,11 @@ test.describe("business landing", () => {
     await page.getByTestId("landing-for-business").click();
     await expect(page).toHaveURL(/\/business$/);
     await expect(page.getByRole("heading", { level: 1, name: "Your box runs on its own. You coach." })).toBeVisible();
+
+    // On the business page the same chip says «For athletes →»; nothing else links there from the top bar.
+    const topbar = page.getByTestId("business-topbar");
+    await expect(topbar.getByRole("link", { name: /For athletes/ })).toHaveCount(1);
+    await topbar.getByTestId("business-for-athletes").click();
+    await expect(page.getByTestId("guest-landing")).toBeVisible();
   });
 });

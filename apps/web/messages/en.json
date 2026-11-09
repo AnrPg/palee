@@ -19488,7 +19488,6 @@
   "BusinessLanding": {
     "metaTitle": "Palee for boxes and coaches",
     "metaDescription": "Classes, bookings, payments with receipts, a free website and e-shop, staff and a community that keeps members coming back. Try everything free in demo mode.",
-    "brandTag": "for business",
     "nav": {
       "athletes": "For athletes",
       "signIn": "Sign in",
@@ -19691,6 +19690,7 @@
     "visual": {
       "seats": "{count} places",
       "receiptPackage": "Subscription package · Monthly",
+      "receiptPackageCoach": "Personal training · 8 sessions",
       "receiptTotal": "Total",
       "receiptCard": "Card",
       "receiptStamp": "myDATA ✓",
@@ -19718,6 +19718,7 @@
       "branches": "Kypseli branch | Piraeus branch",
       "clubName": "Eleni",
       "clubWhere": "Box club",
+      "clubWhereCoach": "Coach's group",
       "clubPr": "New PR · 120 kg",
       "clubKudos": "24 kudos",
       "clients": "Anna · week programme ✓ | George · technique video | Sofia · Sunday check-in",
@@ -19736,10 +19737,12 @@
       "stock": "Protein | Bands | T-shirts | Water",
       "stockLow": "Low",
       "adSponsored": "Box offer · Box Kypseli",
+      "adSponsoredCoach": "Coach offer · Eleni",
       "adTitle": "20% off the 3-month package",
       "adBody": "Code AUTUMN20 · until 30 November",
       "offerPartner": "Partner · Healthy Bites",
       "offerTitle": "15% off for box members",
+      "offerTitleCoach": "15% off for my clients",
       "offerBody": "Show your membership card at the till",
       "shopItems": "Protein | T-shirt | Bands",
       "shopPrices": "€29 | €18 | €12",

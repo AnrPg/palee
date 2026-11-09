@@ -19488,7 +19488,6 @@
   "BusinessLanding": {
     "metaTitle": "Palee para boxes y coaches",
     "metaDescription": "Clases, reservas, pagos con recibo, web y tienda online gratis, personal y una comunidad que hace volver a los miembros. Pruébalo todo gratis en modo demo.",
-    "brandTag": "para empresas",
     "nav": {
       "athletes": "Para atletas",
       "signIn": "Iniciar sesión",
@@ -19691,6 +19690,7 @@
     "visual": {
       "seats": "{count} plazas",
       "receiptPackage": "Paquete de suscripción · Mensual",
+      "receiptPackageCoach": "Entrenamiento personal · 8 sesiones",
       "receiptTotal": "Total",
       "receiptCard": "Tarjeta",
       "receiptStamp": "myDATA ✓",
@@ -19718,6 +19718,7 @@
       "branches": "Sede Kypseli | Sede El Pireo",
       "clubName": "Eleni",
       "clubWhere": "Club del box",
+      "clubWhereCoach": "Grupo del coach",
       "clubPr": "Nuevo PR · 120 kg",
       "clubKudos": "24 kudos",
       "clients": "Anna · programa semanal ✓ | Jorge · vídeo de técnica | Sofía · check-in del domingo",
@@ -19736,10 +19737,12 @@
       "stock": "Proteína | Gomas | Camisetas | Agua",
       "stockLow": "Poco",
       "adSponsored": "Oferta del box · Box Kypseli",
+      "adSponsoredCoach": "Oferta del coach · Eleni",
       "adTitle": "-20 % en el paquete de 3 meses",
       "adBody": "Código OTONO20 · hasta el 30 de noviembre",
       "offerPartner": "Colaborador · Healthy Bites",
       "offerTitle": "-15 % para miembros del box",
+      "offerTitleCoach": "-15 % para mis clientes",
       "offerBody": "Enseña tu tarjeta de miembro en caja",
       "shopItems": "Proteína | Camiseta | Gomas",
       "shopPrices": "29 € | 18 € | 12 €",

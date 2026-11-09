@@ -870,14 +870,12 @@ html[data-platform]::before {
 
 /* ADR-556: the business landing (palee.app/business) adds its own motions.
    Same rules: theme variables only, nothing moves under reduced motion. */
-/* The hero's rotating word. */
-.landing-words { display: inline-grid; vertical-align: bottom; }
-.landing-words > span { grid-area: 1 / 1; opacity: 0; animation: landing-word 12s infinite; }
-@keyframes landing-word {
-  0% { opacity: 0; transform: translateY(0.45em); }
-  4%, 22% { opacity: 1; transform: none; }
-  26%, 100% { opacity: 0; transform: translateY(-0.45em); }
+/* The hero's rotating word: each new word rises in (BusinessLanding swaps it). */
+@keyframes landing-word-in {
+  from { opacity: 0; transform: translateY(0.45em); }
+  to { opacity: 1; transform: none; }
 }
+.landing-word-in { animation: landing-word-in 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
 /* The console: seats fill, notices slide in and out. */
 .landing-seat { transition: background-color 0.3s ease, transform 0.3s ease; }
 .landing-seat[data-on="true"] { transform: scale(1.15); }
@@ -977,6 +975,23 @@ html[data-platform]::before {
   50% { transform: rotate(-2deg) translateY(-4px); }
 }
 .landing-sway { animation: landing-sway 4s ease-in-out infinite; }
+/* E-shop: light sweeps over the products; the cart badge lands right after «Add» is tapped (landing-tap, 4s). */
+@keyframes landing-shine {
+  0%, 60% { transform: translateX(-120%) skewX(-18deg); }
+  85%, 100% { transform: translateX(160%) skewX(-18deg); }
+}
+.landing-shine {
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--panel) 45%, transparent), transparent);
+  transform: translateX(-120%) skewX(-18deg);
+  animation: landing-shine 4.5s ease-in-out infinite;
+}
+@keyframes landing-cart {
+  0%, 50% { opacity: 0; transform: scale(0.4); }
+  56% { opacity: 1; transform: scale(1.3); }
+  62%, 92% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1); }
+}
+.landing-cart { opacity: 0; animation: landing-cart 4s ease-out infinite; }
 /* «How it works»: the step in view lights up, the phone changes screen. */
 .landing-step { opacity: 0.45; transition: opacity 0.4s ease; }
 .landing-step[data-on="true"] { opacity: 1; }
@@ -1021,6 +1036,6 @@ html[data-platform]::before {
   .landing-chip, .landing-bubble, .landing-float { opacity: 1; }
   .landing-float, .landing-heart-pop, .landing-tap-done { display: none; }
   .landing-tap-idle { opacity: 1; }
-  .landing-words > span:first-child, .landing-pop, .landing-site:first-child, .landing-state:first-child, .landing-low, .landing-stamp { opacity: 1; }
+  .landing-pop, .landing-site:first-child, .landing-state:first-child, .landing-low, .landing-stamp, .landing-cart { opacity: 1; }
   .landing-step { opacity: 1; }
 }

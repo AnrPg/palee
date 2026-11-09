@@ -19488,7 +19488,6 @@
   "BusinessLanding": {
     "metaTitle": "Palee לבוקסים ולמאמנים",
     "metaDescription": "שיעורים, הזמנות, תשלומים עם קבלות, אתר וחנות אונליין בחינם, צוות וקהילה שמחזירה את החברים. נסו הכול בחינם במצב הדגמה.",
-    "brandTag": "לעסקים",
     "nav": {
       "athletes": "למתאמנים",
       "signIn": "התחברות",
@@ -19691,6 +19690,7 @@
     "visual": {
       "seats": "{count} מקומות",
       "receiptPackage": "חבילת מנוי · חודשית",
+      "receiptPackageCoach": "אימון אישי · 8 מפגשים",
       "receiptTotal": "סה״כ",
       "receiptCard": "כרטיס",
       "receiptStamp": "myDATA ✓",
@@ -19718,6 +19718,7 @@
       "branches": "סניף קיפסלי | סניף פיראוס",
       "clubName": "אלני",
       "clubWhere": "מועדון הבוקס",
+      "clubWhereCoach": "הקבוצה של המאמנת",
       "clubPr": "שיא חדש · 120 ק״ג",
       "clubKudos": "24 kudos",
       "clients": "אנה · תוכנית שבועית ✓ | גיורגוס · סרטון טכניקה | סופיה · צ׳ק-אין של יום ראשון",
@@ -19736,10 +19737,12 @@
       "stock": "חלבון | גומיות | חולצות | מים",
       "stockLow": "נמוך",
       "adSponsored": "מבצע של הבוקס · בוקס קיפסלי",
+      "adSponsoredCoach": "מבצע של המאמנת · אלני",
       "adTitle": "‏20% הנחה על חבילת 3 חודשים",
       "adBody": "קוד AUTUMN20 · עד 30 בנובמבר",
       "offerPartner": "שותף · Healthy Bites",
       "offerTitle": "‏15% הנחה לחברי הבוקס",
+      "offerTitleCoach": "‏15% הנחה ללקוחות שלי",
       "offerBody": "הציגו את כרטיס החבר בקופה",
       "shopItems": "חלבון | חולצה | גומיות",
       "shopPrices": "29 € | 18 € | 12 €",

@@ -3,7 +3,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { useFormatter, useTranslations } from "next-intl";
 
-import type { VisualId } from "@/components/business-landing/content";
+import type { Audience, VisualId } from "@/components/business-landing/content";
 
 /**
  * The small product pictures of the business landing (ADR-556), drawn with
@@ -47,7 +47,7 @@ function ScheduleVisual() {
   const seats = [16, 12];
   const fills = [0.94, 0.75];
   return (
-    <Frame className="grid gap-4">
+    <Frame className="grid w-full max-w-sm gap-4">
       {rows.map((name, index) => (
         <div key={name} className="grid gap-1.5">
           <div className="flex justify-between gap-3">
@@ -66,14 +66,17 @@ function ScheduleVisual() {
   );
 }
 
-function ReceiptVisual() {
+/** Which side the picture speaks for: the box's or the independent coach's. */
+type VisualProps = { audience: Audience };
+
+function ReceiptVisual({ audience }: VisualProps) {
   const t = useTranslations("BusinessLanding");
   const format = useFormatter();
   return (
     <div className="grid place-items-center" aria-hidden="true">
       <div className="landing-print grid w-48 gap-1 rounded-t-lg p-3 pb-5 text-xs" style={cardStyle}>
-        <b>{t("console.box.name")}</b>
-        <span>{t("visual.receiptPackage")}</span>
+        <b>{t(`console.${audience}.name`)}</b>
+        <span>{t(audience === "coach" ? "visual.receiptPackageCoach" : "visual.receiptPackage")}</span>
         <span className="flex justify-between"><span>{t("visual.receiptTotal")}</span><b>{format.number(49, { style: "currency", currency: "EUR" })}</b></span>
         <span className="flex justify-between"><span>{t("visual.receiptCard")}</span><span>•••• 4242</span></span>
         <span
@@ -238,11 +241,11 @@ function RolesVisual() {
   );
 }
 
-function ClubVisual() {
+function ClubVisual({ audience }: VisualProps) {
   const t = useTranslations("BusinessLanding");
   return (
     <Frame className="relative w-full max-w-64">
-      <p><b>{t("visual.clubName")}</b> · <span style={{ color: "var(--muted)" }}>{t("visual.clubWhere")}</span></p>
+      <p><b>{t("visual.clubName")}</b> · <span style={{ color: "var(--muted)" }}>{t(audience === "coach" ? "visual.clubWhereCoach" : "visual.clubWhere")}</span></p>
       <div className="relative mt-2 h-20 overflow-hidden rounded-xl" style={{ background: "linear-gradient(135deg, var(--primary), var(--deep))" }}>
         <b className="absolute bottom-1.5 start-2.5 text-base font-black" style={{ color: "var(--spark)" }}>{t("visual.clubPr")}</b>
       </div>
@@ -308,24 +311,29 @@ function CoachPayVisual() {
   );
 }
 
-/** Two lines drawing themselves, with the insights popping beside them. */
+/** Two lines drawing themselves, with the insights popping above them (never on them). */
 function InsightsVisual() {
   const t = useTranslations("BusinessLanding");
   return (
-    <div className="relative w-full" aria-hidden="true">
-      <svg viewBox="0 0 320 140" className="block h-auto w-full">
-        {[35, 70, 105].map((y) => (
-          <line key={y} x1="0" x2="320" y1={y} y2={y} stroke="var(--border)" strokeWidth="1" />
+    <div className="grid w-full gap-2" aria-hidden="true">
+      <div className="flex min-h-[1.9rem] flex-wrap gap-1.5">
+        {(["insightDrop", "insightRisk"] as const).map((key, index) => (
+          <span
+            key={key}
+            className="landing-pop min-w-0 rounded-lg px-2.5 py-1.5 text-[11px] font-bold shadow-(--shadow-lg)"
+            style={{ ...cardStyle, ...delay(1.8 + index * 1.4), animationDuration: "7s" }}
+          >
+            {t(`visual.${key}`)}
+          </span>
         ))}
-        <path className="landing-draw" pathLength={1} d="M5 100 L50 88 L95 92 L140 70 L185 74 L230 52 L275 46 L315 30" fill="none" stroke="var(--primary)" strokeWidth="3" strokeLinecap="round" />
-        <path className="landing-draw" pathLength={1} d="M5 60 L50 62 L95 58 L140 66 L185 80 L230 92 L275 96 L315 104" fill="none" stroke="var(--spark)" strokeWidth="3" strokeLinecap="round" style={delay(0.4)} />
+      </div>
+      <svg viewBox="0 0 320 120" className="block h-auto w-full">
+        {[30, 60, 90].map((y) => (
+          <line key={y} x1="0" x2="320" y1={y} y2={y} stroke="color-mix(in srgb, currentColor 18%, transparent)" strokeWidth="1" />
+        ))}
+        <path className="landing-draw" pathLength={1} d="M5 95 L50 84 L95 88 L140 66 L185 70 L230 48 L275 42 L315 26" fill="none" stroke="var(--primary)" strokeWidth="3" strokeLinecap="round" />
+        <path className="landing-draw" pathLength={1} d="M5 55 L50 57 L95 53 L140 61 L185 74 L230 85 L275 89 L315 97" fill="none" stroke="var(--spark)" strokeWidth="3" strokeLinecap="round" style={delay(0.4)} />
       </svg>
-      <span className="landing-pop absolute end-1 top-[60%] max-w-[60%] rounded-lg px-2.5 py-1.5 text-[11px] font-bold shadow-(--shadow-lg)" style={{ ...cardStyle, ...delay(1.8), animationDuration: "7s" }}>
-        {t("visual.insightDrop")}
-      </span>
-      <span className="landing-pop absolute start-1 top-0 max-w-[60%] rounded-lg px-2.5 py-1.5 text-[11px] font-bold shadow-(--shadow-lg)" style={{ ...cardStyle, ...delay(3.2), animationDuration: "7s" }}>
-        {t("visual.insightRisk")}
-      </span>
     </div>
   );
 }
@@ -419,18 +427,19 @@ const STOCK: { from: number; to: number; low: boolean }[] = [
 function StockVisual() {
   const t = useTranslations("BusinessLanding");
   return (
-    <div className="grid w-full grid-cols-[5.5rem_1fr_auto] items-center gap-x-2 gap-y-2 text-xs" aria-hidden="true">
+    <div className="grid w-full gap-2.5 text-xs" aria-hidden="true">
       {splitList(t("visual.stock")).map((item, index) => (
-        <span key={item} className="contents">
-          <span className="truncate">{item}</span>
-          <span className="h-2 overflow-hidden rounded-full" style={{ background: "var(--panel-muted)" }}>
-            <span className="landing-drain block h-full" style={{ background: "var(--primary)", ["--from" as string]: STOCK[index].from, ["--to" as string]: STOCK[index].to }} />
+        <span key={item} className="grid gap-1">
+          <span className="flex min-w-0 items-center justify-between gap-2">
+            <span className="truncate font-semibold">{item}</span>
+            {STOCK[index].low ? (
+              <span className="landing-low shrink-0 rounded-full px-2 py-0.5 text-[10px] font-extrabold" style={{ background: "var(--heat)", color: "var(--heat-contrast)" }}>
+                {t("visual.stockLow")}
+              </span>
+            ) : null}
           </span>
-          <span
-            className={`rounded-full px-2 py-0.5 text-[10px] font-extrabold ${STOCK[index].low ? "landing-low" : "invisible"}`}
-            style={{ background: "var(--heat)", color: "var(--heat-contrast)" }}
-          >
-            {t("visual.stockLow")}
+          <span className="block h-2 overflow-hidden rounded-full" style={{ background: "var(--panel-muted)" }}>
+            <span className="landing-drain block h-full rounded-full" style={{ background: "var(--primary)", ["--from" as string]: STOCK[index].from, ["--to" as string]: STOCK[index].to }} />
           </span>
         </span>
       ))}
@@ -438,7 +447,7 @@ function StockVisual() {
   );
 }
 
-function CampaignsVisual() {
+function CampaignsVisual({ audience }: VisualProps) {
   const t = useTranslations("BusinessLanding");
   const post = <span className="block h-10 rounded-xl" style={rowStyle} />;
   return (
@@ -446,7 +455,7 @@ function CampaignsVisual() {
       <div className="landing-feed absolute inset-x-0 top-0 grid gap-1.5">
         {post}
         <span className="grid gap-0.5 rounded-xl p-2.5 text-xs shadow-(--shadow-lg)" style={{ background: "var(--deep)", color: "var(--deep-contrast)" }}>
-          <small className="text-[10px] font-extrabold uppercase tracking-[0.1em]" style={{ color: "var(--spark)" }}>{t("visual.adSponsored")}</small>
+          <small className="text-[10px] font-extrabold uppercase tracking-[0.1em]" style={{ color: "var(--spark)" }}>{t(audience === "coach" ? "visual.adSponsoredCoach" : "visual.adSponsored")}</small>
           <b>{t("visual.adTitle")}</b>
           <span>{t("visual.adBody")}</span>
         </span>
@@ -457,27 +466,25 @@ function CampaignsVisual() {
   );
 }
 
-function OfferVisual() {
-  return (
-    <div className="grid place-items-center" aria-hidden="true">
-      <OfferCoupon />
-    </div>
-  );
-}
-
-function OfferCoupon() {
+function OfferVisual({ audience }: VisualProps) {
   const t = useTranslations("BusinessLanding");
   return (
-    <div className="landing-sway relative grid w-full max-w-64 gap-0.5 rounded-2xl px-4 py-3 text-xs" style={{ background: "var(--spark)", color: "var(--spark-contrast)" }}>
-      <span>{t("visual.offerPartner")}</span>
-      <b className="text-lg font-black">{t("visual.offerTitle")}</b>
-      <span>{t("visual.offerBody")}</span>
+    <div className="grid place-items-center" aria-hidden="true">
+      <div className="landing-sway relative grid w-full max-w-64 gap-0.5 rounded-2xl px-4 py-3 text-xs" style={{ background: "var(--spark)", color: "var(--spark-contrast)" }}>
+        <span>{t("visual.offerPartner")}</span>
+        <b className="text-lg font-black">{t(audience === "coach" ? "visual.offerTitleCoach" : "visual.offerTitle")}</b>
+        <span>{t("visual.offerBody")}</span>
+      </div>
     </div>
   );
 }
 
 
-/** The e-shop: products, «Add» tapped, the cart counting up. */
+/**
+ * The e-shop: products, «Add» tapped, the cart counting up. Each product is
+ * its own column that can shrink (minmax(0, 1fr)), the picture stays inside
+ * it, the price never breaks and «Add» takes the full width under it.
+ */
 function ShopVisual() {
   const t = useTranslations("BusinessLanding");
   const items = splitList(t("visual.shopItems"));
@@ -485,26 +492,29 @@ function ShopVisual() {
   return (
     <Frame className="grid w-full gap-3">
       <span className="flex items-center justify-between gap-2">
-        <b>{t("visual.shopTitle")}</b>
-        <span className="relative rounded-full px-2.5 py-1 text-xs font-bold" style={rowStyle}>
+        <b className="truncate">{t("visual.shopTitle")}</b>
+        <span className="relative shrink-0 rounded-full px-2.5 py-1 text-xs font-bold" style={rowStyle}>
           {t("visual.shopCart")}
-          <span className="landing-pop absolute -end-2 -top-2 grid size-5 place-items-center rounded-full text-[10px] font-black" style={{ background: "var(--heat)", color: "var(--heat-contrast)", animationDuration: "4s", ...delay(1) }}>
+          <span className="landing-cart absolute -end-2 -top-2 grid size-5 place-items-center rounded-full text-[10px] font-black" style={{ background: "var(--heat)", color: "var(--heat-contrast)" }}>
             1
           </span>
         </span>
       </span>
-      <span className="grid grid-cols-3 gap-2">
+      <span className="grid grid-cols-3 gap-2 [&>*]:min-w-0">
         {items.map((item, index) => (
-          <span key={item} className="grid gap-1 rounded-xl p-2 text-xs" style={rowStyle}>
-            <span className="landing-bob aspect-square rounded-lg" style={{ background: index === 1 ? "var(--spark)" : "linear-gradient(135deg, var(--primary), var(--deep))", ...delay(index * -1.3) }} />
+          <span key={item} className="grid min-w-0 content-start gap-1.5 rounded-xl p-1.5 text-xs" style={rowStyle}>
+            <span className="relative block aspect-[4/3] overflow-hidden rounded-lg" style={{ background: index === 1 ? "var(--spark)" : "linear-gradient(135deg, var(--primary), var(--deep))" }}>
+              <span className="landing-shine absolute inset-0" style={delay(index * 1.1)} />
+            </span>
             <b className="truncate">{item}</b>
             <span className="flex items-center justify-between gap-1">
-              <span className="tabular-nums">{prices[index]}</span>
+              <span className="whitespace-nowrap tabular-nums" style={{ color: "var(--text-soft)" }}>{prices[index]}</span>
               <span
-                className={`rounded-full px-1.5 text-[10px] font-extrabold ${index === 0 ? "landing-tap" : ""}`}
+                className={`grid size-6 shrink-0 place-items-center rounded-full text-sm font-black leading-none ${index === 0 ? "landing-tap" : ""}`}
                 style={index === 0 ? undefined : { background: "var(--primary)", color: "var(--primary-contrast)" }}
+                title={t("visual.shopAdd")}
               >
-                {t("visual.shopAdd")}
+                +
               </span>
             </span>
           </span>
@@ -514,7 +524,7 @@ function ShopVisual() {
   );
 }
 
-const VISUALS: Record<VisualId, () => ReactNode> = {
+const VISUALS: Record<VisualId, (props: VisualProps) => ReactNode> = {
   schedule: ScheduleVisual,
   receipt: ReceiptVisual,
   checkin: CheckinVisual,
@@ -538,7 +548,7 @@ const VISUALS: Record<VisualId, () => ReactNode> = {
   shop: ShopVisual,
 };
 
-export function BusinessVisual({ id }: { id: VisualId }) {
+export function BusinessVisual({ id, audience }: { id: VisualId; audience: Audience }) {
   const Visual = VISUALS[id];
-  return <Visual />;
+  return <Visual audience={audience} />;
 }

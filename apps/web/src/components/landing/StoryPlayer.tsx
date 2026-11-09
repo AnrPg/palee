@@ -16,6 +16,7 @@ import {
   ProgressVisual,
 } from "@/components/landing/LandingVisuals";
 import { BUSINESS_LANDING_HREF } from "@/components/business-landing/links";
+import { AudienceChip } from "@/components/landing/AudienceChip";
 import { StoryFrame } from "@/components/landing/StoryFrame";
 
 export const LANDING_PHOTO = "/landing-gym-floor.jpg";
@@ -109,9 +110,12 @@ export function StoryPlayer({
         position: (current, total) => t("stories.position", { current, total }),
       }}
       brand={
-        <span className="flex items-center gap-2 text-lg font-black">
-          <PaleeMark className="size-7 [&_path]:stroke-[var(--deep-contrast)]" />
-          {BRAND_NAME}
+        <span className="flex min-w-0 items-center gap-2">
+          <span className="flex items-center gap-2 text-lg font-black">
+            <PaleeMark className="size-7 shrink-0 [&_path]:stroke-[var(--deep-contrast)]" />
+            {BRAND_NAME}
+          </span>
+          <AudienceChip href={BUSINESS_LANDING_HREF} label={t("forBusiness")} testId="landing-stories-for-business" />
         </span>
       }
       actions={

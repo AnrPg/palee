@@ -19488,7 +19488,6 @@
   "BusinessLanding": {
     "metaTitle": "Palee για box και coaches",
     "metaDescription": "Τμήματα, κρατήσεις, πληρωμές με αποδείξεις, δωρεάν ιστοσελίδα και e-shop, προσωπικό και μια κοινότητα που κρατάει τα μέλη. Δοκίμασε τα πάντα δωρεάν σε λειτουργία demo.",
-    "brandTag": "για επιχειρήσεις",
     "nav": {
       "athletes": "Για αθλητές",
       "signIn": "Σύνδεση",
@@ -19497,7 +19496,7 @@
     "audience": {
       "label": "Για",
       "box": "Box",
-      "coach": "Ανεξάρτητο coach",
+      "coach": "Ανεξάρτητος coach",
       "coachShort": "Coach"
     },
     "hero": {
@@ -19691,6 +19690,7 @@
     "visual": {
       "seats": "{count} θέσεις",
       "receiptPackage": "Πακέτο συνδρομής · Μηνιαίο",
+      "receiptPackageCoach": "Προσωπικές προπονήσεις · 8 συνεδρίες",
       "receiptTotal": "Σύνολο",
       "receiptCard": "Κάρτα",
       "receiptStamp": "myDATA ✓",
@@ -19718,6 +19718,7 @@
       "branches": "Παράρτημα Κυψέλης | Παράρτημα Πειραιά",
       "clubName": "Ελένη",
       "clubWhere": "Club του box",
+      "clubWhereCoach": "Ομάδα του coach",
       "clubPr": "Νέο PR · 120 kg",
       "clubKudos": "24 kudos",
       "clients": "Άννα · πρόγραμμα εβδομάδας ✓ | Γιώργος · βίντεο τεχνικής | Σοφία · check-in Κυριακής",
@@ -19736,10 +19737,12 @@
       "stock": "Πρωτεΐνη | Λάστιχα | Μπλουζάκια | Νερό",
       "stockLow": "Χαμηλό",
       "adSponsored": "Προσφορά του box · Box Κυψέλη",
+      "adSponsoredCoach": "Προσφορά του coach · Ελένη",
       "adTitle": "-20% στο τρίμηνο πακέτο",
       "adBody": "Κωδικός ΦΘΙΝΟΠΩΡΟ20 · έως 30 Νοεμβρίου",
       "offerPartner": "Συνεργάτης · Healthy Bites",
       "offerTitle": "-15% για μέλη box",
+      "offerTitleCoach": "-15% για πελάτες",
       "offerBody": "Δείξε την κάρτα μέλους στο ταμείο",
       "shopItems": "Πρωτεΐνη | Μπλουζάκι | Λάστιχα",
       "shopPrices": "29 € | 18 € | 12 €",

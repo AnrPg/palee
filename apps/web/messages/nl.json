@@ -19488,7 +19488,6 @@
   "BusinessLanding": {
     "metaTitle": "Palee voor boxen en coaches",
     "metaDescription": "Lessen, boekingen, betalingen met bon, gratis website en webshop, personeel en een community die leden laat terugkomen. Probeer alles gratis in demomodus.",
-    "brandTag": "voor bedrijven",
     "nav": {
       "athletes": "Voor atleten",
       "signIn": "Inloggen",
@@ -19691,6 +19690,7 @@
     "visual": {
       "seats": "{count} plekken",
       "receiptPackage": "Abonnementspakket · Maandelijks",
+      "receiptPackageCoach": "Personal training · 8 sessies",
       "receiptTotal": "Totaal",
       "receiptCard": "Kaart",
       "receiptStamp": "myDATA ✓",
@@ -19718,6 +19718,7 @@
       "branches": "Vestiging Kypseli | Vestiging Piraeus",
       "clubName": "Eleni",
       "clubWhere": "Boxclub",
+      "clubWhereCoach": "Coachgroep",
       "clubPr": "Nieuw PR · 120 kg",
       "clubKudos": "24 kudos",
       "clients": "Anna · weekprogramma ✓ | Joris · techniekvideo | Sofia · check-in van zondag",
@@ -19736,10 +19737,12 @@
       "stock": "Proteïne | Elastieken | T-shirts | Water",
       "stockLow": "Laag",
       "adSponsored": "Boxaanbieding · Box Kypseli",
+      "adSponsoredCoach": "Coachaanbieding · Eleni",
       "adTitle": "20% korting op het 3-maandenpakket",
       "adBody": "Code HERFST20 · tot 30 november",
       "offerPartner": "Partnerwinkel · Healthy Bites",
       "offerTitle": "15% korting voor boxleden",
+      "offerTitleCoach": "15% korting voor mijn klanten",
       "offerBody": "Laat je ledenpas zien aan de kassa",
       "shopItems": "Proteïne | T-shirt | Elastieken",
       "shopPrices": "€ 29 | € 18 | € 12",

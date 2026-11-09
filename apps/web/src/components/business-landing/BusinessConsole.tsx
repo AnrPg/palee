@@ -40,7 +40,7 @@ export function BusinessConsole({ audience }: { audience: Audience }) {
   return (
     <div className="landing-bob relative w-full max-w-[35rem]" aria-hidden="true" data-testid="business-console">
       <div
-        className="grid aspect-[16/10.4] grid-cols-1 overflow-hidden rounded-t-[1.1rem] text-[11px] sm:grid-cols-[6rem_1fr]"
+        className="grid min-h-[20rem] grid-cols-1 overflow-hidden rounded-t-[1.1rem] text-[11px] sm:grid-cols-[6rem_1fr]"
         style={{ background: "var(--bg)", color: "var(--text)", border: "10px solid color-mix(in srgb, var(--deep-contrast) 18%, var(--deep))", borderBottomWidth: 14 }}
       >
         <div className="hidden content-start gap-1 p-2.5 sm:grid" style={{ background: "var(--panel)", borderInlineEnd: "1px solid var(--border)" }}>
@@ -55,7 +55,7 @@ export function BusinessConsole({ audience }: { audience: Audience }) {
             </span>
           ))}
         </div>
-        <div className="relative grid content-start gap-2 p-3">
+        <div className="flex min-w-0 flex-col gap-2 p-3">
           <b className="text-[13px]">{t("console.today")}</b>
           <div className="grid grid-cols-3 gap-1.5">
             {kpis.map((label, index) => (
@@ -94,15 +94,16 @@ export function BusinessConsole({ audience }: { audience: Audience }) {
               </div>
             );
           })}
-          <div className="absolute bottom-2.5 end-2.5 grid w-52 gap-1.5">
+          {/* Notices sit in their own strip under the classes, never on top of them. */}
+          <div className="mt-auto grid min-h-[3.75rem] content-end justify-items-end gap-1.5">
             {state.toasts.map((toast) => (
               <span
                 key={toast}
-                className="landing-toast flex items-center gap-2 rounded-lg px-2.5 py-1.5 font-semibold shadow-(--shadow-lg)"
+                className="landing-toast flex max-w-full items-center gap-2 rounded-lg px-2.5 py-1.5 font-semibold shadow-(--shadow-lg)"
                 style={{ background: "var(--deep)", color: "var(--deep-contrast)" }}
               >
-                <span className="font-black" style={{ color: "var(--spark)" }}>✓</span>
-                {toastAt(toasts, toast)}
+                <span className="shrink-0 font-black" style={{ color: "var(--spark)" }}>✓</span>
+                <span className="truncate">{toastAt(toasts, toast)}</span>
               </span>
             ))}
           </div>

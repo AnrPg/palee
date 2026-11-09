@@ -9,6 +9,7 @@ import { BRAND_NAME } from "@/components/branding/brand";
 import { PaleeMark } from "@/components/branding/PaleeMark";
 import { PaleeTagline } from "@/components/branding/PaleeTagline";
 import { BUSINESS_LANDING_HREF } from "@/components/business-landing/links";
+import { AudienceChip } from "@/components/landing/AudienceChip";
 import { Dialog } from "@/components/ui/Dialog";
 import {
   AutoVisual,
@@ -74,19 +75,18 @@ function SparkButton({ onClick, children, className = "" }: { onClick: () => voi
   );
 }
 
-const PILLAR_ICON = { crew: "🤝", journal: "📓", partners: "🏋️", auto: "⚡" } as const;
+const PILLARS = ["crew", "journal", "partners", "auto"] as const;
 
-function Pillar({ id, index }: { id: keyof typeof PILLAR_ICON; index: number }) {
+function Pillar({ id, index }: { id: (typeof PILLARS)[number]; index: number }) {
   const t = useTranslations("Landing");
   return (
     <article
       className="landing-reveal landing-lift flex flex-col gap-1.5 rounded-3xl p-5"
       style={{ background: "var(--panel)", border: "1px solid var(--border)", ["--reveal-delay" as string]: `${index * 0.1}s` }}
     >
-      <span className="landing-bob grid size-11 place-items-center rounded-2xl text-2xl" style={{ background: "var(--panel-muted)", animationDelay: `${index * -1.4}s` }} aria-hidden="true">
-        {PILLAR_ICON[id]}
-      </span>
-      <p className="mt-2 text-xs font-bold uppercase tracking-[0.18em]" style={{ color: "var(--primary)" }}>{t(`pillars.${id}Kicker`)}</p>
+      {/* ANR: no emojis on these cards; a short accent line leads instead. */}
+      <span className="mb-2 block h-1 w-10 rounded-full" style={{ background: "var(--primary)" }} aria-hidden="true" />
+      <p className="text-xs font-bold uppercase tracking-[0.18em]" style={{ color: "var(--primary)" }}>{t(`pillars.${id}Kicker`)}</p>
       <h3 className="text-xl font-black tracking-tight">{t(`pillars.${id}Title`)}</h3>
       <p className="text-sm" style={{ color: "var(--text-soft)" }}>{t(`pillars.${id}Body`)}</p>
     </article>
@@ -175,20 +175,13 @@ export function GuestLanding({
 
         <div className="hidden sm:block" style={{ background: "var(--bg)", color: "var(--text)" }}>
           <header className="landing-deep sticky top-0 z-(--z-sticky) flex h-16 items-center justify-between gap-4 px-6 lg:px-16" style={{ backgroundImage: "none" }}>
-            <span className="flex items-center gap-4">
+            <span className="flex items-center gap-3">
               <span className="flex items-center gap-2 text-xl font-black">
                 <PaleeMark className="size-8 [&_path]:stroke-[var(--deep-contrast)]" />
                 {BRAND_NAME}
               </span>
               {/* ADR-556: the way to the business landing sits with the brand, away from sign in / sign up. */}
-              <Link
-                href={BUSINESS_LANDING_HREF}
-                className="landing-soft inline-flex min-h-11 items-center gap-1 border-s ps-4 text-sm font-semibold underline-offset-4 hover:underline"
-                style={{ borderColor: "color-mix(in srgb, var(--deep-contrast) 25%, transparent)" }}
-                data-testid="landing-for-business"
-              >
-                {t("forBusiness")} →
-              </Link>
+              <AudienceChip href={BUSINESS_LANDING_HREF} label={t("forBusiness")} testId="landing-for-business" />
             </span>
             <div className="flex flex-wrap items-center justify-end gap-2">
               <button
@@ -237,7 +230,7 @@ export function GuestLanding({
 
           <div ref={rest} className="scroll-mt-16" data-testid="landing-rest">
             <section className="mx-auto grid max-w-6xl gap-4 px-6 py-12 md:grid-cols-2 lg:grid-cols-4 lg:px-10">
-              {(["crew", "journal", "partners", "auto"] as const).map((id, index) => (
+              {PILLARS.map((id, index) => (
                 <Pillar key={id} id={id} index={index} />
               ))}
             </section>

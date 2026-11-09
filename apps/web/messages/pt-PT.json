@@ -19488,7 +19488,6 @@
   "BusinessLanding": {
     "metaTitle": "Palee para boxes e coaches",
     "metaDescription": "Aulas, reservas, pagamentos com recibo, site e loja online grátis, equipa e uma comunidade que faz os membros voltar. Experimente tudo grátis em modo demo.",
-    "brandTag": "para empresas",
     "nav": {
       "athletes": "Para atletas",
       "signIn": "Iniciar sessão",
@@ -19691,6 +19690,7 @@
     "visual": {
       "seats": "{count} lugares",
       "receiptPackage": "Pacote de subscrição · Mensal",
+      "receiptPackageCoach": "Treino personalizado · 8 sessões",
       "receiptTotal": "Total",
       "receiptCard": "Cartão",
       "receiptStamp": "myDATA ✓",
@@ -19718,6 +19718,7 @@
       "branches": "Filial Kypseli | Filial Pireu",
       "clubName": "Eleni",
       "clubWhere": "Clube da box",
+      "clubWhereCoach": "Grupo do coach",
       "clubPr": "Novo PR · 120 kg",
       "clubKudos": "24 kudos",
       "clients": "Anna · programa da semana ✓ | Jorge · vídeo de técnica | Sofia · check-in de domingo",
@@ -19736,10 +19737,12 @@
       "stock": "Proteína | Elásticos | T-shirts | Água",
       "stockLow": "Baixo",
       "adSponsored": "Oferta da box · Box Kypseli",
+      "adSponsoredCoach": "Oferta do coach · Eleni",
       "adTitle": "-20% no pacote de 3 meses",
       "adBody": "Código OUTONO20 · até 30 de novembro",
       "offerPartner": "Parceiro · Healthy Bites",
       "offerTitle": "-15% para membros da box",
+      "offerTitleCoach": "-15% para os meus clientes",
       "offerBody": "Mostre o cartão de membro na caixa",
       "shopItems": "Proteína | T-shirt | Elásticos",
       "shopPrices": "29 € | 18 € | 12 €",
