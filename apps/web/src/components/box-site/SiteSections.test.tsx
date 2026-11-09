@@ -38,32 +38,32 @@ function show(timetable = TIMETABLE) {
   return screen.getByTestId("site-schedule");
 }
 
-describe("SiteSections «Πρόγραμμα»", () => {
-  it("shows the first day and opens the rest of the week on request", () => {
+describe("SiteSections «Ωρολόγιο» (ANR 2026-11-09)", () => {
+  it("shows the first day and switches days from the strip", () => {
     const section = show();
     expect(within(section).getByText("CrossFit")).toBeInTheDocument();
     expect(within(section).queryByText("Weightlifting")).not.toBeInTheDocument();
 
-    const more = within(section).getByRole("button", { name: "Όλη η εβδομάδα · 2 ακόμα μέρες" });
-    expect(more).toHaveAttribute("aria-expanded", "false");
-    fireEvent.click(more);
+    const days = within(section).getAllByRole("tab");
+    expect(days).toHaveLength(3);
+    expect(days[0]).toHaveAttribute("aria-selected", "true");
+    fireEvent.click(days[1]!);
+    expect(days[1]).toHaveAttribute("aria-selected", "true");
     expect(within(section).getByText("Weightlifting")).toBeInTheDocument();
-    expect(within(section).getByText("Gymnastics")).toBeInTheDocument();
-
-    const less = within(section).getByRole("button", { name: "Λιγότερα" });
-    expect(less).toHaveAttribute("aria-expanded", "true");
-    fireEvent.click(less);
-    expect(within(section).queryByText("Gymnastics")).not.toBeInTheDocument();
+    expect(within(section).queryByText("CrossFit")).not.toBeInTheDocument();
   });
 
-  it("has no expander when every class is on one day", () => {
+  it("puts classes that start together side by side in one row", () => {
+    const section = show([...TIMETABLE.slice(0, 1), { ...TIMETABLE[0]!, id: "t4", name: "Open gym" }]);
+    const slots = within(section).getAllByTestId("site-schedule-slot");
+    expect(slots).toHaveLength(1);
+    expect(within(slots[0]!).getByText("CrossFit")).toBeInTheDocument();
+    expect(within(slots[0]!).getByText("Open gym")).toBeInTheDocument();
+  });
+
+  it("has no day strip when every class is on one day", () => {
     const section = show(TIMETABLE.slice(0, 1));
     expect(within(section).getByText("CrossFit")).toBeInTheDocument();
-    expect(within(section).queryByRole("button")).not.toBeInTheDocument();
-  });
-
-  it("counts a single remaining day in the singular", () => {
-    const section = show(TIMETABLE.slice(0, 2));
-    expect(within(section).getByRole("button", { name: "Όλη η εβδομάδα · 1 ακόμα μέρα" })).toBeInTheDocument();
+    expect(within(section).queryByRole("tab")).not.toBeInTheDocument();
   });
 });

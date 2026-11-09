@@ -19,23 +19,25 @@ import { SPARK_GO_STYLE } from "@/lib/spark";
 import { joinBoxTarget } from "./join-box";
 
 const MAIN = "flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-4 text-base font-extrabold";
+// The desktop header and its sticky bar (ANR 2026-11-09): sized to its words.
+const COMPACT = "flex min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-2xl px-5 text-sm font-extrabold";
 
 /** «Γίνε μέλος box» (ADR-552): a link, or «Ζήτα να γίνεις μέλος» with its own sheet. */
-export function JoinBoxAction({ page, signedIn }: { page: PublicBoxPage; signedIn: boolean }) {
+export function JoinBoxAction({ page, signedIn, compact = false }: { page: PublicBoxPage; signedIn: boolean; compact?: boolean }) {
   const t = useTranslations("BoxPage");
   const sales = useBoxSales(signedIn ? page.box.slug : null);
   const target = joinBoxTarget(page, signedIn, signedIn ? sales.shownCount : null);
   if (target.kind === "link") {
     return (
-      <Link href={target.href} className={MAIN} style={SPARK_GO_STYLE} data-testid="box-page-join">
+      <Link href={target.href} className={compact ? COMPACT : MAIN} style={SPARK_GO_STYLE} data-testid="box-page-join">
         {t("joinBox")}
       </Link>
     );
   }
-  return <AskToJoin page={page} />;
+  return <AskToJoin page={page} compact={compact} />;
 }
 
-function AskToJoin({ page }: { page: PublicBoxPage }) {
+function AskToJoin({ page, compact }: { page: PublicBoxPage; compact: boolean }) {
   const t = useTranslations("BoxPage");
   const { tokens } = useSession();
   const token = tokens?.access_token ?? "";
@@ -64,7 +66,7 @@ function AskToJoin({ page }: { page: PublicBoxPage }) {
 
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)} className={MAIN} style={SPARK_GO_STYLE} data-testid="box-page-join">
+      <button type="button" onClick={() => setOpen(true)} className={compact ? COMPACT : MAIN} style={SPARK_GO_STYLE} data-testid="box-page-join">
         {waiting ? t("joinWaiting") : t("joinBox")}
       </button>
       {open ? <AskSheet page={page} request={mine.data ?? null} onClose={() => setOpen(false)} /> : null}

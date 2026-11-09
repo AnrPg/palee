@@ -10,6 +10,8 @@ defmodule Palee.Finance.PackageAudienceStore do
   @impl true
   def set_box(audience), do: adapter().set_box(audience)
   @impl true
+  def set_featured(id), do: adapter().set_featured(id)
+  @impl true
   def set_package(id, audience), do: adapter().set_package(id, audience)
   @impl true
   def put_exception(params), do: adapter().put_exception(params)

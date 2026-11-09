@@ -1525,6 +1525,7 @@ defmodule PaleeWeb.Router do
     post("/package-audience/exceptions", AdminPackageAudienceController, :put_exception)
     delete("/package-audience/exceptions/:id", AdminPackageAudienceController, :delete_exception)
     put("/package-audience/packages/:id", AdminPackageAudienceController, :update_package)
+    put("/package-audience/featured", AdminPackageAudienceController, :update_featured)
     get("/trial-policy", AdminTrialController, :policy)
     put("/trial-policy", AdminTrialController, :update_policy)
     get("/trials", AdminTrialController, :queue)

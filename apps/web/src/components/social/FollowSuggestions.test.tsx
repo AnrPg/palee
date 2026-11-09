@@ -120,7 +120,7 @@ describe("HomeFollowSuggestions", () => {
 
   it("lists one person per line in Αρχική's right column on wide screens", async () => {
     summary.current = { data: { privacy: { private_account: false, searchable: true, show_follow_suggestions: true } } };
-    render(<HomeFollowSuggestions layout="list" />, { wrapper });
+    render(<HomeFollowSuggestions list />, { wrapper });
     expect(await screen.findByText("title")).toBeTruthy();
     const section = document.querySelector('[data-follow-suggestions="home"]')!;
     expect(section.getAttribute("data-layout")).toBe("list");

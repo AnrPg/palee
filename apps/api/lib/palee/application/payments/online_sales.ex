@@ -35,7 +35,11 @@ defmodule Palee.Application.Payments.OnlineSales do
 
       {:ok,
        %{
-         packages: Enum.map(view.packages, &(&1 |> public_package() |> held(view.held))),
+         packages:
+           Enum.map(
+             view.packages,
+             &(&1 |> public_package() |> held(view.held) |> featured(view.featured))
+           ),
          own_only: view.own_only,
          online_payments: Payments.available?(context, "packages"),
          provider: Payments.provider(context),
@@ -149,6 +153,9 @@ defmodule Palee.Application.Payments.OnlineSales do
 
   # ADR-553: the viewer's own package («Ανανέωση», «Το πακέτο συνδρομής σου είναι X»).
   defp held(package, held_ids), do: Map.put(package, :held, package.id in held_ids)
+
+  # ADR-596: the box's «Προτεινόμενο» package.
+  defp featured(package, featured_id), do: Map.put(package, :featured, package.id == featured_id)
 
   @doc """
   What buying `package_id` costs and the texts the member agrees to.

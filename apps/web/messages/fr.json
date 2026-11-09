@@ -7098,7 +7098,6 @@
     "findTitle": "Trouver des clubs, des box et des personnes",
     "findOpenClubs": "Clubs ouverts",
     "findGroups": "Groupes dans tes box",
-    "findNoClubs": "Les box dont tu es membre ou que tu suis n'ont pas encore de club ouvert.",
     "findNoMatch": "Aucun résultat pour cette recherche.",
     "visibilityTitle": "Listes des membres du club",
     "visibilityHint": "Si les autres membres du club te voient dans l’onglet Membres de leurs clubs.",
@@ -7151,7 +7150,9 @@
     "notif_event_cohost_answered_removed_body": "{box} ne co-organise plus « {event} ».",
     "filterKind": "Type",
     "filterBox": "Box",
-    "findFiltersTitle": "Filtres de recherche"
+    "findFiltersTitle": "Filtres de recherche",
+    "findStaffNoClubs": "{box} n’a pas encore de club ouvert. Un club ouvert réunit membres et non-membres autour d’une passion commune, comme la course.",
+    "findCreateClub": "Créer un club ouvert"
   },
   "CommunityAdmin": {
     "title": "Communauté",
@@ -7741,7 +7742,9 @@
     "priceFrom": "Prix minimum",
     "priceTo": "Prix maximum",
     "sectionLevel": "Niveau",
-    "levelHint": "Box avec des cours de ce niveau"
+    "levelHint": "Box avec des cours de ce niveau",
+    "nearUpTo": "Jusqu’à {km} km",
+    "nearInTown": "Dans ta ville · {town}"
   },
   "CheckIn": {
     "loading": "Chargement…",
@@ -16947,8 +16950,6 @@
     "cookies": "Cookies",
     "poweredBy": "Créé avec Palee",
     "minutes": "{count, plural, one {# min} other {# min}}",
-    "scheduleMore": "{count, plural, one {Toute la semaine · # jour de plus} other {Toute la semaine · # jours de plus}}",
-    "scheduleLess": "Moins",
     "free": "Gratuit",
     "allPackages": "Toutes les formules",
     "languageLabel": "Langue",
@@ -17207,7 +17208,10 @@
       "all": "{count, plural, one {Tous les programmes d’entraînement (#)} other {Tous les programmes d’entraînement (#)}}",
       "nav": "Programmes d’entraînement",
       "settingsHint": "Affiché quand tu as un programme d’entraînement en vente."
-    }
+    },
+    "scheduleDays": "Jours",
+    "nextClass": "Prochain",
+    "featured": "Recommandé"
   },
   "WebsiteLook": {
     "notice": "Ton site a une nouvelle apparence : {template}. Découvre les autres modèles et change-la quand tu veux.",
@@ -19417,7 +19421,10 @@
     "badge_own": "Seulement ceux qui l'ont",
     "badge_none": "Masqué",
     "websiteHint": "Affiche les forfaits d'abonnement visibles par les personnes non connectées.",
-    "websiteLink": "Qui voit les forfaits"
+    "websiteLink": "Qui voit les forfaits",
+    "featuredTitle": "Recommandé sur la page du box",
+    "featuredHint": "Affiché en premier et mis en avant sur la page et le site. Un forfait par box.",
+    "featuredReplaces": "Un autre forfait est recommandé. L’activer ici prend sa place."
   },
   "Landing": {
     "signIn": "Se connecter",
@@ -20135,5 +20142,10 @@
     "answerFor": "Réponse pour «{typed}»",
     "answerAll": "Réponds à chaque ligne pour publier.",
     "failed": "Tes réponses n’ont pas été enregistrées. Réessaie."
+  },
+  "BoxOnMap": {
+    "title": "Ta box n’apparaît pas dans Autour de moi",
+    "body": "Sans adresse ni ville, personne à proximité ne la trouve dans Autour de moi ou Découvrir. Ajoute-les dans Sites.",
+    "action": "Ajouter une adresse"
   }
 }

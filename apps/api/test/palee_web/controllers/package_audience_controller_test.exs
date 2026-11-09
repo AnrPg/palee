@@ -107,7 +107,7 @@ defmodule PaleeWeb.PackageAudienceControllerTest do
     assert names(anonymous(ctx)) == ["12 επισκέψεις", "Unlimited"]
     assert %{"own_only" => false, "packages" => [%{"held" => false}, _]} = as(ctx, ctx.member)
 
-    assert %{"audience" => "all", "exceptions" => []} =
+    assert %{"audience" => "all", "exceptions" => [], "featured_package_id" => nil} =
              ctx |> admin(:get, "/package-audience") |> json_response(200)
   end
 
@@ -232,6 +232,40 @@ defmodule PaleeWeb.PackageAudienceControllerTest do
 
     ctx
     |> admin(:delete, "/package-audience/exceptions/#{Ecto.UUID.generate()}")
+    |> json_response(404)
+  end
+
+  test "ADR-596: the box features one package, and can clear it", ctx do
+    featured = fn page -> for p <- page["packages"], p["featured"], do: p["name"] end
+    assert featured.(anonymous(ctx)) == []
+
+    assert %{"featured_package_id" => id} =
+             ctx
+             |> admin(:put, "/package-audience/featured", %{package_id: ctx.unlimited.id})
+             |> json_response(200)
+
+    assert id == ctx.unlimited.id
+    assert featured.(anonymous(ctx)) == ["Unlimited"]
+    assert featured.(as(ctx, ctx.member)) == ["Unlimited"]
+
+    # One per box: featuring another replaces it.
+    ctx
+    |> admin(:put, "/package-audience/featured", %{package_id: ctx.twelve.id})
+    |> json_response(200)
+
+    assert featured.(anonymous(ctx)) == ["12 επισκέψεις"]
+
+    # A package hidden from the viewer is never shown as featured.
+    ctx |> admin(:put, "/package-audience/packages/#{ctx.twelve.id}", %{audience: "none"})
+    assert featured.(anonymous(ctx)) == []
+
+    assert %{"featured_package_id" => nil} =
+             ctx
+             |> admin(:put, "/package-audience/featured", %{package_id: nil})
+             |> json_response(200)
+
+    ctx
+    |> admin(:put, "/package-audience/featured", %{package_id: Ecto.UUID.generate()})
     |> json_response(404)
   end
 

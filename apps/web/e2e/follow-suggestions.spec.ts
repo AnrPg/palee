@@ -149,8 +149,9 @@ test("Find lists the suggestions while nothing is typed", async ({ page }) => {
   await expect(list).toHaveCount(0);
 });
 
-// ANR 2026-11-09: on wide screens Home has side columns, «People you may
-// know» on the right as a list; phones keep the one column with the card row.
+// ANR 2026-11-09: from 1024px «People you may know» sits in a right column
+// as a list (from 1280px with the reminders in a left column too); phones
+// keep the one column with the card row.
 test("Home puts the suggestions in a right column on wide screens only", async ({ page }) => {
   await stub(page);
   await page.goto("/");
@@ -161,13 +162,14 @@ test("Home puts the suggestions in a right column on wide screens only", async (
   await expect(card.getByRole("heading", { name: "People you may know" })).toBeVisible();
 
   const width = page.viewportSize()?.width ?? 0;
-  if (width >= 1280) {
+  if (width >= 1024) {
     const right = page.locator('[data-home-column="people"]');
     await expect(right.locator('[data-follow-suggestions="home"]')).toHaveAttribute("data-layout", "list");
     await expect(right).toHaveCSS("position", "sticky");
     const feed = await page.locator('[data-home-column="feed"]').boundingBox();
     const side = await right.boundingBox();
     expect(side!.x).toBeGreaterThanOrEqual(feed!.x + feed!.width);
+    await expect(page.locator("[data-home-columns]")).toHaveAttribute("data-home-columns", width >= 1280 ? "three" : "two");
   } else {
     await expect(page.locator("[data-home-columns]")).toHaveCount(0);
     await expect(card).toHaveAttribute("data-layout", "row");

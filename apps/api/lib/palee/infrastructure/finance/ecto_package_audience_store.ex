@@ -18,12 +18,12 @@ defmodule Palee.Infrastructure.Finance.EctoPackageAudienceStore do
 
   @impl true
   def load do
-    box =
+    {box, featured} =
       FinanceSetting
       |> tenant_scope()
-      |> select([s], s.package_audience)
+      |> select([s], {s.package_audience, s.featured_package_id})
       |> limit(1)
-      |> Repo.one()
+      |> Repo.one() || {nil, nil}
 
     packages =
       MembershipPackage
@@ -40,26 +40,41 @@ defmodule Palee.Infrastructure.Finance.EctoPackageAudienceStore do
       |> Repo.all()
       |> Enum.map(&normalize/1)
 
-    %{box: box || "all", packages: packages, exceptions: exceptions}
+    %{box: box || "all", packages: packages, exceptions: exceptions, featured: featured}
   end
 
   @impl true
   def set_box(audience) do
+    case put_settings(%{package_audience: audience}) do
+      {:ok, settings} -> {:ok, settings.package_audience}
+      {:error, changeset} -> {:error, changeset}
+    end
+  end
+
+  @impl true
+  def set_featured(nil), do: featured(nil)
+
+  def set_featured(id) do
+    if package(id), do: featured(id), else: {:error, :not_found}
+  end
+
+  defp featured(id) do
+    case put_settings(%{featured_package_id: id}) do
+      {:ok, settings} -> {:ok, settings.featured_package_id}
+      {:error, changeset} -> {:error, changeset}
+    end
+  end
+
+  # The box's one finance settings row, created on the first change.
+  defp put_settings(changes) do
     case FinanceSetting |> tenant_scope() |> limit(1) |> Repo.one() do
       nil ->
         %FinanceSetting{}
-        |> FinanceSetting.changeset(%{
-          organization_id: organization_id(),
-          package_audience: audience
-        })
+        |> FinanceSetting.changeset(changes)
         |> Repo.insert()
 
       %FinanceSetting{} = settings ->
-        settings |> FinanceSetting.changeset(%{package_audience: audience}) |> Repo.update()
-    end
-    |> case do
-      {:ok, settings} -> {:ok, settings.package_audience}
-      {:error, changeset} -> {:error, changeset}
+        settings |> FinanceSetting.changeset(changes) |> Repo.update()
     end
   end
 

@@ -25,7 +25,7 @@ import { BasicsStep, IncludedStep } from "@/components/admin/finance/packages/Pa
 import { AdvancedSettings, LockStrip, MemberPreview, PackageContractDetails, previewContext, useT } from "@/components/admin/finance/packages/package-ui";
 import { usePackageAuthoring } from "@/components/admin/finance/packages/use-package-authoring";
 import { SoldOnlineCard } from "@/components/admin/finance/packages/SoldOnlineCard";
-import { PackageAudienceBadge, PackageAudienceCard } from "@/components/admin/finance/packages/PackageAudience";
+import { FeaturedPackageCard, PackageAudienceBadge, PackageAudienceCard } from "@/components/admin/finance/packages/PackageAudience";
 import { SoldOnlineBadge } from "@/components/admin/finance/packages/SoldOnlineBadge";
 import {
   applyLocks,
@@ -261,6 +261,7 @@ export function PackagePanel({
             <div className="space-y-4 px-4 pb-4">
               <SoldOnlineCard token={token} pkg={pkg} />
               <PackageAudienceCard token={token} pkg={pkg} />
+              <FeaturedPackageCard token={token} pkg={pkg} />
               <AdvancedSettings
                 catalog={catalog}
                 type={type}
@@ -312,6 +313,7 @@ export function PackagePanel({
             <div className="space-y-4 px-4 pb-4">
               <SoldOnlineCard token={token} pkg={pkg} />
               <PackageAudienceCard token={token} pkg={pkg} />
+              <FeaturedPackageCard token={token} pkg={pkg} />
             </div>
           </details>
           {catalog ? <PackageContractDetails catalog={catalog} draft={draftFromPackage(catalog, pkg)} packages={packages} /> : null}

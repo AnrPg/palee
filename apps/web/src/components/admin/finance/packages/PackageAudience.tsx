@@ -13,6 +13,7 @@ import {
   fetchPackageAudience,
   putAudienceException,
   setBoxAudience,
+  setFeaturedPackage,
   setPackageAudience,
   type AudienceEffect,
   type BoxAudience,
@@ -145,6 +146,53 @@ export function PackageAudienceCard({ token, pkg }: { token: string; pkg: Financ
       <p className="text-xs" style={{ color: "var(--dim)" }}>{t("bothPlaces")}</p>
       {mutation.error ? <ErrorNotice>{localizeError(mutation.error, ui)}</ErrorNotice> : null}
       <PeopleExceptions token={token} settings={settings.data} packageId={packageId} />
+    </section>
+  );
+}
+
+/**
+ * ADR-596 (ANR 2026-11-09): «Προτεινόμενο στη σελίδα του box». One package
+ * per box; turning it on here moves the mark from any other package.
+ */
+export function FeaturedPackageCard({ token, pkg }: { token: string; pkg: FinanceRecord }) {
+  const t = useTranslations("PackageAudience");
+  const ui = useUiTranslations();
+  const queryClient = useQueryClient();
+  const settings = useAudienceSettings(token);
+  const packageId = String(pkg.id ?? "");
+  const mutation = useMutation({
+    mutationFn: (featured: boolean) => setFeaturedPackage(token, featured ? packageId : null),
+    onSuccess: (data) => queryClient.setQueryData(PACKAGE_AUDIENCE_KEY, data),
+  });
+  const featured = mutation.isPending ? mutation.variables === true : settings.data?.featured_package_id === packageId;
+  const other = !featured && Boolean(settings.data?.featured_package_id);
+
+  return (
+    <section className="space-y-2 rounded-2xl px-4 py-3" style={{ background: "var(--panel)", border: "1px solid var(--border)" }} data-testid="featured-package-card">
+      <div className="flex items-center gap-3">
+        <span className="min-w-0 flex-1">
+          <span id={`featured-${packageId}`} className="block text-sm font-semibold" style={{ color: "var(--text)" }}>{t("featuredTitle")}</span>
+          <span className="block text-xs" style={{ color: "var(--dim)" }}>{other ? t("featuredReplaces") : t("featuredHint")}</span>
+        </span>
+        <button
+          type="button"
+          role="switch"
+          aria-checked={featured}
+          aria-labelledby={`featured-${packageId}`}
+          disabled={!settings.data || mutation.isPending}
+          onClick={() => mutation.mutate(!featured)}
+          className="relative h-7 w-12 shrink-0 rounded-full transition-colors disabled:opacity-60"
+          style={{ background: featured ? "var(--primary)" : "var(--control-bg)", border: `1px solid ${featured ? "var(--primary)" : "var(--control-border)"}` }}
+          data-testid="featured-package-switch"
+        >
+          <span
+            aria-hidden="true"
+            className="absolute top-0.5 size-5.5 rounded-full shadow transition-[inset-inline-start]"
+            style={{ background: "var(--control-knob)", insetInlineStart: featured ? "1.375rem" : "0.125rem" }}
+          />
+        </button>
+      </div>
+      {mutation.error ? <ErrorNotice>{localizeError(mutation.error, ui)}</ErrorNotice> : null}
     </section>
   );
 }

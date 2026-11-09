@@ -47,6 +47,18 @@ defmodule PaleeWeb.AdminPackageAudienceController do
          do: json(conn, settings)
   end
 
+  operation(:update_featured,
+    summary: "ADR-596: the package the public page and website feature; null for none",
+    request_body: {"Choice", "application/json", S.featured_request()},
+    responses: [ok: {"Settings", "application/json", S.settings()}] ++ @refused
+  )
+
+  def update_featured(conn, params) do
+    with {:ok, settings} <-
+           PackageAudience.set_featured(conn.assigns.tenant_context, params["package_id"]),
+         do: json(conn, settings)
+  end
+
   operation(:update_package,
     summary: "A package's own choice; null follows the box",
     parameters: [@id],

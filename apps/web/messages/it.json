@@ -7098,7 +7098,6 @@
     "findTitle": "Trova club, box e persone",
     "findOpenClubs": "Club aperti",
     "findGroups": "Gruppi nei tuoi box",
-    "findNoClubs": "I box di cui sei membro o che segui non hanno ancora club aperti.",
     "findNoMatch": "Nessun risultato per questa ricerca.",
     "visibilityTitle": "Elenchi dei membri",
     "visibilityHint": "Se gli altri membri ti vedono nella scheda Membri dei loro club.",
@@ -7151,7 +7150,9 @@
     "notif_event_cohost_answered_removed_body": "{box} non co-organizza più «{event}».",
     "filterKind": "Tipo",
     "filterBox": "Box",
-    "findFiltersTitle": "Filtri di ricerca"
+    "findFiltersTitle": "Filtri di ricerca",
+    "findStaffNoClubs": "{box} non ha ancora club aperti. Un club aperto riunisce iscritti e non iscritti intorno a una passione comune, come la corsa.",
+    "findCreateClub": "Crea un club aperto"
   },
   "CommunityAdmin": {
     "title": "Comunità",
@@ -7741,7 +7742,9 @@
     "priceFrom": "Prezzo minimo",
     "priceTo": "Prezzo massimo",
     "sectionLevel": "Livello",
-    "levelHint": "Box con lezioni di questo livello"
+    "levelHint": "Box con lezioni di questo livello",
+    "nearUpTo": "Fino a {km} km",
+    "nearInTown": "Nella tua città · {town}"
   },
   "CheckIn": {
     "loading": "Caricamento…",
@@ -16947,8 +16950,6 @@
     "cookies": "Cookie",
     "poweredBy": "Creato con Palee",
     "minutes": "{count, plural, one {# min} other {# min}}",
-    "scheduleMore": "{count, plural, one {Tutta la settimana · # giorno in più} other {Tutta la settimana · # giorni in più}}",
-    "scheduleLess": "Meno",
     "free": "Gratis",
     "allPackages": "Tutti i pacchetti",
     "languageLabel": "Lingua",
@@ -17207,7 +17208,10 @@
       "all": "{count, plural, one {Tutti i programmi di allenamento (#)} other {Tutti i programmi di allenamento (#)}}",
       "nav": "Programmi di allenamento",
       "settingsHint": "Compare quando hai un programma di allenamento in vendita."
-    }
+    },
+    "scheduleDays": "Giorni",
+    "nextClass": "Prossima",
+    "featured": "Consigliato"
   },
   "WebsiteLook": {
     "notice": "Il tuo sito ha un nuovo aspetto: {template}. Guarda gli altri modelli e cambialo quando vuoi.",
@@ -19417,7 +19421,10 @@
     "badge_own": "Solo chi lo ha",
     "badge_none": "Nascosto",
     "websiteHint": "Mostra i pacchetti di abbonamento visibili a chi non ha effettuato l'accesso.",
-    "websiteLink": "Chi vede i pacchetti"
+    "websiteLink": "Chi vede i pacchetti",
+    "featuredTitle": "Consigliato nella pagina del box",
+    "featuredHint": "Appare per primo ed evidenziato nella pagina e nel sito. Un pacchetto per box.",
+    "featuredReplaces": "Ora è consigliato un altro pacchetto. Attivando questo, prende il suo posto."
   },
   "Landing": {
     "signIn": "Accedi",
@@ -20135,5 +20142,10 @@
     "answerFor": "Risposta per «{typed}»",
     "answerAll": "Rispondi a ogni riga per pubblicare.",
     "failed": "Non siamo riusciti a salvare le risposte. Riprova."
+  },
+  "BoxOnMap": {
+    "title": "Il tuo box non compare in Intorno a me",
+    "body": "Senza indirizzo e città nessuno nei dintorni lo trova in Intorno a me o in Trova. Aggiungili in Sedi.",
+    "action": "Aggiungi indirizzo"
   }
 }

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { CommunityClub, CommunityPost } from "@/api/community";
 
-import { channelNameKey, clubInitials, defaultChannelId, feedHasPosts, postableChannels, withoutPinned } from "./community";
+import { channelNameKey, clubInitials, defaultChannelId, feedHasPosts, postableChannels, staffBoxes, withoutPinned } from "./community";
 
 const channel = (id: string, kind: CommunityClub["channels"][number]["kind"], canPost: boolean) => ({
   id,
@@ -164,5 +164,26 @@ describe("audienceReach («Πού θα φανεί»)", async () => {
     const target = { kind: "profile", audience: "public" } as const;
     expect(shown(audienceReach(target, false))).toEqual(["whereProfileEveryone", "whereFollowersFeed"]);
     expect(shown(audienceReach(target, true))).toContain("whereAround");
+  });
+});
+
+describe("staffBoxes (ADR-583 Ε3 B)", () => {
+  it("lists each box whose gym club the person runs as staff, once", () => {
+    const club = (kind: string, role: string | null, slug: string | null, name = "Club") => ({
+      kind,
+      role,
+      organization_slug: slug,
+      organization_name: slug ? `Box ${slug}` : null,
+      name,
+    });
+    expect(
+      staffBoxes([
+        club("gym", "staff", "milos-method"),
+        club("open", "staff", "milos-method"),
+        club("gym", "member", "argo"),
+        club("gym", "staff", "milos-method"),
+        club("gym", "staff", null),
+      ]),
+    ).toEqual([{ slug: "milos-method", name: "Box milos-method" }]);
   });
 });

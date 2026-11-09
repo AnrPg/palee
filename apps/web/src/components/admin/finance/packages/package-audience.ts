@@ -25,7 +25,8 @@ export function normalizeSettings(data: unknown): PackageAudienceSettings {
   const exceptions = (Array.isArray(raw.exceptions) ? raw.exceptions : [])
     .filter((row) => row && typeof row.id === "string" && (row.effect === "show" || row.effect === "hide"))
     .map((row) => ({ ...row, person: row.person ?? { id: row.id, nickname: null, handle: null, avatar_url: null } }));
-  return { audience, exceptions } as PackageAudienceSettings;
+  const featured = typeof raw.featured_package_id === "string" ? raw.featured_package_id : null;
+  return { audience, exceptions, featured_package_id: featured } as PackageAudienceSettings;
 }
 
 /** The person exceptions of one package, or of the whole box with `null`, «show» first. */

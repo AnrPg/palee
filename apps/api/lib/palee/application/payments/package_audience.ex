@@ -12,7 +12,11 @@ defmodule Palee.Application.Payments.PackageAudience do
       a link. The front desk can always give any package.
 
   Staff settings (`settings/1`, `set_box/2`, `set_package/3`,
-  `put_exception/2`, `delete_exception/2`) answer with the settings again.
+  `put_exception/2`, `delete_exception/2`, `set_featured/2`) answer with the
+  settings again.
+
+  ADR-596: the box may feature one package («Προτεινόμενο»); the lists mark
+  it with `featured`, only when the viewer sees it.
   """
 
   alias Palee.Application.Payments.OnlineSales
@@ -26,8 +30,11 @@ defmodule Palee.Application.Payments.PackageAudience do
   """
   def view(context, user_id) do
     listed = OnlineSales.listed_packages(context)
-    %{policy: policy} = Finance.package_audience(context)
-    PackageAudience.view(listed, policy, Finance.package_viewer(context, user_id))
+    %{policy: policy, featured: featured} = Finance.package_audience(context)
+
+    listed
+    |> PackageAudience.view(policy, Finance.package_viewer(context, user_id))
+    |> Map.put(:featured, featured)
   end
 
   @doc "Whether `user_id` sees `package_id` (it must also be listed for sale elsewhere)."
@@ -43,9 +50,10 @@ defmodule Palee.Application.Payments.PackageAudience do
 
   # ── Staff ──────────────────────────────────────────────────────────────
 
-  @doc "`%{audience, exceptions: [%{id, package_id, effect, person}]}`."
+  @doc "`%{audience, featured_package_id, exceptions: [%{id, package_id, effect, person}]}`."
   def settings(context) do
-    %{policy: policy, exceptions: exceptions} = Finance.package_audience(context)
+    %{policy: policy, exceptions: exceptions, featured: featured} =
+      Finance.package_audience(context)
 
     people =
       exceptions
@@ -57,6 +65,7 @@ defmodule Palee.Application.Payments.PackageAudience do
     {:ok,
      %{
        audience: policy.box,
+       featured_package_id: featured,
        exceptions:
          for exception <- exceptions do
            %{
@@ -82,6 +91,13 @@ defmodule Palee.Application.Payments.PackageAudience do
 
   def set_box(context, audience) do
     with {:ok, _audience} <- Finance.set_box_package_audience(context, audience),
+         do: settings(context)
+  end
+
+  @doc "ADR-596: features `package_id` on the public page and website (nil: none)."
+  def set_featured(context, package_id) do
+    with {:ok, id} <- cast_optional_id(package_id),
+         {:ok, _featured} <- Finance.set_featured_package(context, id),
          do: settings(context)
   end
 

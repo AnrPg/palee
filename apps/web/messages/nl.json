@@ -7098,7 +7098,6 @@
     "findTitle": "Clubs, boxen en mensen vinden",
     "findOpenClubs": "Open clubs",
     "findGroups": "Groepen in je boxen",
-    "findNoClubs": "De boxen waar je lid van bent of die je volgt hebben nog geen open clubs.",
     "findNoMatch": "Niets gevonden voor deze zoekopdracht.",
     "visibilityTitle": "Ledenlijsten",
     "visibilityHint": "Of andere leden je zien in het tabblad Leden van hun clubs.",
@@ -7151,7 +7150,9 @@
     "notif_event_cohost_answered_removed_body": "{box} organiseert „{event}” niet meer mee.",
     "filterKind": "Soort",
     "filterBox": "Box",
-    "findFiltersTitle": "Zoekfilters"
+    "findFiltersTitle": "Zoekfilters",
+    "findStaffNoClubs": "{box} heeft nog geen open clubs. Een open club brengt leden en niet-leden samen rond iets wat ze delen, zoals hardlopen.",
+    "findCreateClub": "Open club maken"
   },
   "CommunityAdmin": {
     "title": "Community",
@@ -7741,7 +7742,9 @@
     "priceFrom": "Laagste prijs",
     "priceTo": "Hoogste prijs",
     "sectionLevel": "Niveau",
-    "levelHint": "Boxen met lessen op dit niveau"
+    "levelHint": "Boxen met lessen op dit niveau",
+    "nearUpTo": "Tot {km} km",
+    "nearInTown": "In jouw stad · {town}"
   },
   "CheckIn": {
     "loading": "Laden…",
@@ -16947,8 +16950,6 @@
     "cookies": "Cookies",
     "poweredBy": "Gemaakt met Palee",
     "minutes": "{count, plural, one {# min} other {# min}}",
-    "scheduleMore": "{count, plural, one {Hele week · # dag meer} other {Hele week · # dagen meer}}",
-    "scheduleLess": "Minder",
     "free": "Gratis",
     "allPackages": "Alle pakketten",
     "languageLabel": "Taal",
@@ -17207,7 +17208,10 @@
       "all": "{count, plural, one {Alle trainingsprogramma’s (#)} other {Alle trainingsprogramma’s (#)}}",
       "nav": "Trainingsprogramma’s",
       "settingsHint": "Zichtbaar als je een trainingsprogramma te koop hebt."
-    }
+    },
+    "scheduleDays": "Dagen",
+    "nextClass": "Volgende",
+    "featured": "Aanbevolen"
   },
   "WebsiteLook": {
     "notice": "Je website heeft een nieuw uiterlijk: {template}. Bekijk de andere sjablonen en wissel wanneer je wilt.",
@@ -19417,7 +19421,10 @@
     "badge_own": "Alleen wie het heeft",
     "badge_none": "Verborgen",
     "websiteHint": "Toont de abonnementspakketten die wie niet is ingelogd mag zien.",
-    "websiteLink": "Wie de pakketten ziet"
+    "websiteLink": "Wie de pakketten ziet",
+    "featuredTitle": "Aanbevolen op de boxpagina",
+    "featuredHint": "Staat bovenaan en uitgelicht op de pagina en de website. Eén pakket per box.",
+    "featuredReplaces": "Er is nu een ander pakket aanbevolen. Zet je dit aan, dan neemt het die plek in."
   },
   "Landing": {
     "signIn": "Inloggen",
@@ -20135,5 +20142,10 @@
     "answerFor": "Antwoord voor «{typed}»",
     "answerAll": "Beantwoord elke regel om te publiceren.",
     "failed": "Je antwoorden zijn niet opgeslagen. Probeer het opnieuw."
+  },
+  "BoxOnMap": {
+    "title": "Je box staat niet in In de buurt",
+    "body": "Zonder adres en plaats vindt niemand in de buurt hem in In de buurt of Vinden. Voeg ze toe bij Locaties.",
+    "action": "Adres toevoegen"
   }
 }

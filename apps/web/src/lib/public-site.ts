@@ -183,23 +183,36 @@ export function attribution(location: { search: string; pathname: string }, refe
 }
 
 /** The site's timetable grouped by the gym's day, in order. */
-export function timetableByDay(
-  classes: PublicSite["timetable"],
-  timeZone: string,
-  locale: string,
-): { day: string; label: string; classes: { id: string; time: string; name: string; minutes: number }[] }[] {
+export type TimetableClass = { id: string; at: string; time: string; name: string; minutes: number };
+/** Classes that start at the same minute, side by side (ANR 2026-11-09). */
+export type TimetableSlot = { at: string; time: string; classes: TimetableClass[] };
+export type TimetableDay = { day: string; label: string; weekday: string; date: string; classes: TimetableClass[]; slots: TimetableSlot[] };
+
+export function timetableByDay(classes: PublicSite["timetable"], timeZone: string, locale: string): TimetableDay[] {
   const dayKey = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" });
   const dayLabel = new Intl.DateTimeFormat(locale, { timeZone, weekday: "long", day: "numeric", month: "numeric" });
+  const weekday = new Intl.DateTimeFormat(locale, { timeZone, weekday: "short" });
+  const date = new Intl.DateTimeFormat(locale, { timeZone, day: "numeric" });
   const time = new Intl.DateTimeFormat(locale, { timeZone, hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
-  const days = new Map<string, { day: string; label: string; classes: { id: string; time: string; name: string; minutes: number }[] }>();
-  for (const entry of [...classes].sort((a, b) => a.scheduled_at.localeCompare(b.scheduled_at))) {
+  const days = new Map<string, TimetableDay>();
+  for (const entry of [...classes].sort((a, b) => a.scheduled_at.localeCompare(b.scheduled_at) || a.name.localeCompare(b.name))) {
     const at = new Date(entry.scheduled_at);
     const key = dayKey.format(at);
-    const day = days.get(key) ?? { day: key, label: dayLabel.format(at), classes: [] };
-    day.classes.push({ id: entry.id, time: time.format(at), name: entry.name, minutes: entry.duration_minutes });
+    const day = days.get(key) ?? { day: key, label: dayLabel.format(at), weekday: weekday.format(at), date: date.format(at), classes: [], slots: [] };
+    const item = { id: entry.id, at: entry.scheduled_at, time: time.format(at), name: entry.name, minutes: entry.duration_minutes };
+    day.classes.push(item);
+    const last = day.slots.at(-1);
+    if (last && Date.parse(last.at) === at.getTime()) last.classes.push(item);
+    else day.slots.push({ at: entry.scheduled_at, time: item.time, classes: [item] });
     days.set(key, day);
   }
   return [...days.values()];
+}
+
+/** The first slot that has not started yet at `now` (ms), across every day: «Επόμενο». */
+export function nextSlotAt(days: TimetableDay[], now: number): string | null {
+  for (const day of days) for (const slot of day.slots) if (Date.parse(slot.at) >= now) return slot.at;
+  return null;
 }
 
 /** The address a visitor should use for the site: the custom host's root or `/b/<slug>`. */
