@@ -25,6 +25,48 @@ defmodule Palee.Anatomy.Domain.GoalSuggestion do
   @stabilizer_share 0.25
   @quality_share 0.2
 
+  @doc """
+  ADR-570: folds a new suggestion into goals the coach already edited, only
+  upwards: a suggested muscle the goals lack is added, one they hold with a
+  weaker role is promoted (stabilizer → secondary/primary, secondary →
+  primary); nothing is removed or demoted. A suggested head is left out when
+  the goals already hold its group with an equal or stronger role.
+  Qualities are joined. Roles may be atoms or strings; strings come back.
+  """
+  def merge_up(%{muscles: current, qualities: current_qualities}, %{
+        muscles: suggested,
+        qualities: suggested_qualities
+      }) do
+    rank = fn role -> ExerciseTargets.role_rank(role_atom(role)) end
+    held = Map.new(current, &{&1.id, to_string(&1.role)})
+
+    merged =
+      Enum.reduce(suggested, held, fn %{id: id, role: role}, acc ->
+        role = to_string(role)
+        group = MuscleTaxonomy.group_of(id)
+
+        cond do
+          group != id and Map.has_key?(acc, group) and rank.(acc[group]) >= rank.(role) -> acc
+          not Map.has_key?(acc, id) -> Map.put(acc, id, role)
+          rank.(role) > rank.(acc[id]) -> Map.put(acc, id, role)
+          true -> acc
+        end
+      end)
+
+    %{
+      muscles:
+        merged
+        |> Enum.map(fn {id, role} -> %{id: id, role: role} end)
+        |> Enum.sort_by(fn %{id: id, role: role} -> {-rank.(role), order(id)} end),
+      qualities: FitnessQualities.normalize(current_qualities ++ suggested_qualities)
+    }
+  end
+
+  defp role_atom(role) when is_atom(role), do: role
+  defp role_atom("primary"), do: :primary
+  defp role_atom("secondary"), do: :secondary
+  defp role_atom("stabilizer"), do: :stabilizer
+
   def suggest(exercises) when is_list(exercises) do
     resolved =
       exercises

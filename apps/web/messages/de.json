@@ -18588,7 +18588,8 @@
       "mobility": "Mobilität",
       "skill": "Technik"
     },
-    "textHint": "Enter oder Tab übernimmt, Esc schreibt weiter"
+    "textHint": "Enter oder Tab übernimmt, Esc schreibt weiter",
+    "editorHint": "Tab übernimmt · ↑/↓ dann Enter · Esc zum Weiterschreiben"
   },
   "PlatformExerciseCandidates": {
     "title": "Übungen zur Prüfung",
@@ -20077,5 +20078,22 @@
     "settingToggle": "Jedes WOD automatisch posten",
     "settingOn": "Jedes WOD, das du beendest, geht auf Palee, gleich danach mit Rückgängig.",
     "settingOff": "WODs gehen nur auf Palee, wenn du es wählst, über die Teilen-Karte."
+  },
+  "ExerciseMatches": {
+    "title": "Gefundene Übungen",
+    "description": "Sag uns, ob sie stimmen, damit Muskeln und Fähigkeiten berechnet werden können.",
+    "allYes": "Alle ja",
+    "allNo": "Alle nein",
+    "yes": "Ja",
+    "no": "Nein",
+    "back": "Zurück",
+    "publish": "Veröffentlichen",
+    "publishing": "Wird veröffentlicht…",
+    "stillQuestion": "Du hast es in «{typed}» geändert. Immer noch {label}?",
+    "means": "bedeutet",
+    "remembered": "Deine Box hat schon einmal ja gesagt",
+    "answerFor": "Antwort für «{typed}»",
+    "answerAll": "Beantworte jede Zeile, um zu veröffentlichen.",
+    "failed": "Deine Antworten wurden nicht gespeichert. Versuch es noch einmal."
   }
 }

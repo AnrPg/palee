@@ -16,7 +16,7 @@ defmodule Palee.Workouts.Domain.ExerciseDescriptors do
   base exercise's catalog ref.
   """
 
-  alias Palee.Workouts.Domain.{FreeTextExercises, PlanWorkload}
+  alias Palee.Workouts.Domain.{FreeTextDocument, FreeTextExercises, PlanWorkload}
   alias Palee.Workouts.Domain.WorkoutDsl.ExerciseCatalog
 
   def from_workout(%{sections: sections}) when is_list(sections) do
@@ -44,12 +44,24 @@ defmodule Palee.Workouts.Domain.ExerciseDescriptors do
   """
   def weighted_from_workout(workout) when is_map(workout) do
     case section_exercises(workout) do
-      [] -> FreeTextExercises.from_text(free_text_body(workout))
+      [] -> free_text_exercises(workout)
       exercises -> Enum.map(exercises, &weighted_descriptor/1)
     end
   end
 
   def weighted_from_workout(_workout), do: []
+
+  # ADR-570: a document with exercise links (picked or confirmed by the
+  # coach) is read with them; otherwise the body is read line by line.
+  defp free_text_exercises(workout) do
+    document =
+      field(workout, :free_text_document) ||
+        field(field(workout, :draft_data), :free_text_document)
+
+    if FreeTextDocument.links?(document),
+      do: document |> FreeTextDocument.lines() |> FreeTextExercises.from_lines(),
+      else: FreeTextExercises.from_text(free_text_body(workout))
+  end
 
   # A draft keeps its body in the draft data until it is published.
   defp free_text_body(workout),

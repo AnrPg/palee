@@ -1465,6 +1465,15 @@ defmodule PaleeWeb.Router do
     get("/workouts/:id", AdminWorkoutController, :show)
     get("/workouts/:id/goals", AdminWorkoutGoalsController, :show)
     put("/workouts/:id/goals", AdminWorkoutGoalsController, :update)
+    # ADR-570: confirm the exercises found in a free-text workout.
+    get("/workouts/:id/exercise-matches", AdminWorkoutGoalsController, :exercise_matches)
+
+    post(
+      "/workouts/:id/exercise-matches/decisions",
+      AdminWorkoutGoalsController,
+      :decide_exercise_matches
+    )
+
     get("/workouts/:id/goal-feedback-summary", AdminWorkoutGoalsController, :feedback_summary)
     patch("/workouts/:id/draft", AdminWorkoutController, :update_draft)
     patch("/workouts/:id/library", AdminWorkoutController, :update_library)

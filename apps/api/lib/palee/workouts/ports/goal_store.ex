@@ -28,4 +28,19 @@ defmodule Palee.Workouts.Ports.GoalStore do
   @callback resolve_goals(workout_id :: Ecto.UUID.t()) :: resolved()
   @callback put_goals(workout_id :: Ecto.UUID.t(), attrs :: map()) ::
               {:ok, goals()} | {:error, Ecto.Changeset.t()}
+
+  @doc "ADR-570: the box's remembered matches among `folded` texts (`%{folded => exercise_ref}`)."
+  @callback match_memories(folded :: [String.t()]) :: %{String.t() => String.t()}
+
+  @doc """
+  ADR-570: remembers `remember` (`[%{folded, exercise_ref}]`, a newer answer
+  replaces an older one) and forgets `forget` (`[%{folded, exercise_ref}]`,
+  only while it still names that exercise).
+  """
+  @callback update_match_memories(
+              remember :: [map()],
+              forget :: [map()],
+              decided_by_id :: Ecto.UUID.t() | nil,
+              DateTime.t()
+            ) :: :ok
 end

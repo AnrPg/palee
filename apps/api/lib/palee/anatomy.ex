@@ -47,6 +47,9 @@ defmodule Palee.Anatomy do
   @doc "ADR-560: an exercise's muscles by role and qualities, or nil when not mapped."
   def exercise_targets(catalog_id), do: ExerciseTargets.fetch(catalog_id)
 
+  @doc "ADR-570: a new suggestion folded into edited goals, only adding or promoting."
+  def merge_goals_up(current, suggested), do: GoalSuggestion.merge_up(current, suggested)
+
   @doc "Suggested goals from `[%{exercise_ref, weight}]` (deterministic, ADR-163 D3)."
   def suggest_goals(exercises), do: GoalSuggestion.suggest(exercises)
 

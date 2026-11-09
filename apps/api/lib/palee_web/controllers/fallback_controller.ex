@@ -3564,6 +3564,9 @@ defmodule PaleeWeb.FallbackController do
     invalid_exercise_category: {:unprocessable_entity, "Choose the exercise's category"},
     exercise_catalog_slug_taken: {:conflict, "An exercise with this name already exists"},
     exercise_already_in_catalog: {:conflict, "The catalog already has this name"},
+    invalid_exercise_match_decision:
+      {:unprocessable_entity,
+       "Each decision needs the written words, a catalog exercise and yes or no"},
     unknown_exercise_catalog_slug: {:unprocessable_entity, "Choose an exercise of the catalog"},
     coach_practice_exists: {:conflict, "You already run a practice as an independent coach"},
     plan_limit_reached:

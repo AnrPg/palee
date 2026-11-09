@@ -17,6 +17,8 @@ defmodule Palee.Workouts.Domain.TenantDataPolicy do
             tables: [
               # ADR-461: a box's remembered exercise names (its `org` rows).
               %{table: "exercise_names"},
+              # ADR-570: a box's confirmed free-text exercise matches.
+              %{table: "exercise_match_memories"},
               %{table: "assigned_workout_athletes"},
               %{table: "assigned_workouts"},
               # ADR-357: after assigned_workouts, which reference it.

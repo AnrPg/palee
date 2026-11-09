@@ -18588,7 +18588,8 @@
       "mobility": "Mobiliteit",
       "skill": "Vaardigheid"
     },
-    "textHint": "Enter of Tab om het te gebruiken, Esc om verder te schrijven"
+    "textHint": "Enter of Tab om het te gebruiken, Esc om verder te schrijven",
+    "editorHint": "Tab voegt in · ↑/↓ en Enter · Esc om door te typen"
   },
   "PlatformExerciseCandidates": {
     "title": "Oefeningen om te beoordelen",
@@ -20077,5 +20078,22 @@
     "settingToggle": "Elke WOD automatisch plaatsen",
     "settingOn": "Elke WOD die je afrondt gaat op Palee, met meteen daarna Ongedaan maken.",
     "settingOff": "WODs gaan alleen op Palee als je dat kiest, via de deelkaart."
+  },
+  "ExerciseMatches": {
+    "title": "Gevonden oefeningen",
+    "description": "Laat weten of ze kloppen, zodat spieren en kwaliteiten berekend worden.",
+    "allYes": "Alle ja",
+    "allNo": "Alle nee",
+    "yes": "Ja",
+    "no": "Nee",
+    "back": "Terug",
+    "publish": "Publiceren",
+    "publishing": "Bezig met publiceren…",
+    "stillQuestion": "Je veranderde het in «{typed}». Nog steeds {label}?",
+    "means": "betekent",
+    "remembered": "Je box zei eerder ja",
+    "answerFor": "Antwoord voor «{typed}»",
+    "answerAll": "Beantwoord elke regel om te publiceren.",
+    "failed": "Je antwoorden zijn niet opgeslagen. Probeer het opnieuw."
   }
 }

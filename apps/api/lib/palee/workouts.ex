@@ -248,6 +248,13 @@ defmodule Palee.Workouts do
   def resolve_workout_goals(context, workout_id),
     do: GoalStore.resolve_goals(context, workout_id)
 
+  @doc "ADR-570: the box's remembered free-text exercise matches (`%{folded => exercise_ref}`)."
+  def exercise_match_memories(context, folded), do: GoalStore.match_memories(context, folded)
+
+  @doc "ADR-570: remembers confirmed matches and forgets rejected remembered ones."
+  def update_exercise_match_memories(context, remember, forget, decided_by_id, now),
+    do: GoalStore.update_match_memories(context, remember, forget, decided_by_id, now)
+
   @doc "Upserts a workout's WOD goals; attrs are already normalised (ADR-163)."
   def put_workout_goals(context, workout_id, attrs),
     do: GoalStore.put_goals(context, workout_id, attrs)

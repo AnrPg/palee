@@ -248,4 +248,91 @@ defmodule PaleeWeb.Schemas.WorkoutGoals do
   def feedback_request, do: @feedback_request
   def taxonomy, do: @taxonomy
   def feedback_summary, do: @feedback_summary
+
+  # -- ADR-570: exercise matches of a free-text workout -------------------------
+
+  def exercise_matches do
+    %Schema{
+      title: "ExerciseMatches",
+      type: :object,
+      properties: %{
+        matches: %Schema{
+          type: :array,
+          items: %Schema{
+            title: "ExerciseMatch",
+            type: :object,
+            properties: %{
+              id: %Schema{type: :string, description: "line:from:to"},
+              line: %Schema{type: :integer, description: "Text block index in the document"},
+              from: %Schema{type: :integer, description: "Character offset in the line"},
+              to: %Schema{type: :integer},
+              typed: %Schema{type: :string, description: "The words as written"},
+              folded: %Schema{type: :string},
+              exercise_ref: %Schema{type: :string},
+              label: %Schema{type: :string},
+              kind: %Schema{type: :string, enum: ["exact", "fuzzy", "changed"]},
+              remembered: %Schema{
+                type: :boolean,
+                description: "The box confirmed this match before"
+              },
+              muscles: %Schema{type: :array, items: @muscle},
+              qualities: %Schema{type: :array, items: %Schema{type: :string}}
+            },
+            required: [
+              :exercise_ref,
+              :folded,
+              :from,
+              :id,
+              :kind,
+              :label,
+              :line,
+              :muscles,
+              :qualities,
+              :remembered,
+              :to,
+              :typed
+            ]
+          }
+        }
+      },
+      required: [:matches]
+    }
+  end
+
+  def exercise_match_decisions do
+    %Schema{
+      title: "ExerciseMatchDecisions",
+      type: :object,
+      properties: %{
+        decisions: %Schema{
+          type: :array,
+          maxItems: 200,
+          items: %Schema{
+            type: :object,
+            properties: %{
+              typed: %Schema{type: :string},
+              exercise_ref: %Schema{type: :string},
+              decision: %Schema{type: :string, enum: ["yes", "no"]}
+            },
+            required: [:decision, :exercise_ref, :typed]
+          }
+        }
+      },
+      required: [:decisions]
+    }
+  end
+
+  def exercise_match_decided do
+    %Schema{
+      title: "ExerciseMatchesDecided",
+      type: :object,
+      properties: %{
+        goals_updated: %Schema{
+          type: :boolean,
+          description: "Edited goals gained muscles or stronger roles"
+        }
+      },
+      required: [:goals_updated]
+    }
+  end
 end

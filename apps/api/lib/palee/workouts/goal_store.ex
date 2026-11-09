@@ -18,4 +18,13 @@ defmodule Palee.Workouts.GoalStore do
 
   def put_goals(context, workout_id, attrs),
     do: RepoContext.run(context, fn -> adapter().put_goals(workout_id, attrs) end)
+
+  def match_memories(context, folded),
+    do: RepoContext.run(context, fn -> adapter().match_memories(folded) end)
+
+  def update_match_memories(context, remember, forget, decided_by_id, now),
+    do:
+      RepoContext.run(context, fn ->
+        adapter().update_match_memories(remember, forget, decided_by_id, now)
+      end)
 end

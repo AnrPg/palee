@@ -18588,7 +18588,8 @@
       "mobility": "Mobilité",
       "skill": "Technique"
     },
-    "textHint": "Entrée ou Tab pour l’utiliser, Échap pour continuer à écrire"
+    "textHint": "Entrée ou Tab pour l’utiliser, Échap pour continuer à écrire",
+    "editorHint": "Tab l’insère · ↑/↓ puis Entrée · Échap pour continuer à écrire"
   },
   "PlatformExerciseCandidates": {
     "title": "Exercices à vérifier",
@@ -20077,5 +20078,22 @@
     "settingToggle": "Publier chaque WOD automatiquement",
     "settingOn": "Chaque WOD terminé est publié sur Palee, avec Annuler juste après.",
     "settingOff": "Les WODs ne sont publiés sur Palee que si tu le choisis, depuis la carte Partager."
+  },
+  "ExerciseMatches": {
+    "title": "Exercices trouvés",
+    "description": "Dis-nous s’ils sont justes, pour calculer les muscles et les qualités.",
+    "allYes": "Tous oui",
+    "allNo": "Tous non",
+    "yes": "Oui",
+    "no": "Non",
+    "back": "Retour",
+    "publish": "Publier",
+    "publishing": "Publication…",
+    "stillQuestion": "Tu l’as changé en «{typed}». Toujours {label} ?",
+    "means": "signifie",
+    "remembered": "Ta box a déjà dit oui",
+    "answerFor": "Réponse pour «{typed}»",
+    "answerAll": "Réponds à chaque ligne pour publier.",
+    "failed": "Tes réponses n’ont pas été enregistrées. Réessaie."
   }
 }

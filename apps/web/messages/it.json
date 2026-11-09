@@ -18588,7 +18588,8 @@
       "mobility": "Mobilità",
       "skill": "Abilità"
     },
-    "textHint": "Invio o Tab per usarlo, Esc per continuare a scrivere"
+    "textHint": "Invio o Tab per usarlo, Esc per continuare a scrivere",
+    "editorHint": "Tab lo inserisce · ↑/↓ poi Invio · Esc per continuare a scrivere"
   },
   "PlatformExerciseCandidates": {
     "title": "Esercizi da controllare",
@@ -20077,5 +20078,22 @@
     "settingToggle": "Pubblica ogni WOD automaticamente",
     "settingOn": "Ogni WOD che finisci va su Palee, con Annulla subito dopo.",
     "settingOff": "I WOD vanno su Palee solo quando lo scegli, dalla card Condividi."
+  },
+  "ExerciseMatches": {
+    "title": "Esercizi trovati",
+    "description": "Dicci se sono giusti, così calcoliamo muscoli e capacità.",
+    "allYes": "Tutti sì",
+    "allNo": "Tutti no",
+    "yes": "Sì",
+    "no": "No",
+    "back": "Indietro",
+    "publish": "Pubblica",
+    "publishing": "Pubblicazione…",
+    "stillQuestion": "L’hai cambiato in «{typed}». Ancora {label}?",
+    "means": "significa",
+    "remembered": "Il tuo box ha già detto sì",
+    "answerFor": "Risposta per «{typed}»",
+    "answerAll": "Rispondi a ogni riga per pubblicare.",
+    "failed": "Non siamo riusciti a salvare le risposte. Riprova."
   }
 }

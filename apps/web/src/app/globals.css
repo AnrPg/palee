@@ -306,6 +306,30 @@ input[type="number"] {
   background: var(--mark-color);
 }
 
+/* ADR-570: words tied to a catalog exercise in the free-text editor. */
+.exercise-link {
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: color-mix(in srgb, var(--primary) 70%, transparent);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+
+/* A match the coach answered «Όχι»: orange-red, never struck through. */
+.exercise-link-rejected {
+  text-decoration-line: none;
+  border-radius: 0.2rem;
+  background: color-mix(in srgb, color-mix(in srgb, var(--warning) 60%, var(--danger)) 22%, transparent);
+}
+
+/* The rest of the selected suggestion, after the caret (Tab puts it in). */
+.exercise-ghost {
+  color: var(--muted);
+  opacity: 0.75;
+  pointer-events: none;
+  user-select: none;
+}
+
 .free-text-rich-content :where(p, ul, ol, blockquote, pre, h1, h2, h3, h4, h5) {
   margin-block: 0.65rem;
 }

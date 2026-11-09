@@ -18588,7 +18588,8 @@
       "mobility": "مرونة",
       "skill": "مهارة"
     },
-    "textHint": "Enter أو Tab للاستخدام، Esc لمتابعة الكتابة"
+    "textHint": "Enter أو Tab للاستخدام، Esc لمتابعة الكتابة",
+    "editorHint": "Tab للإدراج · ↑/↓ ثم Enter · Esc لمتابعة الكتابة"
   },
   "PlatformExerciseCandidates": {
     "title": "تمارين للمراجعة",
@@ -20077,5 +20078,22 @@
     "settingToggle": "انشر كل WOD تلقائيًا",
     "settingOn": "كل WOD تنهيه يُنشر على Palee، مع «تراجع» مباشرةً بعده.",
     "settingOff": "لا تُنشر الـ WOD على Palee إلا عندما تختار ذلك من بطاقة «شارك»."
+  },
+  "ExerciseMatches": {
+    "title": "تمارين وجدناها",
+    "description": "أخبرنا إن كانت صحيحة لحساب العضلات والقدرات.",
+    "allYes": "الكل نعم",
+    "allNo": "الكل لا",
+    "yes": "نعم",
+    "no": "لا",
+    "back": "رجوع",
+    "publish": "نشر",
+    "publishing": "جارٍ النشر…",
+    "stillQuestion": "غيّرته إلى «{typed}». هل ما زال {label}؟",
+    "means": "يعني",
+    "remembered": "قال صندوقك نعم من قبل",
+    "answerFor": "الإجابة عن «{typed}»",
+    "answerAll": "أجب عن كل سطر للنشر.",
+    "failed": "تعذّر حفظ إجاباتك. حاول مرة أخرى."
   }
 }

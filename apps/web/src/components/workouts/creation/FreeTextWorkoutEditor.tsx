@@ -16,6 +16,7 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState, type MutableRefObject } from "react";
 
 import { ApiError } from "@/api/client";
+import { decideExerciseMatches, fetchExerciseMatches, type ExerciseMatch } from "@/api/exercise-matches";
 import {
   analyzeFreeTextWorkout,
   createDraftWorkout,
@@ -46,6 +47,12 @@ import {
 } from "@/lib/free-text-analysis";
 import { FREE_TEXT_EDITOR_CLASS, sanitizeWorkoutDslPaste } from "@/lib/workout-dsl-editor-data";
 import {
+  groupExerciseMatches,
+  linkFor,
+  matchDecisions,
+  type ExerciseMatchAnswers,
+} from "@/lib/exercise-match-answers";
+import {
   FREE_TEXT_TIMER_METADATA_KEY,
   type FreeTextTimerPreset,
   parseFreeTextTimerPreset,
@@ -58,6 +65,9 @@ import { editorSectionsFrom, SECTIONED_TEXT_MODE, sectionsToFreeText } from "@/l
 
 import { AssistantSwitch } from "./AssistantSwitch";
 import { DraftConflictNotice } from "./DraftConflictNotice";
+import { useEditorExerciseSuggestions } from "./EditorExerciseSuggestions";
+import { applyExerciseLinks, ExerciseLink, ExerciseSuggestKeys } from "./exercise-link";
+import { ExerciseMatchesDialog } from "./ExerciseMatchesDialog";
 import { EditorTabs } from "./EditorTabs";
 import { InlineSuggestionBubble } from "./InlineSuggestionBubble";
 import {
@@ -94,6 +104,7 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
   const i18n = useUiTranslations();
   const assistantT = useTranslations("WorkoutAssistant");
   const goalsT = useTranslations("WodGoals");
+  const matchesT = useTranslations("ExerciseMatches");
   const conflictT = useTranslations("DraftConflict");
   const locale = useUiLocale();
   const { tokens } = useSession();
@@ -131,6 +142,10 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
   const metadataRef = useRef<Record<string, unknown>>({});
   const formatLabels = useMemo(() => getFormatLabels(i18n), [i18n]);
   const loadedDraftRef = useRef<string | null>(null);
+  /** ADR-570: the keys the open exercise suggestion list takes (Tab, ↑/↓, Enter, Esc). */
+  const suggestKeysRef = useRef<((event: KeyboardEvent) => boolean) | null>(null);
+  /** ADR-570: the exercises found before publishing, waiting for the coach's answers. */
+  const [matchCheck, setMatchCheck] = useState<{ matches: ExerciseMatch[]; busy: boolean; error: string | null } | null>(null);
 
   const editor = useEditor({
     extensions: [
@@ -150,6 +165,8 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
       CharacterCount.configure({ limit: 200_000 }),
       FreeTextEditingAssist,
       AssistantHighlights.configure({ onOpen: setMarkClick }),
+      ExerciseLink,
+      ExerciseSuggestKeys.configure({ handler: suggestKeysRef }),
     ],
     content: emptyDocument(),
     immediatelyRender: false,
@@ -277,6 +294,8 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
     applyWorkout(await fetchAdminWorkout(accessToken, draftId));
   }
 
+  const { menu: exerciseSuggestionMenu } = useEditorExerciseSuggestions(editor, suggestKeysRef);
+
   // ADR-181: the open issues' words are marked in the text, coloured by kind.
   const openIssueList = useMemo(() => (review ? openIssues(review) : []), [review]);
   useEffect(() => {
@@ -319,6 +338,28 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
       setAnalysisError(error instanceof ApiError ? error.payload?.code ?? "analyzer_unavailable" : "analyzer_unavailable");
       return null;
     }
+  }
+
+  /** The coach answered every found exercise: link the words, save, remember, publish. */
+  async function confirmExerciseMatches(answers: ExerciseMatchAnswers) {
+    if (!accessToken || !draftId || !editor || !matchCheck) return;
+    setMatchCheck({ ...matchCheck, busy: true, error: null });
+    const groups = groupExerciseMatches(matchCheck.matches);
+    const spans = groups.flatMap((group) =>
+      group.matches.map((match) => ({ line: match.line, from: match.from, to: match.to, typed: match.typed, ...linkFor(match, answers[group.key]!) })),
+    );
+    const { tr } = applyExerciseLinks(editor.state, spans);
+    if (tr.docChanged) editor.view.dispatch(tr);
+    try {
+      const payload = draftPayload();
+      if (payload) await saver.saveNow(payload);
+      await decideExerciseMatches(accessToken, draftId, matchDecisions(groups, answers));
+    } catch (error) {
+      setMatchCheck({ ...matchCheck, busy: false, error: error instanceof DraftConflictError ? null : matchesT("failed") });
+      return;
+    }
+    setMatchCheck(null);
+    await publish({ matchesChecked: true });
   }
 
   function syncWorkoutField(path: string, value: unknown) {
@@ -388,7 +429,7 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
     editor.commands.focus("end");
   }
 
-  async function publish() {
+  async function publish(options: { matchesChecked?: boolean } = {}) {
     if (!accessToken || !draftId || !editor || !body.trim()) return;
     setNotice(null);
 
@@ -424,6 +465,27 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
     const payload = draftPayload({ title: effectiveTitle, type: effectiveType, review: current });
     if (!payload) return;
     setPublishing(true);
+
+    // ADR-570: the exercises the matcher finds in the saved text are confirmed
+    // first. Nothing found, or the check unavailable, publishes as before.
+    if (!options.matchesChecked) {
+      let matches: ExerciseMatch[] = [];
+      try {
+        await saver.saveNow(payload);
+        matches = await fetchExerciseMatches(accessToken, draftId);
+      } catch (error) {
+        if (error instanceof DraftConflictError) {
+          setPublishing(false);
+          return;
+        }
+      }
+      if (matches.length > 0) {
+        setMatchCheck({ matches, busy: false, error: null });
+        setPublishing(false);
+        return;
+      }
+    }
+
     try {
       // The final save and the publish run back to back in the save queue,
       // after any autosave still running and before any later one.
@@ -560,6 +622,16 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
         <div className="min-h-0 min-w-0 flex-1 overflow-auto overflow-x-clip">
           <EditorContent editor={editor} />
         </div>
+        {exerciseSuggestionMenu}
+        {matchCheck ? (
+          <ExerciseMatchesDialog
+            matches={matchCheck.matches}
+            busy={matchCheck.busy}
+            error={matchCheck.error}
+            onBack={() => setMatchCheck(null)}
+            onConfirm={(answers) => void confirmExerciseMatches(answers)}
+          />
+        ) : null}
 
         {editor && markClick && clickedIssues.length > 0 && review ? (
           <InlineSuggestionBubble editor={editor} click={markClick} onClose={() => setMarkClick(null)}>

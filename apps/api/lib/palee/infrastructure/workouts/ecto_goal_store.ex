@@ -114,6 +114,54 @@ defmodule Palee.Infrastructure.Workouts.EctoGoalStore do
     end
   end
 
+  @impl true
+  def match_memories([]), do: %{}
+
+  def match_memories(folded) do
+    from(m in "exercise_match_memories",
+      where: m.folded in ^folded,
+      select: {m.folded, m.exercise_ref}
+    )
+    |> Repo.all()
+    |> Map.new()
+  end
+
+  @impl true
+  def update_match_memories(remember, forget, decided_by_id, now) do
+    Repo.transaction(fn ->
+      Enum.each(forget, fn %{folded: folded, exercise_ref: ref} ->
+        from(m in "exercise_match_memories",
+          where: m.folded == ^folded and m.exercise_ref == ^ref
+        )
+        |> Repo.delete_all()
+      end)
+
+      organization_id = RepoContext.current_setting("app.organization_id")
+
+      rows =
+        for %{folded: folded, exercise_ref: ref} <- Enum.uniq_by(remember, & &1.folded) do
+          %{
+            id: Ecto.UUID.bingenerate(),
+            organization_id: Ecto.UUID.dump!(organization_id),
+            folded: folded,
+            exercise_ref: ref,
+            decided_by_id: decided_by_id && Ecto.UUID.dump!(decided_by_id),
+            inserted_at: now,
+            updated_at: now
+          }
+        end
+
+      if rows != [] do
+        Repo.insert_all("exercise_match_memories", rows,
+          on_conflict: {:replace, [:exercise_ref, :decided_by_id, :updated_at]},
+          conflict_target: [:organization_id, :folded]
+        )
+      end
+    end)
+
+    :ok
+  end
+
   defp by_workout(workout_id),
     do: where(WorkoutGoal, [goal], goal.master_workout_id == ^workout_id)
 

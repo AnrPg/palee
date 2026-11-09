@@ -18588,7 +18588,8 @@
       "mobility": "Mobility",
       "skill": "Skill"
     },
-    "textHint": "Enter or Tab to use it, Esc to keep writing"
+    "textHint": "Enter or Tab to use it, Esc to keep writing",
+    "editorHint": "Tab puts it in · ↑/↓ then Enter · Esc to keep typing"
   },
   "PlatformExerciseCandidates": {
     "title": "Exercises to review",
@@ -20077,5 +20078,22 @@
     "settingToggle": "Post every WOD automatically",
     "settingOn": "Each WOD you finish goes up on Palee, with Undo right after.",
     "settingOff": "WODs go up on Palee only when you choose, from the Share card."
+  },
+  "ExerciseMatches": {
+    "title": "Exercises we found",
+    "description": "Tell us if they are right, so the muscles and qualities can be worked out.",
+    "allYes": "All yes",
+    "allNo": "All no",
+    "yes": "Yes",
+    "no": "No",
+    "back": "Back",
+    "publish": "Publish",
+    "publishing": "Publishing…",
+    "stillQuestion": "You changed it to «{typed}». Still {label}?",
+    "means": "means",
+    "remembered": "Your box said yes before",
+    "answerFor": "Answer for «{typed}»",
+    "answerAll": "Answer every row to publish.",
+    "failed": "We could not save your answers. Try again."
   }
 }

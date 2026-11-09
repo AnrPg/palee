@@ -7,7 +7,13 @@ defmodule PaleeWeb.AdminWorkoutGoalsController do
   use PaleeWeb, :controller
   use PaleeWeb.ControllerSpecs
 
-  alias Palee.Application.{GetGoalFeedbackSummary, GetWorkoutGoals, SaveWorkoutGoals}
+  alias Palee.Application.{
+    ExerciseMatches,
+    GetGoalFeedbackSummary,
+    GetWorkoutGoals,
+    SaveWorkoutGoals
+  }
+
   alias PaleeWeb.Schemas.WorkoutGoals
   alias OpenApiSpex.{MediaType, Parameter, RequestBody, Schema}
 
@@ -101,6 +107,48 @@ defmodule PaleeWeb.AdminWorkoutGoalsController do
   def class_feedback_summary(conn, %{id: id}) do
     with {:ok, result} <-
            GetGoalFeedbackSummary.for_scheduled_class(conn.assigns.tenant_context, id) do
+      json(conn, result)
+    end
+  end
+
+  operation(:exercise_matches,
+    summary: "Catalog exercises found in a free-text workout, to confirm before publishing",
+    description:
+      "ADR-570: reads the saved editor document; an empty list is a normal answer. Links the coach made are skipped, except those whose words no longer name their exercise (kind changed).",
+    parameters: [@id],
+    responses: [
+      ok: {"Exercise matches", "application/json", WorkoutGoals.exercise_matches()},
+      not_found: {"Not found", "application/json", @error}
+    ]
+  )
+
+  def exercise_matches(conn, %{id: id}) do
+    with {:ok, result} <- ExerciseMatches.list(conn.assigns.tenant_context, id) do
+      json(conn, result)
+    end
+  end
+
+  operation(:decide_exercise_matches,
+    summary: "Record the coach's answers to the exercise matches",
+    description:
+      "ADR-570: after the editor saved the answers as links, the box remembers each yes (and forgets a remembered match answered no), and goals the coach edited take the new suggestion only by adding muscles or promoting roles.",
+    parameters: [@id],
+    request_body: %RequestBody{
+      required: true,
+      content: %{
+        "application/json" => %MediaType{schema: WorkoutGoals.exercise_match_decisions()}
+      }
+    },
+    responses: [
+      ok: {"Recorded", "application/json", WorkoutGoals.exercise_match_decided()},
+      not_found: {"Not found", "application/json", @error},
+      unprocessable_entity: {"Invalid decisions", "application/json", @error}
+    ]
+  )
+
+  def decide_exercise_matches(conn, %{id: id}) do
+    with {:ok, result} <-
+           ExerciseMatches.decide(conn.assigns.tenant_context, id, conn.body_params) do
       json(conn, result)
     end
   end

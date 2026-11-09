@@ -13954,6 +13954,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/workouts/{id}/exercise-matches": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Catalog exercises found in a free-text workout, to confirm before publishing
+         * @description ADR-570: reads the saved editor document; an empty list is a normal answer. Links the coach made are skipped, except those whose words no longer name their exercise (kind changed).
+         */
+        get: operations["PaleeWeb.AdminWorkoutGoalsController.exercise_matches"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/workouts/{id}/exercise-matches/decisions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Record the coach's answers to the exercise matches
+         * @description ADR-570: after the editor saved the answers as links, the box remembers each yes (and forgets a remembered match answered no), and goals the coach edited take the new suggestion only by adding muscles or promoting roles.
+         */
+        post: operations["PaleeWeb.AdminWorkoutGoalsController.decide_exercise_matches"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/workouts/{id}/goal-feedback-summary": {
         parameters: {
             query?: never;
@@ -35774,6 +35814,74 @@ export interface components {
                 id: string;
                 metadata?: Record<string, never>;
             }[];
+        };
+        /** ExerciseMatch */
+        ExerciseMatch: {
+            exercise_ref: string;
+            folded: string;
+            /** @description Character offset in the line */
+            from: number;
+            /** @description line:from:to */
+            id: string;
+            /** @enum {string} */
+            kind: "exact" | "fuzzy" | "changed";
+            label: string;
+            /** @description Text block index in the document */
+            line: number;
+            muscles: {
+                /** @description Taxonomy group or head id */
+                id: string;
+                /** @enum {string} */
+                role: "primary" | "secondary" | "stabilizer";
+            }[];
+            qualities: string[];
+            /** @description The box confirmed this match before */
+            remembered: boolean;
+            to: number;
+            /** @description The words as written */
+            typed: string;
+        };
+        /** ExerciseMatchDecisions */
+        ExerciseMatchDecisions: {
+            decisions: {
+                /** @enum {string} */
+                decision: "yes" | "no";
+                exercise_ref: string;
+                typed: string;
+            }[];
+        };
+        /** ExerciseMatches */
+        ExerciseMatches: {
+            matches: {
+                exercise_ref: string;
+                folded: string;
+                /** @description Character offset in the line */
+                from: number;
+                /** @description line:from:to */
+                id: string;
+                /** @enum {string} */
+                kind: "exact" | "fuzzy" | "changed";
+                label: string;
+                /** @description Text block index in the document */
+                line: number;
+                muscles: {
+                    /** @description Taxonomy group or head id */
+                    id: string;
+                    /** @enum {string} */
+                    role: "primary" | "secondary" | "stabilizer";
+                }[];
+                qualities: string[];
+                /** @description The box confirmed this match before */
+                remembered: boolean;
+                to: number;
+                /** @description The words as written */
+                typed: string;
+            }[];
+        };
+        /** ExerciseMatchesDecided */
+        ExerciseMatchesDecided: {
+            /** @description Edited goals gained muscles or stronger roles */
+            goals_updated: boolean;
         };
         /** ExerciseMuscleTarget */
         ExerciseMuscleTarget: {
@@ -129528,6 +129636,128 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminWorkoutGoalsController.exercise_matches": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Workout ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Exercise matches */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        matches: {
+                            exercise_ref: string;
+                            folded: string;
+                            /** @description Character offset in the line */
+                            from: number;
+                            /** @description line:from:to */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "exact" | "fuzzy" | "changed";
+                            label: string;
+                            /** @description Text block index in the document */
+                            line: number;
+                            muscles: {
+                                /** @description Taxonomy group or head id */
+                                id: string;
+                                /** @enum {string} */
+                                role: "primary" | "secondary" | "stabilizer";
+                            }[];
+                            qualities: string[];
+                            /** @description The box confirmed this match before */
+                            remembered: boolean;
+                            to: number;
+                            /** @description The words as written */
+                            typed: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code?: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminWorkoutGoalsController.decide_exercise_matches": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Workout ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    decisions: {
+                        /** @enum {string} */
+                        decision: "yes" | "no";
+                        exercise_ref: string;
+                        typed: string;
+                    }[];
+                };
+            };
+        };
+        responses: {
+            /** @description Recorded */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Edited goals gained muscles or stronger roles */
+                        goals_updated: boolean;
+                    };
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code?: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid decisions */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code?: string;
                         error: string;
                     };
                 };

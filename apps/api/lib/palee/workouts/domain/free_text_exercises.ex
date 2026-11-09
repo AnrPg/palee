@@ -30,6 +30,42 @@ defmodule Palee.Workouts.Domain.FreeTextExercises do
   def from_text(_text), do: []
 
   @doc """
+  ADR-570: exercises of a document's lines (`FreeTextDocument.lines/1`): a
+  linked span counts as its exercise, a span the coach rejected (and the
+  same words elsewhere in the workout) counts as nothing, and the rest of
+  each line is read as `from_text/1` reads it.
+  """
+  def from_lines(lines) when is_list(lines) do
+    rejected =
+      for line <- lines,
+          link <- line.links,
+          is_nil(link.ref),
+          into: MapSet.new(),
+          do: fold_words(link.text)
+
+    lines
+    |> Enum.take(@max_lines)
+    |> Enum.flat_map(fn line ->
+      weight = sets(line.text)
+
+      linked =
+        for %{ref: ref} <- line.links,
+            is_binary(ref),
+            entry = ExerciseCatalog.fetch(ref),
+            entry != nil do
+          %{name: entry.label, exercise_ref: entry.id, category: entry.category, weight: weight}
+        end
+
+      rest = line.text |> blank_spans(line.links) |> blank_rejected(rejected)
+
+      case line_exercises(rest, weight) do
+        [%{exercise_ref: nil}] when line.links != [] -> linked
+        found -> linked ++ found
+      end
+    end)
+  end
+
+  @doc """
   Resolves one exercise name leniently: as written, then with a plural last
   word made singular. Returns the catalog entry or `nil`.
   """
@@ -40,13 +76,13 @@ defmodule Palee.Workouts.Domain.FreeTextExercises do
 
   def resolve_name(_name), do: nil
 
-  defp line_exercises(line) do
+  defp line_exercises(line, weight \\ nil) do
     words = words(line)
 
     if words == [] do
       []
     else
-      weight = sets(line)
+      weight = weight || sets(line)
 
       case scan(words, []) do
         [] ->
@@ -126,6 +162,69 @@ defmodule Palee.Workouts.Domain.FreeTextExercises do
     |> String.split(" ", trim: true)
     |> Enum.reject(&(Regex.match?(~r/\d/u, &1) or &1 in @noise))
   end
+
+  defp blank_spans(text, links) do
+    Enum.reduce(links, text, fn %{from: from, to: to}, acc ->
+      String.slice(acc, 0, from) <>
+        String.duplicate(" ", to - from) <> String.slice(acc, to..-1//1)
+    end)
+  end
+
+  defp blank_rejected(text, rejected) do
+    if MapSet.size(rejected) == 0 do
+      text
+    else
+      folded = fold_words(text)
+
+      Enum.reduce(rejected, text, fn words, acc ->
+        if words != "" and String.contains?(folded, words),
+          do: replace_folded(acc, words),
+          else: acc
+      end)
+    end
+  end
+
+  # Replaces every run of `acc` whose folded form is `words` by spaces.
+  defp replace_folded(text, words) do
+    pattern =
+      words
+      |> String.split(" ", trim: true)
+      |> Enum.map_join("[\\s_-]+", &Regex.escape/1)
+
+    folded = fold_chars(text)
+
+    case Regex.compile("(?<![\\p{L}])" <> pattern <> "(?![\\p{L}])", "u") do
+      {:ok, regex} ->
+        regex
+        |> Regex.scan(folded, return: :index)
+        |> Enum.reduce(text, fn [{start, len}], acc ->
+          from = folded |> binary_part(0, start) |> String.length()
+          to = folded |> binary_part(0, start + len) |> String.length()
+
+          String.slice(acc, 0, from) <>
+            String.duplicate(" ", to - from) <> String.slice(acc, to..-1//1)
+        end)
+
+      _error ->
+        text
+    end
+  end
+
+  # Lower case, accents dropped, one character per character (offsets kept).
+  defp fold_chars(text) do
+    text
+    |> String.graphemes()
+    |> Enum.map_join(fn g ->
+      case g |> String.normalize(:nfd) |> String.replace(~r/\p{Mn}/u, "") |> String.downcase() do
+        "" -> g
+        <<_::utf8>> = one -> if one == "ς", do: "σ", else: one
+        _longer -> String.first(String.downcase(g))
+      end
+    end)
+  end
+
+  defp fold_words(text),
+    do: text |> fold_chars() |> String.replace(~r/[\s_-]+/u, " ") |> String.trim()
 
   defp sets(line) do
     case Regex.run(~r/^\s*(\d{1,2})\s*[x×]\s*\d+/u, line) do

@@ -18588,7 +18588,8 @@
       "mobility": "ניידות",
       "skill": "מיומנות"
     },
-    "textHint": "Enter או Tab כדי להכניס, Esc כדי להמשיך לכתוב"
+    "textHint": "Enter או Tab כדי להכניס, Esc כדי להמשיך לכתוב",
+    "editorHint": "Tab להכנסה · ↑/↓ ואז Enter · Esc כדי להמשיך לכתוב"
   },
   "PlatformExerciseCandidates": {
     "title": "תרגילים לבדיקה",
@@ -20077,5 +20078,22 @@
     "settingToggle": "לפרסם כל WOD אוטומטית",
     "settingOn": "כל WOD שאתה מסיים עולה ל-Palee, עם ביטול מיד אחר כך.",
     "settingOff": "WOD עולים ל-Palee רק כשאתה בוחר בזה, מכרטיס השיתוף."
+  },
+  "ExerciseMatches": {
+    "title": "תרגילים שמצאנו",
+    "description": "ספרו לנו אם הם נכונים, כדי לחשב את השרירים והיכולות.",
+    "allYes": "כולם כן",
+    "allNo": "כולם לא",
+    "yes": "כן",
+    "no": "לא",
+    "back": "חזרה",
+    "publish": "פרסום",
+    "publishing": "מפרסם…",
+    "stillQuestion": "שינית ל־«{typed}». עדיין {label}?",
+    "means": "פירושו",
+    "remembered": "הבוקס שלך כבר אמר כן",
+    "answerFor": "תשובה עבור «{typed}»",
+    "answerAll": "ענו על כל שורה כדי לפרסם.",
+    "failed": "לא הצלחנו לשמור את התשובות. נסו שוב."
   }
 }

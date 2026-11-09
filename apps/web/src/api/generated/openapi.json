@@ -47678,6 +47678,251 @@
         "title": "ExerciseCatalogAudit",
         "type": "object"
       },
+      "ExerciseMatch": {
+        "properties": {
+          "exercise_ref": {
+            "type": "string"
+          },
+          "folded": {
+            "type": "string"
+          },
+          "from": {
+            "description": "Character offset in the line",
+            "type": "integer"
+          },
+          "id": {
+            "description": "line:from:to",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "exact",
+              "fuzzy",
+              "changed"
+            ],
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "line": {
+            "description": "Text block index in the document",
+            "type": "integer"
+          },
+          "muscles": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "description": "Taxonomy group or head id",
+                  "type": "string"
+                },
+                "role": {
+                  "enum": [
+                    "primary",
+                    "secondary",
+                    "stabilizer"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "role"
+              ],
+              "title": "GoalMuscle",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "qualities": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "remembered": {
+            "description": "The box confirmed this match before",
+            "type": "boolean"
+          },
+          "to": {
+            "type": "integer"
+          },
+          "typed": {
+            "description": "The words as written",
+            "type": "string"
+          }
+        },
+        "required": [
+          "exercise_ref",
+          "folded",
+          "from",
+          "id",
+          "kind",
+          "label",
+          "line",
+          "muscles",
+          "qualities",
+          "remembered",
+          "to",
+          "typed"
+        ],
+        "title": "ExerciseMatch",
+        "type": "object"
+      },
+      "ExerciseMatchDecisions": {
+        "properties": {
+          "decisions": {
+            "items": {
+              "properties": {
+                "decision": {
+                  "enum": [
+                    "yes",
+                    "no"
+                  ],
+                  "type": "string"
+                },
+                "exercise_ref": {
+                  "type": "string"
+                },
+                "typed": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "decision",
+                "exercise_ref",
+                "typed"
+              ],
+              "type": "object"
+            },
+            "maxItems": 200,
+            "type": "array"
+          }
+        },
+        "required": [
+          "decisions"
+        ],
+        "title": "ExerciseMatchDecisions",
+        "type": "object"
+      },
+      "ExerciseMatches": {
+        "properties": {
+          "matches": {
+            "items": {
+              "properties": {
+                "exercise_ref": {
+                  "type": "string"
+                },
+                "folded": {
+                  "type": "string"
+                },
+                "from": {
+                  "description": "Character offset in the line",
+                  "type": "integer"
+                },
+                "id": {
+                  "description": "line:from:to",
+                  "type": "string"
+                },
+                "kind": {
+                  "enum": [
+                    "exact",
+                    "fuzzy",
+                    "changed"
+                  ],
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "line": {
+                  "description": "Text block index in the document",
+                  "type": "integer"
+                },
+                "muscles": {
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "description": "Taxonomy group or head id",
+                        "type": "string"
+                      },
+                      "role": {
+                        "enum": [
+                          "primary",
+                          "secondary",
+                          "stabilizer"
+                        ],
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "role"
+                    ],
+                    "title": "GoalMuscle",
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "qualities": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "remembered": {
+                  "description": "The box confirmed this match before",
+                  "type": "boolean"
+                },
+                "to": {
+                  "type": "integer"
+                },
+                "typed": {
+                  "description": "The words as written",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "exercise_ref",
+                "folded",
+                "from",
+                "id",
+                "kind",
+                "label",
+                "line",
+                "muscles",
+                "qualities",
+                "remembered",
+                "to",
+                "typed"
+              ],
+              "title": "ExerciseMatch",
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "matches"
+        ],
+        "title": "ExerciseMatches",
+        "type": "object"
+      },
+      "ExerciseMatchesDecided": {
+        "properties": {
+          "goals_updated": {
+            "description": "Edited goals gained muscles or stronger roles",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "goals_updated"
+        ],
+        "title": "ExerciseMatchesDecided",
+        "type": "object"
+      },
       "ExerciseMuscleTarget": {
         "properties": {
           "id": {
@@ -320264,6 +320509,303 @@
         "summary": "Duplicate a workout as a new draft",
         "tags": [
           "Admin Workouts"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/workouts/{id}/exercise-matches": {
+      "get": {
+        "callbacks": {},
+        "description": "ADR-570: reads the saved editor document; an empty list is a normal answer. Links the coach made are skipped, except those whose words no longer name their exercise (kind changed).",
+        "operationId": "PaleeWeb.AdminWorkoutGoalsController.exercise_matches",
+        "parameters": [
+          {
+            "description": "Workout ID",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "matches": {
+                      "items": {
+                        "properties": {
+                          "exercise_ref": {
+                            "type": "string"
+                          },
+                          "folded": {
+                            "type": "string"
+                          },
+                          "from": {
+                            "description": "Character offset in the line",
+                            "type": "integer"
+                          },
+                          "id": {
+                            "description": "line:from:to",
+                            "type": "string"
+                          },
+                          "kind": {
+                            "enum": [
+                              "exact",
+                              "fuzzy",
+                              "changed"
+                            ],
+                            "type": "string"
+                          },
+                          "label": {
+                            "type": "string"
+                          },
+                          "line": {
+                            "description": "Text block index in the document",
+                            "type": "integer"
+                          },
+                          "muscles": {
+                            "items": {
+                              "additionalProperties": false,
+                              "properties": {
+                                "id": {
+                                  "description": "Taxonomy group or head id",
+                                  "type": "string"
+                                },
+                                "role": {
+                                  "enum": [
+                                    "primary",
+                                    "secondary",
+                                    "stabilizer"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "role"
+                              ],
+                              "title": "GoalMuscle",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "qualities": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "remembered": {
+                            "description": "The box confirmed this match before",
+                            "type": "boolean"
+                          },
+                          "to": {
+                            "type": "integer"
+                          },
+                          "typed": {
+                            "description": "The words as written",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "exercise_ref",
+                          "folded",
+                          "from",
+                          "id",
+                          "kind",
+                          "label",
+                          "line",
+                          "muscles",
+                          "qualities",
+                          "remembered",
+                          "to",
+                          "typed"
+                        ],
+                        "title": "ExerciseMatch",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "matches"
+                  ],
+                  "title": "ExerciseMatches",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Exercise matches"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Catalog exercises found in a free-text workout, to confirm before publishing",
+        "tags": [
+          "Workouts"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/workouts/{id}/exercise-matches/decisions": {
+      "post": {
+        "callbacks": {},
+        "description": "ADR-570: after the editor saved the answers as links, the box remembers each yes (and forgets a remembered match answered no), and goals the coach edited take the new suggestion only by adding muscles or promoting roles.",
+        "operationId": "PaleeWeb.AdminWorkoutGoalsController.decide_exercise_matches",
+        "parameters": [
+          {
+            "description": "Workout ID",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "decisions": {
+                    "items": {
+                      "properties": {
+                        "decision": {
+                          "enum": [
+                            "yes",
+                            "no"
+                          ],
+                          "type": "string"
+                        },
+                        "exercise_ref": {
+                          "type": "string"
+                        },
+                        "typed": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "decision",
+                        "exercise_ref",
+                        "typed"
+                      ],
+                      "type": "object"
+                    },
+                    "maxItems": 200,
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "decisions"
+                ],
+                "title": "ExerciseMatchDecisions",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "goals_updated": {
+                      "description": "Edited goals gained muscles or stronger roles",
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "goals_updated"
+                  ],
+                  "title": "ExerciseMatchesDecided",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Recorded"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invalid decisions"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Record the coach's answers to the exercise matches",
+        "tags": [
+          "Workouts"
         ]
       }
     },
