@@ -16,12 +16,19 @@ defmodule Palee.Application.SendMessage do
   alias Palee.{Coaching, Finance, Messaging, Organizations}
   alias Palee.Messaging.Domain.BoxInboxPolicy
 
-  def call(sender, params) do
+  @doc """
+  Sends `params` as `sender`. `notify: false` (ADR-580) stores and shows the
+  message without notifying the other side, for a message that arrives
+  together with its own notification (a follower's invitation).
+  """
+  def call(sender, params, opts \\ []) do
     with {:ok, thread} <- Messaging.get_thread(params.thread_id, sender.id),
          {:ok, kind} <- kind(sender, thread, params) do
-      deliver(kind, thread, sender, params)
+      deliver(kind, thread, sender, Map.put(params, :notify, Keyword.get(opts, :notify, true)))
     end
   end
+
+  defp delivery(params), do: %{reservations: [], notify: Map.get(params, :notify, true)}
 
   defp deliver({:coaching_message, clients}, thread, _sender, params) do
     delivery_id = Map.get(params, :client_operation_id) || Ecto.UUID.generate()
@@ -36,7 +43,7 @@ defmodule Palee.Application.SendMessage do
   defp deliver(:box_message, _thread, _sender, params) do
     params
     |> Map.put(:message_type, :box_message)
-    |> Messaging.send_message(%{reservations: []})
+    |> Messaging.send_message(delivery(params))
     |> TrackMessagingAnalytics.call()
   end
 

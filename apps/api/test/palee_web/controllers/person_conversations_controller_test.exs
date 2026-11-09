@@ -94,6 +94,7 @@ defmodule PaleeWeb.PersonConversationsControllerTest do
     assert summary["follow_groups"]["buddies"] == 1
 
     assert summary["privacy"] == %{
+             "box_invites" => true,
              "private_account" => true,
              "searchable" => true,
              "show_follow_suggestions" => true
@@ -202,6 +203,7 @@ defmodule PaleeWeb.PersonConversationsControllerTest do
 
     assert json_response(get(ctx.as.(eli), "/api/me/social"), 200)["privacy"] ==
              %{
+               "box_invites" => true,
                "private_account" => false,
                "searchable" => true,
                "show_follow_suggestions" => true
@@ -222,6 +224,7 @@ defmodule PaleeWeb.PersonConversationsControllerTest do
              ctx.as.(ben) |> send_json(:put, "/api/me/social/privacy", %{private_account: false}),
              200
            ) == %{
+             "box_invites" => true,
              "private_account" => false,
              "searchable" => true,
              "show_follow_suggestions" => true

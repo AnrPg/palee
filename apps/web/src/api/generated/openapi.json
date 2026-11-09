@@ -18384,6 +18384,323 @@
         "title": "BoxDataExports",
         "type": "object"
       },
+      "BoxFollower": {
+        "properties": {
+          "followed_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "former_member": {
+            "type": "boolean"
+          },
+          "had_trial": {
+            "type": "boolean"
+          },
+          "invitable": {
+            "type": "boolean"
+          },
+          "invite": {
+            "description": "The latest invitation: sent (next_invite_at: when the box may invite again) or declined (never again)",
+            "nullable": true,
+            "properties": {
+              "next_invite_at": {
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+              },
+              "sent_at": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "sent",
+                  "declined"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "next_invite_at",
+              "sent_at",
+              "status"
+            ],
+            "title": "BoxFollowerInvite",
+            "type": "object"
+          },
+          "person": {
+            "properties": {
+              "avatar_url": {
+                "nullable": true,
+                "type": "string"
+              },
+              "handle": {
+                "nullable": true,
+                "type": "string"
+              },
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "nickname": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "avatar_url",
+              "handle",
+              "id",
+              "nickname"
+            ],
+            "title": "BoxFollowerPerson",
+            "type": "object"
+          }
+        },
+        "required": [
+          "followed_at",
+          "former_member",
+          "had_trial",
+          "invitable",
+          "invite",
+          "person"
+        ],
+        "title": "BoxFollower",
+        "type": "object"
+      },
+      "BoxFollowerInvite": {
+        "description": "The latest invitation: sent (next_invite_at: when the box may invite again) or declined (never again)",
+        "nullable": true,
+        "properties": {
+          "next_invite_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "sent_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "sent",
+              "declined"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "next_invite_at",
+          "sent_at",
+          "status"
+        ],
+        "title": "BoxFollowerInvite",
+        "type": "object"
+      },
+      "BoxFollowerList": {
+        "properties": {
+          "counts": {
+            "description": "Followers who are not box members: listed, may be invited now, did a trial, former box members",
+            "properties": {
+              "former": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "invitable": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "listed": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "trial": {
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "former",
+              "invitable",
+              "listed",
+              "trial"
+            ],
+            "title": "FollowerInviteCounts",
+            "type": "object"
+          },
+          "followers": {
+            "items": {
+              "properties": {
+                "followed_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "former_member": {
+                  "type": "boolean"
+                },
+                "had_trial": {
+                  "type": "boolean"
+                },
+                "invitable": {
+                  "type": "boolean"
+                },
+                "invite": {
+                  "description": "The latest invitation: sent (next_invite_at: when the box may invite again) or declined (never again)",
+                  "nullable": true,
+                  "properties": {
+                    "next_invite_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "sent_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum": [
+                        "sent",
+                        "declined"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "next_invite_at",
+                    "sent_at",
+                    "status"
+                  ],
+                  "title": "BoxFollowerInvite",
+                  "type": "object"
+                },
+                "person": {
+                  "properties": {
+                    "avatar_url": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "handle": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "nickname": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "avatar_url",
+                    "handle",
+                    "id",
+                    "nickname"
+                  ],
+                  "title": "BoxFollowerPerson",
+                  "type": "object"
+                }
+              },
+              "required": [
+                "followed_at",
+                "former_member",
+                "had_trial",
+                "invitable",
+                "invite",
+                "person"
+              ],
+              "title": "BoxFollower",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "next_cursor": {
+            "nullable": true,
+            "type": "string"
+          },
+          "offer": {
+            "description": "What a send may hold: packages listed to everyone, and whether trials are open",
+            "properties": {
+              "packages": {
+                "items": {
+                  "properties": {
+                    "billing_period": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "currency": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "price_cents": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "billing_period",
+                    "currency",
+                    "id",
+                    "name",
+                    "price_cents"
+                  ],
+                  "title": "FollowerInvitePackage",
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "trial_available": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "packages",
+              "trial_available"
+            ],
+            "title": "FollowerInviteOffer",
+            "type": "object"
+          }
+        },
+        "required": [
+          "counts",
+          "followers",
+          "next_cursor",
+          "offer"
+        ],
+        "title": "BoxFollowerList",
+        "type": "object"
+      },
+      "BoxFollowerPerson": {
+        "properties": {
+          "avatar_url": {
+            "nullable": true,
+            "type": "string"
+          },
+          "handle": {
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "nickname": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "avatar_url",
+          "handle",
+          "id",
+          "nickname"
+        ],
+        "title": "BoxFollowerPerson",
+        "type": "object"
+      },
       "BoxProgrammeList": {
         "properties": {
           "box": {
@@ -51904,6 +52221,242 @@
         "title": "FollowSuggestionsResponse",
         "type": "object"
       },
+      "FollowerInviteCounts": {
+        "description": "Followers who are not box members: listed, may be invited now, did a trial, former box members",
+        "properties": {
+          "former": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "invitable": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "listed": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "trial": {
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "former",
+          "invitable",
+          "listed",
+          "trial"
+        ],
+        "title": "FollowerInviteCounts",
+        "type": "object"
+      },
+      "FollowerInviteOffer": {
+        "description": "What a send may hold: packages listed to everyone, and whether trials are open",
+        "properties": {
+          "packages": {
+            "items": {
+              "properties": {
+                "billing_period": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "currency": {
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "price_cents": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "billing_period",
+                "currency",
+                "id",
+                "name",
+                "price_cents"
+              ],
+              "title": "FollowerInvitePackage",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "trial_available": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "packages",
+          "trial_available"
+        ],
+        "title": "FollowerInviteOffer",
+        "type": "object"
+      },
+      "FollowerInvitePackage": {
+        "properties": {
+          "billing_period": {
+            "nullable": true,
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "price_cents": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "billing_period",
+          "currency",
+          "id",
+          "name",
+          "price_cents"
+        ],
+        "title": "FollowerInvitePackage",
+        "type": "object"
+      },
+      "FollowerInviteSendRequest": {
+        "properties": {
+          "message": {
+            "maxLength": 500,
+            "nullable": true,
+            "type": "string"
+          },
+          "offer_trial": {
+            "type": "boolean"
+          },
+          "package_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "user_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 200,
+            "minItems": 1,
+            "type": "array"
+          }
+        },
+        "required": [
+          "user_ids"
+        ],
+        "title": "FollowerInviteSendRequest",
+        "type": "object"
+      },
+      "FollowerInviteSendResponse": {
+        "properties": {
+          "sent": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "skipped": {
+            "items": {
+              "properties": {
+                "reason": {
+                  "enum": [
+                    "declined",
+                    "recently_invited",
+                    "not_a_follower"
+                  ],
+                  "type": "string"
+                },
+                "user_id": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "reason",
+                "user_id"
+              ],
+              "title": "FollowerInviteSkipped",
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "sent",
+          "skipped"
+        ],
+        "title": "FollowerInviteSendResponse",
+        "type": "object"
+      },
+      "FollowerInviteSkipped": {
+        "properties": {
+          "reason": {
+            "enum": [
+              "declined",
+              "recently_invited",
+              "not_a_follower"
+            ],
+            "type": "string"
+          },
+          "user_id": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason",
+          "user_id"
+        ],
+        "title": "FollowerInviteSkipped",
+        "type": "object"
+      },
+      "FollowerInviteSummaryResponse": {
+        "properties": {
+          "counts": {
+            "description": "Followers who are not box members: listed, may be invited now, did a trial, former box members",
+            "properties": {
+              "former": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "invitable": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "listed": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "trial": {
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "former",
+              "invitable",
+              "listed",
+              "trial"
+            ],
+            "title": "FollowerInviteCounts",
+            "type": "object"
+          }
+        },
+        "required": [
+          "counts"
+        ],
+        "title": "FollowerInviteSummaryResponse",
+        "type": "object"
+      },
       "Food": {
         "properties": {
           "barcode": {
@@ -59778,6 +60331,191 @@
           "reviews"
         ],
         "title": "MyBoxReviewsResponse",
+        "type": "object"
+      },
+      "MyFollowerInvite": {
+        "nullable": true,
+        "properties": {
+          "box": {
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "slug": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "slug"
+            ],
+            "type": "object"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "message": {
+            "nullable": true,
+            "type": "string"
+          },
+          "offer_trial": {
+            "type": "boolean"
+          },
+          "package": {
+            "allOf": [
+              {
+                "properties": {
+                  "billing_period": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "currency": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "price_cents": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "billing_period",
+                  "currency",
+                  "id",
+                  "name",
+                  "price_cents"
+                ],
+                "title": "FollowerInvitePackage",
+                "type": "object"
+              }
+            ],
+            "nullable": true
+          },
+          "sent_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "sent",
+              "declined"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "box",
+          "id",
+          "message",
+          "offer_trial",
+          "package",
+          "sent_at",
+          "status"
+        ],
+        "title": "MyFollowerInvite",
+        "type": "object"
+      },
+      "MyFollowerInviteResponse": {
+        "properties": {
+          "invite": {
+            "nullable": true,
+            "properties": {
+              "box": {
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "slug": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "slug"
+                ],
+                "type": "object"
+              },
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "message": {
+                "nullable": true,
+                "type": "string"
+              },
+              "offer_trial": {
+                "type": "boolean"
+              },
+              "package": {
+                "allOf": [
+                  {
+                    "properties": {
+                      "billing_period": {
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "currency": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "format": "uuid",
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "price_cents": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "billing_period",
+                      "currency",
+                      "id",
+                      "name",
+                      "price_cents"
+                    ],
+                    "title": "FollowerInvitePackage",
+                    "type": "object"
+                  }
+                ],
+                "nullable": true
+              },
+              "sent_at": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "sent",
+                  "declined"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "box",
+              "id",
+              "message",
+              "offer_trial",
+              "package",
+              "sent_at",
+              "status"
+            ],
+            "title": "MyFollowerInvite",
+            "type": "object"
+          }
+        },
+        "required": [
+          "invite"
+        ],
+        "title": "MyFollowerInviteResponse",
         "type": "object"
       },
       "MyInjuryWarningsAcknowledged": {
@@ -102173,6 +102911,10 @@
       "SocialPrivacy": {
         "description": "ADR-193: a private account answers follow requests; searchable shows you in people search and (ADR-561) in others' «Ίσως γνωρίζεις»; show_follow_suggestions shows that card on your Αρχική",
         "properties": {
+          "box_invites": {
+            "description": "ADR-580: boxes you follow may see you and invite you to become a box member",
+            "type": "boolean"
+          },
           "private_account": {
             "type": "boolean"
           },
@@ -102184,6 +102926,7 @@
           }
         },
         "required": [
+          "box_invites",
           "private_account",
           "searchable",
           "show_follow_suggestions"
@@ -102193,6 +102936,9 @@
       },
       "SocialPrivacyRequest": {
         "properties": {
+          "box_invites": {
+            "type": "boolean"
+          },
           "private_account": {
             "type": "boolean"
           },
@@ -102308,6 +103054,10 @@
           "privacy": {
             "description": "ADR-193: a private account answers follow requests; searchable shows you in people search and (ADR-561) in others' «Ίσως γνωρίζεις»; show_follow_suggestions shows that card on your Αρχική",
             "properties": {
+              "box_invites": {
+                "description": "ADR-580: boxes you follow may see you and invite you to become a box member",
+                "type": "boolean"
+              },
               "private_account": {
                 "type": "boolean"
               },
@@ -102319,6 +103069,7 @@
               }
             },
             "required": [
+              "box_invites",
               "private_account",
               "searchable",
               "show_follow_suggestions"
@@ -134865,6 +135616,292 @@
         "summary": "A published box's upcoming events open to everyone (its page's Events tab)",
         "tags": [
           "Community events"
+        ]
+      }
+    },
+    "/api/boxes/{slug}/follower-invite": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.FollowerInviteController.show",
+        "parameters": [
+          {
+            "description": "The box's slug or one of its former slugs",
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "maxLength": 120,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "invite": {
+                      "nullable": true,
+                      "properties": {
+                        "box": {
+                          "properties": {
+                            "name": {
+                              "type": "string"
+                            },
+                            "slug": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "slug"
+                          ],
+                          "type": "object"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "message": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "offer_trial": {
+                          "type": "boolean"
+                        },
+                        "package": {
+                          "allOf": [
+                            {
+                              "properties": {
+                                "billing_period": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "currency": {
+                                  "type": "string"
+                                },
+                                "id": {
+                                  "format": "uuid",
+                                  "type": "string"
+                                },
+                                "name": {
+                                  "type": "string"
+                                },
+                                "price_cents": {
+                                  "type": "integer"
+                                }
+                              },
+                              "required": [
+                                "billing_period",
+                                "currency",
+                                "id",
+                                "name",
+                                "price_cents"
+                              ],
+                              "title": "FollowerInvitePackage",
+                              "type": "object"
+                            }
+                          ],
+                          "nullable": true
+                        },
+                        "sent_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "sent",
+                            "declined"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "box",
+                        "id",
+                        "message",
+                        "offer_trial",
+                        "package",
+                        "sent_at",
+                        "status"
+                      ],
+                      "title": "MyFollowerInvite",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "invite"
+                  ],
+                  "title": "MyFollowerInviteResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invitation"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such box"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Your open invitation from a published box to become a box member, or null",
+        "tags": [
+          "Follower invites"
+        ]
+      }
+    },
+    "/api/boxes/{slug}/follower-invite/decline": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.FollowerInviteController.decline",
+        "parameters": [
+          {
+            "description": "The box's slug or one of its former slugs",
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "maxLength": 120,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "invite": {
+                      "nullable": true,
+                      "properties": {
+                        "box": {
+                          "properties": {
+                            "name": {
+                              "type": "string"
+                            },
+                            "slug": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "slug"
+                          ],
+                          "type": "object"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "message": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "offer_trial": {
+                          "type": "boolean"
+                        },
+                        "package": {
+                          "allOf": [
+                            {
+                              "properties": {
+                                "billing_period": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "currency": {
+                                  "type": "string"
+                                },
+                                "id": {
+                                  "format": "uuid",
+                                  "type": "string"
+                                },
+                                "name": {
+                                  "type": "string"
+                                },
+                                "price_cents": {
+                                  "type": "integer"
+                                }
+                              },
+                              "required": [
+                                "billing_period",
+                                "currency",
+                                "id",
+                                "name",
+                                "price_cents"
+                              ],
+                              "title": "FollowerInvitePackage",
+                              "type": "object"
+                            }
+                          ],
+                          "nullable": true
+                        },
+                        "sent_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "sent",
+                            "declined"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "box",
+                        "id",
+                        "message",
+                        "offer_trial",
+                        "package",
+                        "sent_at",
+                        "status"
+                      ],
+                      "title": "MyFollowerInvite",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "invite"
+                  ],
+                  "title": "MyFollowerInviteResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invitation"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such box or invitation"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "«Όχι, ευχαριστώ»: no more invitations from this box",
+        "tags": [
+          "Follower invites"
         ]
       }
     },
@@ -183901,6 +184938,10 @@
                     "privacy": {
                       "description": "ADR-193: a private account answers follow requests; searchable shows you in people search and (ADR-561) in others' «Ίσως γνωρίζεις»; show_follow_suggestions shows that card on your Αρχική",
                       "properties": {
+                        "box_invites": {
+                          "description": "ADR-580: boxes you follow may see you and invite you to become a box member",
+                          "type": "boolean"
+                        },
                         "private_account": {
                           "type": "boolean"
                         },
@@ -183912,6 +184953,7 @@
                         }
                       },
                       "required": [
+                        "box_invites",
                         "private_account",
                         "searchable",
                         "show_follow_suggestions"
@@ -184205,6 +185247,9 @@
             "application/json": {
               "schema": {
                 "properties": {
+                  "box_invites": {
+                    "type": "boolean"
+                  },
                   "private_account": {
                     "type": "boolean"
                   },
@@ -184229,6 +185274,10 @@
                 "schema": {
                   "description": "ADR-193: a private account answers follow requests; searchable shows you in people search and (ADR-561) in others' «Ίσως γνωρίζεις»; show_follow_suggestions shows that card on your Αρχική",
                   "properties": {
+                    "box_invites": {
+                      "description": "ADR-580: boxes you follow may see you and invite you to become a box member",
+                      "type": "boolean"
+                    },
                     "private_account": {
                       "type": "boolean"
                     },
@@ -184240,6 +185289,7 @@
                     }
                   },
                   "required": [
+                    "box_invites",
                     "private_account",
                     "searchable",
                     "show_follow_suggestions"
@@ -251479,6 +252529,416 @@
         "summary": "Reports to the tax authority, newest first, with counts per status",
         "tags": [
           "Fiscal"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/follower-invites": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminFollowerInviteController.index",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "filter",
+            "required": false,
+            "schema": {
+              "enum": [
+                "all",
+                "trial",
+                "former"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "counts": {
+                      "description": "Followers who are not box members: listed, may be invited now, did a trial, former box members",
+                      "properties": {
+                        "former": {
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "invitable": {
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "listed": {
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "trial": {
+                          "minimum": 0,
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "former",
+                        "invitable",
+                        "listed",
+                        "trial"
+                      ],
+                      "title": "FollowerInviteCounts",
+                      "type": "object"
+                    },
+                    "followers": {
+                      "items": {
+                        "properties": {
+                          "followed_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "former_member": {
+                            "type": "boolean"
+                          },
+                          "had_trial": {
+                            "type": "boolean"
+                          },
+                          "invitable": {
+                            "type": "boolean"
+                          },
+                          "invite": {
+                            "description": "The latest invitation: sent (next_invite_at: when the box may invite again) or declined (never again)",
+                            "nullable": true,
+                            "properties": {
+                              "next_invite_at": {
+                                "format": "date-time",
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "sent_at": {
+                                "format": "date-time",
+                                "type": "string"
+                              },
+                              "status": {
+                                "enum": [
+                                  "sent",
+                                  "declined"
+                                ],
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "next_invite_at",
+                              "sent_at",
+                              "status"
+                            ],
+                            "title": "BoxFollowerInvite",
+                            "type": "object"
+                          },
+                          "person": {
+                            "properties": {
+                              "avatar_url": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "handle": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "nickname": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "avatar_url",
+                              "handle",
+                              "id",
+                              "nickname"
+                            ],
+                            "title": "BoxFollowerPerson",
+                            "type": "object"
+                          }
+                        },
+                        "required": [
+                          "followed_at",
+                          "former_member",
+                          "had_trial",
+                          "invitable",
+                          "invite",
+                          "person"
+                        ],
+                        "title": "BoxFollower",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "next_cursor": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "offer": {
+                      "description": "What a send may hold: packages listed to everyone, and whether trials are open",
+                      "properties": {
+                        "packages": {
+                          "items": {
+                            "properties": {
+                              "billing_period": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "currency": {
+                                "type": "string"
+                              },
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "price_cents": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "billing_period",
+                              "currency",
+                              "id",
+                              "name",
+                              "price_cents"
+                            ],
+                            "title": "FollowerInvitePackage",
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "trial_available": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "packages",
+                        "trial_available"
+                      ],
+                      "title": "FollowerInviteOffer",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "counts",
+                    "followers",
+                    "next_cursor",
+                    "offer"
+                  ],
+                  "title": "BoxFollowerList",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Followers"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad filter or cursor"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Followers who are not box members, newest follow first",
+        "tags": [
+          "Follower invites"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "description": "Each one gets a notification and a message from the box. People who declined or were invited in the last 90 days come back in skipped.",
+        "operationId": "PaleeWeb.AdminFollowerInviteController.create",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "message": {
+                    "maxLength": 500,
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "offer_trial": {
+                    "type": "boolean"
+                  },
+                  "package_id": {
+                    "format": "uuid",
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "user_ids": {
+                    "items": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "maxItems": 200,
+                    "minItems": 1,
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "user_ids"
+                ],
+                "title": "FollowerInviteSendRequest",
+                "type": "object"
+              }
+            }
+          },
+          "description": "Invitation",
+          "required": false
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "sent": {
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "skipped": {
+                      "items": {
+                        "properties": {
+                          "reason": {
+                            "enum": [
+                              "declined",
+                              "recently_invited",
+                              "not_a_follower"
+                            ],
+                            "type": "string"
+                          },
+                          "user_id": {
+                            "format": "uuid",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "reason",
+                          "user_id"
+                        ],
+                        "title": "FollowerInviteSkipped",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "sent",
+                    "skipped"
+                  ],
+                  "title": "FollowerInviteSendResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Sent"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invalid invitation"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Invite followers to become box members",
+        "tags": [
+          "Follower invites"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/follower-invites/summary": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminFollowerInviteController.summary",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "counts": {
+                      "description": "Followers who are not box members: listed, may be invited now, did a trial, former box members",
+                      "properties": {
+                        "former": {
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "invitable": {
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "listed": {
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "trial": {
+                          "minimum": 0,
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "former",
+                        "invitable",
+                        "listed",
+                        "trial"
+                      ],
+                      "title": "FollowerInviteCounts",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "counts"
+                  ],
+                  "title": "FollowerInviteSummaryResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Counts"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "How many followers are not box members, and how many may be invited now",
+        "tags": [
+          "Follower invites"
         ]
       }
     },

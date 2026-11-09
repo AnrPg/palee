@@ -102,8 +102,28 @@ defmodule Palee.Application.GetOrCreateMessagingThread do
     with :ok <- Organizations.authorize_capability(context, :message_from_box),
          true <-
            (active_member?(member_id, organization_id) or trial_guest?(context, member_id) or
-              wrote_to_box?(context, member_id)) || {:error, :not_found},
-         {:ok, thread} <-
+              wrote_to_box?(context, member_id)) || {:error, :not_found} do
+      open_box_thread(context, actor, member_id)
+    end
+  end
+
+  def call(_context, actor, params), do: call(actor, params)
+
+  @doc """
+  ADR-580: the box's thread with a follower it invites to become a box
+  member, so the invitation also lands in their Μηνύματα › Box. The caller
+  has already checked that the person follows the box and accepts
+  invitations; the actor must still be able to write for the box.
+  """
+  def for_invited_follower(%{organization_id: organization_id} = context, actor, person_id)
+      when is_binary(organization_id) and is_binary(person_id) do
+    with :ok <- Organizations.authorize_capability(context, :message_from_box) do
+      open_box_thread(context, actor, person_id)
+    end
+  end
+
+  defp open_box_thread(context, actor, member_id) do
+    with {:ok, thread} <-
            Messaging.with_tenant_context(context, fn ->
              Messaging.get_or_create_thread(%{
                context_type: :box,
@@ -124,8 +144,6 @@ defmodule Palee.Application.GetOrCreateMessagingThread do
       |> TrackMessagingAnalytics.call()
     end
   end
-
-  def call(_context, actor, params), do: call(actor, params)
 
   # Assignments belong to one organization; an actor is authorized either as
   # a (non-archived) participant on it, or as owner/admin/coach staff of that

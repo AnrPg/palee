@@ -123,6 +123,8 @@ defmodule Palee.Notifications.Notification do
     :join_requested,
     :join_request_accepted,
     :join_request_declined,
+    # ADR-580: a box invites a follower to become a box member.
+    :follower_invited,
     # ADR-252: documents to sign and health certificates.
     :document_signature_requested,
     :health_certificate_expiring,

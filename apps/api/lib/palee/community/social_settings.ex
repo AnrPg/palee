@@ -25,6 +25,9 @@ defmodule Palee.Community.SocialSettings do
     # ADR-561: the «Ίσως γνωρίζεις» card on the person's own Αρχική.
     field :show_follow_suggestions, :boolean, default: true
 
+    # ADR-580: «Δέχομαι προσκλήσεις από box που ακολουθώ» (on by default).
+    field :box_invites, :boolean, default: true
+
     timestamps(type: :utc_datetime_usec)
   end
 
@@ -39,6 +42,7 @@ defmodule Palee.Community.SocialSettings do
       :private_account,
       :searchable,
       :show_follow_suggestions,
+      :box_invites,
       :auto_post_workouts
     ])
     |> validate_required([:user_id, :share_bookings])

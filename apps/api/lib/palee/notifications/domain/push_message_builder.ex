@@ -1025,6 +1025,19 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
     }
   end
 
+  # ADR-580: the box's own words when it wrote some.
+  def build("follower_invited", payload, localize) do
+    %{
+      title: localize.("%{box} invites you to become a member", %{box: payload["box_name"]}),
+      body:
+        case payload["message"] do
+          message when is_binary(message) and message != "" -> String.slice(message, 0, 140)
+          _none -> localize.("See the box's packages and join in a few taps.", %{})
+        end,
+      url: payload["url"] || "/"
+    }
+  end
+
   def build("join_request_accepted", payload, localize) do
     %{
       title: localize.("You are a box member", %{}),

@@ -888,7 +888,7 @@ msgid "Asks to join the box"
 msgstr "רוצה להצטרף"
 
 msgid "%{nickname} asks to become a box member."
-msgstr "%{nickname} מבקש/ת להצטרף כחבר ב-Box."
+msgstr "%{nickname} מבקש/ת להצטרף כחבר/ה ב-Box."
 
 msgid "You are a box member"
 msgstr "את/ה חבר/ה ב-Box"
@@ -901,3 +901,12 @@ msgstr "הבקשה שלך להצטרף"
 
 msgid "%{box} did not accept your request. You can write to the box."
 msgstr "%{box} לא קיבל/ה את הבקשה שלך. אפשר לכתוב ל-Box."
+
+msgid "%{box} invites you to become a member"
+msgstr "%{box} מזמין אותך להצטרף כחבר/ה"
+
+msgid "See the box's packages and join in a few taps."
+msgstr "ראה את החבילות של הבוקס והצטרף בכמה נגיעות."
+
+msgid "%{box} invites you to become a member."
+msgstr "%{box} מזמין אותך להצטרף כחבר/ה."

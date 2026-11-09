@@ -22,7 +22,7 @@ defmodule Palee.Application.DispatchMessageDelivery do
          {:ok, thread} <- Messaging.get_thread(message.thread_id, message.sender_id),
          true <- thread.organization_id == organization_id,
          :ok <- finalize_reservations(Map.get(delivery, "reservations", []), message),
-         :ok <- notify_participants(thread, message),
+         :ok <- notify_participants(thread, message, Map.get(delivery, "notify", true)),
          :ok <- invalidate_landing(thread, message),
          :ok <- record_analytics(message, thread),
          :ok <- publish(message, thread) do
@@ -65,6 +65,10 @@ defmodule Palee.Application.DispatchMessageDelivery do
       }
     )
   end
+
+  # ADR-580: a message sent together with its own notification stays quiet.
+  defp notify_participants(_thread, _message, false), do: :ok
+  defp notify_participants(thread, message, _notify), do: notify_participants(thread, message)
 
   # ADR-282: a box thread tells the box's inbox about the person's message
   # (whoever answered last, else everyone in it) and the person about the

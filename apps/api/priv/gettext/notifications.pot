@@ -896,3 +896,12 @@ msgstr ""
 
 msgid "%{box} did not accept your request. You can write to the box."
 msgstr ""
+
+msgid "%{box} invites you to become a member"
+msgstr ""
+
+msgid "See the box's packages and join in a few taps."
+msgstr ""
+
+msgid "%{box} invites you to become a member."
+msgstr ""

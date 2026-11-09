@@ -1513,6 +1513,10 @@ defmodule PaleeWeb.Router do
     get("/branding", AdminBrandingController, :show)
     # ADR-552: «Ζήτα να γίνεις μέλος», answered by the staff.
     get("/join-requests", AdminJoinRequestController, :index)
+    # ADR-580: Χρήστες › «Ακόλουθοι, όχι μέλη».
+    get("/follower-invites/summary", AdminFollowerInviteController, :summary)
+    get("/follower-invites", AdminFollowerInviteController, :index)
+    post("/follower-invites", AdminFollowerInviteController, :create)
     post("/join-requests/:id/accept", AdminJoinRequestController, :accept)
     post("/join-requests/:id/decline", AdminJoinRequestController, :decline)
     # ADR-553: who sees the subscription packages.
@@ -2694,6 +2698,9 @@ defmodule PaleeWeb.Router do
     post("/referrals/claim", ReferralController, :claim)
     # ADR-552: «Ζήτα να γίνεις μέλος».
     get("/boxes/:slug/join-request", JoinRequestController, :show)
+    # ADR-580: the box's invitation to a follower.
+    get("/boxes/:slug/follower-invite", FollowerInviteController, :show)
+    post("/boxes/:slug/follower-invite/decline", FollowerInviteController, :decline)
     post("/boxes/:slug/join-request", JoinRequestController, :create)
     post("/boxes/:slug/join-request/cancel", JoinRequestController, :cancel)
     # ADR-144: trials.

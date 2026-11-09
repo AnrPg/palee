@@ -404,7 +404,7 @@ msgid "Try a class"
 msgstr "Essaie un cours"
 
 msgid "Liked «%{event}»? %{box} invites you to a trial class."
-msgstr "«%{event}» t'a plu ? %{box} t'invite à un cours d'essai."
+msgstr "«%{event}» t'a plu ? %{box} t’invite à un cours d'essai."
 
 msgid "Message about «%{event}»"
 msgstr "Message à propos de «%{event}»"
@@ -616,7 +616,7 @@ msgid "Co-host request"
 msgstr "Demande de co-organisation"
 
 msgid "%{box} invites you to co-host «%{event}» (%{when})."
-msgstr "%{box} t'invite à co-organiser «%{event}» (%{when})."
+msgstr "%{box} t’invite à co-organiser «%{event}» (%{when})."
 
 msgid "Co-hosting"
 msgstr "Co-organisation"
@@ -901,3 +901,12 @@ msgstr "Ta demande d’inscription"
 
 msgid "%{box} did not accept your request. You can write to the box."
 msgstr "%{box} n’a pas accepté ta demande. Tu peux écrire à la box."
+
+msgid "%{box} invites you to become a member"
+msgstr "%{box} t’invite à devenir membre"
+
+msgid "See the box's packages and join in a few taps."
+msgstr "Découvre les formules de la box et deviens membre en quelques gestes."
+
+msgid "%{box} invites you to become a member."
+msgstr "%{box} t’invite à devenir membre."

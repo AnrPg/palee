@@ -338,10 +338,10 @@ msgid "The box didn't approve «%{group}»."
 msgstr "De box heeft «%{group}» niet goedgekeurd."
 
 msgid "Request to join"
-msgstr "Verzoek om lid te worden"
+msgstr "Verzoek om boxlid te worden"
 
 msgid "%{nickname} asks to join «%{group}»."
-msgstr "%{nickname} vraagt om lid te worden van «%{group}»."
+msgstr "%{nickname} vraagt om boxlid te worden van «%{group}»."
 
 msgid "You're in"
 msgstr "Je bent erbij"
@@ -897,7 +897,16 @@ msgid "%{box} accepted you as a box member."
 msgstr "%{box} heeft je als boxlid aangenomen."
 
 msgid "Your request to join"
-msgstr "Je aanvraag om lid te worden"
+msgstr "Je aanvraag om boxlid te worden"
 
 msgid "%{box} did not accept your request. You can write to the box."
 msgstr "%{box} heeft je aanvraag niet aangenomen. Je kunt de box een bericht sturen."
+
+msgid "%{box} invites you to become a member"
+msgstr "%{box} nodigt je uit om boxlid te worden"
+
+msgid "See the box's packages and join in a few taps."
+msgstr "Bekijk de pakketten van de box en word boxlid in een paar tikken."
+
+msgid "%{box} invites you to become a member."
+msgstr "%{box} nodigt je uit om boxlid te worden."

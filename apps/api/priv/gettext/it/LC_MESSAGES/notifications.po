@@ -901,3 +901,12 @@ msgstr "La tua richiesta di iscrizione"
 
 msgid "%{box} did not accept your request. You can write to the box."
 msgstr "%{box} non ha accettato la tua richiesta. Puoi scrivere al box."
+
+msgid "%{box} invites you to become a member"
+msgstr "%{box} ti invita a diventare socio"
+
+msgid "See the box's packages and join in a few taps."
+msgstr "Guarda i pacchetti del box e diventa socio in pochi tocchi."
+
+msgid "%{box} invites you to become a member."
+msgstr "%{box} ti invita a diventare socio."

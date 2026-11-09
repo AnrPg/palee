@@ -397,9 +397,14 @@ defmodule PaleeWeb.Schemas.Social do
       properties: %{
         private_account: %Schema{type: :boolean},
         searchable: %Schema{type: :boolean},
-        show_follow_suggestions: %Schema{type: :boolean}
+        show_follow_suggestions: %Schema{type: :boolean},
+        box_invites: %Schema{
+          type: :boolean,
+          description:
+            "ADR-580: boxes you follow may see you and invite you to become a box member"
+        }
       },
-      required: [:private_account, :searchable, :show_follow_suggestions]
+      required: [:box_invites, :private_account, :searchable, :show_follow_suggestions]
     }
   end
 
@@ -559,7 +564,8 @@ defmodule PaleeWeb.Schemas.Social do
       properties: %{
         private_account: %Schema{type: :boolean},
         searchable: %Schema{type: :boolean},
-        show_follow_suggestions: %Schema{type: :boolean}
+        show_follow_suggestions: %Schema{type: :boolean},
+        box_invites: %Schema{type: :boolean}
       }
     }
   end

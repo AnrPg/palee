@@ -201,6 +201,9 @@ config :palee,
        :organization_store,
        Palee.Infrastructure.Organizations.EctoOrganizationStore
 
+# ADR-580: a box's invitations to its followers.
+config :palee, :follower_invite_store, Palee.Infrastructure.Organizations.EctoFollowerInviteStore
+
 # ADR-552: «Ζήτα να γίνεις μέλος» requests.
 config :palee, :join_request_store, Palee.Infrastructure.Organizations.EctoJoinRequestStore
 

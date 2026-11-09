@@ -58,6 +58,7 @@ defmodule Palee.Notifications.Domain.NotificationCategories do
         community_event_waitlist_promoted community_event_cancelled community_event_changed
         community_event_reminder community_event_guest_joined community_event_trial_offer
         community_event_message community_event_cohost_request community_event_cohost_answered
+        follower_invited
         referral_progress referral_reward
       )
     },

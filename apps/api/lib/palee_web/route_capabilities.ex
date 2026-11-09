@@ -24,6 +24,8 @@ defmodule PaleeWeb.RouteCapabilities do
   @controller_defaults %{
     # ADR-552: answering «Ζήτα να γίνεις μέλος» admits box members.
     W.AdminJoinRequestController => [:manage_memberships],
+    # ADR-580: inviting followers to become box members.
+    W.AdminFollowerInviteController => [:manage_memberships],
     # ADR-553: who sees the packages is part of managing them.
     W.AdminPackageAudienceController => [:manage_packages],
     W.AdminWorkoutController => [:manage_workouts],

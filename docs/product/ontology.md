@@ -256,6 +256,7 @@ Terms marked **(proposed)** change today's wording; see §5. Everything else mat
 | English | Ελληνικά | Code | What it is | Not to be confused with |
 |---|---|---|---|---|
 | Follow / follower | Ακολουθώ / ακόλουθος | `community_follows` | One-way. Instant for public profiles (the default), a request for private ones. | |
+| Follower invite | Πρόσκληση ακολούθου (button «Προσκάλεσε») | `organization_follower_invites` | A box invites someone who follows it and is not a box member to become one: a notification and a message from the box. «Όχι, ευχαριστώ» stops further ones from that box; otherwise the box may invite the same person again after 90 days. People choose in Ρυθμίσεις whether boxes they follow may invite them (on by default). (ADR-580) | Invitation (email, ADR-209); join request (ADR-552). |
 | Buddies | Φιλαράκια | derived: mutual follows | Two people who follow each other. Can message each other anywhere. (ADR-193) | Check-in buddy. |
 | Training partner | Συναθλητής (plural «Συναθλητές») | `partners` context | A match between two verified adults anywhere on Palee who both said yes, to train together («Κλείστε μαζί»). One public deck, opened from Γύρω μου. (ADR-169, ADR-280 from 2026-10-30; it was one deck per club before) | Partner business; Buddies. |
 | Check-in buddy | Φιλαράκι στήριξης | `buddy_links` | One or two people you pick to hear from you when you ask for support (cravings, motivation); can get your weekly summary. (ADR-160) | Buddies (mutual follow). |

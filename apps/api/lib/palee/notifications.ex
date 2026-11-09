@@ -853,6 +853,19 @@ defmodule Palee.Notifications do
     end)
   end
 
+  # ADR-580: a box invites a follower to become a box member; the box page
+  # holds the invitation («Γίνε μέλος», «Όχι, ευχαριστώ»).
+  def process_event("follower_invited", payload),
+    do:
+      enqueue_simple(:follower_invited, payload, %{
+        organization_id: field(payload, :organization_id),
+        follower_invite_id: field(payload, :follower_invite_id),
+        box_name: field(payload, :box_name),
+        message: field(payload, :message),
+        dedupe_key: "follower_invited:#{field(payload, :follower_invite_id)}",
+        url: "/b/#{field(payload, :box_slug)}"
+      })
+
   def process_event(type, payload) when type in ~w(join_request_accepted join_request_declined),
     do:
       enqueue_simple(String.to_existing_atom(type), payload, %{

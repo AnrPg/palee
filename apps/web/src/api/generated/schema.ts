@@ -833,6 +833,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/boxes/{slug}/follower-invite": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Your open invitation from a published box to become a box member, or null */
+        get: operations["PaleeWeb.FollowerInviteController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/boxes/{slug}/follower-invite/decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Όχι, ευχαριστώ»: no more invitations from this box */
+        post: operations["PaleeWeb.FollowerInviteController.decline"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/boxes/{slug}/join-request": {
         parameters: {
             query?: never;
@@ -9851,6 +9885,44 @@ export interface paths {
         };
         /** Reports to the tax authority, newest first, with counts per status */
         get: operations["PaleeWeb.AdminFiscalReportingController.transmissions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/follower-invites": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Followers who are not box members, newest follow first */
+        get: operations["PaleeWeb.AdminFollowerInviteController.index"];
+        put?: never;
+        /**
+         * Invite followers to become box members
+         * @description Each one gets a notification and a message from the box. People who declined or were invited in the last 90 days come back in skipped.
+         */
+        post: operations["PaleeWeb.AdminFollowerInviteController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/follower-invites/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** How many followers are not box members, and how many may be invited now */
+        get: operations["PaleeWeb.AdminFollowerInviteController.summary"];
         put?: never;
         post?: never;
         delete?: never;
@@ -26863,6 +26935,110 @@ export interface components {
                 table_count: number | null;
             }[];
         };
+        /** BoxFollower */
+        BoxFollower: {
+            /** Format: date-time */
+            followed_at: string;
+            former_member: boolean;
+            had_trial: boolean;
+            invitable: boolean;
+            /**
+             * BoxFollowerInvite
+             * @description The latest invitation: sent (next_invite_at: when the box may invite again) or declined (never again)
+             */
+            invite: {
+                /** Format: date-time */
+                next_invite_at: string | null;
+                /** Format: date-time */
+                sent_at: string;
+                /** @enum {string} */
+                status: "sent" | "declined";
+            } | null;
+            /** BoxFollowerPerson */
+            person: {
+                avatar_url: string | null;
+                handle: string | null;
+                /** Format: uuid */
+                id: string;
+                nickname: string;
+            };
+        };
+        /**
+         * BoxFollowerInvite
+         * @description The latest invitation: sent (next_invite_at: when the box may invite again) or declined (never again)
+         */
+        BoxFollowerInvite: {
+            /** Format: date-time */
+            next_invite_at: string | null;
+            /** Format: date-time */
+            sent_at: string;
+            /** @enum {string} */
+            status: "sent" | "declined";
+        } | null;
+        /** BoxFollowerList */
+        BoxFollowerList: {
+            /**
+             * FollowerInviteCounts
+             * @description Followers who are not box members: listed, may be invited now, did a trial, former box members
+             */
+            counts: {
+                former: number;
+                invitable: number;
+                listed: number;
+                trial: number;
+            };
+            followers: {
+                /** Format: date-time */
+                followed_at: string;
+                former_member: boolean;
+                had_trial: boolean;
+                invitable: boolean;
+                /**
+                 * BoxFollowerInvite
+                 * @description The latest invitation: sent (next_invite_at: when the box may invite again) or declined (never again)
+                 */
+                invite: {
+                    /** Format: date-time */
+                    next_invite_at: string | null;
+                    /** Format: date-time */
+                    sent_at: string;
+                    /** @enum {string} */
+                    status: "sent" | "declined";
+                } | null;
+                /** BoxFollowerPerson */
+                person: {
+                    avatar_url: string | null;
+                    handle: string | null;
+                    /** Format: uuid */
+                    id: string;
+                    nickname: string;
+                };
+            }[];
+            next_cursor: string | null;
+            /**
+             * FollowerInviteOffer
+             * @description What a send may hold: packages listed to everyone, and whether trials are open
+             */
+            offer: {
+                packages: {
+                    billing_period: string | null;
+                    currency: string;
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                    price_cents: number;
+                }[];
+                trial_available: boolean;
+            };
+        };
+        /** BoxFollowerPerson */
+        BoxFollowerPerson: {
+            avatar_url: string | null;
+            handle: string | null;
+            /** Format: uuid */
+            id: string;
+            nickname: string;
+        };
         /** BoxProgrammeList */
         BoxProgrammeList: {
             /** @description The box's public card */
@@ -37101,6 +37277,78 @@ export interface components {
                 };
             }[];
         };
+        /**
+         * FollowerInviteCounts
+         * @description Followers who are not box members: listed, may be invited now, did a trial, former box members
+         */
+        FollowerInviteCounts: {
+            former: number;
+            invitable: number;
+            listed: number;
+            trial: number;
+        };
+        /**
+         * FollowerInviteOffer
+         * @description What a send may hold: packages listed to everyone, and whether trials are open
+         */
+        FollowerInviteOffer: {
+            packages: {
+                billing_period: string | null;
+                currency: string;
+                /** Format: uuid */
+                id: string;
+                name: string;
+                price_cents: number;
+            }[];
+            trial_available: boolean;
+        };
+        /** FollowerInvitePackage */
+        FollowerInvitePackage: {
+            billing_period: string | null;
+            currency: string;
+            /** Format: uuid */
+            id: string;
+            name: string;
+            price_cents: number;
+        };
+        /** FollowerInviteSendRequest */
+        FollowerInviteSendRequest: {
+            message?: string | null;
+            offer_trial?: boolean;
+            /** Format: uuid */
+            package_id?: string | null;
+            user_ids: string[];
+        };
+        /** FollowerInviteSendResponse */
+        FollowerInviteSendResponse: {
+            sent: number;
+            skipped: {
+                /** @enum {string} */
+                reason: "declined" | "recently_invited" | "not_a_follower";
+                /** Format: uuid */
+                user_id: string;
+            }[];
+        };
+        /** FollowerInviteSkipped */
+        FollowerInviteSkipped: {
+            /** @enum {string} */
+            reason: "declined" | "recently_invited" | "not_a_follower";
+            /** Format: uuid */
+            user_id: string;
+        };
+        /** FollowerInviteSummaryResponse */
+        FollowerInviteSummaryResponse: {
+            /**
+             * FollowerInviteCounts
+             * @description Followers who are not box members: listed, may be invited now, did a trial, former box members
+             */
+            counts: {
+                former: number;
+                invitable: number;
+                listed: number;
+                trial: number;
+            };
+        };
         /** Food */
         Food: {
             barcode?: string | null;
@@ -39486,6 +39734,55 @@ export interface components {
                     replied_at: string;
                 } | null;
             }[];
+        };
+        /** MyFollowerInvite */
+        MyFollowerInvite: {
+            box: {
+                name: string;
+                slug: string;
+            };
+            /** Format: uuid */
+            id: string;
+            message: string | null;
+            offer_trial: boolean;
+            package: {
+                billing_period: string | null;
+                currency: string;
+                /** Format: uuid */
+                id: string;
+                name: string;
+                price_cents: number;
+            } | null;
+            /** Format: date-time */
+            sent_at: string;
+            /** @enum {string} */
+            status: "sent" | "declined";
+        } | null;
+        /** MyFollowerInviteResponse */
+        MyFollowerInviteResponse: {
+            /** MyFollowerInvite */
+            invite: {
+                box: {
+                    name: string;
+                    slug: string;
+                };
+                /** Format: uuid */
+                id: string;
+                message: string | null;
+                offer_trial: boolean;
+                package: {
+                    billing_period: string | null;
+                    currency: string;
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                    price_cents: number;
+                } | null;
+                /** Format: date-time */
+                sent_at: string;
+                /** @enum {string} */
+                status: "sent" | "declined";
+            } | null;
         };
         /** MyInjuryWarningsAcknowledged */
         MyInjuryWarningsAcknowledged: {
@@ -51913,12 +52210,15 @@ export interface components {
          * @description ADR-193: a private account answers follow requests; searchable shows you in people search and (ADR-561) in others' «Ίσως γνωρίζεις»; show_follow_suggestions shows that card on your Αρχική
          */
         SocialPrivacy: {
+            /** @description ADR-580: boxes you follow may see you and invite you to become a box member */
+            box_invites: boolean;
             private_account: boolean;
             searchable: boolean;
             show_follow_suggestions: boolean;
         };
         /** SocialPrivacyRequest */
         SocialPrivacyRequest: {
+            box_invites?: boolean;
             private_account?: boolean;
             searchable?: boolean;
             show_follow_suggestions?: boolean;
@@ -51976,6 +52276,8 @@ export interface components {
              * @description ADR-193: a private account answers follow requests; searchable shows you in people search and (ADR-561) in others' «Ίσως γνωρίζεις»; show_follow_suggestions shows that card on your Αρχική
              */
             privacy: {
+                /** @description ADR-580: boxes you follow may see you and invite you to become a box member */
+                box_invites: boolean;
                 private_account: boolean;
                 searchable: boolean;
                 show_follow_suggestions: boolean;
@@ -62747,6 +63049,118 @@ export interface operations {
                             waitlist_count: number;
                         }[];
                     };
+                };
+            };
+        };
+    };
+    "PaleeWeb.FollowerInviteController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The box's slug or one of its former slugs */
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Invitation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** MyFollowerInvite */
+                        invite: {
+                            box: {
+                                name: string;
+                                slug: string;
+                            };
+                            /** Format: uuid */
+                            id: string;
+                            message: string | null;
+                            offer_trial: boolean;
+                            package: {
+                                billing_period: string | null;
+                                currency: string;
+                                /** Format: uuid */
+                                id: string;
+                                name: string;
+                                price_cents: number;
+                            } | null;
+                            /** Format: date-time */
+                            sent_at: string;
+                            /** @enum {string} */
+                            status: "sent" | "declined";
+                        } | null;
+                    };
+                };
+            };
+            /** @description No such box */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.FollowerInviteController.decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The box's slug or one of its former slugs */
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Invitation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** MyFollowerInvite */
+                        invite: {
+                            box: {
+                                name: string;
+                                slug: string;
+                            };
+                            /** Format: uuid */
+                            id: string;
+                            message: string | null;
+                            offer_trial: boolean;
+                            package: {
+                                billing_period: string | null;
+                                currency: string;
+                                /** Format: uuid */
+                                id: string;
+                                name: string;
+                                price_cents: number;
+                            } | null;
+                            /** Format: date-time */
+                            sent_at: string;
+                            /** @enum {string} */
+                            status: "sent" | "declined";
+                        } | null;
+                    };
+                };
+            };
+            /** @description No such box or invitation */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
                 };
             };
         };
@@ -81456,6 +81870,8 @@ export interface operations {
                          * @description ADR-193: a private account answers follow requests; searchable shows you in people search and (ADR-561) in others' «Ίσως γνωρίζεις»; show_follow_suggestions shows that card on your Αρχική
                          */
                         privacy: {
+                            /** @description ADR-580: boxes you follow may see you and invite you to become a box member */
+                            box_invites: boolean;
                             private_account: boolean;
                             searchable: boolean;
                             show_follow_suggestions: boolean;
@@ -81592,6 +82008,7 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    box_invites?: boolean;
                     private_account?: boolean;
                     searchable?: boolean;
                     show_follow_suggestions?: boolean;
@@ -81606,6 +82023,8 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description ADR-580: boxes you follow may see you and invite you to become a box member */
+                        box_invites: boolean;
                         private_account: boolean;
                         searchable: boolean;
                         show_follow_suggestions: boolean;
@@ -106238,6 +106657,171 @@ export interface operations {
                             /** Format: date-time */
                             updated_at?: string;
                         }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminFollowerInviteController.index": {
+        parameters: {
+            query?: {
+                filter?: "all" | "trial" | "former";
+                cursor?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Followers */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * FollowerInviteCounts
+                         * @description Followers who are not box members: listed, may be invited now, did a trial, former box members
+                         */
+                        counts: {
+                            former: number;
+                            invitable: number;
+                            listed: number;
+                            trial: number;
+                        };
+                        followers: {
+                            /** Format: date-time */
+                            followed_at: string;
+                            former_member: boolean;
+                            had_trial: boolean;
+                            invitable: boolean;
+                            /**
+                             * BoxFollowerInvite
+                             * @description The latest invitation: sent (next_invite_at: when the box may invite again) or declined (never again)
+                             */
+                            invite: {
+                                /** Format: date-time */
+                                next_invite_at: string | null;
+                                /** Format: date-time */
+                                sent_at: string;
+                                /** @enum {string} */
+                                status: "sent" | "declined";
+                            } | null;
+                            /** BoxFollowerPerson */
+                            person: {
+                                avatar_url: string | null;
+                                handle: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                nickname: string;
+                            };
+                        }[];
+                        next_cursor: string | null;
+                        /**
+                         * FollowerInviteOffer
+                         * @description What a send may hold: packages listed to everyone, and whether trials are open
+                         */
+                        offer: {
+                            packages: {
+                                billing_period: string | null;
+                                currency: string;
+                                /** Format: uuid */
+                                id: string;
+                                name: string;
+                                price_cents: number;
+                            }[];
+                            trial_available: boolean;
+                        };
+                    };
+                };
+            };
+            /** @description Bad filter or cursor */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminFollowerInviteController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Invitation */
+        requestBody?: {
+            content: {
+                "application/json": {
+                    message?: string | null;
+                    offer_trial?: boolean;
+                    /** Format: uuid */
+                    package_id?: string | null;
+                    user_ids: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description Sent */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        sent: number;
+                        skipped: {
+                            /** @enum {string} */
+                            reason: "declined" | "recently_invited" | "not_a_follower";
+                            /** Format: uuid */
+                            user_id: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description Invalid invitation */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminFollowerInviteController.summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Counts */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * FollowerInviteCounts
+                         * @description Followers who are not box members: listed, may be invited now, did a trial, former box members
+                         */
+                        counts: {
+                            former: number;
+                            invitable: number;
+                            listed: number;
+                            trial: number;
+                        };
                     };
                 };
             };

@@ -527,6 +527,12 @@ defmodule PaleeWeb.FallbackController do
     too_many_rows: {:unprocessable_entity, "The file has too many rows"},
     # ADR-346: automations.
     unknown_recipe: {:not_found, "Unknown recipe"},
+    # ADR-580: inviting followers.
+    invalid_follower_filter: {:unprocessable_entity, "Unknown filter"},
+    follower_invite_people_required: {:unprocessable_entity, "Choose who to invite"},
+    follower_invite_too_many: {:unprocessable_entity, "At most 200 people at a time"},
+    follower_invite_message_too_long: {:unprocessable_entity, "The message is too long"},
+    trials_closed: {:unprocessable_entity, "The box does not take trials"},
     # ADR-552: «Ζήτα να γίνεις μέλος». Also the trials' refusal (ADR-144): being
     # a member already is a conflict with the box's state, like trial_already_used.
     already_member: {:conflict, "You are already a member of this box"},

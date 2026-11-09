@@ -901,3 +901,12 @@ msgstr "Το αίτημά σου για εγγραφή"
 
 msgid "%{box} did not accept your request. You can write to the box."
 msgstr "Το %{box} δεν δέχτηκε το αίτημά σου. Μπορείς να του γράψεις."
+
+msgid "%{box} invites you to become a member"
+msgstr "Το %{box} σε προσκαλεί να γίνεις μέλος"
+
+msgid "See the box's packages and join in a few taps."
+msgstr "Δες τα πακέτα του box και γίνε μέλος με λίγα πατήματα."
+
+msgid "%{box} invites you to become a member."
+msgstr "Το %{box} σε προσκαλεί να γίνεις μέλος."
