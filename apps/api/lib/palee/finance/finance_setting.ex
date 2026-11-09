@@ -23,6 +23,8 @@ defmodule Palee.Finance.FinanceSetting do
     field :package_modules, {:array, :string}, default: ["group_classes", "online_coaching"]
     # ADR-553: who sees the subscription packages (all, own, none).
     field :package_audience, :string, default: "all"
+    # ADR-596: the one package the public page and website feature (nil: none).
+    field :featured_package_id, :binary_id
 
     timestamps(type: :utc_datetime_usec)
   end
@@ -39,7 +41,8 @@ defmodule Palee.Finance.FinanceSetting do
       :entitlement_timezone,
       :document_mode,
       :package_modules,
-      :package_audience
+      :package_audience,
+      :featured_package_id
     ])
     |> validate_required([
       :payment_reminder_interval_days,
@@ -65,6 +68,7 @@ defmodule Palee.Finance.FinanceSetting do
     |> validate_inclusion(:document_mode, ["invoice", "receipt"])
     |> validate_package_modules()
     |> validate_inclusion(:package_audience, Palee.Finance.Domain.PackageAudience.audiences())
+    |> foreign_key_constraint(:featured_package_id)
   end
 
   defp validate_package_modules(changeset) do

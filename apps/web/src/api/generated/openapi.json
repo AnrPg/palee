@@ -64356,6 +64356,21 @@
         "title": "PackageAudienceExceptionRequest",
         "type": "object"
       },
+      "PackageAudienceFeaturedRequest": {
+        "properties": {
+          "package_id": {
+            "description": "null: no package is featured",
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "package_id"
+        ],
+        "title": "PackageAudienceFeaturedRequest",
+        "type": "object"
+      },
       "PackageAudiencePackageRequest": {
         "properties": {
           "audience": {
@@ -64495,11 +64510,18 @@
               "type": "object"
             },
             "type": "array"
+          },
+          "featured_package_id": {
+            "description": "ADR-596: the package the public page and website feature",
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
           }
         },
         "required": [
           "audience",
-          "exceptions"
+          "exceptions",
+          "featured_package_id"
         ],
         "title": "PackageAudienceSettings",
         "type": "object"
@@ -136417,6 +136439,10 @@
                           "description": {
                             "nullable": true,
                             "type": "string"
+                          },
+                          "featured": {
+                            "description": "ADR-596: the box features it («Προτεινόμενο»; only on the package lists)",
+                            "type": "boolean"
                           },
                           "held": {
                             "description": "ADR-553: the signed-in viewer holds it (only on the package lists)",
@@ -265670,11 +265696,18 @@
                         "type": "object"
                       },
                       "type": "array"
+                    },
+                    "featured_package_id": {
+                      "description": "ADR-596: the package the public page and website feature",
+                      "format": "uuid",
+                      "nullable": true,
+                      "type": "string"
                     }
                   },
                   "required": [
                     "audience",
-                    "exceptions"
+                    "exceptions",
+                    "featured_package_id"
                   ],
                   "title": "PackageAudienceSettings",
                   "type": "object"
@@ -265796,11 +265829,18 @@
                         "type": "object"
                       },
                       "type": "array"
+                    },
+                    "featured_package_id": {
+                      "description": "ADR-596: the package the public page and website feature",
+                      "format": "uuid",
+                      "nullable": true,
+                      "type": "string"
                     }
                   },
                   "required": [
                     "audience",
-                    "exceptions"
+                    "exceptions",
+                    "featured_package_id"
                   ],
                   "title": "PackageAudienceSettings",
                   "type": "object"
@@ -265953,11 +265993,18 @@
                         "type": "object"
                       },
                       "type": "array"
+                    },
+                    "featured_package_id": {
+                      "description": "ADR-596: the package the public page and website feature",
+                      "format": "uuid",
+                      "nullable": true,
+                      "type": "string"
                     }
                   },
                   "required": [
                     "audience",
-                    "exceptions"
+                    "exceptions",
+                    "featured_package_id"
                   ],
                   "title": "PackageAudienceSettings",
                   "type": "object"
@@ -266086,11 +266133,18 @@
                         "type": "object"
                       },
                       "type": "array"
+                    },
+                    "featured_package_id": {
+                      "description": "ADR-596: the package the public page and website feature",
+                      "format": "uuid",
+                      "nullable": true,
+                      "type": "string"
                     }
                   },
                   "required": [
                     "audience",
-                    "exceptions"
+                    "exceptions",
+                    "featured_package_id"
                   ],
                   "title": "PackageAudienceSettings",
                   "type": "object"
@@ -266126,6 +266180,159 @@
           }
         ],
         "summary": "Removes a person exception",
+        "tags": [
+          "Package audience"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/package-audience/featured": {
+      "put": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminPackageAudienceController.update_featured",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "package_id": {
+                    "description": "null: no package is featured",
+                    "format": "uuid",
+                    "nullable": true,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "package_id"
+                ],
+                "title": "PackageAudienceFeaturedRequest",
+                "type": "object"
+              }
+            }
+          },
+          "description": "Choice",
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "audience": {
+                      "enum": [
+                        "all",
+                        "own",
+                        "none"
+                      ],
+                      "type": "string"
+                    },
+                    "exceptions": {
+                      "items": {
+                        "properties": {
+                          "effect": {
+                            "enum": [
+                              "show",
+                              "hide"
+                            ],
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "package_id": {
+                            "description": "The package; null for every package of the box",
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "person": {
+                            "properties": {
+                              "avatar_url": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "handle": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "nickname": {
+                                "nullable": true,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "avatar_url",
+                              "handle",
+                              "id",
+                              "nickname"
+                            ],
+                            "title": "PackageAudiencePerson",
+                            "type": "object"
+                          }
+                        },
+                        "required": [
+                          "effect",
+                          "id",
+                          "package_id",
+                          "person"
+                        ],
+                        "title": "PackageAudienceException",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "featured_package_id": {
+                      "description": "ADR-596: the package the public page and website feature",
+                      "format": "uuid",
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "audience",
+                    "exceptions",
+                    "featured_package_id"
+                  ],
+                  "title": "PackageAudienceSettings",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Settings"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such package, person or exception"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invalid choice"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "ADR-596: the package the public page and website feature; null for none",
         "tags": [
           "Package audience"
         ]
@@ -350991,6 +351198,10 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "featured": {
+                          "description": "ADR-596: the box features it («Προτεινόμενο»; only on the package lists)",
+                          "type": "boolean"
+                        },
                         "held": {
                           "description": "ADR-553: the signed-in viewer holds it (only on the package lists)",
                           "type": "boolean"
@@ -427580,6 +427791,10 @@
                           "description": {
                             "nullable": true,
                             "type": "string"
+                          },
+                          "featured": {
+                            "description": "ADR-596: the box features it («Προτεινόμενο»; only on the package lists)",
+                            "type": "boolean"
                           },
                           "held": {
                             "description": "ADR-553: the signed-in viewer holds it (only on the package lists)",

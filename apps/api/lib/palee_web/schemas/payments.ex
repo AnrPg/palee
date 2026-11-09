@@ -495,6 +495,10 @@ defmodule PaleeWeb.Schemas.Payments do
         held: %Schema{
           type: :boolean,
           description: "ADR-553: the signed-in viewer holds it (only on the package lists)"
+        },
+        featured: %Schema{
+          type: :boolean,
+          description: "ADR-596: the box features it («Προτεινόμενο»; only on the package lists)"
         }
       },
       required: [

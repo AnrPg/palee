@@ -113,7 +113,8 @@ defmodule Palee.Finance do
 
       %{
         policy: PackageAudience.policy(stored.box, stored.packages, stored.exceptions),
-        exceptions: stored.exceptions
+        exceptions: stored.exceptions,
+        featured: Map.get(stored, :featured)
       }
     end)
   end
@@ -133,6 +134,10 @@ defmodule Palee.Finance do
       do: scoped(context, fn -> PackageAudienceStore.set_box(audience) end),
       else: {:error, :invalid_audience}
   end
+
+  @doc "ADR-596: the package the box's public page and website feature (nil: none)."
+  def set_featured_package(context, package_id),
+    do: scoped(context, fn -> PackageAudienceStore.set_featured(package_id) end)
 
   def set_package_audience(context, package_id, audience) do
     if PackageAudience.valid?(audience, true),

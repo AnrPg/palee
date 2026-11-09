@@ -45,9 +45,15 @@ defmodule PaleeWeb.Schemas.PackageAudience do
       type: :object,
       properties: %{
         audience: %Schema{type: :string, enum: @audiences},
+        featured_package_id: %Schema{
+          type: :string,
+          format: :uuid,
+          nullable: true,
+          description: "ADR-596: the package the public page and website feature"
+        },
         exceptions: %Schema{type: :array, items: exception()}
       },
-      required: [:audience, :exceptions]
+      required: [:audience, :exceptions, :featured_package_id]
     }
   end
 
@@ -57,6 +63,22 @@ defmodule PaleeWeb.Schemas.PackageAudience do
       type: :object,
       properties: %{audience: %Schema{type: :string, enum: @audiences}},
       required: [:audience]
+    }
+  end
+
+  def featured_request do
+    %Schema{
+      title: "PackageAudienceFeaturedRequest",
+      type: :object,
+      properties: %{
+        package_id: %Schema{
+          type: :string,
+          format: :uuid,
+          nullable: true,
+          description: "null: no package is featured"
+        }
+      },
+      required: [:package_id]
     }
   end
 

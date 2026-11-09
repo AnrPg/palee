@@ -10846,6 +10846,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/package-audience/featured": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** ADR-596: the package the public page and website feature; null for none */
+        put: operations["PaleeWeb.AdminPackageAudienceController.update_featured"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/package-audience/packages/{id}": {
         parameters: {
             query?: never;
@@ -40953,6 +40970,14 @@ export interface components {
             /** Format: uuid */
             user_id: string;
         };
+        /** PackageAudienceFeaturedRequest */
+        PackageAudienceFeaturedRequest: {
+            /**
+             * Format: uuid
+             * @description null: no package is featured
+             */
+            package_id: string | null;
+        };
         /** PackageAudiencePackageRequest */
         PackageAudiencePackageRequest: {
             /**
@@ -40999,6 +41024,11 @@ export interface components {
                     nickname: string | null;
                 };
             }[];
+            /**
+             * Format: uuid
+             * @description ADR-596: the package the public page and website feature
+             */
+            featured_package_id: string | null;
         };
         /** PairWatchRequest */
         PairWatchRequest: {
@@ -63397,6 +63427,8 @@ export interface operations {
                             billing_period: string;
                             currency: string;
                             description?: string | null;
+                            /** @description ADR-596: the box features it («Προτεινόμενο»; only on the package lists) */
+                            featured?: boolean;
                             /** @description ADR-553: the signed-in viewer holds it (only on the package lists) */
                             held?: boolean;
                             /** Format: uuid */
@@ -111050,6 +111082,11 @@ export interface operations {
                                 nickname: string | null;
                             };
                         }[];
+                        /**
+                         * Format: uuid
+                         * @description ADR-596: the package the public page and website feature
+                         */
+                        featured_package_id: string | null;
                     };
                 };
             };
@@ -111100,6 +111137,11 @@ export interface operations {
                                 nickname: string | null;
                             };
                         }[];
+                        /**
+                         * Format: uuid
+                         * @description ADR-596: the package the public page and website feature
+                         */
+                        featured_package_id: string | null;
                     };
                 };
             };
@@ -111172,6 +111214,11 @@ export interface operations {
                                 nickname: string | null;
                             };
                         }[];
+                        /**
+                         * Format: uuid
+                         * @description ADR-596: the package the public page and website feature
+                         */
+                        featured_package_id: string | null;
                     };
                 };
             };
@@ -111234,6 +111281,87 @@ export interface operations {
                                 nickname: string | null;
                             };
                         }[];
+                        /**
+                         * Format: uuid
+                         * @description ADR-596: the package the public page and website feature
+                         */
+                        featured_package_id: string | null;
+                    };
+                };
+            };
+            /** @description No such package, person or exception */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Invalid choice */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminPackageAudienceController.update_featured": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Choice */
+        requestBody?: {
+            content: {
+                "application/json": {
+                    /**
+                     * Format: uuid
+                     * @description null: no package is featured
+                     */
+                    package_id: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        audience: "all" | "own" | "none";
+                        exceptions: {
+                            /** @enum {string} */
+                            effect: "show" | "hide";
+                            /** Format: uuid */
+                            id: string;
+                            /**
+                             * Format: uuid
+                             * @description The package; null for every package of the box
+                             */
+                            package_id: string | null;
+                            /** PackageAudiencePerson */
+                            person: {
+                                avatar_url: string | null;
+                                handle: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                nickname: string | null;
+                            };
+                        }[];
+                        /**
+                         * Format: uuid
+                         * @description ADR-596: the package the public page and website feature
+                         */
+                        featured_package_id: string | null;
                     };
                 };
             };
@@ -140326,6 +140454,8 @@ export interface operations {
                             billing_period: string;
                             currency: string;
                             description?: string | null;
+                            /** @description ADR-596: the box features it («Προτεινόμενο»; only on the package lists) */
+                            featured?: boolean;
                             /** @description ADR-553: the signed-in viewer holds it (only on the package lists) */
                             held?: boolean;
                             /** Format: uuid */
@@ -166722,6 +166852,8 @@ export interface operations {
                             billing_period: string;
                             currency: string;
                             description?: string | null;
+                            /** @description ADR-596: the box features it («Προτεινόμενο»; only on the package lists) */
+                            featured?: boolean;
                             /** @description ADR-553: the signed-in viewer holds it (only on the package lists) */
                             held?: boolean;
                             /** Format: uuid */

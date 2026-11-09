@@ -5,10 +5,16 @@ defmodule Palee.Finance.Ports.PackageAudienceStore do
   runs inside the caller's tenant scope (`Finance.with_tenant_context/2`).
   """
 
-  @doc "`%{box: audience, packages: %{id => audience | nil}, exceptions: [map]}`."
+  @doc """
+  `%{box: audience, packages: %{id => audience | nil}, exceptions: [map],
+  featured: package_id | nil}` (ADR-596: the package the box features).
+  """
   @callback load() :: map()
 
   @callback set_box(String.t()) :: {:ok, String.t()} | {:error, term()}
+
+  @doc "ADR-596: features one of the box's packages (nil: none)."
+  @callback set_featured(Ecto.UUID.t() | nil) :: {:ok, Ecto.UUID.t() | nil} | {:error, term()}
 
   @callback set_package(Ecto.UUID.t(), String.t() | nil) :: {:ok, map()} | {:error, term()}
 
