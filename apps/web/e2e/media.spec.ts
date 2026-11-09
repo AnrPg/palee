@@ -429,3 +429,27 @@ test.describe("photos and video in posts", () => {
     expect(calls.posts).toEqual([]);
   });
 });
+
+test.describe("who will see it", () => {
+  test("the audience picker says where each choice shows; public stays out of Around me unless switched on", async ({ page }) => {
+    await stub(page, () => []);
+
+    await page.goto("/clubs/club-1");
+    await page.getByRole("button", { name: "New post" }).click();
+    const compose = page.getByRole("dialog", { name: "New post" });
+    await compose.getByRole("button", { name: /Who will see it/ }).click();
+    const picker = page.getByRole("dialog", { name: "Who will see it" });
+    await expect(picker.getByText("Club members only, in their Feed and the channel.").first()).toBeVisible();
+    const reach = picker.getByTestId("compose-reach");
+    await expect(reach.getByRole("listitem").first()).toHaveText("In club members' Feed");
+    await expect(reach.getByText("In the #wod-today channel")).toBeVisible();
+    await expect(reach.getByRole("listitem").filter({ hasText: "On your profile" })).toContainText("Not:");
+
+    await picker.getByRole("radio", { name: /Public/ }).last().check();
+    await expect(picker).toBeHidden();
+    await compose.getByRole("button", { name: /Who will see it/ }).click();
+    await expect(reach.getByText("On your profile, for everyone on Palee")).toBeVisible();
+    await expect(reach.getByText("In your followers' Feed")).toBeVisible();
+    await expect(reach.getByRole("listitem").filter({ hasText: "In Around me" })).toContainText("Not:");
+  });
+});

@@ -133,3 +133,35 @@ describe("feedHasPosts", () => {
     expect(feedHasPosts({ pages: [page([], [post])] })).toBe(true);
   });
 });
+
+describe("audienceReach («Πού θα φανεί»)", async () => {
+  const { audienceReach } = await import("./community");
+  const shown = (places: { key: string; shown: boolean }[]) => places.filter((p) => p.shown).map((p) => p.key);
+
+  it("keeps a club channel post to the club, off the profile and Γύρω μου", () => {
+    const places = audienceReach({ kind: "channel", channelId: "c1", public: false }, true);
+    expect(shown(places)).toEqual(["whereClubFeed", "whereChannel"]);
+  });
+
+  it("puts a box-public post on the box page and its followers' feed", () => {
+    expect(shown(audienceReach({ kind: "channel", channelId: "c1", public: true }, false))).toEqual([
+      "whereClubFeed",
+      "whereBoxPage",
+      "whereBoxFollowersFeed",
+      "whereAroundPublished",
+    ]);
+  });
+
+  it("shows a followers post only to followers", () => {
+    expect(shown(audienceReach({ kind: "profile", audience: "followers" }, true))).toEqual([
+      "whereFollowersFeed",
+      "whereProfileFollowers",
+    ]);
+  });
+
+  it("puts a public post in Γύρω μου only with «Φαίνομαι στο Γύρω μου»", () => {
+    const target = { kind: "profile", audience: "public" } as const;
+    expect(shown(audienceReach(target, false))).toEqual(["whereProfileEveryone", "whereFollowersFeed"]);
+    expect(shown(audienceReach(target, true))).toContain("whereAround");
+  });
+});

@@ -46,6 +46,63 @@ export type ComposeTarget =
   | { kind: "channel"; channelId: string; public: boolean }
   | { kind: "profile"; audience: "followers" | "public" };
 
+/** One place a post shows up, or does not («Πού θα φανεί»). */
+export type ReachPlace = {
+  key:
+    | "whereClubFeed"
+    | "whereChannel"
+    | "whereYourProfile"
+    | "whereProfileFollowers"
+    | "whereProfileEveryone"
+    | "whereFollowersFeed"
+    | "whereClubs"
+    | "whereAround"
+    | "whereBoxPage"
+    | "whereBoxFollowersFeed"
+    | "whereAroundPublished";
+  shown: boolean;
+};
+
+/**
+ * Where a post with `target` shows (ADR-142, ADR-154 §6): a club post in its
+ * members' feed and channel; a box-public post also on the box page and in
+ * its followers' feed; a profile post in the followers' feed and on the
+ * profile; a public one in Γύρω μου only with «Φαίνομαι στο Γύρω μου».
+ * There is no feed for everyone (vision §7.1).
+ */
+export function audienceReach(target: ComposeTarget, aroundVisible: boolean): ReachPlace[] {
+  if (target.kind === "channel" && target.public) {
+    return [
+      { key: "whereClubFeed", shown: true },
+      { key: "whereBoxPage", shown: true },
+      { key: "whereBoxFollowersFeed", shown: true },
+      { key: "whereAroundPublished", shown: true },
+    ];
+  }
+  if (target.kind === "channel") {
+    return [
+      { key: "whereClubFeed", shown: true },
+      { key: "whereChannel", shown: true },
+      { key: "whereYourProfile", shown: false },
+      { key: "whereAround", shown: false },
+    ];
+  }
+  if (target.audience === "followers") {
+    return [
+      { key: "whereFollowersFeed", shown: true },
+      { key: "whereProfileFollowers", shown: true },
+      { key: "whereClubs", shown: false },
+      { key: "whereAround", shown: false },
+    ];
+  }
+  return [
+    { key: "whereProfileEveryone", shown: true },
+    { key: "whereFollowersFeed", shown: true },
+    { key: "whereAround", shown: aroundVisible },
+    { key: "whereClubs", shown: false },
+  ];
+}
+
 /** Every target the sheet offers: channels grouped by club, then the profile audiences. */
 export function composeTargetGroups(clubs: CommunityClub[]) {
   return clubs

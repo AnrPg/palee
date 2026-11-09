@@ -12,6 +12,7 @@ import { clientErrorMessage } from "@/components/client/errors";
 import { formatDateTime } from "@/components/client/format";
 import {
   attachmentTypeOf,
+  audienceReach,
   channelName,
   composeTargetGroups,
   initialComposeTarget,
@@ -24,6 +25,7 @@ import { ComposeMediaPicker } from "@/components/media/ComposeMediaPicker";
 import { useComposeMedia } from "@/components/media/useComposeMedia";
 import { formatScore } from "@/components/pantheon/PantheonCard";
 import { useSession } from "@/components/session-provider";
+import { useSocialSummary } from "@/components/social/use-social";
 import { useUiTranslations } from "@/i18n/ui";
 import { useUiLocale } from "@/i18n/use-ui-locale";
 import { Dialog } from "@/components/ui/Dialog";
@@ -341,7 +343,8 @@ function presetLabel(snapshot: Record<string, unknown> | undefined, t: (key: str
 
 /**
  * «Ποιος το βλέπει» (plan §5a Q13): channels grouped by club, then the
- * profile audiences, each saying who sees it.
+ * profile audiences, each saying who sees it and where; under them
+ * «Πού θα φανεί» for the chosen one (mockup A, 2026-11-09).
  */
 function AudienceSheet({
   groups,
@@ -355,6 +358,14 @@ function AudienceSheet({
   onClose: () => void;
 }) {
   const t = useTranslations("Community");
+  const summary = useSocialSummary();
+  const aroundVisible = summary.data?.around_visibility?.visible ?? false;
+  const selectedChannel =
+    selected.kind === "channel"
+      ? groups.flatMap(({ club, channels }) => channels.map((channel) => ({ club, channel }))).find(
+          ({ channel }) => channel.id === selected.channelId,
+        )
+      : undefined;
   const option = (target: ComposeTarget, label: string, hint: string, key: string) => (
     <Choice key={key} name="audience" checked={sameTarget(target, selected)} onChange={() => onPick(target)} label={label} hint={hint} />
   );
@@ -391,6 +402,30 @@ function AudienceSheet({
           {option({ kind: "profile", audience: "followers" }, t("audienceFollowers"), t("audienceFollowersHint"), "followers")}
           {option({ kind: "profile", audience: "public" }, t("audiencePublic"), t("audiencePublicHint"), "public")}
         </fieldset>
+        <div
+          data-testid="compose-reach"
+          aria-live="polite"
+          className="rounded-2xl p-3 text-sm"
+          style={{ background: "var(--panel-raised)", color: "var(--text-soft)" }}
+        >
+          <p className="font-semibold" style={{ color: "var(--text)" }}>{t("whereTitle")}</p>
+          <ul className="mt-1 flex flex-col gap-0.5 ps-5" style={{ listStyleType: "disc" }}>
+            {audienceReach(selected, aroundVisible).map((place) => {
+              const label = t(place.key, {
+                channel: selectedChannel ? channelName(selectedChannel.channel, t) : "",
+                club: selectedChannel?.club.name ?? "",
+              });
+              return place.shown ? (
+                <li key={place.key}>{label}</li>
+              ) : (
+                <li key={place.key} className="line-through" style={{ color: "var(--dim)" }}>
+                  <span className="sr-only">{t("whereNot")} </span>
+                  {label}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
     </Dialog>
   );
 }
