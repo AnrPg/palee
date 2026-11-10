@@ -176,7 +176,7 @@ function FollowerList({ counts }: { counts: { listed: number; trial: number; for
       ) : null}
       {picked.size > 0 ? (
         <div
-          className="sticky bottom-[calc(var(--bottom-bar-space,0px)+0.5rem)] z-(--z-sticky) flex items-center gap-3 rounded-2xl p-3"
+          className="sticky bottom-[calc(var(--bottom-float-inset)+0.5rem)] z-(--z-sticky) flex items-center gap-3 rounded-2xl p-3"
           style={{ background: "var(--panel-raised)", border: "1px solid var(--border)", boxShadow: "var(--shadow-sm)" }}
         >
           <span className="min-w-0 flex-1 text-sm" style={{ color: "var(--text-soft)" }}>
