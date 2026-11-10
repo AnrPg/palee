@@ -96,6 +96,25 @@ describe.each(TEMPLATES)("BoxWebsite «%s»", (template) => {
     expect(screen.getAllByText("Μαρία").length).toBeGreaterThan(0);
   });
 
+  it("puts the same «flag + code ▾» language button in the footer as in the bar (ADR-545)", () => {
+    show({ template, site: { languages: ["el", "en", "de"] } });
+    const footer = screen.getByTestId("site-footer");
+    const button = within(footer).getByTestId("site-footer-language-button");
+    expect(button).toHaveTextContent("EL");
+    expect(button.querySelector('img[data-flag="el"]')).not.toBeNull();
+    expect(within(footer).queryByRole("link", { name: /^(el|en|de)$/i })).toBeNull();
+    fireEvent.click(button);
+    const list = screen.getByTestId("site-languages");
+    expect(within(list).getByTestId("site-language-option-de")).toHaveAttribute("href", "/b/box-kypseli/de");
+    expect(within(list).getByTestId("site-language-option-en")).toHaveTextContent("English");
+  });
+
+  it("shows no language button with one language", () => {
+    show({ template, site: { languages: ["el"] } });
+    expect(screen.queryByTestId("site-footer-language-button")).toBeNull();
+    expect(screen.queryByTestId("site-language-button")).toBeNull();
+  });
+
   it("moves less with «Λιγότερη κίνηση»", () => {
     show({ template, site: { calm_motion: true } });
     expect(screen.getByTestId("box-website").className).toContain("calm");
