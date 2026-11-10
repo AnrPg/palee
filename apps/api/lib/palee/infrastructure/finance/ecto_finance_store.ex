@@ -24,6 +24,7 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
     MembershipPackageSubscription,
     MembershipPayment,
     FinancePaymentReversal,
+    PackageRequest,
     PromotionCampaign,
     PromotionCode,
     PromotionRedemption,
@@ -382,6 +383,7 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
            {:ok, params} <- payment_model_params(membership, package, string_key_map(params)) do
         subscription = insert_subscription!(membership, package, params)
         rejoin!(membership)
+        activate_package_requests!(membership, package, subscription)
 
         # ADR-274: what the package costs is owed from the day it starts.
         if params["charge_now"] != false,
@@ -394,6 +396,38 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
         {:error, reason} -> Repo.rollback(reason)
       end
     end)
+  end
+
+  # ADR-291 addendum: however the package is given (the desk's «Είσπραξη»,
+  # «+ Πληρωμή», an assignment or a gift), a «Το θέλω» still waiting for it
+  # is fulfilled, so it leaves the queue and cannot be collected twice. The
+  # «Είσπραξη» then adds its payment to the closed request.
+  defp activate_package_requests!(membership, package, subscription) do
+    now = DateTime.utc_now()
+
+    PackageRequest
+    |> tenant_scope()
+    |> where(
+      [r],
+      r.user_id == ^membership.user_id and r.membership_package_id == ^package.id and
+        r.status == "pending"
+    )
+    |> Repo.update_all(
+      set: [
+        status: "activated",
+        closed_at: now,
+        closed_by_id: acting_user_id(),
+        membership_package_subscription_id: subscription.id,
+        updated_at: now
+      ]
+    )
+  end
+
+  defp acting_user_id do
+    case Ecto.UUID.cast(RepoContext.current_setting("app.user_id") || "") do
+      {:ok, id} -> id
+      :error -> nil
+    end
   end
 
   defp insert_subscription!(membership, package, params) do

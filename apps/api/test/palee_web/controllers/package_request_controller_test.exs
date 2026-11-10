@@ -151,11 +151,47 @@ defmodule PaleeWeb.PackageRequestControllerTest do
     profile = Finance.get_member_profile(ctx.context, ctx.member.id)
     assert profile.membership
 
+    stored =
+      Finance.with_tenant_context(ctx.context, fn -> PackageRequestStore.get(request["id"]) end)
+
+    assert stored.membership_payment_id
+    assert stored.membership_package_subscription_id
+    assert stored.closed_by_id == ctx.admin.id
+
     # Pressed twice: the money is recorded once.
     assert %{"code" => "package_request_closed"} =
              conn |> collect(ctx, request["id"]) |> json_response(409)
 
     assert desk_queue(conn, ctx) == []
+  end
+
+  test "a package given another way fulfils the waiting request, so it is not collected twice",
+       %{conn: conn} = ctx do
+    request = conn |> ask(ctx, ctx.monthly) |> json_response(201) |> Map.fetch!("request")
+
+    conn
+    |> put_bearer_token(ctx.admin)
+    |> post(admin_path(ctx, "/finance/members/#{ctx.member.id}/packages"), %{
+      membership_package_id: ctx.monthly.id
+    })
+    |> json_response(201)
+
+    assert desk_queue(conn, ctx) == []
+
+    stored =
+      Finance.with_tenant_context(ctx.context, fn -> PackageRequestStore.get(request["id"]) end)
+
+    assert stored.status == "activated"
+    assert stored.membership_package_subscription_id
+    assert stored.closed_by_id == ctx.admin.id
+
+    assert %{"code" => "package_request_closed"} =
+             conn |> collect(ctx, request["id"]) |> json_response(409)
+
+    # Another person's request for the same package still waits.
+    other = conn |> ask(ctx, ctx.monthly, ctx.other) |> json_response(201)
+    assert [%{"id" => id}] = desk_queue(conn, ctx)
+    assert id == other["request"]["id"]
   end
 
   test "a desk payment needs a desk payment method", %{conn: conn} = ctx do
