@@ -28,10 +28,11 @@ function useCurrentLanguage() {
 }
 
 /**
- * ADR-545: «🇬🇷 EL ▾» at the top right of the website's bar; it opens the
- * list of the languages the owner shows. Hidden with one language.
+ * ADR-545: «🇬🇷 EL ▾» at the top right of the website's bar and in its
+ * footer; it opens the list of the languages the owner shows. Hidden with
+ * one language.
  */
-export function SiteLanguageButton() {
+export function SiteLanguageButton({ testId = "site-language-button" }: { testId?: string } = {}) {
   const { site, open } = useSite();
   const { tb } = useSiteText();
   const tl = useTranslations("LanguageMenu");
@@ -45,7 +46,7 @@ export function SiteLanguageButton() {
       aria-label={tl("button", { language: nativeLanguageName(current) })}
       title={tb("languageLabel")}
       onClick={() => open({ kind: "languages" })}
-      data-testid="site-language-button"
+      data-testid={testId}
     >
       <LanguageFlag code={current} size={20} />
       <span>{languageShortCode(current)}</span>

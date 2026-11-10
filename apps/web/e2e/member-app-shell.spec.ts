@@ -714,12 +714,14 @@ test.describe("member app shell", () => {
     await expect(page.getByTestId("app-language-menu")).toHaveCount(0);
 
     await page.goto("/me/settings");
-    const language = page.getByRole("combobox", { name: "Application language" });
-    await expect(language).toHaveAttribute("data-value", "en");
+    // ADR-545: the same «🇬🇧 EN ▾» button as everywhere else; the list shows flag, code and own name.
+    const language = page.getByTestId("settings-language-menu");
+    await expect(language).toHaveText(/EN/);
+    await expect(language.locator('img[data-flag="en"]')).toHaveAttribute("src", "/flags/gb.svg");
     await language.click();
-    await expect(page.locator('[role="option"][data-value="el"]')).toContainText("Ελληνικά");
+    await expect(page.getByTestId("settings-language-menu-option-el")).toContainText("Ελληνικά");
     // Choosing saves it on the account, then the page reloads in it.
-    await page.locator('[role="option"][data-value="el"]').click();
+    await page.getByTestId("settings-language-menu-option-el").click();
     await expect.poll(() => patches).toEqual([{ preferred_locale: "el" }]);
   });
 

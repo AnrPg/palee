@@ -65,6 +65,7 @@ the original wording and dates for traceability.
 | TD-109 | Resolved (four small leftovers listed in the row) |
 | TD-205 | Resolved |
 | TD-206–TD-210 | Open |
+| TD-211 | Open |
 
 ## Detailed Ledger
 
@@ -210,3 +211,4 @@ the original wording and dates for traceability.
 | TD-540 | Programmes (ADR-540) | A day counts as done only through an in-app run or a training-log entry of the assigned workout the purchase created; a buyer who logs the same WOD another way (library, freeform) still sees it behind. Purchases made before ADR-540 have no `planned_ends_on` until their first move (no backfill under forced RLS). | Keeps «done» exact and cheap to read | Low | 2026-11-04 |
 | TD-541 | Programmes (ADR-541) | The cover is rendered by the browser; the API checks the 16:9 size and the edit values but cannot prove the rendered image matches the stored edit of the original. | No server image processing for inspected media (ADR-148) | Low | 2026-11-04 |
 | TD-542 | Workouts / Search (ADR-542, ADR-461) | Meilisearch indexes no exercises on `main`; ADR-461's `exercise_names` index (open branch) does. Once both are merged, add `equipment` (from `ExerciseEquipment.for_exercise/1`, filterable) to its catalogue documents. Also: «περίπου ανά προπόνηση» uses only `estimated_duration_seconds`; a WOD without it but with a time cap or a timed section could be counted from its timers. Programme titles are not translatable on the box website (ADR-520). | Avoid editing files the ADR-461 branch changes; keep the first version exact | Medium | 2026-11-04 |
+| TD-211 | Public box page / Coaches | Staff cannot set a coach's photo for the public box page and box website (`/b/<slug>/coaches`, «Coaches» card). The card shows only the coach's own account avatar (`PublicBox.coaches/2` reads `avatar_url` from Identity), which only the coach can upload (Ρυθμίσεις › Εικόνα προφίλ); a coach who never uploads one shows a placeholder and the box cannot fix it. Add a box-owned public photo per coach, managed in Δημόσια σελίδα › Coaches next to the pick, falling back to the coach's avatar when unset. Mockups with alternatives first (who may upload, crop, whether the coach must agree, removal when the coach leaves the box) | Raised by ANR 2026-11-10; not built, needs mockups and decisions | Medium | 2026-11-10 |

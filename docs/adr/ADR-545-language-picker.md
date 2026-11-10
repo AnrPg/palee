@@ -25,7 +25,15 @@ script. Mockups: https://claude.ai/artifact/RUiKdbUFopP3MnPquXF6Hj (A · A · A)
    the cookie, reloads; shared with Ρυθμίσεις through `useAppLanguage`) and
    on the signed-out pages (cookie only). Box website: top right of every
    template's bar (`SiteLanguageButton` → the `languages` overlay, in the
-   template's colours) and on the signed-in app view of the box; the footer
-   keeps its language links. Hidden when a site shows one language.
+   template's colours) and on the signed-in app view of the box. Hidden when
+   a site shows one language.
+5. **Amendment 2026-11-10 (ANR: «we agreed on flags + 2-letter in a
+   dropdown»).** No bare-code toggles anywhere: the website footer shows the
+   same `SiteLanguageButton` as the bar (opening the same list) instead of
+   «EL EN» links, and Ρυθμίσεις › Γλώσσα uses `LanguageMenu` instead of a
+   list of names. Crawlers still find every language through the page's
+   hreflang alternates and the sitemap (ADR-530). A site lists only the
+   languages its owner shows (box language + translations in the website
+   settings), so a box with Greek and English shows those two.
 4. Page titles stay in the language of the page's address (ADR-530), not
    the visitor's app language.

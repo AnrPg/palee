@@ -31,11 +31,7 @@ import { JournalSettingsSections } from "@/components/providers/JournalSettings"
 import { isSupportedAvatarSource } from "@/components/profile/avatar-crop";
 import { useSession } from "@/components/session-provider";
 import { useAppLanguage } from "@/components/account/use-app-language";
-import {
-  LOCALE_NAMES,
-  SUPPORTED_LOCALES,
-  type AppLocale,
-} from "@/i18n/locales";
+import { isAppLocale, SUPPORTED_LOCALES } from "@/i18n/locales";
 import { PageHeader } from "@/components/PageHeader";
 import { OutboxSettingsCard } from "@/components/outbox/OutboxSettingsCard";
 import { BackToMe } from "@/components/member-app/me/BackToMe";
@@ -46,7 +42,7 @@ import { showsTenantSelfServiceSurfaces } from "@/lib/account-surfaces";
 import { ThemeSetting } from "@/components/profile/ThemeSetting";
 import { AthleteUseSetting } from "@/components/profile/AthleteUseSetting";
 import { usesAppAsAthlete } from "@/lib/athlete-use";
-import { Select } from "@/components/ui/Select";
+import { LanguageMenu } from "@/components/ui/LanguageMenu";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 
 function FieldGroup({ label, children }: { label: string; children: React.ReactNode }) {
@@ -196,24 +192,16 @@ export function ProfilePage() {
           defaultOpen
         >
           <FieldGroup label={tProfile("languageLabel")}>
-            <Select
-              aria-label={tProfile("languageLabel")}
-              className="w-full rounded-xl px-4 py-2.5 text-sm outline-none"
-              disabled={language.pending}
+            {/* ADR-545: the same «🇬🇷 EL ▾» button as everywhere else, not a list of bare names. */}
+            <LanguageMenu
               value={language.value}
-              onValueChange={(value) => void language.choose(value as AppLocale)}
-              style={{
-                background: "var(--panel-muted)",
-                border: "1px solid var(--border)",
-                color: "var(--text)",
+              options={SUPPORTED_LOCALES}
+              pending={language.pending}
+              onChoose={(value) => {
+                if (isAppLocale(value)) void language.choose(value);
               }}
-            >
-              {SUPPORTED_LOCALES.map((supportedLocale) => (
-                <option key={supportedLocale} value={supportedLocale}>
-                  {LOCALE_NAMES[supportedLocale]}
-                </option>
-              ))}
-            </Select>
+              testId="settings-language-menu"
+            />
           </FieldGroup>
           {language.pending ? (
             <p className="mt-3 text-sm" style={{ color: "var(--muted)" }}>

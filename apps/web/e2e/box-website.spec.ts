@@ -172,7 +172,11 @@ test.describe("the box's public website", () => {
     // The app's box page and its enquiry card are not shown to guests.
     await expect(page.getByTestId("site-sections")).toHaveCount(0);
     await expect(page.getByTestId("enquiry-open")).toHaveCount(0);
-    await expect(page.getByTestId("site-language-switch").getByRole("link", { name: "el" })).toHaveAttribute("aria-current", "page");
+    // ADR-545: the footer has the same «🇬🇷 EL ▾» button as the bar, never a row of bare codes.
+    const footerLanguage = page.getByTestId("site-footer").getByTestId("site-footer-language-button");
+    await expect(footerLanguage).toHaveText(/EL/);
+    await expect(footerLanguage.locator('img[data-flag="el"]')).toBeVisible();
+    await expect(page.getByTestId("site-footer").getByRole("link", { name: /^en$/i })).toHaveCount(0);
 
     // The footer names Palee's moderation address for reports on content (ADR-397).
     await expect(page.getByTestId("site-report-contact")).toHaveAttribute("href", "mailto:moderation@palee.app");
@@ -254,12 +258,16 @@ test.describe("the box's public website", () => {
     await expect(page.getByTestId("site-about")).toContainText("A friendly box in Kypseli.");
     await expect(page.getByText("Ένα φιλικό box στην Κυψέλη.")).toHaveCount(0);
     await expect(page.getByTestId("site-faq").first().getByText("Do I need experience?")).toBeVisible();
-    await expect(page.getByTestId("site-language-switch").getByRole("link", { name: "en" })).toHaveAttribute("aria-current", "page");
+    await expect(page.getByTestId("site-footer-language-button")).toHaveText(/EN/);
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", new RegExp(`/b/${slug}/en$`));
 
     await page.goto(`/b/${slug}/en/coaches`);
     await expect(page.getByTestId("box-website")).toHaveAttribute("data-page", "coaches");
-    await expect(page.getByTestId("site-language-switch").getByRole("link", { name: "el" })).toHaveAttribute("href", `/b/${slug}/coaches`);
+    // The footer's button opens the same list as the bar's; its rows keep the page.
+    await page.getByTestId("site-footer-language-button").click();
+    await expect(page.getByTestId("site-languages").getByTestId("site-language-option-el")).toHaveAttribute("href", `/b/${slug}/coaches`);
+    await page.keyboard.press("Escape");
+    await expect(page.getByTestId("site-languages")).toHaveCount(0);
 
     // ADR-545: «🇬🇧 EN ▾» at the top right opens the list, current first; each row is a flag, its code and its own name.
     const button = page.getByTestId("site-language-button");

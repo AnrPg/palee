@@ -66,9 +66,7 @@
 .bw .foot .wrapx{display:flex; flex-wrap:wrap; gap:10px 24px; justify-content:space-between; align-items:center; padding:0}
 .bw .foot button,.bw .foot a{font:inherit; border:0; background:none; color:inherit; text-decoration:underline; cursor:pointer; padding:0; min-height:44px; display:inline-flex; align-items:center}
 .bw .foot .links{display:flex; flex-wrap:wrap; gap:0 14px; align-items:center}
-.bw .foot .langs{display:flex; gap:4px}
-.bw .foot .langs a{text-decoration:none; min-width:44px; justify-content:center; text-transform:uppercase; font-weight:700; border-radius:999px}
-.bw .foot .langs a[aria-current="page"]{background:var(--s-surface); color:var(--s-ink); box-shadow:inset 0 0 0 1px var(--s-line)}
+.bw .foot .langBtn{text-decoration:none; min-height:44px; padding:0 12px; gap:6px; background:var(--s-surface); color:var(--s-ink); box-shadow:inset 0 0 0 1px var(--s-line); border-radius:999px; font-weight:800}
 .bw input,.bw textarea{font:inherit; color:var(--s-ink); background:var(--s-surface); border:1.5px solid var(--s-line-strong); border-radius:12px; padding:12px; width:100%}
 .bw input[aria-invalid="true"],.bw textarea[aria-invalid="true"]{border-color:var(--s-err)}
 .bw label{font-size:13px; font-weight:600}
