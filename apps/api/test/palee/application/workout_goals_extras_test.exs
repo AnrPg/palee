@@ -68,11 +68,11 @@ defmodule Palee.Application.WorkoutGoalsExtrasTest do
   end
 
   describe "gym default visibility" do
-    test "is off by default and exposed through the admin settings", ctx do
-      assert {:ok, %{workouts: %{wod_goals_visible_by_default: false}}} =
+    test "is on by default and exposed through the admin settings", ctx do
+      assert {:ok, %{workouts: %{wod_goals_visible_by_default: true}}} =
                GetAdminSettings.call(ctx.staff)
 
-      assert {:ok, %{goals: %{visible_to_members: false}}} =
+      assert {:ok, %{goals: %{visible_to_members: true}}} =
                GetWorkoutGoals.call(ctx.staff, ctx.workout.id)
     end
 
@@ -123,7 +123,7 @@ defmodule Palee.Application.WorkoutGoalsExtrasTest do
                  "wod_goals_visible_by_default" => true
                })
 
-      assert %{wod_goals_visible_by_default: false} =
+      assert %{wod_goals_visible_by_default: true} =
                Organizations.get_workout_settings(coach_context)
     end
   end

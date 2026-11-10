@@ -9320,8 +9320,6 @@
     "title": "Ziele",
     "showToMembers": "Ziele den Mitgliedern zeigen",
     "showToMembersHint": "Mitglieder sehen die Ziele auf der Workout-Karte.",
-    "notSavedYet": "Vorschlag · noch nicht gespeichert",
-    "keepSuggestion": "Vorschlag behalten",
     "needsDraft": "Ziele erscheinen, sobald der Entwurf gespeichert ist.",
     "legend": {
       "primary": "Primär",
@@ -9406,7 +9404,7 @@
       "sectionTitle": "Workouts",
       "sectionDescription": "Voreinstellungen für neue Workouts.",
       "visibleByDefault": "Ziele standardmäßig sichtbar",
-      "visibleByDefaultHint": "Startwert von «Ziele den Mitgliedern zeigen» bei Workouts ohne eigene Ziele.",
+      "visibleByDefaultHint": "Ohne gespeicherte Ziele sehen Mitglieder die aus den Übungen vorgeschlagenen Ziele. Ein Coach kann sie bei jedem Workout ausblenden.",
       "feltPrompt": "«Wie hat es sich angefühlt?» auch ohne Ziele",
       "feltPromptHint": "Nach einem Workout ohne Ziele anbieten, am Körper zu markieren, was du gespürt hast."
     },

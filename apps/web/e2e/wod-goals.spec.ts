@@ -125,7 +125,7 @@ test("coach shows goals to members and edits them on the chips and in the picker
   await page.getByRole("tab", { name: "Goals", exact: true }).click();
   const panel = page.getByTestId("wod-goals-panel");
   await expect(panel.getByText("Suggested from 2 exercises")).toBeVisible();
-  await expect(panel.getByText("Suggestion · not saved yet")).toBeVisible();
+  await expect(panel.getByText(/not saved yet/)).toHaveCount(0);
   const totals = panel.getByRole("region", { name: "What they felt" });
   await expect(totals).toContainText("12 entries");
   await expect(totals).toContainText("Latissimus dorsi9");

@@ -135,12 +135,7 @@ function GoalsPanel({ workoutId, refreshKey, timeDomainSeconds = null }: { worko
         {state.inheritedFrom ? (
           <p className="text-xs font-semibold" style={{ color: "var(--text-soft, var(--muted))" }}>{t("inherited")}</p>
         ) : null}
-        <SaveLine
-          status={saveStatus}
-          saved={state.saved || Boolean(state.inheritedFrom)}
-          onKeep={() => dispatch({ type: "setVisible", visible: draft.visible })}
-          onRetry={() => setRetry((value) => value + 1)}
-        />
+        <SaveLine status={saveStatus} onRetry={() => setRetry((value) => value + 1)} />
       </div>
 
       <div className="flex items-start gap-3">
@@ -235,7 +230,7 @@ function GoalsPanel({ workoutId, refreshKey, timeDomainSeconds = null }: { worko
   );
 }
 
-function SaveLine({ status, saved, onKeep, onRetry }: { status: SaveStatus; saved: boolean; onKeep: () => void; onRetry: () => void }) {
+function SaveLine({ status, onRetry }: { status: SaveStatus; onRetry: () => void }) {
   const t = useTranslations("WodGoals");
   if (status === "error" || status === "invalid") {
     return (
@@ -246,13 +241,7 @@ function SaveLine({ status, saved, onKeep, onRetry }: { status: SaveStatus; save
     );
   }
   if (status === "saving") return <p role="status" className="text-xs" style={{ color: "var(--muted)" }}>{t("status.saving")}</p>;
-  if (!saved) {
-    return (
-      <p className="flex flex-wrap items-center gap-2 text-xs" style={{ color: "var(--muted)" }}>
-        {t("notSavedYet")}
-        <button type="button" className="font-bold" style={{ color: "var(--primary-strong, var(--primary))" }} onClick={onKeep}>{t("keepSuggestion")}</button>
-      </p>
-    );
-  }
+  // ANR 2026-11-10: an unsaved suggestion is already what members see, so
+  // it carries no «not saved yet» mark.
   return status === "saved" ? <p role="status" className="text-xs" style={{ color: "var(--success, var(--muted))" }}>{t("status.saved")}</p> : null;
 }

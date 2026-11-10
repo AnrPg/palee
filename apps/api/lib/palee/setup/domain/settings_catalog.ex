@@ -29,7 +29,7 @@ defmodule Palee.Setup.Domain.SettingsCatalog do
     {"access.role_grants", :advanced, %{}, true},
     {"join_link.member", :basic, false, false},
     {"join_link.athlete", :advanced, false, false},
-    {"workouts.wod_goals_visible_by_default", :advanced, false, true},
+    {"workouts.wod_goals_visible_by_default", :advanced, true, true},
     {"workouts.wod_assistant_enabled", :advanced, true, true},
     {"onboarding.checklist", :derive, nil, false},
     # B. Money

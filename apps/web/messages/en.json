@@ -9320,8 +9320,6 @@
     "title": "Goals",
     "showToMembers": "Show goals to box members",
     "showToMembersHint": "Box members see the goals on the workout card.",
-    "notSavedYet": "Suggestion · not saved yet",
-    "keepSuggestion": "Keep the suggestion",
     "needsDraft": "Goals appear once the draft is saved.",
     "legend": {
       "primary": "Primary",
@@ -9406,7 +9404,7 @@
       "sectionTitle": "Workouts",
       "sectionDescription": "Defaults for new workouts.",
       "visibleByDefault": "Goals visible by default",
-      "visibleByDefaultHint": "The starting value of «Show goals to box members» on workouts without goals of their own.",
+      "visibleByDefaultHint": "Without saved goals, members see the goals suggested from the exercises. A coach can hide them on any workout.",
       "feltPrompt": "«How did it feel?» without goals too",
       "feltPromptHint": "After a workout without goals, offer to mark on the body what you felt."
     },

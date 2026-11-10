@@ -75,7 +75,7 @@ describe("WodGoalsEditorPanel", () => {
     wrap(<WodGoalsEditorPanel workoutId="w-1" timeDomainSeconds={420} />);
 
     expect(await screen.findByText("Suggested from 3 exercises · 1 exercise not matched")).toBeInTheDocument();
-    expect(screen.getByText("Suggestion · not saved yet")).toBeInTheDocument();
+    expect(screen.queryByText(/not saved yet/)).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Reset to suggestion" })).toBeDisabled();
     expect(apiRequest).toHaveBeenCalledWith("/admin/workouts/w-1/goals", { token: "token" });
 
@@ -244,7 +244,7 @@ describe("inherited goals", () => {
     }));
     wrap(<WodGoalsEditorPanel workoutId="variant-1" />);
     expect(await screen.findByText("From the base workout")).toBeInTheDocument();
-    expect(screen.queryByText("Suggestion · not saved yet")).not.toBeInTheDocument();
+    expect(screen.queryByText(/not saved yet/)).not.toBeInTheDocument();
     expect(screen.getByRole("checkbox", { name: "Show goals to box members" })).toBeChecked();
   });
 });

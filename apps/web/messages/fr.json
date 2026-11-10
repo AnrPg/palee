@@ -9320,8 +9320,6 @@
     "title": "Objectifs",
     "showToMembers": "Montrer les objectifs aux membres de la box",
     "showToMembersHint": "Les membres de la box voient les objectifs sur la carte de l'entraînement.",
-    "notSavedYet": "Suggestion · pas encore enregistrée",
-    "keepSuggestion": "Garder la suggestion",
     "needsDraft": "Les objectifs apparaissent dès que le brouillon est enregistré.",
     "legend": {
       "primary": "Principaux",
@@ -9406,7 +9404,7 @@
       "sectionTitle": "Entraînements",
       "sectionDescription": "Valeurs par défaut des nouveaux entraînements.",
       "visibleByDefault": "Objectifs visibles par défaut",
-      "visibleByDefaultHint": "Valeur de départ de « Montrer les objectifs aux membres de la box » pour les entraînements sans objectifs propres.",
+      "visibleByDefaultHint": "Sans objectifs enregistrés, les membres voient les objectifs suggérés à partir des exercices. Un coach peut les masquer sur chaque entraînement.",
       "feltPrompt": "« Qu’as-tu ressenti ? » même sans objectifs",
       "feltPromptHint": "Après un entraînement sans objectifs, proposer de noter sur le corps ce qui a été ressenti."
     },

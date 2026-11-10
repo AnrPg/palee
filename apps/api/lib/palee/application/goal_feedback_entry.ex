@@ -11,8 +11,8 @@ defmodule Palee.Application.GoalFeedbackEntry do
   none.
   """
 
-  alias Palee.Application.WorkoutGoalsPresenter, as: Presenter
-  alias Palee.{Journal, Workouts}
+  alias Palee.Application.GetMemberWorkoutGoals
+  alias Palee.Journal
 
   def fetch(%{user_id: user_id} = context, entry_kind, entry_id) do
     with {:ok, entry_kind} <- entry_kind(entry_kind),
@@ -43,7 +43,7 @@ defmodule Palee.Application.GoalFeedbackEntry do
          master_workout_id: workout_id
        })
        when is_binary(workout_id) do
-    Presenter.member_goals(workout_id, Workouts.resolve_workout_goals(context, workout_id))
+    GetMemberWorkoutGoals.visible(context, workout_id)
   end
 
   defp goals(_context, _entry), do: nil

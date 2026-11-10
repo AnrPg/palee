@@ -9320,8 +9320,6 @@
     "title": "Doelen",
     "showToMembers": "Doelen tonen aan leden",
     "showToMembersHint": "Leden zien de doelen op de trainingskaart.",
-    "notSavedYet": "Voorstel · nog niet opgeslagen",
-    "keepSuggestion": "Voorstel behouden",
     "needsDraft": "Doelen verschijnen zodra het concept is opgeslagen.",
     "legend": {
       "primary": "Primair",
@@ -9406,7 +9404,7 @@
       "sectionTitle": "Trainingen",
       "sectionDescription": "Standaardwaarden voor nieuwe trainingen.",
       "visibleByDefault": "Doelen standaard zichtbaar",
-      "visibleByDefaultHint": "Beginwaarde van «Doelen tonen aan leden» bij trainingen zonder eigen doelen.",
+      "visibleByDefaultHint": "Zonder opgeslagen doelen zien leden de doelen die uit de oefeningen worden voorgesteld. Een coach kan ze bij elke training verbergen.",
       "feltPrompt": "«Wat voelde je?» ook zonder doelen",
       "feltPromptHint": "Na een training zonder doelen voorstellen om op het lichaam te markeren wat je voelde."
     },

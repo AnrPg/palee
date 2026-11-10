@@ -140,12 +140,12 @@ defmodule PaleeWeb.WorkoutGoalsControllerTest do
   end
 
   describe "member goals" do
-    test "hidden goals are null; visible goals are shown to members and athletes",
+    test "unsaved goals show the suggestion; hidden goals are null; visible goals are shown",
          %{conn: conn} = ctx do
-      assert %{"goals" => nil} =
+      assert %{"goals" => %{"stimulus" => nil, "muscles" => [_ | _]}} =
                conn |> put_bearer_token(ctx.member) |> get(member_path(ctx)) |> json_response(200)
 
-      conn |> save_goals(ctx) |> json_response(200)
+      conn |> save_goals(ctx, %{visible_to_members: false}) |> json_response(200)
 
       assert %{"goals" => nil} =
                conn
@@ -262,7 +262,8 @@ defmodule PaleeWeb.WorkoutGoalsControllerTest do
         |> json_response(200)
 
       assert body["entry_kind"] == "training_log"
-      assert body["goals"] == nil
+      # No saved goals: the suggestion, as the member's card shows it.
+      assert [_ | _] = body["goals"]["muscles"]
       assert body["feedback"]["felt_muscles"] == ["latissimus-dorsi"]
 
       # «Ένιωσα: …» rides on the entry in the journal feed.

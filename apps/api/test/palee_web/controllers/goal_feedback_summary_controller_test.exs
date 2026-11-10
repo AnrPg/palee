@@ -168,19 +168,19 @@ defmodule PaleeWeb.GoalFeedbackSummaryControllerTest do
          %{conn: conn} = ctx do
       settings_path = "/api/org/#{ctx.org.slug}/admin/settings"
 
-      assert %{"workouts" => %{"wod_goals_visible_by_default" => false}} =
+      assert %{"workouts" => %{"wod_goals_visible_by_default" => true}} =
                conn |> get_as(ctx.owner, settings_path) |> json_response(200)
 
-      assert %{"workouts" => %{"wod_goals_visible_by_default" => true}} =
+      assert %{"workouts" => %{"wod_goals_visible_by_default" => false}} =
                conn
                |> recycle()
                |> put_bearer_token(ctx.owner)
-               |> patch(settings_path, %{workouts: %{wod_goals_visible_by_default: true}})
+               |> patch(settings_path, %{workouts: %{wod_goals_visible_by_default: false}})
                |> json_response(200)
 
       other = TestFixtures.workout_fixture(ctx.owner, %{tenant_context: ctx.staff})
 
-      assert %{"goals" => %{"saved" => false, "visible_to_members" => true}} =
+      assert %{"goals" => %{"saved" => false, "visible_to_members" => false}} =
                conn
                |> get_as(ctx.coach, "/api/org/#{ctx.org.slug}/admin/workouts/#{other.id}/goals")
                |> json_response(200)
