@@ -496,6 +496,10 @@ defmodule Palee.Finance do
   def update_finance_settings(context, params),
     do: scoped(context, fn -> update_finance_settings(params) end)
 
+  @doc "ADR-633: starts (a time) or stops (nil) the package rule for the box."
+  def put_package_rule_since(context, since),
+    do: scoped(context, fn -> FinanceStore.put_package_rule_since(since) end)
+
   defdelegate membership_outstanding_balance_cents(membership_id),
     to: FinanceStore,
     as: :membership_outstanding_balance_cents

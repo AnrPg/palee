@@ -929,3 +929,28 @@ msgstr[2] "+%{count} مشابهة"
 msgstr[3] "+%{count} مشابهة"
 msgstr[4] "+%{count} مشابهة"
 msgstr[5] "+%{count} مشابهة"
+
+# ADR-633: «Χωρίς πακέτο, χωρίς κράτηση».
+msgid "A package to activate"
+msgstr "باقة بانتظار التفعيل"
+
+msgid "%{nickname} wants %{package} and will pay at the front desk."
+msgstr "يريد %{nickname} باقة %{package} وسيدفع في الاستقبال."
+
+msgid "Booking now needs a package"
+msgstr "الحجز يحتاج الآن إلى باقة"
+
+msgid "%{count} members train without a package. They keep booking until %{date}; see the list."
+msgstr "%{count} أعضاء يتدربون بلا باقة. يمكنهم الحجز حتى %{date}؛ اطّلع على القائمة."
+
+msgid "Your package request was declined"
+msgstr "رُفض طلب الباقة"
+
+msgid "%{box} declined %{package}: %{reason}"
+msgstr "رفض %{box} باقة %{package}: %{reason}"
+
+msgid "Choose a package"
+msgstr "اختر باقة"
+
+msgid "%{box} now takes bookings with a package. You can keep booking until %{date}."
+msgstr "يقبل %{box} الآن الحجوزات بباقة فقط. يمكنك الحجز حتى %{date}."

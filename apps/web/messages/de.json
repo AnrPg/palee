@@ -4969,7 +4969,9 @@
     "kpiRetirementHelp": "Abschnitte mit fester Zeit (AMRAP, EMOM, Intervalle) abgeschlossener Workouts, in denen die Person vor Ablauf der Uhr aufgehört hat oder die Uhr lange nach dem letzten Tippen weiterlief (3× die eigene Rundenzeit). «Ich wollte ein kürzeres WOD» zählt als verkürzte Zeit, nicht als Aufgabe.",
     "kpiRetirementOf": "{retired} von {count, plural, one {# Abschnitt mit fester Zeit} other {# Abschnitten mit fester Zeit}}",
     "kpiRetirementStopped": "Vor dem Ende gestoppt",
-    "kpiRetirementIdle": "Untätig geworden"
+    "kpiRetirementIdle": "Untätig geworden",
+    "apiErrorPackageRequired": "Buchen in dieser Box braucht ein Paket. Wähle eins unter Pakete; zahlst du am Empfang, kannst du beim Warten eine Stunde buchen.",
+    "apiErrorDeclineReasonRequired": "Schreib, warum die Anfrage abgelehnt wird."
   },
   "PrSharing": {
     "gymLabel": "Wo hast du diesen PR aufgestellt?",
@@ -15528,7 +15530,23 @@
     "collect": "{amount} kassieren",
     "collectTitle": "Zahlung kassieren",
     "collectHint": "Das Paket startet heute und der Beleg wird ausgestellt.",
-    "close": "Schließen"
+    "close": "Schließen",
+    "activate": "Aktivieren",
+    "activateTitle": "Paket aktivieren",
+    "activatePaid": "{amount} erhalten",
+    "activateUnpaid": "Zahlung ausstehend",
+    "activateUnpaidHint": "Das Paket startet heute, {amount} bleiben offen. Erinnerungen, Kulanztage und Sperre folgen von selbst.",
+    "activateUnpaidConfirm": "Aktivieren, Zahlung ausstehend",
+    "decline": "Ablehnen",
+    "declineTitle": "Anfrage ablehnen",
+    "declineReason": "Warum (das Mitglied liest es)",
+    "declineHint": "Hat die Person ihre eine Stunde beim Warten gebucht, wird sie storniert.",
+    "declineConfirm": "Ablehnen",
+    "firstClassBooked": "Hat die eine Stunde beim Warten gebucht",
+    "rolloutTitle": "Trainieren noch ein paar Tage ohne Paket",
+    "rolloutBody": "Seit {date} braucht Buchen in dieser Box ein Paket. Diese Mitglieder trainierten ohne und können bis zu ihrem Datum buchen.",
+    "rolloutUntil": "Bis {date}",
+    "rolloutHasPackage": "Hat ein Paket"
   },
   "Sms": {
     "connectionsTitle": "Verbindungen",
@@ -20248,6 +20266,8 @@
     "submit_free_access": "Gratis-Zugang geben",
     "submit_extra_uses": "Nutzungen hinzufügen",
     "submit_package": "Paket geben",
-    "submit_debt_forgiven": "Schuld erlassen"
+    "submit_debt_forgiven": "Schuld erlassen",
+    "givenBySystem": "Von Palee, {when}",
+    "reasonRollout": "Buchen braucht jetzt ein Paket: 14 Tage für alle, die schon trainierten"
   }
 }

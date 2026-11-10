@@ -22,6 +22,21 @@ defmodule Palee.Finance.Ports.PackageRequestStore do
   @doc "Closes a pending request (`cancelled`, `activated`, `lapsed`) under a row lock."
   @callback close(Ecto.UUID.t(), String.t(), map()) :: {:ok, request()} | {:error, term()}
 
-  @doc "Closes as `lapsed` every pending request whose hold ended before `today`."
-  @callback lapse_before(Date.t(), DateTime.t()) :: non_neg_integer()
+  @doc "Closes as `lapsed` every pending request whose hold ended before `today`; returns them."
+  @callback lapse_before(Date.t(), DateTime.t()) :: [request()]
+
+  @doc """
+  ADR-633: takes the person's one class while their request waits, on the
+  oldest request open on `today`: `{:ok, request}`, or `{:error,
+  :first_class_used}` (already taken at this box, by any request) or
+  `{:error, :no_pending_request}`.
+  """
+  @callback claim_first_class(Ecto.UUID.t(), Ecto.UUID.t(), Date.t(), DateTime.t()) ::
+              {:ok, request()} | {:error, :first_class_used | :no_pending_request}
+
+  @doc "Gives the one class back when the booking it was taken for was not made."
+  @callback release_first_class(Ecto.UUID.t()) :: :ok
+
+  @doc "The request the person's one class was taken on at this box, if any."
+  @callback first_class(Ecto.UUID.t()) :: request() | nil
 end

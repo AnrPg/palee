@@ -7227,7 +7227,8 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
           entitlement_timezone: "Europe/Athens",
           document_mode: "invoice",
           package_modules: Palee.Finance.Domain.PackageType.default_modules(),
-          package_audience: "all"
+          package_audience: "all",
+          package_rule_since: nil
         }
 
       settings ->
@@ -7254,6 +7255,26 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
     end
   end
 
+  @impl true
+  def put_package_rule_since(since) do
+    case FinanceSetting |> tenant_scope() |> limit(1) |> Repo.one() do
+      nil ->
+        organization_id = RepoContext.current_setting("app.organization_id")
+
+        %FinanceSetting{}
+        |> FinanceSetting.changeset(%{organization_id: organization_id})
+        |> Ecto.Changeset.put_change(:package_rule_since, since)
+        |> Repo.insert()
+        |> normalize_result(&normalize_finance_settings/1)
+
+      %FinanceSetting{} = settings ->
+        settings
+        |> Ecto.Changeset.change(package_rule_since: since)
+        |> Repo.update()
+        |> normalize_result(&normalize_finance_settings/1)
+    end
+  end
+
   defp normalize_finance_settings(%FinanceSetting{} = s) do
     %{
       id: s.id,
@@ -7268,6 +7289,7 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
       document_mode: s.document_mode,
       package_modules: s.package_modules,
       package_audience: s.package_audience,
+      package_rule_since: s.package_rule_since,
       inserted_at: s.inserted_at,
       updated_at: s.updated_at
     }

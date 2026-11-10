@@ -4969,7 +4969,9 @@
     "kpiRetirementHelp": "Onderdelen met vaste tijd (AMRAP, EMOM, intervallen) van voltooide workouts waarin de atleet stopte voordat de klok afliep, of de klok lang doorliep na de laatste tik (3× de eigen rondetijd). «Ik wilde een kortere WOD» telt als ingekorte tijd, niet als opgave.",
     "kpiRetirementOf": "{retired} van {count, plural, one {# onderdeel met vaste tijd} other {# onderdelen met vaste tijd}}",
     "kpiRetirementStopped": "Gestopt voor het einde",
-    "kpiRetirementIdle": "Inactief geworden"
+    "kpiRetirementIdle": "Inactief geworden",
+    "apiErrorPackageRequired": "Boeken in deze box vraagt een pakket. Kies er een bij Pakketten; betaal je aan de balie, dan kun je tijdens het wachten één les boeken.",
+    "apiErrorDeclineReasonRequired": "Schrijf waarom de aanvraag wordt afgewezen."
   },
   "PrSharing": {
     "gymLabel": "Waar heb je dit PR neergezet?",
@@ -15528,7 +15530,23 @@
     "collect": "{amount} afrekenen",
     "collectTitle": "Afrekenen",
     "collectHint": "Het pakket start vandaag en het bonnetje wordt uitgegeven.",
-    "close": "Sluiten"
+    "close": "Sluiten",
+    "activate": "Activeren",
+    "activateTitle": "Pakket activeren",
+    "activatePaid": "{amount} ontvangen",
+    "activateUnpaid": "Betaling openstaand",
+    "activateUnpaidHint": "Het pakket start vandaag en {amount} blijft openstaan. Herinneringen, coulancedagen en blokkering volgen vanzelf.",
+    "activateUnpaidConfirm": "Activeren, betaling openstaand",
+    "decline": "Afwijzen",
+    "declineTitle": "Aanvraag afwijzen",
+    "declineReason": "Waarom (het lid leest dit)",
+    "declineHint": "Als er tijdens het wachten die ene les is geboekt, wordt die geannuleerd.",
+    "declineConfirm": "Afwijzen",
+    "firstClassBooked": "Heeft die ene les tijdens het wachten geboekt",
+    "rolloutTitle": "Trainen nog een paar dagen zonder pakket",
+    "rolloutBody": "Sinds {date} vraagt boeken in deze box een pakket. Deze leden trainden zonder en boeken tot hun datum.",
+    "rolloutUntil": "Tot {date}",
+    "rolloutHasPackage": "Heeft een pakket"
   },
   "Sms": {
     "connectionsTitle": "Koppelingen",
@@ -20248,6 +20266,8 @@
     "submit_free_access": "Gratis toegang geven",
     "submit_extra_uses": "Gebruik toevoegen",
     "submit_package": "Pakket geven",
-    "submit_debt_forgiven": "Schuld kwijtschelden"
+    "submit_debt_forgiven": "Schuld kwijtschelden",
+    "givenBySystem": "Door Palee, {when}",
+    "reasonRollout": "Boeken vraagt nu een pakket: 14 dagen voor wie al trainde"
   }
 }

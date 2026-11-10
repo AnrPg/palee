@@ -94,6 +94,8 @@ defmodule Palee.Finance.Ports.FinanceStore do
   @callback refresh_aggregates() :: :ok | {:error, term()}
   @callback get_finance_settings() :: map()
   @callback update_finance_settings(map()) :: {:ok, map()} | {:error, Ecto.Changeset.t()}
+  @doc "ADR-633: since when the box's clients book only with a package (nil: off)."
+  @callback put_package_rule_since(DateTime.t() | nil) :: {:ok, map()} | {:error, term()}
   @callback membership_outstanding_balance_cents(Ecto.UUID.t()) :: non_neg_integer()
   @callback outstanding_balance_per_membership([Ecto.UUID.t()]) ::
               %{optional(Ecto.UUID.t()) => non_neg_integer()}

@@ -16,7 +16,7 @@ import { fetchFinanceQueues, type FinanceRecord } from "@/api/finance";
 import { formatDateKey } from "@/lib/local-date";
 import { offeredQueues, parseFinanceQueue, type FinanceQueue } from "@/components/admin/finance/finance-queues";
 import { FailedChargesList, useFailedCharges } from "@/components/admin/payments/FailedCharges";
-import { DeskPackageRequestRows, PersonLink, useDeskPackageRequests } from "@/components/admin/finance/payments/DeskPackageRequests";
+import { DeskPackageRequestRows, PackageRuleRolloutList, PersonLink, useDeskPackageRequests } from "@/components/admin/finance/payments/DeskPackageRequests";
 import { ReceivePaymentDialog } from "@/components/admin/finance/payments/ReceivePaymentDialog";
 import { useStatusLabel } from "@/components/admin/finance/shared/MemberStandingCells";
 import { statusTone, toneStyle } from "@/components/admin/finance/shared/member-standing";
@@ -169,10 +169,14 @@ export function QueuesTab({ locationIds }: { locationIds?: string } = {}) {
             <p className="px-6 py-8 text-sm" style={{ color: "var(--dim)" }}>{i18n("loadingQueuea1e2a39")}</p>
           ) : (
             // Stays mounted when the last request is collected, so its receipt shows.
-            <DeskPackageRequestRows
-              rows={awaiting}
-              empty={<p className="px-6 py-8 text-sm" style={{ color: "var(--dim)" }} data-testid="desk-requests-empty">{deskT("queueEmpty")}</p>}
-            />
+            <>
+              <DeskPackageRequestRows
+                rows={awaiting}
+                canAct={can(membership, "take_payments")}
+                empty={<p className="px-6 py-8 text-sm" style={{ color: "var(--dim)" }} data-testid="desk-requests-empty">{deskT("queueEmpty")}</p>}
+              />
+              <PackageRuleRolloutList />
+            </>
           )
         ) : queuesQuery.isLoading ? (
           <p className="px-6 py-8 text-sm" style={{ color: "var(--dim)" }}>{i18n("loadingQueuea1e2a39")}</p>

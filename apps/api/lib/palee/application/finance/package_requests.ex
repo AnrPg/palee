@@ -8,14 +8,21 @@ defmodule Palee.Application.Finance.PackageRequests do
   invoice settles its first period, so no separate charge is issued).
 
   Prices are the ones the person was shown when asking.
+
+  ADR-633: the staff who take payments hear of each new request (bell and
+  push). «Ενεργοποίηση» is either «Εισπράχθηκαν X €» (`collect/4`) or
+  «Εκκρεμεί πληρωμή» (`activate_unpaid/3`: the package starts now and its
+  charge is owed, so the box's reminders, grace days and lock follow it).
+  «Απόρριψη» (`decline/4`) always says why, and the person hears it. While
+  a request waits, the person may book one class (`PackageRule`).
   """
 
+  alias Palee.Application.{AssignFinanceMemberPackage, PackageRule, ReceiveFinancePayment}
   alias Palee.Application.Payments.PackageAudience
-  alias Palee.Application.ReceiveFinancePayment
   alias Palee.Finance
   alias Palee.Finance.Domain.PackageRequestPolicy
   alias Palee.Finance.PackageRequestStore
-  alias Palee.{Identity, Organizations, Payments}
+  alias Palee.{Identity, Notifications, Organizations, Payments}
   alias Palee.Payments.Domain.PackageSale
 
   # ── The person ──────────────────────────────────────────────────────────
@@ -45,8 +52,23 @@ defmodule Palee.Application.Finance.PackageRequests do
                today: today
              })
            end) do
+      if how == :created, do: notify_staff(context, request)
       {:ok, %{request: present(request, today), created: how == :created}}
     end
+  end
+
+  defp notify_staff(context, request) do
+    person = Identity.find_by_id(request.user_id)
+
+    Notifications.dispatch_event(:package_requested, %{
+      organization_id: context.organization_id,
+      package_request_id: request.id,
+      person_nickname: person && person.nickname,
+      member_user_id: request.user_id,
+      package_name: request.package_name_snapshot,
+      price_cents: request.price_cents_snapshot,
+      currency: request.currency
+    })
   end
 
   defp requestable_package(context, package_id) do
@@ -91,6 +113,10 @@ defmodule Palee.Application.Finance.PackageRequests do
       end
     end)
     |> closed_error()
+    |> tap(fn
+      {:ok, closed} -> PackageRule.end_waiting(context, closed.user_id)
+      _error -> :ok
+    end)
   end
 
   # ── The front desk ──────────────────────────────────────────────────────
@@ -182,6 +208,112 @@ defmodule Palee.Application.Finance.PackageRequests do
     end
   end
 
+  @doc """
+  «Ενεργοποίηση» › «Εκκρεμεί πληρωμή»: the person trains from today and
+  owes the package. Assigns it at the price they were shown, with its
+  charge issued now (ADR-274 `billing: :now`), so the box's payment
+  reminders, grace days and lock take over by themselves. Assigning closes
+  the request as activated (ADR-291 addendum). A retry finds it closed.
+  """
+  def activate_unpaid(context, request_id, admin_id) do
+    today = today(context)
+
+    with %{} = request <-
+           scoped(context, fn -> PackageRequestStore.get(request_id) end) || {:error, :not_found},
+         true <-
+           PackageRequestPolicy.open?(request, today) || {:error, :package_request_closed},
+         {:ok, subscription} <-
+           Finance.with_tenant_context(context, fn ->
+             AssignFinanceMemberPackage.call(
+               context,
+               request.user_id,
+               %{
+                 "membership_package_id" => request.membership_package_id,
+                 "signup_source" => "direct"
+               },
+               price_cents: request.price_cents_snapshot
+             )
+           end),
+         {:ok, closed} <- close_unpaid(context, request, subscription, admin_id) do
+      {:ok, %{request: present(closed, today), subscription_id: Map.get(subscription, :id)}}
+    end
+  end
+
+  defp close_unpaid(context, request, subscription, admin_id) do
+    scoped(context, fn ->
+      case PackageRequestStore.get(request.id) do
+        %{status: "activated"} = closed ->
+          {:ok, closed}
+
+        _pending ->
+          PackageRequestStore.close(request.id, "activated", %{
+            closed_at: DateTime.utc_now(),
+            closed_by_id: admin_id,
+            membership_package_subscription_id: Map.get(subscription, :id)
+          })
+      end
+    end)
+  end
+
+  @doc """
+  «Απόρριψη»: the desk will not activate it. The reason is required (at
+  most 500 characters) and the person reads it in their notification. Their
+  upcoming class while waiting, if any, is cancelled.
+  """
+  def decline(context, request_id, admin_id, params) do
+    today = today(context)
+
+    with {:ok, reason} <- decline_reason(params),
+         {:ok, closed} <-
+           scoped(context, fn ->
+             PackageRequestStore.close(request_id, "declined", %{
+               closed_at: DateTime.utc_now(),
+               closed_by_id: admin_id,
+               decline_reason: reason
+             })
+           end)
+           |> closed_error() do
+      cancelled = PackageRule.end_waiting(context, closed.user_id)
+      notify_declined(context, closed, cancelled)
+      {:ok, %{request: present(closed, today), cancelled_bookings: cancelled}}
+    end
+  end
+
+  defp decline_reason(params) do
+    case params |> Map.new(fn {key, value} -> {to_string(key), value} end) |> Map.get("reason") do
+      reason when is_binary(reason) ->
+        reason = String.trim(reason)
+
+        cond do
+          reason == "" -> {:error, :package_decline_reason_required}
+          String.length(reason) > 500 -> {:error, :package_decline_reason_too_long}
+          true -> {:ok, reason}
+        end
+
+      _missing ->
+        {:error, :package_decline_reason_required}
+    end
+  end
+
+  defp notify_declined(context, request, cancelled) do
+    box =
+      context.organization_id
+      |> List.wrap()
+      |> Palee.Application.PublicBox.boxes()
+      |> List.first()
+
+    Notifications.dispatch_event(:package_request_declined, %{
+      organization_id: context.organization_id,
+      user_id: request.user_id,
+      package_request_id: request.id,
+      package_name: request.package_name_snapshot,
+      reason: request.decline_reason,
+      cancelled_bookings: cancelled,
+      box_name: box && box.name,
+      box_slug: box && box.slug
+    })
+  end
+
   # Someone known to the box without a Finance profile yet: the profile the
   # payment needs, as a first online purchase creates it (ADR-248).
   defp ensure_membership(context, user_id) do
@@ -200,10 +332,21 @@ defmodule Palee.Application.Finance.PackageRequests do
 
   # ── Housekeeping ────────────────────────────────────────────────────────
 
-  @doc "Closes as `lapsed` the requests whose 14 days ended. Returns how many."
+  @doc """
+  Closes as `lapsed` the requests whose 14 days ended. Returns how many.
+  ADR-633: whoever booked their one class while waiting and still has no
+  profile loses their upcoming bookings.
+  """
   def lapse(context, now \\ DateTime.utc_now()) do
     today = Organizations.local_today(context.organization_id, now)
-    scoped(context, fn -> PackageRequestStore.lapse_before(today, now) end)
+    lapsed = scoped(context, fn -> PackageRequestStore.lapse_before(today, now) end)
+
+    lapsed
+    |> Enum.map(& &1.user_id)
+    |> Enum.uniq()
+    |> Enum.each(&PackageRule.end_waiting(context, &1))
+
+    length(lapsed)
   end
 
   # ── Shape ───────────────────────────────────────────────────────────────
@@ -222,7 +365,9 @@ defmodule Palee.Application.Finance.PackageRequests do
       requested_at: request.inserted_at,
       hold_until: request.hold_until,
       hold_days: PackageRequestPolicy.hold_days(),
-      days_left: PackageRequestPolicy.days_left(request, today)
+      days_left: PackageRequestPolicy.days_left(request, today),
+      first_class_at: Map.get(request, :first_class_at),
+      decline_reason: Map.get(request, :decline_reason)
     }
   end
 

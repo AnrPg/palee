@@ -66,3 +66,39 @@ export function collectPackageRequest(token: string, slug: string, requestId: st
     { token, method: "POST", body },
   );
 }
+
+// ADR-633: «Χωρίς πακέτο, χωρίς κράτηση». «Ενεργοποίηση» is either
+// «Εισπράχθηκαν X €» (collect) or «Εκκρεμεί πληρωμή» (the package starts now
+// and its charge is owed); «Απόρριψη» always says why.
+export type DeclineBody = Body<"PaleeWeb.AdminPackageRequestController.decline">;
+export type PackageRuleStanding = Json<"PaleeWeb.MyPaymentsController.package_rule">;
+export type PackageRuleRollout = Json<"PaleeWeb.AdminPackageRequestController.rollout">;
+
+/** The decline reason's longest length, as the server checks it. */
+export const DECLINE_REASON_MAX = 500;
+
+export function activateUnpaidPackageRequest(token: string, slug: string, requestId: string) {
+  return apiRequest<Json<"PaleeWeb.AdminPackageRequestController.activate_unpaid">>(
+    org(slug, `/admin/finance/package-requests/${id(requestId)}/activate-unpaid`),
+    { token, method: "POST", body: {} },
+  );
+}
+
+export function declinePackageRequest(token: string, slug: string, requestId: string, body: DeclineBody) {
+  return apiRequest<Json<"PaleeWeb.AdminPackageRequestController.decline">>(
+    org(slug, `/admin/finance/package-requests/${id(requestId)}/decline`),
+    { token, method: "POST", body },
+  );
+}
+
+export const packageRuleRolloutKey = (slug: string) => ["admin", "finance", "package-rule", slug] as const;
+
+export function fetchPackageRuleRollout(token: string, slug: string) {
+  return apiRequest<PackageRuleRollout>(org(slug, "/admin/finance/package-rule"), { token });
+}
+
+export const myPackageRuleKey = (slug: string) => ["me", "package-rule", slug] as const;
+
+export function fetchMyPackageRule(token: string, slug: string) {
+  return apiRequest<PackageRuleStanding>(org(slug, "/me/package-rule"), { token });
+}

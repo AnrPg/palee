@@ -853,6 +853,76 @@ defmodule Palee.Notifications do
     end)
   end
 
+  # ADR-633: a new «Το θέλω» and the package rule's start go to the staff
+  # who take payments; the queue holds «Ενεργοποίηση» and «Απόρριψη».
+  def process_event("package_requested", payload) do
+    organization_id = field(payload, :organization_id)
+    request_id = field(payload, :package_request_id)
+
+    organization_id
+    |> Organizations.list_user_ids_with_capability(:take_payments)
+    |> Enum.reduce_while(:ok, fn staff_id, :ok ->
+      case enqueue_simple(:package_requested, %{user_id: staff_id}, %{
+             organization_id: organization_id,
+             package_request_id: request_id,
+             member_user_id: field(payload, :member_user_id),
+             person_nickname: field(payload, :person_nickname),
+             package_name: field(payload, :package_name),
+             price_cents: field(payload, :price_cents),
+             currency: field(payload, :currency),
+             dedupe_key: "package_requested:#{request_id}:#{staff_id}",
+             url: "/admin/finance?tab=queues&queue=awaiting"
+           }) do
+        :ok -> {:cont, :ok}
+        error -> {:halt, error}
+      end
+    end)
+  end
+
+  def process_event("package_rule_started", payload) do
+    organization_id = field(payload, :organization_id)
+
+    organization_id
+    |> Organizations.list_user_ids_with_capability(:take_payments)
+    |> Enum.reduce_while(:ok, fn staff_id, :ok ->
+      case enqueue_simple(:package_rule_started, %{user_id: staff_id}, %{
+             organization_id: organization_id,
+             count: field(payload, :count),
+             ends_on: field(payload, :ends_on),
+             dedupe_key:
+               "package_rule_started:#{organization_id}:#{field(payload, :ends_on)}:#{staff_id}",
+             url: "/admin/finance?tab=queues&queue=awaiting"
+           }) do
+        :ok -> {:cont, :ok}
+        error -> {:halt, error}
+      end
+    end)
+  end
+
+  def process_event("package_request_declined", payload),
+    do:
+      enqueue_simple(:package_request_declined, payload, %{
+        organization_id: field(payload, :organization_id),
+        package_request_id: field(payload, :package_request_id),
+        package_name: field(payload, :package_name),
+        reason: field(payload, :reason),
+        cancelled_bookings: field(payload, :cancelled_bookings),
+        box_name: field(payload, :box_name),
+        dedupe_key: "package_request_declined:#{field(payload, :package_request_id)}",
+        url: "/me/payments?box=#{field(payload, :box_slug)}"
+      })
+
+  def process_event("package_rule_grace", payload),
+    do:
+      enqueue_simple(:package_rule_grace, payload, %{
+        organization_id: field(payload, :organization_id),
+        ends_on: field(payload, :ends_on),
+        box_name: field(payload, :box_name),
+        dedupe_key:
+          "package_rule_grace:#{field(payload, :organization_id)}:#{field(payload, :user_id)}",
+        url: "/me/payments?box=#{field(payload, :box_slug)}"
+      })
+
   # ADR-552: «Ζήτα να γίνεις μέλος». The staff who manage memberships hear
   # of a new request; the person hears the box's answer.
   def process_event("join_requested", payload) do

@@ -170,18 +170,24 @@ defmodule Palee.Finance.MemberStandingTest do
     {:ok, _} = Finance.set_value_override(user.id, "status", %{value: "paused"})
     assert profile(user).membership.status == "paused"
 
-    {:ok, _} = Finance.set_value_override(user.id, "status", %{value: "comped"})
+    {:ok, _} = Finance.set_value_override(user.id, "status", %{value: "expired"})
     assert {:ok, %{end_reason: "reset"}} = Finance.reset_value_override(user.id, "status", %{})
     assert profile(user).membership.status_shown == "unpaid"
     assert profile(user).membership.status == "active"
 
-    assert [%{value: "comped", end_reason: "reset"}, %{value: "paused", end_reason: "replaced"}] =
+    assert [%{value: "expired", end_reason: "reset"}, %{value: "paused", end_reason: "replaced"}] =
              Finance.list_value_overrides(user.id)
 
     assert {:error, :override_not_found} = Finance.reset_value_override(user.id, "status", %{})
 
     assert {:error, :invalid_override_value} =
              Finance.set_value_override(user.id, "status", %{value: "unpaid"})
+
+    # ADR-633: free access by hand always has an end now («Δώρο ή χάρη»).
+    for endless <- ["comped", "trial"] do
+      assert {:error, :invalid_override_value} =
+               Finance.set_value_override(user.id, "status", %{value: endless})
+    end
   end
 
   test "a subscription's last day set by hand ends it there until reset",

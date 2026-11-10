@@ -36,6 +36,11 @@ defmodule Palee.Finance.Domain.MemberStatus do
   @statuses ~w(active trial comped unpaid overdue leaving expiring paused expired cancelled former no_package)
   @lifecycles ~w(active trial comped expiring paused expired cancelled)
   @overridable ~w(active trial comped paused expired cancelled)
+  # ADR-633: «Δωρεάν» and «Δοκιμή» by hand had no end, so someone could
+  # train for ever without a package. Free access now always has a last day
+  # («Δώρο ή χάρη», ADR-612); the statuses still come from a free or trial
+  # package, and overrides set before stay readable until the rollout ends them.
+  @settable ~w(active paused expired cancelled)
 
   @doc "Every status staff can see."
   def statuses, do: @statuses
@@ -45,6 +50,8 @@ defmodule Palee.Finance.Domain.MemberStatus do
 
   @doc "The statuses staff may set by hand (leaving with its rules has its own flow, ADR-220)."
   def overridable, do: @overridable
+  @doc "ADR-633: the statuses staff may set by hand now (`overridable/0` minus the endless ones)."
+  def settable, do: @settable
 
   @doc """
   Works the status out. `facts`:

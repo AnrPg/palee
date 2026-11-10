@@ -242,6 +242,19 @@ defmodule PaleeWeb.MyPaymentsController do
     end
   end
 
+  operation(:package_rule,
+    summary: "Whether the member can book here without a package (ADR-633)",
+    description:
+      "In a box that sells packages, booking needs one; while the first «Το θέλω» waits " <>
+        "the member may book one class.",
+    responses: [ok: {"Package rule", "application/json", P.package_rule_standing()}]
+  )
+
+  def package_rule(conn, _params) do
+    context = conn.assigns.tenant_context
+    json(conn, Palee.Application.PackageRule.standing(context, context.user_id))
+  end
+
   operation(:package_requests,
     summary: "The member's packages waiting to be paid at the front desk",
     responses: [ok: {"Package requests", "application/json", P.package_request_list()}]

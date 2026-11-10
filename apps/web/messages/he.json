@@ -4969,7 +4969,9 @@
     "kpiRetirementHelp": "חלקים בזמן קבוע (AMRAP, EMOM, אינטרוולים) באימונים שהושלמו, שבהם המתאמן עצר לפני שהשעון הסתיים, או שהשעון רץ זמן רב אחרי ההקשה האחרונה שלו (פי 3 מזמן הסבב שלו). «רציתי WOD קצר יותר» נספר כזמן מקוצר, לא כפרישה.",
     "kpiRetirementOf": "{retired} מתוך {count, plural, one {חלק אחד בזמן קבוע} other {# חלקים בזמן קבוע}}",
     "kpiRetirementStopped": "עצרו לפני הסוף",
-    "kpiRetirementIdle": "נשארו לא פעילים"
+    "kpiRetirementIdle": "נשארו לא פעילים",
+    "apiErrorPackageRequired": "הזמנה במקום הזה דורשת חבילה. בחרו אחת בחבילות; אם משלמים בקבלה, אפשר להזמין שיעור אחד בזמן ההמתנה.",
+    "apiErrorDeclineReasonRequired": "כתבו למה הבקשה נדחית."
   },
   "PrSharing": {
     "gymLabel": "איפה קבעת את השיא הזה?",
@@ -15528,7 +15530,23 @@
     "collect": "גבייה {amount}",
     "collectTitle": "גביית תשלום",
     "collectHint": "החבילה מתחילה היום והקבלה מונפקת.",
-    "close": "סגירה"
+    "close": "סגירה",
+    "activate": "הפעלה",
+    "activateTitle": "הפעלת חבילה",
+    "activatePaid": "התקבלו {amount}",
+    "activateUnpaid": "התשלום ממתין",
+    "activateUnpaidHint": "החבילה מתחילה היום ו-{amount} נשארים חוב. תזכורות, ימי חסד ונעילה ממשיכים לבד.",
+    "activateUnpaidConfirm": "הפעלה, התשלום ממתין",
+    "decline": "דחייה",
+    "declineTitle": "דחיית הבקשה",
+    "declineReason": "למה (החבר יקרא את זה)",
+    "declineHint": "אם הוזמן השיעור האחד בזמן ההמתנה, הוא מבוטל.",
+    "declineConfirm": "דחייה",
+    "firstClassBooked": "הזמין את השיעור האחד בזמן ההמתנה",
+    "rolloutTitle": "מתאמנים בלי חבילה עוד כמה ימים",
+    "rolloutBody": "מאז {date} הזמנה במקום הזה דורשת חבילה. החברים האלה התאמנו בלי חבילה ומזמינים עד התאריך שלהם.",
+    "rolloutUntil": "עד {date}",
+    "rolloutHasPackage": "יש חבילה"
   },
   "Sms": {
     "connectionsTitle": "חיבורים",
@@ -20248,6 +20266,8 @@
     "submit_free_access": "תן גישה חינם",
     "submit_extra_uses": "הוסף שימושים",
     "submit_package": "תן את החבילה",
-    "submit_debt_forgiven": "מחק את החוב"
+    "submit_debt_forgiven": "מחק את החוב",
+    "givenBySystem": "מ-Palee, {when}",
+    "reasonRollout": "הזמנה דורשת עכשיו חבילה: 14 ימים למי שכבר התאמן"
   }
 }

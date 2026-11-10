@@ -58,6 +58,8 @@ defmodule Palee.Application.PlaceMemberInClass do
            booking_window: false,
            # ADR-252: staff decide; the documents gate is for clients booking themselves.
            documents_gate: false,
+           # ADR-633: staff may place someone whose package is not set up yet.
+           package_rule: false,
            now: now
          ) do
       {:ok, slot, booking} -> {:ok, slot, booking}

@@ -60,6 +60,16 @@ defmodule Palee.Infrastructure.Finance.EctoMemberBenefitStore do
   end
 
   @impl true
+  def list_system_grants(reason) do
+    MemberBenefit
+    |> tenant_scope()
+    |> where([b], b.action == "grant" and is_nil(b.actor_id) and b.reason == ^reason)
+    |> order_by([b], desc: b.inserted_at, desc: b.id)
+    |> Repo.all()
+    |> Enum.map(&normalize/1)
+  end
+
+  @impl true
   def access(membership_id, %Date{} = today) do
     kinds = MemberBenefits.access_kinds()
 

@@ -168,9 +168,16 @@ export function MemberBenefits({
               <p className="text-xs" style={{ color: "var(--muted)" }}>
                 <span style={{ color: STATE_COLOURS[benefit.state] ?? "var(--muted)" }}>{t(`state_${benefit.state}`)}</span>
                 {" · "}
-                {t("givenBy", { name: benefit.given_by_name ?? t("someone"), when: momentText(locale, benefit.given_at) })}
+                {benefit.given_by_roles?.includes("system")
+                  ? t("givenBySystem", { when: momentText(locale, benefit.given_at) })
+                  : t("givenBy", { name: benefit.given_by_name ?? t("someone"), when: momentText(locale, benefit.given_at) })}
               </p>
-              {benefit.reason ? <p className="text-xs" style={{ color: "var(--text-soft)" }}>{t("reasonShown", { reason: benefit.reason })}</p> : null}
+              {benefit.reason ? (
+                <p className="text-xs" style={{ color: "var(--text-soft)" }}>
+                  {/* ADR-633: the rollout's own reason is a code, shown in words. */}
+                  {t("reasonShown", { reason: benefit.reason === "package_rule_rollout" ? t("reasonRollout") : benefit.reason })}
+                </p>
+              ) : null}
               {benefit.revocation ? (
                 <p className="text-xs" style={{ color: "var(--muted)" }}>
                   {t("revokedBy", { name: benefit.revocation.by_name ?? t("someone"), when: momentText(locale, benefit.revocation.at) })}

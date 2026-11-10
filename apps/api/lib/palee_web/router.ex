@@ -783,6 +783,8 @@ defmodule PaleeWeb.Router do
     # ADR-291: «Το θέλω», paid at the front desk.
     post("/packages/:id/request", MyPaymentsController, :request_package)
     get("/package-requests", MyPaymentsController, :package_requests)
+    # ADR-633: no package, no booking (one class while waiting).
+    get("/package-rule", MyPaymentsController, :package_rule)
     post("/package-requests/:id/cancel", MyPaymentsController, :cancel_package_request)
     post("/payments/:id/withdraw", MyPaymentsController, :withdraw)
     # ADR-371: programmes bought online (never in the store apps, ADR-256).
@@ -2069,6 +2071,16 @@ defmodule PaleeWeb.Router do
     # ADR-291: packages waiting to be paid at the front desk.
     get("/finance/package-requests", AdminPackageRequestController, :index)
     post("/finance/package-requests/:id/collect", AdminPackageRequestController, :collect)
+
+    # ADR-633: «Εκκρεμεί πληρωμή», «Απόρριψη» and the rule's «Μετάβαση» list.
+    post(
+      "/finance/package-requests/:id/activate-unpaid",
+      AdminPackageRequestController,
+      :activate_unpaid
+    )
+
+    post("/finance/package-requests/:id/decline", AdminPackageRequestController, :decline)
+    get("/finance/package-rule", AdminPackageRequestController, :rollout)
     post("/finance/members/:id/receipts", AdminFinanceController, :create_receipt)
     post("/finance/members/:id/invoices", AdminFinanceController, :create_invoice)
 

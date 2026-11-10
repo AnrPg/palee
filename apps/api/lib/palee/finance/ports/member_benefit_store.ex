@@ -17,6 +17,9 @@ defmodule Palee.Finance.Ports.MemberBenefitStore do
   @doc "Every row of a membership, newest first."
   @callback list(Ecto.UUID.t()) :: [map()]
 
+  @doc "ADR-633: the system's own grants with this reason (the package rule's rollout), newest first."
+  @callback list_system_grants(String.t()) :: [map()]
+
   @doc """
   The grace or free access covering `today` that lasts longest, as
   `%{kind, until}`, or nil.

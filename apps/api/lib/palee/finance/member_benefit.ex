@@ -53,7 +53,8 @@ defmodule Palee.Finance.MemberBenefit do
   def changeset(params) do
     %__MODULE__{id: Map.get(params, :id) || Map.get(params, "id")}
     |> cast(params, @fields)
-    |> validate_required([:membership_id, :user_id, :action, :kind, :actor_id, :idempotency_key])
+    |> validate_required([:membership_id, :user_id, :action, :kind, :idempotency_key])
+    |> validate_actor()
     |> validate_inclusion(:action, ["grant", "revoke"])
     |> validate_inclusion(:kind, MemberBenefits.kinds())
     |> validate_length(:reason, max: 500)
@@ -61,5 +62,14 @@ defmodule Palee.Finance.MemberBenefit do
     |> unique_constraint([:organization_id, :idempotency_key])
     |> unique_constraint(:benefit_id, name: :finance_member_benefits_one_revocation_index)
     |> check_constraint(:ends_on, name: :finance_member_benefits_access_dates_check)
+    |> check_constraint(:actor_id, name: :finance_member_benefits_actor_check)
+  end
+
+  # ADR-633: only the system's own grants (the package rule's rollout) have
+  # no person behind them, and they say so in `actor_roles`.
+  defp validate_actor(changeset) do
+    if get_field(changeset, :actor_id) || get_field(changeset, :actor_roles) == ["system"],
+      do: changeset,
+      else: add_error(changeset, :actor_id, "can't be blank")
   end
 end

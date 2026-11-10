@@ -17,7 +17,7 @@ defmodule Palee.Finance.Domain.ValueOverride do
 
   Fields:
 
-    * `"status"` of a membership (`MemberStatus.overridable/0`);
+    * `"status"` of a membership (`MemberStatus.settable/0`, ADR-633);
     * `"ends_on"` of a subscription (an ISO date, the subscription's last day).
   """
 
@@ -35,7 +35,7 @@ defmodule Palee.Finance.Domain.ValueOverride do
 
   @doc "Checks a value staff typed for a field; returns it in its stored form."
   def validate("status", value) do
-    if value in MemberStatus.overridable(),
+    if value in MemberStatus.settable(),
       do: {:ok, value},
       else: {:error, :invalid_override_value}
   end
