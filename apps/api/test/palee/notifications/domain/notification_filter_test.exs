@@ -20,6 +20,37 @@ defmodule Palee.Notifications.Domain.NotificationFilterTest do
     assert "booking_approved" in types
   end
 
+  test "ADR-600: parses a stack's group key and a list of types" do
+    assert {:ok, %{group_key: "class_workout_missing:o:-:d:2026-11-10", types: nil}} =
+             NotificationFilter.parse(
+               %{"group_key" => "class_workout_missing:o:-:d:2026-11-10"},
+               @now
+             )
+
+    assert {:ok, %{types: ["booking_approved", "class_cancelled"]}} =
+             NotificationFilter.parse(%{types: "booking_approved,class_cancelled"}, @now)
+
+    assert {:ok, %{types: ["booking_approved"]}} =
+             NotificationFilter.parse(%{types: ["booking_approved"]}, @now)
+
+    # With a category too, both must match.
+    assert {:ok, %{types: ["booking_approved"]}} =
+             NotificationFilter.parse(
+               %{types: "booking_approved,water_reminder", category: "bookings"},
+               @now
+             )
+  end
+
+  test "ADR-600: refuses an unknown type or an empty group key" do
+    assert NotificationFilter.parse(%{types: "booking_approved,nope"}, @now) ==
+             {:error, :bad_request}
+
+    assert NotificationFilter.parse(%{group_key: ""}, @now) == {:error, :bad_request}
+
+    assert NotificationFilter.parse(%{group_key: String.duplicate("k", 401)}, @now) ==
+             {:error, :bad_request}
+  end
+
   test "refuses unknown values" do
     assert NotificationFilter.parse(%{state: "unread"}, @now) == {:error, :bad_request}
     assert NotificationFilter.parse(%{older_than_days: 0}, @now) == {:error, :bad_request}

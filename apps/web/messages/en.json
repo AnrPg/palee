@@ -12246,7 +12246,13 @@
     "confirmTitle": "{count, plural, one {Delete # notification?} other {Delete # notifications?}}",
     "confirmBody": "You won't see them again on any device. This cannot be undone.",
     "cancel": "Cancel",
-    "deleteManyFailed": "Nothing was deleted. Try again."
+    "deleteManyFailed": "Nothing was deleted. Try again.",
+    "stackMore": "{count, plural, one {+# more similar} other {+# more similar}}",
+    "stackNew": "{count, plural, one {# new} other {# new}}",
+    "stackCount": "{count, plural, one {# similar notification} other {# similar notifications}}",
+    "stackCollapse": "Collapse",
+    "stackDelete": "Delete all of these similar notifications",
+    "stackHide": "Mark all of these as read"
   },
   "Spaces": {
     "eyebrow": "Settings",

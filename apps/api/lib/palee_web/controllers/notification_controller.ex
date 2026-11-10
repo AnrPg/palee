@@ -42,7 +42,9 @@ defmodule PaleeWeb.NotificationController do
               :mark_read,
               :delete,
               :restore,
-              :bulk_delete
+              :bulk_delete,
+              :mark_read_matching,
+              :restore_matching
             ]
 
   @notification_schema %Schema{
@@ -54,7 +56,13 @@ defmodule PaleeWeb.NotificationController do
       type: %Schema{type: :string},
       payload: %Schema{type: :object, additionalProperties: true},
       read_at: %Schema{type: :string, format: :"date-time", nullable: true},
-      inserted_at: %Schema{type: :string, format: :"date-time"}
+      inserted_at: %Schema{type: :string, format: :"date-time"},
+      group_key: %Schema{
+        type: :string,
+        nullable: true,
+        description: "ADR-600: similar notifications share it; nil never stacks."
+      },
+      stack: S.stack()
     },
     required: [:id, :user_id, :type, :payload, :inserted_at]
   }
@@ -250,9 +258,26 @@ defmodule PaleeWeb.NotificationController do
 
   operation(:bulk_delete,
     summary: "Delete the notifications picked, or every one a filter matches",
-    description: "ADR-460: «Διαγραφή ειδοποιήσεων» in Ρυθμίσεις. Not undoable.",
+    description:
+      "ADR-460: «Διαγραφή ειδοποιήσεων» in Ρυθμίσεις. ADR-600: the trash of a stack " <>
+        "(`filter.group_key`); `POST /notifications/restore` undoes it for a moment.",
     request_body: S.bulk_delete_request(),
     responses: [ok: S.deleted_count_response(), bad_request: S.error_response("Bad request")]
+  )
+
+  operation(:mark_read_matching,
+    summary: "Mark every notification a filter matches as read",
+    description: "ADR-600: the closed eye of a stack (`filter.group_key`).",
+    request_body: S.filter_request("NotificationReadMatching"),
+    responses: [ok: S.marked_count_response(), bad_request: S.error_response("Bad request")]
+  )
+
+  operation(:restore_matching,
+    summary: "Restore the notifications of a filter deleted moments ago",
+    description:
+      "ADR-600: «Αναίρεση» after the trash of a stack; only within the restore window.",
+    request_body: S.filter_request("NotificationRestoreMatching"),
+    responses: [ok: S.restored_count_response(), bad_request: S.error_response("Bad request")]
   )
 
   operation(:mark_clicked,
@@ -470,7 +495,26 @@ defmodule PaleeWeb.NotificationController do
     actor = GuardianPlug.current_resource(conn)
 
     with {:ok, count} <- DeleteNotifications.call(actor.id, conn.body_params) do
-      json(conn, %{deleted_count: count})
+      json(conn, %{
+        deleted_count: count,
+        restorable_for_seconds: DeleteNotifications.restorable_for_seconds()
+      })
+    end
+  end
+
+  def mark_read_matching(conn, _params) do
+    actor = GuardianPlug.current_resource(conn)
+
+    with {:ok, count} <- MarkNotificationsRead.call_matching(actor.id, conn.body_params) do
+      json(conn, %{marked_count: count})
+    end
+  end
+
+  def restore_matching(conn, _params) do
+    actor = GuardianPlug.current_resource(conn)
+
+    with {:ok, count} <- DeleteNotifications.restore(actor.id, conn.body_params) do
+      json(conn, %{restored_count: count})
     end
   end
 

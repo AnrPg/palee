@@ -20,6 +20,7 @@ import {
   useState,
   useSyncExternalStore,
   type PointerEvent as ReactPointerEvent,
+  type ReactNode,
   type RefObject,
   type SyntheticEvent,
 } from "react";
@@ -29,15 +30,26 @@ import { useTranslations } from "next-intl";
 
 import {
   deleteNotification,
+  deleteNotifications,
   fetchNotifications,
   fetchUnreadNotificationCount,
   markNotificationClicked,
   markNotificationRead,
+  markNotificationsRead,
   markAllNotificationsRead,
   restoreNotification,
+  restoreNotifications,
   type NotificationsResponse,
   type NotificationRecord,
 } from "@/api/notifications";
+import {
+  countAcross,
+  entryUnread,
+  isStack,
+  isUnreadEntry,
+  markEntryRead,
+  unreadAcross,
+} from "@/components/notifications/notification-stacks";
 import { FRESHNESS } from "@/lib/query-policy";
 import { useSession } from "@/components/session-provider";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
@@ -813,6 +825,7 @@ export function NotificationCard({
   origin,
   onDelete,
   onHide,
+  stack,
 }: {
   notification: NotificationRecord;
   targetUrl: string | null;
@@ -822,12 +835,22 @@ export function NotificationCard({
   onDelete: () => void;
   /** ADR-460: the closed eye: marks it read, so it moves to «Διαβασμένες». */
   onHide: () => void;
+  /**
+   * ADR-600: the card stands for a closed stack of similar notifications: it
+   * is unread while any of them is, a tap opens the stack, and the trash and
+   * the closed eye cover all of them.
+   */
+  stack?: { unreadCount: number; footer: ReactNode };
 }) {
   const uiLocale = useUiLocale();
   const i18n = useUiTranslations();
   const t = useTranslations("NotificationActions");
   const { title: titleFromPayload, body: notificationBody } = useNotificationText();
-  const clickable = Boolean(targetUrl);
+  const clickable = Boolean(targetUrl) || Boolean(stack);
+  const read = stack ? stack.unreadCount === 0 : Boolean(notification.read_at);
+  const actionLabels = stack
+    ? { delete: t("stackDelete"), hide: t("stackHide"), hidden: t("alreadyHidden") }
+    : { delete: t("delete"), hide: t("hide"), hidden: t("alreadyHidden") };
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const swipe = useSwipeReveal(wrapperRef);
 
@@ -843,13 +866,13 @@ export function NotificationCard({
       data-testid="notification-card"
     >
     <NotificationActions
-      read={Boolean(notification.read_at)}
+      read={read}
       onDelete={onDelete}
       onHide={onHide}
       onFocusWithin={() => {
         if (isCoarsePointer()) swipe.reveal();
       }}
-      labels={{ delete: t("delete"), hide: t("hide"), hidden: t("alreadyHidden") }}
+      labels={actionLabels}
     />
     <article
       key={notification.id}
@@ -867,9 +890,9 @@ export function NotificationCard({
         transform: swipe.offset ? `translateX(${swipe.offset}px)` : undefined,
         // Vertical scrolling stays with the browser; horizontal moves are the swipe.
         touchAction: "pan-y",
-        border: notification.read_at ? "1px solid var(--border)" : "1px solid color-mix(in srgb, var(--primary) 30%, transparent)",
+        border: read ? "1px solid var(--border)" : "1px solid color-mix(in srgb, var(--primary) 30%, transparent)",
         // Opaque, so the buttons behind it (touch, ADR-460) never show through.
-        background: `linear-gradient(${notification.read_at ? "var(--panel-muted)" : "color-mix(in srgb, var(--primary) 6%, transparent)"} 0 0), var(--panel)`,
+        background: `linear-gradient(${read ? "var(--panel-muted)" : "color-mix(in srgb, var(--primary) 6%, transparent)"} 0 0), var(--panel)`,
         cursor: clickable ? "pointer" : "default",
         // Anything raised outside the active organization gets a colour spine
         // in that gym's own brand colour, so repeat senders stay recognisable.
@@ -925,18 +948,23 @@ export function NotificationCard({
             {notificationBody(notification)}
           </p>
         </div>
-        {!notification.read_at ? (
+        {!read ? (
           <span
             className="shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.18em]"
             style={{ background: "var(--spark)", color: "var(--spark-contrast)" }}
+            data-testid="notification-new-badge"
           >
-            {i18n("new6403f2b")}
+            {/* ADR-600: a stack says how many of it are new («1 νέα»). */}
+            {stack ? t("stackNew", { count: stack.unreadCount }) : i18n("new6403f2b")}
           </span>
         ) : null}
       </div>
-      <p className="mt-3 text-xs uppercase tracking-[0.18em]" style={{ color: "var(--dim)" }}>
-        {formatTimestamp(uiLocale, notification.inserted_at)}
-      </p>
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+        <p className="text-xs uppercase tracking-[0.18em]" style={{ color: "var(--dim)" }}>
+          {formatTimestamp(uiLocale, notification.inserted_at)}
+        </p>
+        {stack?.footer}
+      </div>
     </article>
     </div>
   );
@@ -1090,15 +1118,16 @@ function updateInboxCache(
       if (!target) return page;
 
       const next = change(target);
-      const wasUnread = !target.read_at;
-      const isUnread = next ? !next.read_at : false;
+      // ADR-600: a stack row carries many notifications, so the badge drops by
+      // how many of them stopped being unread.
+      const dropped = entryUnread(target) - (next ? entryUnread(next) : 0);
 
       return {
         ...page,
         notifications: next
           ? page.notifications.map((notification) => (notification.id === notificationId ? next : notification))
           : page.notifications.filter((notification) => notification.id !== notificationId),
-        unread_count: wasUnread && !isUnread ? Math.max(0, page.unread_count - 1) : page.unread_count,
+        unread_count: dropped > 0 ? Math.max(0, page.unread_count - dropped) : page.unread_count,
       };
     }),
   };
@@ -1166,6 +1195,86 @@ const COMMUNITY_NOTICES = [
   "community_event_cohost_answered",
 ] as const;
 
+/**
+ * ADR-600: an opened stack: every notification of it, newest first, each with
+ * its own tap, trash and closed eye. Opening it marks nothing read.
+ */
+function NotificationStackMembers({
+  groupKey,
+  count,
+  token,
+  userId,
+  onCollapse,
+  renderCard,
+}: {
+  groupKey: string;
+  count: number;
+  token: string;
+  userId: string | undefined;
+  onCollapse: () => void;
+  renderCard: (notification: NotificationRecord) => ReactNode;
+}) {
+  const i18n = useUiTranslations();
+  const t = useTranslations("NotificationActions");
+  const members = useInfiniteQuery({
+    // Under ["notifications", user], so every inbox refresh refreshes it too.
+    queryKey: ["notifications", userId, "stack", groupKey],
+    initialPageParam: null as string | null,
+    queryFn: ({ pageParam }) =>
+      fetchNotifications(token, { limit: 50, cursor: pageParam, filter: { group_key: groupKey } }),
+    getNextPageParam: (lastPage) => lastPage.next_cursor ?? undefined,
+  });
+  const rows = members.data?.pages.flatMap((page) => page.notifications) ?? [];
+  const nextCursor = members.data?.pages.at(-1)?.next_cursor ?? null;
+
+  return (
+    <div
+      className="space-y-3 border-s-2 ps-3"
+      style={{ borderColor: "var(--border-strong)" }}
+      data-testid="notification-stack-open"
+    >
+      <div className="flex items-center justify-between gap-3 text-xs" style={{ color: "var(--text-soft)" }}>
+        <span>{t("stackCount", { count })}</span>
+        <button
+          type="button"
+          aria-expanded="true"
+          className="rounded-full px-3 py-1 text-xs font-semibold"
+          style={{ background: "var(--border)", color: "var(--text-soft)" }}
+          onClick={onCollapse}
+          data-testid="notification-stack-collapse"
+        >
+          {t("stackCollapse")}
+        </button>
+      </div>
+      {members.isPending ? (
+        <p className="text-sm" style={{ color: "var(--dim)" }}>{i18n("loadingNotificationsf5e60c3")}</p>
+      ) : members.isError && rows.length === 0 ? (
+        <button
+          type="button"
+          onClick={() => void members.refetch()}
+          className="rounded-full px-3 py-1.5 text-xs font-semibold"
+          style={{ background: "var(--panel)", border: "1px solid var(--border)", color: "var(--text-soft)" }}
+        >
+          {i18n("retry9f5cd8a")}
+        </button>
+      ) : (
+        rows.map((notification) => renderCard(notification))
+      )}
+      {nextCursor ? (
+        <button
+          className="w-full rounded-[1.4rem] border px-4 py-3 text-sm font-semibold disabled:opacity-50"
+          style={{ borderColor: "var(--border)", color: "var(--text-soft)", background: "var(--panel-muted)" }}
+          disabled={members.isFetchingNextPage}
+          onClick={() => void members.fetchNextPage()}
+          type="button"
+        >
+          {members.isFetchingNextPage ? i18n("loadingOlderNotifications927e059") : i18n("loadOlderNotifications3447adb")}
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
 export function NotificationBell({
   onUnreadChange,
   triggerClassName = "flex",
@@ -1227,8 +1336,14 @@ export function NotificationBell({
     queryFn: () => fetchUnreadNotificationCount(tokens!.access_token),
     staleTime: FRESHNESS.pushed,
   });
+  // ADR-600: the server answers one row per stack of similar notifications
+  // and filters the tabs itself, so pages, stacks and counts stay right.
+  const inboxKey = useMemo(
+    () => ["notifications", currentUser?.id, "inbox", activeFilter] as const,
+    [activeFilter, currentUser?.id],
+  );
   const notificationQuery = useInfiniteQuery({
-    queryKey: ["notifications", currentUser?.id],
+    queryKey: inboxKey,
     enabled: signedIn && open,
     initialPageParam: null as string | null,
     queryFn: async ({ pageParam }) => {
@@ -1236,9 +1351,12 @@ export function NotificationBell({
         throw new Error(i18n("authenticationRequired9e44e0b"));
       }
 
+      const types = FILTER_TYPES[activeFilter];
       return fetchNotifications(tokens.access_token, {
         limit: pageSize,
         cursor: pageParam,
+        stacks: true,
+        ...(types ? { filter: { types } } : {}),
       });
     },
     getNextPageParam: (lastPage) => lastPage.next_cursor ?? undefined,
@@ -1263,45 +1381,23 @@ export function NotificationBell({
 
       return markNotificationClicked(tokens.access_token, notificationId, url);
     },
-    onSuccess: async (_result, variables) => {
-      queryClient.setQueryData(["notifications", currentUser?.id], (current: { pages: NotificationsResponse[]; pageParams: unknown[] } | undefined) => {
-        if (!current) return current;
-
-        return {
-          ...current,
-          pages: current.pages.map((page) => {
-            let pageChanged = false;
-
-            const notifications = page.notifications.map((notification) => {
-              if (notification.id !== variables.notificationId || notification.read_at) {
-                return notification;
-              }
-
-              pageChanged = true;
-              return { ...notification, read_at: new Date().toISOString() };
-            });
-
-            if (!pageChanged) {
-              return page;
-            }
-
-            return {
-              ...page,
-              notifications,
-              unread_count: Math.max(0, page.unread_count - 1),
-            };
-          }),
-        };
-      });
-
+    onSuccess: async () => {
+      // The opened notification may sit inside a stack (ADR-600), whose
+      // counts only the server knows: refetch rather than guess.
       await queryClient.invalidateQueries({ queryKey: ["notifications", currentUser?.id] });
     },
   });
 
   // ADR-460: the trash button deletes at once (the server keeps a short
-  // restore window); «Αναίρεση» is offered for UNDO_DELETE_MS.
-  const inboxKey = useMemo(() => ["notifications", currentUser?.id] as const, [currentUser?.id]);
-  const [undoable, setUndoable] = useState<{ id: string; pending: Promise<unknown> } | null>(null);
+  // restore window); «Αναίρεση» is offered for UNDO_DELETE_MS. ADR-600: the
+  // trash of a stack deletes all of it, and «Αναίρεση» brings all of it back.
+  const allNotificationsKey = useMemo(() => ["notifications", currentUser?.id] as const, [currentUser?.id]);
+  const [undoable, setUndoable] = useState<
+    | { kind: "one"; id: string; pending: Promise<unknown> }
+    | { kind: "stack"; id: string; groupKey: string; count: number; pending: Promise<unknown> }
+    | null
+  >(null);
+  const [expandedStacks, setExpandedStacks] = useState<Record<string, boolean>>({});
   const [actionError, setActionError] = useState<string | null>(null);
   const undoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -1322,19 +1418,43 @@ export function NotificationBell({
     queryClient.setQueryData<InboxCache>(inboxKey, (current) => updateInboxCache(current, notification.id, () => null));
 
     const pending = deleteNotification(token, notification.id).then(
-      () => queryClient.invalidateQueries({ queryKey: inboxKey }),
+      () => queryClient.invalidateQueries({ queryKey: allNotificationsKey }),
       async (error: unknown) => {
         setUndoable((current) => (current?.id === notification.id ? null : current));
         setActionError(tActions("deleteFailed"));
-        await queryClient.invalidateQueries({ queryKey: inboxKey });
+        await queryClient.invalidateQueries({ queryKey: allNotificationsKey });
         throw error;
       },
     );
-    // A failed delete is reported above; nothing else waits on it.
-    pending.catch(() => undefined);
+    offerUndo({ kind: "one", id: notification.id, pending });
+  }
 
+  // ADR-600: the trash of a closed stack: every notification of it.
+  function handleStackDelete(entry: NotificationRecord) {
+    if (!tokens?.access_token || !entry.stack) return;
+    const token = tokens.access_token;
+    const groupKey = entry.stack.key;
+    const count = entry.stack.count;
+    setActionError(null);
+    queryClient.setQueryData<InboxCache>(inboxKey, (current) => updateInboxCache(current, entry.id, () => null));
+
+    const pending = deleteNotifications(token, { filter: { group_key: groupKey } }).then(
+      () => queryClient.invalidateQueries({ queryKey: allNotificationsKey }),
+      async (error: unknown) => {
+        setUndoable((current) => (current?.id === entry.id ? null : current));
+        setActionError(tActions("deleteFailed"));
+        await queryClient.invalidateQueries({ queryKey: allNotificationsKey });
+        throw error;
+      },
+    );
+    offerUndo({ kind: "stack", id: entry.id, groupKey, count, pending });
+  }
+
+  function offerUndo(next: NonNullable<typeof undoable>) {
+    // A failed delete is reported by its caller; nothing else waits on it.
+    next.pending.catch(() => undefined);
     if (undoTimer.current) clearTimeout(undoTimer.current);
-    setUndoable({ id: notification.id, pending });
+    setUndoable(next);
     undoTimer.current = setTimeout(() => {
       undoTimer.current = null;
       setUndoable(null);
@@ -1343,17 +1463,21 @@ export function NotificationBell({
 
   async function handleUndo() {
     if (!undoable || !tokens?.access_token) return;
-    const { id, pending } = undoable;
+    const current = undoable;
     clearUndo();
 
     try {
       // A restore sent before the delete arrived would find nothing deleted.
-      await pending;
-      await restoreNotification(tokens.access_token, id);
+      await current.pending;
+      if (current.kind === "stack") {
+        await restoreNotifications(tokens.access_token, { group_key: current.groupKey });
+      } else {
+        await restoreNotification(tokens.access_token, current.id);
+      }
     } catch {
       setActionError(tActions("undoFailed"));
     }
-    await queryClient.invalidateQueries({ queryKey: inboxKey });
+    await queryClient.invalidateQueries({ queryKey: allNotificationsKey });
   }
 
   async function handleHide(notification: NotificationRecord) {
@@ -1368,12 +1492,33 @@ export function NotificationBell({
     } catch {
       setActionError(tActions("hideFailed"));
     }
-    await queryClient.invalidateQueries({ queryKey: inboxKey });
+    await queryClient.invalidateQueries({ queryKey: allNotificationsKey });
+  }
+
+  // ADR-600: the closed eye of a stack marks all of it read.
+  async function handleStackHide(entry: NotificationRecord) {
+    if (!tokens?.access_token || !entry.stack || entry.stack.unread_count === 0) return;
+    setActionError(null);
+    queryClient.setQueryData<InboxCache>(inboxKey, (current) =>
+      updateInboxCache(current, entry.id, (row) => markEntryRead(row, new Date().toISOString())),
+    );
+
+    try {
+      await markNotificationsRead(tokens.access_token, { group_key: entry.stack.key });
+    } catch {
+      setActionError(tActions("hideFailed"));
+    }
+    await queryClient.invalidateQueries({ queryKey: allNotificationsKey });
+  }
+
+  function toggleStack(key: string) {
+    setExpandedStacks((current) => ({ ...current, [key]: !current[key] }));
   }
 
   function closePanel() {
     clearUndo();
     setActionError(null);
+    setExpandedStacks({});
     setOpen(false);
   }
 
@@ -1387,14 +1532,14 @@ export function NotificationBell({
   const [readSectionOpen, setReadSectionOpen] = useState(false);
 
   const unreadCount = notificationQuery.data?.pages[0]?.unread_count ?? unreadQuery.data?.unread_count;
-  const allNotifications =
+  // ADR-600: rows are stacks or single notifications; the tabs are filtered
+  // by the server.
+  const notifications =
     notificationQuery.data?.pages.flatMap((page: NotificationsResponse) => page.notifications) ?? [];
-  const filterTypes = FILTER_TYPES[activeFilter];
-  const notifications = filterTypes
-    ? allNotifications.filter((n) => filterTypes.includes(n.type))
-    : allNotifications;
-  const unreadNotifications = notifications.filter((n) => !n.read_at);
-  const readNotifications = notifications.filter((n) => Boolean(n.read_at));
+  const unreadNotifications = notifications.filter(isUnreadEntry);
+  const readNotifications = notifications.filter((n) => !isUnreadEntry(n));
+  const unreadShown = unreadAcross(unreadNotifications);
+  const readShown = countAcross(readNotifications);
   const nextCursor = notificationQuery.data?.pages.at(-1)?.next_cursor ?? null;
   const hasUnread = typeof unreadCount === "number" && unreadCount > 0;
   const emptyMessage = useMemo(() => {
@@ -1453,6 +1598,78 @@ export function NotificationBell({
       return;
     }
     router.push(url);
+  }
+
+  function renderCard(notification: NotificationRecord) {
+    return (
+      <NotificationCard
+        key={notification.id}
+        notification={notification}
+        targetUrl={notificationTargetUrl(notification, currentUser?.role)}
+        onClick={() => handleNotificationClick(notification)}
+        origin={originFor(notification)}
+        onDelete={() => handleDelete(notification)}
+        onHide={() => void handleHide(notification)}
+      />
+    );
+  }
+
+  // ADR-600: a stack shows as its newest card with two sheets behind it and
+  // «+N ακόμη παρόμοιες»; a tap opens it in place, listing all of it.
+  function renderEntry(entry: NotificationRecord) {
+    if (!isStack(entry)) return renderCard(entry);
+    const key = entry.stack.key;
+
+    if (expandedStacks[key]) {
+      return (
+        <NotificationStackMembers
+          key={entry.id}
+          groupKey={key}
+          count={entry.stack.count}
+          token={tokens!.access_token}
+          userId={currentUser?.id}
+          onCollapse={() => toggleStack(key)}
+          renderCard={renderCard}
+        />
+      );
+    }
+
+    return (
+      <div key={entry.id} className="relative pb-3" data-testid="notification-stack" data-stack-count={entry.stack.count}>
+        <span
+          aria-hidden="true"
+          className="absolute inset-x-5 bottom-0 h-6 rounded-b-[1.2rem]"
+          style={{ background: "var(--panel-muted)", border: "1px solid var(--border)", borderTop: "0", opacity: 0.8 }}
+        />
+        <span
+          aria-hidden="true"
+          className="absolute inset-x-2.5 bottom-1.5 h-6 rounded-b-[1.3rem]"
+          style={{ background: "var(--panel-raised)", border: "1px solid var(--border)", borderTop: "0" }}
+        />
+        <div className="relative">
+          <NotificationCard
+            notification={entry}
+            targetUrl={null}
+            onClick={() => toggleStack(key)}
+            origin={originFor(entry)}
+            onDelete={() => handleStackDelete(entry)}
+            onHide={() => void handleStackHide(entry)}
+            stack={{
+              unreadCount: entry.stack.unread_count,
+              footer: (
+                <span
+                  className="rounded-full px-2.5 py-1 text-[11px] font-bold"
+                  style={{ background: "var(--panel)", border: "1px solid var(--border-strong)", color: "var(--text)" }}
+                  data-testid="notification-stack-more"
+                >
+                  {tActions("stackMore", { count: entry.stack.count - 1 })}
+                </span>
+              ),
+            }}
+          />
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -1545,12 +1762,12 @@ export function NotificationBell({
                   <div className="mb-3 flex items-center justify-between gap-3">
                     <p className="text-xs font-bold uppercase tracking-[0.22em]" style={{ color: "var(--dim)" }}>
                       {i18n("new6403f2b")}
-                      {unreadNotifications.length > 0 ? (
+                      {unreadShown > 0 ? (
                         <span
                           className="ms-2 rounded-full px-1.5 py-0.5 text-[10px]"
                           style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}
                         >
-                          {unreadNotifications.length}
+                          {unreadShown}
                         </span>
                       ) : null}
                     </p>
@@ -1572,17 +1789,7 @@ export function NotificationBell({
                     </p>
                   ) : (
                     <div className="space-y-3">
-                      {unreadNotifications.map((notification) => (
-                        <NotificationCard
-                          key={notification.id}
-                          notification={notification}
-                          targetUrl={notificationTargetUrl(notification, currentUser?.role)}
-                          onClick={() => handleNotificationClick(notification)}
-                          origin={originFor(notification)}
-                          onDelete={() => handleDelete(notification)}
-                          onHide={() => void handleHide(notification)}
-                        />
-                      ))}
+                      {unreadNotifications.map(renderEntry)}
                     </div>
                   )}
                 </section>
@@ -1597,7 +1804,7 @@ export function NotificationBell({
                     type="button"
                   >
                     <p className="text-xs font-bold uppercase tracking-[0.22em]" style={{ color: "var(--dim)" }}>
-                      {i18n("read4de891c")}{readNotifications.length})
+                      {i18n("read4de891c")}{readShown})
                     </p>
                     <span className="text-xs" style={{ color: "var(--dim)" }}>
                       {readSectionOpen ? "▲" : "▼"}
@@ -1605,17 +1812,7 @@ export function NotificationBell({
                   </button>
                   {readSectionOpen ? (
                     <div className="space-y-3">
-                      {readNotifications.map((notification) => (
-                        <NotificationCard
-                          key={notification.id}
-                          notification={notification}
-                          targetUrl={notificationTargetUrl(notification, currentUser?.role)}
-                          onClick={() => handleNotificationClick(notification)}
-                          origin={originFor(notification)}
-                          onDelete={() => handleDelete(notification)}
-                          onHide={() => void handleHide(notification)}
-                        />
-                      ))}
+                      {readNotifications.map(renderEntry)}
                     </div>
                   ) : null}
                 </section>
@@ -1643,7 +1840,11 @@ export function NotificationBell({
                 data-testid="notification-undo-toast"
               >
                 <span style={actionError && !undoable ? { color: "var(--danger)" } : undefined}>
-                  {undoable ? tActions("deleted") : actionError}
+                  {undoable
+                    ? undoable.kind === "stack"
+                      ? tActions("deletedCount", { count: undoable.count })
+                      : tActions("deleted")
+                    : actionError}
                 </span>
                 {undoable ? (
                   <button

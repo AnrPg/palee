@@ -12246,7 +12246,13 @@
     "confirmTitle": "{count, plural, one {# melding verwijderen?} other {# meldingen verwijderen?}}",
     "confirmBody": "Je ziet ze op geen enkel apparaat meer terug. Dit kan niet ongedaan worden gemaakt.",
     "cancel": "Annuleren",
-    "deleteManyFailed": "Er is niets verwijderd. Probeer het opnieuw."
+    "deleteManyFailed": "Er is niets verwijderd. Probeer het opnieuw.",
+    "stackMore": "{count, plural, one {+# andere vergelijkbare} other {+# andere vergelijkbare}}",
+    "stackNew": "{count, plural, one {# nieuwe} other {# nieuwe}}",
+    "stackCount": "{count, plural, one {# vergelijkbare melding} other {# vergelijkbare meldingen}}",
+    "stackCollapse": "Inklappen",
+    "stackDelete": "Al deze vergelijkbare meldingen verwijderen",
+    "stackHide": "Alles als gelezen markeren"
   },
   "Spaces": {
     "eyebrow": "Instellingen",

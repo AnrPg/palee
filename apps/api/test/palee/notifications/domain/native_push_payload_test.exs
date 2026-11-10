@@ -39,6 +39,31 @@ defmodule Palee.Notifications.Domain.NativePushPayloadTest do
     assert String.length(payload["aps"]["alert"]["body"]) == 600
   end
 
+  test "ADR-600: a stack's tag replaces the earlier push on the phone" do
+    message = Map.put(@message, :tag, "palee-0123456789abcdef")
+
+    assert NativePushPayload.fcm("tok", message)["message"]["android"]["notification"]["tag"] ==
+             "palee-0123456789abcdef"
+
+    assert NativePushPayload.apns(message)["aps"]["thread-id"] == "palee-0123456789abcdef"
+
+    assert {"apns-collapse-id", "palee-0123456789abcdef"} in NativePushPayload.apns_headers(
+             "app.palee.member",
+             "jwt",
+             message
+           )
+
+    refute Map.has_key?(
+             NativePushPayload.fcm("tok", @message)["message"]["android"]["notification"],
+             "tag"
+           )
+
+    refute Enum.any?(
+             NativePushPayload.apns_headers("t", "jwt", @message),
+             &(elem(&1, 0) == "apns-collapse-id")
+           )
+  end
+
   test "APNs headers name the topic and the provider token" do
     headers = NativePushPayload.apns_headers("app.palee.member", "jwt")
     assert {"apns-topic", "app.palee.member"} in headers

@@ -919,3 +919,9 @@ msgstr "%{box} прекрати членството ти в box. Пакетът
 
 msgid "%{box} ended your box membership."
 msgstr "%{box} прекрати членството ти в box."
+
+# ADR-600: the push of a stack of similar notifications.
+msgid "+%{count} more similar"
+msgid_plural "+%{count} more similar"
+msgstr[0] "+%{count} още подобно"
+msgstr[1] "+%{count} още подобни"

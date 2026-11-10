@@ -919,3 +919,13 @@ msgstr "أنهى %{box} عضويتك في الـ box. تبقى باقتك صال
 
 msgid "%{box} ended your box membership."
 msgstr "أنهى %{box} عضويتك في الـ box."
+
+# ADR-600: the push of a stack of similar notifications.
+msgid "+%{count} more similar"
+msgid_plural "+%{count} more similar"
+msgstr[0] "+%{count} مشابهة"
+msgstr[1] "+%{count} مشابهة"
+msgstr[2] "+%{count} مشابهة"
+msgstr[3] "+%{count} مشابهة"
+msgstr[4] "+%{count} مشابهة"
+msgstr[5] "+%{count} مشابهة"

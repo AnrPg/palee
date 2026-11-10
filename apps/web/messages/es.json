@@ -12246,7 +12246,13 @@
     "confirmTitle": "{count, plural, one {¿Eliminar # notificación?} other {¿Eliminar # notificaciones?}}",
     "confirmBody": "No volverás a verlas en ningún dispositivo. No se puede deshacer.",
     "cancel": "Cancelar",
-    "deleteManyFailed": "No se eliminó nada. Inténtalo de nuevo."
+    "deleteManyFailed": "No se eliminó nada. Inténtalo de nuevo.",
+    "stackMore": "{count, plural, one {+# similar más} other {+# similares más}}",
+    "stackNew": "{count, plural, one {# nueva} other {# nuevas}}",
+    "stackCount": "{count, plural, one {# notificación similar} other {# notificaciones similares}}",
+    "stackCollapse": "Contraer",
+    "stackDelete": "Eliminar todas estas notificaciones similares",
+    "stackHide": "Marcar todas como leídas"
   },
   "Spaces": {
     "eyebrow": "Ajustes",

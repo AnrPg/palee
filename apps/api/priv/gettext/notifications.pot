@@ -914,3 +914,9 @@ msgstr ""
 
 msgid "%{box} ended your box membership."
 msgstr ""
+
+# ADR-600: the push of a stack of similar notifications.
+msgid "+%{count} more similar"
+msgid_plural "+%{count} more similar"
+msgstr[0] ""
+msgstr[1] ""
