@@ -250,7 +250,16 @@ test.describe("public box page", () => {
     // From another tab, the member action brings the club back.
     await page.getByRole("tab", { name: "About" }).click();
     await expect(page).toHaveURL(/#about$/);
-    await page.getByRole("button", { name: "Box member · Open the club" }).first().click();
+    const openClub = page.getByTestId("box-page-open-club").first();
+    await expect(openClub).toHaveAccessibleName("Box member · Open the club");
+    // The label fits inside the pill with padding on both sides (ANR 2026-11-10).
+    const fits = await openClub.evaluate((el) => {
+      const pill = el.getBoundingClientRect();
+      const label = el.querySelector("span:last-child")!.getBoundingClientRect();
+      return el.scrollWidth <= el.clientWidth && label.left - pill.left >= 12 && pill.right - label.right >= 12;
+    });
+    expect(fits).toBe(true);
+    await openClub.click();
     await expect(page.getByTestId("box-club-tab")).toBeVisible();
   });
 
