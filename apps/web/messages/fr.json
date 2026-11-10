@@ -12244,7 +12244,13 @@
     "confirmTitle": "{count, plural, one {Supprimer # notification ?} other {Supprimer # notifications ?}}",
     "confirmBody": "Tu ne les reverras sur aucun appareil. Cette action est définitive.",
     "cancel": "Retour",
-    "deleteManyFailed": "Rien n’a été supprimé. Réessaie."
+    "deleteManyFailed": "Rien n’a été supprimé. Réessaie.",
+    "stackMore": "{count, plural, one {+# autre similaire} other {+# autres similaires}}",
+    "stackNew": "{count, plural, one {# nouvelle} other {# nouvelles}}",
+    "stackCount": "{count, plural, one {# notification similaire} other {# notifications similaires}}",
+    "stackCollapse": "Réduire",
+    "stackDelete": "Supprimer toutes ces notifications similaires",
+    "stackHide": "Tout marquer comme lu"
   },
   "Spaces": {
     "eyebrow": "Réglages",

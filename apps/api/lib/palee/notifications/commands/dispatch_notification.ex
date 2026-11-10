@@ -3,7 +3,14 @@ defmodule Palee.Notifications.Commands.DispatchNotification do
   alias Palee.Notifications.Commands.EnqueueNativePushDispatch
   alias Palee.Notifications.Commands.EnqueuePushDispatch
   alias Palee.Notifications.NotificationStore
-  alias Palee.Notifications.Domain.{PayloadNormalizer, PayloadTimes, PushMessageBuilder}
+
+  alias Palee.Notifications.Domain.{
+    NotificationGrouping,
+    PayloadNormalizer,
+    PayloadTimes,
+    PushMessageBuilder
+  }
+
   alias Palee.Notifications.PushConfig
   alias Palee.Notifications.Queries.DeliversNotification
   alias Palee.Localization
@@ -79,11 +86,54 @@ defmodule Palee.Notifications.Commands.DispatchNotification do
 
   # ADR-171: the store apps' installs get the same push as the browser ones.
   defp enqueue_push(notification) do
+    notification = stacked_push(notification)
     web = if PushConfig.enabled?(), do: EnqueuePushDispatch.call(notification), else: :ok
 
     case {web, EnqueueNativePushDispatch.call(notification)} do
       {:ok, native} -> native
       {web_error, _native} -> web_error
+    end
+  end
+
+  # ADR-600: similar notifications keep one push on the phone. It carries the
+  # stack's tag, so it replaces the earlier push of the stack, and says how
+  # many more similar ones are still unread. The stored row is unchanged.
+  defp stacked_push(notification) do
+    case NotificationGrouping.push_tag(Map.get(notification, :group_key)) do
+      nil ->
+        notification
+
+      tag ->
+        more =
+          max(
+            NotificationStore.count_unread_in_group(notification.user_id, notification.group_key) -
+              1,
+            0
+          )
+
+        payload =
+          (notification.payload || %{})
+          |> Map.put("push_tag", tag)
+          |> with_more_similar(more)
+
+        %{notification | payload: payload}
+    end
+  end
+
+  defp with_more_similar(payload, 0), do: payload
+
+  defp with_more_similar(payload, more) do
+    line =
+      Localization.translate_plural(
+        payload["locale"] || "en",
+        "+%{count} more similar",
+        "+%{count} more similar",
+        more
+      )
+
+    case payload["body"] do
+      body when is_binary(body) and body != "" -> Map.put(payload, "body", body <> "\n" <> line)
+      _missing -> Map.put(payload, "body", line)
     end
   end
 

@@ -46,6 +46,8 @@ defmodule Palee.Workers.PushDispatchJob do
             locale: payload["locale"]
           }
           |> fallback_message(type, payload)
+          # ADR-600: one push per stack of similar notifications.
+          |> put_tag(payload["push_tag"])
           |> Map.put(:notification_id, notification_id)
 
         result = dispatcher().send_push(subscription, message)
@@ -71,6 +73,9 @@ defmodule Palee.Workers.PushDispatchJob do
         end
     end
   end
+
+  defp put_tag(message, tag) when is_binary(tag) and tag != "", do: Map.put(message, :tag, tag)
+  defp put_tag(message, _tag), do: message
 
   defp fallback_message(%{title: title, body: body} = message, _type, _payload)
        when is_binary(title) and is_binary(body),

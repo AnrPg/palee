@@ -12,6 +12,21 @@ function entries(source) {
   );
 }
 
+// Plural entries: `msgid` + `msgid_plural` + one `msgstr[n]` per plural form
+// of the locale (Gettext.Plural); every form keeps the placeholders.
+const pluralForms = { en: 2, el: 2, ar: 6, ru: 3, de: 2, es: 2, pt_PT: 2, he: 2, it: 2, bg: 2, nl: 2, fr: 2 };
+
+function pluralEntries(source) {
+  return new Map(
+    [...source.matchAll(/^msgid ("(?:[^"\\]|\\.)*")\nmsgid_plural ("(?:[^"\\]|\\.)*")\n((?:msgstr\[\d+\] "(?:[^"\\]|\\.)*"\n?)+)/gm)].map(
+      (match) => [
+        JSON.parse(match[1]),
+        [...match[3].matchAll(/^msgstr\[\d+\] ("(?:[^"\\]|\\.)*")$/gm)].map((form) => JSON.parse(form[1])),
+      ],
+    ),
+  );
+}
+
 function placeholders(message) {
   return [...message.matchAll(/%\{([A-Za-z_][\w]*)\}/g)].map((match) => match[1]).sort();
 }
@@ -29,5 +44,21 @@ for (const domain of domains) {
       }
     }
   }
-  console.log(`Validated ${reference.size} ${domain} messages across ${locales.length} locales.`);
+  const pluralReference = pluralEntries(await readFile(resolve("priv/gettext/en/LC_MESSAGES", `${domain}.po`), "utf8"));
+  for (const locale of locales) {
+    const catalog = pluralEntries(await readFile(resolve("priv/gettext", locale, "LC_MESSAGES", `${domain}.po`), "utf8"));
+    for (const id of new Set([...pluralReference.keys(), ...catalog.keys()])) {
+      const forms = catalog.get(id);
+      if (!pluralReference.has(id) || !forms) throw new Error(`${locale}/${domain} plural key mismatch for ${id}`);
+      if (forms.length !== pluralForms[locale] || forms.some((form) => !form)) {
+        throw new Error(`${locale}/${domain} needs ${pluralForms[locale]} plural forms for ${id}`);
+      }
+      for (const form of forms) {
+        if (JSON.stringify(placeholders(id)) !== JSON.stringify(placeholders(form))) {
+          throw new Error(`${locale}/${domain} placeholder mismatch for ${id}`);
+        }
+      }
+    }
+  }
+  console.log(`Validated ${reference.size} ${domain} messages and ${pluralReference.size} plurals across ${locales.length} locales.`);
 }

@@ -12244,7 +12244,13 @@
     "confirmTitle": "{count, plural, one {למחוק התראה אחת?} two {למחוק שתי התראות?} other {למחוק # התראות?}}",
     "confirmBody": "לא תראו אותן שוב באף מכשיר. אי אפשר לבטל את זה.",
     "cancel": "חזרה",
-    "deleteManyFailed": "שום דבר לא נמחק. אפשר לנסות שוב."
+    "deleteManyFailed": "שום דבר לא נמחק. אפשר לנסות שוב.",
+    "stackMore": "{count, plural, one {+# נוספת דומה} other {+# נוספות דומות}}",
+    "stackNew": "{count, plural, one {# חדשה} other {# חדשות}}",
+    "stackCount": "{count, plural, one {התראה דומה אחת} other {# התראות דומות}}",
+    "stackCollapse": "כיווץ",
+    "stackDelete": "מחיקת כל ההתראות הדומות האלה",
+    "stackHide": "סימון כולן כנקראו"
   },
   "Spaces": {
     "eyebrow": "הגדרות",

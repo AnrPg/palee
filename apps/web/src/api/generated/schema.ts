@@ -5429,7 +5429,7 @@ export interface paths {
         put?: never;
         /**
          * Delete the notifications picked, or every one a filter matches
-         * @description ADR-460: «Διαγραφή ειδοποιήσεων» in Ρυθμίσεις. Not undoable.
+         * @description ADR-460: «Διαγραφή ειδοποιήσεων» in Ρυθμίσεις. ADR-600: the trash of a stack (`filter.group_key`); `POST /notifications/restore` undoes it for a moment.
          */
         post: operations["PaleeWeb.NotificationController.bulk_delete"];
         delete?: never;
@@ -5564,6 +5564,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/notifications/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mark every notification a filter matches as read
+         * @description ADR-600: the closed eye of a stack (`filter.group_key`).
+         */
+        post: operations["PaleeWeb.NotificationController.mark_read_matching"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/notifications/read-all": {
         parameters: {
             query?: never;
@@ -5575,6 +5595,26 @@ export interface paths {
         put?: never;
         /** Mark all notifications as read for the current user */
         post: operations["PaleeWeb.NotificationController.mark_all_read"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Restore the notifications of a filter deleted moments ago
+         * @description ADR-600: «Αναίρεση» after the trash of a stack; only within the restore window.
+         */
+        post: operations["PaleeWeb.NotificationController.restore_matching"];
         delete?: never;
         options?: never;
         head?: never;
@@ -40591,7 +40631,7 @@ export interface components {
         };
         /**
          * NotificationBulkDelete
-         * @description Either `ids` (the notifications picked) or `filter` (every notification it matches, as the list shows them), never both. Not undoable.
+         * @description Either `ids` (the notifications picked) or `filter` (every notification it matches, as the list shows them), never both. A `filter` delete may be restored for `restorable_for_seconds` (ADR-600).
          */
         NotificationBulkDelete: {
             /**
@@ -40604,6 +40644,8 @@ export interface components {
                  * @enum {string}
                  */
                 category?: "bookings" | "messages" | "community" | "coach" | "partners" | "journal" | "staff" | "account";
+                /** @description ADR-600: only the notifications of this stack (its `stack.key`). */
+                group_key?: string;
                 /** @description Only notifications received more than this many days ago. */
                 older_than_days?: number;
                 /**
@@ -40611,6 +40653,8 @@ export interface components {
                  * @enum {string}
                  */
                 state?: "all" | "read";
+                /** @description ADR-600: only notifications of these types, comma-separated (the bell's tabs). */
+                types?: string;
             };
             ids?: string[];
         };
@@ -40623,6 +40667,8 @@ export interface components {
         /** NotificationDeletedCount */
         NotificationDeletedCount: {
             deleted_count: number;
+            /** @description How long «Αναίρεση» may still restore them (ADR-600). */
+            restorable_for_seconds: number;
         };
         /**
          * NotificationFilter
@@ -40634,6 +40680,8 @@ export interface components {
              * @enum {string}
              */
             category?: "bookings" | "messages" | "community" | "coach" | "partners" | "journal" | "staff" | "account";
+            /** @description ADR-600: only the notifications of this stack (its `stack.key`). */
+            group_key?: string;
             /** @description Only notifications received more than this many days ago. */
             older_than_days?: number;
             /**
@@ -40641,6 +40689,12 @@ export interface components {
              * @enum {string}
              */
             state?: "all" | "read";
+            /** @description ADR-600: only notifications of these types, comma-separated (the bell's tabs). */
+            types?: string;
+        };
+        /** NotificationMarkedCount */
+        NotificationMarkedCount: {
+            marked_count: number;
         };
         /** NotificationPreference */
         NotificationPreference: {
@@ -40695,10 +40749,70 @@ export interface components {
             in_app?: boolean;
             push?: boolean;
         };
+        /** NotificationReadMatching */
+        NotificationReadMatching: {
+            /**
+             * NotificationFilter
+             * @description Which notifications a bulk delete covers; an empty filter covers all.
+             */
+            filter: {
+                /**
+                 * @description Only notifications of this category (ADR-199).
+                 * @enum {string}
+                 */
+                category?: "bookings" | "messages" | "community" | "coach" | "partners" | "journal" | "staff" | "account";
+                /** @description ADR-600: only the notifications of this stack (its `stack.key`). */
+                group_key?: string;
+                /** @description Only notifications received more than this many days ago. */
+                older_than_days?: number;
+                /**
+                 * @description `read`: only notifications already read. Default `all`.
+                 * @enum {string}
+                 */
+                state?: "all" | "read";
+                /** @description ADR-600: only notifications of these types, comma-separated (the bell's tabs). */
+                types?: string;
+            };
+        };
+        /** NotificationRestoreMatching */
+        NotificationRestoreMatching: {
+            /**
+             * NotificationFilter
+             * @description Which notifications a bulk delete covers; an empty filter covers all.
+             */
+            filter: {
+                /**
+                 * @description Only notifications of this category (ADR-199).
+                 * @enum {string}
+                 */
+                category?: "bookings" | "messages" | "community" | "coach" | "partners" | "journal" | "staff" | "account";
+                /** @description ADR-600: only the notifications of this stack (its `stack.key`). */
+                group_key?: string;
+                /** @description Only notifications received more than this many days ago. */
+                older_than_days?: number;
+                /**
+                 * @description `read`: only notifications already read. Default `all`.
+                 * @enum {string}
+                 */
+                state?: "all" | "read";
+                /** @description ADR-600: only notifications of these types, comma-separated (the bell's tabs). */
+                types?: string;
+            };
+        };
         /** NotificationRestored */
         NotificationRestored: {
             restored: boolean;
         };
+        /** NotificationRestoredCount */
+        NotificationRestoredCount: {
+            restored_count: number;
+        };
+        /** NotificationStack */
+        NotificationStack: {
+            count: number;
+            key: string;
+            unread_count: number;
+        } | null;
         /** NutritionPlan */
         NutritionPlan: {
             body: string;
@@ -85099,6 +85213,10 @@ export interface operations {
             query?: {
                 limit?: number;
                 cursor?: string;
+                group_key?: string;
+                types?: string;
+                /** @description ADR-600: one row per stack of similar notifications (its newest, with `stack`). */
+                stacks?: boolean;
                 state?: "all" | "read";
                 older_than_days?: number;
                 category?: "bookings" | "messages" | "community" | "coach" | "partners" | "journal" | "staff" | "account";
@@ -85122,6 +85240,8 @@ export interface operations {
                         matching_count?: number | null;
                         next_cursor: string | null;
                         notifications: {
+                            /** @description ADR-600: similar notifications share it; nil never stacks. */
+                            group_key?: string | null;
                             /** Format: uuid */
                             id: string;
                             /** Format: date-time */
@@ -85133,6 +85253,12 @@ export interface operations {
                             };
                             /** Format: date-time */
                             read_at?: string | null;
+                            /** NotificationStack */
+                            stack?: {
+                                count: number;
+                                key: string;
+                                unread_count: number;
+                            } | null;
                             type: string;
                             /** Format: uuid */
                             user_id: string;
@@ -85163,6 +85289,8 @@ export interface operations {
                          * @enum {string}
                          */
                         category?: "bookings" | "messages" | "community" | "coach" | "partners" | "journal" | "staff" | "account";
+                        /** @description ADR-600: only the notifications of this stack (its `stack.key`). */
+                        group_key?: string;
                         /** @description Only notifications received more than this many days ago. */
                         older_than_days?: number;
                         /**
@@ -85170,6 +85298,8 @@ export interface operations {
                          * @enum {string}
                          */
                         state?: "all" | "read";
+                        /** @description ADR-600: only notifications of these types, comma-separated (the bell's tabs). */
+                        types?: string;
                     };
                     ids?: string[];
                 };
@@ -85184,6 +85314,8 @@ export interface operations {
                 content: {
                     "application/json": {
                         deleted_count: number;
+                        /** @description How long «Αναίρεση» may still restore them (ADR-600). */
+                        restorable_for_seconds: number;
                     };
                 };
             };
@@ -85566,6 +85698,67 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.NotificationController.mark_read_matching": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * NotificationFilter
+                     * @description Which notifications a bulk delete covers; an empty filter covers all.
+                     */
+                    filter: {
+                        /**
+                         * @description Only notifications of this category (ADR-199).
+                         * @enum {string}
+                         */
+                        category?: "bookings" | "messages" | "community" | "coach" | "partners" | "journal" | "staff" | "account";
+                        /** @description ADR-600: only the notifications of this stack (its `stack.key`). */
+                        group_key?: string;
+                        /** @description Only notifications received more than this many days ago. */
+                        older_than_days?: number;
+                        /**
+                         * @description `read`: only notifications already read. Default `all`.
+                         * @enum {string}
+                         */
+                        state?: "all" | "read";
+                        /** @description ADR-600: only notifications of these types, comma-separated (the bell's tabs). */
+                        types?: string;
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description Read count */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        marked_count: number;
+                    };
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code?: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.NotificationController.mark_all_read": {
         parameters: {
             query?: never;
@@ -85583,6 +85776,67 @@ export interface operations {
                 content: {
                     "application/json": {
                         marked_count: number;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.NotificationController.restore_matching": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * NotificationFilter
+                     * @description Which notifications a bulk delete covers; an empty filter covers all.
+                     */
+                    filter: {
+                        /**
+                         * @description Only notifications of this category (ADR-199).
+                         * @enum {string}
+                         */
+                        category?: "bookings" | "messages" | "community" | "coach" | "partners" | "journal" | "staff" | "account";
+                        /** @description ADR-600: only the notifications of this stack (its `stack.key`). */
+                        group_key?: string;
+                        /** @description Only notifications received more than this many days ago. */
+                        older_than_days?: number;
+                        /**
+                         * @description `read`: only notifications already read. Default `all`.
+                         * @enum {string}
+                         */
+                        state?: "all" | "read";
+                        /** @description ADR-600: only notifications of these types, comma-separated (the bell's tabs). */
+                        types?: string;
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description Restored count */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        restored_count: number;
+                    };
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code?: string;
+                        error: string;
                     };
                 };
             };

@@ -12244,7 +12244,13 @@
     "confirmTitle": "{count, plural, one {Να διαγραφεί # ειδοποίηση;} other {Να διαγραφούν # ειδοποιήσεις;}}",
     "confirmBody": "Δεν θα τις ξαναδείς σε καμία συσκευή. Η διαγραφή δεν αναιρείται.",
     "cancel": "Άκυρο",
-    "deleteManyFailed": "Δεν διαγράφηκε τίποτα. Δοκίμασε ξανά."
+    "deleteManyFailed": "Δεν διαγράφηκε τίποτα. Δοκίμασε ξανά.",
+    "stackMore": "{count, plural, one {+# ακόμη παρόμοια} other {+# ακόμη παρόμοιες}}",
+    "stackNew": "{count, plural, one {# νέα} other {# νέες}}",
+    "stackCount": "{count, plural, one {# παρόμοια ειδοποίηση} other {# παρόμοιες ειδοποιήσεις}}",
+    "stackCollapse": "Σύμπτυξη",
+    "stackDelete": "Διαγραφή όλων αυτών των παρόμοιων ειδοποιήσεων",
+    "stackHide": "Σήμανση όλων ως διαβασμένων"
   },
   "Spaces": {
     "eyebrow": "Ρυθμίσεις",

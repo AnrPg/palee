@@ -919,3 +919,10 @@ msgstr "%{box} завершил ваше членство в box. Ваш пак�
 
 msgid "%{box} ended your box membership."
 msgstr "%{box} завершил ваше членство в box."
+
+# ADR-600: the push of a stack of similar notifications.
+msgid "+%{count} more similar"
+msgid_plural "+%{count} more similar"
+msgstr[0] "+%{count} похожее"
+msgstr[1] "+%{count} похожих"
+msgstr[2] "+%{count} похожих"

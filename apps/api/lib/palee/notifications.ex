@@ -10,8 +10,10 @@ defmodule Palee.Notifications do
   alias Palee.Notifications.Commands.EnqueueNotificationEvent
   alias Palee.Notifications.Commands.MarkAllRead
   alias Palee.Notifications.Commands.MarkNotificationRead
+  alias Palee.Notifications.Commands.MarkNotificationsRead
   alias Palee.Notifications.Commands.ReplacePushKeys
   alias Palee.Notifications.Commands.RestoreNotification
+  alias Palee.Notifications.Commands.RestoreNotifications
   alias Palee.Notifications.Commands.SaveNativePushToken
   alias Palee.Notifications.Commands.SavePushContact
   alias Palee.Notifications.Commands.SavePushSubscription
@@ -147,6 +149,27 @@ defmodule Palee.Notifications do
         error
     end
   end
+
+  @doc "ADR-600: mark every notification a filter matches read (a stack's closed eye)."
+  def mark_read_matching(user_id, body),
+    do:
+      user_id
+      |> in_user_context(fn -> MarkNotificationsRead.call(user_id, body) end)
+      |> changed(user_id)
+
+  @doc "ADR-600: «Αναίρεση» of a stack's delete, within the restore window."
+  def restore_notifications(user_id, body),
+    do:
+      user_id
+      |> in_user_context(fn -> RestoreNotifications.call(user_id, body) end)
+      |> changed(user_id)
+
+  defp changed({:ok, count} = ok, user_id) do
+    if count > 0, do: broadcast_notification_changed(user_id)
+    ok
+  end
+
+  defp changed({:error, _reason} = error, _user_id), do: error
 
   defp in_user_context(user_id, fun),
     do: NotificationStore.with_user_context(%{user_id: user_id}, fun)

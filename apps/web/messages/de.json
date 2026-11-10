@@ -12244,7 +12244,13 @@
     "confirmTitle": "{count, plural, one {# Benachrichtigung löschen?} other {# Benachrichtigungen löschen?}}",
     "confirmBody": "Du siehst sie auf keinem Gerät wieder. Das lässt sich nicht rückgängig machen.",
     "cancel": "Abbrechen",
-    "deleteManyFailed": "Es wurde nichts gelöscht. Versuche es erneut."
+    "deleteManyFailed": "Es wurde nichts gelöscht. Versuche es erneut.",
+    "stackMore": "{count, plural, one {+# weitere ähnliche} other {+# weitere ähnliche}}",
+    "stackNew": "{count, plural, one {# neue} other {# neue}}",
+    "stackCount": "{count, plural, one {# ähnliche Benachrichtigung} other {# ähnliche Benachrichtigungen}}",
+    "stackCollapse": "Einklappen",
+    "stackDelete": "Alle diese ähnlichen Benachrichtigungen löschen",
+    "stackHide": "Alle als gelesen markieren"
   },
   "Spaces": {
     "eyebrow": "Einstellungen",

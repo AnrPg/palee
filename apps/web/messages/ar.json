@@ -12244,7 +12244,13 @@
     "confirmTitle": "{count, plural, zero {حذف # إشعار؟} one {حذف إشعار واحد؟} two {حذف إشعارين؟} few {حذف # إشعارات؟} many {حذف # إشعارًا؟} other {حذف # إشعار؟}}",
     "confirmBody": "لن تراها مجددًا على أي جهاز. لا يمكن التراجع عن ذلك.",
     "cancel": "إلغاء",
-    "deleteManyFailed": "لم يُحذف شيء. حاول مرة أخرى."
+    "deleteManyFailed": "لم يُحذف شيء. حاول مرة أخرى.",
+    "stackMore": "{count, plural, zero {+# مشابهة} one {+# مشابهة} two {+# مشابهة} few {+# مشابهة} many {+# مشابهة} other {+# مشابهة}}",
+    "stackNew": "{count, plural, zero {# جديدة} one {# جديدة} two {# جديدة} few {# جديدة} many {# جديدة} other {# جديدة}}",
+    "stackCount": "{count, plural, zero {# إشعارات مشابهة} one {إشعار مشابه واحد} two {إشعاران مشابهان} few {# إشعارات مشابهة} many {# إشعارًا مشابهًا} other {# إشعار مشابه}}",
+    "stackCollapse": "طي",
+    "stackDelete": "حذف كل هذه الإشعارات المشابهة",
+    "stackHide": "تعليم الكل كمقروء"
   },
   "Spaces": {
     "eyebrow": "الإعدادات",

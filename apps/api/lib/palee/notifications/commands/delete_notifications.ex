@@ -1,8 +1,9 @@
 defmodule Palee.Notifications.Commands.DeleteNotifications do
   @moduledoc """
   ADR-460: «Διαγραφή N ειδοποιήσεων» from Ρυθμίσεις: the ids picked, or every
-  notification a filter matches (so "select all" never ships ids). Not
-  undoable: there is no restore for a bulk delete.
+  notification a filter matches (so "select all" never ships ids). ADR-600:
+  the bell's trash on a stack is the filter of its `group_key`;
+  `RestoreNotifications` undoes it within the restore window.
   """
 
   alias Palee.Notifications.Domain.NotificationFilter

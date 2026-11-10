@@ -10,6 +10,12 @@ defmodule Palee.Notifications.Domain.NotificationFilter do
   either `ids` or a `filter`, never both, so "select all (N)" is sent as the
   filter itself and the server deletes exactly what it would list.
 
+  ADR-600 adds `group_key` (one stack: what its closed eye, trash and
+  «Αναίρεση» cover, and what it lists when opened) and `types` (the bell's
+  «Προπονήσεις» and «Κρατήσεις» tabs, filtered on the server so the pages
+  and stacks stay right). `types` is a list or a comma-separated string of
+  notification types; with `category` too, both must match.
+
   Pure: the caller passes the current time.
   """
 
@@ -18,17 +24,20 @@ defmodule Palee.Notifications.Domain.NotificationFilter do
   @states ~w(all read)
   @max_older_than_days 3650
   @max_ids 200
+  @max_group_key_length 400
+  @max_types 60
   @restore_window_seconds 60
 
   @type t :: %{
           read_only: boolean(),
           inserted_before: NaiveDateTime.t() | nil,
-          types: [String.t()] | nil
+          types: [String.t()] | nil,
+          group_key: String.t() | nil
         }
 
   @doc "No filter: every notification of the inbox."
   @spec all() :: t()
-  def all, do: %{read_only: false, inserted_before: nil, types: nil}
+  def all, do: %{read_only: false, inserted_before: nil, types: nil, group_key: nil}
 
   @doc "The most ids one bulk delete may name."
   def max_ids, do: @max_ids
@@ -44,8 +53,16 @@ defmodule Palee.Notifications.Domain.NotificationFilter do
   def parse(params, %DateTime{} = now) when is_map(params) do
     with {:ok, read_only} <- parse_state(param(params, :state)),
          {:ok, inserted_before} <- parse_age(param(params, :older_than_days), now),
-         {:ok, types} <- parse_category(param(params, :category)) do
-      {:ok, %{read_only: read_only, inserted_before: inserted_before, types: types}}
+         {:ok, category_types} <- parse_category(param(params, :category)),
+         {:ok, listed_types} <- parse_types(param(params, :types)),
+         {:ok, group_key} <- parse_group_key(param(params, :group_key)) do
+      {:ok,
+       %{
+         read_only: read_only,
+         inserted_before: inserted_before,
+         types: intersect(category_types, listed_types),
+         group_key: group_key
+       }}
     end
   end
 
@@ -116,6 +133,38 @@ defmodule Palee.Notifications.Domain.NotificationFilter do
   end
 
   defp parse_category(_category), do: {:error, :bad_request}
+
+  defp parse_types(nil), do: {:ok, nil}
+  defp parse_types(""), do: {:ok, nil}
+
+  defp parse_types(types) when is_binary(types),
+    do: types |> String.split(",", trim: true) |> parse_types()
+
+  defp parse_types(types) when is_list(types) and length(types) <= @max_types do
+    known = known_types()
+    types = types |> Enum.map(&to_string/1) |> Enum.uniq()
+
+    if types != [] and Enum.all?(types, &MapSet.member?(known, &1)),
+      do: {:ok, types},
+      else: {:error, :bad_request}
+  end
+
+  defp parse_types(_types), do: {:error, :bad_request}
+
+  # Every type has an ADR-199 category, so the categories know them all.
+  defp known_types, do: MapSet.new(NotificationCategories.mapped_types())
+
+  defp intersect(nil, types), do: types
+  defp intersect(types, nil), do: types
+  defp intersect(category_types, types), do: Enum.filter(types, &(&1 in category_types))
+
+  defp parse_group_key(nil), do: {:ok, nil}
+
+  defp parse_group_key(key)
+       when is_binary(key) and key != "" and byte_size(key) <= @max_group_key_length,
+       do: {:ok, key}
+
+  defp parse_group_key(_key), do: {:error, :bad_request}
 
   defp parse_ids([]), do: {:error, :bad_request}
 

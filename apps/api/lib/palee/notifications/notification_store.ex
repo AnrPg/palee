@@ -23,6 +23,17 @@ defmodule Palee.Notifications.NotificationStore do
   def count_unread_inbox(user_id), do: adapter().count_unread_inbox(user_id)
 
   @impl true
+  def count_unread_in_group(user_id, group_key),
+    do: adapter().count_unread_in_group(user_id, group_key)
+
+  @impl true
+  def mark_read_matching(user_id, filter), do: adapter().mark_read_matching(user_id, filter)
+
+  @impl true
+  def restore_matching(user_id, filter, deleted_since),
+    do: adapter().restore_matching(user_id, filter, deleted_since)
+
+  @impl true
   def count_inbox(user_id, filter), do: adapter().count_inbox(user_id, filter)
 
   @impl true

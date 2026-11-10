@@ -79,7 +79,11 @@ async function stubMember(page: Page, writes: Write[], requests: Array<typeof RE
     if (path === "/api/auth/me") return json(route, MEMBER);
     if (path === "/api/memberships") return json(route, [MEMBER_MEMBERSHIP]);
     if (path.startsWith("/api/notifications")) return json(route, { notifications: [], unread_count: 0 });
-    if (path === "/api/public/boxes/kypseli/packages" || path === "/api/boxes/kypseli/packages") return json(route, DESK_SALES);
+    if (path === "/api/public/boxes/kypseli/packages") return json(route, DESK_SALES);
+    // Like the API: the signed-in list needs the person's token (2026-11-10).
+    if (path === "/api/boxes/kypseli/packages") {
+      return route.request().headers()["authorization"] ? json(route, DESK_SALES) : json(route, { error: "unauthorized" }, 401);
+    }
     if (path === "/api/me/packages/unl/request") {
       requests.splice(0, requests.length, REQUEST);
       return json(route, { request: REQUEST, created: true }, 201);
