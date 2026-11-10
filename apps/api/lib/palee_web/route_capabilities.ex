@@ -560,6 +560,14 @@ defmodule PaleeWeb.RouteCapabilities do
       :view_finance_reports
     ],
     {W.AdminPackageRequestController, :collect} => [:take_payments],
+    # ADR-633.
+    {W.AdminPackageRequestController, :activate_unpaid} => [:take_payments],
+    {W.AdminPackageRequestController, :decline} => [:take_payments],
+    {W.AdminPackageRequestController, :rollout} => [
+      :take_payments,
+      :manage_billing,
+      :view_finance_reports
+    ],
     {W.AdminFinanceController, :redeem_promotion} => [:take_payments],
     {W.AdminFinanceController, :create_invoice} => [:manage_billing],
     {W.AdminFinanceController, :generate_renewal_invoice} => [:manage_billing],

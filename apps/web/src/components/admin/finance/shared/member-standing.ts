@@ -25,7 +25,8 @@ export const MEMBER_STATUSES = [
 export type MemberStatus = (typeof MEMBER_STATUSES)[number];
 
 /** The statuses staff may set by hand (leaving has its own flow, ADR-220/595). */
-export const OVERRIDABLE_STATUSES = ["active", "trial", "comped", "paused", "expired", "cancelled"] as const;
+// ADR-633: «Δωρεάν» and «Δοκιμή» by hand had no end; free access is «Δώρο ή χάρη» now.
+export const OVERRIDABLE_STATUSES = ["active", "paused", "expired", "cancelled"] as const;
 
 export type StatusTone = "good" | "warn" | "bad" | "info" | "off";
 

@@ -411,6 +411,9 @@ const API_ERROR_KEYS: Record<string, string> = {
   finance_profile_missing: "apiErrorSelfFinanceProfileMissing",
   finance_entitlement_inactive: "apiErrorSelfFinanceEntitlementInactive",
   finance_entitlement_blocked: "apiErrorSelfFinanceEntitlementBlocked",
+  // ADR-633: no package, no booking.
+  finance_package_required: "apiErrorPackageRequired",
+  package_decline_reason_required: "apiErrorDeclineReasonRequired",
   finance_entitlement_plan_missing: "apiErrorSelfFinanceEntitlementPlanMissing",
   finance_channel_not_included: "apiErrorSelfFinanceChannelNotIncluded",
   finance_capability_not_included: "apiErrorSelfFinanceCapabilityNotIncluded",

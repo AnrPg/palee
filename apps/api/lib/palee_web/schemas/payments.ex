@@ -179,7 +179,7 @@ defmodule PaleeWeb.Schemas.Payments do
         package_name: %Schema{type: :string},
         price_cents: @int,
         currency: %Schema{type: :string},
-        status: %Schema{type: :string, enum: ~w(pending activated cancelled lapsed)},
+        status: %Schema{type: :string, enum: ~w(pending activated cancelled lapsed declined)},
         source: %Schema{type: :string, enum: ~w(member staff)},
         requested_at: %Schema{type: :string, format: :"date-time"},
         hold_until: %Schema{
@@ -189,6 +189,13 @@ defmodule PaleeWeb.Schemas.Payments do
         },
         hold_days: @int,
         days_left: @int,
+        first_class_at: %Schema{
+          type: :string,
+          format: :"date-time",
+          nullable: true,
+          description: "ADR-633: when the one class while waiting was booked on this request"
+        },
+        decline_reason: %{@text | nullable: true},
         person: %Schema{
           type: :object,
           nullable: true,
@@ -226,6 +233,55 @@ defmodule PaleeWeb.Schemas.Payments do
       type: :object,
       properties: %{request: package_request(), created: %Schema{type: :boolean}},
       required: [:created, :request]
+    }
+  end
+
+  @doc "ADR-633: «Απόρριψη», always with the reason the person reads."
+  def package_request_decline_body do
+    %Schema{
+      type: :object,
+      properties: %{reason: %{@text | maxLength: 500, minLength: 1}},
+      required: [:reason]
+    }
+  end
+
+  @doc "ADR-633: what the booking screens tell the person before they book."
+  def package_rule_standing do
+    %Schema{
+      type: :object,
+      properties: %{
+        rule: %Schema{type: :boolean, description: "The box books only with a package"},
+        pending_request: %Schema{type: :boolean},
+        first_class_available: %Schema{type: :boolean},
+        package_required: %Schema{type: :boolean, description: "Booking is refused now"}
+      },
+      required: [:rule, :pending_request, :first_class_available, :package_required]
+    }
+  end
+
+  @doc "ADR-633: the staff's «Μετάβαση» list."
+  def package_rule_rollout do
+    %Schema{
+      type: :object,
+      properties: %{
+        since: %Schema{type: :string, format: :"date-time", nullable: true},
+        people: %Schema{
+          type: :array,
+          items: %Schema{
+            type: :object,
+            properties: %{
+              user_id: @uuid,
+              display_name: %{@text | nullable: true},
+              handle: %{@text | nullable: true},
+              avatar_url: %{@text | nullable: true},
+              ends_on: %Schema{type: :string, format: :date, nullable: true},
+              has_package: %Schema{type: :boolean}
+            },
+            required: [:user_id, :ends_on, :has_package]
+          }
+        }
+      },
+      required: [:since, :people]
     }
   end
 

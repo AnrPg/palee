@@ -8,12 +8,14 @@ defmodule Palee.Finance.Domain.PackageRequestPolicy do
     * The desk's «Είσπραξη» records the money and assigns the package in
       one step (`activated`).
     * The person can take it back (`cancelled`) while it is pending.
+    * The desk may decline it (`declined`, ADR-633), always with a reason
+      the person reads.
     * It is held for 14 days, counted in the box's own days: from the day
       after `hold_until` it no longer shows and is closed as `lapsed`.
   """
 
   @hold_days 14
-  @statuses ~w(pending activated cancelled lapsed)
+  @statuses ~w(pending activated cancelled lapsed declined)
   @sources ~w(member staff)
   # Sold only beside another package or through an employer: never asked
   # for alone.

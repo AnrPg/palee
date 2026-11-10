@@ -224,6 +224,8 @@ defmodule Palee.Finance.FinanceStore do
   @impl true
   def update_finance_settings(params), do: adapter().update_finance_settings(params)
   @impl true
+  def put_package_rule_since(since), do: adapter().put_package_rule_since(since)
+  @impl true
   def membership_outstanding_balance_cents(membership_id),
     do: adapter().membership_outstanding_balance_cents(membership_id)
 

@@ -554,6 +554,20 @@ defmodule Palee.Organizations do
 
   def buyer_role(_context, _user_id), do: nil
 
+  @doc "ADR-633: the tenant roles a person holds in a gym ([] when none)."
+  def roles_of(%{organization_id: organization_id}, user_id) when is_binary(organization_id),
+    do: roles_of(organization_id, user_id)
+
+  def roles_of(organization_id, user_id)
+      when is_binary(organization_id) and is_binary(user_id) do
+    case member(organization_id, user_id) do
+      %{roles: roles} -> roles
+      nil -> []
+    end
+  end
+
+  def roles_of(_context, _user_id), do: []
+
   defp member(organization_id, user_id) do
     organization_id
     |> ListMemberRoles.call(user_id: user_id)

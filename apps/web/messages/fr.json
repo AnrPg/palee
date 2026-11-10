@@ -4969,7 +4969,9 @@
     "kpiRetirementHelp": "Sections à durée fixe (AMRAP, EMOM, intervalles) d’entraînements terminés où l’athlète s’est arrêté avant la fin du chrono, ou le chrono a tourné longtemps après sa dernière touche (3× son propre temps par tour). « Je voulais un WOD plus court » compte comme un chrono raccourci, pas comme un abandon.",
     "kpiRetirementOf": "{retired} sur {count, plural, one {# section à durée fixe} other {# sections à durée fixe}}",
     "kpiRetirementStopped": "Arrêtés avant la fin",
-    "kpiRetirementIdle": "Restés inactifs"
+    "kpiRetirementIdle": "Restés inactifs",
+    "apiErrorPackageRequired": "Réserver dans cette box demande un forfait. Choisis-en un dans Forfaits ; si tu paies à l'accueil, tu peux réserver un cours pendant l'attente.",
+    "apiErrorDeclineReasonRequired": "Écris pourquoi la demande est refusée."
   },
   "PrSharing": {
     "gymLabel": "Où as-tu réalisé ce PR ?",
@@ -15526,7 +15528,23 @@
     "collect": "Encaisser {amount}",
     "collectTitle": "Encaisser",
     "collectHint": "Le forfait commence aujourd’hui et le reçu est émis.",
-    "close": "Fermer"
+    "close": "Fermer",
+    "activate": "Activer",
+    "activateTitle": "Activer le forfait",
+    "activatePaid": "{amount} reçus",
+    "activateUnpaid": "Paiement en attente",
+    "activateUnpaidHint": "Le forfait commence aujourd'hui et {amount} reste dû. Rappels, jours de grâce et blocage suivent d'eux-mêmes.",
+    "activateUnpaidConfirm": "Activer, paiement en attente",
+    "decline": "Refuser",
+    "declineTitle": "Refuser la demande",
+    "declineReason": "Pourquoi (le membre le lira)",
+    "declineHint": "Si la personne a réservé son cours pendant l'attente, il est annulé.",
+    "declineConfirm": "Refuser",
+    "firstClassBooked": "A réservé son cours pendant l'attente",
+    "rolloutTitle": "S'entraînent sans forfait encore quelques jours",
+    "rolloutBody": "Depuis le {date}, réserver dans cette box demande un forfait. Ces membres s'entraînaient sans et réservent jusqu'à leur date.",
+    "rolloutUntil": "Jusqu'au {date}",
+    "rolloutHasPackage": "A un forfait"
   },
   "Sms": {
     "connectionsTitle": "Connexions",
@@ -20246,6 +20264,8 @@
     "submit_free_access": "Offrir l'accès gratuit",
     "submit_extra_uses": "Ajouter des utilisations",
     "submit_package": "Offrir la formule",
-    "submit_debt_forgiven": "Annuler la dette"
+    "submit_debt_forgiven": "Annuler la dette",
+    "givenBySystem": "Par Palee, {when}",
+    "reasonRollout": "Réserver demande désormais un forfait : 14 jours pour ceux qui s'entraînaient déjà"
   }
 }

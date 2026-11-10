@@ -25,6 +25,9 @@ defmodule Palee.Finance.FinanceSetting do
     field :package_audience, :string, default: "all"
     # ADR-596: the one package the public page and website feature (nil: none).
     field :featured_package_id, :binary_id
+    # ADR-633: since when clients book only with a package (nil: the box
+    # sells no package). Set and cleared by the daily run, never by a form.
+    field :package_rule_since, :utc_datetime_usec
 
     timestamps(type: :utc_datetime_usec)
   end

@@ -1,7 +1,7 @@
 defmodule Palee.Application.SubmitBooking do
   require Logger
 
-  alias Palee.Application.{BookingTerms, GoLive, TrackAnalyticsEvent}
+  alias Palee.Application.{BookingTerms, GoLive, PackageRule, TrackAnalyticsEvent}
   alias Palee.Application.Documents.BookingGate
   alias Palee.{Finance, Identity, Scheduling}
   alias Palee.Scheduling.Domain.{BookingOperationPolicy, BookingPolicy}
@@ -63,7 +63,8 @@ defmodule Palee.Application.SubmitBooking do
   (no approval step), `booking_window: false` (staff may place a member
   before the member's own booking window opens) and `documents_gate: false`
   (ADR-252: staff decide); capacity, timing and the
-  member's package still apply.
+  member's package still apply. `package_rule: false` (ADR-633) lets staff
+  place someone who has no package yet.
 
   Returns `{:ok, slot, booking}`, `{:replayed, booking}` for a replayed
   `client_operation_id`, or an error.
@@ -79,8 +80,11 @@ defmodule Palee.Application.SubmitBooking do
          :ok <- documents_gate(Keyword.get(opts, :documents_gate, true), context, user_id, now),
          :ok <- check_booking_window(context, user_id, slot, now, opts),
          :ok <- check_booking_limits(context, user_id, slot, now, opts),
+         # ADR-633: no package, no booking (but one class while waiting).
+         {:ok, rule} <-
+           PackageRule.check_booking(context, actor, slot, Keyword.get(opts, :package_rule, true)),
          request = BookingPolicy.entitlement_request(slot),
-         {:ok, reservation} <- reserve_visit(context, actor, slot, request) do
+         {:ok, reservation} <- reserve_or_release(context, actor, slot, request, rule) do
       attrs = %{
         entitlement_allowance: BookingPolicy.booking_allowance(request),
         client_operation_id: operation_id
@@ -95,6 +99,7 @@ defmodule Palee.Application.SubmitBooking do
 
         {:error, reason} ->
           release_failed_reservation(context, reservation)
+          PackageRule.release(context, rule)
           # A concurrent delivery of the same operation may have won the race.
           case find_replay(context, user_id, operation_id, slot_id) do
             :none -> {:error, reason}
@@ -175,6 +180,17 @@ defmodule Palee.Application.SubmitBooking do
     case Identity.find_by_id(user_id) do
       nil -> {:error, :not_found}
       actor -> call(nil, actor, slot_id)
+    end
+  end
+
+  defp reserve_or_release(context, actor, slot, request, rule) do
+    case reserve_visit(context, actor, slot, request) do
+      {:ok, _reservation} = ok ->
+        ok
+
+      error ->
+        PackageRule.release(context, rule)
+        error
     end
   end
 

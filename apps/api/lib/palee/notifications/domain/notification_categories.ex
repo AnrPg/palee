@@ -102,6 +102,7 @@ defmodule Palee.Notifications.Domain.NotificationCategories do
       audience: "staff",
       types: ~w(
         booking_pending booking_timeout check_in_visitor member_leaving join_requested
+        package_requested package_rule_started
         trial_requested trial_booked trial_cancelled season_requested class_workout_missing
         community_group_proposed community_report_created referral_review
         inventory_repair_needed inventory_stock_low inventory_digest cleaning_point_not_cleaned
@@ -125,6 +126,7 @@ defmodule Palee.Notifications.Domain.NotificationCategories do
         document_signature_requested health_certificate_expiring
         box_review_moderated box_review_report_decided
         join_request_accepted join_request_declined box_membership_ended
+        package_request_declined package_rule_grace
       )
     }
   ]

@@ -21,4 +21,12 @@ defmodule Palee.Finance.PackageRequestStore do
   def close(id, status, params), do: adapter().close(id, status, params)
   @impl true
   def lapse_before(today, now), do: adapter().lapse_before(today, now)
+  @impl true
+  def claim_first_class(user_id, scheduled_class_id, today, now),
+    do: adapter().claim_first_class(user_id, scheduled_class_id, today, now)
+
+  @impl true
+  def release_first_class(request_id), do: adapter().release_first_class(request_id)
+  @impl true
+  def first_class(user_id), do: adapter().first_class(user_id)
 end

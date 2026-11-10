@@ -160,6 +160,8 @@ export function salesPageSections(packages: PublicPackage[]) {
  * the member is offered to pay for the visit instead of an error.
  */
 const NO_PACKAGE_CODES = new Set([
+  // ADR-633: no package, no booking.
+  "finance_package_required",
   "finance_profile_missing",
   "finance_entitlement_inactive",
   "finance_entitlement_plan_missing",

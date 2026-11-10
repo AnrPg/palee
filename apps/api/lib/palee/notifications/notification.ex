@@ -125,6 +125,11 @@ defmodule Palee.Notifications.Notification do
     :join_request_declined,
     # ADR-595: the box ended the person's box membership.
     :box_membership_ended,
+    # ADR-633: «Χωρίς πακέτο, χωρίς κράτηση».
+    :package_requested,
+    :package_rule_started,
+    :package_request_declined,
+    :package_rule_grace,
     # ADR-580: a box invites a follower to become a box member.
     :follower_invited,
     # ADR-252: documents to sign and health certificates.

@@ -14,6 +14,8 @@ defmodule Palee.Finance.MemberBenefitStore do
   @impl true
   def list(membership_id), do: adapter().list(membership_id)
   @impl true
+  def list_system_grants(reason), do: adapter().list_system_grants(reason)
+  @impl true
   def access(membership_id, today), do: adapter().access(membership_id, today)
   @impl true
   def transaction(fun), do: adapter().transaction(fun)

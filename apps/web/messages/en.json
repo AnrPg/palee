@@ -4969,7 +4969,9 @@
     "kpiRetirementHelp": "Time-set sections (AMRAP, EMOM, intervals) of completed workouts where the athlete stopped before the clock ran out, or the clock ran on long after their last tap (3× their own round time). «I wanted a shorter WOD» counts as a shortened clock, not retirement.",
     "kpiRetirementOf": "{retired} of {count, plural, one {# time-set section} other {# time-set sections}}",
     "kpiRetirementStopped": "Stopped before the end",
-    "kpiRetirementIdle": "Went idle"
+    "kpiRetirementIdle": "Went idle",
+    "apiErrorPackageRequired": "Booking at this box needs a package. Choose one in Packages; if you pay at the front desk, you can book one class while it waits.",
+    "apiErrorDeclineReasonRequired": "Say why the request is declined."
   },
   "PrSharing": {
     "gymLabel": "Where did you set this PR?",
@@ -15526,7 +15528,23 @@
     "collect": "Collect {amount}",
     "collectTitle": "Collect payment",
     "collectHint": "The package starts today and the receipt is issued.",
-    "close": "Close"
+    "close": "Close",
+    "activate": "Activate",
+    "activateTitle": "Activate package",
+    "activatePaid": "Received {amount}",
+    "activateUnpaid": "Payment pending",
+    "activateUnpaidHint": "The package starts today and {amount} stays owed. Reminders, the grace days and the lock follow by themselves.",
+    "activateUnpaidConfirm": "Activate, payment pending",
+    "decline": "Decline",
+    "declineTitle": "Decline request",
+    "declineReason": "Why (the member reads it)",
+    "declineHint": "If they booked their one class while waiting, it is cancelled.",
+    "declineConfirm": "Decline",
+    "firstClassBooked": "Booked their one class while waiting",
+    "rolloutTitle": "Training without a package, for a few more days",
+    "rolloutBody": "Since {date}, booking at this box needs a package. These members were training without one and keep booking until their date.",
+    "rolloutUntil": "Until {date}",
+    "rolloutHasPackage": "Has a package"
   },
   "Sms": {
     "connectionsTitle": "Connections",
@@ -20246,6 +20264,8 @@
     "submit_free_access": "Give free access",
     "submit_extra_uses": "Add uses",
     "submit_package": "Give the package",
-    "submit_debt_forgiven": "Forgive the debt"
+    "submit_debt_forgiven": "Forgive the debt",
+    "givenBySystem": "By Palee, {when}",
+    "reasonRollout": "Booking now needs a package: 14 days for those already training"
   }
 }

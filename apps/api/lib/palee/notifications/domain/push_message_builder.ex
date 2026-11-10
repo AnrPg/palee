@@ -1081,6 +1081,57 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
     }
   end
 
+  # ADR-633: «Το θέλω» to pay at the desk; the queue holds «Ενεργοποίηση»
+  # and «Απόρριψη».
+  def build("package_requested", payload, localize) do
+    %{
+      title: localize.("A package to activate", %{}),
+      body:
+        localize.("%{nickname} wants %{package} and will pay at the front desk.", %{
+          nickname: payload["person_nickname"],
+          package: payload["package_name"]
+        }),
+      url: payload["url"] || "/admin/finance"
+    }
+  end
+
+  def build("package_rule_started", payload, localize) do
+    %{
+      title: localize.("Booking now needs a package", %{}),
+      body:
+        localize.(
+          "%{count} members train without a package. They keep booking until %{date}; see the list.",
+          %{count: payload["count"], date: payload["ends_on"]}
+        ),
+      url: payload["url"] || "/admin/finance"
+    }
+  end
+
+  def build("package_request_declined", payload, localize) do
+    %{
+      title: localize.("Your package request was declined", %{}),
+      body:
+        localize.("%{box} declined %{package}: %{reason}", %{
+          box: payload["box_name"],
+          package: payload["package_name"],
+          reason: payload["reason"]
+        }),
+      url: payload["url"] || "/me/payments"
+    }
+  end
+
+  def build("package_rule_grace", payload, localize) do
+    %{
+      title: localize.("Choose a package", %{}),
+      body:
+        localize.(
+          "%{box} now takes bookings with a package. You can keep booking until %{date}.",
+          %{box: payload["box_name"], date: payload["ends_on"]}
+        ),
+      url: payload["url"] || "/me/payments"
+    }
+  end
+
   # ADR-220.
   def build("member_leaving", payload, localize) do
     bindings = %{nickname: payload["person_nickname"], date: payload["leaving_on"]}

@@ -542,6 +542,11 @@ defmodule PaleeWeb.FallbackController do
     # ADR-291: packages waiting to be paid at the front desk.
     package_request_closed: {:conflict, "This request is no longer waiting for payment"},
     package_request_exists: {:conflict, "You have already asked for this package"},
+    # ADR-633: no package, no booking.
+    finance_package_required: {:forbidden, "Choose a package to book classes at this box"},
+    package_decline_reason_required: {:unprocessable_entity, "Say why the request is declined"},
+    package_decline_reason_too_long:
+      {:unprocessable_entity, "The reason is longer than 500 characters"},
     # ADR-260: failed charges in the queue.
     payment_not_retryable: {:conflict, "This charge can no longer be tried again"},
     # ADR-261: one-button connection.

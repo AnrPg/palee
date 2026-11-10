@@ -4969,7 +4969,9 @@
     "kpiRetirementHelp": "Secções de tempo fixo (AMRAP, EMOM, intervalos) de treinos concluídos em que o atleta parou antes de o relógio acabar, ou o relógio continuou muito depois do último toque (3× o seu próprio tempo por ronda). «Queria um WOD mais curto» conta como tempo encurtado, não como desistência.",
     "kpiRetirementOf": "{retired} de {count, plural, one {# secção de tempo fixo} other {# secções de tempo fixo}}",
     "kpiRetirementStopped": "Pararam antes do fim",
-    "kpiRetirementIdle": "Ficaram inativos"
+    "kpiRetirementIdle": "Ficaram inativos",
+    "apiErrorPackageRequired": "Reservar nesta box exige um pacote. Escolhe um em Pacotes; se pagares na receção, podes reservar uma aula enquanto espera.",
+    "apiErrorDeclineReasonRequired": "Escreve porque o pedido é recusado."
   },
   "PrSharing": {
     "gymLabel": "Onde fizeste este PR?",
@@ -15526,7 +15528,23 @@
     "collect": "Cobrar {amount}",
     "collectTitle": "Cobrar",
     "collectHint": "O pacote começa hoje e o recibo é emitido.",
-    "close": "Fechar"
+    "close": "Fechar",
+    "activate": "Ativar",
+    "activateTitle": "Ativar pacote",
+    "activatePaid": "Recebido {amount}",
+    "activateUnpaid": "Pagamento pendente",
+    "activateUnpaidHint": "O pacote começa hoje e {amount} fica em dívida. Lembretes, dias de tolerância e bloqueio seguem sozinhos.",
+    "activateUnpaidConfirm": "Ativar, pagamento pendente",
+    "decline": "Recusar",
+    "declineTitle": "Recusar pedido",
+    "declineReason": "Porquê (o membro vai ler)",
+    "declineHint": "Se reservou a sua aula enquanto esperava, é cancelada.",
+    "declineConfirm": "Recusar",
+    "firstClassBooked": "Reservou a aula enquanto espera",
+    "rolloutTitle": "Treinam sem pacote mais alguns dias",
+    "rolloutBody": "Desde {date}, reservar nesta box exige um pacote. Estes membros treinavam sem pacote e reservam até à sua data.",
+    "rolloutUntil": "Até {date}",
+    "rolloutHasPackage": "Tem pacote"
   },
   "Sms": {
     "connectionsTitle": "Ligações",
@@ -20246,6 +20264,8 @@
     "submit_free_access": "Dar acesso grátis",
     "submit_extra_uses": "Adicionar utilizações",
     "submit_package": "Dar o pacote",
-    "submit_debt_forgiven": "Perdoar a dívida"
+    "submit_debt_forgiven": "Perdoar a dívida",
+    "givenBySystem": "Pela Palee, {when}",
+    "reasonRollout": "Reservar exige agora um pacote: 14 dias para quem já treinava"
   }
 }

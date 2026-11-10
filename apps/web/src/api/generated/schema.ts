@@ -8948,6 +8948,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/finance/package-requests/{id}/activate-unpaid": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Activate a package that waits at the desk, payment pending («Εκκρεμεί πληρωμή»)
+         * @description ADR-633: the package starts today at the price the person was shown and its charge is issued now, so payment reminders, grace days and the lock follow it. Safe to retry.
+         */
+        post: operations["PaleeWeb.AdminPackageRequestController.activate_unpaid"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/finance/package-requests/{id}/collect": {
         parameters: {
             query?: never;
@@ -8962,6 +8982,46 @@ export interface paths {
          * @description Records the payment (the box's receipt or invoice, ADR-222) and assigns the package from today in one step. Safe to retry.
          */
         post: operations["PaleeWeb.AdminPackageRequestController.collect"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/finance/package-requests/{id}/decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Decline a package that waits at the desk («Απόρριψη»)
+         * @description ADR-633: the reason is required and the person reads it; their upcoming class while waiting, if any, is cancelled.
+         */
+        post: operations["PaleeWeb.AdminPackageRequestController.decline"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/finance/package-rule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Who trains on the package rule's 14 days («Μετάβαση»)
+         * @description ADR-633: since when the box books only with a package, and the people who were training without one then, with their last free day and whether they have a package now.
+         */
+        get: operations["PaleeWeb.AdminPackageRequestController.rollout"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -15783,6 +15843,26 @@ export interface paths {
         put?: never;
         /** Take back a package that waits for payment at the front desk */
         post: operations["PaleeWeb.MyPaymentsController.cancel_package_request"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/package-rule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Whether the member can book here without a package (ADR-633)
+         * @description In a box that sells packages, booking needs one; while the first «Το θέλω» waits the member may book one class.
+         */
+        get: operations["PaleeWeb.MyPaymentsController.package_rule"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -102739,6 +102819,12 @@ export interface operations {
                         requests: {
                             currency: string;
                             days_left: number;
+                            decline_reason?: string | null;
+                            /**
+                             * Format: date-time
+                             * @description ADR-633: when the one class while waiting was booked on this request
+                             */
+                            first_class_at?: string | null;
                             hold_days: number;
                             /**
                              * Format: date
@@ -102764,10 +102850,73 @@ export interface operations {
                             /** @enum {string} */
                             source: "member" | "staff";
                             /** @enum {string} */
-                            status: "pending" | "activated" | "cancelled" | "lapsed";
+                            status: "pending" | "activated" | "cancelled" | "lapsed" | "declined";
                             /** Format: uuid */
                             user_id: string;
                         }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminPackageRequestController.activate_unpaid": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Activated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        request: {
+                            currency: string;
+                            days_left: number;
+                            decline_reason?: string | null;
+                            /**
+                             * Format: date-time
+                             * @description ADR-633: when the one class while waiting was booked on this request
+                             */
+                            first_class_at?: string | null;
+                            hold_days: number;
+                            /**
+                             * Format: date
+                             * @description The box's last day the package is held; it is removed the day after
+                             */
+                            hold_until: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            package_id: string;
+                            package_name: string;
+                            /** @description Staff queue only: who asked, to open their account */
+                            person?: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id?: string;
+                            } | null;
+                            price_cents: number;
+                            /** Format: date-time */
+                            requested_at: string;
+                            /** @enum {string} */
+                            source: "member" | "staff";
+                            /** @enum {string} */
+                            status: "pending" | "activated" | "cancelled" | "lapsed" | "declined";
+                            /** Format: uuid */
+                            user_id: string;
+                        };
+                        /** Format: uuid */
+                        subscription_id?: string | null;
                     };
                 };
             };
@@ -102805,6 +102954,12 @@ export interface operations {
                         request: {
                             currency: string;
                             days_left: number;
+                            decline_reason?: string | null;
+                            /**
+                             * Format: date-time
+                             * @description ADR-633: when the one class while waiting was booked on this request
+                             */
+                            first_class_at?: string | null;
                             hold_days: number;
                             /**
                              * Format: date
@@ -102830,10 +102985,111 @@ export interface operations {
                             /** @enum {string} */
                             source: "member" | "staff";
                             /** @enum {string} */
-                            status: "pending" | "activated" | "cancelled" | "lapsed";
+                            status: "pending" | "activated" | "cancelled" | "lapsed" | "declined";
                             /** Format: uuid */
                             user_id: string;
                         };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminPackageRequestController.decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    reason: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Declined */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        cancelled_bookings: number;
+                        request: {
+                            currency: string;
+                            days_left: number;
+                            decline_reason?: string | null;
+                            /**
+                             * Format: date-time
+                             * @description ADR-633: when the one class while waiting was booked on this request
+                             */
+                            first_class_at?: string | null;
+                            hold_days: number;
+                            /**
+                             * Format: date
+                             * @description The box's last day the package is held; it is removed the day after
+                             */
+                            hold_until: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            package_id: string;
+                            package_name: string;
+                            /** @description Staff queue only: who asked, to open their account */
+                            person?: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id?: string;
+                            } | null;
+                            price_cents: number;
+                            /** Format: date-time */
+                            requested_at: string;
+                            /** @enum {string} */
+                            source: "member" | "staff";
+                            /** @enum {string} */
+                            status: "pending" | "activated" | "cancelled" | "lapsed" | "declined";
+                            /** Format: uuid */
+                            user_id: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminPackageRequestController.rollout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Rollout */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        people: {
+                            avatar_url?: string | null;
+                            display_name?: string | null;
+                            /** Format: date */
+                            ends_on: string | null;
+                            handle?: string | null;
+                            has_package: boolean;
+                            /** Format: uuid */
+                            user_id: string;
+                        }[];
+                        /** Format: date-time */
+                        since: string | null;
                     };
                 };
             };
@@ -141167,6 +141423,12 @@ export interface operations {
                         requests: {
                             currency: string;
                             days_left: number;
+                            decline_reason?: string | null;
+                            /**
+                             * Format: date-time
+                             * @description ADR-633: when the one class while waiting was booked on this request
+                             */
+                            first_class_at?: string | null;
                             hold_days: number;
                             /**
                              * Format: date
@@ -141192,7 +141454,7 @@ export interface operations {
                             /** @enum {string} */
                             source: "member" | "staff";
                             /** @enum {string} */
-                            status: "pending" | "activated" | "cancelled" | "lapsed";
+                            status: "pending" | "activated" | "cancelled" | "lapsed" | "declined";
                             /** Format: uuid */
                             user_id: string;
                         }[];
@@ -141222,6 +141484,12 @@ export interface operations {
                         request: {
                             currency: string;
                             days_left: number;
+                            decline_reason?: string | null;
+                            /**
+                             * Format: date-time
+                             * @description ADR-633: when the one class while waiting was booked on this request
+                             */
+                            first_class_at?: string | null;
                             hold_days: number;
                             /**
                              * Format: date
@@ -141247,10 +141515,37 @@ export interface operations {
                             /** @enum {string} */
                             source: "member" | "staff";
                             /** @enum {string} */
-                            status: "pending" | "activated" | "cancelled" | "lapsed";
+                            status: "pending" | "activated" | "cancelled" | "lapsed" | "declined";
                             /** Format: uuid */
                             user_id: string;
                         };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyPaymentsController.package_rule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Package rule */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        first_class_available: boolean;
+                        /** @description Booking is refused now */
+                        package_required: boolean;
+                        pending_request: boolean;
+                        /** @description The box books only with a package */
+                        rule: boolean;
                     };
                 };
             };
@@ -141426,6 +141721,12 @@ export interface operations {
                         request: {
                             currency: string;
                             days_left: number;
+                            decline_reason?: string | null;
+                            /**
+                             * Format: date-time
+                             * @description ADR-633: when the one class while waiting was booked on this request
+                             */
+                            first_class_at?: string | null;
                             hold_days: number;
                             /**
                              * Format: date
@@ -141451,7 +141752,7 @@ export interface operations {
                             /** @enum {string} */
                             source: "member" | "staff";
                             /** @enum {string} */
-                            status: "pending" | "activated" | "cancelled" | "lapsed";
+                            status: "pending" | "activated" | "cancelled" | "lapsed" | "declined";
                             /** Format: uuid */
                             user_id: string;
                         };
@@ -141469,6 +141770,12 @@ export interface operations {
                         request: {
                             currency: string;
                             days_left: number;
+                            decline_reason?: string | null;
+                            /**
+                             * Format: date-time
+                             * @description ADR-633: when the one class while waiting was booked on this request
+                             */
+                            first_class_at?: string | null;
                             hold_days: number;
                             /**
                              * Format: date
@@ -141494,7 +141801,7 @@ export interface operations {
                             /** @enum {string} */
                             source: "member" | "staff";
                             /** @enum {string} */
-                            status: "pending" | "activated" | "cancelled" | "lapsed";
+                            status: "pending" | "activated" | "cancelled" | "lapsed" | "declined";
                             /** Format: uuid */
                             user_id: string;
                         };

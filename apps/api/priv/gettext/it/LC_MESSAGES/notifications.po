@@ -925,3 +925,28 @@ msgid "+%{count} more similar"
 msgid_plural "+%{count} more similar"
 msgstr[0] "+%{count} altra simile"
 msgstr[1] "+%{count} altre simili"
+
+# ADR-633: «Χωρίς πακέτο, χωρίς κράτηση».
+msgid "A package to activate"
+msgstr "Un pacchetto da attivare"
+
+msgid "%{nickname} wants %{package} and will pay at the front desk."
+msgstr "%{nickname} vuole %{package} e pagherà alla reception."
+
+msgid "Booking now needs a package"
+msgstr "Ora per prenotare serve un pacchetto"
+
+msgid "%{count} members train without a package. They keep booking until %{date}; see the list."
+msgstr "%{count} membri si allenano senza pacchetto. Possono prenotare fino al %{date}; guarda l'elenco."
+
+msgid "Your package request was declined"
+msgstr "La tua richiesta di pacchetto è stata rifiutata"
+
+msgid "%{box} declined %{package}: %{reason}"
+msgstr "%{box} ha rifiutato %{package}: %{reason}"
+
+msgid "Choose a package"
+msgstr "Scegli un pacchetto"
+
+msgid "%{box} now takes bookings with a package. You can keep booking until %{date}."
+msgstr "%{box} ora accetta prenotazioni solo con pacchetto. Puoi prenotare fino al %{date}."

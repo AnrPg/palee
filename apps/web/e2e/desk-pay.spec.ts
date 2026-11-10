@@ -237,9 +237,74 @@ test("the desk sees «Περιμένουν πληρωμή», opens the person's 
   await expect(row).toContainText("Αφαιρείται σε 14 ημέρες");
   await row.getByTestId("desk-collect-req-1").click();
   const dialog = page.getByTestId("desk-collect");
+  // ADR-633: «Ενεργοποίηση» › «Εισπράχθηκαν 75,00 €», and nothing is picked for the desk.
+  await expect(dialog.getByTestId("desk-collect-confirm")).toBeDisabled();
+  await dialog.getByTestId("desk-activate-paid").click();
+  await expect(dialog.getByTestId("desk-collect-confirm")).toBeDisabled();
   await dialog.getByRole("radio", { name: /Μετρητά/ }).click();
+  await expect(dialog.getByTestId("desk-collect-confirm")).toHaveText("Εισπράχθηκαν 75,00 €");
   await dialog.getByTestId("desk-collect-confirm").click();
   await expect(page.getByText("R-0008")).toBeVisible();
   const collect = writes.find((write) => write.path === "/api/admin/finance/package-requests/req-1/collect");
   expect(collect?.body).toEqual({ payment_method: "cash" });
+});
+
+// ADR-633: «Εκκρεμεί πληρωμή» starts the package with its charge owed;
+// «Απόρριψη» needs the reason the member reads.
+test("the desk activates with payment pending, or declines with a reason", async ({ page }) => {
+  const writes: Write[] = [];
+  let open = [
+    { ...REQUEST, person: { user_id: "maria", display_name: "Μαρία Κωνσταντίνου", handle: "maria", avatar_url: null }, first_class_at: "2026-10-31T09:00:00Z" },
+    { ...REQUEST, id: "req-2", user_id: "nikos", person: { user_id: "nikos", display_name: "Νίκος Π.", handle: "nikos", avatar_url: null } },
+  ];
+  await page.context().addCookies([{ name: "palee_locale", value: "el", url: "http://127.0.0.1" }]);
+  await page.route("**/api/**", async (route) => {
+    const path = tenantless(new URL(route.request().url()).pathname);
+    const method = route.request().method();
+    if (method !== "GET") writes.push({ method, path, body: route.request().postDataJSON() });
+    if (path === "/api/auth/refresh") return json(route, { access_token: tokenFor(DESK.id, "admin"), refresh_token: "refresh" });
+    if (path === "/api/auth/me") return json(route, DESK);
+    if (path === "/api/memberships") return json(route, [DESK_MEMBERSHIP]);
+    if (path.startsWith("/api/notifications")) return json(route, { notifications: [], unread_count: 0 });
+    if (path === "/api/admin/finance/queues") return json(route, { queues: {} });
+    if (path === "/api/admin/finance/package-catalog") return json(route, { types: [], modules: [] });
+    if (path.startsWith("/api/admin/finance/members")) return json(route, { members: [], meta: {} });
+    if (path === "/api/admin/payments/attention") return json(route, { payments: [], total: 0 });
+    if (path === "/api/join-link") return json(route, { member: { enabled: false }, athlete: { enabled: false, key: null } });
+    if (path === "/api/admin/finance/package-requests") return json(route, { requests: open });
+    if (path === "/api/admin/finance/package-rule")
+      return json(route, {
+        since: "2026-10-20T06:00:00Z",
+        people: [{ user_id: "eleni", display_name: "Ελένη Μ.", handle: "eleni", avatar_url: null, ends_on: "2026-11-02", has_package: false }],
+      });
+    if (path === "/api/admin/finance/package-requests/req-1/activate-unpaid") {
+      open = open.filter((row) => row.id !== "req-1");
+      return json(route, { request: { ...REQUEST, status: "activated" }, subscription_id: "sub-1" });
+    }
+    if (path === "/api/admin/finance/package-requests/req-2/decline") {
+      open = open.filter((row) => row.id !== "req-2");
+      return json(route, { request: { ...REQUEST, id: "req-2", status: "declined" }, cancelled_bookings: 0 });
+    }
+    return json(route, {});
+  });
+
+  await page.goto("/admin/finance?tab=queues&queue=awaiting");
+  await expect(page.getByTestId("desk-first-class-req-1")).toHaveText("Έκανε τη μία κράτηση της αναμονής");
+  await expect(page.getByTestId("package-rule-person-eleni")).toContainText("Ελένη Μ.");
+
+  await page.getByTestId("desk-collect-req-1").click();
+  const activate = page.getByTestId("desk-collect");
+  await activate.getByTestId("desk-activate-unpaid").click();
+  await expect(activate).toContainText("τα 75,00 € μένουν οφειλή");
+  await activate.getByTestId("desk-collect-confirm").click();
+  await expect(page.getByTestId("desk-request-req-1")).toHaveCount(0);
+  expect(writes.find((write) => write.path.endsWith("/req-1/activate-unpaid"))).toBeTruthy();
+
+  await page.getByTestId("desk-decline-req-2").click();
+  const decline = page.getByTestId("desk-decline");
+  await expect(decline.getByTestId("desk-decline-confirm")).toBeDisabled();
+  await decline.getByTestId("desk-decline-reason").fill("Ζήτησε λάθος πακέτο");
+  await decline.getByTestId("desk-decline-confirm").click();
+  await expect(page.getByTestId("desk-request-req-2")).toHaveCount(0);
+  expect(writes.find((write) => write.path.endsWith("/req-2/decline"))?.body).toEqual({ reason: "Ζήτησε λάθος πακέτο" });
 });

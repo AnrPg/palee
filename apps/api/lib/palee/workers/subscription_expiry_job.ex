@@ -27,7 +27,7 @@ defmodule Palee.Workers.SubscriptionExpiryJob do
   use Oban.Worker, queue: :analytics, max_attempts: 3
 
   alias Palee.{Finance, Notifications, Organizations}
-  alias Palee.Application.RevokeAccess
+  alias Palee.Application.{PackageRule, RevokeAccess}
   alias Palee.Finance.Domain.InvoiceLifecycle
 
   @impl Oban.Worker
@@ -89,6 +89,11 @@ defmodule Palee.Workers.SubscriptionExpiryJob do
         followup: true
       })
     end)
+
+    # ADR-633: the package rule starts the first day the box sells a
+    # package (its clients already training get 14 days) and stops when it
+    # sells none.
+    PackageRule.daily(context)
 
     context
     |> Finance.refresh_entitlement_snapshots()

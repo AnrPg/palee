@@ -130,13 +130,79 @@ defmodule Palee.Infrastructure.Finance.EctoPackageRequestStore do
 
   @impl true
   def lapse_before(%Date{} = today, %DateTime{} = now) do
-    {count, _rows} =
+    {_count, rows} =
       PackageRequest
       |> tenant_scope()
       |> where([r], r.status == "pending" and r.hold_until < ^today)
+      |> select([r], r)
       |> Repo.update_all(set: [status: "lapsed", closed_at: now, updated_at: now])
 
-    count
+    Enum.map(rows, &normalize/1)
+  end
+
+  @impl true
+  def claim_first_class(user_id, scheduled_class_id, %Date{} = today, %DateTime{} = now) do
+    Repo.transaction(fn ->
+      cond do
+        first_class(user_id) ->
+          Repo.rollback(:first_class_used)
+
+        request = oldest_open_locked(user_id, today) ->
+          request
+          |> Ecto.Changeset.change(
+            first_class_at: now,
+            first_class_scheduled_class_id: scheduled_class_id
+          )
+          |> Ecto.Changeset.unique_constraint([:organization_id, :user_id],
+            name: :finance_package_requests_one_first_class_index
+          )
+          |> Repo.update()
+          |> case do
+            {:ok, claimed} -> normalize(claimed)
+            # Two bookings at once: the index lets only one take it.
+            {:error, _changeset} -> Repo.rollback(:first_class_used)
+          end
+
+        true ->
+          Repo.rollback(:no_pending_request)
+      end
+    end)
+  end
+
+  defp oldest_open_locked(user_id, today) do
+    PackageRequest
+    |> tenant_scope()
+    |> where([r], r.user_id == ^user_id and r.status == "pending" and r.hold_until >= ^today)
+    |> order_by([r], asc: r.inserted_at, asc: r.id)
+    |> limit(1)
+    |> lock("FOR UPDATE")
+    |> Repo.one()
+  end
+
+  @impl true
+  def release_first_class(request_id) do
+    PackageRequest
+    |> tenant_scope()
+    |> where([r], r.id == ^request_id)
+    |> Repo.update_all(
+      set: [
+        first_class_at: nil,
+        first_class_scheduled_class_id: nil,
+        updated_at: DateTime.utc_now()
+      ]
+    )
+
+    :ok
+  end
+
+  @impl true
+  def first_class(user_id) do
+    PackageRequest
+    |> tenant_scope()
+    |> where([r], r.user_id == ^user_id and not is_nil(r.first_class_at))
+    |> limit(1)
+    |> Repo.one()
+    |> normalize()
   end
 
   defp tenant_scope(queryable) do

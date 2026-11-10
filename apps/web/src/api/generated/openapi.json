@@ -240673,6 +240673,16 @@
                           "days_left": {
                             "type": "integer"
                           },
+                          "decline_reason": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "first_class_at": {
+                            "description": "ADR-633: when the one class while waiting was booked on this request",
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
                           "hold_days": {
                             "type": "integer"
                           },
@@ -240734,7 +240744,8 @@
                               "pending",
                               "activated",
                               "cancelled",
-                              "lapsed"
+                              "lapsed",
+                              "declined"
                             ],
                             "type": "string"
                           },
@@ -240778,6 +240789,160 @@
           }
         ],
         "summary": "Packages waiting to be paid at the front desk",
+        "tags": [
+          "Admin Finance"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/finance/package-requests/{id}/activate-unpaid": {
+      "post": {
+        "callbacks": {},
+        "description": "ADR-633: the package starts today at the price the person was shown and its charge is issued now, so payment reminders, grace days and the lock follow it. Safe to retry.",
+        "operationId": "PaleeWeb.AdminPackageRequestController.activate_unpaid",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "request": {
+                      "properties": {
+                        "currency": {
+                          "type": "string"
+                        },
+                        "days_left": {
+                          "type": "integer"
+                        },
+                        "decline_reason": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "first_class_at": {
+                          "description": "ADR-633: when the one class while waiting was booked on this request",
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "hold_days": {
+                          "type": "integer"
+                        },
+                        "hold_until": {
+                          "description": "The box's last day the package is held; it is removed the day after",
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "package_id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "package_name": {
+                          "type": "string"
+                        },
+                        "person": {
+                          "description": "Staff queue only: who asked, to open their account",
+                          "nullable": true,
+                          "properties": {
+                            "avatar_url": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "display_name": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "handle": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "user_id": {
+                              "format": "uuid",
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "price_cents": {
+                          "type": "integer"
+                        },
+                        "requested_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "source": {
+                          "enum": [
+                            "member",
+                            "staff"
+                          ],
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "pending",
+                            "activated",
+                            "cancelled",
+                            "lapsed",
+                            "declined"
+                          ],
+                          "type": "string"
+                        },
+                        "user_id": {
+                          "format": "uuid",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "currency",
+                        "days_left",
+                        "hold_days",
+                        "hold_until",
+                        "id",
+                        "package_id",
+                        "package_name",
+                        "price_cents",
+                        "requested_at",
+                        "source",
+                        "status",
+                        "user_id"
+                      ],
+                      "type": "object"
+                    },
+                    "subscription_id": {
+                      "format": "uuid",
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "request"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Activated"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Activate a package that waits at the desk, payment pending («Εκκρεμεί πληρωμή»)",
         "tags": [
           "Admin Finance"
         ]
@@ -240846,6 +241011,16 @@
                         "days_left": {
                           "type": "integer"
                         },
+                        "decline_reason": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "first_class_at": {
+                          "description": "ADR-633: when the one class while waiting was booked on this request",
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
                         "hold_days": {
                           "type": "integer"
                         },
@@ -240907,7 +241082,8 @@
                             "pending",
                             "activated",
                             "cancelled",
-                            "lapsed"
+                            "lapsed",
+                            "declined"
                           ],
                           "type": "string"
                         },
@@ -240950,6 +241126,257 @@
           }
         ],
         "summary": "Take the money for a package waiting at the desk («Είσπραξη»)",
+        "tags": [
+          "Admin Finance"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/finance/package-requests/{id}/decline": {
+      "post": {
+        "callbacks": {},
+        "description": "ADR-633: the reason is required and the person reads it; their upcoming class while waiting, if any, is cancelled.",
+        "operationId": "PaleeWeb.AdminPackageRequestController.decline",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "reason": {
+                    "maxLength": 500,
+                    "minLength": 1,
+                    "nullable": true,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "reason"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "cancelled_bookings": {
+                      "type": "integer"
+                    },
+                    "request": {
+                      "properties": {
+                        "currency": {
+                          "type": "string"
+                        },
+                        "days_left": {
+                          "type": "integer"
+                        },
+                        "decline_reason": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "first_class_at": {
+                          "description": "ADR-633: when the one class while waiting was booked on this request",
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "hold_days": {
+                          "type": "integer"
+                        },
+                        "hold_until": {
+                          "description": "The box's last day the package is held; it is removed the day after",
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "package_id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "package_name": {
+                          "type": "string"
+                        },
+                        "person": {
+                          "description": "Staff queue only: who asked, to open their account",
+                          "nullable": true,
+                          "properties": {
+                            "avatar_url": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "display_name": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "handle": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "user_id": {
+                              "format": "uuid",
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "price_cents": {
+                          "type": "integer"
+                        },
+                        "requested_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "source": {
+                          "enum": [
+                            "member",
+                            "staff"
+                          ],
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "pending",
+                            "activated",
+                            "cancelled",
+                            "lapsed",
+                            "declined"
+                          ],
+                          "type": "string"
+                        },
+                        "user_id": {
+                          "format": "uuid",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "currency",
+                        "days_left",
+                        "hold_days",
+                        "hold_until",
+                        "id",
+                        "package_id",
+                        "package_name",
+                        "price_cents",
+                        "requested_at",
+                        "source",
+                        "status",
+                        "user_id"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "request",
+                    "cancelled_bookings"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Declined"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Decline a package that waits at the desk («Απόρριψη»)",
+        "tags": [
+          "Admin Finance"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/finance/package-rule": {
+      "get": {
+        "callbacks": {},
+        "description": "ADR-633: since when the box books only with a package, and the people who were training without one then, with their last free day and whether they have a package now.",
+        "operationId": "PaleeWeb.AdminPackageRequestController.rollout",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "people": {
+                      "items": {
+                        "properties": {
+                          "avatar_url": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "display_name": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "ends_on": {
+                            "format": "date",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "handle": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "has_package": {
+                            "type": "boolean"
+                          },
+                          "user_id": {
+                            "format": "uuid",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "user_id",
+                          "ends_on",
+                          "has_package"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "since": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "since",
+                    "people"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Rollout"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Who trains on the package rule's 14 days («Μετάβαση»)",
         "tags": [
           "Admin Finance"
         ]
@@ -352990,6 +353417,16 @@
                           "days_left": {
                             "type": "integer"
                           },
+                          "decline_reason": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "first_class_at": {
+                            "description": "ADR-633: when the one class while waiting was booked on this request",
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
                           "hold_days": {
                             "type": "integer"
                           },
@@ -353051,7 +353488,8 @@
                               "pending",
                               "activated",
                               "cancelled",
-                              "lapsed"
+                              "lapsed",
+                              "declined"
                             ],
                             "type": "string"
                           },
@@ -353129,6 +353567,16 @@
                         "days_left": {
                           "type": "integer"
                         },
+                        "decline_reason": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "first_class_at": {
+                          "description": "ADR-633: when the one class while waiting was booked on this request",
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
                         "hold_days": {
                           "type": "integer"
                         },
@@ -353190,7 +353638,8 @@
                             "pending",
                             "activated",
                             "cancelled",
-                            "lapsed"
+                            "lapsed",
+                            "declined"
                           ],
                           "type": "string"
                         },
@@ -353232,6 +353681,57 @@
           }
         ],
         "summary": "Take back a package that waits for payment at the front desk",
+        "tags": [
+          "Member Finance"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/me/package-rule": {
+      "get": {
+        "callbacks": {},
+        "description": "In a box that sells packages, booking needs one; while the first «Το θέλω» waits the member may book one class.",
+        "operationId": "PaleeWeb.MyPaymentsController.package_rule",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "first_class_available": {
+                      "type": "boolean"
+                    },
+                    "package_required": {
+                      "description": "Booking is refused now",
+                      "type": "boolean"
+                    },
+                    "pending_request": {
+                      "type": "boolean"
+                    },
+                    "rule": {
+                      "description": "The box books only with a package",
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "rule",
+                    "pending_request",
+                    "first_class_available",
+                    "package_required"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Package rule"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Whether the member can book here without a package (ADR-633)",
         "tags": [
           "Member Finance"
         ]
@@ -353712,6 +354212,16 @@
                         "days_left": {
                           "type": "integer"
                         },
+                        "decline_reason": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "first_class_at": {
+                          "description": "ADR-633: when the one class while waiting was booked on this request",
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
                         "hold_days": {
                           "type": "integer"
                         },
@@ -353773,7 +354283,8 @@
                             "pending",
                             "activated",
                             "cancelled",
-                            "lapsed"
+                            "lapsed",
+                            "declined"
                           ],
                           "type": "string"
                         },
@@ -353825,6 +354336,16 @@
                         "days_left": {
                           "type": "integer"
                         },
+                        "decline_reason": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "first_class_at": {
+                          "description": "ADR-633: when the one class while waiting was booked on this request",
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
                         "hold_days": {
                           "type": "integer"
                         },
@@ -353886,7 +354407,8 @@
                             "pending",
                             "activated",
                             "cancelled",
-                            "lapsed"
+                            "lapsed",
+                            "declined"
                           ],
                           "type": "string"
                         },

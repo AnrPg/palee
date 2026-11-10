@@ -4969,7 +4969,9 @@
     "kpiRetirementHelp": "Secciones de tiempo fijo (AMRAP, EMOM, intervalos) de entrenamientos completados en las que el atleta paró antes de que acabara el reloj, o el reloj siguió mucho después de su último toque (3× su propio tiempo por ronda). «Quería un WOD más corto» cuenta como tiempo acortado, no como abandono.",
     "kpiRetirementOf": "{retired} de {count, plural, one {# sección de tiempo fijo} other {# secciones de tiempo fijo}}",
     "kpiRetirementStopped": "Pararon antes del final",
-    "kpiRetirementIdle": "Se quedaron inactivos"
+    "kpiRetirementIdle": "Se quedaron inactivos",
+    "apiErrorPackageRequired": "Reservar en este box requiere un paquete. Elige uno en Paquetes; si pagas en recepción, puedes reservar una clase mientras espera.",
+    "apiErrorDeclineReasonRequired": "Escribe por qué se rechaza la solicitud."
   },
   "PrSharing": {
     "gymLabel": "¿Dónde conseguiste este PR?",
@@ -15526,7 +15528,23 @@
     "collect": "Cobrar {amount}",
     "collectTitle": "Cobrar",
     "collectHint": "El paquete empieza hoy y se emite el recibo.",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "activate": "Activar",
+    "activateTitle": "Activar paquete",
+    "activatePaid": "Recibido {amount}",
+    "activateUnpaid": "Pago pendiente",
+    "activateUnpaidHint": "El paquete empieza hoy y {amount} queda pendiente. Recordatorios, días de gracia y bloqueo siguen solos.",
+    "activateUnpaidConfirm": "Activar, pago pendiente",
+    "decline": "Rechazar",
+    "declineTitle": "Rechazar solicitud",
+    "declineReason": "Por qué (el miembro lo leerá)",
+    "declineHint": "Si reservó su única clase mientras esperaba, se cancela.",
+    "declineConfirm": "Rechazar",
+    "firstClassBooked": "Reservó su única clase mientras espera",
+    "rolloutTitle": "Entrenan sin paquete unos días más",
+    "rolloutBody": "Desde el {date}, reservar en este box requiere un paquete. Estos miembros entrenaban sin él y reservan hasta su fecha.",
+    "rolloutUntil": "Hasta el {date}",
+    "rolloutHasPackage": "Tiene paquete"
   },
   "Sms": {
     "connectionsTitle": "Conexiones",
@@ -20246,6 +20264,8 @@
     "submit_free_access": "Dar acceso gratis",
     "submit_extra_uses": "Añadir usos",
     "submit_package": "Dar el paquete",
-    "submit_debt_forgiven": "Perdonar la deuda"
+    "submit_debt_forgiven": "Perdonar la deuda",
+    "givenBySystem": "Por Palee, {when}",
+    "reasonRollout": "Ahora reservar requiere un paquete: 14 días para quien ya entrenaba"
   }
 }

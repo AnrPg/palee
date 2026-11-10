@@ -63,6 +63,28 @@ defmodule Palee.Application.MemberBenefits do
   def grant(_context, _user_id, _params), do: {:error, :invalid_benefit}
 
   @doc """
+  ADR-633: a grant the system makes by itself (the package rule's rollout
+  gives the clients already training a free access). No person is behind
+  it: `actor_id` is empty and `actor_roles` is `["system"]`. `context`
+  needs only the `organization_id`; `params` as for `grant/3`.
+  """
+  def grant_as_system(%{organization_id: organization_id}, user_id, params)
+      when is_binary(organization_id) and is_map(params) do
+    context = %{organization_id: organization_id, user_id: nil, roles: ["system"]}
+    today = today(context)
+
+    with {:ok, key} <- idempotency_key(params),
+         {:ok, grant} <- Rules.validate_grant(params, today) do
+      Finance.with_tenant_context(context, fn ->
+        case MemberBenefitStore.by_idempotency_key(key) do
+          %{} = existing -> {:ok, %{benefit: existing, replayed: true}}
+          nil -> give(context, user_id, grant, key, today)
+        end
+      end)
+    end
+  end
+
+  @doc """
   Revokes a grace, a free access or extra uses. `params`: `reason`
   (optional), `idempotency_key`.
   """

@@ -4969,7 +4969,9 @@
     "kpiRetirementHelp": "أقسام ذات وقت ثابت (AMRAP وEMOM والفترات) في تمارين مكتملة توقف فيها الرياضي قبل انتهاء المؤقت، أو استمر المؤقت طويلًا بعد آخر نقرة له (3× زمن جولته). «أردت WOD أقصر» يُحسب وقتًا مختصرًا لا انسحابًا.",
     "kpiRetirementOf": "{retired} من {count, plural, zero {# قسم ذي وقت ثابت} one {قسم واحد ذي وقت ثابت} two {قسمين ذوي وقت ثابت} few {# أقسام ذات وقت ثابت} many {# قسمًا ذا وقت ثابت} other {# قسم ذي وقت ثابت}}",
     "kpiRetirementStopped": "توقفوا قبل النهاية",
-    "kpiRetirementIdle": "أصبحوا غير نشطين"
+    "kpiRetirementIdle": "أصبحوا غير نشطين",
+    "apiErrorPackageRequired": "الحجز في هذا المكان يحتاج إلى باقة. اختر واحدة من الباقات؛ إن كنت ستدفع في الاستقبال يمكنك حجز حصة واحدة أثناء الانتظار.",
+    "apiErrorDeclineReasonRequired": "اكتب سبب رفض الطلب."
   },
   "PrSharing": {
     "gymLabel": "أين حققت هذا الرقم القياسي؟",
@@ -15526,7 +15528,23 @@
     "collect": "تحصيل {amount}",
     "collectTitle": "تحصيل الدفعة",
     "collectHint": "تبدأ الباقة اليوم ويُصدر الإيصال.",
-    "close": "إغلاق"
+    "close": "إغلاق",
+    "activate": "تفعيل",
+    "activateTitle": "تفعيل الباقة",
+    "activatePaid": "تم استلام {amount}",
+    "activateUnpaid": "الدفع معلّق",
+    "activateUnpaidHint": "تبدأ الباقة اليوم ويبقى {amount} مستحقًا. التذكيرات وأيام السماح والإيقاف تتم تلقائيًا.",
+    "activateUnpaidConfirm": "تفعيل، الدفع معلّق",
+    "decline": "رفض",
+    "declineTitle": "رفض الطلب",
+    "declineReason": "السبب (سيقرؤه العضو)",
+    "declineHint": "إذا حجز حصته الواحدة أثناء الانتظار، تُلغى.",
+    "declineConfirm": "رفض",
+    "firstClassBooked": "حجز حصته الواحدة أثناء الانتظار",
+    "rolloutTitle": "يتدربون بلا باقة لأيام قليلة أخرى",
+    "rolloutBody": "منذ {date} يحتاج الحجز في هذا المكان إلى باقة. هؤلاء الأعضاء كانوا يتدربون بلا باقة ويحجزون حتى تاريخهم.",
+    "rolloutUntil": "حتى {date}",
+    "rolloutHasPackage": "لديه باقة"
   },
   "Sms": {
     "connectionsTitle": "الاتصالات",
@@ -20246,6 +20264,8 @@
     "submit_free_access": "امنح الدخول المجاني",
     "submit_extra_uses": "أضف استخدامات",
     "submit_package": "امنح الباقة",
-    "submit_debt_forgiven": "أعفِ من الدين"
+    "submit_debt_forgiven": "أعفِ من الدين",
+    "givenBySystem": "من Palee، {when}",
+    "reasonRollout": "الحجز يحتاج الآن إلى باقة: 14 يومًا لمن كانوا يتدربون"
   }
 }
