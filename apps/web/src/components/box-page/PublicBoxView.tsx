@@ -551,9 +551,17 @@ function Actions({
     return (
       <div className={`flex items-start gap-2 ${onOpenClub ? "" : "justify-end"}`}>
         {onOpenClub ? (
-        <button type="button" onClick={onOpenClub} className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded-2xl text-sm font-bold" style={{ background: "var(--panel-raised)", border: "1px solid var(--border)", color: "var(--text)" }}>
-          <Icon name="check" size={16} />
-          {t("memberOpenClub")}
+        // Padding on both sides and room to wrap: the label must never touch or clip
+        // the edges, on 320px phones and in long locales alike (ANR 2026-11-10).
+        <button
+          type="button"
+          onClick={onOpenClub}
+          className={`flex min-h-11 min-w-0 items-center justify-center gap-2 rounded-2xl px-4 py-2 text-center text-sm font-bold leading-tight ${row ? "shrink-0" : "flex-1"}`}
+          style={{ background: "var(--panel-raised)", border: "1px solid var(--border)", color: "var(--text)" }}
+          data-testid="box-page-open-club"
+        >
+          <span className="shrink-0"><Icon name="check" size={16} /></span>
+          <span className="min-w-0 text-balance">{t("memberOpenClub")}</span>
         </button>
         ) : null}
         {message}
