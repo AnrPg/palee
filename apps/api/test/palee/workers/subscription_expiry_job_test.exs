@@ -49,16 +49,33 @@ defmodule Palee.Workers.SubscriptionExpiryJobTest do
     ])
   end
 
+  # `notifications.inserted_at` has second precision, so two job runs within the
+  # same second tie on it: the rows come back in a stable order (type breaks the
+  # tie), but that order is not the order they were sent in. Tests that look at
+  # more than one notification assert on the set, not on the order.
   defp notifications(user_id) do
     %{rows: rows} =
       Repo.query!(
-        "SELECT type, payload FROM notifications WHERE user_id = $1 ORDER BY inserted_at",
+        "SELECT type, payload FROM notifications WHERE user_id = $1 ORDER BY inserted_at, type, id",
         [
           Ecto.UUID.dump!(user_id)
         ]
       )
 
     rows
+  end
+
+  defp notification_types(user_id) do
+    user_id |> notifications() |> Enum.map(&hd/1) |> Enum.sort()
+  end
+
+  defp notification_payload(user_id, type) do
+    user_id
+    |> notifications()
+    |> Enum.find_value(fn
+      [^type, payload] -> payload
+      _ -> nil
+    end)
   end
 
   test "reminds the client once before the subscription ends", ctx do
@@ -112,6 +129,7 @@ defmodule Palee.Workers.SubscriptionExpiryJobTest do
        ctx do
     end_subscription_on(ctx.subscription, Date.add(gym_today(), -1))
     assert :ok = perform_job(SubscriptionExpiryJob, %{})
+    assert [["subscription_grace", _]] = notifications(ctx.member.id)
 
     class_type = Palee.TestFixtures.class_type_fixture(%{tenant_context: ctx.context})
 
@@ -142,10 +160,10 @@ defmodule Palee.Workers.SubscriptionExpiryJobTest do
     assert :ok = perform_job(SubscriptionExpiryJob, %{})
 
     assert Repo.get(Booking, booking.id) == nil
-    assert ["subscription_grace", "access_ended"] = Enum.map(notifications(ctx.member.id), &hd/1)
+    assert notification_types(ctx.member.id) == ["access_ended", "subscription_grace"]
 
-    assert [_, ["access_ended", %{"cancelled_bookings" => 1, "reason" => "subscription_ended"}]] =
-             notifications(ctx.member.id)
+    assert %{"cancelled_bookings" => 1, "reason" => "subscription_ended"} =
+             notification_payload(ctx.member.id, "access_ended")
 
     actor = %{id: ctx.member.id, role: :member}
 
@@ -161,7 +179,7 @@ defmodule Palee.Workers.SubscriptionExpiryJobTest do
 
     # Nothing more to revoke on the next run.
     assert :ok = perform_job(SubscriptionExpiryJob, %{})
-    assert length(notifications(ctx.member.id)) == 2
+    assert notification_types(ctx.member.id) == ["access_ended", "subscription_grace"]
   end
 
   describe "the box's reminder schedule (ADR-500)" do
@@ -193,10 +211,11 @@ defmodule Palee.Workers.SubscriptionExpiryJobTest do
       end_subscription_on(ctx.subscription, gym_today())
       assert :ok = perform_job(SubscriptionExpiryJob, %{})
 
-      assert [1, 0] =
-               Enum.map(notifications(ctx.member.id), fn [_type, payload] ->
-                 payload["days_left"]
-               end)
+      assert [0, 1] =
+               ctx.member.id
+               |> notifications()
+               |> Enum.map(fn [_type, payload] -> payload["days_left"] end)
+               |> Enum.sort()
     end
 
     test "the day after names no access date when the box gives no grace days", ctx do
