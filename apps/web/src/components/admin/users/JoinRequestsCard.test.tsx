@@ -42,14 +42,14 @@ describe("JoinRequestsCard (ADR-552)", () => {
   });
 
   it("is not shown while nobody waits", async () => {
-    vi.mocked(fetchStaffJoinRequests).mockResolvedValue({ requests: [] });
+    vi.mocked(fetchStaffJoinRequests).mockResolvedValue([]);
     renderCard();
     await waitFor(() => expect(fetchStaffJoinRequests).toHaveBeenCalled());
     expect(screen.queryByTestId("join-requests")).toBeNull();
   });
 
   it("lists who asks and accepts them", async () => {
-    vi.mocked(fetchStaffJoinRequests).mockResolvedValue({ requests: [row] } as never);
+    vi.mocked(fetchStaffJoinRequests).mockResolvedValue([row] as never);
     const onAccepted = renderCard();
     expect(await screen.findByText("1 άτομο ζητά να γίνει μέλος")).toBeInTheDocument();
     expect(screen.getByText(/@maria/)).toBeInTheDocument();

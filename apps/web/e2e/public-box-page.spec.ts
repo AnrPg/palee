@@ -241,7 +241,8 @@ test.describe("public box page", () => {
     await page.goto(`/b/${box.slug}`);
     const tabs = page.getByRole("tablist", { name: "Page sections" });
     await expect(tabs.getByRole("tab").first()).toHaveText("Club");
-    await expect(page.getByRole("tab", { name: "Club" })).toHaveAttribute("aria-selected", "true");
+    // Scoped to the page's own tabs: the club inside has a «Club members» tab too.
+    await expect(tabs.getByRole("tab", { name: "Club", exact: true })).toHaveAttribute("aria-selected", "true");
     await expect(page.getByTestId("box-club-tab")).toBeVisible();
     await expect(page.getByTestId("box-guest-banner")).toHaveCount(0);
     await expect(page.getByTestId("box-page-join")).toHaveCount(0);
@@ -262,7 +263,7 @@ test.describe("public box page", () => {
   test("a visitor never sees the «Club» tab", async ({ page }) => {
     await signedIn(page);
     await page.goto(`/b/${box.slug}#club`);
-    await expect(page.getByRole("tab", { name: "Club" })).toHaveCount(0);
+    await expect(page.getByRole("tab", { name: "Club", exact: true })).toHaveCount(0);
     await expect(page.getByRole("tab", { name: "About" })).toHaveAttribute("aria-selected", "true");
   });
 
@@ -352,8 +353,9 @@ test.describe("public box page", () => {
     await expect(notice.getByRole("heading", { name: `${box.name} invites you to become a member` })).toBeVisible();
     await expect(notice).toContainText("«Come and train with us!»");
     await expect(notice.getByTestId("box-follower-invite-package")).toContainText("Unlimited");
-    // «Become a box member» stays the page's own action (ADR-552).
-    await expect(page.getByTestId("box-page-join").first()).toBeVisible();
+    // «Become a box member» stays the page's own action (ADR-552). The desktop
+    // and the phone layouts each hold it; the one on screen must be visible.
+    await expect(page.getByTestId("box-page-join").locator("visible=true").first()).toBeVisible();
     await notice.getByTestId("box-follower-invite-decline").click();
     await expect(notice).toBeHidden();
     expect(declined).toEqual(["decline"]);

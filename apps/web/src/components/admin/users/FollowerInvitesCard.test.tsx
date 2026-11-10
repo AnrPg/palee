@@ -56,14 +56,14 @@ describe("FollowerInvitesCard (ADR-580)", () => {
   });
 
   it("is not shown while nobody may be invited", async () => {
-    vi.mocked(fetchFollowerInviteSummary).mockResolvedValue({ counts: { listed: 2, invitable: 0, trial: 0, former: 0 } });
+    vi.mocked(fetchFollowerInviteSummary).mockResolvedValue({ listed: 2, invitable: 0, trial: 0, former: 0 });
     renderCard();
     await waitFor(() => expect(fetchFollowerInviteSummary).toHaveBeenCalled());
     expect(screen.queryByTestId("follower-invites")).toBeNull();
   });
 
   it("invites one follower with a message and a package", async () => {
-    vi.mocked(fetchFollowerInviteSummary).mockResolvedValue({ counts: page.counts });
+    vi.mocked(fetchFollowerInviteSummary).mockResolvedValue(page.counts);
     renderCard();
     expect(await screen.findByText("3 ακόλουθοι δεν είναι ακόμα μέλη")).toBeInTheDocument();
     fireEvent.click(screen.getByTestId("follower-invites-toggle"));
@@ -85,7 +85,7 @@ describe("FollowerInvitesCard (ADR-580)", () => {
   });
 
   it("invites many at once", async () => {
-    vi.mocked(fetchFollowerInviteSummary).mockResolvedValue({ counts: page.counts });
+    vi.mocked(fetchFollowerInviteSummary).mockResolvedValue(page.counts);
     vi.mocked(inviteFollowers).mockResolvedValue({ sent: 2, skipped: [] });
     renderCard();
     fireEvent.click(await screen.findByTestId("follower-invites-toggle"));

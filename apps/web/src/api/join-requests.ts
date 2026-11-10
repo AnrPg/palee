@@ -36,8 +36,10 @@ export function cancelJoinRequest(token: string, slug: string) {
   return apiRequest<{ request: MyJoinRequest }>(`/boxes/${id(slug)}/join-request/cancel`, { token, method: "POST" });
 }
 
-export function fetchStaffJoinRequests(token: string) {
-  return apiRequest<{ requests: StaffJoinRequest[] }>("/admin/join-requests", { token });
+/** A malformed answer reads as «nobody waits» ([]), never undefined (a query's data must not be undefined). */
+export async function fetchStaffJoinRequests(token: string): Promise<StaffJoinRequest[]> {
+  const body = await apiRequest<{ requests?: StaffJoinRequest[] | null } | null>("/admin/join-requests", { token });
+  return body?.requests ?? [];
 }
 
 export function decideJoinRequest(token: string, requestId: string, decision: "accept" | "decline") {

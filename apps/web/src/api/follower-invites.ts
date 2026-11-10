@@ -26,8 +26,10 @@ export const myFollowerInviteKey = (slug: string) => ["me", "follower-invite", s
 
 const id = (value: string) => encodeURIComponent(value);
 
-export function fetchFollowerInviteSummary(token: string) {
-  return apiRequest<{ counts: FollowerInviteCounts }>("/admin/follower-invites/summary", { token });
+/** A malformed answer reads as «no counts» (null), never undefined (a query's data must not be undefined). */
+export async function fetchFollowerInviteSummary(token: string): Promise<FollowerInviteCounts | null> {
+  const body = await apiRequest<{ counts?: FollowerInviteCounts | null } | null>("/admin/follower-invites/summary", { token });
+  return body?.counts ?? null;
 }
 
 export function fetchBoxFollowers(token: string, filter: FollowerFilter, cursor?: string | null) {

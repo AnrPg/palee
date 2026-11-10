@@ -23,7 +23,7 @@ export function JoinRequestsCard({ onAccepted }: { onAccepted?: () => void }) {
   const token = tokens?.access_token ?? "";
   const requests = useQuery({
     queryKey: STAFF_JOIN_REQUESTS_KEY,
-    queryFn: () => fetchStaffJoinRequests(token).then((response) => response.requests),
+    queryFn: () => fetchStaffJoinRequests(token),
     enabled: Boolean(token),
   });
   const rows = requests.data ?? [];

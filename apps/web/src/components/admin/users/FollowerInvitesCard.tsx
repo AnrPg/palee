@@ -45,7 +45,7 @@ export function FollowerInvitesCard() {
   const [open, setOpen] = useState(false);
   const summary = useQuery({
     queryKey: FOLLOWER_INVITES_SUMMARY_KEY,
-    queryFn: () => fetchFollowerInviteSummary(token).then((response) => response.counts),
+    queryFn: () => fetchFollowerInviteSummary(token),
     enabled: Boolean(token),
   });
   const counts = summary.data;
