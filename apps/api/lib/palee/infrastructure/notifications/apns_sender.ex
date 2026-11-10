@@ -30,7 +30,8 @@ defmodule Palee.Infrastructure.Notifications.ApnsSender do
              host <> "/3/device/" <> URI.encode(token),
              [
                json: NativePushPayload.apns(message),
-               headers: NativePushPayload.apns_headers(credentials.topic, provider_token),
+               headers:
+                 NativePushPayload.apns_headers(credentials.topic, provider_token, message),
                connect_options: [protocols: [:http2]],
                receive_timeout: @timeout,
                retry: false

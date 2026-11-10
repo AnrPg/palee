@@ -9320,8 +9320,6 @@
     "title": "Objetivos",
     "showToMembers": "Mostrar objetivos aos membros",
     "showToMembersHint": "Os membros veem os objetivos no cartão do treino.",
-    "notSavedYet": "Sugestão · ainda não guardada",
-    "keepSuggestion": "Manter a sugestão",
     "needsDraft": "Os objetivos aparecem quando o rascunho for guardado.",
     "legend": {
       "primary": "Principais",
@@ -9406,7 +9404,7 @@
       "sectionTitle": "Treinos",
       "sectionDescription": "Predefinições para novos treinos.",
       "visibleByDefault": "Objetivos visíveis por predefinição",
-      "visibleByDefaultHint": "Valor inicial de «Mostrar objetivos aos membros» em treinos sem objetivos próprios.",
+      "visibleByDefaultHint": "Sem objetivos guardados, os membros veem os objetivos sugeridos a partir dos exercícios. O coach pode ocultá-los em qualquer treino.",
       "feltPrompt": "«O que sentiu?» também sem objetivos",
       "feltPromptHint": "Depois de um treino sem objetivos, sugerir marcar no corpo o que sentiu."
     },
@@ -12246,7 +12244,13 @@
     "confirmTitle": "{count, plural, one {Eliminar # notificação?} other {Eliminar # notificações?}}",
     "confirmBody": "Não as voltarás a ver em nenhum dispositivo. Isto não pode ser anulado.",
     "cancel": "Cancelar",
-    "deleteManyFailed": "Nada foi eliminado. Tenta novamente."
+    "deleteManyFailed": "Nada foi eliminado. Tenta novamente.",
+    "stackMore": "{count, plural, one {+# outra semelhante} other {+# outras semelhantes}}",
+    "stackNew": "{count, plural, one {# nova} other {# novas}}",
+    "stackCount": "{count, plural, one {# notificação semelhante} other {# notificações semelhantes}}",
+    "stackCollapse": "Recolher",
+    "stackDelete": "Eliminar todas estas notificações semelhantes",
+    "stackHide": "Marcar todas como lidas"
   },
   "Spaces": {
     "eyebrow": "Definições",

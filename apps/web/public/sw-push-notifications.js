@@ -16,6 +16,9 @@ self.addEventListener("push", (event) => {
       icon: "/globe.svg",
       badge: "/globe.svg",
       data: { url: data.url, notification_id: notificationId },
+      // ADR-600: similar notifications share a tag, so the newest replaces
+      // the earlier one of its stack quietly instead of adding another.
+      ...(typeof data.tag === "string" && data.tag ? { tag: data.tag, renotify: false } : {}),
     }),
   );
 });

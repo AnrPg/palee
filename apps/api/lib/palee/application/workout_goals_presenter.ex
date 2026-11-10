@@ -65,8 +65,8 @@ defmodule Palee.Application.WorkoutGoalsPresenter do
   end
 
   @doc """
-  Member view of a workout's resolved goals (its own or inherited): only
-  goals the coach saved and made visible, else nil. `workout_id` is the
+  Member view of a workout's saved goals (its own or inherited): only
+  goals the coach made visible, else nil. `workout_id` is the
   workout asked about, also when its goals are inherited.
   """
   def member_goals(workout_id, %{goals: %{visible_to_members: true} = saved}) do
@@ -81,6 +81,26 @@ defmodule Palee.Application.WorkoutGoalsPresenter do
   end
 
   def member_goals(_workout_id, _resolved), do: nil
+
+  @doc """
+  Member view of a workout's live suggestion, for a workout whose coach
+  saved no goals (nil when nothing was recognised).
+  """
+  def suggested_member_goals(_workout_id, _workout, %{muscles: [], qualities: []}), do: nil
+
+  def suggested_member_goals(workout_id, workout, suggestion) do
+    %{
+      workout_id: workout_id,
+      muscles: suggestion.muscles,
+      qualities: suggestion.qualities,
+      stimulus: nil,
+      taxonomy_version: suggestion.taxonomy_version,
+      updated_at: utc(Map.get(workout, :updated_at) || Map.get(workout, :inserted_at))
+    }
+  end
+
+  defp utc(%NaiveDateTime{} = at), do: DateTime.from_naive!(at, "Etc/UTC")
+  defp utc(at), do: at
 
   def muscle(%{id: id, role: role}), do: %{id: id, role: to_string(role)}
 end

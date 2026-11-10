@@ -162,3 +162,22 @@ The owner took every recommended extra on board 18 (plan §5a). Backend:
   policy already covers it). Workouts with goals always offer «Τι ένιωσες;».
 - Open: an owner or admin who is not also a coach sees `entries: 0` on the totals, as on any
   coach read of the journal; widening that is a journal-visibility decision, not a goals one.
+
+## Addendum (2026-11-10): the suggestion is visible to members by default
+The owner decided that WOD goals are visible to members by default, even when the author
+never approved them, and that the editor shows no «Πρόταση · δεν έχει αποθηκευτεί» /
+«Κράτα την πρόταση» line in any language. The box hides them for every workout, or the
+author for one workout.
+
+- `wod_goals_visible_by_default` now defaults to **true** (`WorkoutSettingsPolicy`,
+  `SettingsCatalog`). Gyms that stored `false` keep it.
+- `GetMemberWorkoutGoals.visible/3` is the one member read (the member endpoint and the
+  «τι ένιωσες» feedback both use it): saved or inherited goals as before (only when
+  visible); with nothing saved or inherited, the live suggestion
+  (`WorkoutGoalsPresenter.suggested_member_goals/3`, `stimulus: null`, `updated_at` = the
+  workout's) when the gym default is on, else `null`. A suggestion with no muscles and no
+  qualities is `null`.
+- The author hides one workout with the editor's «Εμφάνιση στόχων στα μέλη» toggle: turning it
+  off saves the goals hidden, so members get `null`. The gym setting's hint now says what it
+  does for unsaved suggestions.
+- The staff library preview shows the same «Στόχοι» block (saved goals, else the suggestion).

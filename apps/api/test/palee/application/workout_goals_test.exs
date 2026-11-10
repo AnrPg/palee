@@ -72,14 +72,18 @@ defmodule Palee.Application.WorkoutGoalsTest do
 
       assert goals.saved == false
       assert goals.source == "suggested"
-      assert goals.visible_to_members == false
+      assert goals.visible_to_members == true
       assert goals.muscles == suggestion.muscles
       assert goals.qualities == suggestion.qualities
     end
 
     test "saves normalised goals, stamps version and author, keeps visibility", ctx do
       assert {:ok, %{goals: goals}} =
-               SaveWorkoutGoals.call(ctx.staff, ctx.workout.id, goals_params())
+               SaveWorkoutGoals.call(
+                 ctx.staff,
+                 ctx.workout.id,
+                 goals_params(%{"visible_to_members" => false})
+               )
 
       assert goals.saved
       assert goals.source == "edited"
@@ -170,10 +174,48 @@ defmodule Palee.Application.WorkoutGoalsTest do
   end
 
   describe "member goals" do
-    test "hidden goals read as nil, visible ones are returned", ctx do
-      assert {:ok, %{goals: nil}} = GetMemberWorkoutGoals.call(ctx.member_context, ctx.workout.id)
+    test "unsaved goals show the suggestion unless the gym hides it", ctx do
+      assert {:ok, %{goals: suggested}} =
+               GetMemberWorkoutGoals.call(ctx.member_context, ctx.workout.id)
 
-      {:ok, _} = SaveWorkoutGoals.call(ctx.staff, ctx.workout.id, goals_params())
+      assert %{id: "quadriceps", role: "primary"} in suggested.muscles
+      assert "strength" in suggested.qualities
+      assert suggested.stimulus == nil
+      assert %DateTime{} = suggested.updated_at
+
+      {:ok, _settings} =
+        Palee.Organizations.update_workout_settings(ctx.staff, %{
+          "wod_goals_visible_by_default" => false
+        })
+
+      assert {:ok, %{goals: nil}} = GetMemberWorkoutGoals.call(ctx.member_context, ctx.workout.id)
+    end
+
+    test "a workout with nothing recognised shows no goals", ctx do
+      workout =
+        TestFixtures.workout_fixture(ctx.owner, %{
+          tenant_context: ctx.staff,
+          sections: [
+            %{
+              name: "Main",
+              order: 1,
+              scoreable: false,
+              exercises: [%{name: "Partner relay", order: 1, sets: 1, prescription_value: 1}]
+            }
+          ]
+        })
+
+      assert {:ok, %{goals: nil}} = GetMemberWorkoutGoals.call(ctx.member_context, workout.id)
+    end
+
+    test "hidden goals read as nil, visible ones are returned", ctx do
+      {:ok, _} =
+        SaveWorkoutGoals.call(
+          ctx.staff,
+          ctx.workout.id,
+          goals_params(%{"visible_to_members" => false})
+        )
+
       assert {:ok, %{goals: nil}} = GetMemberWorkoutGoals.call(ctx.member_context, ctx.workout.id)
 
       {:ok, _} =

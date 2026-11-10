@@ -6,6 +6,10 @@ defmodule Palee.Notifications.Domain.NativePushPayload do
   tapping the notification in the app opens `url` in the web view, exactly as
   the service worker does on the web. Text is cut so the payload stays far
   below the providers' 4 KB limit.
+
+  ADR-600: a message with a `tag` (one stack of similar notifications)
+  replaces the earlier one of the same tag on the phone: Android's
+  notification `tag`, APNs' `apns-collapse-id` and `thread-id`.
   """
 
   @title_limit 120
@@ -20,7 +24,7 @@ defmodule Palee.Notifications.Domain.NativePushPayload do
         "data" => data(message),
         "android" => %{
           "priority" => "high",
-          "notification" => %{"channel_id" => "default"}
+          "notification" => put_tag(%{"channel_id" => "default"}, "tag", message)
         }
       }
     }
@@ -30,23 +34,33 @@ defmodule Palee.Notifications.Domain.NativePushPayload do
   def apns(message) when is_map(message) do
     Map.merge(
       %{
-        "aps" => %{
-          "alert" => %{"title" => title(message), "body" => body(message)},
-          "sound" => "default"
-        }
+        "aps" =>
+          put_tag(
+            %{
+              "alert" => %{"title" => title(message), "body" => body(message)},
+              "sound" => "default"
+            },
+            "thread-id",
+            message
+          )
       },
       data(message)
     )
   end
 
   @doc "The APNs request headers for an alert to `topic` (the app's bundle id)."
-  def apns_headers(topic, provider_token) do
-    [
+  def apns_headers(topic, provider_token, message \\ %{}) do
+    headers = [
       {"authorization", "bearer " <> provider_token},
       {"apns-topic", topic},
       {"apns-push-type", "alert"},
       {"apns-priority", "10"}
     ]
+
+    case tag(message) do
+      nil -> headers
+      tag -> headers ++ [{"apns-collapse-id", tag}]
+    end
   end
 
   @doc """
@@ -96,6 +110,21 @@ defmodule Palee.Notifications.Domain.NativePushPayload do
     }
     |> Enum.reject(fn {_key, value} -> is_nil(value) end)
     |> Map.new()
+  end
+
+  defp put_tag(map, key, message) do
+    case tag(message) do
+      nil -> map
+      tag -> Map.put(map, key, tag)
+    end
+  end
+
+  # APNs refuses a collapse id over 64 bytes.
+  defp tag(message) do
+    case value(message, :tag) do
+      tag when is_binary(tag) and byte_size(tag) <= 64 -> tag
+      _other -> nil
+    end
   end
 
   defp title(message), do: message |> value(:title) |> Kernel.||("Palee") |> cut(@title_limit)

@@ -4,8 +4,9 @@ defmodule Palee.Organizations.Domain.WorkoutSettingsPolicy do
   `organization_settings.settings["workouts"]` (ADR-163).
 
   - `wod_goals_visible_by_default`: the starting value of the editor's
-    «Εμφάνιση στόχων στα μέλη» toggle for a workout without goals of its own
-    (off by default).
+    «Εμφάνιση στόχων στα μέλη» toggle for a workout without goals of its own,
+    and whether members see the live suggestion of a workout whose coach
+    saved nothing (on by default).
   - `wod_assistant_enabled` (ADR-180): whether coaches may use the WOD
     assistant at all. On by default, so gyms keep what they had; off, the
     assistant is never called and every new workout is written in text
@@ -18,7 +19,7 @@ defmodule Palee.Organizations.Domain.WorkoutSettingsPolicy do
 
   @settings_key "workouts"
   @defaults %{
-    wod_goals_visible_by_default: false,
+    wod_goals_visible_by_default: true,
     wod_assistant_enabled: true,
     workout_types: nil
   }

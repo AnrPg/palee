@@ -9320,8 +9320,6 @@
     "title": "Objetivos",
     "showToMembers": "Mostrar objetivos a los socios",
     "showToMembersHint": "Los socios ven los objetivos en la tarjeta del entrenamiento.",
-    "notSavedYet": "Sugerencia · aún no guardada",
-    "keepSuggestion": "Mantener la sugerencia",
     "needsDraft": "Los objetivos aparecen cuando se guarda el borrador.",
     "legend": {
       "primary": "Principales",
@@ -9406,7 +9404,7 @@
       "sectionTitle": "Entrenamientos",
       "sectionDescription": "Valores predeterminados para entrenamientos nuevos.",
       "visibleByDefault": "Objetivos visibles por defecto",
-      "visibleByDefaultHint": "Valor inicial de «Mostrar objetivos a los socios» en entrenamientos sin objetivos propios.",
+      "visibleByDefaultHint": "Sin objetivos guardados, los miembros ven los objetivos sugeridos a partir de los ejercicios. El coach puede ocultarlos en cualquier entrenamiento.",
       "feltPrompt": "«¿Qué sentiste?» también sin objetivos",
       "feltPromptHint": "Tras un entrenamiento sin objetivos, ofrecer marcar en el cuerpo lo que sentiste."
     },
@@ -12246,7 +12244,13 @@
     "confirmTitle": "{count, plural, one {¿Eliminar # notificación?} other {¿Eliminar # notificaciones?}}",
     "confirmBody": "No volverás a verlas en ningún dispositivo. No se puede deshacer.",
     "cancel": "Cancelar",
-    "deleteManyFailed": "No se eliminó nada. Inténtalo de nuevo."
+    "deleteManyFailed": "No se eliminó nada. Inténtalo de nuevo.",
+    "stackMore": "{count, plural, one {+# similar más} other {+# similares más}}",
+    "stackNew": "{count, plural, one {# nueva} other {# nuevas}}",
+    "stackCount": "{count, plural, one {# notificación similar} other {# notificaciones similares}}",
+    "stackCollapse": "Contraer",
+    "stackDelete": "Eliminar todas estas notificaciones similares",
+    "stackHide": "Marcar todas como leídas"
   },
   "Spaces": {
     "eyebrow": "Ajustes",

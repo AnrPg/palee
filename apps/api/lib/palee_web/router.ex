@@ -2496,6 +2496,9 @@ defmodule PaleeWeb.Router do
 
     # ADR-460: delete for the person (soft), «Αναίρεση», and bulk from Ρυθμίσεις.
     post("/notifications/delete", NotificationController, :bulk_delete)
+    # ADR-600: a stack's closed eye and the «Αναίρεση» of its trash.
+    post("/notifications/read", NotificationController, :mark_read_matching)
+    post("/notifications/restore", NotificationController, :restore_matching)
     post("/notifications/:id/restore", NotificationController, :restore)
     get("/notifications/push-config", NotificationController, :push_config)
     post("/notifications/push-subscriptions", NotificationController, :create_push_subscription)

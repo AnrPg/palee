@@ -63597,7 +63597,7 @@
         "type": "object"
       },
       "NotificationBulkDelete": {
-        "description": "Either `ids` (the notifications picked) or `filter` (every notification it matches, as the list shows them), never both. Not undoable.",
+        "description": "Either `ids` (the notifications picked) or `filter` (every notification it matches, as the list shows them), never both. A `filter` delete may be restored for `restorable_for_seconds` (ADR-600).",
         "properties": {
           "filter": {
             "additionalProperties": false,
@@ -63617,6 +63617,12 @@
                 ],
                 "type": "string"
               },
+              "group_key": {
+                "description": "ADR-600: only the notifications of this stack (its `stack.key`).",
+                "maxLength": 400,
+                "minLength": 1,
+                "type": "string"
+              },
               "older_than_days": {
                 "description": "Only notifications received more than this many days ago.",
                 "maximum": 3650,
@@ -63629,6 +63635,11 @@
                   "all",
                   "read"
                 ],
+                "type": "string"
+              },
+              "types": {
+                "description": "ADR-600: only notifications of these types, comma-separated (the bell's tabs).",
+                "maxLength": 4000,
                 "type": "string"
               }
             },
@@ -63670,10 +63681,15 @@
           "deleted_count": {
             "minimum": 0,
             "type": "integer"
+          },
+          "restorable_for_seconds": {
+            "description": "How long «Αναίρεση» may still restore them (ADR-600).",
+            "type": "integer"
           }
         },
         "required": [
-          "deleted_count"
+          "deleted_count",
+          "restorable_for_seconds"
         ],
         "title": "NotificationDeletedCount",
         "type": "object"
@@ -63696,6 +63712,12 @@
             ],
             "type": "string"
           },
+          "group_key": {
+            "description": "ADR-600: only the notifications of this stack (its `stack.key`).",
+            "maxLength": 400,
+            "minLength": 1,
+            "type": "string"
+          },
           "older_than_days": {
             "description": "Only notifications received more than this many days ago.",
             "maximum": 3650,
@@ -63709,9 +63731,27 @@
               "read"
             ],
             "type": "string"
+          },
+          "types": {
+            "description": "ADR-600: only notifications of these types, comma-separated (the bell's tabs).",
+            "maxLength": 4000,
+            "type": "string"
           }
         },
         "title": "NotificationFilter",
+        "type": "object"
+      },
+      "NotificationMarkedCount": {
+        "properties": {
+          "marked_count": {
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "marked_count"
+        ],
+        "title": "NotificationMarkedCount",
         "type": "object"
       },
       "NotificationPreference": {
@@ -63848,6 +63888,118 @@
         "title": "NotificationPreferenceUpdate",
         "type": "object"
       },
+      "NotificationReadMatching": {
+        "properties": {
+          "filter": {
+            "additionalProperties": false,
+            "description": "Which notifications a bulk delete covers; an empty filter covers all.",
+            "properties": {
+              "category": {
+                "description": "Only notifications of this category (ADR-199).",
+                "enum": [
+                  "bookings",
+                  "messages",
+                  "community",
+                  "coach",
+                  "partners",
+                  "journal",
+                  "staff",
+                  "account"
+                ],
+                "type": "string"
+              },
+              "group_key": {
+                "description": "ADR-600: only the notifications of this stack (its `stack.key`).",
+                "maxLength": 400,
+                "minLength": 1,
+                "type": "string"
+              },
+              "older_than_days": {
+                "description": "Only notifications received more than this many days ago.",
+                "maximum": 3650,
+                "minimum": 1,
+                "type": "integer"
+              },
+              "state": {
+                "description": "`read`: only notifications already read. Default `all`.",
+                "enum": [
+                  "all",
+                  "read"
+                ],
+                "type": "string"
+              },
+              "types": {
+                "description": "ADR-600: only notifications of these types, comma-separated (the bell's tabs).",
+                "maxLength": 4000,
+                "type": "string"
+              }
+            },
+            "title": "NotificationFilter",
+            "type": "object"
+          }
+        },
+        "required": [
+          "filter"
+        ],
+        "title": "NotificationReadMatching",
+        "type": "object"
+      },
+      "NotificationRestoreMatching": {
+        "properties": {
+          "filter": {
+            "additionalProperties": false,
+            "description": "Which notifications a bulk delete covers; an empty filter covers all.",
+            "properties": {
+              "category": {
+                "description": "Only notifications of this category (ADR-199).",
+                "enum": [
+                  "bookings",
+                  "messages",
+                  "community",
+                  "coach",
+                  "partners",
+                  "journal",
+                  "staff",
+                  "account"
+                ],
+                "type": "string"
+              },
+              "group_key": {
+                "description": "ADR-600: only the notifications of this stack (its `stack.key`).",
+                "maxLength": 400,
+                "minLength": 1,
+                "type": "string"
+              },
+              "older_than_days": {
+                "description": "Only notifications received more than this many days ago.",
+                "maximum": 3650,
+                "minimum": 1,
+                "type": "integer"
+              },
+              "state": {
+                "description": "`read`: only notifications already read. Default `all`.",
+                "enum": [
+                  "all",
+                  "read"
+                ],
+                "type": "string"
+              },
+              "types": {
+                "description": "ADR-600: only notifications of these types, comma-separated (the bell's tabs).",
+                "maxLength": 4000,
+                "type": "string"
+              }
+            },
+            "title": "NotificationFilter",
+            "type": "object"
+          }
+        },
+        "required": [
+          "filter"
+        ],
+        "title": "NotificationRestoreMatching",
+        "type": "object"
+      },
       "NotificationRestored": {
         "properties": {
           "restored": {
@@ -63858,6 +64010,42 @@
           "restored"
         ],
         "title": "NotificationRestored",
+        "type": "object"
+      },
+      "NotificationRestoredCount": {
+        "properties": {
+          "restored_count": {
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "restored_count"
+        ],
+        "title": "NotificationRestoredCount",
+        "type": "object"
+      },
+      "NotificationStack": {
+        "nullable": true,
+        "properties": {
+          "count": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "key": {
+            "type": "string"
+          },
+          "unread_count": {
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "count",
+          "key",
+          "unread_count"
+        ],
+        "title": "NotificationStack",
         "type": "object"
       },
       "NutritionPlan": {
@@ -193818,6 +194006,36 @@
           },
           {
             "in": "query",
+            "name": "group_key",
+            "required": false,
+            "schema": {
+              "description": "ADR-600: only the notifications of this stack (its `stack.key`).",
+              "maxLength": 400,
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "types",
+            "required": false,
+            "schema": {
+              "description": "ADR-600: only notifications of these types, comma-separated (the bell's tabs).",
+              "maxLength": 4000,
+              "type": "string"
+            }
+          },
+          {
+            "description": "ADR-600: one row per stack of similar notifications (its newest, with `stack`).",
+            "in": "query",
+            "name": "stacks",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
             "name": "state",
             "required": false,
             "schema": {
@@ -193887,6 +194105,11 @@
                     "notifications": {
                       "items": {
                         "properties": {
+                          "group_key": {
+                            "description": "ADR-600: similar notifications share it; nil never stacks.",
+                            "nullable": true,
+                            "type": "string"
+                          },
                           "id": {
                             "format": "uuid",
                             "type": "string"
@@ -193908,6 +194131,29 @@
                             "format": "date-time",
                             "nullable": true,
                             "type": "string"
+                          },
+                          "stack": {
+                            "nullable": true,
+                            "properties": {
+                              "count": {
+                                "minimum": 1,
+                                "type": "integer"
+                              },
+                              "key": {
+                                "type": "string"
+                              },
+                              "unread_count": {
+                                "minimum": 0,
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "count",
+                              "key",
+                              "unread_count"
+                            ],
+                            "title": "NotificationStack",
+                            "type": "object"
                           },
                           "type": {
                             "type": "string"
@@ -193958,14 +194204,14 @@
     "/api/notifications/delete": {
       "post": {
         "callbacks": {},
-        "description": "ADR-460: «Διαγραφή ειδοποιήσεων» in Ρυθμίσεις. Not undoable.",
+        "description": "ADR-460: «Διαγραφή ειδοποιήσεων» in Ρυθμίσεις. ADR-600: the trash of a stack (`filter.group_key`); `POST /notifications/restore` undoes it for a moment.",
         "operationId": "PaleeWeb.NotificationController.bulk_delete",
         "parameters": [],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "description": "Either `ids` (the notifications picked) or `filter` (every notification it matches, as the list shows them), never both. Not undoable.",
+                "description": "Either `ids` (the notifications picked) or `filter` (every notification it matches, as the list shows them), never both. A `filter` delete may be restored for `restorable_for_seconds` (ADR-600).",
                 "properties": {
                   "filter": {
                     "additionalProperties": false,
@@ -193985,6 +194231,12 @@
                         ],
                         "type": "string"
                       },
+                      "group_key": {
+                        "description": "ADR-600: only the notifications of this stack (its `stack.key`).",
+                        "maxLength": 400,
+                        "minLength": 1,
+                        "type": "string"
+                      },
                       "older_than_days": {
                         "description": "Only notifications received more than this many days ago.",
                         "maximum": 3650,
@@ -193997,6 +194249,11 @@
                           "all",
                           "read"
                         ],
+                        "type": "string"
+                      },
+                      "types": {
+                        "description": "ADR-600: only notifications of these types, comma-separated (the bell's tabs).",
+                        "maxLength": 4000,
                         "type": "string"
                       }
                     },
@@ -194029,10 +194286,15 @@
                     "deleted_count": {
                       "minimum": 0,
                       "type": "integer"
+                    },
+                    "restorable_for_seconds": {
+                      "description": "How long «Αναίρεση» may still restore them (ADR-600).",
+                      "type": "integer"
                     }
                   },
                   "required": [
-                    "deleted_count"
+                    "deleted_count",
+                    "restorable_for_seconds"
                   ],
                   "title": "NotificationDeletedCount",
                   "type": "object"
@@ -194955,6 +195217,129 @@
         ]
       }
     },
+    "/api/notifications/read": {
+      "post": {
+        "callbacks": {},
+        "description": "ADR-600: the closed eye of a stack (`filter.group_key`).",
+        "operationId": "PaleeWeb.NotificationController.mark_read_matching",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "filter": {
+                    "additionalProperties": false,
+                    "description": "Which notifications a bulk delete covers; an empty filter covers all.",
+                    "properties": {
+                      "category": {
+                        "description": "Only notifications of this category (ADR-199).",
+                        "enum": [
+                          "bookings",
+                          "messages",
+                          "community",
+                          "coach",
+                          "partners",
+                          "journal",
+                          "staff",
+                          "account"
+                        ],
+                        "type": "string"
+                      },
+                      "group_key": {
+                        "description": "ADR-600: only the notifications of this stack (its `stack.key`).",
+                        "maxLength": 400,
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "older_than_days": {
+                        "description": "Only notifications received more than this many days ago.",
+                        "maximum": 3650,
+                        "minimum": 1,
+                        "type": "integer"
+                      },
+                      "state": {
+                        "description": "`read`: only notifications already read. Default `all`.",
+                        "enum": [
+                          "all",
+                          "read"
+                        ],
+                        "type": "string"
+                      },
+                      "types": {
+                        "description": "ADR-600: only notifications of these types, comma-separated (the bell's tabs).",
+                        "maxLength": 4000,
+                        "type": "string"
+                      }
+                    },
+                    "title": "NotificationFilter",
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "filter"
+                ],
+                "title": "NotificationReadMatching",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "marked_count": {
+                      "minimum": 0,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "marked_count"
+                  ],
+                  "title": "NotificationMarkedCount",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Read count"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Mark every notification a filter matches as read",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
     "/api/notifications/read-all": {
       "post": {
         "callbacks": {},
@@ -194986,6 +195371,129 @@
           }
         ],
         "summary": "Mark all notifications as read for the current user",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/api/notifications/restore": {
+      "post": {
+        "callbacks": {},
+        "description": "ADR-600: «Αναίρεση» after the trash of a stack; only within the restore window.",
+        "operationId": "PaleeWeb.NotificationController.restore_matching",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "filter": {
+                    "additionalProperties": false,
+                    "description": "Which notifications a bulk delete covers; an empty filter covers all.",
+                    "properties": {
+                      "category": {
+                        "description": "Only notifications of this category (ADR-199).",
+                        "enum": [
+                          "bookings",
+                          "messages",
+                          "community",
+                          "coach",
+                          "partners",
+                          "journal",
+                          "staff",
+                          "account"
+                        ],
+                        "type": "string"
+                      },
+                      "group_key": {
+                        "description": "ADR-600: only the notifications of this stack (its `stack.key`).",
+                        "maxLength": 400,
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "older_than_days": {
+                        "description": "Only notifications received more than this many days ago.",
+                        "maximum": 3650,
+                        "minimum": 1,
+                        "type": "integer"
+                      },
+                      "state": {
+                        "description": "`read`: only notifications already read. Default `all`.",
+                        "enum": [
+                          "all",
+                          "read"
+                        ],
+                        "type": "string"
+                      },
+                      "types": {
+                        "description": "ADR-600: only notifications of these types, comma-separated (the bell's tabs).",
+                        "maxLength": 4000,
+                        "type": "string"
+                      }
+                    },
+                    "title": "NotificationFilter",
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "filter"
+                ],
+                "title": "NotificationRestoreMatching",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "restored_count": {
+                      "minimum": 0,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "restored_count"
+                  ],
+                  "title": "NotificationRestoredCount",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Restored count"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Restore the notifications of a filter deleted moments ago",
         "tags": [
           "Notifications"
         ]

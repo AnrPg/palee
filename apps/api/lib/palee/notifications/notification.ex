@@ -156,6 +156,8 @@ defmodule Palee.Notifications.Notification do
     field :type, Ecto.Enum, values: @types
     field :payload, :map, default: %{}
     field :dedupe_key, :string
+    # ADR-600: similar notifications share it; the inbox stacks them.
+    field :group_key, :string
     field :read_at, :utc_datetime
     # ADR-460: deleted by the person; kept for the GDPR export only.
     field :deleted_at, :utc_datetime_usec
@@ -168,7 +170,15 @@ defmodule Palee.Notifications.Notification do
 
   def changeset(notification \\ %__MODULE__{}, params) do
     notification
-    |> cast(params, [:organization_id, :user_id, :type, :payload, :dedupe_key, :read_at])
+    |> cast(params, [
+      :organization_id,
+      :user_id,
+      :type,
+      :payload,
+      :dedupe_key,
+      :group_key,
+      :read_at
+    ])
     |> validate_required([:user_id, :type])
     |> foreign_key_constraint(:user_id)
     |> unique_constraint(:dedupe_key, name: :notifications_user_id_dedupe_key_index)

@@ -3,7 +3,7 @@ defmodule Palee.Infrastructure.Notifications.EctoNotificationStore do
 
   import Ecto.Query
 
-  alias Palee.Notifications.Domain.{InboxCursor, VisibleTypes}
+  alias Palee.Notifications.Domain.{InboxCursor, NotificationGrouping, VisibleTypes}
   alias Palee.Notifications.Notification
   alias Palee.Infrastructure.Tenancy.RepoContext
   alias Palee.Repo
@@ -55,16 +55,12 @@ defmodule Palee.Infrastructure.Notifications.EctoNotificationStore do
   def list_inbox_page(user_id, opts) do
     limit = Keyword.fetch!(opts, :limit)
     cursor = Keyword.get(opts, :cursor)
+    filter = Keyword.get(opts, :filter)
 
     notifications =
-      user_id
-      |> live_inbox()
-      |> apply_filter(Keyword.get(opts, :filter))
-      |> maybe_apply_cursor(cursor)
-      |> order_by([notification], desc: notification.inserted_at, desc: notification.id)
-      |> limit(^limit_plus_one(limit))
-      |> Repo.all()
-      |> Enum.map(&normalize_notification/1)
+      if Keyword.get(opts, :stacks, false),
+        do: list_stacked(user_id, filter, cursor, limit),
+        else: list_flat(user_id, filter, cursor, limit)
 
     {page_entries, next_cursor} = split_page(notifications, limit)
 
@@ -72,6 +68,105 @@ defmodule Palee.Infrastructure.Notifications.EctoNotificationStore do
       notifications: page_entries,
       next_cursor: next_cursor
     }
+  end
+
+  defp list_flat(user_id, filter, cursor, limit) do
+    user_id
+    |> live_inbox()
+    |> apply_filter(filter)
+    |> maybe_apply_cursor(cursor)
+    |> order_by([notification], desc: notification.inserted_at, desc: notification.id)
+    |> limit(^limit_plus_one(limit))
+    |> Repo.all()
+    |> Enum.map(&normalize_notification/1)
+  end
+
+  # ADR-600: one row per stack (its newest notification, with how many it
+  # holds and how many are unread), and every notification of a group too
+  # small to stack. A stack sorts by its newest notification, so one that
+  # gets a new notification moves back to the top. The cursor pages over
+  # these rows exactly as over single notifications.
+  defp list_stacked(user_id, filter, cursor, limit) do
+    ranked =
+      user_id
+      |> live_inbox()
+      |> apply_filter(filter)
+      |> select([n], %{
+        id: n.id,
+        stack_size:
+          fragment(
+            "count(*) OVER (PARTITION BY coalesce(?, ?::text))",
+            n.group_key,
+            n.id
+          ),
+        stack_unread:
+          fragment(
+            "count(*) FILTER (WHERE ? IS NULL) OVER (PARTITION BY coalesce(?, ?::text))",
+            n.read_at,
+            n.group_key,
+            n.id
+          ),
+        stack_rank:
+          fragment(
+            "row_number() OVER (PARTITION BY coalesce(?, ?::text) ORDER BY ? DESC, ? DESC)",
+            n.group_key,
+            n.id,
+            n.inserted_at,
+            n.id
+          )
+      })
+
+    min_size = NotificationGrouping.min_stack_size()
+
+    Notification
+    |> scoped_to_user()
+    |> join(:inner, [notification], r in subquery(ranked), on: r.id == notification.id)
+    |> where([_notification, r], r.stack_size < ^min_size or r.stack_rank == 1)
+    |> maybe_apply_cursor(cursor)
+    |> order_by([notification], desc: notification.inserted_at, desc: notification.id)
+    |> limit(^limit_plus_one(limit))
+    |> select([notification, r], {notification, r.stack_size, r.stack_unread})
+    |> Repo.all()
+    |> Enum.map(fn {notification, size, unread} ->
+      notification
+      |> normalize_notification()
+      |> Map.put(:stack, stack(notification.group_key, size, unread, min_size))
+    end)
+  end
+
+  defp stack(group_key, size, unread, min_size) when is_binary(group_key) and size >= min_size,
+    do: %{key: group_key, count: size, unread_count: unread}
+
+  defp stack(_group_key, _size, _unread, _min_size), do: nil
+
+  @impl true
+  def count_unread_in_group(_user_id, nil), do: 0
+
+  def count_unread_in_group(user_id, group_key) do
+    user_id
+    |> live_inbox()
+    |> where([n], n.group_key == ^group_key and is_nil(n.read_at))
+    |> Repo.aggregate(:count)
+  end
+
+  @impl true
+  def mark_read_matching(user_id, filter) do
+    user_id
+    |> live_inbox()
+    |> apply_filter(filter)
+    |> where([n], is_nil(n.read_at))
+    |> Repo.update_all(set: [read_at: current_timestamp()])
+    |> elem(0)
+  end
+
+  @impl true
+  def restore_matching(user_id, filter, deleted_since) do
+    Notification
+    |> scoped_to_user()
+    |> where([n], n.user_id == ^user_id and n.deleted_at >= ^deleted_since)
+    |> apply_filter(filter)
+    |> Repo.update_all(set: [deleted_at: nil])
+    |> elem(0)
   end
 
   @impl true
@@ -237,7 +332,11 @@ defmodule Palee.Infrastructure.Notifications.EctoNotificationStore do
     |> filter_read(filter.read_only)
     |> filter_inserted_before(filter.inserted_before)
     |> filter_types(filter.types)
+    |> filter_group(Map.get(filter, :group_key))
   end
+
+  defp filter_group(query, nil), do: query
+  defp filter_group(query, group_key), do: where(query, [n], n.group_key == ^group_key)
 
   defp filter_read(query, true), do: where(query, [n], not is_nil(n.read_at))
   defp filter_read(query, _all), do: query
@@ -300,6 +399,8 @@ defmodule Palee.Infrastructure.Notifications.EctoNotificationStore do
       organization_id: notification.organization_id,
       type: to_string(notification.type),
       payload: notification.payload || %{},
+      # ADR-600: similar notifications share it (nil: never stacked).
+      group_key: notification.group_key,
       read_at: notification.read_at,
       # Stored naive (UTC); sent with its offset so clients never read it as local time.
       inserted_at: InboxCursor.to_utc(notification.inserted_at)

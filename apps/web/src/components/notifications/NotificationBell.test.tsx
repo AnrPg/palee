@@ -13,6 +13,9 @@ const api = vi.hoisted(() => ({
   markNotificationRead: vi.fn(),
   markNotificationClicked: vi.fn(),
   markAllNotificationsRead: vi.fn(),
+  deleteNotifications: vi.fn(),
+  restoreNotifications: vi.fn(),
+  markNotificationsRead: vi.fn(),
 }));
 
 vi.mock("@/api/notifications", () => api);
@@ -257,5 +260,111 @@ describe("NotificationBell delete with «Αναίρεση» (ADR-460)", () => {
     // «Διαβασμένες» is collapsed, so the card leaves the view.
     expect(await screen.findByText("youReAllCaughtUp3d39c46")).toBeInTheDocument();
     expect(screen.queryByTestId("notification-card")).not.toBeInTheDocument();
+  });
+});
+
+describe("NotificationBell stacks of similar notifications (ADR-600)", () => {
+  const key = "class_workout_missing:o:box:d:2026-11-10";
+
+  function wodMissing(id: string, overrides: Partial<NotificationRecord> = {}): NotificationRecord {
+    return notification({
+      id,
+      type: "booking_approved",
+      group_key: key,
+      ...overrides,
+    });
+  }
+
+  const stackRow = wodMissing("s4", { stack: { key, count: 4, unread_count: 4 } });
+  const single = notification({ id: "p1", type: "booking_rejected", stack: null });
+  const members = ["s4", "s3", "s2", "s1"].map((id) => wodMissing(id));
+
+  function serve(rows: NotificationRecord[]) {
+    api.fetchUnreadNotificationCount.mockResolvedValue({ unread_count: 5 });
+    api.fetchNotifications.mockImplementation(async (_token: string, params: { filter?: { group_key?: string } }) =>
+      params.filter?.group_key
+        ? { notifications: members, unread_count: 5, next_cursor: null, matching_count: null }
+        : { notifications: rows, unread_count: 5, next_cursor: null, matching_count: null },
+    );
+  }
+
+  async function openBell(rows: NotificationRecord[] = [stackRow, single]) {
+    serve(rows);
+    render(withClient(<NotificationBell hideTrigger />));
+    act(() => openNotifications());
+    await screen.findByTestId("notification-stack");
+  }
+
+  it("asks the server for stacks and shows one as a deck with «+N ακόμη παρόμοιες»", async () => {
+    await openBell();
+
+    expect(api.fetchNotifications).toHaveBeenCalledWith("token", expect.objectContaining({ stacks: true }));
+    const stack = screen.getByTestId("notification-stack");
+    expect(stack).toHaveAttribute("data-stack-count", "4");
+    expect(screen.getByTestId("notification-stack-more")).toHaveTextContent('stackMore:{"count":3}');
+    expect(screen.getAllByTestId("notification-new-badge")[0]).toHaveTextContent('stackNew:{"count":4}');
+    // «Νέο» counts every unread notification, not stacks.
+    expect(screen.getByText("5")).toBeInTheDocument();
+    expect(screen.getAllByTestId("notification-card")).toHaveLength(2);
+  });
+
+  it("opens in place on a tap without marking anything read, and closes again", async () => {
+    await openBell();
+
+    fireEvent.click(screen.getByTestId("notification-stack").querySelector("article")!);
+
+    expect(await screen.findByTestId("notification-stack-open")).toHaveTextContent('stackCount:{"count":4}');
+    expect(api.fetchNotifications).toHaveBeenCalledWith(
+      "token",
+      expect.objectContaining({ filter: { group_key: key } }),
+    );
+    await waitFor(() => expect(screen.getAllByTestId("notification-card")).toHaveLength(5));
+    expect(api.markNotificationsRead).not.toHaveBeenCalled();
+    expect(api.markNotificationClicked).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByTestId("notification-stack-collapse"));
+    expect(await screen.findByTestId("notification-stack")).toBeInTheDocument();
+  });
+
+  it("the trash deletes the whole stack and «Αναίρεση» restores all of it", async () => {
+    api.deleteNotifications.mockResolvedValue({ deleted_count: 4, restorable_for_seconds: 60 });
+    api.restoreNotifications.mockResolvedValue({ restored_count: 4 });
+    await openBell();
+
+    fireEvent.click(screen.getByRole("button", { name: "stackDelete" }));
+
+    expect(screen.queryByTestId("notification-stack")).not.toBeInTheDocument();
+    expect(api.deleteNotifications).toHaveBeenCalledWith("token", { filter: { group_key: key } });
+    expect(screen.getByTestId("notification-undo-toast")).toHaveTextContent('deletedCount:{"count":4}');
+
+    fireEvent.click(screen.getByRole("button", { name: "undo" }));
+    await waitFor(() => expect(api.restoreNotifications).toHaveBeenCalledWith("token", { group_key: key }));
+    expect(api.restoreNotification).not.toHaveBeenCalled();
+  });
+
+  it("the closed eye marks the whole stack read", async () => {
+    api.markNotificationsRead.mockResolvedValue({ marked_count: 4 });
+    await openBell();
+
+    fireEvent.click(screen.getByRole("button", { name: "stackHide" }));
+
+    expect(api.markNotificationsRead).toHaveBeenCalledWith("token", { group_key: key });
+    expect(api.markNotificationRead).not.toHaveBeenCalled();
+  });
+
+  it("filters a tab on the server", async () => {
+    await openBell();
+
+    fireEvent.click(screen.getByRole("radio", { name: "bookings135229c" }));
+
+    await waitFor(() =>
+      expect(api.fetchNotifications).toHaveBeenCalledWith(
+        "token",
+        expect.objectContaining({
+          stacks: true,
+          filter: { types: expect.arrayContaining(["booking_approved", "class_cancelled"]) },
+        }),
+      ),
+    );
   });
 });

@@ -6,6 +6,9 @@ export type NotificationsResponse =
 
 export type NotificationRecord = NotificationsResponse["notifications"][number];
 
+/** ADR-600: a row of the stacked inbox that stands for similar notifications. */
+export type NotificationStack = NonNullable<NotificationRecord["stack"]>;
+
 export type PushNotificationConfig =
   operations["PaleeWeb.NotificationController.push_config"]["responses"][200]["content"]["application/json"];
 
@@ -37,6 +40,10 @@ export type NotificationFilter = {
   state?: "all" | "read";
   older_than_days?: number;
   category?: NotificationCategory;
+  /** ADR-600: only the notifications of one stack (its `stack.key`). */
+  group_key?: string;
+  /** ADR-600: only these notification types (the bell's tabs). */
+  types?: string[];
 };
 
 export async function fetchNotifications(
@@ -47,6 +54,8 @@ export async function fetchNotifications(
     filter?: NotificationFilter;
     /** Also answer `matching_count`: how many match the filter in all. */
     includeCount?: boolean;
+    /** ADR-600: one row per stack of similar notifications (the bell). */
+    stacks?: boolean;
   } = {},
 ) {
   const search = new URLSearchParams();
@@ -64,7 +73,10 @@ export async function fetchNotifications(
     search.set("older_than_days", String(params.filter.older_than_days));
   }
   if (params.filter?.category) search.set("category", params.filter.category);
+  if (params.filter?.group_key) search.set("group_key", params.filter.group_key);
+  if (params.filter?.types?.length) search.set("types", params.filter.types.join(","));
   if (params.includeCount) search.set("include_count", "true");
+  if (params.stacks) search.set("stacks", "true");
 
   const suffix = search.size > 0 ? `?${search.toString()}` : "";
   return apiRequest<NotificationsResponse>(`/notifications${suffix}`, { token });
@@ -99,15 +111,36 @@ export async function restoreNotification(token: string, notificationId: string)
   });
 }
 
-/** ADR-460: the ids picked, or every notification a filter matches. Not undoable. */
+/**
+ * ADR-460: the ids picked, or every notification a filter matches. ADR-600: a
+ * filter delete (a stack's trash) may be restored for `restorable_for_seconds`.
+ */
 export async function deleteNotifications(
   token: string,
   target: { ids: string[] } | { filter: NotificationFilter },
 ) {
-  return apiRequest<{ deleted_count: number }>("/notifications/delete", {
+  return apiRequest<{ deleted_count: number; restorable_for_seconds: number }>("/notifications/delete", {
     method: "POST",
     token,
     body: target,
+  });
+}
+
+/** ADR-600: «Αναίρεση» after a stack's trash. */
+export async function restoreNotifications(token: string, filter: NotificationFilter) {
+  return apiRequest<{ restored_count: number }>("/notifications/restore", {
+    method: "POST",
+    token,
+    body: { filter },
+  });
+}
+
+/** ADR-600: the closed eye of a stack marks all of it read. */
+export async function markNotificationsRead(token: string, filter: NotificationFilter) {
+  return apiRequest<{ marked_count: number }>("/notifications/read", {
+    method: "POST",
+    token,
+    body: { filter },
   });
 }
 

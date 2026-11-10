@@ -7,6 +7,12 @@ defmodule Palee.Notifications.Ports.NotificationStore do
               next_cursor: String.t() | nil
             }
   @callback count_unread_inbox(Ecto.UUID.t()) :: non_neg_integer()
+  # ADR-600: unread notifications of one stack (the push says "+N more").
+  @callback count_unread_in_group(Ecto.UUID.t(), String.t()) :: non_neg_integer()
+  # ADR-600: the closed eye of a stack marks every notification a filter matches.
+  @callback mark_read_matching(Ecto.UUID.t(), map()) :: non_neg_integer()
+  # ADR-600: «Αναίρεση» of a stack's delete.
+  @callback restore_matching(Ecto.UUID.t(), map(), DateTime.t()) :: non_neg_integer()
   # ADR-460: `filter` is a `Domain.NotificationFilter`; deleted rows are never counted.
   @callback count_inbox(Ecto.UUID.t(), map()) :: non_neg_integer()
   @callback soft_delete(Ecto.UUID.t(), Ecto.UUID.t(), DateTime.t()) :: boolean()
