@@ -6,6 +6,9 @@ import { useRouter } from "next/navigation";
 import { useFormatter, useTranslations } from "next-intl";
 
 import type { MemberWorkoutGoals } from "@/api/wod-goals";
+
+/** What the strip reads: the member's goals or the coach's (saved or suggested). */
+export type GoalsShown = Pick<MemberWorkoutGoals, "muscles" | "qualities" | "stimulus">;
 import { AnatomyFigure } from "@/components/anatomy/AnatomyFigure";
 import { AnatomyThumb } from "@/components/anatomy/AnatomyThumb";
 import { Sheet, SheetButton } from "@/components/community/Sheet";
@@ -31,7 +34,7 @@ export function WodGoalsStrip({ workoutId, className = "" }: { workoutId: string
  * value is left out. The small figure opens the sheet with every muscle and
  * the atlas.
  */
-export function WodGoalsStripView({ goals, className = "" }: { goals: MemberWorkoutGoals | null; className?: string }) {
+export function WodGoalsStripView({ goals, className = "" }: { goals: GoalsShown | null; className?: string }) {
   const t = useTranslations("WodGoals");
   const anatomy = useTranslations("Anatomy");
   const format = useFormatter();
@@ -84,7 +87,7 @@ export function WodGoalsStripView({ goals, className = "" }: { goals: MemberWork
  * All the goals, stabilizers included, on the interactive figure. A muscle
  * opens the anatomy atlas on it (ADR-164); «Άτλαντας» opens it on the main one.
  */
-export function WodGoalsSheet({ goals, onClose }: { goals: MemberWorkoutGoals; onClose: () => void }) {
+export function WodGoalsSheet({ goals, onClose }: { goals: GoalsShown; onClose: () => void }) {
   const t = useTranslations("WodGoals");
   const anatomy = useTranslations("Anatomy");
   const router = useRouter();

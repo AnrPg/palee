@@ -445,9 +445,9 @@ export async function fetchShopTransactions(token: string, slug: string): Promis
   return data.transactions ?? [];
 }
 
-/** GET /boxes/{slug}/shop/products: the products a box shows to anyone on its public page. */
-export async function fetchPublicShopProducts(slug: string): Promise<ShopProductSummary[]> {
-  const data = await apiRequest<{ products?: ApiMemberProduct[] }>(`/boxes/${id(slug)}/shop/products`, { scope: "account" });
+/** GET /boxes/{slug}/shop/products: the products a box shows anyone signed in on its public page. */
+export async function fetchPublicShopProducts(token: string, slug: string): Promise<ShopProductSummary[]> {
+  const data = await apiRequest<{ products?: ApiMemberProduct[] }>(`/boxes/${id(slug)}/shop/products`, { token, scope: "account" });
   const now = Date.now();
   return (data.products ?? []).map((product) => toShopProduct(product, now));
 }

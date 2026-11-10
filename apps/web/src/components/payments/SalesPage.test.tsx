@@ -164,6 +164,25 @@ describe("Σελίδα αγοράς πακέτων (mockup s5 option C)", () => 
     );
     expect(screen.getByRole("button", { name: "Ανανέωση" })).toBeInTheDocument();
     expect(fetchPublicPackages).not.toHaveBeenCalled();
+    // The signed-in read carries the person's token (a missing one meant 401).
+    expect(fetchMyPackages).toHaveBeenCalledWith("access", "box-kypseli");
+  });
+
+  it("signed in, a box without online payments lists its packages with «Το θέλω» (2026-11-10)", async () => {
+    state.status = "authenticated";
+    vi.mocked(fetchMyPackages).mockResolvedValue({ packages: PACKAGES, online_payments: false, provider: null, withdrawal_days: 14, own_only: false } as never);
+    renderPage();
+    expect(await screen.findByTestId("sales-desk-note")).toHaveTextContent(el.DeskPay.pageNote);
+    expect(screen.getAllByRole("button", { name: el.DeskPay.want }).length).toBeGreaterThan(0);
+    expect(screen.queryByText(el.Pay.nothingOnline)).toBeNull();
+  });
+
+  it("signed in, a list that cannot be read still offers to contact the box, never a dead end", async () => {
+    state.status = "authenticated";
+    vi.mocked(fetchMyPackages).mockRejectedValue(new Error("401"));
+    renderPage();
+    expect(await screen.findByTestId("sales-ask-box")).toBeInTheDocument();
+    expect(screen.getByTestId("sales-contact-box")).toBeInTheDocument();
   });
 
   it("ADR-553: someone shown no packages is asked to contact the box", async () => {
