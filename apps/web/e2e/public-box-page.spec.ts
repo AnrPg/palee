@@ -213,14 +213,13 @@ test.describe("public box page", () => {
     await expect(viewer).toBeHidden();
   });
 
-  test("signed in: the schedule lists classes with filters and a sheet, and the box can be followed", async ({ page }) => {
+  test("signed in: the schedule lists classes with filters and a sheet, and the box can be followed", async ({ page, isMobile }) => {
     const follows = await signedIn(page);
     await page.goto(`/b/${box.slug}#schedule`);
 
     await expect(page.getByRole("button", { name: /Yoga 40\+/ })).toBeVisible();
     // ADR-621: desktop shows the week in seven columns with the filters in its row; phones fold them away.
-    const desktop = (page.viewportSize()?.width ?? 0) >= 1024;
-    if (desktop) await expect(page.getByTestId("schedule-week-grid").getByRole("listitem")).toHaveCount(7);
+    if (!isMobile) await expect(page.getByTestId("schedule-week-grid").getByRole("listitem")).toHaveCount(7);
     else await page.getByRole("button", { name: "Filters", exact: true }).click();
     await chooseOption(page, page.getByLabel("Level"), "beginner");
     await expect(page.getByRole("button", { name: /CrossFit.*Stelios/ })).toBeHidden();
@@ -377,5 +376,273 @@ test.describe("public box page", () => {
     await notice.getByTestId("box-follower-invite-decline").click();
     await expect(notice).toBeHidden();
     expect(declined).toEqual(["decline"]);
+  });
+});
+
+// ADR-621 (ANR 2026-11-10): the «Club» and «Schedule» tabs on desktop and phones.
+// Every control is checked visible and, with a trial click, not covered by the
+// sticky bar, the side column or the bottom tab bar before it is used.
+const clubChannel = (id: string, kind: string) => ({
+  id,
+  kind,
+  name: null,
+  write_policy: "members",
+  membership: "everyone",
+  joined: true,
+  can_post: true,
+  can_leave: false,
+});
+
+const clubPost = {
+  id: "post-1",
+  origin: "club",
+  audience: "club_channel",
+  author: { id: "member-2", nickname: "Eleni", avatar_url: null },
+  body: "Who's in for Saturday's partner WOD?",
+  attachment: null,
+  attachment_id: null,
+  attachment_type: null,
+  can_delete: false,
+  can_moderate: false,
+  can_pin: false,
+  can_report: true,
+  channel: { id: "ch-gen", kind: "general", name: null },
+  club: { id: "club-1", name: box.name, organization_slug: box.slug, kind: "gym" },
+  comment_count: 0,
+  hidden: false,
+  inserted_at: new Date().toISOString(),
+  kudos_by_me: false,
+  kudos_count: 0,
+  pinned: false,
+};
+
+function clubEvent() {
+  const startsAt = new Date(Date.now() + 3 * 86_400_000).toISOString();
+  return {
+    id: "event-1",
+    organization_id: box.organization_id,
+    club_id: "club-1",
+    club: { id: "club-1", name: box.name, kind: "gym" },
+    box: { name: box.name, slug: box.slug, logo_url: null },
+    title: "Saturday partner WOD",
+    starts_at: startsAt,
+    ends_at: startsAt,
+    place: { name: box.name, address: null, latitude: null, longitude: null, location_id: null },
+    capacity: 20,
+    spots_left: 10,
+    going_count: 10,
+    waitlist_count: 0,
+    price_cents: 0,
+    currency: "EUR",
+    open_to_non_members: false,
+    guest_pass_allowed: false,
+    guests_per_member: 0,
+    goers: null,
+    cancelled: false,
+    can_rsvp: true,
+    can_manage: false,
+    my: null,
+  };
+}
+
+/** A member of a club with two channels, one post, one event and three club members; returns the feed requests. */
+async function busyClub(page: Page) {
+  await signedIn(page, { member: true });
+  const feeds: URL[] = [];
+  await page.route("**/api/me/clubs", (route) =>
+    route.fulfill(
+      json({
+        clubs: [
+          {
+            id: "club-1",
+            kind: "gym",
+            name: box.name,
+            organization_id: box.organization_id,
+            organization_slug: box.slug,
+            box_page: true,
+            role: "member",
+            notify_level: "all",
+            logo_url: null,
+            primary_color: null,
+            channels: [clubChannel("ch-gen", "general"), clubChannel("ch-wod", "wod")],
+          },
+        ],
+      }),
+    ),
+  );
+  await page.route("**/api/org/*/community/wod-today**", (route) =>
+    route.fulfill(json({ date: "2026-10-20", channel_id: null, classes: [], leaderboard: [], logged_by_me: false, score: null, workout: null })),
+  );
+  await page.route("**/api/me/feed**", (route) => {
+    feeds.push(new URL(route.request().url()));
+    return route.fulfill(json({ posts: [clubPost], pinned: [], next_cursor: null }));
+  });
+  await page.route("**/api/me/community/clubs/club-1/events**", (route) => route.fulfill(json({ events: [clubEvent()] })));
+  await page.route("**/api/me/clubs/club-1/members**", (route) =>
+    route.fulfill(
+      json({
+        club_id: "club-1",
+        count: 3,
+        members: [
+          { id: "coach-1", nickname: "Stelios", avatar_url: null, coach: true, following: false },
+          { id: "member-2", nickname: "Eleni", avatar_url: null, coach: false, following: true },
+          { id: "member-3", nickname: "Petros", avatar_url: null, coach: false, following: false },
+        ],
+      }),
+    ),
+  );
+  return feeds;
+}
+
+/** Visible, and a click would land on it (nothing covers it). */
+async function reachable(locator: ReturnType<Page["locator"]>) {
+  await expect(locator).toBeVisible();
+  await locator.click({ trial: true });
+}
+
+test.describe("the «Club» and «Schedule» tabs (ADR-621)", () => {
+  test("desktop: the feed with «Write something», and a side column of events, channels and club members", async ({ page, isMobile }) => {
+    test.skip(isMobile, "the side column is desktop only");
+    const feeds = await busyClub(page);
+    await page.goto(`/b/${box.slug}`);
+
+    const club = page.getByTestId("box-club-tab");
+    await expect(club.getByText("Who's in for Saturday's partner WOD?")).toBeVisible();
+    // No inner tabs on desktop: the side column replaces them.
+    await expect(club.getByRole("tablist")).toHaveCount(0);
+    const side = page.getByTestId("box-club-side");
+    await expect(side).toBeVisible();
+
+    // The header: a low cover, the labelled «Message» and one share button.
+    await reachable(page.getByTestId("box-page-message").locator("visible=true").first());
+    await expect(page.getByTestId("box-page-message").locator("visible=true").first()).toHaveText("Message");
+    await reachable(page.getByTestId("box-page-header-share"));
+    await expect(page.getByRole("button", { name: "Share" }).locator("visible=true")).toHaveCount(1);
+
+    // Filters: the coaches filter lives in the sheet only, under its clear name.
+    const filters = club.getByRole("button", { name: "Filters", exact: true });
+    await reachable(filters);
+    await expect(club.getByRole("button", { name: "Posts by coaches" })).toHaveCount(0);
+    await expect(club.getByRole("button", { name: "Coaches only" })).toHaveCount(0);
+    await filters.click();
+    const sheet = page.getByRole("dialog", { name: "Post filters" });
+    await expect(sheet.getByRole("button", { name: "Posts by coaches" })).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(sheet).toBeHidden();
+
+    // Events show once, in the side column.
+    const events = page.getByTestId("box-club-side-events");
+    await expect(events.getByText("Saturday partner WOD")).toBeVisible();
+    await expect(page.getByText("Saturday partner WOD", { exact: true }).locator("visible=true")).toHaveCount(1);
+
+    // A channel narrows the feed to it; again shows everything.
+    const general = page.getByTestId("box-club-side-channels").getByRole("button", { name: "general" });
+    await reachable(general);
+    await general.click();
+    await expect(general).toHaveAttribute("aria-pressed", "true");
+    await expect.poll(() => feeds.some((url) => url.searchParams.get("channel_id") === "ch-gen")).toBe(true);
+    await general.click();
+    await expect(general).toHaveAttribute("aria-pressed", "false");
+
+    // «All» channels opens the list in the main column, with a way back.
+    const allChannels = page.getByTestId("box-club-side-channels").getByRole("button", { name: /All/ });
+    await reachable(allChannels);
+    await allChannels.click();
+    const back = page.getByTestId("box-club-back");
+    await reachable(back);
+    await expect(club.getByText("From the box")).toBeVisible();
+    await back.click();
+
+    // «All» club members opens the list with its search.
+    const allMembers = page.getByTestId("box-club-side-members").getByRole("button", { name: /All/ });
+    await expect(page.getByTestId("box-club-side-members")).toContainText("3 members");
+    await reachable(allMembers);
+    await allMembers.click();
+    await expect(page.getByPlaceholder("Search club members")).toBeVisible();
+    await back.click();
+
+    // «Write something to the club…» opens the compose sheet.
+    const prompt = club.getByTestId("club-compose-prompt");
+    await reachable(prompt);
+    await prompt.click();
+    await expect(page.getByRole("dialog", { name: "New post" })).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("dialog", { name: "New post" })).toBeHidden();
+
+    // «All» events goes to the page's one «Events» tab, which lists the club's events.
+    const allEvents = events.getByRole("button", { name: /All/ });
+    await reachable(allEvents);
+    await allEvents.click();
+    await expect(page).toHaveURL(/#events$/);
+    await expect(page.getByRole("tablist", { name: "Page sections" }).getByRole("tab", { name: "Events" })).toHaveAttribute("aria-selected", "true");
+    await expect(page.getByText("Saturday partner WOD", { exact: true }).locator("visible=true").first()).toBeVisible();
+  });
+
+  test("phones: a small Feed · Channels · Club members switch and «Message» under the name", async ({ page, isMobile }) => {
+    test.skip(!isMobile, "phones keep the switch instead of the side column");
+    await busyClub(page);
+    await page.goto(`/b/${box.slug}`);
+
+    const club = page.getByTestId("box-club-tab");
+    const sections = club.getByRole("tablist", { name: "Club sections" });
+    await expect(sections.getByRole("tab")).toHaveText(["Feed", "Channels", "Club members"]);
+    await expect(page.getByTestId("box-club-side")).toHaveCount(0);
+    // Members get no fixed action bar; «Message» sits under the name.
+    await reachable(page.getByTestId("box-page-message").locator("visible=true").first());
+    await expect(page.getByTestId("box-page-message").locator("visible=true").first()).toHaveText("Message");
+
+    await reachable(club.getByTestId("club-compose-prompt"));
+    // On phones the feed keeps its own events card.
+    await expect(club.getByText("Saturday partner WOD", { exact: true })).toBeVisible();
+
+    const membersTab = sections.getByRole("tab", { name: "Club members" });
+    await reachable(membersTab);
+    await membersTab.click();
+    await expect(page.getByPlaceholder("Search club members")).toBeVisible();
+    await sections.getByRole("tab", { name: "Channels" }).click();
+    await expect(club.getByText("From the box")).toBeVisible();
+    await sections.getByRole("tab", { name: "Feed" }).click();
+    await expect(club.getByText("Who's in for Saturday's partner WOD?")).toBeVisible();
+  });
+
+  test("an empty club shows no filters over its feed", async ({ page }) => {
+    await signedIn(page, { member: true });
+    await page.route("**/api/me/feed**", (route) => route.fulfill(json({ posts: [], pinned: [], next_cursor: null })));
+    await page.goto(`/b/${box.slug}`);
+    const club = page.getByTestId("box-club-tab");
+    await reachable(club.getByTestId("club-compose-prompt"));
+    await expect(club.getByRole("button", { name: "Filters", exact: true })).toHaveCount(0);
+  });
+
+  test("desktop: the schedule shows the whole week, with its arrows, «Today» and the filters in one row", async ({ page, isMobile }) => {
+    test.skip(isMobile, "phones keep the day strip");
+    await signedIn(page);
+    await page.goto(`/b/${box.slug}#schedule`);
+
+    const grid = page.getByTestId("schedule-week-grid");
+    await expect(grid.getByRole("listitem")).toHaveCount(7);
+    await expect(grid.locator('[aria-current="date"]')).toHaveCount(1);
+    // The filters are in the week's row, not behind a «Filters» button.
+    await expect(page.getByRole("button", { name: "Filters", exact: true })).toHaveCount(0);
+    await reachable(page.getByLabel("Level"));
+
+    const range = page.getByTestId("schedule-week-range");
+    const thisWeek = await range.textContent();
+    const week = page.getByRole("navigation", { name: "Week" });
+    const today = week.getByRole("button", { name: "Today" });
+    await expect(today).toBeDisabled();
+    const next = week.getByRole("button", { name: "Next week" });
+    await reachable(next);
+    await next.click();
+    await expect(range).not.toHaveText(thisWeek ?? "");
+    await expect(today).toBeEnabled();
+    await today.click();
+    await expect(range).toHaveText(thisWeek ?? "");
+
+    // A class opens its sheet from the week.
+    const yoga = grid.getByRole("button", { name: /Yoga 40\+/ });
+    await reachable(yoga);
+    await yoga.click();
+    await expect(page.getByRole("dialog", { name: "Yoga 40+" })).toBeVisible();
   });
 });
