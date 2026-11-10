@@ -198,12 +198,13 @@ export function useShopTransactions(slug: string | null) {
   });
 }
 
-/** A box's public catalogue, for its public page (no login). */
+/** A box's public catalogue, for its public page (the API asks for a signed-in person). */
 export function usePublicShopProducts(slug: string | null) {
+  const token = useToken();
   return useQuery({
     queryKey: shopKeys.publicProducts(slug ?? ""),
-    enabled: Boolean(slug),
-    queryFn: () => fetchPublicShopProducts(slug!),
+    enabled: Boolean(token && slug),
+    queryFn: () => fetchPublicShopProducts(token, slug!),
     staleTime: 60_000,
   });
 }

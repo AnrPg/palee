@@ -57,8 +57,8 @@ export const myPackagesKey = (slug: string) => ["me", "box", slug, "packages"] a
  * box keeps its other packages for the people who hold them; `held` marks
  * the person's own.
  */
-export function fetchMyPackages(slug: string) {
-  return apiRequest<PublicPackages>(`/boxes/${id(slug)}/packages`, { scope: "account" });
+export function fetchMyPackages(token: string, slug: string) {
+  return apiRequest<PublicPackages>(`/boxes/${id(slug)}/packages`, { token, scope: "account" });
 }
 
 export const packageTermsKey = (slug: string, packageId: string, language: TermsLanguage, slotId: string | null) =>

@@ -186,8 +186,9 @@ export function SalesPage({ page, line }: { page: PublicBoxPage; line: string })
         <p className="text-center text-xs" style={{ color: "var(--dim)" }} data-testid="sales-desk-note">{tDesk("pageNote")}</p>
       ) : null}
 
-      {!sales.isLoading && sales.shownCount === 0 && status === "authenticated" ? (
-        // ADR-553: the box shows this person no package; asking it is the way.
+      {!sales.isLoading && shown.length === 0 && status === "authenticated" ? (
+        // ADR-553: the box shows this person no package (or the list could
+        // not be read); asking the box is the way, never a dead end.
         <section className="flex flex-col gap-3 rounded-3xl p-4" style={{ background: "var(--panel)", border: "1px solid var(--border)" }} data-testid="sales-ask-box">
           <p className="text-sm" style={{ color: "var(--text-soft)" }}>{t("askBoxForPackages")}</p>
           <Link

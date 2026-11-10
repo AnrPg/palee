@@ -24,12 +24,15 @@ import { DeskRenewDialog } from "./DeskPayment";
 export function useBoxSales(slug: string | null | undefined) {
   // ADR-553: the box chooses who sees its packages; signed in, the API
   // answers for this person (their own, people always or never shown).
-  const { status } = useSession();
-  const signedIn = status === "authenticated";
+  // The signed-in read needs the person's token: without it the API answers
+  // 401 and the page used to fall to «δεν πουλά ακόμη πακέτα» (2026-11-10).
+  const { status, tokens } = useSession();
+  const token = tokens?.access_token ?? "";
+  const signedIn = status === "authenticated" && Boolean(token);
   const query = useQuery({
     queryKey: signedIn ? myPackagesKey(slug ?? "none") : publicPackagesKey(slug ?? "none"),
     enabled: Boolean(slug) && status !== "loading",
-    queryFn: () => (signedIn ? fetchMyPackages(slug!) : fetchPublicPackages(slug!)),
+    queryFn: () => (signedIn ? fetchMyPackages(token, slug!) : fetchPublicPackages(slug!)),
     staleTime: FRESHNESS.reference,
     retry: false,
   });

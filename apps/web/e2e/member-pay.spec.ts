@@ -86,7 +86,10 @@ async function stubMember(page: Page) {
   await page.route("**/api/notifications?**", (route) => route.fulfill(json({ notifications: [] })));
   await page.route("**/api/public/boxes/kypseli/packages", (route) => route.fulfill(json(sales)));
   // ADR-553: signed in, the page asks what this person sees.
-  await page.route("**/api/boxes/kypseli/packages", (route) => route.fulfill(json(sales)));
+  // Like the API, it answers 401 without the person's token (2026-11-10).
+  await page.route("**/api/boxes/kypseli/packages", (route) =>
+    route.fulfill(route.request().headers()["authorization"] ? json(sales) : json({}, 401)),
+  );
 }
 
 /** The sandbox checkout: the API answers with a redirect to our own /pay/return. */
