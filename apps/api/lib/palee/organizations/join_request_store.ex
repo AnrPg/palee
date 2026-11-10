@@ -19,5 +19,9 @@ defmodule Palee.Organizations.JoinRequestStore do
   @impl true
   def list_open, do: adapter().list_open()
   @impl true
+  def open_organization_ids(user_id, organization_ids),
+    do: adapter().open_organization_ids(user_id, organization_ids)
+
+  @impl true
   def close(id, params), do: adapter().close(id, params)
 end

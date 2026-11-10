@@ -506,6 +506,7 @@ test.describe("member app shell", () => {
               neighbourhood: null,
               city: "Αθήνα",
               my_status: "none",
+              my_join: "none",
             },
           ],
         }),

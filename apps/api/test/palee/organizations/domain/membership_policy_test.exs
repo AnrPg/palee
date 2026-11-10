@@ -214,4 +214,14 @@ defmodule Palee.Organizations.Domain.MembershipPolicyTest do
                :already_member
     end
   end
+
+  describe "ADR-638: where the viewer stands with a box" do
+    test "staff, then member, then a waiting request, else free to join" do
+      assert JoinRequestPolicy.viewer_status(true, true, true) == "staff"
+      assert JoinRequestPolicy.viewer_status(false, true, true) == "member"
+      assert JoinRequestPolicy.viewer_status(false, false, true) == "requested"
+      assert JoinRequestPolicy.viewer_status(false, false, false) == "none"
+      assert JoinRequestPolicy.viewer_statuses() == ~w(none requested member staff)
+    end
+  end
 end

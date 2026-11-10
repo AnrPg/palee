@@ -7,6 +7,7 @@ defmodule Palee.Application.Follows do
   member's personal session.
   """
 
+  alias Palee.Application.JoinBox
   alias Palee.{Community, Identity, Notifications, Organizations}
 
   @page 50
@@ -113,7 +114,7 @@ defmodule Palee.Application.Follows do
 
       case type do
         "user" -> present_people(result, :target_id, context)
-        "organization" -> present_boxes(result)
+        "organization" -> present_boxes(result, user_id)
       end
     end
   end
@@ -230,12 +231,16 @@ defmodule Palee.Application.Follows do
 
   defp present_people(error, _key, _context), do: error
 
-  defp present_boxes({:ok, follows, cursor}) do
+  defp present_boxes({:ok, follows, cursor}, user_id) do
+    ids = Enum.map(follows, & &1.target_id)
+    joins = JoinBox.statuses(user_id, ids)
+
     boxes =
-      follows
-      |> Enum.map(& &1.target_id)
+      ids
       |> Organizations.public_boxes()
-      |> Map.new(&{&1.organization_id, &1})
+      |> Map.new(
+        &{&1.organization_id, Map.put(&1, :my_join, Map.get(joins, &1.organization_id, "none"))}
+      )
 
     {:ok,
      %{
@@ -260,7 +265,7 @@ defmodule Palee.Application.Follows do
      }}
   end
 
-  defp present_boxes(error), do: error
+  defp present_boxes(error, _user_id), do: error
 
   defp notify_target(follower_id, %{status: "requested"} = follow),
     do: notify_request(follower_id, follow)

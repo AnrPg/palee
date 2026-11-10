@@ -40,6 +40,7 @@ defmodule Palee.Application.ScanCheckIn do
     CheckInFacts,
     CheckInGeofences,
     CheckInKeys,
+    JoinBox,
     SignedToken,
     Trials
   }
@@ -393,8 +394,16 @@ defmodule Palee.Application.ScanCheckIn do
        location: present_location(door),
        membership: to_string(Organizations.membership_standing(context.organization_id, user.id)),
        trial: trial,
-       follow: Community.follow_status(%{user_id: user.id}, "organization", door.organization_id)
+       follow: Community.follow_status(%{user_id: user.id}, "organization", door.organization_id),
+       join: join_status(user, door)
      }}
+  end
+
+  # ADR-638: «Γίνε μέλος» beside «Ακολούθησε». Joining starts on the box's
+  # public page, so an unpublished box offers none (nil).
+  defp join_status(user, door) do
+    if Organizations.public_box_by_slug(door.slug),
+      do: JoinBox.statuses(user.id, [door.organization_id])[door.organization_id]
   end
 
   # Trials are asked for on the box's public page, so the door offers them

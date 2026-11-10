@@ -176,6 +176,7 @@ test.describe("QR check-in", () => {
           location,
           membership: "none",
           follow: "none",
+          join: "none",
           trial: { enabled: true, approval: "auto", blocked_reason: null, classes: [slot], mine: null },
         }),
       ]);
@@ -210,6 +211,12 @@ test.describe("QR check-in", () => {
       await page.goto("/c/loc-1/D1doorcode");
       await expect(page.getByTestId("scan-visitor")).toHaveText("You're not a member yet");
       await expect(page.getByText("Trial classes today and tomorrow")).toBeVisible();
+      // ADR-638: «Become a member» beside «Follow», so the two read as different things.
+      const join = page.getByTestId("join-box");
+      await expect(join).toBeVisible();
+      await expect(join).toHaveAttribute("href", "/b/kypseli?join=1");
+      await join.click({ trial: true });
+      await expect(page.getByRole("button", { name: "Follow" })).toBeVisible();
       await page.getByRole("button", { name: "Book a trial" }).click();
       const sheet = page.getByRole("dialog", { name: "Trial class" });
       await expect(sheet.getByText("CrossFit Basics")).toBeVisible();

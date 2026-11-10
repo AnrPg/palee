@@ -17,7 +17,7 @@ defmodule Palee.Application.JoinBox do
   alias Palee.Application.{JoinOrganizationByLink, PublicBox}
   alias Palee.Application.Payments.PackageAudience
   alias Palee.{Identity, Notifications, Organizations}
-  alias Palee.Organizations.Domain.JoinRequestPolicy
+  alias Palee.Organizations.Domain.{JoinRequestPolicy, MembershipPolicy}
   alias Palee.Organizations.JoinRequestStore
 
   # ── Buying ──────────────────────────────────────────────────────────────
@@ -85,6 +85,45 @@ defmodule Palee.Application.JoinBox do
       end)
     end
   end
+
+  # ── Beside «Ακολούθησε» ────────────────────────────────────────────────
+
+  @doc """
+  ADR-638: for each of `organization_ids`, where the person stands with it
+  (`JoinRequestPolicy.viewer_status/3`), so lists of boxes and coaches show
+  «Γίνε μέλος» only to whoever can still join. Two reads for the whole
+  list: the person's current memberships and their open requests.
+  """
+  def statuses(_user_id, []), do: %{}
+
+  def statuses(user_id, organization_ids) when is_binary(user_id) do
+    ids = Enum.uniq(organization_ids)
+
+    roles =
+      user_id
+      |> Organizations.list_memberships()
+      |> Organizations.current_memberships()
+      |> Map.new(&{&1.organization.id, &1.membership.roles})
+
+    requested =
+      JoinRequestStore.with_scope(%{user_id: user_id}, fn ->
+        JoinRequestStore.open_organization_ids(user_id, ids -- Map.keys(roles))
+      end)
+      |> MapSet.new()
+
+    Map.new(ids, fn id ->
+      member_roles = Map.get(roles, id)
+
+      {id,
+       JoinRequestPolicy.viewer_status(
+         member_roles != nil and MembershipPolicy.staff?(member_roles),
+         member_roles != nil,
+         MapSet.member?(requested, id)
+       )}
+    end)
+  end
+
+  def statuses(_user_id, organization_ids), do: Map.new(organization_ids, &{&1, "none"})
 
   # ── Staff ───────────────────────────────────────────────────────────────
 

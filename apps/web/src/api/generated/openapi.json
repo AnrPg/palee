@@ -23925,6 +23925,16 @@
                   "nullable": true,
                   "type": "string"
                 },
+                "my_join": {
+                  "description": "none: may join; requested: their request waits; member or staff: no «Γίνε μέλος»",
+                  "enum": [
+                    "none",
+                    "requested",
+                    "member",
+                    "staff"
+                  ],
+                  "type": "string"
+                },
                 "my_status": {
                   "enum": [
                     "none",
@@ -23960,6 +23970,7 @@
                 }
               },
               "required": [
+                "my_join",
                 "my_status",
                 "name",
                 "organization_id",
@@ -23987,6 +23998,16 @@
           },
           "logo_url": {
             "nullable": true,
+            "type": "string"
+          },
+          "my_join": {
+            "description": "none: may join; requested: their request waits; member or staff: no «Γίνε μέλος»",
+            "enum": [
+              "none",
+              "requested",
+              "member",
+              "staff"
+            ],
             "type": "string"
           },
           "my_status": {
@@ -24024,6 +24045,7 @@
           }
         },
         "required": [
+          "my_join",
           "my_status",
           "name",
           "organization_id",
@@ -28660,6 +28682,22 @@
               "active"
             ],
             "type": "string"
+          },
+          "join": {
+            "allOf": [
+              {
+                "description": "none: may join; requested: their request waits; member or staff: no «Γίνε μέλος»",
+                "enum": [
+                  "none",
+                  "requested",
+                  "member",
+                  "staff"
+                ],
+                "type": "string"
+              }
+            ],
+            "description": "ADR-638: null when the box has no public page to join from",
+            "nullable": true
           },
           "location": {
             "properties": {
@@ -51593,39 +51631,46 @@
       "FollowEntry": {
         "properties": {
           "box": {
-            "allOf": [
-              {
-                "properties": {
-                  "logo_url": {
-                    "nullable": true,
-                    "type": "string"
-                  },
-                  "name": {
-                    "type": "string"
-                  },
-                  "organization_id": {
-                    "format": "uuid",
-                    "type": "string"
-                  },
-                  "primary_color": {
-                    "nullable": true,
-                    "type": "string"
-                  },
-                  "slug": {
-                    "description": "Canonical slug; redirect when it differs",
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "organization_id",
-                  "slug",
-                  "name"
+            "nullable": true,
+            "properties": {
+              "logo_url": {
+                "nullable": true,
+                "type": "string"
+              },
+              "my_join": {
+                "description": "none: may join; requested: their request waits; member or staff: no «Γίνε μέλος»",
+                "enum": [
+                  "none",
+                  "requested",
+                  "member",
+                  "staff"
                 ],
-                "title": "PublicBox",
-                "type": "object"
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "organization_id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "primary_color": {
+                "nullable": true,
+                "type": "string"
+              },
+              "slug": {
+                "description": "Canonical slug; redirect when it differs",
+                "type": "string"
               }
+            },
+            "required": [
+              "organization_id",
+              "slug",
+              "name",
+              "my_join"
             ],
-            "nullable": true
+            "title": "FollowedBox",
+            "type": "object"
           },
           "follow_id": {
             "format": "uuid",
@@ -51728,39 +51773,46 @@
             "items": {
               "properties": {
                 "box": {
-                  "allOf": [
-                    {
-                      "properties": {
-                        "logo_url": {
-                          "nullable": true,
-                          "type": "string"
-                        },
-                        "name": {
-                          "type": "string"
-                        },
-                        "organization_id": {
-                          "format": "uuid",
-                          "type": "string"
-                        },
-                        "primary_color": {
-                          "nullable": true,
-                          "type": "string"
-                        },
-                        "slug": {
-                          "description": "Canonical slug; redirect when it differs",
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "organization_id",
-                        "slug",
-                        "name"
+                  "nullable": true,
+                  "properties": {
+                    "logo_url": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "my_join": {
+                      "description": "none: may join; requested: their request waits; member or staff: no «Γίνε μέλος»",
+                      "enum": [
+                        "none",
+                        "requested",
+                        "member",
+                        "staff"
                       ],
-                      "title": "PublicBox",
-                      "type": "object"
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "organization_id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "primary_color": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "slug": {
+                      "description": "Canonical slug; redirect when it differs",
+                      "type": "string"
                     }
+                  },
+                  "required": [
+                    "organization_id",
+                    "slug",
+                    "name",
+                    "my_join"
                   ],
-                  "nullable": true
+                  "title": "FollowedBox",
+                  "type": "object"
                 },
                 "follow_id": {
                   "format": "uuid",
@@ -52364,6 +52416,48 @@
           "people"
         ],
         "title": "FollowSuggestionsResponse",
+        "type": "object"
+      },
+      "FollowedBox": {
+        "nullable": true,
+        "properties": {
+          "logo_url": {
+            "nullable": true,
+            "type": "string"
+          },
+          "my_join": {
+            "description": "none: may join; requested: their request waits; member or staff: no «Γίνε μέλος»",
+            "enum": [
+              "none",
+              "requested",
+              "member",
+              "staff"
+            ],
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "organization_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "primary_color": {
+            "nullable": true,
+            "type": "string"
+          },
+          "slug": {
+            "description": "Canonical slug; redirect when it differs",
+            "type": "string"
+          }
+        },
+        "required": [
+          "organization_id",
+          "slug",
+          "name",
+          "my_join"
+        ],
+        "title": "FollowedBox",
         "type": "object"
       },
       "FollowerInviteCounts": {
@@ -135214,6 +135308,16 @@
                             "nullable": true,
                             "type": "string"
                           },
+                          "my_join": {
+                            "description": "none: may join; requested: their request waits; member or staff: no «Γίνε μέλος»",
+                            "enum": [
+                              "none",
+                              "requested",
+                              "member",
+                              "staff"
+                            ],
+                            "type": "string"
+                          },
                           "my_status": {
                             "enum": [
                               "none",
@@ -135249,6 +135353,7 @@
                           }
                         },
                         "required": [
+                          "my_join",
                           "my_status",
                           "name",
                           "organization_id",
@@ -140068,6 +140173,22 @@
                         "active"
                       ],
                       "type": "string"
+                    },
+                    "join": {
+                      "allOf": [
+                        {
+                          "description": "none: may join; requested: their request waits; member or staff: no «Γίνε μέλος»",
+                          "enum": [
+                            "none",
+                            "requested",
+                            "member",
+                            "staff"
+                          ],
+                          "type": "string"
+                        }
+                      ],
+                      "description": "ADR-638: null when the box has no public page to join from",
+                      "nullable": true
                     },
                     "location": {
                       "properties": {
@@ -150776,39 +150897,46 @@
                       "items": {
                         "properties": {
                           "box": {
-                            "allOf": [
-                              {
-                                "properties": {
-                                  "logo_url": {
-                                    "nullable": true,
-                                    "type": "string"
-                                  },
-                                  "name": {
-                                    "type": "string"
-                                  },
-                                  "organization_id": {
-                                    "format": "uuid",
-                                    "type": "string"
-                                  },
-                                  "primary_color": {
-                                    "nullable": true,
-                                    "type": "string"
-                                  },
-                                  "slug": {
-                                    "description": "Canonical slug; redirect when it differs",
-                                    "type": "string"
-                                  }
-                                },
-                                "required": [
-                                  "organization_id",
-                                  "slug",
-                                  "name"
+                            "nullable": true,
+                            "properties": {
+                              "logo_url": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "my_join": {
+                                "description": "none: may join; requested: their request waits; member or staff: no «Γίνε μέλος»",
+                                "enum": [
+                                  "none",
+                                  "requested",
+                                  "member",
+                                  "staff"
                                 ],
-                                "title": "PublicBox",
-                                "type": "object"
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "organization_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "primary_color": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "slug": {
+                                "description": "Canonical slug; redirect when it differs",
+                                "type": "string"
                               }
+                            },
+                            "required": [
+                              "organization_id",
+                              "slug",
+                              "name",
+                              "my_join"
                             ],
-                            "nullable": true
+                            "title": "FollowedBox",
+                            "type": "object"
                           },
                           "follow_id": {
                             "format": "uuid",
@@ -172229,39 +172357,46 @@
                       "items": {
                         "properties": {
                           "box": {
-                            "allOf": [
-                              {
-                                "properties": {
-                                  "logo_url": {
-                                    "nullable": true,
-                                    "type": "string"
-                                  },
-                                  "name": {
-                                    "type": "string"
-                                  },
-                                  "organization_id": {
-                                    "format": "uuid",
-                                    "type": "string"
-                                  },
-                                  "primary_color": {
-                                    "nullable": true,
-                                    "type": "string"
-                                  },
-                                  "slug": {
-                                    "description": "Canonical slug; redirect when it differs",
-                                    "type": "string"
-                                  }
-                                },
-                                "required": [
-                                  "organization_id",
-                                  "slug",
-                                  "name"
+                            "nullable": true,
+                            "properties": {
+                              "logo_url": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "my_join": {
+                                "description": "none: may join; requested: their request waits; member or staff: no «Γίνε μέλος»",
+                                "enum": [
+                                  "none",
+                                  "requested",
+                                  "member",
+                                  "staff"
                                 ],
-                                "title": "PublicBox",
-                                "type": "object"
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "organization_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "primary_color": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "slug": {
+                                "description": "Canonical slug; redirect when it differs",
+                                "type": "string"
                               }
+                            },
+                            "required": [
+                              "organization_id",
+                              "slug",
+                              "name",
+                              "my_join"
                             ],
-                            "nullable": true
+                            "title": "FollowedBox",
+                            "type": "object"
                           },
                           "follow_id": {
                             "format": "uuid",
@@ -172849,39 +172984,46 @@
                       "items": {
                         "properties": {
                           "box": {
-                            "allOf": [
-                              {
-                                "properties": {
-                                  "logo_url": {
-                                    "nullable": true,
-                                    "type": "string"
-                                  },
-                                  "name": {
-                                    "type": "string"
-                                  },
-                                  "organization_id": {
-                                    "format": "uuid",
-                                    "type": "string"
-                                  },
-                                  "primary_color": {
-                                    "nullable": true,
-                                    "type": "string"
-                                  },
-                                  "slug": {
-                                    "description": "Canonical slug; redirect when it differs",
-                                    "type": "string"
-                                  }
-                                },
-                                "required": [
-                                  "organization_id",
-                                  "slug",
-                                  "name"
+                            "nullable": true,
+                            "properties": {
+                              "logo_url": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "my_join": {
+                                "description": "none: may join; requested: their request waits; member or staff: no «Γίνε μέλος»",
+                                "enum": [
+                                  "none",
+                                  "requested",
+                                  "member",
+                                  "staff"
                                 ],
-                                "title": "PublicBox",
-                                "type": "object"
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "organization_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "primary_color": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "slug": {
+                                "description": "Canonical slug; redirect when it differs",
+                                "type": "string"
                               }
+                            },
+                            "required": [
+                              "organization_id",
+                              "slug",
+                              "name",
+                              "my_join"
                             ],
-                            "nullable": true
+                            "title": "FollowedBox",
+                            "type": "object"
                           },
                           "follow_id": {
                             "format": "uuid",
@@ -173070,39 +173212,46 @@
                       "items": {
                         "properties": {
                           "box": {
-                            "allOf": [
-                              {
-                                "properties": {
-                                  "logo_url": {
-                                    "nullable": true,
-                                    "type": "string"
-                                  },
-                                  "name": {
-                                    "type": "string"
-                                  },
-                                  "organization_id": {
-                                    "format": "uuid",
-                                    "type": "string"
-                                  },
-                                  "primary_color": {
-                                    "nullable": true,
-                                    "type": "string"
-                                  },
-                                  "slug": {
-                                    "description": "Canonical slug; redirect when it differs",
-                                    "type": "string"
-                                  }
-                                },
-                                "required": [
-                                  "organization_id",
-                                  "slug",
-                                  "name"
+                            "nullable": true,
+                            "properties": {
+                              "logo_url": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "my_join": {
+                                "description": "none: may join; requested: their request waits; member or staff: no «Γίνε μέλος»",
+                                "enum": [
+                                  "none",
+                                  "requested",
+                                  "member",
+                                  "staff"
                                 ],
-                                "title": "PublicBox",
-                                "type": "object"
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "organization_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "primary_color": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "slug": {
+                                "description": "Canonical slug; redirect when it differs",
+                                "type": "string"
                               }
+                            },
+                            "required": [
+                              "organization_id",
+                              "slug",
+                              "name",
+                              "my_join"
                             ],
-                            "nullable": true
+                            "title": "FollowedBox",
+                            "type": "object"
                           },
                           "follow_id": {
                             "format": "uuid",

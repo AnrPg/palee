@@ -121,6 +121,57 @@ defmodule PaleeWeb.JoinBoxControllerTest do
     end
   end
 
+  describe "«Γίνε μέλος» beside «Ακολούθησε» (ADR-638)" do
+    defp my_join(ctx, user) do
+      name = ctx.organization.name
+
+      user
+      |> as()
+      |> get("/api/box-search?q=#{URI.encode_www_form(name)}")
+      |> json_response(200)
+      |> Map.fetch!("boxes")
+      |> Enum.find(&(&1["organization_id"] == ctx.organization.id))
+      |> Map.fetch!("my_join")
+    end
+
+    test "box search tells who may join, who waits and who is already in", ctx do
+      assert my_join(ctx, ctx.visitor) == "none"
+      assert my_join(ctx, ctx.owner) == "staff"
+      assert my_join(ctx, ctx.coach) == "staff"
+
+      path = "/api/boxes/#{ctx.slug}/join-request"
+
+      assert %{"request" => %{"id" => id}} =
+               ctx.visitor |> as() |> post(path) |> json_response(201)
+
+      assert my_join(ctx, ctx.visitor) == "requested"
+      # Someone else's request is not theirs.
+      assert my_join(ctx, user_fixture()) == "none"
+
+      ctx.owner
+      |> as()
+      |> post("/api/org/#{ctx.slug}/admin/join-requests/#{id}/accept")
+      |> json_response(200)
+
+      assert my_join(ctx, ctx.visitor) == "member"
+    end
+
+    test "the boxes you follow carry it too", ctx do
+      ctx.visitor
+      |> as()
+      |> post("/api/me/follows", %{target_type: "organization", target_id: ctx.organization.id})
+      |> json_response(200)
+
+      assert %{"entries" => [%{"box" => %{"slug" => slug, "my_join" => "none"}}]} =
+               ctx.visitor
+               |> as()
+               |> get("/api/me/following?type=organization")
+               |> json_response(200)
+
+      assert slug == ctx.slug
+    end
+  end
+
   describe "«Ζήτα να γίνεις μέλος»" do
     test "the person asks, the staff hear and accept, the person becomes a box member", ctx do
       path = "/api/boxes/#{ctx.slug}/join-request"

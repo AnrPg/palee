@@ -6585,6 +6585,8 @@
   },
   "Social": {
     "follow": "متابعة",
+    "join": "كن عضوًا",
+    "joinSent": "تم إرسال الطلب",
     "followBack": "تابِع أيضًا",
     "requested": "مطلوب",
     "following": "تتابعه",

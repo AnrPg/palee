@@ -6585,6 +6585,8 @@
   },
   "Social": {
     "follow": "Seguir",
+    "join": "Tornar-me membro",
+    "joinSent": "Pedido enviado",
     "followBack": "Seguir também",
     "requested": "Pedido",
     "following": "A seguir",

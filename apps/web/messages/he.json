@@ -6585,6 +6585,8 @@
   },
   "Social": {
     "follow": "עקוב",
+    "join": "הצטרף כחבר",
+    "joinSent": "הבקשה נשלחה",
     "followBack": "עקוב בחזרה",
     "requested": "נשלחה בקשה",
     "following": "עוקב",

@@ -241,6 +241,15 @@ defmodule PaleeWeb.Schemas.Social do
 
   def status, do: %Schema{type: :string, enum: ~w(none requested active)}
 
+  @doc "ADR-638: where the viewer stands with a box, for «Γίνε μέλος» beside «Ακολούθησε»."
+  def join_status,
+    do: %Schema{
+      type: :string,
+      enum: Palee.Organizations.Domain.JoinRequestPolicy.viewer_statuses(),
+      description:
+        "none: may join; requested: their request waits; member or staff: no «Γίνε μέλος»"
+    }
+
   def follow_request do
     %Schema{
       title: "FollowRequest",
@@ -295,7 +304,13 @@ defmodule PaleeWeb.Schemas.Social do
         status: status(),
         since: @datetime,
         person: %Schema{allOf: [person], nullable: true},
-        box: %Schema{allOf: [box()], nullable: true}
+        box: %Schema{
+          title: "FollowedBox",
+          type: :object,
+          nullable: true,
+          properties: Map.put(box().properties, :my_join, join_status()),
+          required: [:organization_id, :slug, :name, :my_join]
+        }
       },
       required: [:follow_id, :status, :since]
     }
@@ -679,9 +694,10 @@ defmodule PaleeWeb.Schemas.Social do
         provider_kind: %Schema{type: :string, enum: ~w(gym coach)},
         neighbourhood: %Schema{type: :string, nullable: true},
         city: %Schema{type: :string, nullable: true},
-        my_status: status()
+        my_status: status(),
+        my_join: join_status()
       },
-      required: [:my_status, :name, :organization_id, :provider_kind, :slug]
+      required: [:my_join, :my_status, :name, :organization_id, :provider_kind, :slug]
     }
 
     %Schema{

@@ -2,11 +2,12 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 import { askToJoin, cancelJoinRequest, fetchMyJoinRequest, myJoinRequestKey, type MyJoinRequest } from "@/api/join-requests";
-import type { PublicBoxPage } from "@/api/social";
+import { SOCIAL_KEY, type PublicBoxPage } from "@/api/social";
 import { clientErrorMessage } from "@/components/client/errors";
 import { useBoxSales } from "@/components/payments/BoxSales";
 import { useSession } from "@/components/session-provider";
@@ -27,6 +28,22 @@ export function JoinBoxAction({ page, signedIn, compact = false }: { page: Publi
   const t = useTranslations("BoxPage");
   const sales = useBoxSales(signedIn ? page.box.slug : null);
   const target = joinBoxTarget(page, signedIn, signedIn ? sales.shownCount : null);
+  const router = useRouter();
+  const href = target.kind === "link" ? target.href : null;
+  // ADR-638: «Γίνε μέλος» beside «Ακολούθησε» elsewhere opens this page with
+  // `?join=1`; once the way in is known (the packages this person sees), it
+  // goes on to it. The «ask» way opens its sheet in `AskToJoin`. The page
+  // renders this button twice; the first to run takes the link.
+  const settled = !signedIn || !sales.isLoading;
+  useEffect(() => {
+    if (!href || !settled) return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("join") !== "1") return;
+    params.delete("join");
+    const query = params.toString();
+    window.history.replaceState(null, "", window.location.pathname + (query ? `?${query}` : "") + window.location.hash);
+    router.push(href);
+  }, [href, settled, router]);
   if (target.kind === "link") {
     return (
       <Link href={target.href} className={compact ? COMPACT : MAIN} style={SPARK_GO_STYLE} data-testid="box-page-join">
@@ -81,7 +98,11 @@ function AskSheet({ page, request, onClose }: { page: PublicBoxPage; request: My
   const token = tokens?.access_token ?? "";
   const slug = page.box.slug;
   const queryClient = useQueryClient();
-  const settle = (response: { request: MyJoinRequest }) => queryClient.setQueryData(myJoinRequestKey(slug), response.request);
+  const settle = (response: { request: MyJoinRequest }) => {
+    queryClient.setQueryData(myJoinRequestKey(slug), response.request);
+    // ADR-638: lists of boxes show «Αίτημα εστάλη» beside «Ακολούθησε».
+    void queryClient.invalidateQueries({ queryKey: SOCIAL_KEY });
+  };
   const ask = useMutation({ mutationFn: () => askToJoin(token, slug), onSuccess: settle });
   const cancel = useMutation({ mutationFn: () => cancelJoinRequest(token, slug), onSuccess: settle });
   const error = ask.error ?? cancel.error;

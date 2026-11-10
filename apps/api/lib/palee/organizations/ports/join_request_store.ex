@@ -19,6 +19,12 @@ defmodule Palee.Organizations.Ports.JoinRequestStore do
   @doc "Open requests of the box in scope, oldest first."
   @callback list_open() :: [request()]
 
+  @doc """
+  ADR-638: of `organization_ids`, those where the person has an open
+  request. Runs in the person's own scope (no box), across boxes.
+  """
+  @callback open_organization_ids(Ecto.UUID.t(), [Ecto.UUID.t()]) :: [Ecto.UUID.t()]
+
   @doc "Closes an open request under a row lock (`accepted`, `declined`, `cancelled`)."
   @callback close(Ecto.UUID.t(), map()) :: {:ok, request()} | {:error, term()}
 end

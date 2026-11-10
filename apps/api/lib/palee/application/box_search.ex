@@ -11,6 +11,7 @@ defmodule Palee.Application.BoxSearch do
   written (ADR-170), so "tolaras" finds «Τολάρας».
   """
 
+  alias Palee.Application.JoinBox
   alias Palee.{Community, Identity, Organizations, Transliteration}
 
   @limit 20
@@ -25,12 +26,15 @@ defmodule Palee.Application.BoxSearch do
       boxes = query |> terms() |> Organizations.search_public_boxes(@limit)
       ids = Enum.map(boxes, & &1.organization_id)
       mine = Community.follow_statuses(context, user_id, "organization", ids)
+      joins = JoinBox.statuses(user_id, ids)
 
       {:ok,
        %{
          boxes:
            Enum.map(boxes, fn box ->
-             Map.put(box, :my_status, Map.get(mine, box.organization_id, "none"))
+             box
+             |> Map.put(:my_status, Map.get(mine, box.organization_id, "none"))
+             |> Map.put(:my_join, Map.get(joins, box.organization_id, "none"))
            end)
        }}
     end

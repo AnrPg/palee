@@ -28458,6 +28458,11 @@ export interface components {
             boxes: {
                 city?: string | null;
                 logo_url?: string | null;
+                /**
+                 * @description none: may join; requested: their request waits; member or staff: no «Γίνε μέλος»
+                 * @enum {string}
+                 */
+                my_join: "none" | "requested" | "member" | "staff";
                 /** @enum {string} */
                 my_status: "none" | "requested" | "active";
                 name: string;
@@ -28477,6 +28482,11 @@ export interface components {
         BoxSearchResult: {
             city?: string | null;
             logo_url?: string | null;
+            /**
+             * @description none: may join; requested: their request waits; member or staff: no «Γίνε μέλος»
+             * @enum {string}
+             */
+            my_join: "none" | "requested" | "member" | "staff";
             /** @enum {string} */
             my_status: "none" | "requested" | "active";
             name: string;
@@ -29875,6 +29885,8 @@ export interface components {
             }[];
             /** @enum {string} */
             follow?: "none" | "requested" | "active";
+            /** @description ADR-638: null when the box has no public page to join from */
+            join?: ("none" | "requested" | "member" | "staff") | null;
             /** CheckInLocation */
             location: {
                 /** Format: uuid */
@@ -37201,8 +37213,14 @@ export interface components {
         };
         /** FollowEntry */
         FollowEntry: {
+            /** FollowedBox */
             box?: {
                 logo_url?: string | null;
+                /**
+                 * @description none: may join; requested: their request waits; member or staff: no «Γίνε μέλος»
+                 * @enum {string}
+                 */
+                my_join: "none" | "requested" | "member" | "staff";
                 name: string;
                 /** Format: uuid */
                 organization_id: string;
@@ -37240,8 +37258,14 @@ export interface components {
         /** FollowPage */
         FollowPage: {
             entries: {
+                /** FollowedBox */
                 box?: {
                     logo_url?: string | null;
+                    /**
+                     * @description none: may join; requested: their request waits; member or staff: no «Γίνε μέλος»
+                     * @enum {string}
+                     */
+                    my_join: "none" | "requested" | "member" | "staff";
                     name: string;
                     /** Format: uuid */
                     organization_id: string;
@@ -37425,6 +37449,21 @@ export interface components {
                 };
             }[];
         };
+        /** FollowedBox */
+        FollowedBox: {
+            logo_url?: string | null;
+            /**
+             * @description none: may join; requested: their request waits; member or staff: no «Γίνε μέλος»
+             * @enum {string}
+             */
+            my_join: "none" | "requested" | "member" | "staff";
+            name: string;
+            /** Format: uuid */
+            organization_id: string;
+            primary_color?: string | null;
+            /** @description Canonical slug; redirect when it differs */
+            slug: string;
+        } | null;
         /**
          * FollowerInviteCounts
          * @description Followers who are not box members: listed, may be invited now, did a trial, former box members
@@ -62975,6 +63014,11 @@ export interface operations {
                         boxes: {
                             city?: string | null;
                             logo_url?: string | null;
+                            /**
+                             * @description none: may join; requested: their request waits; member or staff: no «Γίνε μέλος»
+                             * @enum {string}
+                             */
+                            my_join: "none" | "requested" | "member" | "staff";
                             /** @enum {string} */
                             my_status: "none" | "requested" | "active";
                             name: string;
@@ -64824,6 +64868,8 @@ export interface operations {
                         }[];
                         /** @enum {string} */
                         follow?: "none" | "requested" | "active";
+                        /** @description ADR-638: null when the box has no public page to join from */
+                        join?: ("none" | "requested" | "member" | "staff") | null;
                         /** CheckInLocation */
                         location: {
                             /** Format: uuid */
@@ -68947,8 +68993,14 @@ export interface operations {
                 content: {
                     "application/json": {
                         entries: {
+                            /** FollowedBox */
                             box?: {
                                 logo_url?: string | null;
+                                /**
+                                 * @description none: may join; requested: their request waits; member or staff: no «Γίνε μέλος»
+                                 * @enum {string}
+                                 */
+                                my_join: "none" | "requested" | "member" | "staff";
                                 name: string;
                                 /** Format: uuid */
                                 organization_id: string;
@@ -77111,8 +77163,14 @@ export interface operations {
                 content: {
                     "application/json": {
                         entries: {
+                            /** FollowedBox */
                             box?: {
                                 logo_url?: string | null;
+                                /**
+                                 * @description none: may join; requested: their request waits; member or staff: no «Γίνε μέλος»
+                                 * @enum {string}
+                                 */
+                                my_join: "none" | "requested" | "member" | "staff";
                                 name: string;
                                 /** Format: uuid */
                                 organization_id: string;
@@ -77355,8 +77413,14 @@ export interface operations {
                 content: {
                     "application/json": {
                         entries: {
+                            /** FollowedBox */
                             box?: {
                                 logo_url?: string | null;
+                                /**
+                                 * @description none: may join; requested: their request waits; member or staff: no «Γίνε μέλος»
+                                 * @enum {string}
+                                 */
+                                my_join: "none" | "requested" | "member" | "staff";
                                 name: string;
                                 /** Format: uuid */
                                 organization_id: string;
@@ -77432,8 +77496,14 @@ export interface operations {
                 content: {
                     "application/json": {
                         entries: {
+                            /** FollowedBox */
                             box?: {
                                 logo_url?: string | null;
+                                /**
+                                 * @description none: may join; requested: their request waits; member or staff: no «Γίνε μέλος»
+                                 * @enum {string}
+                                 */
+                                my_join: "none" | "requested" | "member" | "staff";
                                 name: string;
                                 /** Format: uuid */
                                 organization_id: string;

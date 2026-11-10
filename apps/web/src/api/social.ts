@@ -29,6 +29,8 @@ export type PeopleRelation = PeopleSearchPerson["relation"];
 /** ADR-221: published, live boxes and independent coaches found by name. */
 export type BoxSearchResponse = components["schemas"]["BoxSearchResponse"];
 export type BoxSearchResult = components["schemas"]["BoxSearchResult"];
+/** ADR-638: where the viewer stands with a box, for «Γίνε μέλος» beside «Ακολούθησε». */
+export type BoxJoinStatus = BoxSearchResult["my_join"];
 /** ADR-554: «Λίγα λόγια» and the tabs a profile shows. */
 export type ProfileCard = components["schemas"]["ProfileCard"];
 export type ProfileCardRequest = components["schemas"]["ProfileCardRequest"];

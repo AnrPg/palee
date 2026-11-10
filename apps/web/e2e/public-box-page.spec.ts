@@ -335,6 +335,12 @@ test.describe("public box page", () => {
     await expect(page.getByTestId("box-join-ask")).toBeVisible();
   });
 
+  test("«Become a member» elsewhere (?join=1) goes on to the box's way in (ADR-638)", async ({ page }) => {
+    await signedIn(page);
+    await page.goto("/b/kypseli-link?join=1");
+    await page.waitForURL("**/join/kypseli-link");
+  });
+
   test("a guest of the box (ADR-272) sees it, with becoming a box member as the next step", async ({ page }) => {
     await signedIn(page);
     await page.route("**/api/memberships/guest-boxes", (route) =>

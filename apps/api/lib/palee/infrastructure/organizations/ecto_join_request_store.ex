@@ -73,6 +73,22 @@ defmodule Palee.Infrastructure.Organizations.EctoJoinRequestStore do
     |> Enum.map(&normalize/1)
   end
 
+  # The person's own requests across boxes: the owner-read policy lets them
+  # see their rows whatever box they are at, so there is no box scope here.
+  @impl true
+  def open_organization_ids(_user_id, []), do: []
+
+  def open_organization_ids(user_id, organization_ids) do
+    JoinRequest
+    |> where(
+      [r],
+      r.user_id == ^user_id and r.status == "requested" and r.organization_id in ^organization_ids
+    )
+    |> select([r], r.organization_id)
+    |> distinct(true)
+    |> Repo.all()
+  end
+
   @impl true
   def close(id, params) do
     Repo.transaction(fn ->

@@ -41,6 +41,21 @@ defmodule Palee.Organizations.Domain.JoinRequestPolicy do
   def can_ask?(:member), do: {:error, :already_member}
   def can_ask?(_standing), do: :ok
 
+  @doc """
+  ADR-638: where the viewer stands with a box, for «Γίνε μέλος» beside
+  «Ακολούθησε»: `"staff"` or `"member"` (the box's current member, so no
+  button), `"requested"` (their request waits) or `"none"` (they may join).
+  `staff?` and `member?` come from the person's current memberships.
+  """
+  def viewer_status(staff?, member?, requested?)
+  def viewer_status(true, _member?, _requested?), do: "staff"
+  def viewer_status(_staff?, true, _requested?), do: "member"
+  def viewer_status(_staff?, _member?, true), do: "requested"
+  def viewer_status(_staff?, _member?, _requested?), do: "none"
+
+  @doc "ADR-638: every `viewer_status/3` value."
+  def viewer_statuses, do: ~w(none requested member staff)
+
   @doc "The status a staff decision closes a request with."
   def decision("accept"), do: {:ok, "accepted"}
   def decision("decline"), do: {:ok, "declined"}

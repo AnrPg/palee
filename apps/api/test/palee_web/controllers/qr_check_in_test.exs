@@ -421,6 +421,8 @@ defmodule PaleeWeb.QrCheckInTest do
                "membership" => "none",
                "trial" => nil,
                "follow" => _,
+               # ADR-638: an unpublished box has no page to join from.
+               "join" => nil,
                "box" => %{"slug" => slug}
              } = scan_door(ctx, visitor) |> json_response(200)
 
@@ -440,7 +442,12 @@ defmodule PaleeWeb.QrCheckInTest do
 
       {:ok, _policy} = Trials.update_policy(ctx.context, %{enabled: true})
 
-      assert %{"outcome" => "visitor", "trial" => %{"enabled" => true, "classes" => classes}} =
+      assert %{
+               "outcome" => "visitor",
+               # ADR-638: «Γίνε μέλος» beside «Ακολούθησε».
+               "join" => "none",
+               "trial" => %{"enabled" => true, "classes" => classes}
+             } =
                scan_door(ctx, visitor) |> json_response(200)
 
       assert [%{"id" => id, "trial_seats" => seats}] = classes

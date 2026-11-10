@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { boxSearchKey, searchBoxes, type BoxSearchResult } from "@/api/social";
 import { useSession } from "@/components/session-provider";
 import { FollowButton } from "@/components/social/FollowButton";
+import { JoinBoxButton, offersJoin } from "@/components/social/JoinBoxButton";
 import { PersonAvatar } from "@/components/social/PersonAvatar";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { itemRow, itemRowActions, itemRowMain } from "@/components/ui/rows";
@@ -30,7 +31,7 @@ export function useBoxSearch(term: string) {
   });
 }
 
-/** One result: logo, name, kind and area, then Follow; the row opens the public page. */
+/** One result: logo, name, kind and area, then «Γίνε μέλος» (ADR-638) and Follow; the row opens the public page. */
 export function BoxResultRow({ box }: { box: BoxSearchResult }) {
   const tProviders = useTranslations("Providers");
   const place = box.neighbourhood || box.city;
@@ -46,7 +47,8 @@ export function BoxResultRow({ box }: { box: BoxSearchResult }) {
         </span>
       </Link>
       <div className={itemRowActions}>
-        <FollowButton targetType="organization" targetId={box.organization_id} initialStatus={box.my_status} />
+        <JoinBoxButton slug={box.slug} status={box.my_join} />
+        <FollowButton targetType="organization" targetId={box.organization_id} initialStatus={box.my_status} quiet={offersJoin(box.my_join)} />
       </div>
     </li>
   );

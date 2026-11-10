@@ -9,6 +9,8 @@ import { openDoor } from "@/api/doors";
 import { scanDoor, undoScan, type CheckInBooking, type CheckInClass, type CheckInPackage, type ScanResult, type UndoResult } from "@/api/check-in";
 import { useSession } from "@/components/session-provider";
 import { FollowButton } from "@/components/social/FollowButton";
+import { JoinBoxButton, offersJoin } from "@/components/social/JoinBoxButton";
+import { buttonRow } from "@/components/ui/rows";
 import { TrialSheet } from "@/components/trials/TrialSheet";
 import { adminHref } from "@/lib/organization-slug";
 
@@ -299,6 +301,8 @@ function VisitorView({ token, result }: { token: string; result: ScanResult }) {
   const trial = result.trial ?? null;
   const classes = trial?.enabled && !trial.blocked_reason ? trial.classes : [];
   const mine = trial?.mine as { id?: string; status?: string } | null | undefined;
+  // ADR-638: null when the box has no public page to join from.
+  const joinable = Boolean(result.join) && offersJoin(result.join);
 
   return (
     <Card>
@@ -344,7 +348,17 @@ function VisitorView({ token, result }: { token: string; result: ScanResult }) {
         </>
       ) : null}
 
-      <FollowButton targetType="organization" targetId={result.box.organization_id} initialStatus={result.follow} wide />
+      {/* ADR-638: «Γίνε μέλος» beside «Ακολούθησε», so the two read as different things. */}
+      <div className={buttonRow}>
+        {joinable ? (
+          <div className="min-w-[9rem] flex-1">
+            <JoinBoxButton slug={result.box.slug} status={result.join} wide />
+          </div>
+        ) : null}
+        <div className="min-w-[9rem] flex-1">
+          <FollowButton targetType="organization" targetId={result.box.organization_id} initialStatus={result.follow} wide quiet={joinable} />
+        </div>
+      </div>
 
       {picked && trial ? (
         <TrialSheet

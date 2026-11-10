@@ -205,7 +205,12 @@ defmodule PaleeWeb.Schemas.CheckIn do
         next_booking: %Schema{allOf: [booking()], nullable: true},
         membership: %Schema{type: :string, enum: ~w(none former member)},
         trial: trial_offer(),
-        follow: %Schema{type: :string, enum: ~w(none requested active)}
+        follow: %Schema{type: :string, enum: ~w(none requested active)},
+        join: %Schema{
+          allOf: [PaleeWeb.Schemas.Social.join_status()],
+          nullable: true,
+          description: "ADR-638: null when the box has no public page to join from"
+        }
       },
       required: [:outcome, :box, :location]
     }

@@ -394,14 +394,14 @@ test.describe("community", () => {
   // ADR-221: the same field finds a live, published box or coach by name.
   test("a followed box shows as a dashed bubble and its posts are headed by the box (ADR-590)", async ({ page }) => {
     await member(page);
-    const gazi = { organization_id: "org-2", slug: "crossfit-gazi", name: "CrossFit Gazi", logo_url: null };
+    const gazi = { organization_id: "org-2", slug: "crossfit-gazi", name: "CrossFit Gazi", logo_url: null, my_join: "none" };
     await page.route("**/api/me/following**", (route) =>
       route.fulfill(
         json({
           entries: [
             { follow_id: "f-1", status: "active", box: gazi },
             // The box the member belongs to keeps its own club bubble only.
-            { follow_id: "f-2", status: "active", box: { organization_id: "org-1", slug: "kypseli", name: "Box Kypseli", logo_url: null } },
+            { follow_id: "f-2", status: "active", box: { organization_id: "org-1", slug: "kypseli", name: "Box Kypseli", logo_url: null, my_join: "member" } },
           ],
           next_cursor: null,
         }),
@@ -453,6 +453,19 @@ test.describe("community", () => {
                   neighbourhood: "Κυψέλη",
                   city: "Αθήνα",
                   my_status: "none",
+                  my_join: "none",
+                },
+                {
+                  organization_id: "org-10",
+                  slug: "tolaras-coach",
+                  name: "Τολάρας Coach",
+                  logo_url: null,
+                  primary_color: null,
+                  provider_kind: "coach",
+                  neighbourhood: null,
+                  city: "Αθήνα",
+                  my_status: "active",
+                  my_join: "member",
                 },
               ]
             : [],
@@ -472,6 +485,31 @@ test.describe("community", () => {
     await expect(page.getByText("Boxes and coaches")).toBeVisible();
     await expect(card).toContainText("Box · Κυψέλη");
     await expect(card).toHaveAttribute("href", "/b/tolaras-box");
+
+    // ADR-638: «Become a member» right beside «Follow», for whoever can still join.
+    const row = page.getByRole("listitem").filter({ has: page.getByRole("link", { name: /Τολάρας Box/ }) });
+    const join = row.getByTestId("join-box");
+    await expect(join).toBeVisible();
+    await expect(join).toHaveText("Become a member");
+    await expect(join).toHaveAttribute("href", "/b/tolaras-box?join=1");
+    await expect(row.getByRole("button", { name: "Follow" })).toBeVisible();
+    // Nothing covers it: a trial click passes Playwright's hit test.
+    await join.click({ trial: true });
+    // A member of the coach sees no «Become a member».
+    const memberRow = page.getByRole("listitem").filter({ has: page.getByRole("link", { name: /Τολάρας Coach/ }) });
+    await expect(memberRow.getByRole("button", { name: /Following/ })).toBeVisible();
+    await expect(memberRow.getByTestId("join-box")).toHaveCount(0);
+
+    // At 320px both buttons stay on screen.
+    await page.setViewportSize({ width: 320, height: 640 });
+    await expect(join).toBeVisible();
+    await join.click({ trial: true });
+    for (const button of [join, row.getByRole("button", { name: "Follow" })]) {
+      const box = await button.boundingBox();
+      expect(box).not.toBeNull();
+      expect(box!.x).toBeGreaterThanOrEqual(0);
+      expect(box!.x + box!.width).toBeLessThanOrEqual(320);
+    }
   });
 });
 

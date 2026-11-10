@@ -11,6 +11,10 @@ import type { PublicBoxPage } from "@/api/social";
 import { JoinBoxAction } from "./JoinBoxAction";
 
 vi.mock("@/components/session-provider", () => ({ useSession: () => ({ tokens: { access_token: "access" } }) }));
+const push = vi.fn();
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
+// The packages this person sees: none known, so the page's own answer decides.
+vi.mock("@/components/payments/BoxSales", () => ({ useBoxSales: () => ({ shownCount: null, isLoading: false }) }));
 vi.mock("@/api/join-requests", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/api/join-requests")>()),
   fetchMyJoinRequest: vi.fn(),
@@ -35,6 +39,8 @@ function renderAction(joining: { packages: boolean; join_link: boolean }) {
 
 describe("JoinBoxAction (ADR-552)", () => {
   beforeEach(() => {
+    push.mockReset();
+    window.history.replaceState(null, "", "/b/kypseli");
     vi.mocked(fetchMyJoinRequest).mockResolvedValue({ request: null });
     vi.mocked(askToJoin).mockResolvedValue({ request: request("requested") } as never);
     vi.mocked(cancelJoinRequest).mockResolvedValue({ request: request("cancelled") } as never);
@@ -63,5 +69,19 @@ describe("JoinBoxAction (ADR-552)", () => {
     fireEvent.click(await screen.findByText("Ακύρωση αιτήματος"));
     expect(await screen.findByTestId("box-join-send")).toBeInTheDocument();
     expect(cancelJoinRequest).toHaveBeenCalledWith("access", "kypseli");
+  });
+
+  it("ADR-638: opened with ?join=1, goes on to the way in and drops the flag", () => {
+    window.history.replaceState(null, "", "/b/kypseli?join=1");
+    renderAction({ packages: true, join_link: false });
+    expect(push).toHaveBeenCalledWith("/b/kypseli/packages");
+    expect(window.location.search).toBe("");
+  });
+
+  it("ADR-638: opened with ?join=1 and no other way in, opens the ask sheet", async () => {
+    window.history.replaceState(null, "", "/b/kypseli?join=1");
+    renderAction({ packages: false, join_link: false });
+    expect(await screen.findByTestId("box-join-send")).toBeInTheDocument();
+    expect(push).not.toHaveBeenCalled();
   });
 });
