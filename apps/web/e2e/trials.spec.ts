@@ -142,7 +142,7 @@ test.describe("trials", () => {
     expect(asks).toEqual([expect.objectContaining({ scheduled_class_id: slot.id, note: "First time", source: "box_page" })]);
   });
 
-  test("Πρόγραμμα tags trial classes, filters them, and books one from its sheet", async ({ page }) => {
+  test("Πρόγραμμα tags trial classes, filters them, and books one from its sheet", async ({ page, isMobile }) => {
     const asks = await visitor(page);
     // The class sits at 23:30 today; pin the browser clock to midday so it
     // is still upcoming whenever the suite runs.
@@ -150,8 +150,9 @@ test.describe("trials", () => {
     await page.goto(`/b/${box.slug}#schedule`);
 
     await expect(page.getByRole("button", { name: /Competitors/ })).toBeVisible();
-    // The filters sit behind the filter button (CollapsibleFilterBar).
-    await page.getByRole("button", { name: "Filters", exact: true }).click();
+    // Phones: the filters sit behind the filter button (CollapsibleFilterBar).
+    // Desktop (ADR-621): they sit in the week's row, beside «Today».
+    if (isMobile) await page.getByRole("button", { name: "Filters", exact: true }).click();
     await page.getByRole("button", { name: "Trial classes" }).click();
     await expect(page.getByRole("button", { name: /Competitors/ })).toBeHidden();
     await page.getByRole("button", { name: /CrossFit Basics/ }).click();

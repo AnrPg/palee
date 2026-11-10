@@ -68,7 +68,14 @@ Web only; no API change.
   the badge, the labelled message, no open-club pill and the single Events
   tab; the schedule test checks seven columns on desktop and the folded
   filters on phones.
-- Unit: `WeekGrid.test.tsx`.
+- e2e «the «Club» and «Schedule» tabs (ADR-621)»: desktop side column
+  (channel narrows the feed, «Όλα» views with «Πίσω στη ροή», members,
+  events → Events tab, compose prompt, filters sheet), phones' switch and
+  header «Μήνυμα», no filters over an empty club, the week grid's arrows and
+  «Σήμερα». Every control is asserted visible and trial-clicked first, so a
+  control covered by the sticky bar, side column or tab bar fails the test.
+  `trials.spec.ts` opens «Φίλτρα» on phones only.
+- Unit: `WeekGrid.test.tsx`, `PostFilters.test.tsx`.
 - The member's own booked class is not marked in the week (the public
   schedule API does not say which slots are yours); members book in their own
   Πρόγραμμα as before.
