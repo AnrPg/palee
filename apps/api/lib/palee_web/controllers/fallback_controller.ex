@@ -2360,6 +2360,34 @@ defmodule PaleeWeb.FallbackController do
     |> json(%{code: "finance_entitlement_blocked", error: "Finance entitlement blocked"})
   end
 
+  # ADR-612: «Δώρο ή χάρη».
+  @member_benefit_errors %{
+    invalid_benefit: {:unprocessable_entity, "The benefit is not valid"},
+    invalid_benefit_kind: {:unprocessable_entity, "Choose what to give"},
+    benefit_reason_too_long: {:unprocessable_entity, "The reason is longer than 500 characters"},
+    benefit_end_required: {:unprocessable_entity, "Choose the last day"},
+    benefit_ends_in_past: {:unprocessable_entity, "The last day has already passed"},
+    invalid_benefit_allowance: {:unprocessable_entity, "Choose what the extra uses are for"},
+    invalid_benefit_quantity: {:unprocessable_entity, "Choose how many extra uses"},
+    benefit_period_required: {:unprocessable_entity, "Choose how long the extra uses last"},
+    invalid_benefit_package: {:unprocessable_entity, "Choose a package"},
+    benefit_pricing_required: {:unprocessable_entity, "Choose free this period or a price"},
+    invalid_benefit_invoice: {:unprocessable_entity, "Choose the charges to forgive"},
+    benefit_invoices_required: {:unprocessable_entity, "Choose the charges to forgive"},
+    benefit_member_left: {:conflict, "This person has left the box"},
+    benefit_not_revocable: {:conflict, "This benefit cannot be revoked"},
+    benefit_already_revoked: {:conflict, "This benefit is already revoked"},
+    invoice_nothing_owed: {:conflict, "Nothing is owed on this charge"}
+  }
+
+  def call(conn, {:error, reason}) when is_map_key(@member_benefit_errors, reason) do
+    {status, message} = Map.fetch!(@member_benefit_errors, reason)
+
+    conn
+    |> put_status(status)
+    |> json(%{code: Atom.to_string(reason), error: message})
+  end
+
   def call(conn, {:error, :finance_profile_missing}) do
     conn
     |> put_status(:forbidden)

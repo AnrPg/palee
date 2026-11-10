@@ -12,7 +12,14 @@ defmodule PaleeWeb.Schemas.MemberStanding do
       nullable: true,
       description:
         "ADR-595: the status and the line under it, worked out once and shown alike to the member and the staff",
-      required: [:status, :grace_until, :access_until, :outstanding_cents, :unpaid_since],
+      required: [
+        :access_until,
+        :benefit,
+        :grace_until,
+        :outstanding_cents,
+        :status,
+        :unpaid_since
+      ],
       properties: %{
         status: %Schema{type: :string, enum: @statuses},
         grace_until: %Schema{
@@ -20,6 +27,13 @@ defmodule PaleeWeb.Schemas.MemberStanding do
           format: :date,
           nullable: true,
           description: "The last day of the grace the member is in"
+        },
+        benefit: %Schema{
+          type: :string,
+          enum: ["grace", "free_access"],
+          nullable: true,
+          description:
+            "ADR-612: a grace or free access the box gave; it lasts through `grace_until`"
         },
         access_until: %Schema{
           type: :string,

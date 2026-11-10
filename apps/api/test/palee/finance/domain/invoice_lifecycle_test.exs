@@ -119,6 +119,48 @@ defmodule Palee.Finance.Domain.InvoiceLifecycleTest do
            }).status == "blocked"
   end
 
+  test "ADR-612: a grace or free access the box gave opens access until its last day" do
+    today = ~D[2026-06-12]
+
+    overdue = %{
+      membership_status: "active",
+      membership_expires_on: Date.add(today, 30),
+      active_subscription?: true,
+      open_invoice_count: 1,
+      overdue_invoice_count: 1,
+      today: today
+    }
+
+    until = Date.add(today, 4)
+
+    assert %{status: "active", source: "staff_grace", grace_until: ^until} =
+             InvoiceLifecycle.entitlement(
+               Map.put(overdue, :staff_access, %{kind: "grace", until: until})
+             )
+
+    assert %{status: "active", source: "staff_free_access"} =
+             InvoiceLifecycle.entitlement(%{
+               membership_status: "active",
+               membership_expires_on: nil,
+               active_subscription?: false,
+               open_invoice_count: 0,
+               overdue_invoice_count: 0,
+               staff_access: %{kind: "free_access", until: until},
+               today: today
+             })
+
+    assert InvoiceLifecycle.entitlement(Map.put(overdue, :staff_access, nil)).status == "blocked"
+
+    # A paused or cancelled membership stays closed.
+    assert InvoiceLifecycle.entitlement(
+             %{
+               overdue
+               | membership_status: "cancelled"
+             }
+             |> Map.put(:staff_access, %{kind: "grace", until: until})
+           ).status == "inactive"
+  end
+
   test "advances renewal periods by calendar month and year boundaries" do
     assert InvoiceLifecycle.next_period("monthly", ~D[2026-01-31]) ==
              {~D[2026-01-31], ~D[2026-02-28]}

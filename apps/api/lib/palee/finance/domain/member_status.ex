@@ -30,6 +30,8 @@ defmodule Palee.Finance.Domain.MemberStatus do
   `Palee.Finance.Domain.ValueOverride` for how that is kept and when it ends.
   """
 
+  alias Palee.Finance.Domain.MemberBenefits
+
   @expiring_window_days 30
   @statuses ~w(active trial comped unpaid overdue leaving expiring paused expired cancelled former no_package)
   @lifecycles ~w(active trial comped expiring paused expired cancelled)
@@ -71,6 +73,8 @@ defmodule Palee.Finance.Domain.MemberStatus do
       cond do
         left?(facts, today) -> "former"
         leaving?(facts, today) -> "leaving"
+        # ADR-612: access without a package that the box gave.
+        current == nil and staff_free_access?(facts) -> "comped"
         subscriptions == [] -> no_package_status(facts, today)
         current == nil -> "expired"
         current.status == "paused" or Map.get(facts, :frozen?, false) -> "paused"
@@ -91,10 +95,14 @@ defmodule Palee.Finance.Domain.MemberStatus do
   """
   def standing(membership, outstanding_cents, unpaid_since) when is_map(membership) do
     status = Map.get(membership, :status_shown) || Map.get(membership, :status)
+    benefit = MemberBenefits.kind_of_source(Map.get(membership, :entitlement_source))
 
     %{
       status: status,
       grace_until: Map.get(membership, :entitlement_grace_until),
+      # ADR-612: the grace or free access the box gave (its last day is
+      # `grace_until`), so member and staff read the same line.
+      benefit: benefit,
       access_until:
         if(status in ["leaving", "former"], do: Map.get(membership, :leaving_on), else: nil),
       outstanding_cents: max(outstanding_cents || 0, 0),
@@ -208,6 +216,9 @@ defmodule Palee.Finance.Domain.MemberStatus do
       match?(%Date{}, Map.get(facts, :leaving_on)) and
       Date.compare(Map.get(facts, :leaving_on), today) != :lt
   end
+
+  defp staff_free_access?(facts),
+    do: match?(%{status: "active", source: "staff_free_access"}, Map.get(facts, :entitlement))
 
   defp blocked_for_money?(facts) do
     match?(%{status: "blocked", source: "overdue_invoice"}, Map.get(facts, :entitlement))

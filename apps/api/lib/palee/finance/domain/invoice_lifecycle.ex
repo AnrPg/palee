@@ -1,4 +1,6 @@
 defmodule Palee.Finance.Domain.InvoiceLifecycle do
+  alias Palee.Finance.Domain.MemberBenefits
+
   @active_membership_statuses ["active", "trial", "expiring", "comped"]
   @active_subscription_statuses ["active"]
   @blocking_invoice_statuses ["issued", "partially_paid", "overdue"]
@@ -160,8 +162,10 @@ defmodule Palee.Finance.Domain.InvoiceLifecycle do
   Inputs: `membership_status`, `membership_expires_on`, `active_subscription?`,
   `open_invoice_count`, `overdue_invoice_count` and `today`; optionally
   `grace_days` (default 0), `lapsed_subscription_ends_on` (the latest
-  subscription that has ended, when no other one is active) and
-  `earliest_overdue_due_date`.
+  subscription that has ended, when no other one is active),
+  `earliest_overdue_due_date` and `staff_access` (ADR-612: `%{kind, until}`
+  of a grace or free access the box gave; `grace_until` is then its last
+  day and `source` says which).
   """
   def entitlement(
         %{
@@ -178,9 +182,23 @@ defmodule Palee.Finance.Domain.InvoiceLifecycle do
     overdue_since = Map.get(facts, :earliest_overdue_due_date)
     active_membership? = membership_status in @active_membership_statuses
 
+    staff_access = Map.get(facts, :staff_access)
+
     result =
       cond do
-        membership_status in ["cancelled", "paused", "expired"] ->
+        membership_status in ["cancelled", "paused"] ->
+          %{status: "inactive", source: "membership_status"}
+
+        # ADR-612: a grace or free access the box gave opens access until
+        # its last day, whatever is owed or has ended; what is owed stays.
+        match?(%{kind: _, until: %Date{}}, staff_access) ->
+          %{
+            status: "active",
+            source: MemberBenefits.entitlement_source(staff_access.kind),
+            grace_until: staff_access.until
+          }
+
+        membership_status == "expired" ->
           %{status: "inactive", source: "membership_status"}
 
         membership_expires_on && Date.compare(membership_expires_on, today) == :lt ->
@@ -228,6 +246,9 @@ defmodule Palee.Finance.Domain.InvoiceLifecycle do
     do: %{status: "grace", source: source, grace_until: grace_until(ended_on, grace_days)}
 
   def active_subscription_statuses, do: @active_subscription_statuses
+
+  @doc "ADR-612: whether an entitlement source is a grace or free access the box gave."
+  def staff_access_source?(source), do: source in MemberBenefits.entitlement_sources()
   def blocking_invoice_statuses, do: @blocking_invoice_statuses
 
   def next_period("monthly", starts_on), do: {starts_on, Date.shift(starts_on, month: 1)}

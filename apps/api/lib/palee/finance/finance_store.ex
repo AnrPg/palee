@@ -275,6 +275,13 @@ defmodule Palee.Finance.FinanceStore do
 
   @impl true
   def refresh_entitlement_snapshots, do: adapter().refresh_entitlement_snapshots()
+  @impl true
+  def forgive_invoice(membership_id, invoice_id, params),
+    do: adapter().forgive_invoice(membership_id, invoice_id, params)
+
+  @impl true
+  def refresh_member_entitlement(membership_id),
+    do: adapter().refresh_member_entitlement(membership_id)
 
   @impl true
   def charge_due_subscriptions(today), do: adapter().charge_due_subscriptions(today)

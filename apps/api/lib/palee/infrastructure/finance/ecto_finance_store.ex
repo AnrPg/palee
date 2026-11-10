@@ -40,6 +40,7 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
     EntitlementPolicy,
     InvoiceLifecycle,
     InvoiceNumber,
+    MemberBenefits,
     MembershipLifecycle,
     MembershipLinks,
     MemberRenewal,
@@ -61,6 +62,7 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
   }
 
   alias Palee.Finance.FinanceValueOverride
+  alias Palee.Finance.MemberBenefitStore
   alias Palee.Infrastructure.Finance.MemberStanding
 
   alias Palee.Repo
@@ -1466,6 +1468,87 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
         entry
       else
         nil -> Repo.rollback(:not_found)
+        {:error, reason} -> Repo.rollback(reason)
+      end
+    end)
+  end
+
+  @doc """
+  ADR-612: settles what is still owed on an invoice with a non-cash
+  `forgiveness` credit, granted and applied at once, so no money is
+  recorded and reports tell it from a payment. `params`: `request_id` (the
+  benefit's id: both entries' idempotency keys), `created_by_id`,
+  `description`. Answers `%{invoice_id, invoice_number, amount_cents,
+  grant_entry_id, offset_entry_id}`.
+  """
+  @impl true
+  def forgive_invoice(membership_id, invoice_id, params) do
+    params = string_key_map(params)
+
+    Repo.transaction(fn ->
+      with %Membership{} = membership <- locked_membership(membership_id),
+           %FinanceInvoice{} = invoice <- locked_invoice(invoice_id),
+           :ok <- require_request_id(params),
+           :ok <-
+             MembershipLinks.validate_optional_link(
+               :finance_invoice_id,
+               membership.id,
+               invoice.membership_id
+             ),
+           amount_cents when amount_cents > 0 <- invoice_balance_due(invoice.id),
+           :ok <-
+             InvoiceLifecycle.validate_credit_application(
+               invoice.status,
+               amount_cents,
+               amount_cents,
+               amount_cents
+             ),
+           {:ok, grant} <-
+             create_credit_entry(%{
+               "membership_id" => membership.id,
+               "user_id" => membership.user_id,
+               "finance_invoice_id" => invoice.id,
+               "source_type" => "forgiveness",
+               "entry_type" => "grant",
+               "amount_cents" => amount_cents,
+               "currency" => invoice.currency || "EUR",
+               "occurred_on" => GymClock.today(),
+               "occurred_at" => utc_now(),
+               "description" => params["description"],
+               "created_by_id" => params["created_by_id"],
+               "idempotency_key" =>
+                 scoped_idempotency_key("forgiveness:#{invoice.id}", membership.id, params),
+               "params" => %{"request_id" => params["request_id"], "origin" => "member_benefit"}
+             }),
+           {:ok, offset} <-
+             create_credit_entry(%{
+               "membership_id" => membership.id,
+               "user_id" => membership.user_id,
+               "finance_invoice_id" => invoice.id,
+               "source_type" => "invoice_offset",
+               "entry_type" => "invoice_offset",
+               "amount_cents" => -amount_cents,
+               "currency" => invoice.currency || "EUR",
+               "occurred_on" => GymClock.today(),
+               "occurred_at" => utc_now(),
+               "description" => params["description"],
+               "created_by_id" => params["created_by_id"],
+               "idempotency_key" =>
+                 scoped_idempotency_key("invoice_offset:#{invoice.id}", membership.id, params),
+               "params" => %{"request_id" => params["request_id"], "origin" => "member_benefit"}
+             }) do
+        refresh_invoice_and_entitlement(invoice.id, membership.id)
+
+        %{
+          invoice_id: invoice.id,
+          invoice_number: invoice.invoice_number,
+          amount_cents: amount_cents,
+          grant_entry_id: grant.id,
+          offset_entry_id: offset.id
+        }
+      else
+        nil -> Repo.rollback(:not_found)
+        amount when is_integer(amount) -> Repo.rollback(:invoice_nothing_owed)
         {:error, reason} -> Repo.rollback(reason)
       end
     end)
@@ -5187,6 +5270,8 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
 
     derived =
       InvoiceLifecycle.entitlement(%{
+        # ADR-612: a grace or free access the box gave opens access.
+        staff_access: MemberBenefitStore.access(membership.id, today),
         membership_status: membership.status,
         membership_expires_on: membership.expires_on,
         active_subscription?: active_subscription?,
@@ -7277,11 +7362,19 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
   def memberships_needing_payment_reminder(interval_days) do
     threshold = DateTime.add(DateTime.utc_now(), -interval_days * 86_400, :second)
 
+    # ADR-612: no reminders while a grace or free access the box gave runs;
+    # they start again the day after it ends.
+    staff_sources = MemberBenefits.entitlement_sources()
+
     memberships =
       tenant_scope(Membership)
       |> where(
         [m],
         is_nil(m.last_payment_reminder_sent_at) or m.last_payment_reminder_sent_at < ^threshold
+      )
+      |> where(
+        [m],
+        is_nil(m.entitlement_source) or m.entitlement_source not in ^staff_sources
       )
       |> Repo.all()
 
@@ -7396,6 +7489,12 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
     |> ends_from(first_day)
     |> not_yet_sent(sent_field)
     |> where([_subscription, membership], membership.status in ^statuses)
+    # ADR-612: nothing to renew while a grace or free access the box gave runs.
+    |> where(
+      [_subscription, membership],
+      is_nil(membership.entitlement_source) or
+        membership.entitlement_source not in ^MemberBenefits.entitlement_sources()
+    )
     # ADR-220: a member who is leaving chose this end; no reminders about it.
     |> where([_subscription, membership], is_nil(membership.left_at))
     |> where(
@@ -8261,9 +8360,21 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
     :ok
   end
 
-  # ADR-595: the grace a member is in ends on this day.
+  # ADR-595: the grace a member is in ends on this day. ADR-612: a grace or
+  # free access the box gave ends on its last day.
   defp grace_until(%{status: "grace", grace_until: %Date{} = until}), do: until
+
+  defp grace_until(%{status: "active", source: source, grace_until: %Date{} = until}) do
+    if InvoiceLifecycle.staff_access_source?(source), do: until
+  end
+
   defp grace_until(_entitlement), do: nil
+
+  @impl true
+  @doc "ADR-612: works one membership's access and status out again now."
+  def refresh_member_entitlement(membership_id) do
+    refresh_entitlement_snapshot(membership_id)
+  end
 
   @impl true
   def refresh_entitlement_snapshots do

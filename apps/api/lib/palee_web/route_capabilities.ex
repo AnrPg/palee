@@ -541,6 +541,14 @@ defmodule PaleeWeb.RouteCapabilities do
     {W.AdminFinanceController, :undo_member_left} => [:manage_billing],
     {W.AdminFinanceController, :assign_package} => [:take_payments],
     {W.AdminFinanceController, :record_payment} => [:take_payments],
+    # ADR-612: only those who take payments give; the money roles may look.
+    {W.AdminMemberBenefitController, :index} => [
+      :take_payments,
+      :manage_billing,
+      :manage_memberships
+    ],
+    {W.AdminMemberBenefitController, :create} => [:take_payments],
+    {W.AdminMemberBenefitController, :revoke} => [:take_payments],
     {W.AdminFinanceController, :create_receipt} => [:take_payments],
     # ADR-222: front desk takes the money and leaves the document the billing
     # setup calls for, a paid invoice included.

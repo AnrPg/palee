@@ -23,6 +23,9 @@ defmodule Palee.Finance.Domain.TenantDataPolicy do
               %{table: "finance_refund_receipts"},
               %{table: "finance_accounting_exports"},
               %{table: "finance_document_counters"},
+              # ADR-612: gifts and graces reference memberships (and each other:
+              # one DELETE removes a grant with its revocation).
+              %{table: "finance_member_benefits"},
               %{table: "finance_entitlement_usage_entries"},
               %{table: "finance_credit_ledger_entries"},
               %{table: "finance_payment_reversals"},

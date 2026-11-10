@@ -73,7 +73,9 @@ defmodule Palee.Finance.FinanceCreditLedgerEntry do
       "promo_credit",
       "payment_application",
       "reversal",
-      "invoice_offset"
+      "invoice_offset",
+      # ADR-612: the non-cash credit that settles a forgiven debt.
+      "forgiveness"
     ])
     |> validate_inclusion(:entry_type, ["grant", "application", "reversal", "invoice_offset"])
     |> validate_change(:amount_cents, fn

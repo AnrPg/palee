@@ -20,7 +20,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     finance_invoice_lines finance_payment_reversals finance_credit_ledger_entries
     finance_entitlement_usage_entries finance_settings
     finance_document_counters finance_refund_receipts finance_reconciliation_records
-    finance_accounting_exports
+    finance_accounting_exports finance_member_benefits
     finance_entitlement_usage_entries finance_settings finance_subscription_freezes
     finance_value_overrides finance_package_requests finance_package_audience_exceptions
     leads lead_tasks lead_events

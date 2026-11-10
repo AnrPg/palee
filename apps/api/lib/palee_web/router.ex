@@ -2052,6 +2052,16 @@ defmodule PaleeWeb.Router do
       :set_member_auto_renew
     )
 
+    # ADR-612: «Δώρο ή χάρη» and its history.
+    get("/finance/members/:id/benefits", AdminMemberBenefitController, :index)
+    post("/finance/members/:id/benefits", AdminMemberBenefitController, :create)
+
+    post(
+      "/finance/members/:id/benefits/:benefit_id/revoke",
+      AdminMemberBenefitController,
+      :revoke
+    )
+
     post("/finance/members/:id/leave", AdminFinanceController, :mark_member_left)
     delete("/finance/members/:id/leave", AdminFinanceController, :undo_member_left)
     post("/finance/members/:id/payments", AdminFinanceController, :record_payment)

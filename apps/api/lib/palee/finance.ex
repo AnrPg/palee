@@ -564,6 +564,14 @@ defmodule Palee.Finance do
   def refresh_entitlement_snapshots(context),
     do: scoped(context, fn -> FinanceStore.refresh_entitlement_snapshots() end)
 
+  @doc "ADR-612: settles what is owed on an invoice with a non-cash forgiveness credit."
+  def forgive_invoice(context, membership_id, invoice_id, params),
+    do: scoped(context, fn -> FinanceStore.forgive_invoice(membership_id, invoice_id, params) end)
+
+  @doc "ADR-612: works one membership's access and status out again now."
+  def refresh_member_entitlement(context, membership_id),
+    do: scoped(context, fn -> FinanceStore.refresh_member_entitlement(membership_id) end)
+
   @doc "ADR-274: issues the charges every subscription owes on `today`."
   defdelegate charge_due_subscriptions(today), to: FinanceStore
 

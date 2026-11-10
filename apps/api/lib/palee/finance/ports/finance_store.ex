@@ -120,6 +120,11 @@ defmodule Palee.Finance.Ports.FinanceStore do
   @callback rejoin_after_leaving(Ecto.UUID.t()) :: {:ok, map() | nil} | {:error, term()}
   @doc "Refreshes every snapshot; returns the memberships that lost access."
   @callback refresh_entitlement_snapshots() :: [map()]
+  @doc "ADR-612: settles what is owed on an invoice with a non-cash forgiveness credit."
+  @callback forgive_invoice(Ecto.UUID.t(), Ecto.UUID.t(), map()) ::
+              {:ok, map()} | {:error, term()}
+  @doc "ADR-612: works one membership's access and status out again now."
+  @callback refresh_member_entitlement(Ecto.UUID.t()) :: :ok
   # ADR-274: subscription charges and values staff set by hand.
   @callback charge_due_subscriptions(Date.t()) :: [map()]
   @callback charge_subscription_now(Ecto.UUID.t()) :: {:ok, [map()]} | {:error, term()}

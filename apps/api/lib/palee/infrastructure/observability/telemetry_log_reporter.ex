@@ -20,6 +20,8 @@ defmodule Palee.Infrastructure.Observability.TelemetryLogReporter do
     [:palee, :cache, :state],
     [:palee, :finance, :revenue, :recorded],
     [:palee, :finance, :revenue, :refunded],
+    [:palee, :finance, :member_benefit, :granted],
+    [:palee, :finance, :member_benefit, :revoked],
     [:palee, :shop, :order, :placed],
     [:palee, :shop, :order, :paid],
     [:palee, :shop, :order, :refunded],

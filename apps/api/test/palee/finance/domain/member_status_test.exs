@@ -35,6 +35,36 @@ defmodule Palee.Finance.Domain.MemberStatusTest do
 
   defp derive(overrides \\ %{}), do: MemberStatus.derive(facts(overrides))
 
+  test "ADR-612: free access the box gave, without a package, is comped" do
+    assert %{status: "comped"} =
+             derive(%{
+               subscriptions: [],
+               entitlement: %{status: "active", source: "staff_free_access"}
+             })
+
+    # With a running package the package's status still shows.
+    assert %{status: "active"} =
+             derive(%{entitlement: %{status: "active", source: "staff_free_access"}})
+  end
+
+  test "ADR-612: the standing names the grace or free access the box gave" do
+    membership = %{
+      status: "overdue",
+      entitlement_source: "staff_grace",
+      entitlement_grace_until: ~D[2026-11-02]
+    }
+
+    assert %{benefit: "grace", grace_until: ~D[2026-11-02]} =
+             MemberStatus.standing(membership, 5000, nil)
+
+    assert %{benefit: nil} =
+             MemberStatus.standing(
+               %{membership | entitlement_source: "membership_package"},
+               0,
+               nil
+             )
+  end
+
   test "a running, paid, renewing subscription is active" do
     assert %{status: "active", lifecycle: "active"} = derive()
   end

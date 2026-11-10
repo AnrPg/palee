@@ -233,6 +233,23 @@ defmodule PaleeWeb.Telemetry do
         tags: [:stream],
         description: "Refunds recorded, by revenue stream",
         reporter_options: [prometheus_name: "palee_revenue_refunds_total"]
+      ),
+      # ADR-612: what staff gave members for free («Δώρο ή χάρη»), by kind.
+      counter("palee.finance.member_benefit.granted.count",
+        tags: [:kind],
+        description:
+          "Benefits staff gave members (grace, free access, extra uses, package, debt forgiven)",
+        reporter_options: [prometheus_name: "palee_member_benefits_granted_total"]
+      ),
+      sum("palee.finance.member_benefit.granted.amount_cents",
+        tags: [:kind],
+        description: "Money the boxes gave up through benefits, in cents, by kind",
+        reporter_options: [prometheus_name: "palee_member_benefits_given_cents_total"]
+      ),
+      counter("palee.finance.member_benefit.revoked.count",
+        tags: [:kind],
+        description: "Benefits staff revoked, by kind",
+        reporter_options: [prometheus_name: "palee_member_benefits_revoked_total"]
       )
     ]
   end
