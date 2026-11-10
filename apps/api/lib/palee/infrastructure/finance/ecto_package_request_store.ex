@@ -99,7 +99,11 @@ defmodule Palee.Infrastructure.Finance.EctoPackageRequestStore do
     Repo.transaction(fn ->
       with {:ok, id} <- Ecto.UUID.cast(id),
            %PackageRequest{} = request <- locked(id) do
-        if request.status == "pending" do
+        # A package given another way fulfilled it first (ADR-291
+        # addendum); the desk's «Είσπραξη» still adds its payment.
+        if request.status == "pending" or
+             (request.status == "activated" and status == "activated" and
+                is_nil(request.membership_payment_id)) do
           request
           |> PackageRequest.close_changeset(Map.put(params, :status, status))
           |> Repo.update()
