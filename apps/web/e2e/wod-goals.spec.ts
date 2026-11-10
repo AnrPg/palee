@@ -166,6 +166,34 @@ test("coach shows goals to members and edits them on the chips and in the picker
   await expect(panel.getByRole("button", { name: "Reset to suggestion" })).toBeEnabled();
 });
 
+test("the library preview shows the WOD's goals, the suggestion while none are saved", async ({ context, page }) => {
+  const body = "Strength\nA. Build up 5 Rm back squat\nWod\nFor time\n15 thrusters\n30 dual db hang clean";
+  await context.route("**/api/**", async (route) => {
+    const path = tenantless(new URL(route.request().url()).pathname);
+    if (path === "/api/auth/refresh") return json(route, { access_token: "test-token" });
+    if (path === "/api/auth/me") return json(route, { ...admin, email_verified: true, completed_tours: ["admin", "member", "athlete", "first_run"] });
+    if (path === "/api/memberships") return json(route, [adminMembership]);
+    if (path.startsWith("/api/notifications")) return json(route, { notifications: [], unread_count: 0 });
+    if (path === "/api/admin/workout-folders") return json(route, { folders: [] });
+    const hybrid = { id: draftId, title: "Hybrid", type: "functional", status: "published", folder_id: null, icon: null, available_scale_levels: [], sections: [] };
+    if (path === "/api/admin/workouts") return json(route, { workouts: [hybrid] });
+    if (path === `/api/admin/workouts/${draftId}`) {
+      return json(route, { workout: { ...hybrid, authoring_mode: "free_text", free_text_body: body } });
+    }
+    if (path === `/api/admin/workouts/${draftId}/goals`) return json(route, staffGoals(false));
+    return json(route, {});
+  });
+
+  await page.goto("/admin/workouts");
+  await page.getByRole("listitem").filter({ hasText: "Hybrid" }).getByRole("button", { name: /Hybrid/ }).first().click();
+  const preview = page.getByRole("dialog", { name: "Hybrid" });
+  await expect(preview.getByText("30 dual db hang clean")).toBeVisible();
+  const strip = preview.getByTestId("wod-goals-strip");
+  await expect(strip).toContainText("Quadriceps");
+  await expect(strip).toContainText("Stamina");
+  await expect(strip.getByTestId("wod-goals-open")).toBeVisible();
+});
+
 // ── Member ───────────────────────────────────────────────────────────────────
 
 const member = {
