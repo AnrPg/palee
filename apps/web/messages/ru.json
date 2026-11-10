@@ -6196,7 +6196,7 @@
       "pr": "Личные рекорды",
       "event": "Мероприятия"
     },
-    "filterCoachesOnly": "Только тренеры",
+    "filterCoachesOnly": "Публикации тренеров",
     "filterAuthor": "Автор",
     "postsNoMatch": "Нет публикаций по этим фильтрам.",
     "whereTitle": "Где это будет видно",
@@ -6211,7 +6211,8 @@
     "whereAround": "В разделе «Рядом»",
     "whereBoxPage": "На странице {club}",
     "whereBoxFollowersFeed": "В Ленте подписчиков бокса",
-    "whereAroundPublished": "В разделе «Рядом», пока страница бокса опубликована"
+    "whereAroundPublished": "В разделе «Рядом», пока страница бокса опубликована",
+    "composePrompt": "Напишите что-нибудь в клуб…"
   },
   "Filters": {
     "filtersCount": "{count, plural, =0 {Фильтры} other {Фильтры (#)}}",
@@ -6308,7 +6309,9 @@
     "friendsOnly": "Только куда идут друзья",
     "friendsGoing": "{others, plural, =0 {Идёт: {name}} other {Идут: {name} и ещё #}}",
     "friendsLabel": "Идут",
-    "level_intermediate": "Средний уровень"
+    "level_intermediate": "Средний уровень",
+    "today": "Сегодня",
+    "weekGridAria": "Занятия недели"
   },
   "LocationPicker": {
     "title": "Филиал",
@@ -6771,7 +6774,6 @@
     "locations": "Филиалы",
     "lockedHint": "С аккаунтом Palee можно смотреть бокс и подписаться на него.",
     "mapAria": "Карта филиалов бокса",
-    "memberOpenClub": "Участник бокса · Открыть клуб",
     "more": "Ещё",
     "moreDisciplines": "{count, plural, one {Ещё # направление} few {Ещё # направления} many {Ещё # направлений} other {Ещё # направления}}",
     "morePosts": "Ещё посты",
@@ -6821,7 +6823,14 @@
     "inviteTitle": "{box} приглашает тебя стать участником",
     "inviteBody": "Нажми «Стать участником бокса», чтобы начать.",
     "inviteBodyTrial": "Нажми «Стать участником бокса» или сначала запишись на бесплатное пробное.",
-    "inviteDecline": "Нет, спасибо"
+    "inviteDecline": "Нет, спасибо",
+    "memberBadge": "Член бокса",
+    "staffBadge": "Команда бокса",
+    "message": "Сообщение",
+    "backToFeed": "Назад к ленте",
+    "clubSectionsAria": "Разделы клуба",
+    "clubUpcoming": "Ближайшие события",
+    "seeAll": "Все"
   },
   "Trials": {
     "ask": "Запросить пробное занятие",

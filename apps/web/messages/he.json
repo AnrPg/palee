@@ -6196,7 +6196,7 @@
       "pr": "שיאים אישיים",
       "event": "אירועים"
     },
-    "filterCoachesOnly": "מאמנים בלבד",
+    "filterCoachesOnly": "פוסטים של מאמנים",
     "filterAuthor": "כותב",
     "postsNoMatch": "אין פוסטים שתואמים לסינון.",
     "whereTitle": "איפה זה יופיע",
@@ -6211,7 +6211,8 @@
     "whereAround": "ב«סביבי»",
     "whereBoxPage": "בעמוד של {club}",
     "whereBoxFollowersFeed": "בפיד של מי שעוקב אחרי הבוקס",
-    "whereAroundPublished": "ב«סביבי», כל עוד עמוד הבוקס מפורסם"
+    "whereAroundPublished": "ב«סביבי», כל עוד עמוד הבוקס מפורסם",
+    "composePrompt": "כתבו משהו במועדון…"
   },
   "Filters": {
     "filtersCount": "{count, plural, =0 {מסננים} other {מסננים (#)}}",
@@ -6308,7 +6309,9 @@
     "friendsOnly": "רק איפה שחברים הולכים",
     "friendsGoing": "{others, plural, =0 {הולך/ת: {name}} other {הולכים: {name} ועוד #}}",
     "friendsLabel": "הולכים",
-    "level_intermediate": "בינוניים"
+    "level_intermediate": "בינוניים",
+    "today": "היום",
+    "weekGridAria": "השיעורים של השבוע"
   },
   "LocationPicker": {
     "title": "מיקום",
@@ -6771,7 +6774,6 @@
     "locations": "מיקומים",
     "lockedHint": "עם חשבון Palee אפשר לראות את הבוקס ולעקוב אחריו.",
     "mapAria": "מפת המיקומים של הבוקס",
-    "memberOpenClub": "חבר · פתח את המועדון",
     "more": "עוד",
     "moreDisciplines": "{count, plural, one {עוד תחום אחד} other {עוד # תחומים}}",
     "morePosts": "עוד פוסטים",
@@ -6821,7 +6823,14 @@
     "inviteTitle": "{box} מזמין אותך להצטרף כחבר/ה",
     "inviteBody": "הקש/י «הצטרף כחבר ב-Box» כדי להתחיל.",
     "inviteBodyTrial": "הקש/י «הצטרף כחבר ב-Box» או קבע/י קודם אימון ניסיון חינם.",
-    "inviteDecline": "לא, תודה"
+    "inviteDecline": "לא, תודה",
+    "memberBadge": "חבר/ת בוקס",
+    "staffBadge": "צוות הבוקס",
+    "message": "הודעה",
+    "backToFeed": "חזרה לפיד",
+    "clubSectionsAria": "אזורי המועדון",
+    "clubUpcoming": "האירועים הבאים",
+    "seeAll": "הכול"
   },
   "Trials": {
     "ask": "בקשת שיעור ניסיון",

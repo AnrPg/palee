@@ -6196,7 +6196,7 @@
       "pr": "Marcas personales",
       "event": "Eventos"
     },
-    "filterCoachesOnly": "Solo coaches",
+    "filterCoachesOnly": "Publicaciones de coaches",
     "filterAuthor": "Autor",
     "postsNoMatch": "Ninguna publicación coincide con estos filtros.",
     "whereTitle": "Dónde se verá",
@@ -6211,7 +6211,8 @@
     "whereAround": "En Cerca de mí",
     "whereBoxPage": "En la página de {club}",
     "whereBoxFollowersFeed": "En el Feed de quienes siguen el box",
-    "whereAroundPublished": "En Cerca de mí, mientras la página del box esté publicada"
+    "whereAroundPublished": "En Cerca de mí, mientras la página del box esté publicada",
+    "composePrompt": "Escribe algo en el club…"
   },
   "Filters": {
     "filtersCount": "{count, plural, =0 {Filtros} other {Filtros (#)}}",
@@ -6308,7 +6309,9 @@
     "friendsOnly": "Solo donde van amigos",
     "friendsGoing": "{others, plural, =0 {Va {name}} other {Van {name} y # más}}",
     "friendsLabel": "Van",
-    "level_intermediate": "Intermedios"
+    "level_intermediate": "Intermedios",
+    "today": "Hoy",
+    "weekGridAria": "Las clases de la semana"
   },
   "LocationPicker": {
     "title": "Ubicación",
@@ -6771,7 +6774,6 @@
     "locations": "Sedes",
     "lockedHint": "Con una cuenta de Palee ves y sigues el box.",
     "mapAria": "Mapa de las sedes del box",
-    "memberOpenClub": "Socio · Abrir el club",
     "more": "Más",
     "moreDisciplines": "{count, plural, one {# disciplina más} other {# disciplinas más}}",
     "morePosts": "Más publicaciones",
@@ -6821,7 +6823,14 @@
     "inviteTitle": "{box} te invita a hacerte socio",
     "inviteBody": "Toca «Hazte socio del box» para empezar.",
     "inviteBodyTrial": "Toca «Hazte socio del box» o reserva antes una prueba gratis.",
-    "inviteDecline": "No, gracias"
+    "inviteDecline": "No, gracias",
+    "memberBadge": "Miembro del box",
+    "staffBadge": "Staff del box",
+    "message": "Mensaje",
+    "backToFeed": "Volver al feed",
+    "clubSectionsAria": "Secciones del club",
+    "clubUpcoming": "Próximos eventos",
+    "seeAll": "Todos"
   },
   "Trials": {
     "ask": "Pedir una clase de prueba",

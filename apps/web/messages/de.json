@@ -6196,7 +6196,7 @@
       "pr": "Persönliche Rekorde",
       "event": "Events"
     },
-    "filterCoachesOnly": "Nur Coaches",
+    "filterCoachesOnly": "Beiträge von Coaches",
     "filterAuthor": "Verfasser",
     "postsNoMatch": "Keine Beiträge passen zu diesen Filtern.",
     "whereTitle": "Wo es erscheint",
@@ -6211,7 +6211,8 @@
     "whereAround": "In „In der Nähe“",
     "whereBoxPage": "Auf der Seite von {club}",
     "whereBoxFollowersFeed": "Im Feed der Follower der Box",
-    "whereAroundPublished": "In „In der Nähe“, solange die Box-Seite veröffentlicht ist"
+    "whereAroundPublished": "In „In der Nähe“, solange die Box-Seite veröffentlicht ist",
+    "composePrompt": "Schreib etwas in den Club…"
   },
   "Filters": {
     "filtersCount": "{count, plural, =0 {Filter} other {Filter (#)}}",
@@ -6308,7 +6309,9 @@
     "friendsOnly": "Nur wo Freunde hingehen",
     "friendsGoing": "{others, plural, =0 {{name} geht hin} other {{name} und # weitere gehen hin}}",
     "friendsLabel": "Dabei",
-    "level_intermediate": "Mittelstufe"
+    "level_intermediate": "Mittelstufe",
+    "today": "Heute",
+    "weekGridAria": "Die Stunden der Woche"
   },
   "LocationPicker": {
     "title": "Standort",
@@ -6771,7 +6774,6 @@
     "locations": "Standorte",
     "lockedHint": "Mit einem Palee-Konto siehst du die Box und kannst ihr folgen.",
     "mapAria": "Karte der Standorte der Box",
-    "memberOpenClub": "Mitglied · Club öffnen",
     "more": "Mehr",
     "moreDisciplines": "{count, plural, one {# weitere Disziplin} other {# weitere Disziplinen}}",
     "morePosts": "Weitere Beiträge",
@@ -6821,7 +6823,14 @@
     "inviteTitle": "{box} lädt dich ein, Mitglied zu werden",
     "inviteBody": "Tippe auf «Mitglied werden», um loszulegen.",
     "inviteBodyTrial": "Tippe auf «Mitglied werden» oder buche zuerst ein kostenloses Probetraining.",
-    "inviteDecline": "Nein, danke"
+    "inviteDecline": "Nein, danke",
+    "memberBadge": "Box-Mitglied",
+    "staffBadge": "Box-Team",
+    "message": "Nachricht",
+    "backToFeed": "Zurück zum Feed",
+    "clubSectionsAria": "Bereiche des Clubs",
+    "clubUpcoming": "Nächste Events",
+    "seeAll": "Alle"
   },
   "Trials": {
     "ask": "Probetraining anfragen",

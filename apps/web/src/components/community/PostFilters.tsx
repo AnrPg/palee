@@ -42,6 +42,7 @@ export function PostFilters<S extends PostsShape>({
   onChange,
   clubs,
   clubId,
+  channelChip = true,
 }: {
   shape: S;
   filter: ListFilter<S>;
@@ -49,6 +50,8 @@ export function PostFilters<S extends PostsShape>({
   clubs: readonly CommunityClub[];
   /** A club's own Ροή: the club is fixed, its channels are the choices. */
   clubId?: string;
+  /** ADR-621: false on the box page, where the side column already lists the channels; they stay in «Φίλτρα». */
+  channelChip?: boolean;
 }) {
   const t = useTranslations("Community");
   const posts = filter as PostsFilter;
@@ -57,9 +60,10 @@ export function PostFilters<S extends PostsShape>({
 
   const fields: ListFilterField<typeof FEED_POSTS_SHAPE>[] = [
     ...(clubId ? [] : [{ key: "club" as const, label: t("filterClub"), options: clubs.map((entry) => ({ value: entry.id, label: entry.name })) }]),
-    { key: "channel", label: t("filterChannel"), chip: Boolean(clubId), options: channels.map((channel) => ({ value: channel.id, label: `#${channelName(channel, t)}` })) },
+    { key: "channel", label: t("filterChannel"), chip: Boolean(clubId) && channelChip, options: channels.map((channel) => ({ value: channel.id, label: `#${channelName(channel, t)}` })) },
     { key: "type", label: t("filterType"), options: FEED_POST_TYPES.map((type) => ({ value: type, label: t(`postType.${type}`) })) },
-    { key: "coaches", label: t("filterCoachesOnly"), section: t("filterAuthor") },
+    // ADR-621: it narrows to posts written by coaches; in the sheet only, so a member never reads it as a coaches' setting.
+    { key: "coaches", label: t("filterCoachesOnly"), section: t("filterAuthor"), chip: false },
   ];
 
   return (

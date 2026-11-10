@@ -6196,7 +6196,7 @@
       "pr": "Recordes pessoais",
       "event": "Eventos"
     },
-    "filterCoachesOnly": "Só coaches",
+    "filterCoachesOnly": "Publicações de coaches",
     "filterAuthor": "Autor",
     "postsNoMatch": "Nenhuma publicação corresponde a estes filtros.",
     "whereTitle": "Onde aparece",
@@ -6211,7 +6211,8 @@
     "whereAround": "No Perto de mim",
     "whereBoxPage": "Na página de {club}",
     "whereBoxFollowersFeed": "No Feed de quem segue a box",
-    "whereAroundPublished": "No Perto de mim, enquanto a página da box estiver publicada"
+    "whereAroundPublished": "No Perto de mim, enquanto a página da box estiver publicada",
+    "composePrompt": "Escreve algo no clube…"
   },
   "Filters": {
     "filtersCount": "{count, plural, =0 {Filtros} other {Filtros (#)}}",
@@ -6308,7 +6309,9 @@
     "friendsOnly": "Só onde vão amigos",
     "friendsGoing": "{others, plural, =0 {Vai {name}} other {Vão {name} e mais #}}",
     "friendsLabel": "Vão",
-    "level_intermediate": "Intermédios"
+    "level_intermediate": "Intermédios",
+    "today": "Hoje",
+    "weekGridAria": "As aulas da semana"
   },
   "LocationPicker": {
     "title": "Local",
@@ -6771,7 +6774,6 @@
     "locations": "Localizações",
     "lockedHint": "Com uma conta Palee vês e segues a box.",
     "mapAria": "Mapa das localizações da box",
-    "memberOpenClub": "Membro · Abrir o clube",
     "more": "Mais",
     "moreDisciplines": "{count, plural, one {Mais # modalidade} other {Mais # modalidades}}",
     "morePosts": "Mais publicações",
@@ -6821,7 +6823,14 @@
     "inviteTitle": "A {box} convida-te a seres membro",
     "inviteBody": "Toca em «Tornar-me membro da box» para começar.",
     "inviteBodyTrial": "Toca em «Tornar-me membro da box» ou marca primeiro uma aula experimental grátis.",
-    "inviteDecline": "Não, obrigado"
+    "inviteDecline": "Não, obrigado",
+    "memberBadge": "Membro da box",
+    "staffBadge": "Staff da box",
+    "message": "Mensagem",
+    "backToFeed": "Voltar ao feed",
+    "clubSectionsAria": "Secções do clube",
+    "clubUpcoming": "Próximos eventos",
+    "seeAll": "Todos"
   },
   "Trials": {
     "ask": "Pedir uma aula experimental",

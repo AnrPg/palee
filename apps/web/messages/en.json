@@ -6196,7 +6196,7 @@
       "pr": "Personal records",
       "event": "Events"
     },
-    "filterCoachesOnly": "Coaches only",
+    "filterCoachesOnly": "Posts by coaches",
     "filterAuthor": "Author",
     "postsNoMatch": "No posts match these filters.",
     "whereTitle": "Where it shows",
@@ -6211,7 +6211,8 @@
     "whereAround": "In Around me",
     "whereBoxPage": "On the {club} page",
     "whereBoxFollowersFeed": "In the Feed of the box's followers",
-    "whereAroundPublished": "In Around me, while the box page is published"
+    "whereAroundPublished": "In Around me, while the box page is published",
+    "composePrompt": "Write something to the club…"
   },
   "Filters": {
     "filtersCount": "{count, plural, =0 {Filters} other {Filters (#)}}",
@@ -6308,7 +6309,9 @@
     "friendsOnly": "Only where friends go",
     "friendsGoing": "{others, plural, =0 {{name} is going} other {{name} and # more are going}}",
     "friendsLabel": "Going",
-    "level_intermediate": "Intermediate"
+    "level_intermediate": "Intermediate",
+    "today": "Today",
+    "weekGridAria": "The week's classes"
   },
   "LocationPicker": {
     "title": "Location",
@@ -6771,7 +6774,6 @@
     "locations": "Branches",
     "lockedHint": "With a Palee account you can see and follow the box.",
     "mapAria": "Map of the box's branches",
-    "memberOpenClub": "Box member · Open the club",
     "more": "More",
     "moreDisciplines": "{count, plural, one {# more discipline} other {# more disciplines}}",
     "morePosts": "More posts",
@@ -6821,7 +6823,14 @@
     "inviteTitle": "{box} invites you to become a member",
     "inviteBody": "Tap «Become a box member» to get started.",
     "inviteBodyTrial": "Tap «Become a box member», or book a free trial first.",
-    "inviteDecline": "No, thanks"
+    "inviteDecline": "No, thanks",
+    "memberBadge": "Box member",
+    "staffBadge": "Box staff",
+    "message": "Message",
+    "backToFeed": "Back to the feed",
+    "clubSectionsAria": "Club sections",
+    "clubUpcoming": "Next events",
+    "seeAll": "All"
   },
   "Trials": {
     "ask": "Ask for a trial",

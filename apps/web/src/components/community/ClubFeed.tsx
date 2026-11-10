@@ -29,7 +29,16 @@ const isPrCelebration = (post: CommunityPost) => post.attachment_type === "pr";
  * (its about text when it has one). Challenges are the gym's, so they show
  * on the club of the gym the member has selected.
  */
-export function ClubFeed({ club, onShowEvents }: { club: CommunityClub; onShowEvents: () => void }) {
+export function ClubFeed({
+  club,
+  onShowEvents,
+  eventsClassName,
+}: {
+  club: CommunityClub;
+  onShowEvents: () => void;
+  /** ADR-621: on the box page the desktop side column lists the events, so the card shows on phones only («lg:hidden»). */
+  eventsClassName?: string;
+}) {
   const t = useTranslations("Community");
   const tClubs = useTranslations("Clubs");
   const tEvents = useTranslations("Events");
@@ -64,6 +73,7 @@ export function ClubFeed({ club, onShowEvents }: { club: CommunityClub; onShowEv
       <ChallengesCard challenges={challenges} />
       <Posts posts={prs} />
       {upcoming.length > 0 ? (
+        <div className={eventsClassName}>
         <HubCard eyebrow={tClubs("tabEvents")}>
           <EventList events={upcoming.slice(0, EVENTS_SHOWN)} lead={(event) => event.group?.name ?? undefined} />
           {upcoming.length > EVENTS_SHOWN ? (
@@ -77,6 +87,7 @@ export function ClubFeed({ club, onShowEvents }: { club: CommunityClub; onShowEv
             </button>
           ) : null}
         </HubCard>
+        </div>
       ) : null}
       <Posts posts={memberPosts} />
       {feed.isError ? <ErrorNotice>{t("loadFailed")}</ErrorNotice> : null}

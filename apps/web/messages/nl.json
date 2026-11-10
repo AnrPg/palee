@@ -6196,7 +6196,7 @@
       "pr": "Persoonlijke records",
       "event": "Evenementen"
     },
-    "filterCoachesOnly": "Alleen coaches",
+    "filterCoachesOnly": "Berichten van coaches",
     "filterAuthor": "Auteur",
     "postsNoMatch": "Geen berichten voor deze filters.",
     "whereTitle": "Waar het verschijnt",
@@ -6211,7 +6211,8 @@
     "whereAround": "In In de buurt",
     "whereBoxPage": "Op de pagina van {club}",
     "whereBoxFollowersFeed": "In de Feed van wie de box volgt",
-    "whereAroundPublished": "In In de buurt, zolang de boxpagina gepubliceerd is"
+    "whereAroundPublished": "In In de buurt, zolang de boxpagina gepubliceerd is",
+    "composePrompt": "Schrijf iets in de club…"
   },
   "Filters": {
     "filtersCount": "{count, plural, =0 {Filters} other {Filters (#)}}",
@@ -6308,7 +6309,9 @@
     "friendsOnly": "Alleen waar vrienden gaan",
     "friendsGoing": "{others, plural, =0 {{name} gaat} other {{name} en # anderen gaan}}",
     "friendsLabel": "Gaan",
-    "level_intermediate": "Gemiddeld"
+    "level_intermediate": "Gemiddeld",
+    "today": "Vandaag",
+    "weekGridAria": "De lessen van de week"
   },
   "LocationPicker": {
     "title": "Locatie",
@@ -6771,7 +6774,6 @@
     "locations": "Locaties",
     "lockedHint": "Met een Palee-account zie en volg je de box.",
     "mapAria": "Kaart van de locaties van de box",
-    "memberOpenClub": "Lid · Open de club",
     "more": "Meer",
     "moreDisciplines": "{count, plural, one {# andere discipline} other {# andere disciplines}}",
     "morePosts": "Meer berichten",
@@ -6821,7 +6823,14 @@
     "inviteTitle": "{box} nodigt je uit om boxlid te worden",
     "inviteBody": "Tik op «Word boxlid» om te beginnen.",
     "inviteBodyTrial": "Tik op «Word boxlid» of boek eerst een gratis proefles.",
-    "inviteDecline": "Nee, bedankt"
+    "inviteDecline": "Nee, bedankt",
+    "memberBadge": "Boxlid",
+    "staffBadge": "Boxteam",
+    "message": "Bericht",
+    "backToFeed": "Terug naar de feed",
+    "clubSectionsAria": "Onderdelen van de club",
+    "clubUpcoming": "Volgende events",
+    "seeAll": "Alles"
   },
   "Trials": {
     "ask": "Vraag een proefles aan",

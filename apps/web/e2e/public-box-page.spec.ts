@@ -218,7 +218,10 @@ test.describe("public box page", () => {
     await page.goto(`/b/${box.slug}#schedule`);
 
     await expect(page.getByRole("button", { name: /Yoga 40\+/ })).toBeVisible();
-    await page.getByRole("button", { name: "Filters", exact: true }).click();
+    // ADR-621: desktop shows the week in seven columns with the filters in its row; phones fold them away.
+    const desktop = (page.viewportSize()?.width ?? 0) >= 1024;
+    if (desktop) await expect(page.getByTestId("schedule-week-grid").getByRole("listitem")).toHaveCount(7);
+    else await page.getByRole("button", { name: "Filters", exact: true }).click();
     await chooseOption(page, page.getByLabel("Level"), "beginner");
     await expect(page.getByRole("button", { name: /CrossFit.*Stelios/ })).toBeHidden();
     await page.getByRole("button", { name: /Yoga 40\+/ }).click();
@@ -247,20 +250,26 @@ test.describe("public box page", () => {
     await expect(page.getByTestId("box-guest-banner")).toHaveCount(0);
     await expect(page.getByTestId("box-page-join")).toHaveCount(0);
 
-    // From another tab, the member action brings the club back.
+    // ADR-621: one level of navigation, «Write something to the club…» over the feed,
+    // no «Club member» line, and no filters over an empty club.
+    const club = page.getByTestId("box-club-tab");
+    await expect(club.getByTestId("club-compose-prompt")).toHaveText("Write something to the club…");
+    await expect(club.getByText("Club member", { exact: true })).toHaveCount(0);
+    await expect(club.getByRole("button", { name: "Filters", exact: true })).toHaveCount(0);
+    await expect(club.getByRole("tab", { name: "Events" })).toHaveCount(0);
+    await expect(page.getByTestId("box-page-role")).toHaveText("Box member");
+
+    // Members message the box from the header; the club is a tab, so no «Open the club» pill.
     await page.getByRole("tab", { name: "About" }).click();
     await expect(page).toHaveURL(/#about$/);
-    const openClub = page.getByTestId("box-page-open-club").first();
-    await expect(openClub).toHaveAccessibleName("Box member · Open the club");
-    // The label fits inside the pill with padding on both sides (ANR 2026-11-10).
-    const fits = await openClub.evaluate((el) => {
-      const pill = el.getBoundingClientRect();
-      const label = el.querySelector("span:last-child")!.getBoundingClientRect();
-      return el.scrollWidth <= el.clientWidth && label.left - pill.left >= 12 && pill.right - label.right >= 12;
-    });
-    expect(fits).toBe(true);
-    await openClub.click();
+    await expect(page.getByTestId("box-page-message").locator("visible=true").first()).toHaveText("Message");
+    await expect(page.getByText("Box member · Open the club")).toHaveCount(0);
+    await tabs.getByRole("tab", { name: "Club", exact: true }).click();
     await expect(page.getByTestId("box-club-tab")).toBeVisible();
+
+    // One «Events» tab: members see the club's events there.
+    await tabs.getByRole("tab", { name: "Events" }).click();
+    await expect(page.getByText("No upcoming events.")).toBeVisible();
   });
 
   test("a box's club link opens the box page when it is published (ADR-590)", async ({ page }) => {

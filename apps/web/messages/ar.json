@@ -6196,7 +6196,7 @@
       "pr": "أرقام شخصية",
       "event": "فعاليات"
     },
-    "filterCoachesOnly": "المدربون فقط",
+    "filterCoachesOnly": "منشورات المدربين",
     "filterAuthor": "الكاتب",
     "postsNoMatch": "لا توجد منشورات تطابق هذه الفلاتر.",
     "whereTitle": "أين سيظهر",
@@ -6211,7 +6211,8 @@
     "whereAround": "في «حولي»",
     "whereBoxPage": "في صفحة {club}",
     "whereBoxFollowersFeed": "في موجز متابعي البوكس",
-    "whereAroundPublished": "في «حولي»، ما دامت صفحة البوكس منشورة"
+    "whereAroundPublished": "في «حولي»، ما دامت صفحة البوكس منشورة",
+    "composePrompt": "اكتب شيئًا في النادي…"
   },
   "Filters": {
     "filtersCount": "{count, plural, =0 {عوامل التصفية} other {عوامل التصفية (#)}}",
@@ -6308,7 +6309,9 @@
     "friendsOnly": "فقط حيث يذهب الأصدقاء",
     "friendsGoing": "{others, plural, =0 {يذهب: {name}} other {يذهب: {name} و# آخرون}}",
     "friendsLabel": "يذهبون",
-    "level_intermediate": "متوسطون"
+    "level_intermediate": "متوسطون",
+    "today": "اليوم",
+    "weekGridAria": "حصص الأسبوع"
   },
   "LocationPicker": {
     "title": "الموقع",
@@ -6771,7 +6774,6 @@
     "locations": "المواقع",
     "lockedHint": "بحساب في Palee ترى الصالة وتتابعها.",
     "mapAria": "خريطة مواقع الصالة",
-    "memberOpenClub": "عضو · افتح النادي",
     "more": "المزيد",
     "moreDisciplines": "{count, plural, one {رياضة أخرى واحدة} other {# رياضات أخرى}}",
     "morePosts": "منشورات أكثر",
@@ -6821,7 +6823,14 @@
     "inviteTitle": "{box} يدعوك لتصبح عضوًا",
     "inviteBody": "اضغط «كن عضوًا في الـBox» للبدء.",
     "inviteBodyTrial": "اضغط «كن عضوًا في الـBox» أو احجز أولًا تجربة مجانية.",
-    "inviteDecline": "لا، شكرًا"
+    "inviteDecline": "لا، شكرًا",
+    "memberBadge": "عضو في البوكس",
+    "staffBadge": "طاقم البوكس",
+    "message": "رسالة",
+    "backToFeed": "العودة إلى الخلاصة",
+    "clubSectionsAria": "أقسام النادي",
+    "clubUpcoming": "الفعاليات القادمة",
+    "seeAll": "الكل"
   },
   "Trials": {
     "ask": "اطلب حصة تجريبية",

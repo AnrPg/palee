@@ -29,7 +29,7 @@ import { ErrorLine, Sheet, SheetButton } from "@/components/community/Sheet";
 import { WodCard } from "@/components/community/WodCard";
 import { ClubEventsTab } from "@/components/events/ClubEventsTab";
 import { useListFilter } from "@/components/filters/use-remembered-filter";
-import { useClubRealtime, useMyClubs } from "@/components/community/use-community";
+import { useClubRealtime, useFeed, useMyClubs } from "@/components/community/use-community";
 import { HubCard, HubPage } from "@/components/member-app/HubParts";
 import { useSession } from "@/components/session-provider";
 import { useUiTranslations } from "@/i18n/ui";
@@ -130,7 +130,7 @@ export function useClubSpace(clubId: string, club: CommunityClub | undefined, ch
 export function ClubSpace({ club, clubs, space }: { club: CommunityClub; clubs: CommunityClub[]; space: ClubSpaceState }) {
   const t = useTranslations("Community");
   const tClubs = useTranslations("Clubs");
-  const { tab, setTab, posts, openChannel, changePosts, showChannel } = space;
+  const { tab, setTab, showChannel } = space;
   return (
     <>
       <p className="text-sm" style={{ color: "var(--dim)" }}>
@@ -161,29 +161,65 @@ export function ClubSpace({ club, clubs, space }: { club: CommunityClub; clubs: 
         ))}
       </div>
       {tab === "channels" ? (
-        <>
-          <ChannelList club={club} onOpen={showChannel} />
-          {club.kind === "gym" ? <GroupsCard club={club} /> : null}
-          {club.kind === "gym" ? <ClubSquadsCard club={club} /> : null}
-        </>
+        <ClubChannels club={club} onOpen={showChannel} />
       ) : tab === "events" ? (
         <ClubEventsTab club={club} />
       ) : tab === "members" ? (
         <MembersTab club={club} />
-      ) : posts === null ? (
-        <p className="text-sm" style={{ color: "var(--dim)" }}>{t("loading")}</p>
       ) : (
+        <ClubPosts club={club} clubs={clubs} space={space} onShowEvents={() => setTab("events")} />
+      )}
+    </>
+  );
+}
+
+/** Κανάλια: the club's channels, then (a box's club) its member groups and PT squads. */
+export function ClubChannels({ club, onOpen }: { club: CommunityClub; onOpen: (id: string) => void }) {
+  return (
+    <>
+      <ChannelList club={club} onOpen={onOpen} />
+      {club.kind === "gym" ? <GroupsCard club={club} /> : null}
+      {club.kind === "gym" ? <ClubSquadsCard club={club} /> : null}
+    </>
+  );
+}
+
+/**
+ * Ροή with its filters: the club's feed, or the matching posts while a
+ * filter narrows it. On the box page (ADR-621) the filters hide while the
+ * club has no posts at all, and the channel stays out of the chip row.
+ */
+export function ClubPosts({
+  club,
+  clubs,
+  space,
+  onShowEvents,
+  boxPage = false,
+}: {
+  club: CommunityClub;
+  clubs: CommunityClub[];
+  space: ClubSpaceState;
+  onShowEvents: () => void;
+  boxPage?: boolean;
+}) {
+  const t = useTranslations("Community");
+  const { posts, openChannel, changePosts } = space;
+  const feed = useFeed({ clubId: club.id });
+  if (posts === null) return <p className="text-sm" style={{ color: "var(--dim)" }}>{t("loading")}</p>;
+  const narrowed = narrowsPosts(posts);
+  const hasPosts = (feed.data?.pages ?? []).some((page) => page.posts.length > 0 || (page.pinned ?? []).length > 0);
+  return (
+    <>
+      {!boxPage || narrowed || hasPosts ? (
+        <PostFilters shape={CLUB_POSTS_SHAPE} filter={posts} onChange={changePosts} clubs={clubs} clubId={club.id} channelChip={!boxPage} />
+      ) : null}
+      {narrowed ? (
         <>
-          <PostFilters shape={CLUB_POSTS_SHAPE} filter={posts} onChange={changePosts} clubs={clubs} clubId={club.id} />
-          {narrowsPosts(posts) ? (
-            <>
-              {openChannel?.kind === "wod" ? <WodCard club={club} showOrigin={false} /> : null}
-              <FeedList filter={postsFeedFilter(posts, clubs, club.id)} empty={t("postsNoMatch")} />
-            </>
-          ) : (
-            <ClubFeed club={club} onShowEvents={() => setTab("events")} />
-          )}
+          {openChannel?.kind === "wod" ? <WodCard club={club} showOrigin={false} /> : null}
+          <FeedList filter={postsFeedFilter(posts, clubs, club.id)} empty={t("postsNoMatch")} />
         </>
+      ) : (
+        <ClubFeed club={club} onShowEvents={onShowEvents} eventsClassName={boxPage ? "lg:hidden" : undefined} />
       )}
     </>
   );

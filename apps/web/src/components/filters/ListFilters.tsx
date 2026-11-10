@@ -15,7 +15,7 @@ export type ListFilterField<S extends ListFilterShape> = {
   chip?: boolean;
   /** «one»/«many» fields: the choices; a field with fewer than two is not shown (nothing to choose). */
   options?: ChipOption[];
-  /** A toggle's heading in the sheet («Συντάκτης» over «Όλα · Μόνο coaches»); its label by default. */
+  /** A toggle's heading in the sheet («Συντάκτης» over «Όλα · Αναρτήσεις από coaches»); its label by default. */
   section?: string;
 };
 

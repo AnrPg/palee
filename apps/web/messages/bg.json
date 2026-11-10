@@ -6196,7 +6196,7 @@
       "pr": "Лични рекорди",
       "event": "Събития"
     },
-    "filterCoachesOnly": "Само треньори",
+    "filterCoachesOnly": "Публикации от треньори",
     "filterAuthor": "Автор",
     "postsNoMatch": "Няма публикации по тези филтри.",
     "whereTitle": "Къде ще се вижда",
@@ -6211,7 +6211,8 @@
     "whereAround": "В Около мен",
     "whereBoxPage": "На страницата на {club}",
     "whereBoxFollowersFeed": "В Лентата на последователите на бокса",
-    "whereAroundPublished": "В Около мен, докато страницата на бокса е публикувана"
+    "whereAroundPublished": "В Около мен, докато страницата на бокса е публикувана",
+    "composePrompt": "Напиши нещо в клуба…"
   },
   "Filters": {
     "filtersCount": "{count, plural, =0 {Филтри} other {Филтри (#)}}",
@@ -6308,7 +6309,9 @@
     "friendsOnly": "Само където ходят приятели",
     "friendsGoing": "{others, plural, =0 {Ходи: {name}} other {Ходят: {name} и още #}}",
     "friendsLabel": "Ходят",
-    "level_intermediate": "Средно ниво"
+    "level_intermediate": "Средно ниво",
+    "today": "Днес",
+    "weekGridAria": "Часовете за седмицата"
   },
   "LocationPicker": {
     "title": "Локация",
@@ -6771,7 +6774,6 @@
     "locations": "Локации",
     "lockedHint": "С акаунт в Palee виждаш и следваш бокса.",
     "mapAria": "Карта на локациите на бокса",
-    "memberOpenClub": "Член · Отвори клуба",
     "more": "Още",
     "moreDisciplines": "{count, plural, one {Още # дисциплина} other {Още # дисциплини}}",
     "morePosts": "Още публикации",
@@ -6821,7 +6823,14 @@
     "inviteTitle": "{box} те кани да станеш член",
     "inviteBody": "Натисни «Стани член на box-а», за да започнеш.",
     "inviteBodyTrial": "Натисни «Стани член на box-а» или първо запиши безплатна пробна тренировка.",
-    "inviteDecline": "Не, благодаря"
+    "inviteDecline": "Не, благодаря",
+    "memberBadge": "Член на бокса",
+    "staffBadge": "Екип на бокса",
+    "message": "Съобщение",
+    "backToFeed": "Обратно към потока",
+    "clubSectionsAria": "Раздели на клуба",
+    "clubUpcoming": "Следващи събития",
+    "seeAll": "Всички"
   },
   "Trials": {
     "ask": "Заяви пробна тренировка",

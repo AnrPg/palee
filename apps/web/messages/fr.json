@@ -6196,7 +6196,7 @@
       "pr": "Records personnels",
       "event": "Événements"
     },
-    "filterCoachesOnly": "Coachs uniquement",
+    "filterCoachesOnly": "Publications des coachs",
     "filterAuthor": "Auteur",
     "postsNoMatch": "Aucune publication ne correspond à ces filtres.",
     "whereTitle": "Où ça s'affiche",
@@ -6211,7 +6211,8 @@
     "whereAround": "Dans Autour de moi",
     "whereBoxPage": "Sur la page de {club}",
     "whereBoxFollowersFeed": "Dans le Fil des abonnés de la box",
-    "whereAroundPublished": "Dans Autour de moi, tant que la page de la box est publiée"
+    "whereAroundPublished": "Dans Autour de moi, tant que la page de la box est publiée",
+    "composePrompt": "Écris quelque chose dans le club…"
   },
   "Filters": {
     "filtersCount": "{count, plural, =0 {Filtres} other {Filtres (#)}}",
@@ -6308,7 +6309,9 @@
     "friendsOnly": "Seulement là où vont des amis",
     "friendsGoing": "{others, plural, =0 {{name} y va} other {{name} et # autres y vont}}",
     "friendsLabel": "Participent",
-    "level_intermediate": "Intermédiaires"
+    "level_intermediate": "Intermédiaires",
+    "today": "Aujourd’hui",
+    "weekGridAria": "Les cours de la semaine"
   },
   "LocationPicker": {
     "title": "Lieu",
@@ -6771,7 +6774,6 @@
     "locations": "Sites",
     "lockedHint": "Avec un compte Palee, tu vois et suis la box.",
     "mapAria": "Carte des sites de la box",
-    "memberOpenClub": "Membre de la box · Ouvrir le club",
     "more": "Plus",
     "moreDisciplines": "{count, plural, one {# autre discipline} other {# autres disciplines}}",
     "morePosts": "Plus de publications",
@@ -6821,7 +6823,14 @@
     "inviteTitle": "{box} t’invite à devenir membre",
     "inviteBody": "Appuie sur «Devenir membre de la box» pour commencer.",
     "inviteBodyTrial": "Appuie sur «Devenir membre de la box» ou réserve d’abord un essai gratuit.",
-    "inviteDecline": "Non, merci"
+    "inviteDecline": "Non, merci",
+    "memberBadge": "Membre de la box",
+    "staffBadge": "Équipe de la box",
+    "message": "Message",
+    "backToFeed": "Retour au fil",
+    "clubSectionsAria": "Sections du club",
+    "clubUpcoming": "Prochains événements",
+    "seeAll": "Tout"
   },
   "Trials": {
     "ask": "Demander un cours d’essai",

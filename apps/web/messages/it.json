@@ -6196,7 +6196,7 @@
       "pr": "Record personali",
       "event": "Eventi"
     },
-    "filterCoachesOnly": "Solo coach",
+    "filterCoachesOnly": "Post dei coach",
     "filterAuthor": "Autore",
     "postsNoMatch": "Nessun post corrisponde a questi filtri.",
     "whereTitle": "Dove si vede",
@@ -6211,7 +6211,8 @@
     "whereAround": "In Intorno a me",
     "whereBoxPage": "Sulla pagina di {club}",
     "whereBoxFollowersFeed": "Nel Feed di chi segue il box",
-    "whereAroundPublished": "In Intorno a me, finché la pagina del box è pubblicata"
+    "whereAroundPublished": "In Intorno a me, finché la pagina del box è pubblicata",
+    "composePrompt": "Scrivi qualcosa nel club…"
   },
   "Filters": {
     "filtersCount": "{count, plural, =0 {Filtri} other {Filtri (#)}}",
@@ -6308,7 +6309,9 @@
     "friendsOnly": "Solo dove vanno amici",
     "friendsGoing": "{others, plural, =0 {Ci va {name}} other {Ci vanno {name} e altri #}}",
     "friendsLabel": "Partecipano",
-    "level_intermediate": "Intermedi"
+    "level_intermediate": "Intermedi",
+    "today": "Oggi",
+    "weekGridAria": "Le lezioni della settimana"
   },
   "LocationPicker": {
     "title": "Sede",
@@ -6771,7 +6774,6 @@
     "locations": "Sedi",
     "lockedHint": "Con un account Palee vedi e segui il box.",
     "mapAria": "Mappa delle sedi del box",
-    "memberOpenClub": "Socio · Apri il club",
     "more": "Altro",
     "moreDisciplines": "{count, plural, one {# altra disciplina} other {# altre discipline}}",
     "morePosts": "Altri post",
@@ -6821,7 +6823,14 @@
     "inviteTitle": "{box} ti invita a diventare socio",
     "inviteBody": "Tocca «Diventa socio del box» per iniziare.",
     "inviteBodyTrial": "Tocca «Diventa socio del box» o prenota prima una prova gratuita.",
-    "inviteDecline": "No, grazie"
+    "inviteDecline": "No, grazie",
+    "memberBadge": "Membro del box",
+    "staffBadge": "Staff del box",
+    "message": "Messaggio",
+    "backToFeed": "Torna al feed",
+    "clubSectionsAria": "Sezioni del club",
+    "clubUpcoming": "Prossimi eventi",
+    "seeAll": "Tutti"
   },
   "Trials": {
     "ask": "Richiedi una prova",

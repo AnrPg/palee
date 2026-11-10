@@ -13,10 +13,8 @@ import { SiteLanguageSwitch } from "@/components/box-site/SiteLanguageSwitch";
 import { SiteProgrammesNavLink } from "@/components/box-site/SiteProgrammes";
 import { SiteRequestSheet } from "@/components/box-site/SiteRequestSheet";
 import { SiteSections } from "@/components/box-site/SiteSections";
-import type { CommunityClub } from "@/api/community";
-import { ClubSpace, useClubSpace } from "@/components/community/ClubPage";
-import { ComposeButton } from "@/components/community/ComposeSheet";
-import { useClubRealtime, useMyClubs } from "@/components/community/use-community";
+import { useMyClubs } from "@/components/community/use-community";
+import { ClubEventsTab } from "@/components/events/ClubEventsTab";
 import { BOTTOM_NAV_SPACE, useBottomTabBarVisible } from "@/components/nav/BottomNav";
 import { useSession } from "@/components/session-provider";
 import { FollowButton } from "@/components/social/FollowButton";
@@ -28,6 +26,7 @@ import { EnquiryCard } from "@/components/leads/LeadEnquiryForm";
 
 import { AboutTab, OpeningHours, type AboutPart } from "./AboutTab";
 import { BoxBento, type BentoItem } from "./BoxBento";
+import { BoxClubTab } from "./BoxClubTab";
 import { BoxEvents } from "./BoxEvents";
 import { BoxPosts } from "./BoxPosts";
 import { FollowerInviteNotice } from "./FollowerInviteNotice";
@@ -64,9 +63,6 @@ function subscribeHash(onChange: () => void) {
 }
 const readHash = () => window.location.hash.slice(1);
 const serverHash = () => "";
-// ADR-590: a channel link into the box's club (`/b/<slug>?channel=<id>`).
-const readChannel = () => new URLSearchParams(window.location.search).get("channel");
-const serverChannel = () => null;
 
 /**
  * Whether the box's name and actions have scrolled up out of view, so the
@@ -182,8 +178,8 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
       token={signedIn ? tokens!.access_token : null}
       loading={status === "loading" || (signedIn && clubs.isPending)}
       clubId={club?.id ?? null}
-      onOpenClub={tab === "club" ? null : () => select("club")}
       onGuestTrial={siteTrial}
+      onShare={() => void share()}
     />
   );
   // Desktop: the card on top of the right column (map, address, hours).
@@ -200,8 +196,8 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
       token={signedIn ? tokens!.access_token : null}
       loading={status === "loading" || (signedIn && clubs.isPending)}
       clubId={club?.id ?? null}
-      onOpenClub={tab === "club" ? null : () => select("club")}
       onGuestTrial={siteTrial}
+      onShare={() => void share()}
       row
     />
   );
@@ -212,7 +208,8 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
         {/* Phones: the cover runs edge to edge. Desktop (ANR 2026-11-09): it sits inside the page's width, rounded. */}
         <div className="lg:mx-auto lg:max-w-[75rem] lg:px-6 lg:pt-6">
           <div
-            className="relative h-52 w-full overflow-hidden sm:h-64 lg:h-80 lg:rounded-[2rem]"
+            // ADR-621: the tall cover is the «Σχετικά» showcase; the other tabs get a strip so their content starts high.
+            className={`relative h-52 w-full overflow-hidden sm:h-64 lg:rounded-[2rem] ${standalone || tab === "about" ? "lg:h-80" : "lg:h-36"}`}
             style={{ background: "linear-gradient(135deg, var(--deep), var(--primary))" }}
           >
             {page.profile.cover ? (
@@ -236,7 +233,7 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
                     <Icon name="images" />
                   </button>
                 ) : null}
-                <button type="button" onClick={() => void share()} aria-label={t("share")} className={roundButtonClass} style={{ background: "var(--media-control)", color: "var(--on-media)" }}>
+                <button type="button" onClick={() => void share()} aria-label={t("share")} className={`${roundButtonClass} ${member ? "lg:hidden" : ""}`} style={{ background: "var(--media-control)", color: "var(--on-media)" }}>
                   <Icon name={copied ? "check" : "share"} />
                 </button>
               </span>
@@ -248,14 +245,25 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
           <Logo page={page} className="-mt-10 lg:-mt-16" size={80} desktopSize={120} />
           <div className="min-w-0 lg:flex-1 lg:pb-2">
             <h1 className="mt-2 text-2xl font-extrabold lg:text-4xl lg:tracking-tight" style={{ color: "var(--text)" }}>{page.box.name}</h1>
-            {line ? <p className="text-sm lg:mt-1 lg:text-base" style={{ color: "var(--text-soft)" }}>{line}</p> : null}
+            {line || member ? (
+              <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm lg:mt-1 lg:text-base" style={{ color: "var(--text-soft)" }}>
+                {line ? <span>{line}</span> : null}
+                {/* ADR-621: who you are here, once, quietly (instead of «Μέλος του club» over the club). */}
+                {member && club ? (
+                  <span className="rounded-full px-2.5 py-0.5 text-xs font-bold" style={{ background: "var(--panel-raised)", color: "var(--text-soft)" }} data-testid="box-page-role">
+                    {club.role === "staff" ? t("staffBadge") : t("memberBadge")}
+                  </span>
+                ) : null}
+              </p>
+            ) : null}
           </div>
           {standalone || tab === "about" ? (
             <div className="lg:pb-2">
               <SiteProgrammesNavLink site={site} />
             </div>
           ) : null}
-          <div className="hidden lg:block lg:pb-2" data-testid="box-page-header-actions">{desktopActions}</div>
+          {/* Members have no fixed bar on phones: their one action (Μήνυμα) sits here on every screen. */}
+          <div className={`${member ? "mt-3 lg:mt-0" : "hidden"} lg:block lg:pb-2`} data-testid="box-page-header-actions">{desktopActions}</div>
         </div>
       </header>
 
@@ -310,7 +318,7 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
               </div>
               {stuck ? (
                 <div className="ms-auto hidden shrink-0 lg:block" data-testid="box-page-bar-action">
-                  <BarAction page={page} signedIn={signedIn} clubId={club?.id ?? null} onOpenClub={tab === "club" ? null : () => select("club")} loading={status === "loading" || (signedIn && clubs.isPending)} />
+                  <BarAction page={page} signedIn={signedIn} member={Boolean(club)} loading={status === "loading" || (signedIn && clubs.isPending)} />
                 </div>
               ) : null}
             </div>
@@ -318,6 +326,12 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
             <section id="box-tabpanel" role="tabpanel" aria-labelledby={`box-tab-${tab}`} className="px-4 pb-8 pt-5 lg:px-0 lg:pt-6">
               {tab === "about" ? (
                 (sections ?? <AboutBento page={page} onOpenPhoto={setViewer} aside={info} />)
+              ) : tab === "club" && club ? (
+                // ADR-621: the club brings its own side column (events, channels, members).
+                <BoxClubTab club={club} clubs={clubs.data ?? []} onShowEvents={() => select("events")} />
+              ) : tab === "schedule" && signedIn ? (
+                // ADR-621: the whole width, so desktop shows the week in seven columns.
+                <VisitorSchedule page={page} token={tokens!.access_token} member={Boolean(club)} />
               ) : (
                 <BoxBento
                   testId="box-tab-bento"
@@ -329,10 +343,9 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
                       plain: true,
                       node: (
                         <>
-                          {tab === "club" && club ? <BoxClubTab club={club} clubs={clubs.data ?? []} /> : null}
                           {status === "guest" && tab !== "club" ? <LockedTab slug={page.box.slug} tab={tab} /> : null}
-                          {tab === "schedule" && signedIn ? <VisitorSchedule page={page} token={tokens!.access_token} member={Boolean(club)} /> : null}
-                          {tab === "events" && signedIn ? <BoxEvents slug={page.box.slug} token={tokens!.access_token} /> : null}
+                          {/* ADR-621: one «Events» tab; the club's members see the club's events (members-only ones too) and staff create them here. */}
+                          {tab === "events" && signedIn ? (club ? <ClubEventsTab club={club} /> : <BoxEvents slug={page.box.slug} token={tokens!.access_token} />) : null}
                           {tab === "posts" && signedIn ? <BoxPosts slug={page.box.slug} token={tokens!.access_token} /> : null}
                         </>
                       ),
@@ -346,7 +359,10 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
       </div>
 
       {/* Phones: the actions stay in reach above the member tab bar (board 4 Q9). */}
-      <div aria-hidden="true" className={`${club || standalone ? "h-24" : "h-36"} lg:hidden`} />
+      {/* ADR-621: a member's one action, «Μήνυμα», is in the header, so members get no fixed bar. */}
+      {member ? null : (
+        <>
+      <div aria-hidden="true" className={`${standalone ? "h-24" : "h-36"} lg:hidden`} />
       <div
         className="fixed inset-x-0 z-(--z-sticky) px-4 pt-3 lg:hidden"
         style={{
@@ -359,6 +375,8 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
       >
         <div className="mx-auto max-w-xl">{actions}</div>
       </div>
+        </>
+      )}
 
       {viewer !== null && photos.length > 0 ? <PhotoViewer photos={photos} start={viewer} onClose={() => setViewer(null)} /> : null}
       {request ? <SiteRequestSheet slug={page.box.slug} kind={request} privacyHref={`${basePath}/privacy${language === "box" ? "" : `?lang=${encodeURIComponent(language)}`}`} onClose={() => setRequest(null)} /> : null}
@@ -449,30 +467,9 @@ function InfoCard({
   );
 }
 
-/** The sticky bar's one action on desktop: «Γίνε μέλος box», or the club for members. */
-function BarAction({
-  page,
-  signedIn,
-  clubId,
-  onOpenClub,
-  loading,
-}: {
-  page: PublicBoxPage;
-  signedIn: boolean;
-  clubId: string | null;
-  /** ADR-590: the club is this page's «Club» tab; null while it is open. */
-  onOpenClub: (() => void) | null;
-  loading: boolean;
-}) {
-  const t = useTranslations("BoxPage");
-  if (loading) return null;
-  if (clubId)
-    return onOpenClub ? (
-      <button type="button" onClick={onOpenClub} className="flex min-h-11 items-center gap-2 whitespace-nowrap rounded-2xl px-4 text-sm font-bold" style={{ background: "var(--panel-raised)", border: "1px solid var(--border)", color: "var(--text)" }}>
-        <Icon name="check" size={16} />
-        {t("memberOpenClub")}
-      </button>
-    ) : null;
+/** The sticky bar's one action on desktop: «Γίνε μέλος box»; members have the «Club» tab instead (ADR-621). */
+function BarAction({ page, signedIn, member, loading }: { page: PublicBoxPage; signedIn: boolean; member: boolean; loading: boolean }) {
+  if (loading || member) return null;
   return <JoinBoxAction page={page} signedIn={signedIn} compact />;
 }
 
@@ -505,7 +502,8 @@ function Logo({ page, size = 80, desktopSize, bare = false, className = "" }: { 
 
 /**
  * «Γίνε μέλος box» first, then trial and follow (board 4 Q9, board 6 Q1,
- * ANR 2026-11-07); members open their club instead.
+ * ANR 2026-11-07). Members have the «Club» tab, so their actions are a
+ * labelled «Μήνυμα» and «Κοινοποίηση» (ADR-621).
  * Anyone may write to the box (ADR-282): «Μήνυμα» opens the chat, after
  * signing in when needed.
  */
@@ -514,18 +512,18 @@ function Actions({
   token,
   loading,
   clubId,
-  onOpenClub,
   onGuestTrial,
+  onShare,
   row = false,
 }: {
   page: PublicBoxPage;
   token: string | null;
   loading: boolean;
   clubId: string | null;
-  /** ADR-590: the club is this page's «Club» tab; null while it is open. */
-  onOpenClub: (() => void) | null;
   /** ADR-388: a signed-out visitor asks through the website's request form instead of signing in first. */
   onGuestTrial: (() => void) | null;
+  /** Members: the header's own share button (the cover's hides on desktop). */
+  onShare: () => void;
   /** Desktop header (ANR 2026-11-09): one row beside the box's name. */
   row?: boolean;
 }) {
@@ -535,9 +533,10 @@ function Actions({
   const tTrials = useTranslations("Trials");
   if (loading) return <div className={`h-11 animate-pulse rounded-2xl ${row ? "w-96" : ""}`} style={{ background: "var(--panel-raised)" }} />;
   const chat = boxChatHref(page.box.slug);
+  const chatHref = signedIn ? chat : `/login?next=${encodeURIComponent(chat)}`;
   const message = (
     <Link
-      href={signedIn ? chat : `/login?next=${encodeURIComponent(chat)}`}
+      href={chatHref}
       aria-label={t("messageBox")}
       title={t("messageBox")}
       className="grid min-h-11 min-w-11 shrink-0 place-items-center rounded-2xl"
@@ -549,22 +548,27 @@ function Actions({
   );
   if (clubId)
     return (
-      <div className={`flex items-start gap-2 ${onOpenClub ? "" : "justify-end"}`}>
-        {onOpenClub ? (
-        // Padding on both sides and room to wrap: the label must never touch or clip
-        // the edges, on 320px phones and in long locales alike (ANR 2026-11-10).
+      <div className="flex items-center gap-2">
+        <Link
+          href={chatHref}
+          className="flex min-h-11 items-center gap-2 rounded-2xl px-4 text-sm font-bold"
+          style={{ background: "var(--panel-raised)", border: "1px solid var(--border)", color: "var(--text)" }}
+          data-testid="box-page-message"
+        >
+          <Icon name="message-circle" size={18} />
+          {t("message")}
+        </Link>
         <button
           type="button"
-          onClick={onOpenClub}
-          className={`flex min-h-11 min-w-0 items-center justify-center gap-2 rounded-2xl px-4 py-2 text-center text-sm font-bold leading-tight ${row ? "shrink-0" : "flex-1"}`}
+          onClick={onShare}
+          aria-label={t("share")}
+          title={t("share")}
+          className="hidden min-h-11 min-w-11 place-items-center rounded-2xl lg:grid"
           style={{ background: "var(--panel-raised)", border: "1px solid var(--border)", color: "var(--text)" }}
-          data-testid="box-page-open-club"
+          data-testid="box-page-header-share"
         >
-          <span className="shrink-0"><Icon name="check" size={16} /></span>
-          <span className="min-w-0 text-balance">{t("memberOpenClub")}</span>
+          <Icon name="share" size={18} />
         </button>
-        ) : null}
-        {message}
       </div>
     );
   return (
@@ -636,25 +640,6 @@ function SiteActions({ site, onRequest }: { site: PublicSite; onRequest: (kind: 
           <Icon name="message-circle" size={18} />
         </button>
       ) : null}
-    </div>
-  );
-}
-
-/**
- * ADR-590: the box's club inside its page, for its members and staff: the
- * same space as the club page (Ροή, Κανάλια, Events, Μέλη) with «Νέα
- * ανάρτηση». A channel link (`?channel=`) opens that channel.
- */
-function BoxClubTab({ club, clubs }: { club: CommunityClub; clubs: CommunityClub[] }) {
-  const channel = useSyncExternalStore(subscribeNever, readChannel, serverChannel);
-  useClubRealtime(clubs);
-  const space = useClubSpace(club.id, club, channel);
-  return (
-    <div className="flex flex-col gap-4" data-testid="box-club-tab">
-      <div className="flex justify-end">
-        <ComposeButton clubs={clubs} clubId={club.id} channelId={space.openChannel?.id} />
-      </div>
-      <ClubSpace club={club} clubs={clubs} space={space} />
     </div>
   );
 }
