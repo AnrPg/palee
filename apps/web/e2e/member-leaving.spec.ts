@@ -110,6 +110,8 @@ test.describe("member leaving (staff)", () => {
     await page.route("**/api/org/box1/admin/finance/members/u-2/**", (route) => {
       const request = route.request();
       const path = new URL(request.url()).pathname;
+      // ADR-612: the profile also reads the member's gifts and graces.
+      if (path.endsWith("/benefits")) return route.fulfill(json({ benefits: [] }));
       calls.push({ method: request.method(), path, body: request.method() === "DELETE" ? {} : bodyOf(request) });
       if (path.endsWith("/auto-renew")) {
         state.autoRenew = bodyOf(request).auto_renew;

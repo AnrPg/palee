@@ -138,6 +138,7 @@ defmodule PaleeWeb.AdminMemberBenefitControllerTest do
 
     assert revoked["state"] == "revoked"
     assert revoked["revocation"]["by_id"] == ctx.admin.id
+    assert revoked["revocation"]["by_name"] == "gift_admin"
     assert revoked["revocation"]["reason"] == "Paid at the desk"
     refute membership(ctx).entitlement_source == "staff_grace"
 

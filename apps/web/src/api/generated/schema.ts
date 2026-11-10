@@ -8562,6 +8562,41 @@ export interface paths {
         patch: operations["PaleeWeb.AdminFinanceController.update_member"];
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/finance/members/{id}/benefits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** What the box gave a member for free, newest first */
+        get: operations["PaleeWeb.AdminMemberBenefitController.index"];
+        put?: never;
+        /** Give a member a grace, free access, extra uses, a package or a forgiven debt */
+        post: operations["PaleeWeb.AdminMemberBenefitController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/finance/members/{id}/benefits/{benefit_id}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Revoke a grace, free access or extra uses */
+        post: operations["PaleeWeb.AdminMemberBenefitController.revoke"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/finance/members/{id}/credits": {
         parameters: {
             query?: never;
@@ -25873,6 +25908,11 @@ export interface components {
                  */
                 access_until: string | null;
                 /**
+                 * @description ADR-612: a grace or free access the box gave; it lasts through `grace_until`
+                 * @enum {string|null}
+                 */
+                benefit: "grace" | "free_access" | null;
+                /**
                  * Format: date
                  * @description The last day of the grace the member is in
                  */
@@ -39114,6 +39154,161 @@ export interface components {
              */
             content_type: "image/jpeg" | "image/webp";
         };
+        /**
+         * MemberBenefit
+         * @description A grant from the insert-only ledger: what was given, by whom (their roles then), when, why and what it touched
+         */
+        MemberBenefit: {
+            /** @enum {string} */
+            action: "grant" | "revoke";
+            amount_cents: number | null;
+            /** @description extra_uses: allowance, quantity, period, usage_entry_id, subscription_id; package: package_id, package_name, pricing, list_price_cents, price_cents, subscription_id; debt_forgiven: invoices */
+            details: {
+                [key: string]: unknown;
+            };
+            /** Format: date */
+            ends_on: string | null;
+            /** Format: date-time */
+            given_at: string;
+            /** Format: uuid */
+            given_by_id: string;
+            given_by_name: string | null;
+            given_by_roles: string[];
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            kind: "grace" | "free_access" | "extra_uses" | "package" | "debt_forgiven";
+            reason: string | null;
+            request_id: string | null;
+            revocation: {
+                /** Format: date-time */
+                at: string;
+                /** Format: uuid */
+                by_id: string;
+                by_name: string | null;
+                by_roles: string[];
+                reason: string | null;
+                request_id: string | null;
+            } | null;
+            /** Format: date */
+            starts_on: string | null;
+            /** @enum {string} */
+            state: "active" | "upcoming" | "ended" | "revoked" | "given";
+        };
+        /**
+         * MemberBenefitGrant
+         * @description kind grace or free_access: ends_on; extra_uses: allowance, quantity, period; package: package_id, pricing; debt_forgiven: invoice_ids
+         */
+        MemberBenefitGrant: {
+            allowance?: string;
+            /** Format: date */
+            ends_on?: string;
+            idempotency_key: string;
+            invoice_ids?: string[];
+            /** @enum {string} */
+            kind: "grace" | "free_access" | "extra_uses" | "package" | "debt_forgiven";
+            /** Format: uuid */
+            package_id?: string;
+            /** @enum {string} */
+            period?: "calendar_week" | "calendar_month" | "subscription_period";
+            pricing?: {
+                /** @enum {string} */
+                mode: "this_period_free" | "price";
+                price_cents?: number;
+            };
+            quantity?: number;
+            reason?: string | null;
+        };
+        /** MemberBenefitResponse */
+        MemberBenefitResponse: {
+            /**
+             * MemberBenefit
+             * @description A grant from the insert-only ledger: what was given, by whom (their roles then), when, why and what it touched
+             */
+            benefit: {
+                /** @enum {string} */
+                action: "grant" | "revoke";
+                amount_cents: number | null;
+                /** @description extra_uses: allowance, quantity, period, usage_entry_id, subscription_id; package: package_id, package_name, pricing, list_price_cents, price_cents, subscription_id; debt_forgiven: invoices */
+                details: {
+                    [key: string]: unknown;
+                };
+                /** Format: date */
+                ends_on: string | null;
+                /** Format: date-time */
+                given_at: string;
+                /** Format: uuid */
+                given_by_id: string;
+                given_by_name: string | null;
+                given_by_roles: string[];
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                kind: "grace" | "free_access" | "extra_uses" | "package" | "debt_forgiven";
+                reason: string | null;
+                request_id: string | null;
+                revocation: {
+                    /** Format: date-time */
+                    at: string;
+                    /** Format: uuid */
+                    by_id: string;
+                    by_name: string | null;
+                    by_roles: string[];
+                    reason: string | null;
+                    request_id: string | null;
+                } | null;
+                /** Format: date */
+                starts_on: string | null;
+                /** @enum {string} */
+                state: "active" | "upcoming" | "ended" | "revoked" | "given";
+            };
+            replayed: boolean;
+        };
+        /** MemberBenefitRevoke */
+        MemberBenefitRevoke: {
+            idempotency_key: string;
+            reason?: string | null;
+        };
+        /** MemberBenefitsResponse */
+        MemberBenefitsResponse: {
+            benefits: {
+                /** @enum {string} */
+                action: "grant" | "revoke";
+                amount_cents: number | null;
+                /** @description extra_uses: allowance, quantity, period, usage_entry_id, subscription_id; package: package_id, package_name, pricing, list_price_cents, price_cents, subscription_id; debt_forgiven: invoices */
+                details: {
+                    [key: string]: unknown;
+                };
+                /** Format: date */
+                ends_on: string | null;
+                /** Format: date-time */
+                given_at: string;
+                /** Format: uuid */
+                given_by_id: string;
+                given_by_name: string | null;
+                given_by_roles: string[];
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                kind: "grace" | "free_access" | "extra_uses" | "package" | "debt_forgiven";
+                reason: string | null;
+                request_id: string | null;
+                revocation: {
+                    /** Format: date-time */
+                    at: string;
+                    /** Format: uuid */
+                    by_id: string;
+                    by_name: string | null;
+                    by_roles: string[];
+                    reason: string | null;
+                    request_id: string | null;
+                } | null;
+                /** Format: date */
+                starts_on: string | null;
+                /** @enum {string} */
+                state: "active" | "upcoming" | "ended" | "revoked" | "given";
+            }[];
+        };
         /** MemberPerk */
         MemberPerk: {
             benefit: components["schemas"]["PerkBenefit"];
@@ -39362,6 +39557,11 @@ export interface components {
              * @description Leaving or former: the last day of the package they kept
              */
             access_until: string | null;
+            /**
+             * @description ADR-612: a grace or free access the box gave; it lasts through `grace_until`
+             * @enum {string|null}
+             */
+            benefit: "grace" | "free_access" | null;
             /**
              * Format: date
              * @description The last day of the grace the member is in
@@ -39633,6 +39833,11 @@ export interface components {
                      * @description Leaving or former: the last day of the package they kept
                      */
                     access_until: string | null;
+                    /**
+                     * @description ADR-612: a grace or free access the box gave; it lasts through `grace_until`
+                     * @enum {string|null}
+                     */
+                    benefit: "grace" | "free_access" | null;
                     /**
                      * Format: date
                      * @description The last day of the grace the member is in
@@ -66711,6 +66916,11 @@ export interface operations {
                                  * @description Leaving or former: the last day of the package they kept
                                  */
                                 access_until: string | null;
+                                /**
+                                 * @description ADR-612: a grace or free access the box gave; it lasts through `grace_until`
+                                 * @enum {string|null}
+                                 */
+                                benefit: "grace" | "free_access" | null;
                                 /**
                                  * Format: date
                                  * @description The last day of the grace the member is in
@@ -101190,6 +101400,338 @@ export interface operations {
                     "application/json": {
                         [key: string]: unknown;
                     };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminMemberBenefitController.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The member's user id */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Benefits */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        benefits: {
+                            /** @enum {string} */
+                            action: "grant" | "revoke";
+                            amount_cents: number | null;
+                            /** @description extra_uses: allowance, quantity, period, usage_entry_id, subscription_id; package: package_id, package_name, pricing, list_price_cents, price_cents, subscription_id; debt_forgiven: invoices */
+                            details: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: date */
+                            ends_on: string | null;
+                            /** Format: date-time */
+                            given_at: string;
+                            /** Format: uuid */
+                            given_by_id: string;
+                            given_by_name: string | null;
+                            given_by_roles: string[];
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "grace" | "free_access" | "extra_uses" | "package" | "debt_forgiven";
+                            reason: string | null;
+                            request_id: string | null;
+                            revocation: {
+                                /** Format: date-time */
+                                at: string;
+                                /** Format: uuid */
+                                by_id: string;
+                                by_name: string | null;
+                                by_roles: string[];
+                                reason: string | null;
+                                request_id: string | null;
+                            } | null;
+                            /** Format: date */
+                            starts_on: string | null;
+                            /** @enum {string} */
+                            state: "active" | "upcoming" | "ended" | "revoked" | "given";
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminMemberBenefitController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The member's user id */
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description Benefit */
+        requestBody?: {
+            content: {
+                "application/json": {
+                    allowance?: string;
+                    /** Format: date */
+                    ends_on?: string;
+                    idempotency_key: string;
+                    invoice_ids?: string[];
+                    /** @enum {string} */
+                    kind: "grace" | "free_access" | "extra_uses" | "package" | "debt_forgiven";
+                    /** Format: uuid */
+                    package_id?: string;
+                    /** @enum {string} */
+                    period?: "calendar_week" | "calendar_month" | "subscription_period";
+                    pricing?: {
+                        /** @enum {string} */
+                        mode: "this_period_free" | "price";
+                        price_cents?: number;
+                    };
+                    quantity?: number;
+                    reason?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Already given (same idempotency key) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * MemberBenefit
+                         * @description A grant from the insert-only ledger: what was given, by whom (their roles then), when, why and what it touched
+                         */
+                        benefit: {
+                            /** @enum {string} */
+                            action: "grant" | "revoke";
+                            amount_cents: number | null;
+                            /** @description extra_uses: allowance, quantity, period, usage_entry_id, subscription_id; package: package_id, package_name, pricing, list_price_cents, price_cents, subscription_id; debt_forgiven: invoices */
+                            details: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: date */
+                            ends_on: string | null;
+                            /** Format: date-time */
+                            given_at: string;
+                            /** Format: uuid */
+                            given_by_id: string;
+                            given_by_name: string | null;
+                            given_by_roles: string[];
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "grace" | "free_access" | "extra_uses" | "package" | "debt_forgiven";
+                            reason: string | null;
+                            request_id: string | null;
+                            revocation: {
+                                /** Format: date-time */
+                                at: string;
+                                /** Format: uuid */
+                                by_id: string;
+                                by_name: string | null;
+                                by_roles: string[];
+                                reason: string | null;
+                                request_id: string | null;
+                            } | null;
+                            /** Format: date */
+                            starts_on: string | null;
+                            /** @enum {string} */
+                            state: "active" | "upcoming" | "ended" | "revoked" | "given";
+                        };
+                        replayed: boolean;
+                    };
+                };
+            };
+            /** @description Benefit */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * MemberBenefit
+                         * @description A grant from the insert-only ledger: what was given, by whom (their roles then), when, why and what it touched
+                         */
+                        benefit: {
+                            /** @enum {string} */
+                            action: "grant" | "revoke";
+                            amount_cents: number | null;
+                            /** @description extra_uses: allowance, quantity, period, usage_entry_id, subscription_id; package: package_id, package_name, pricing, list_price_cents, price_cents, subscription_id; debt_forgiven: invoices */
+                            details: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: date */
+                            ends_on: string | null;
+                            /** Format: date-time */
+                            given_at: string;
+                            /** Format: uuid */
+                            given_by_id: string;
+                            given_by_name: string | null;
+                            given_by_roles: string[];
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "grace" | "free_access" | "extra_uses" | "package" | "debt_forgiven";
+                            reason: string | null;
+                            request_id: string | null;
+                            revocation: {
+                                /** Format: date-time */
+                                at: string;
+                                /** Format: uuid */
+                                by_id: string;
+                                by_name: string | null;
+                                by_roles: string[];
+                                reason: string | null;
+                                request_id: string | null;
+                            } | null;
+                            /** Format: date */
+                            starts_on: string | null;
+                            /** @enum {string} */
+                            state: "active" | "upcoming" | "ended" | "revoked" | "given";
+                        };
+                        replayed: boolean;
+                    };
+                };
+            };
+            /** @description No such member or benefit */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Not possible now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Not valid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminMemberBenefitController.revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The member's user id */
+                id: string;
+                benefit_id: string;
+            };
+            cookie?: never;
+        };
+        /** @description Revocation */
+        requestBody?: {
+            content: {
+                "application/json": {
+                    idempotency_key: string;
+                    reason?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Benefit */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * MemberBenefit
+                         * @description A grant from the insert-only ledger: what was given, by whom (their roles then), when, why and what it touched
+                         */
+                        benefit: {
+                            /** @enum {string} */
+                            action: "grant" | "revoke";
+                            amount_cents: number | null;
+                            /** @description extra_uses: allowance, quantity, period, usage_entry_id, subscription_id; package: package_id, package_name, pricing, list_price_cents, price_cents, subscription_id; debt_forgiven: invoices */
+                            details: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: date */
+                            ends_on: string | null;
+                            /** Format: date-time */
+                            given_at: string;
+                            /** Format: uuid */
+                            given_by_id: string;
+                            given_by_name: string | null;
+                            given_by_roles: string[];
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "grace" | "free_access" | "extra_uses" | "package" | "debt_forgiven";
+                            reason: string | null;
+                            request_id: string | null;
+                            revocation: {
+                                /** Format: date-time */
+                                at: string;
+                                /** Format: uuid */
+                                by_id: string;
+                                by_name: string | null;
+                                by_roles: string[];
+                                reason: string | null;
+                                request_id: string | null;
+                            } | null;
+                            /** Format: date */
+                            starts_on: string | null;
+                            /** @enum {string} */
+                            state: "active" | "upcoming" | "ended" | "revoked" | "given";
+                        };
+                        replayed: boolean;
+                    };
+                };
+            };
+            /** @description No such member or benefit */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Not possible now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Not valid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
                 };
             };
         };

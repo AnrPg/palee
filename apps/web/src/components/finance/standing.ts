@@ -11,13 +11,15 @@ export type Standing = {
   access_until: string | null;
   outstanding_cents: number;
   unpaid_since: string | null;
+  /** ADR-612: the grace or free access the box gave; its last day is `grace_until`. */
+  benefit?: "grace" | "free_access" | null;
 };
 
 export type StandingPart =
   | { key: "linePackageUntil"; date: string }
   | { key: "lineOwed"; cents: number }
   | { key: "lineOwedSince"; cents: number; date: string }
-  | { key: "lineGrace"; date: string; days: number };
+  | { key: "lineGrace" | "lineBoxGrace" | "lineBoxFree"; date: string; days: number };
 
 /** The local calendar day of `now`, as `YYYY-MM-DD`. */
 export function localDay(now: Date) {
@@ -49,6 +51,9 @@ export function standingParts(standing: Standing | null | undefined, today: stri
     );
   }
   const grace = standing.grace_until?.slice(0, 10);
-  if (grace && grace >= today) parts.push({ key: "lineGrace", date: grace, days: daysBetween(today, grace) });
+  if (grace && grace >= today) {
+    const key = standing.benefit === "grace" ? "lineBoxGrace" : standing.benefit === "free_access" ? "lineBoxFree" : "lineGrace";
+    parts.push({ key, date: grace, days: daysBetween(today, grace) });
+  }
   return parts;
 }

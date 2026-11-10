@@ -28,6 +28,7 @@ import type { EffectiveEntitlement } from "@/api/my-finance";
 import { setFinanceMemberAutoRenew, updateFinanceMember } from "@/api/finance";
 import { shouldShowAllowanceQuota } from "@/components/finance/billing-entitlement-visibility";
 import { dossierMode, grantableAllowances, membershipDateCards, packageSubscriptionLabel, prSectionContentCount, visibleAdminProfileSections } from "@/components/admin/users/admin-user-profile";
+import { MemberBenefits } from "@/components/admin/users/MemberBenefits";
 import { MembershipFreezes } from "@/components/admin/users/MembershipFreezes";
 import { MembershipLeaving } from "@/components/admin/users/MembershipLeaving";
 import {
@@ -318,10 +319,14 @@ function FinanceDetails({
   effectiveEntitlement,
   creditBalance,
   onRefresh,
+  nickname,
+  canGiveBenefits,
 }: {
   finance: AdminUserFinance;
   token: string;
   userId: string;
+  nickname: string;
+  canGiveBenefits: boolean;
   effectiveEntitlement: EffectiveEntitlement | null | undefined;
   creditBalance: unknown;
   onRefresh: () => Promise<unknown>;
@@ -422,6 +427,17 @@ function FinanceDetails({
               />
             ) : null}
             <MembershipFreezes token={token} userId={userId} subscriptions={subscriptions} onRefresh={onRefresh} />
+            {/* ADR-612: «Δώρο ή χάρη», and who gave what, when and why. */}
+            <MemberBenefits
+              token={token}
+              userId={userId}
+              nickname={nickname}
+              allowances={grantableAllowances(effectiveEntitlement?.allowances)
+                .filter((key) => key !== "coaching_touchpoints")
+                .map((key) => ({ key, label: allowanceLabel(key, i18n, effectiveEntitlement?.class_type_names) }))}
+              canGive={canGiveBenefits}
+              onRefresh={onRefresh}
+            />
             <MembershipLeaving
               token={token}
               userId={userId}
@@ -871,7 +887,7 @@ export function AdminUserProfile({ userId }: { userId: string }) {
 
           {token && trains && inTab("schedule") ? <Panel id="schedule" title={i18n("featureScheduleProgramming")}><UserProgrammingSchedule key={scheduleVersion} token={token} userId={userId} role={clientRole ?? "member"} nickname={profile.identity.nickname} programming={profile.programming} assignRequestDate={assignRequestDate} onAssignRequestHandled={clearAssignRequest} /></Panel> : null}
 
-          {inTab("finance") ? <Panel id="finance" title={i18n("finance1b48d3f")}>{finance.data && token ? <FinanceDetails finance={finance.data} token={token} userId={userId} effectiveEntitlement={effectiveEntitlement} creditBalance={finance.data?.summary?.credit_balance ?? 0} onRefresh={() => queryClient.invalidateQueries({ queryKey: ["admin", "users", userId, "finance"] })} /> : null}</Panel> : null}
+          {inTab("finance") ? <Panel id="finance" title={i18n("finance1b48d3f")}>{finance.data && token ? <FinanceDetails finance={finance.data} token={token} userId={userId} nickname={profile?.identity.nickname ?? ""} canGiveBenefits={can(actor, "take_payments")} effectiveEntitlement={effectiveEntitlement} creditBalance={finance.data?.summary?.credit_balance ?? 0} onRefresh={() => queryClient.invalidateQueries({ queryKey: ["admin", "users", userId, "finance"] })} /> : null}</Panel> : null}
 
 
           {token && inTab("training_history") ? (

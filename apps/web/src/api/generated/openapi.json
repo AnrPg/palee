@@ -14837,6 +14837,15 @@
                 "nullable": true,
                 "type": "string"
               },
+              "benefit": {
+                "description": "ADR-612: a grace or free access the box gave; it lasts through `grace_until`",
+                "enum": [
+                  "grace",
+                  "free_access"
+                ],
+                "nullable": true,
+                "type": "string"
+              },
               "grace_until": {
                 "description": "The last day of the grace the member is in",
                 "format": "date",
@@ -14872,10 +14881,11 @@
               }
             },
             "required": [
-              "status",
-              "grace_until",
               "access_until",
+              "benefit",
+              "grace_until",
               "outstanding_cents",
+              "status",
               "unpaid_since"
             ],
             "title": "MemberStanding",
@@ -58200,6 +58210,554 @@
         "title": "MediaUploadRequest",
         "type": "object"
       },
+      "MemberBenefit": {
+        "description": "A grant from the insert-only ledger: what was given, by whom (their roles then), when, why and what it touched",
+        "properties": {
+          "action": {
+            "enum": [
+              "grant",
+              "revoke"
+            ],
+            "type": "string"
+          },
+          "amount_cents": {
+            "minimum": 0,
+            "nullable": true,
+            "type": "integer"
+          },
+          "details": {
+            "additionalProperties": true,
+            "description": "extra_uses: allowance, quantity, period, usage_entry_id, subscription_id; package: package_id, package_name, pricing, list_price_cents, price_cents, subscription_id; debt_forgiven: invoices",
+            "type": "object"
+          },
+          "ends_on": {
+            "format": "date",
+            "nullable": true,
+            "type": "string"
+          },
+          "given_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "given_by_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "given_by_name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "given_by_roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "grace",
+              "free_access",
+              "extra_uses",
+              "package",
+              "debt_forgiven"
+            ],
+            "type": "string"
+          },
+          "reason": {
+            "nullable": true,
+            "type": "string"
+          },
+          "request_id": {
+            "nullable": true,
+            "type": "string"
+          },
+          "revocation": {
+            "nullable": true,
+            "properties": {
+              "at": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "by_id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "by_name": {
+                "nullable": true,
+                "type": "string"
+              },
+              "by_roles": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "reason": {
+                "nullable": true,
+                "type": "string"
+              },
+              "request_id": {
+                "nullable": true,
+                "type": "string"
+              }
+            },
+            "required": [
+              "at",
+              "by_id",
+              "by_name",
+              "by_roles",
+              "reason",
+              "request_id"
+            ],
+            "type": "object"
+          },
+          "starts_on": {
+            "format": "date",
+            "nullable": true,
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "active",
+              "upcoming",
+              "ended",
+              "revoked",
+              "given"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "action",
+          "amount_cents",
+          "details",
+          "ends_on",
+          "given_at",
+          "given_by_id",
+          "given_by_name",
+          "given_by_roles",
+          "id",
+          "kind",
+          "reason",
+          "request_id",
+          "revocation",
+          "starts_on",
+          "state"
+        ],
+        "title": "MemberBenefit",
+        "type": "object"
+      },
+      "MemberBenefitGrant": {
+        "description": "kind grace or free_access: ends_on; extra_uses: allowance, quantity, period; package: package_id, pricing; debt_forgiven: invoice_ids",
+        "properties": {
+          "allowance": {
+            "type": "string"
+          },
+          "ends_on": {
+            "format": "date",
+            "type": "string"
+          },
+          "idempotency_key": {
+            "maxLength": 200,
+            "minLength": 8,
+            "type": "string"
+          },
+          "invoice_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "kind": {
+            "enum": [
+              "grace",
+              "free_access",
+              "extra_uses",
+              "package",
+              "debt_forgiven"
+            ],
+            "type": "string"
+          },
+          "package_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "period": {
+            "enum": [
+              "calendar_week",
+              "calendar_month",
+              "subscription_period"
+            ],
+            "type": "string"
+          },
+          "pricing": {
+            "properties": {
+              "mode": {
+                "enum": [
+                  "this_period_free",
+                  "price"
+                ],
+                "type": "string"
+              },
+              "price_cents": {
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "mode"
+            ],
+            "type": "object"
+          },
+          "quantity": {
+            "maximum": 10000,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "reason": {
+            "maxLength": 500,
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "idempotency_key",
+          "kind"
+        ],
+        "title": "MemberBenefitGrant",
+        "type": "object"
+      },
+      "MemberBenefitResponse": {
+        "properties": {
+          "benefit": {
+            "description": "A grant from the insert-only ledger: what was given, by whom (their roles then), when, why and what it touched",
+            "properties": {
+              "action": {
+                "enum": [
+                  "grant",
+                  "revoke"
+                ],
+                "type": "string"
+              },
+              "amount_cents": {
+                "minimum": 0,
+                "nullable": true,
+                "type": "integer"
+              },
+              "details": {
+                "additionalProperties": true,
+                "description": "extra_uses: allowance, quantity, period, usage_entry_id, subscription_id; package: package_id, package_name, pricing, list_price_cents, price_cents, subscription_id; debt_forgiven: invoices",
+                "type": "object"
+              },
+              "ends_on": {
+                "format": "date",
+                "nullable": true,
+                "type": "string"
+              },
+              "given_at": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "given_by_id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "given_by_name": {
+                "nullable": true,
+                "type": "string"
+              },
+              "given_by_roles": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "grace",
+                  "free_access",
+                  "extra_uses",
+                  "package",
+                  "debt_forgiven"
+                ],
+                "type": "string"
+              },
+              "reason": {
+                "nullable": true,
+                "type": "string"
+              },
+              "request_id": {
+                "nullable": true,
+                "type": "string"
+              },
+              "revocation": {
+                "nullable": true,
+                "properties": {
+                  "at": {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  "by_id": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "by_name": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "by_roles": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "reason": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "request_id": {
+                    "nullable": true,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "at",
+                  "by_id",
+                  "by_name",
+                  "by_roles",
+                  "reason",
+                  "request_id"
+                ],
+                "type": "object"
+              },
+              "starts_on": {
+                "format": "date",
+                "nullable": true,
+                "type": "string"
+              },
+              "state": {
+                "enum": [
+                  "active",
+                  "upcoming",
+                  "ended",
+                  "revoked",
+                  "given"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "action",
+              "amount_cents",
+              "details",
+              "ends_on",
+              "given_at",
+              "given_by_id",
+              "given_by_name",
+              "given_by_roles",
+              "id",
+              "kind",
+              "reason",
+              "request_id",
+              "revocation",
+              "starts_on",
+              "state"
+            ],
+            "title": "MemberBenefit",
+            "type": "object"
+          },
+          "replayed": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "benefit",
+          "replayed"
+        ],
+        "title": "MemberBenefitResponse",
+        "type": "object"
+      },
+      "MemberBenefitRevoke": {
+        "properties": {
+          "idempotency_key": {
+            "maxLength": 200,
+            "minLength": 8,
+            "type": "string"
+          },
+          "reason": {
+            "maxLength": 500,
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "idempotency_key"
+        ],
+        "title": "MemberBenefitRevoke",
+        "type": "object"
+      },
+      "MemberBenefitsResponse": {
+        "properties": {
+          "benefits": {
+            "items": {
+              "description": "A grant from the insert-only ledger: what was given, by whom (their roles then), when, why and what it touched",
+              "properties": {
+                "action": {
+                  "enum": [
+                    "grant",
+                    "revoke"
+                  ],
+                  "type": "string"
+                },
+                "amount_cents": {
+                  "minimum": 0,
+                  "nullable": true,
+                  "type": "integer"
+                },
+                "details": {
+                  "additionalProperties": true,
+                  "description": "extra_uses: allowance, quantity, period, usage_entry_id, subscription_id; package: package_id, package_name, pricing, list_price_cents, price_cents, subscription_id; debt_forgiven: invoices",
+                  "type": "object"
+                },
+                "ends_on": {
+                  "format": "date",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "given_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "given_by_id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "given_by_name": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "given_by_roles": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "kind": {
+                  "enum": [
+                    "grace",
+                    "free_access",
+                    "extra_uses",
+                    "package",
+                    "debt_forgiven"
+                  ],
+                  "type": "string"
+                },
+                "reason": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "request_id": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "revocation": {
+                  "nullable": true,
+                  "properties": {
+                    "at": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "by_id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "by_name": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "by_roles": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "reason": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "at",
+                    "by_id",
+                    "by_name",
+                    "by_roles",
+                    "reason",
+                    "request_id"
+                  ],
+                  "type": "object"
+                },
+                "starts_on": {
+                  "format": "date",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "state": {
+                  "enum": [
+                    "active",
+                    "upcoming",
+                    "ended",
+                    "revoked",
+                    "given"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "action",
+                "amount_cents",
+                "details",
+                "ends_on",
+                "given_at",
+                "given_by_id",
+                "given_by_name",
+                "given_by_roles",
+                "id",
+                "kind",
+                "reason",
+                "request_id",
+                "revocation",
+                "starts_on",
+                "state"
+              ],
+              "title": "MemberBenefit",
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "benefits"
+        ],
+        "title": "MemberBenefitsResponse",
+        "type": "object"
+      },
       "MemberPerk": {
         "properties": {
           "benefit": {
@@ -58966,6 +59524,15 @@
             "nullable": true,
             "type": "string"
           },
+          "benefit": {
+            "description": "ADR-612: a grace or free access the box gave; it lasts through `grace_until`",
+            "enum": [
+              "grace",
+              "free_access"
+            ],
+            "nullable": true,
+            "type": "string"
+          },
           "grace_until": {
             "description": "The last day of the grace the member is in",
             "format": "date",
@@ -59001,10 +59568,11 @@
           }
         },
         "required": [
-          "status",
-          "grace_until",
           "access_until",
+          "benefit",
+          "grace_until",
           "outstanding_cents",
+          "status",
           "unpaid_since"
         ],
         "title": "MemberStanding",
@@ -59832,6 +60400,15 @@
                       "nullable": true,
                       "type": "string"
                     },
+                    "benefit": {
+                      "description": "ADR-612: a grace or free access the box gave; it lasts through `grace_until`",
+                      "enum": [
+                        "grace",
+                        "free_access"
+                      ],
+                      "nullable": true,
+                      "type": "string"
+                    },
                     "grace_until": {
                       "description": "The last day of the grace the member is in",
                       "format": "date",
@@ -59867,10 +60444,11 @@
                     }
                   },
                   "required": [
-                    "status",
-                    "grace_until",
                     "access_until",
+                    "benefit",
+                    "grace_until",
                     "outstanding_cents",
+                    "status",
                     "unpaid_since"
                   ],
                   "title": "MemberStanding",
@@ -144559,6 +145137,15 @@
                                 "nullable": true,
                                 "type": "string"
                               },
+                              "benefit": {
+                                "description": "ADR-612: a grace or free access the box gave; it lasts through `grace_until`",
+                                "enum": [
+                                  "grace",
+                                  "free_access"
+                                ],
+                                "nullable": true,
+                                "type": "string"
+                              },
                               "grace_until": {
                                 "description": "The last day of the grace the member is in",
                                 "format": "date",
@@ -144594,10 +145181,11 @@
                               }
                             },
                             "required": [
-                              "status",
-                              "grace_until",
                               "access_until",
+                              "benefit",
+                              "grace_until",
                               "outstanding_cents",
+                              "status",
                               "unpaid_since"
                             ],
                             "title": "MemberStanding",
@@ -236975,6 +237563,919 @@
         "summary": "Create or update a user's membership profile",
         "tags": [
           "Admin Finance"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/finance/members/{id}/benefits": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminMemberBenefitController.index",
+        "parameters": [
+          {
+            "description": "The member's user id",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "benefits": {
+                      "items": {
+                        "description": "A grant from the insert-only ledger: what was given, by whom (their roles then), when, why and what it touched",
+                        "properties": {
+                          "action": {
+                            "enum": [
+                              "grant",
+                              "revoke"
+                            ],
+                            "type": "string"
+                          },
+                          "amount_cents": {
+                            "minimum": 0,
+                            "nullable": true,
+                            "type": "integer"
+                          },
+                          "details": {
+                            "additionalProperties": true,
+                            "description": "extra_uses: allowance, quantity, period, usage_entry_id, subscription_id; package: package_id, package_name, pricing, list_price_cents, price_cents, subscription_id; debt_forgiven: invoices",
+                            "type": "object"
+                          },
+                          "ends_on": {
+                            "format": "date",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "given_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "given_by_id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "given_by_name": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "given_by_roles": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "kind": {
+                            "enum": [
+                              "grace",
+                              "free_access",
+                              "extra_uses",
+                              "package",
+                              "debt_forgiven"
+                            ],
+                            "type": "string"
+                          },
+                          "reason": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "request_id": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "revocation": {
+                            "nullable": true,
+                            "properties": {
+                              "at": {
+                                "format": "date-time",
+                                "type": "string"
+                              },
+                              "by_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "by_name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "by_roles": {
+                                "items": {
+                                  "type": "string"
+                                },
+                                "type": "array"
+                              },
+                              "reason": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "request_id": {
+                                "nullable": true,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "at",
+                              "by_id",
+                              "by_name",
+                              "by_roles",
+                              "reason",
+                              "request_id"
+                            ],
+                            "type": "object"
+                          },
+                          "starts_on": {
+                            "format": "date",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "state": {
+                            "enum": [
+                              "active",
+                              "upcoming",
+                              "ended",
+                              "revoked",
+                              "given"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "action",
+                          "amount_cents",
+                          "details",
+                          "ends_on",
+                          "given_at",
+                          "given_by_id",
+                          "given_by_name",
+                          "given_by_roles",
+                          "id",
+                          "kind",
+                          "reason",
+                          "request_id",
+                          "revocation",
+                          "starts_on",
+                          "state"
+                        ],
+                        "title": "MemberBenefit",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "benefits"
+                  ],
+                  "title": "MemberBenefitsResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Benefits"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "What the box gave a member for free, newest first",
+        "tags": [
+          "Member benefits"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminMemberBenefitController.create",
+        "parameters": [
+          {
+            "description": "The member's user id",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "kind grace or free_access: ends_on; extra_uses: allowance, quantity, period; package: package_id, pricing; debt_forgiven: invoice_ids",
+                "properties": {
+                  "allowance": {
+                    "type": "string"
+                  },
+                  "ends_on": {
+                    "format": "date",
+                    "type": "string"
+                  },
+                  "idempotency_key": {
+                    "maxLength": 200,
+                    "minLength": 8,
+                    "type": "string"
+                  },
+                  "invoice_ids": {
+                    "items": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "kind": {
+                    "enum": [
+                      "grace",
+                      "free_access",
+                      "extra_uses",
+                      "package",
+                      "debt_forgiven"
+                    ],
+                    "type": "string"
+                  },
+                  "package_id": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "period": {
+                    "enum": [
+                      "calendar_week",
+                      "calendar_month",
+                      "subscription_period"
+                    ],
+                    "type": "string"
+                  },
+                  "pricing": {
+                    "properties": {
+                      "mode": {
+                        "enum": [
+                          "this_period_free",
+                          "price"
+                        ],
+                        "type": "string"
+                      },
+                      "price_cents": {
+                        "minimum": 0,
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "mode"
+                    ],
+                    "type": "object"
+                  },
+                  "quantity": {
+                    "maximum": 10000,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  "reason": {
+                    "maxLength": 500,
+                    "nullable": true,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "idempotency_key",
+                  "kind"
+                ],
+                "title": "MemberBenefitGrant",
+                "type": "object"
+              }
+            }
+          },
+          "description": "Benefit",
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "benefit": {
+                      "description": "A grant from the insert-only ledger: what was given, by whom (their roles then), when, why and what it touched",
+                      "properties": {
+                        "action": {
+                          "enum": [
+                            "grant",
+                            "revoke"
+                          ],
+                          "type": "string"
+                        },
+                        "amount_cents": {
+                          "minimum": 0,
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "details": {
+                          "additionalProperties": true,
+                          "description": "extra_uses: allowance, quantity, period, usage_entry_id, subscription_id; package: package_id, package_name, pricing, list_price_cents, price_cents, subscription_id; debt_forgiven: invoices",
+                          "type": "object"
+                        },
+                        "ends_on": {
+                          "format": "date",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "given_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "given_by_id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "given_by_name": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "given_by_roles": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "kind": {
+                          "enum": [
+                            "grace",
+                            "free_access",
+                            "extra_uses",
+                            "package",
+                            "debt_forgiven"
+                          ],
+                          "type": "string"
+                        },
+                        "reason": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "request_id": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "revocation": {
+                          "nullable": true,
+                          "properties": {
+                            "at": {
+                              "format": "date-time",
+                              "type": "string"
+                            },
+                            "by_id": {
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "by_name": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "by_roles": {
+                              "items": {
+                                "type": "string"
+                              },
+                              "type": "array"
+                            },
+                            "reason": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "request_id": {
+                              "nullable": true,
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "at",
+                            "by_id",
+                            "by_name",
+                            "by_roles",
+                            "reason",
+                            "request_id"
+                          ],
+                          "type": "object"
+                        },
+                        "starts_on": {
+                          "format": "date",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "state": {
+                          "enum": [
+                            "active",
+                            "upcoming",
+                            "ended",
+                            "revoked",
+                            "given"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "action",
+                        "amount_cents",
+                        "details",
+                        "ends_on",
+                        "given_at",
+                        "given_by_id",
+                        "given_by_name",
+                        "given_by_roles",
+                        "id",
+                        "kind",
+                        "reason",
+                        "request_id",
+                        "revocation",
+                        "starts_on",
+                        "state"
+                      ],
+                      "title": "MemberBenefit",
+                      "type": "object"
+                    },
+                    "replayed": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "benefit",
+                    "replayed"
+                  ],
+                  "title": "MemberBenefitResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Already given (same idempotency key)"
+          },
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "benefit": {
+                      "description": "A grant from the insert-only ledger: what was given, by whom (their roles then), when, why and what it touched",
+                      "properties": {
+                        "action": {
+                          "enum": [
+                            "grant",
+                            "revoke"
+                          ],
+                          "type": "string"
+                        },
+                        "amount_cents": {
+                          "minimum": 0,
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "details": {
+                          "additionalProperties": true,
+                          "description": "extra_uses: allowance, quantity, period, usage_entry_id, subscription_id; package: package_id, package_name, pricing, list_price_cents, price_cents, subscription_id; debt_forgiven: invoices",
+                          "type": "object"
+                        },
+                        "ends_on": {
+                          "format": "date",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "given_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "given_by_id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "given_by_name": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "given_by_roles": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "kind": {
+                          "enum": [
+                            "grace",
+                            "free_access",
+                            "extra_uses",
+                            "package",
+                            "debt_forgiven"
+                          ],
+                          "type": "string"
+                        },
+                        "reason": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "request_id": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "revocation": {
+                          "nullable": true,
+                          "properties": {
+                            "at": {
+                              "format": "date-time",
+                              "type": "string"
+                            },
+                            "by_id": {
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "by_name": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "by_roles": {
+                              "items": {
+                                "type": "string"
+                              },
+                              "type": "array"
+                            },
+                            "reason": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "request_id": {
+                              "nullable": true,
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "at",
+                            "by_id",
+                            "by_name",
+                            "by_roles",
+                            "reason",
+                            "request_id"
+                          ],
+                          "type": "object"
+                        },
+                        "starts_on": {
+                          "format": "date",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "state": {
+                          "enum": [
+                            "active",
+                            "upcoming",
+                            "ended",
+                            "revoked",
+                            "given"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "action",
+                        "amount_cents",
+                        "details",
+                        "ends_on",
+                        "given_at",
+                        "given_by_id",
+                        "given_by_name",
+                        "given_by_roles",
+                        "id",
+                        "kind",
+                        "reason",
+                        "request_id",
+                        "revocation",
+                        "starts_on",
+                        "state"
+                      ],
+                      "title": "MemberBenefit",
+                      "type": "object"
+                    },
+                    "replayed": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "benefit",
+                    "replayed"
+                  ],
+                  "title": "MemberBenefitResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Benefit"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such member or benefit"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not possible now"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not valid"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Give a member a grace, free access, extra uses, a package or a forgiven debt",
+        "tags": [
+          "Member benefits"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/finance/members/{id}/benefits/{benefit_id}/revoke": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminMemberBenefitController.revoke",
+        "parameters": [
+          {
+            "description": "The member's user id",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "benefit_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "idempotency_key": {
+                    "maxLength": 200,
+                    "minLength": 8,
+                    "type": "string"
+                  },
+                  "reason": {
+                    "maxLength": 500,
+                    "nullable": true,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "idempotency_key"
+                ],
+                "title": "MemberBenefitRevoke",
+                "type": "object"
+              }
+            }
+          },
+          "description": "Revocation",
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "benefit": {
+                      "description": "A grant from the insert-only ledger: what was given, by whom (their roles then), when, why and what it touched",
+                      "properties": {
+                        "action": {
+                          "enum": [
+                            "grant",
+                            "revoke"
+                          ],
+                          "type": "string"
+                        },
+                        "amount_cents": {
+                          "minimum": 0,
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "details": {
+                          "additionalProperties": true,
+                          "description": "extra_uses: allowance, quantity, period, usage_entry_id, subscription_id; package: package_id, package_name, pricing, list_price_cents, price_cents, subscription_id; debt_forgiven: invoices",
+                          "type": "object"
+                        },
+                        "ends_on": {
+                          "format": "date",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "given_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "given_by_id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "given_by_name": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "given_by_roles": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "kind": {
+                          "enum": [
+                            "grace",
+                            "free_access",
+                            "extra_uses",
+                            "package",
+                            "debt_forgiven"
+                          ],
+                          "type": "string"
+                        },
+                        "reason": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "request_id": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "revocation": {
+                          "nullable": true,
+                          "properties": {
+                            "at": {
+                              "format": "date-time",
+                              "type": "string"
+                            },
+                            "by_id": {
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "by_name": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "by_roles": {
+                              "items": {
+                                "type": "string"
+                              },
+                              "type": "array"
+                            },
+                            "reason": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "request_id": {
+                              "nullable": true,
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "at",
+                            "by_id",
+                            "by_name",
+                            "by_roles",
+                            "reason",
+                            "request_id"
+                          ],
+                          "type": "object"
+                        },
+                        "starts_on": {
+                          "format": "date",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "state": {
+                          "enum": [
+                            "active",
+                            "upcoming",
+                            "ended",
+                            "revoked",
+                            "given"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "action",
+                        "amount_cents",
+                        "details",
+                        "ends_on",
+                        "given_at",
+                        "given_by_id",
+                        "given_by_name",
+                        "given_by_roles",
+                        "id",
+                        "kind",
+                        "reason",
+                        "request_id",
+                        "revocation",
+                        "starts_on",
+                        "state"
+                      ],
+                      "title": "MemberBenefit",
+                      "type": "object"
+                    },
+                    "replayed": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "benefit",
+                    "replayed"
+                  ],
+                  "title": "MemberBenefitResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Benefit"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such member or benefit"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not possible now"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not valid"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Revoke a grace, free access or extra uses",
+        "tags": [
+          "Member benefits"
         ]
       }
     },

@@ -42,7 +42,9 @@ export function StandingLine({ standing, currency = "EUR", className = "" }: { s
       case "lineOwedSince":
         return t("lineOwedSince", { amount: formatMinorUnits(locale, part.cents, currency), date: formatDate(locale, part.date) });
       case "lineGrace":
-        return t("lineGrace", { date: formatDate(locale, part.date), days: part.days });
+      case "lineBoxGrace":
+      case "lineBoxFree":
+        return t(part.key, { date: formatDate(locale, part.date), days: part.days });
     }
   };
 

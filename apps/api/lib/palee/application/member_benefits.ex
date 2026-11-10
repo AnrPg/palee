@@ -18,7 +18,7 @@ defmodule Palee.Application.MemberBenefits do
   require Logger
 
   alias Palee.Application.{AssignFinanceMemberPackage, GrantUserAllowance, UpdateFinanceMember}
-  alias Palee.{Finance, Organizations}
+  alias Palee.{Finance, Identity, Organizations}
   alias Palee.Finance.Domain.MemberBenefits, as: Rules
   alias Palee.Finance.MemberBenefitStore
 
@@ -370,10 +370,11 @@ defmodule Palee.Application.MemberBenefits do
 
   defp present(rows, today) do
     revocations = Enum.filter(rows, &(&1.action == "revoke"))
+    names = names(rows)
 
     rows
     |> Enum.filter(&(&1.action == "grant"))
-    |> Enum.map(&present_one(&1, revocations, today))
+    |> Enum.map(&present_one(&1, revocations, names, today))
   end
 
   # A grant or its revocation, shown as the grant with what happened to it.
@@ -384,10 +385,19 @@ defmodule Palee.Application.MemberBenefits do
 
     rows
     |> Enum.find(&(&1.id == grant_id))
-    |> present_one(revocations, today)
+    |> present_one(revocations, names(rows), today)
   end
 
-  defp present_one(row, revocations, today) do
+  # Who gave and who revoked, by name as well as id (lineage on screen).
+  defp names(rows) do
+    rows
+    |> Enum.map(& &1.actor_id)
+    |> Enum.uniq()
+    |> Identity.list_by_ids()
+    |> Map.new(&{&1.id, &1.nickname})
+  end
+
+  defp present_one(row, revocations, names, today) do
     revocation = Enum.find(revocations, &(&1.benefit_id == row.id))
 
     %{
@@ -401,6 +411,7 @@ defmodule Palee.Application.MemberBenefits do
       details: row.details,
       reason: row.reason,
       given_by_id: row.actor_id,
+      given_by_name: Map.get(names, row.actor_id),
       given_by_roles: row.actor_roles,
       given_at: row.inserted_at,
       request_id: row.request_id,
@@ -409,6 +420,7 @@ defmodule Palee.Application.MemberBenefits do
           %{
             reason: revocation.reason,
             by_id: revocation.actor_id,
+            by_name: Map.get(names, revocation.actor_id),
             by_roles: revocation.actor_roles,
             at: revocation.inserted_at,
             request_id: revocation.request_id

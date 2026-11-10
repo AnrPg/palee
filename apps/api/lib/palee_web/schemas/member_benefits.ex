@@ -30,6 +30,7 @@ defmodule PaleeWeb.Schemas.MemberBenefits do
         },
         reason: %Schema{type: :string, nullable: true},
         given_by_id: %Schema{type: :string, format: :uuid},
+        given_by_name: %Schema{type: :string, nullable: true},
         given_by_roles: %Schema{type: :array, items: %Schema{type: :string}},
         given_at: @at,
         request_id: %Schema{type: :string, nullable: true},
@@ -39,11 +40,12 @@ defmodule PaleeWeb.Schemas.MemberBenefits do
           properties: %{
             reason: %Schema{type: :string, nullable: true},
             by_id: %Schema{type: :string, format: :uuid},
+            by_name: %Schema{type: :string, nullable: true},
             by_roles: %Schema{type: :array, items: %Schema{type: :string}},
             at: @at,
             request_id: %Schema{type: :string, nullable: true}
           },
-          required: [:at, :by_id, :by_roles, :reason, :request_id]
+          required: [:at, :by_id, :by_name, :by_roles, :reason, :request_id]
         }
       },
       required: [
@@ -53,6 +55,7 @@ defmodule PaleeWeb.Schemas.MemberBenefits do
         :ends_on,
         :given_at,
         :given_by_id,
+        :given_by_name,
         :given_by_roles,
         :id,
         :kind,

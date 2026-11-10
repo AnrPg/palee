@@ -33,6 +33,15 @@ describe("standingParts (ADR-595)", () => {
     expect(standingParts({ ...base, status: "former", access_until: "2026-11-01" }, today)).toEqual([]);
   });
 
+  it("ADR-612: names a grace or free access the box gave", () => {
+    expect(standingParts({ ...base, status: "overdue", grace_until: "2026-11-30", benefit: "grace" }, today)).toEqual([
+      { key: "lineBoxGrace", date: "2026-11-30", days: 21 },
+    ]);
+    expect(standingParts({ ...base, status: "comped", grace_until: "2026-11-10", benefit: "free_access" }, today)).toEqual([
+      { key: "lineBoxFree", date: "2026-11-10", days: 1 },
+    ]);
+  });
+
   it("counts days across a month end", () => {
     expect(daysBetween("2026-11-29", "2026-12-02")).toBe(3);
   });
