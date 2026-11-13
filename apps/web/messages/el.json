@@ -6836,7 +6836,10 @@
     "backToFeed": "Πίσω στη ροή",
     "clubSectionsAria": "Ενότητες του club",
     "clubUpcoming": "Επόμενα events",
-    "seeAll": "Όλα"
+    "seeAll": "Όλα",
+    "coachTeaches": "Διδάσκει:",
+    "websiteOnPalee": "Ιστοσελίδα",
+    "websiteAria": "Ιστοσελίδα του box: {site} (ανοίγει σε νέα καρτέλα)"
   },
   "Trials": {
     "ask": "Ζήτα δοκιμαστικό",

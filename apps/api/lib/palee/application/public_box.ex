@@ -252,6 +252,8 @@ defmodule Palee.Application.PublicBox do
       |> Enum.group_by(&Map.get(&1, :coach_user_id), &class_type_name/1)
 
     people = ids |> Identity.list_by_ids() |> Map.new(&{&1.id, &1})
+    # ADR-641: a visitor without an account reads the bio of public accounts only.
+    bios = Community.public_bios(ids)
 
     Enum.flat_map(ids, fn id ->
       case people[id] do
@@ -264,6 +266,7 @@ defmodule Palee.Application.PublicBox do
               id: id,
               nickname: person.nickname,
               avatar_url: Map.get(person, :avatar_url),
+              bio: Map.get(bios, id),
               class_types: teaches |> Map.get(id, []) |> Enum.reject(&is_nil/1) |> Enum.uniq()
             }
           ]

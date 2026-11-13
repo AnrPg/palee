@@ -6836,7 +6836,10 @@
     "backToFeed": "Обратно към потока",
     "clubSectionsAria": "Раздели на клуба",
     "clubUpcoming": "Следващи събития",
-    "seeAll": "Всички"
+    "seeAll": "Всички",
+    "coachTeaches": "Води:",
+    "websiteOnPalee": "Уебсайт",
+    "websiteAria": "Уебсайт на box: {site} (отваря се в нов раздел)"
   },
   "Trials": {
     "ask": "Заяви пробна тренировка",

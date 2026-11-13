@@ -157,6 +157,30 @@ defmodule Palee.Web.SocialControllerTest do
              |> response(400)
     end
 
+    test "a coach's «Λίγα λόγια» shows to visitors only while their account is public (ADR-641)",
+         ctx do
+      slug = ctx.organization.slug
+      publish!(ctx, %{"coach_ids" => [ctx.coach.id]})
+
+      ctx.as.(ctx.coach)
+      |> send_json("PUT", "/api/me/social/privacy", %{private_account: false})
+      |> json_response(200)
+
+      ctx.as.(ctx.coach)
+      |> send_json("PUT", "/api/me/profile-card", %{bio: "Ολυμπιακές άρσεις, 7:00."})
+      |> json_response(200)
+
+      assert %{"profile" => %{"coaches" => [%{"bio" => "Ολυμπιακές άρσεις, 7:00."}]}} =
+               build_conn() |> get("/api/public/boxes/#{slug}") |> json_response(200)
+
+      ctx.as.(ctx.coach)
+      |> send_json("PUT", "/api/me/social/privacy", %{private_account: true})
+      |> json_response(200)
+
+      assert %{"profile" => %{"coaches" => [%{"bio" => nil}]}} =
+               build_conn() |> get("/api/public/boxes/#{slug}") |> json_response(200)
+    end
+
     test "coaches must be the gym's staff", ctx do
       assert {:error, :invalid_public_profile} =
                UpdateBoxPublicProfile.call(ctx.owner_context, %{"coach_ids" => [ctx.member.id]})

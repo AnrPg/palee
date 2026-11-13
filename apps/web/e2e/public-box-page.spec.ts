@@ -15,6 +15,9 @@ const pixel = (color: string) =>
 
 const box = { organization_id: "org-1", slug: "crossfit-kypseli", name: "CrossFit Kypseli", logo_url: null, primary_color: "#D9743D" };
 
+// ANR 2026-11-13: a coach's whole name shows, wrapped, never cut.
+const longCoachName = "Xristoforos Rizopoulos-Papadimitriou";
+
 const publicBox = {
   box,
   followers_count: 12,
@@ -31,7 +34,10 @@ const publicBox = {
       { id: "p1", url: pixel("#335577"), width: 1200, height: 630 },
       { id: "p2", url: pixel("#557733"), width: 1200, height: 630 },
     ],
-    coaches: [{ id: "coach-1", nickname: "Stelios", avatar_url: null, class_types: ["CrossFit", "Olympic lifting"] }],
+    coaches: [
+      { id: "coach-1", nickname: "Stelios", avatar_url: null, bio: null, class_types: ["CrossFit", "Olympic lifting"] },
+      { id: "coach-2", nickname: longCoachName, avatar_url: null, bio: "Hybrid and endurance, mornings.", class_types: ["Hybrid"] },
+    ],
   },
   locations: [
     {
@@ -195,6 +201,42 @@ test.describe("public box page", () => {
     await expect(page).toHaveURL(/#schedule$/);
     await expect(page.getByText("Sign in to see the schedule")).toBeVisible();
     await expect(page.getByRole("link", { name: "Sign in" })).toHaveAttribute("href", `/login?next=${encodeURIComponent(`/b/${box.slug}#schedule`)}`);
+  });
+
+  test("coaches show their whole name; a visitor opens their bio, a signed-in viewer their profile (ADR-641)", async ({ page }) => {
+    await asGuest(page);
+    await page.goto(`/b/${box.slug}`);
+
+    const coach = page.getByTestId("box-coach").filter({ hasText: longCoachName });
+    await coach.scrollIntoViewIfNeeded();
+    await expect(coach).toBeVisible();
+    const name = coach.getByTestId("box-coach-name");
+    await expect(name).toHaveText(longCoachName);
+    // Wrapped, not cut: nothing of the name overflows its box.
+    expect(await name.evaluate((element) => element.scrollWidth <= element.clientWidth && getComputedStyle(element).textOverflow !== "ellipsis")).toBe(true);
+
+    await expect(coach).toBeEnabled();
+    await coach.click();
+    const sheet = page.getByRole("dialog", { name: longCoachName });
+    await expect(sheet.getByTestId("box-coach-bio")).toHaveText("Hybrid and endurance, mornings.");
+    await expect(sheet.getByText("Hybrid")).toBeVisible();
+    await sheet.getByRole("button", { name: "Close" }).first().click();
+    await expect(sheet).toBeHidden();
+
+    // A coach without a public bio still opens, with what the box shows.
+    await page.getByTestId("box-coach").filter({ hasText: "Stelios" }).click();
+    const plain = page.getByRole("dialog", { name: "Stelios" });
+    await expect(plain.getByText("CrossFit · Olympic lifting")).toBeVisible();
+    await expect(plain.getByTestId("box-coach-bio")).toHaveCount(0);
+  });
+
+  test("signed in, a coach opens their profile (ADR-641)", async ({ page }) => {
+    await signedIn(page);
+    await page.goto(`/b/${box.slug}#about`);
+    const coach = page.getByRole("link", { name: new RegExp(longCoachName) });
+    await coach.scrollIntoViewIfNeeded();
+    await expect(coach).toBeVisible();
+    await expect(coach).toHaveAttribute("href", "/people/coach-2");
   });
 
   test("a retired slug redirects to the canonical page", async ({ page }) => {

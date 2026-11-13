@@ -6836,7 +6836,10 @@
     "backToFeed": "Terug naar de feed",
     "clubSectionsAria": "Onderdelen van de club",
     "clubUpcoming": "Volgende events",
-    "seeAll": "Alles"
+    "seeAll": "Alles",
+    "coachTeaches": "Geeft:",
+    "websiteOnPalee": "Website",
+    "websiteAria": "Website van de box: {site} (opent in een nieuw tabblad)"
   },
   "Trials": {
     "ask": "Vraag een proefles aan",

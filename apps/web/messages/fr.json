@@ -6836,7 +6836,10 @@
     "backToFeed": "Retour au fil",
     "clubSectionsAria": "Sections du club",
     "clubUpcoming": "Prochains événements",
-    "seeAll": "Tout"
+    "seeAll": "Tout",
+    "coachTeaches": "Enseigne :",
+    "websiteOnPalee": "Site web",
+    "websiteAria": "Site web de la box : {site} (s’ouvre dans un nouvel onglet)"
   },
   "Trials": {
     "ask": "Demander un cours d’essai",

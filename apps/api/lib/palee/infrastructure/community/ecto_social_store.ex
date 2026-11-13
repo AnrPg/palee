@@ -193,6 +193,18 @@ defmodule Palee.Infrastructure.Community.EctoSocialStore do
   end
 
   @impl true
+  def public_bios([]), do: %{}
+
+  def public_bios(ids) do
+    %{rows: rows} =
+      Repo.query!("SELECT user_id, bio FROM palee_public_bios($1::uuid[])", [
+        Enum.map(ids, &Ecto.UUID.dump!/1)
+      ])
+
+    Map.new(rows, fn [id, bio] -> {Ecto.UUID.load!(id), bio} end)
+  end
+
+  @impl true
   def follow_statuses(_context, _follower_id, _type, []), do: %{}
 
   def follow_statuses(_context, follower_id, type, ids) do

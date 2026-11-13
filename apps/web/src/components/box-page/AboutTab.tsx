@@ -8,9 +8,9 @@ import { useLocale, useTranslations } from "next-intl";
 
 import type { PublicBoxPage } from "@/api/social";
 import { languageNames } from "@/components/admin/public-page/languages";
-import { PersonAvatar } from "@/components/social/PersonAvatar";
 import { RoomPhotoStrip } from "@/components/spaces/RoomPhotoStrip";
 
+import { BoxCoaches } from "./BoxCoaches";
 import { Icon } from "./Icon";
 
 const PlacesMap = dynamic(() => import("@/components/member-app/box/schedule/PlacesMap"), {
@@ -185,23 +185,7 @@ export function AboutTab({
 
       {show("coaches") && profile.coaches.length > 0 ? (
         <Section title={t("coaches")}>
-          <ul className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-1 lg:mx-0 lg:grid lg:grid-cols-2 lg:px-0">
-            {profile.coaches.map((coach) => (
-              <li
-                key={coach.id}
-                className="flex w-56 shrink-0 items-center gap-3 rounded-2xl p-3 lg:w-auto"
-                style={{ background: "var(--panel)", border: "1px solid var(--border)" }}
-              >
-                <PersonAvatar name={coach.nickname ?? "?"} url={coach.avatar_url} size={48} />
-                <span className="flex min-w-0 flex-col">
-                  <span className="truncate font-bold" style={{ color: "var(--text)" }}>{coach.nickname ?? "?"}</span>
-                  {coach.class_types.length > 0 ? (
-                    <span className="line-clamp-2 text-xs" style={{ color: "var(--dim)" }}>{coach.class_types.join(" · ")}</span>
-                  ) : null}
-                </span>
-              </li>
-            ))}
-          </ul>
+          <BoxCoaches coaches={profile.coaches} />
         </Section>
       ) : null}
 

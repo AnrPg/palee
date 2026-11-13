@@ -77,6 +77,9 @@ defmodule Palee.Community.SocialStore do
   def public_user_ids(ids), do: adapter().public_user_ids(ids)
 
   @impl true
+  def public_bios(ids), do: adapter().public_bios(ids)
+
+  @impl true
   def follow_statuses(context, follower_id, type, ids),
     do: call(context, :follow_statuses, [follower_id, type, ids])
 

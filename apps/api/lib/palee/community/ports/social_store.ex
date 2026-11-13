@@ -38,6 +38,8 @@ defmodule Palee.Community.Ports.SocialStore do
             ]
   @doc "ADR-193 §2: whether each person is public (definer function)."
   @callback public_user_ids([id()]) :: [id()]
+  @doc "ADR-641: «Λίγα λόγια» of the given people whose account is public, by id."
+  @callback public_bios([id()]) :: %{id() => String.t()}
   @callback follow_statuses(context(), id(), String.t(), [id()]) :: %{id() => String.t()}
   @callback get_social_settings(context(), id()) :: map() | nil
   @callback put_social_settings(context(), id(), map()) :: {:ok, map()} | {:error, term()}

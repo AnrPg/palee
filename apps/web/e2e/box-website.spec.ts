@@ -821,6 +821,24 @@ async function asMember(page: Page, writes: Write[], extra: (path: string, metho
   });
 }
 
+// ADR-641: a signed-in member keeps the app's box page; «Website» under the name opens the website itself.
+test.describe("the box's website from the app's box page", () => {
+  test("a member sees «Website» under the box's name and it opens the website, not the app page", async ({ page }) => {
+    await asMember(page, [], () => null);
+    await page.goto(`/b/${slug}`);
+    const link = page.getByTestId("box-page-website");
+    await expect(link).toBeVisible();
+    await expect(link).toHaveText("Website");
+    await expect(link).toHaveAttribute("href", `/b/${slug}?site=1`);
+    await expect(link).toHaveAttribute("target", "_blank");
+    await expect(page.getByTestId("box-website")).toHaveCount(0);
+
+    await page.goto(`/b/${slug}?site=1`);
+    await expect(page.getByTestId("box-website")).toBeVisible();
+    await expect(page.getByTestId("site-sections")).toHaveCount(0);
+  });
+});
+
 test.describe("members' reviews", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 

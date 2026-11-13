@@ -6836,7 +6836,10 @@
     "backToFeed": "Back to the feed",
     "clubSectionsAria": "Club sections",
     "clubUpcoming": "Next events",
-    "seeAll": "All"
+    "seeAll": "All",
+    "coachTeaches": "Teaches:",
+    "websiteOnPalee": "Website",
+    "websiteAria": "Box website: {site} (opens in a new tab)"
   },
   "Trials": {
     "ask": "Ask for a trial",

@@ -6836,7 +6836,10 @@
     "backToFeed": "Назад к ленте",
     "clubSectionsAria": "Разделы клуба",
     "clubUpcoming": "Ближайшие события",
-    "seeAll": "Все"
+    "seeAll": "Все",
+    "coachTeaches": "Ведёт:",
+    "websiteOnPalee": "Сайт",
+    "websiteAria": "Сайт box: {site} (откроется в новой вкладке)"
   },
   "Trials": {
     "ask": "Запросить пробное занятие",

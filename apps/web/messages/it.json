@@ -6836,7 +6836,10 @@
     "backToFeed": "Torna al feed",
     "clubSectionsAria": "Sezioni del club",
     "clubUpcoming": "Prossimi eventi",
-    "seeAll": "Tutti"
+    "seeAll": "Tutti",
+    "coachTeaches": "Insegna:",
+    "websiteOnPalee": "Sito web",
+    "websiteAria": "Sito web del box: {site} (si apre in una nuova scheda)"
   },
   "Trials": {
     "ask": "Richiedi una prova",

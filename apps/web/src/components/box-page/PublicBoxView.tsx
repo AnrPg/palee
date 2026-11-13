@@ -245,9 +245,10 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
           <Logo page={page} className="-mt-10 lg:-mt-16" size={80} desktopSize={120} />
           <div className="min-w-0 lg:flex-1 lg:pb-2">
             <h1 className="mt-2 text-2xl font-extrabold lg:text-4xl lg:tracking-tight" style={{ color: "var(--text)" }}>{page.box.name}</h1>
-            {line || member ? (
+            {line || member || (site && !standalone) ? (
               <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm lg:mt-1 lg:text-base" style={{ color: "var(--text-soft)" }}>
                 {line ? <span>{line}</span> : null}
+                {site ? <WebsiteLink site={site} slug={page.box.slug} standalone={standalone} /> : null}
                 {/* ADR-621: who you are here, once, quietly (instead of «Μέλος του club» over the club). */}
                 {member && club ? (
                   <span className="rounded-full px-2.5 py-0.5 text-xs font-bold" style={{ background: "var(--panel-raised)", color: "var(--text-soft)" }} data-testid="box-page-role">
@@ -464,6 +465,33 @@ function InfoCard({
         </div>
       ) : null}
     </div>
+  );
+}
+
+/**
+ * ADR-641: the box's website, on its own domain when it has one, else on
+ * Palee. A signed-in viewer of `/b/<slug>` gets the app's page, so the
+ * Palee address asks for the website with `?site=1` (SiteAudience).
+ */
+function WebsiteLink({ site, slug, standalone }: { site: PublicSite; slug: string; standalone: boolean }) {
+  const t = useTranslations("BoxPage");
+  if (standalone) return null;
+  const own = !site.canonical_url.endsWith(`/b/${slug}`);
+  const href = own ? site.canonical_url : `/b/${slug}?site=1`;
+  const label = own ? site.canonical_url.replace(/^https?:\/\//, "").replace(/\/$/, "") : t("websiteOnPalee");
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener"
+      className="inline-flex min-h-8 items-center gap-1.5 font-bold underline-offset-2 hover:underline"
+      style={{ color: "var(--primary-strong)" }}
+      aria-label={t("websiteAria", { site: label })}
+      data-testid="box-page-website"
+    >
+      <Icon name="globe" size={16} />
+      <span className="[overflow-wrap:anywhere]">{label}</span>
+    </a>
   );
 }
 

@@ -84925,6 +84925,11 @@
             "nullable": true,
             "type": "string"
           },
+          "bio": {
+            "description": "ADR-641: «Λίγα λόγια», only when the coach's account is public",
+            "nullable": true,
+            "type": "string"
+          },
           "class_types": {
             "items": {
               "type": "string"
@@ -85954,6 +85959,11 @@
                   "nullable": true,
                   "type": "string"
                 },
+                "bio": {
+                  "description": "ADR-641: «Λίγα λόγια», only when the coach's account is public",
+                  "nullable": true,
+                  "type": "string"
+                },
                 "class_types": {
                   "items": {
                     "type": "string"
@@ -86390,6 +86400,11 @@
                   "description": "A coach the owner shows, with what they teach in the coming weeks",
                   "properties": {
                     "avatar_url": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "bio": {
+                      "description": "ADR-641: «Λίγα λόγια», only when the coach's account is public",
                       "nullable": true,
                       "type": "string"
                     },
@@ -430460,6 +430475,11 @@
                             "description": "A coach the owner shows, with what they teach in the coming weeks",
                             "properties": {
                               "avatar_url": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "bio": {
+                                "description": "ADR-641: «Λίγα λόγια», only when the coach's account is public",
                                 "nullable": true,
                                 "type": "string"
                               },

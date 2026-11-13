@@ -6836,7 +6836,10 @@
     "backToFeed": "العودة إلى الخلاصة",
     "clubSectionsAria": "أقسام النادي",
     "clubUpcoming": "الفعاليات القادمة",
-    "seeAll": "الكل"
+    "seeAll": "الكل",
+    "coachTeaches": "يدرّب:",
+    "websiteOnPalee": "الموقع الإلكتروني",
+    "websiteAria": "موقع الـbox: {site} (يفتح في علامة تبويب جديدة)"
   },
   "Trials": {
     "ask": "اطلب حصة تجريبية",

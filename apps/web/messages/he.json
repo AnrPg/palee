@@ -6836,7 +6836,10 @@
     "backToFeed": "חזרה לפיד",
     "clubSectionsAria": "אזורי המועדון",
     "clubUpcoming": "האירועים הבאים",
-    "seeAll": "הכול"
+    "seeAll": "הכול",
+    "coachTeaches": "מלמד/ת:",
+    "websiteOnPalee": "אתר",
+    "websiteAria": "האתר של ה-box: {site} (נפתח בכרטיסייה חדשה)"
   },
   "Trials": {
     "ask": "בקשת שיעור ניסיון",

@@ -72,6 +72,11 @@ defmodule PaleeWeb.Schemas.Social do
         id: @uuid,
         nickname: %Schema{type: :string, nullable: true},
         avatar_url: %Schema{type: :string, nullable: true},
+        bio: %Schema{
+          type: :string,
+          nullable: true,
+          description: "ADR-641: «Λίγα λόγια», only when the coach's account is public"
+        },
         class_types: @strings
       },
       required: [:id, :class_types]

@@ -47117,6 +47117,8 @@ export interface components {
          */
         PublicBoxCoach: {
             avatar_url?: string | null;
+            /** @description ADR-641: «Λίγα λόγια», only when the coach's account is public */
+            bio?: string | null;
             class_types: string[];
             /** Format: uuid */
             id: string;
@@ -47455,6 +47457,8 @@ export interface components {
             audiences: string[];
             coaches: {
                 avatar_url?: string | null;
+                /** @description ADR-641: «Λίγα λόγια», only when the coach's account is public */
+                bio?: string | null;
                 class_types: string[];
                 /** Format: uuid */
                 id: string;
@@ -47577,6 +47581,8 @@ export interface components {
                 audiences: string[];
                 coaches: {
                     avatar_url?: string | null;
+                    /** @description ADR-641: «Λίγα λόγια», only when the coach's account is public */
+                    bio?: string | null;
                     class_types: string[];
                     /** Format: uuid */
                     id: string;
@@ -168015,6 +168021,8 @@ export interface operations {
                             audiences: string[];
                             coaches: {
                                 avatar_url?: string | null;
+                                /** @description ADR-641: «Λίγα λόγια», only when the coach's account is public */
+                                bio?: string | null;
                                 class_types: string[];
                                 /** Format: uuid */
                                 id: string;

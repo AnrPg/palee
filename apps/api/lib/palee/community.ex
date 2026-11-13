@@ -378,6 +378,7 @@ defmodule Palee.Community do
   defdelegate person_relations(context, ids), to: SocialStore
   defdelegate search_people(context, handle_term, name_term, limit), to: SocialStore
   defdelegate public_user_ids(ids), to: SocialStore
+  defdelegate public_bios(ids), to: SocialStore
   defdelegate buddies?(mine, theirs), to: FollowPolicy
 
   defdelegate list_incoming_follows(context, type, target_id, status, page),
