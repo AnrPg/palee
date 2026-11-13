@@ -32,7 +32,7 @@ export function JoinToBuy({
   boxName: string;
   packageId: string;
   desk?: boolean;
-  /** ADR-642: the person is in as a guest of the box until they pay or send «Το θέλω», so the dialog moves on by itself. */
+  /** ADR-642: the person has no role anyone sees until they pay or send «Το θέλω», so the dialog moves on by itself. */
   onJoined: () => void;
 }) {
   const t = useTranslations("Pay");

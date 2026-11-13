@@ -129,7 +129,7 @@ describe("Σελίδα αγοράς πακέτων (mockup s5 option C)", () => 
     expect(dialog).toHaveTextContent("Με την αγορά γίνεσαι μέλος box στο Box Κυψέλη.");
     fireEvent.click(within(dialog).getByTestId("join-to-buy"));
     await waitFor(() => expect(joinToBuy).toHaveBeenCalledWith("access", "box-kypseli", "Unlimited"));
-    // A guest of the box until they pay: the list of their boxes does not have it yet, the dialog moves on anyway.
+    // No visible role until they pay: the list of their boxes does not have it yet, the dialog moves on anyway.
     expect(await within(dialog).findByText("Ζητώ να ξεκινήσει (API)")).toBeInTheDocument();
     expect(within(dialog).queryByTestId("join-to-buy")).toBeNull();
   });

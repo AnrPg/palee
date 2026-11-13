@@ -1,9 +1,10 @@
 defmodule PaleeWeb.PurchaseAdmissionTest do
   @moduledoc """
-  ADR-642 end to end: starting to buy a package makes the person a guest of
-  the box, not a member; «Το θέλω» makes them a member (their one class
-  while it waits); a package keeps them one; a request that closes with no
-  package makes them a guest again. Every screen reads the same answer.
+  ADR-642 end to end: starting to buy a package gives the person no role
+  anyone sees (not a member, not a guest, and the box's staff do not see
+  them); «Το θέλω» makes them a member (their one class while it waits); a
+  package keeps them one; a request that closes with no package takes them
+  back to nothing. Every screen reads the same answer.
   """
 
   use PaleeWeb.ConnCase, async: false
@@ -101,7 +102,33 @@ defmodule PaleeWeb.PurchaseAdmissionTest do
     |> Map.fetch!("boxes")
   end
 
-  test "starting to buy makes a guest, not a member", ctx do
+  # Who the box's staff see: the directory and the desk's people search.
+  defp staff_see?(ctx) do
+    users =
+      ctx.owner
+      |> as()
+      |> get("/api/org/#{slug(ctx)}/admin/users")
+      |> json_response(200)
+      |> Map.fetch!("users")
+
+    people =
+      ctx.owner
+      |> as()
+      |> get("/api/org/#{slug(ctx)}/admin/payments/desk/people?q=admission_visitor")
+      |> json_response(200)
+      |> Map.fetch!("people")
+      |> Enum.filter(&(&1["relation"] != "none"))
+
+    in_directory = Enum.any?(users, &(&1["id"] == ctx.visitor.id))
+    at_desk = Enum.any?(people, &(&1["user_id"] == ctx.visitor.id))
+
+    assert in_directory == at_desk,
+           "staff see inconsistent things: #{inspect({in_directory, at_desk})}"
+
+    in_directory
+  end
+
+  test "starting to buy gives no role anyone sees", ctx do
     assert %{"organization" => %{"slug" => _slug}} = start_buying(ctx) |> json_response(201)
 
     assert row(ctx).roles == [:guest]
@@ -110,6 +137,8 @@ defmodule PaleeWeb.PurchaseAdmissionTest do
     refute slug(ctx) in my_boxes(ctx)
     # Not a desk guest either: no «Είσαι επισκέπτης» banner.
     assert guest_boxes(ctx) == []
+    # The box's staff do not see them anywhere.
+    refute staff_see?(ctx)
 
     # Pressing «Συνέχεια» again changes nothing.
     assert start_buying(ctx) |> json_response(200)
@@ -124,6 +153,7 @@ defmodule PaleeWeb.PurchaseAdmissionTest do
     assert %DateTime{} = row(ctx).purchase_admission_at
     assert my_join(ctx) == "member"
     assert slug(ctx) in my_boxes(ctx)
+    assert staff_see?(ctx)
 
     admin(ctx, "/finance/package-requests/#{request_id}/decline", %{reason: "Γεμάτο"})
     |> json_response(200)
@@ -131,6 +161,8 @@ defmodule PaleeWeb.PurchaseAdmissionTest do
     assert row(ctx).roles == [:guest]
     assert my_join(ctx) == "none"
     refute slug(ctx) in my_boxes(ctx)
+    assert guest_boxes(ctx) == []
+    refute staff_see?(ctx)
 
     # They may try again.
     ask(ctx)
@@ -150,6 +182,19 @@ defmodule PaleeWeb.PurchaseAdmissionTest do
     assert my_join(ctx) == "none"
   end
 
+  test "front desk making them a guest makes a real guest the staff see", ctx do
+    start_buying(ctx) |> json_response(201)
+    refute staff_see?(ctx)
+
+    admin(ctx, "/payments/desk/guests", %{user_id: ctx.visitor.id})
+    |> json_response(201)
+
+    assert row(ctx).roles == [:guest]
+    assert row(ctx).purchase_admission_at == nil
+    assert [_box] = guest_boxes(ctx)
+    assert staff_see?(ctx)
+  end
+
   test "a package makes them a member for good", ctx do
     start_buying(ctx) |> json_response(201)
     request_id = ask(ctx)
@@ -162,7 +207,7 @@ defmodule PaleeWeb.PurchaseAdmissionTest do
     assert my_join(ctx) == "member"
   end
 
-  test "online: a guest until the payment goes through, then a member", ctx do
+  test "online: nothing until the payment goes through, then a member", ctx do
     ctx.owner
     |> as()
     |> patch("/api/org/#{slug(ctx)}/admin/finance/packages/#{ctx.package.id}", %{
@@ -191,9 +236,10 @@ defmodule PaleeWeb.PurchaseAdmissionTest do
       |> json_response(200)
       |> Map.fetch!("payment")
 
-    # The provider's page is open, nothing paid: still a guest.
+    # The provider's page is open, nothing paid: still nothing anyone sees.
     assert row(ctx).roles == [:guest]
     assert my_join(ctx) == "none"
+    refute staff_see?(ctx)
 
     ref = URI.decode_query(URI.parse(payment["redirect_url"]).query)["sandbox_checkout"]
 

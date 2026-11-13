@@ -3,10 +3,12 @@ defmodule Palee.Organizations.Domain.PurchaseAdmissionPolicy do
   ADR-642: when buying a package makes someone a box member (ANR 2026-11-13,
   «Με ενεργό πακέτο»). Pure rules over a membership row.
 
-    * **Starting to buy** (`ADR-552` «Συνέχεια»): the person becomes a guest
-      of the box (`:guest`), marked `purchase_admission_at`, so the box's
-      checkout and «Το θέλω» work for them. A guest is no member: no club,
-      no member app, «Γίνε μέλος» still shows.
+    * **Starting to buy** (`ADR-552` «Συνέχεια»): the person gets no role
+      anyone sees. The row is stored as `:guest` marked
+      `purchase_admission_at` only so the box's checkout and «Το θέλω» work
+      for them; it is no member and no «Επισκέπτης» (no club, no member app,
+      no guest banner, «Γίνε μέλος» still shows) and the box's staff lookups
+      leave it out (migration `20271114100000`).
     * **«Το θέλω»** (`on_request/2`): sending it makes a guest a member,
       still marked, so they see the classes and book their one class while
       the request waits (ADR-633).
@@ -15,7 +17,7 @@ defmodule Palee.Organizations.Domain.PurchaseAdmissionPolicy do
       the mark goes.
     * **A request closes with no package** (`on_request_closed/2`): cancelled,
       declined or lapsed, with nothing else waiting and no package ever. A
-      marked member is a guest again (they can try again any time).
+      marked member goes back to that hidden row (they can try again any time).
 
   Staff never move this way, and anyone who joined another way (join link,
   invitation, accepted join request, staff) carries no mark.
@@ -55,7 +57,8 @@ defmodule Palee.Organizations.Domain.PurchaseAdmissionPolicy do
   @doc """
   A request closed with no package. `kept?` is whether anything still holds
   the membership (another request waiting, or a Finance profile: a package
-  now or before). A marked member who kept nothing is a guest again.
+  now or before). A marked member who kept nothing goes back to the hidden
+  row (no role anyone sees).
   """
   def on_request_closed(%{purchase_admission_at: %DateTime{}, roles: roles}, false) do
     if MembershipPolicy.client?(roles) and not MembershipPolicy.staff?(roles),

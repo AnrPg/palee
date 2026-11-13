@@ -22,12 +22,19 @@ you are not a member.
   through a package and has no package yet. `PurchaseAdmissionPolicy` holds
   the rules; `Organizations.Commands.MovePurchaseAdmission` applies them in
   the person's own scope (the `AdmitMember` carve-out).
-- «Συνέχεια» (`JoinBox.for_package`) admits a **guest** of the box (ADR-272
-  role, marked). A guest is no member: not in `/memberships`, clubs or
-  `my_join` (it answers `none`, so «Γίνε μέλος» shows), and not a desk guest
-  either (`/memberships/guest-boxes` leaves marked rows out, no banner).
-  The box's checkout and «Το θέλω» accept guests, so the dialog goes on.
-  No `membership_activated` for a guest.
+- «Συνέχεια» (`JoinBox.for_package`) gives the person **no role anyone sees**
+  (revised the same day, ANR: «Επισκέπτης» is someone who really uses the
+  box, not someone who opened the buy dialog). Stored as a marked row with
+  `roles` `{guest}` only so the box's checkout and «Το θέλω» work for them;
+  it is no member (not in `/memberships`, clubs or `my_join`, which answers
+  `none`, so «Γίνε μέλος» shows) and no desk guest (`/memberships/guest-boxes`
+  leaves marked rows out, no banner). The box's staff do not see them:
+  `palee_organization_user_ids/2` and `palee_organization_member_roles/3`
+  leave such rows out (migration `20271114100000`), so the directory, the
+  desk's «Ποιος;», member counts and "is this person in the box" checks
+  skip them. No `membership_activated`.
+- Front desk making such a person a guest («Επισκέπτης», ADR-272) clears the
+  mark in `palee_add_box_guest/2`: a real guest the staff see.
 - «Το θέλω» (`PackageRequests.request/2`) makes a guest a member (marked) and
   announces `membership_activated`; a desk guest who asks becomes a member on
   the same terms.
@@ -35,8 +42,8 @@ you are not a member.
   «Εκκρεμεί πληρωμή», any `AssignFinanceMemberPackage`) promotes a marked
   guest and clears the mark. A desk guest sold a package by staff (no mark)
   stays a guest, as ADR-272 says.
-- A request closing with no package (taken back, declined, lapsed) makes a
-  marked member a guest again unless something still holds them
+- A request closing with no package (taken back, declined, lapsed) takes a
+  marked member back to no visible role (the hidden marked row) unless something still holds them
   (`PackageRule.keeps_membership?/2`: another request waiting or a Finance
   profile). The one class while waiting is cancelled as before (ADR-633).
 - Any other way in (join link, invitation, accepted join request) replaces
@@ -45,7 +52,8 @@ you are not a member.
 - Carried over (migration `20271113530000`): members since 2026-11-06 who
   came in by starting to buy (a request or an online package payment within
   ten minutes of joining) and have no Finance profile, no waiting request,
-  no invitation and no accepted join request become marked guests.
+  no invitation and no accepted join request become marked rows with no
+  visible role.
 - Web: `JoinToBuy` calls `onJoined`, so the buy sheet and the «Το θέλω»
   dialog move on although the box is not in the person's boxes yet; «Το
   θέλω» and «Δεν το θέλω» refresh the person's boxes and clubs.
