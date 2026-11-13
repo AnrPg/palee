@@ -16,7 +16,7 @@ import {
 import { useSession } from "@/components/session-provider";
 import { preparePhoto, readVideoDuration } from "@/lib/media-files";
 import {
-  DEFAULT_MEDIA_LIMITS,
+  normalizeMediaLimits,
   INITIAL_UPLOAD,
   admitFiles,
   contentTypeOf,
@@ -112,7 +112,7 @@ export function useComposeMedia() {
     queryFn: () => fetchMediaCapabilities(token!),
     staleTime: 10 * 60_000,
   });
-  const limits: MediaLimits = capabilities.data ?? DEFAULT_MEDIA_LIMITS;
+  const limits: MediaLimits = normalizeMediaLimits(capabilities.data);
   const limitsRef = useRef(limits);
   const [items, setItems] = useState<ComposeMediaItem[]>([]);
   const itemsRef = useRef(items);

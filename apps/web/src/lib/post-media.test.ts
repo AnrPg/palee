@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   DEFAULT_MEDIA_LIMITS,
+  normalizeMediaLimits,
   INITIAL_UPLOAD,
   admitFiles,
   buildSrcSet,
@@ -207,5 +208,13 @@ describe("carousel index helpers", () => {
   it("formats a video's length", () => {
     expect(formatDuration(83_400)).toBe("1:23");
     expect(formatDuration(null)).toBe("0:00");
+  });
+});
+
+describe("normalizeMediaLimits", () => {
+  it("falls back to the defaults for a missing or malformed answer", () => {
+    expect(normalizeMediaLimits(undefined)).toEqual(DEFAULT_MEDIA_LIMITS);
+    expect(normalizeMediaLimits({})).toEqual(DEFAULT_MEDIA_LIMITS);
+    expect(normalizeMediaLimits({ photo_content_types: null as never, max_photos: 4 })).toEqual({ ...DEFAULT_MEDIA_LIMITS, max_photos: 4 });
   });
 });

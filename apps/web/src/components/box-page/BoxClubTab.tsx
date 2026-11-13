@@ -87,7 +87,7 @@ export function BoxClubTab({ club, clubs, onShowEvents }: { club: CommunityClub;
                 aria-selected={view === id}
                 onClick={() => showView(id)}
                 className="min-h-9 rounded-lg px-3.5 text-sm font-bold"
-                style={view === id ? { background: "var(--panel)", color: "var(--text)", boxShadow: "0 1px 2px rgb(0 0 0 / 0.12)" } : { color: "var(--dim)" }}
+                style={view === id ? { background: "var(--panel)", color: "var(--text)", boxShadow: "var(--shadow-sm)" } : { color: "var(--dim)" }}
               >
                 {t(VIEW_KEYS[id])}
               </button>

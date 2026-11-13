@@ -32,6 +32,29 @@ export const DEFAULT_MEDIA_LIMITS: MediaLimits = {
   video: false,
 };
 
+/**
+ * The capabilities as the server sent them, over the defaults for anything
+ * missing or malformed (an old API, a stub that answers `{}`): the picker
+ * spreads the type lists, so they must always be lists (Gitea CI, 2026-11-13).
+ */
+export function normalizeMediaLimits(data: Partial<MediaLimits> | null | undefined): MediaLimits {
+  if (!data) return DEFAULT_MEDIA_LIMITS;
+  const list = (value: unknown, fallback: string[]) => (Array.isArray(value) ? (value as string[]) : fallback);
+  const count = (value: unknown, fallback: number) => (typeof value === "number" ? value : fallback);
+  return {
+    ...DEFAULT_MEDIA_LIMITS,
+    ...data,
+    max_photos: count(data.max_photos, DEFAULT_MEDIA_LIMITS.max_photos),
+    max_videos: count(data.max_videos, DEFAULT_MEDIA_LIMITS.max_videos),
+    max_photo_bytes: count(data.max_photo_bytes, DEFAULT_MEDIA_LIMITS.max_photo_bytes),
+    max_video_bytes: count(data.max_video_bytes, DEFAULT_MEDIA_LIMITS.max_video_bytes),
+    max_video_seconds: count(data.max_video_seconds, DEFAULT_MEDIA_LIMITS.max_video_seconds),
+    photo_content_types: list(data.photo_content_types, DEFAULT_MEDIA_LIMITS.photo_content_types),
+    video_content_types: list(data.video_content_types, DEFAULT_MEDIA_LIMITS.video_content_types),
+    video: typeof data.video === "boolean" ? data.video : DEFAULT_MEDIA_LIMITS.video,
+  };
+}
+
 const EXTENSION_TYPES: Record<string, string> = {
   jpg: "image/jpeg",
   jpeg: "image/jpeg",

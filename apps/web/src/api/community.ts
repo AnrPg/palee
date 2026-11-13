@@ -295,5 +295,19 @@ export function setMemberVisibility(token: string, hidden: boolean) {
 export function fetchWodToday(token: string, slug: string, timezone: string, date?: string) {
   const query = new URLSearchParams({ timezone });
   if (date) query.set("date", date);
-  return apiRequest<WodTodayCard>(`${base(slug)}/wod-today?${query.toString()}`, { token });
+  return apiRequest<Partial<WodTodayCard> | null>(`${base(slug)}/wod-today?${query.toString()}`, { token }).then(normalizeWodToday);
+}
+
+/**
+ * A malformed answer (an old API, a stub that answers `{}`) reads as a card
+ * without a WOD and with empty lists, never as missing lists the card would
+ * crash on (Gitea CI, 2026-11-13: the box page's Club tab).
+ */
+export function normalizeWodToday(body: Partial<WodTodayCard> | null | undefined): WodTodayCard {
+  return {
+    ...(body ?? {}),
+    date: body?.date ?? "",
+    classes: Array.isArray(body?.classes) ? body.classes : [],
+    leaderboard: Array.isArray(body?.leaderboard) ? body.leaderboard : [],
+  } as WodTodayCard;
 }
