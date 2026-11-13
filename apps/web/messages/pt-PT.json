@@ -6670,6 +6670,8 @@
     "relationClub": "No teu clube",
     "relationNearby": "Perto de ti",
     "relationYouFollow": "Segues",
+    "relationBoxMember": "{kind, select, coach {Atleta} other {Membro da box}}",
+    "relationBoxStaff": "{kind, select, coach {Coach} other {Staff da box}}",
     "findPeople": "Encontrar pessoas",
     "peopleTitle": "Pessoas",
     "peopleNoMatch": "Não encontrámos ninguém. As contas privadas só aparecem a quem já as conhece.",

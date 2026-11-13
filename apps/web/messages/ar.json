@@ -6670,6 +6670,8 @@
     "relationClub": "في ناديك",
     "relationNearby": "بالقرب منك",
     "relationYouFollow": "تتابعه",
+    "relationBoxMember": "{kind, select, coach {رياضي} other {عضو في البوكس}}",
+    "relationBoxStaff": "{kind, select, coach {Coach} other {طاقم البوكس}}",
     "findPeople": "ابحث عن أشخاص",
     "peopleTitle": "أشخاص",
     "peopleNoMatch": "لم نجد أحدًا. الحسابات الخاصة تظهر فقط لمن يعرفها مسبقًا.",

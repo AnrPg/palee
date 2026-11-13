@@ -6670,6 +6670,8 @@
     "relationClub": "In your club",
     "relationNearby": "Nearby",
     "relationYouFollow": "You follow",
+    "relationBoxMember": "{kind, select, coach {Athlete} other {Box member}}",
+    "relationBoxStaff": "{kind, select, coach {Coach} other {Box staff}}",
     "findPeople": "Find people",
     "peopleTitle": "People",
     "peopleNoMatch": "No one found. Private accounts show up only for people who already know them.",

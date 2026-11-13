@@ -86,17 +86,21 @@ defmodule Palee.Infrastructure.Organizations.EctoPublicProfileStore do
 
     %{rows: rows} =
       Repo.query!(
-        "SELECT organization_id, slug, name, logo_url, primary_color FROM palee_public_boxes($1)",
+        """
+        SELECT organization_id, slug, name, logo_url, primary_color, provider_kind
+        FROM palee_public_boxes($1)
+        """,
         [ids]
       )
 
-    Enum.map(rows, fn [id, slug, name, logo_url, color] ->
+    Enum.map(rows, fn [id, slug, name, logo_url, color, kind] ->
       %{
         organization_id: Ecto.UUID.load!(id),
         slug: slug,
         name: name,
         logo_url: logo_url,
-        primary_color: color
+        primary_color: color,
+        provider_kind: kind
       }
     end)
   end

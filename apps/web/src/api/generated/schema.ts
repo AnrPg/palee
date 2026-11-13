@@ -37305,6 +37305,8 @@ export interface components {
                 /** Format: uuid */
                 organization_id: string;
                 primary_color?: string | null;
+                /** @enum {string} */
+                provider_kind: "gym" | "coach";
                 /** @description Canonical slug; redirect when it differs */
                 slug: string;
             } | null;
@@ -37350,6 +37352,8 @@ export interface components {
                     /** Format: uuid */
                     organization_id: string;
                     primary_color?: string | null;
+                    /** @enum {string} */
+                    provider_kind: "gym" | "coach";
                     /** @description Canonical slug; redirect when it differs */
                     slug: string;
                 } | null;
@@ -37541,6 +37545,8 @@ export interface components {
             /** Format: uuid */
             organization_id: string;
             primary_color?: string | null;
+            /** @enum {string} */
+            provider_kind: "gym" | "coach";
             /** @description Canonical slug; redirect when it differs */
             slug: string;
         } | null;
@@ -69085,6 +69091,8 @@ export interface operations {
                                 /** Format: uuid */
                                 organization_id: string;
                                 primary_color?: string | null;
+                                /** @enum {string} */
+                                provider_kind: "gym" | "coach";
                                 /** @description Canonical slug; redirect when it differs */
                                 slug: string;
                             } | null;
@@ -77255,6 +77263,8 @@ export interface operations {
                                 /** Format: uuid */
                                 organization_id: string;
                                 primary_color?: string | null;
+                                /** @enum {string} */
+                                provider_kind: "gym" | "coach";
                                 /** @description Canonical slug; redirect when it differs */
                                 slug: string;
                             } | null;
@@ -77505,6 +77515,8 @@ export interface operations {
                                 /** Format: uuid */
                                 organization_id: string;
                                 primary_color?: string | null;
+                                /** @enum {string} */
+                                provider_kind: "gym" | "coach";
                                 /** @description Canonical slug; redirect when it differs */
                                 slug: string;
                             } | null;
@@ -77588,6 +77600,8 @@ export interface operations {
                                 /** Format: uuid */
                                 organization_id: string;
                                 primary_color?: string | null;
+                                /** @enum {string} */
+                                provider_kind: "gym" | "coach";
                                 /** @description Canonical slug; redirect when it differs */
                                 slug: string;
                             } | null;

@@ -6670,6 +6670,8 @@
     "relationClub": "В твоя клуб",
     "relationNearby": "Наблизо",
     "relationYouFollow": "Следваш",
+    "relationBoxMember": "{kind, select, coach {Атлет} other {Член на бокса}}",
+    "relationBoxStaff": "{kind, select, coach {Coach} other {Екип на бокса}}",
     "findPeople": "Намери хора",
     "peopleTitle": "Хора",
     "peopleNoMatch": "Няма намерени хора. Частните профили се показват само на хора, които вече ги познават.",

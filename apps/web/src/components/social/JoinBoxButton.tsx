@@ -49,6 +49,27 @@ export function joinBoxHref(slug: string) {
   return `/b/${encodeURIComponent(slug)}?join=1`;
 }
 
+/**
+ * Where the viewer already belongs (ANR 2026-11-13): a list row that shows a
+ * box without «Γίνε μέλος» says why, «Μέλος box» or «Staff», so the list and
+ * the box page never seem to disagree. Nothing for anyone else.
+ */
+export function BoxRelationChip({ status, kind }: { status: BoxJoinStatus | null | undefined; kind: string | null | undefined }) {
+  const t = useTranslations("Social");
+  if (status !== "member" && status !== "staff") return null;
+  const providerKind = kind === "coach" ? "coach" : "box";
+  return (
+    <span
+      className="inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[11px] font-bold"
+      style={{ background: "var(--panel-raised)", color: "var(--text-soft)", border: "1px solid var(--border)" }}
+      data-testid="box-relation"
+      data-relation={status}
+    >
+      {status === "staff" ? t("relationBoxStaff", { kind: providerKind }) : t("relationBoxMember", { kind: providerKind })}
+    </span>
+  );
+}
+
 /** Whether «Γίνε μέλος» shows: not to the box's members and staff. */
 export function offersJoin(status: BoxJoinStatus | null | undefined) {
   return status !== "member" && status !== "staff";

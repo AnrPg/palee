@@ -23,7 +23,7 @@ import { BackToMe } from "@/components/member-app/me/BackToMe";
 import { useSession } from "@/components/session-provider";
 import { BookingSharingOffer } from "@/components/social/BookingSharing";
 import { FollowButton } from "@/components/social/FollowButton";
-import { JoinBoxButton, offersJoin } from "@/components/social/JoinBoxButton";
+import { BoxRelationChip, JoinBoxButton } from "@/components/social/JoinBoxButton";
 import { FollowRequestsRow } from "@/components/social/FollowRequestsRow";
 import { PeopleResults, PeopleSearchField } from "@/components/social/PeopleSearch";
 import { PersonAvatar } from "@/components/social/PersonAvatar";
@@ -244,9 +244,15 @@ function People({ type }: { type: "user" | "organization" }) {
               <FollowButton targetType="user" targetId={entry.person.id} initialStatus={entry.status} buddy={entry.person.buddy} />
             </PersonRow>
           ) : entry.box ? (
-            <Row key={entry.follow_id} href={`/b/${entry.box.slug}`} name={entry.box.name} image={entry.box.logo_url}>
+            <Row
+              key={entry.follow_id}
+              href={`/b/${entry.box.slug}`}
+              name={entry.box.name}
+              image={entry.box.logo_url}
+              detail={<BoxRelationChip status={entry.box.my_join} kind={entry.box.provider_kind} />}
+            >
               <JoinBoxButton slug={entry.box.slug} status={entry.box.my_join} />
-              <FollowButton targetType="organization" targetId={entry.box.organization_id} initialStatus={entry.status} quiet={offersJoin(entry.box.my_join)} />
+              <FollowButton targetType="organization" targetId={entry.box.organization_id} initialStatus={entry.status} quiet />
             </Row>
           ) : null
         }

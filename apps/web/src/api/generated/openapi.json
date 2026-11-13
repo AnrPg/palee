@@ -51658,6 +51658,13 @@
                 "nullable": true,
                 "type": "string"
               },
+              "provider_kind": {
+                "enum": [
+                  "gym",
+                  "coach"
+                ],
+                "type": "string"
+              },
               "slug": {
                 "description": "Canonical slug; redirect when it differs",
                 "type": "string"
@@ -51667,7 +51674,8 @@
               "organization_id",
               "slug",
               "name",
-              "my_join"
+              "my_join",
+              "provider_kind"
             ],
             "title": "FollowedBox",
             "type": "object"
@@ -51800,6 +51808,13 @@
                       "nullable": true,
                       "type": "string"
                     },
+                    "provider_kind": {
+                      "enum": [
+                        "gym",
+                        "coach"
+                      ],
+                      "type": "string"
+                    },
                     "slug": {
                       "description": "Canonical slug; redirect when it differs",
                       "type": "string"
@@ -51809,7 +51824,8 @@
                     "organization_id",
                     "slug",
                     "name",
-                    "my_join"
+                    "my_join",
+                    "provider_kind"
                   ],
                   "title": "FollowedBox",
                   "type": "object"
@@ -52446,6 +52462,13 @@
             "nullable": true,
             "type": "string"
           },
+          "provider_kind": {
+            "enum": [
+              "gym",
+              "coach"
+            ],
+            "type": "string"
+          },
           "slug": {
             "description": "Canonical slug; redirect when it differs",
             "type": "string"
@@ -52455,7 +52478,8 @@
           "organization_id",
           "slug",
           "name",
-          "my_join"
+          "my_join",
+          "provider_kind"
         ],
         "title": "FollowedBox",
         "type": "object"
@@ -150924,6 +150948,13 @@
                                 "nullable": true,
                                 "type": "string"
                               },
+                              "provider_kind": {
+                                "enum": [
+                                  "gym",
+                                  "coach"
+                                ],
+                                "type": "string"
+                              },
                               "slug": {
                                 "description": "Canonical slug; redirect when it differs",
                                 "type": "string"
@@ -150933,7 +150964,8 @@
                               "organization_id",
                               "slug",
                               "name",
-                              "my_join"
+                              "my_join",
+                              "provider_kind"
                             ],
                             "title": "FollowedBox",
                             "type": "object"
@@ -172384,6 +172416,13 @@
                                 "nullable": true,
                                 "type": "string"
                               },
+                              "provider_kind": {
+                                "enum": [
+                                  "gym",
+                                  "coach"
+                                ],
+                                "type": "string"
+                              },
                               "slug": {
                                 "description": "Canonical slug; redirect when it differs",
                                 "type": "string"
@@ -172393,7 +172432,8 @@
                               "organization_id",
                               "slug",
                               "name",
-                              "my_join"
+                              "my_join",
+                              "provider_kind"
                             ],
                             "title": "FollowedBox",
                             "type": "object"
@@ -173011,6 +173051,13 @@
                                 "nullable": true,
                                 "type": "string"
                               },
+                              "provider_kind": {
+                                "enum": [
+                                  "gym",
+                                  "coach"
+                                ],
+                                "type": "string"
+                              },
                               "slug": {
                                 "description": "Canonical slug; redirect when it differs",
                                 "type": "string"
@@ -173020,7 +173067,8 @@
                               "organization_id",
                               "slug",
                               "name",
-                              "my_join"
+                              "my_join",
+                              "provider_kind"
                             ],
                             "title": "FollowedBox",
                             "type": "object"
@@ -173239,6 +173287,13 @@
                                 "nullable": true,
                                 "type": "string"
                               },
+                              "provider_kind": {
+                                "enum": [
+                                  "gym",
+                                  "coach"
+                                ],
+                                "type": "string"
+                              },
                               "slug": {
                                 "description": "Canonical slug; redirect when it differs",
                                 "type": "string"
@@ -173248,7 +173303,8 @@
                               "organization_id",
                               "slug",
                               "name",
-                              "my_join"
+                              "my_join",
+                              "provider_kind"
                             ],
                             "title": "FollowedBox",
                             "type": "object"

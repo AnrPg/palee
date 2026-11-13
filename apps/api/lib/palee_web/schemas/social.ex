@@ -308,8 +308,11 @@ defmodule PaleeWeb.Schemas.Social do
           title: "FollowedBox",
           type: :object,
           nullable: true,
-          properties: Map.put(box().properties, :my_join, join_status()),
-          required: [:organization_id, :slug, :name, :my_join]
+          properties:
+            box().properties
+            |> Map.put(:my_join, join_status())
+            |> Map.put(:provider_kind, %Schema{type: :string, enum: ["gym", "coach"]}),
+          required: [:organization_id, :slug, :name, :my_join, :provider_kind]
         }
       },
       required: [:follow_id, :status, :since]

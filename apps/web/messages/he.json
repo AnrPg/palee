@@ -6670,6 +6670,8 @@
     "relationClub": "במועדון שלך",
     "relationNearby": "בקרבתך",
     "relationYouFollow": "במעקב שלך",
+    "relationBoxMember": "{kind, select, coach {ספורטאי} other {חבר/ת בוקס}}",
+    "relationBoxStaff": "{kind, select, coach {Coach} other {צוות הבוקס}}",
     "findPeople": "מצא אנשים",
     "peopleTitle": "אנשים",
     "peopleNoMatch": "לא נמצא אף אחד. חשבונות פרטיים מופיעים רק למי שכבר מכיר אותם.",

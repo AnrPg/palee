@@ -6670,6 +6670,8 @@
     "relationClub": "Στο club σου",
     "relationNearby": "Κοντά σου",
     "relationYouFollow": "Ακολουθείς",
+    "relationBoxMember": "{kind, select, coach {Αθλητής} other {Μέλος box}}",
+    "relationBoxStaff": "{kind, select, coach {Coach} other {Staff του box}}",
     "findPeople": "Βρες άτομα",
     "peopleTitle": "Άτομα",
     "peopleNoMatch": "Δεν βρέθηκε κανείς. Οι ιδιωτικοί λογαριασμοί εμφανίζονται μόνο σε όσους ήδη τους γνωρίζουν.",

@@ -6670,6 +6670,8 @@
     "relationClub": "In je club",
     "relationNearby": "In de buurt",
     "relationYouFollow": "Je volgt",
+    "relationBoxMember": "{kind, select, coach {Atleet} other {Boxlid}}",
+    "relationBoxStaff": "{kind, select, coach {Coach} other {Boxteam}}",
     "findPeople": "Mensen vinden",
     "peopleTitle": "Mensen",
     "peopleNoMatch": "Niemand gevonden. Privéaccounts verschijnen alleen voor mensen die ze al kennen.",

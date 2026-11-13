@@ -156,13 +156,17 @@ defmodule PaleeWeb.JoinBoxControllerTest do
       assert my_join(ctx, ctx.visitor) == "member"
     end
 
-    test "the boxes you follow carry it too", ctx do
+    test "the boxes you follow carry it too, with their kind for «Μέλος box» or «Αθλητής»", ctx do
       ctx.visitor
       |> as()
       |> post("/api/me/follows", %{target_type: "organization", target_id: ctx.organization.id})
       |> json_response(200)
 
-      assert %{"entries" => [%{"box" => %{"slug" => slug, "my_join" => "none"}}]} =
+      assert %{
+               "entries" => [
+                 %{"box" => %{"slug" => slug, "my_join" => "none", "provider_kind" => "gym"}}
+               ]
+             } =
                ctx.visitor
                |> as()
                |> get("/api/me/following?type=organization")

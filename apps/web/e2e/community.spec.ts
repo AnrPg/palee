@@ -499,6 +499,9 @@ test.describe("community", () => {
     const memberRow = page.getByRole("listitem").filter({ has: page.getByRole("link", { name: /Τολάρας Coach/ }) });
     await expect(memberRow.getByRole("button", { name: /Following/ })).toBeVisible();
     await expect(memberRow.getByTestId("join-box")).toHaveCount(0);
+    // ANR 2026-11-13: the row says why, so it agrees with the box page.
+    await expect(memberRow.getByTestId("box-relation")).toHaveText("Athlete");
+    await expect(row.getByTestId("box-relation")).toHaveCount(0);
 
     // At 320px both buttons stay on screen.
     await page.setViewportSize({ width: 320, height: 640 });

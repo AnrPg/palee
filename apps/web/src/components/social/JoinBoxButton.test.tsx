@@ -63,9 +63,15 @@ describe("BoxResultRow (ADR-638)", () => {
     expect(follow.getAttribute("style")).not.toContain("var(--primary)");
   });
 
-  it("a member sees only the filled «Ακολούθησε»", () => {
+  it("a member sees «Αθλητής» (coach) instead of «Γίνε μέλος», and an outlined «Ακολούθησε»", () => {
     wrap(<ul><BoxResultRow box={box("member")} /></ul>);
     expect(screen.queryByTestId("join-box")).toBeNull();
-    expect(screen.getByRole("button", { name: "Ακολούθησε" }).getAttribute("style")).toContain("var(--primary)");
+    expect(screen.getByTestId("box-relation").textContent).toBe("Αθλητής");
+    expect(screen.getByRole("button", { name: "Ακολούθησε" }).getAttribute("style")).not.toContain("var(--primary)");
+  });
+
+  it("says «Μέλος box» or «Staff του box» for a box, and nothing to someone who may join", () => {
+    wrap(<ul><BoxResultRow box={{ ...box("member"), provider_kind: "gym" }} /><BoxResultRow box={{ ...box("staff"), provider_kind: "gym", organization_id: "org-2" }} /><BoxResultRow box={{ ...box("none"), organization_id: "org-3" }} /></ul>);
+    expect(screen.getAllByTestId("box-relation").map((chip) => chip.textContent)).toEqual(["Μέλος box", "Staff του box"]);
   });
 });

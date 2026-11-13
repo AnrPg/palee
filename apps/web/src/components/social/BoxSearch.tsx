@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import { boxSearchKey, searchBoxes, type BoxSearchResult } from "@/api/social";
 import { useSession } from "@/components/session-provider";
 import { FollowButton } from "@/components/social/FollowButton";
-import { JoinBoxButton, offersJoin } from "@/components/social/JoinBoxButton";
+import { BoxRelationChip, JoinBoxButton } from "@/components/social/JoinBoxButton";
 import { PersonAvatar } from "@/components/social/PersonAvatar";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { itemRow, itemRowActions, itemRowMain } from "@/components/ui/rows";
@@ -31,7 +31,11 @@ export function useBoxSearch(term: string) {
   });
 }
 
-/** One result: logo, name, kind and area, then «Γίνε μέλος» (ADR-638) and Follow; the row opens the public page. */
+/**
+ * One result: logo, name, kind and area, then «Γίνε μέλος» (ADR-638) and Follow; the row opens the public page.
+ * Members and staff see «Μέλος box» / «Staff» under the name instead of «Γίνε μέλος», and Follow
+ * stays outlined, so it never reads as the step that makes you part of the box.
+ */
 export function BoxResultRow({ box }: { box: BoxSearchResult }) {
   const tProviders = useTranslations("Providers");
   const place = box.neighbourhood || box.city;
@@ -41,14 +45,15 @@ export function BoxResultRow({ box }: { box: BoxSearchResult }) {
         <PersonAvatar name={box.name} url={box.logo_url} />
         <span className="min-w-0">
           <span className="block truncate font-bold" style={{ color: "var(--text)" }}>{box.name}</span>
-          <span className="block truncate text-xs" style={{ color: "var(--dim)" }}>
-            {[tProviders(`kind.${box.provider_kind}`), place].filter(Boolean).join(" · ")}
+          <span className="flex min-w-0 items-center gap-1.5 text-xs" style={{ color: "var(--dim)" }}>
+            <span className="truncate">{[tProviders(`kind.${box.provider_kind}`), place].filter(Boolean).join(" · ")}</span>
+            <BoxRelationChip status={box.my_join} kind={box.provider_kind} />
           </span>
         </span>
       </Link>
       <div className={itemRowActions}>
         <JoinBoxButton slug={box.slug} status={box.my_join} />
-        <FollowButton targetType="organization" targetId={box.organization_id} initialStatus={box.my_status} quiet={offersJoin(box.my_join)} />
+        <FollowButton targetType="organization" targetId={box.organization_id} initialStatus={box.my_status} quiet />
       </div>
     </li>
   );
