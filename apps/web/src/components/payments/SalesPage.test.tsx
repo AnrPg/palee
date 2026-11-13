@@ -112,14 +112,26 @@ describe("Σελίδα αγοράς πακέτων (mockup s5 option C)", () => 
     expect(fetchPackageTerms).not.toHaveBeenCalled();
   });
 
-  it("someone not yet in the box becomes a box member by buying (ADR-552)", async () => {
+  it("someone not yet in the box becomes a box member by buying (ADR-552), and «Συνέχεια» goes on to paying (ADR-642)", async () => {
     state.status = "authenticated";
     state.search = "buy=Unlimited";
+    vi.mocked(fetchPackageTerms).mockResolvedValue({
+      package: PACKAGES[1],
+      available: true,
+      provider: "viva",
+      withdrawal_days: 14,
+      start_now_text: "Ζητώ να ξεκινήσει (API)",
+      consent_text: "Επιτρέπω (API)",
+      consent_version: "v1",
+    } as never);
     renderPage();
     const dialog = await screen.findByTestId("sales-buy");
     expect(dialog).toHaveTextContent("Με την αγορά γίνεσαι μέλος box στο Box Κυψέλη.");
     fireEvent.click(within(dialog).getByTestId("join-to-buy"));
     await waitFor(() => expect(joinToBuy).toHaveBeenCalledWith("access", "box-kypseli", "Unlimited"));
+    // A guest of the box until they pay: the list of their boxes does not have it yet, the dialog moves on anyway.
+    expect(await within(dialog).findByText("Ζητώ να ξεκινήσει (API)")).toBeInTheDocument();
+    expect(within(dialog).queryByTestId("join-to-buy")).toBeNull();
   });
 
   it("a member of the box gets the app's «Πριν πληρώσεις»", async () => {

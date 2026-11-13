@@ -83,6 +83,8 @@ defmodule Palee.Infrastructure.Organizations.EctoOrganizationStore do
            :left_at,
            :left_by,
            :access_until,
+           # ADR-642: any other way in ends a purchase admission.
+           :purchase_admission_at,
            :updated_at
          ]},
       conflict_target: [:organization_id, :user_id],
@@ -1186,6 +1188,19 @@ defmodule Palee.Infrastructure.Organizations.EctoOrganizationStore do
       membership ->
         membership
         |> OrganizationMembership.leave_changeset(attrs)
+        |> Repo.update()
+    end
+  end
+
+  @impl true
+  def set_purchase_admission(organization_id, user_id, attrs) do
+    case get_membership(organization_id, user_id) do
+      nil ->
+        {:error, :not_found}
+
+      membership ->
+        membership
+        |> OrganizationMembership.purchase_changeset(attrs)
         |> Repo.update()
     end
   end

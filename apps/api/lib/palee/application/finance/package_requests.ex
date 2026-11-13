@@ -53,6 +53,8 @@ defmodule Palee.Application.Finance.PackageRequests do
              })
            end) do
       if how == :created, do: notify_staff(context, request)
+      # ADR-642: «Το θέλω» makes a guest who started buying a box member.
+      _moved = Organizations.purchase_request_sent(context.organization_id, context.user_id)
       {:ok, %{request: present(request, today), created: how == :created}}
     end
   end
@@ -114,7 +116,7 @@ defmodule Palee.Application.Finance.PackageRequests do
     end)
     |> closed_error()
     |> tap(fn
-      {:ok, closed} -> PackageRule.end_waiting(context, closed.user_id)
+      {:ok, closed} -> closed_without_package(context, closed.user_id)
       _error -> :ok
     end)
   end
@@ -196,6 +198,10 @@ defmodule Palee.Application.Finance.PackageRequests do
         membership_payment_id: received.payment.id
       })
     end)
+    |> tap(fn
+      {:ok, _closed} -> package_started(context, request.user_id)
+      _other -> :ok
+    end)
     |> case do
       {:ok, closed} ->
         {:ok, closed}
@@ -253,6 +259,10 @@ defmodule Palee.Application.Finance.PackageRequests do
           })
       end
     end)
+    |> tap(fn
+      {:ok, _closed} -> package_started(context, request.user_id)
+      _other -> :ok
+    end)
   end
 
   @doc """
@@ -273,7 +283,7 @@ defmodule Palee.Application.Finance.PackageRequests do
              })
            end)
            |> closed_error() do
-      cancelled = PackageRule.end_waiting(context, closed.user_id)
+      cancelled = closed_without_package(context, closed.user_id)
       notify_declined(context, closed, cancelled)
       {:ok, %{request: present(closed, today), cancelled_bookings: cancelled}}
     end
@@ -330,6 +340,29 @@ defmodule Palee.Application.Finance.PackageRequests do
     end
   end
 
+  # ── Box membership (ADR-642) ────────────────────────────────────────────
+
+  # A request closed with no package (cancelled, declined, lapsed): the one
+  # class while waiting goes (ADR-633), and someone who became a member only
+  # by asking is a guest again. Returns how many bookings were cancelled.
+  defp closed_without_package(context, user_id) do
+    cancelled = PackageRule.end_waiting(context, user_id)
+
+    _moved =
+      Organizations.purchase_request_closed(
+        context.organization_id,
+        user_id,
+        PackageRule.keeps_membership?(context, user_id)
+      )
+
+    cancelled
+  end
+
+  defp package_started(context, user_id) do
+    _moved = Organizations.purchase_package_started(context.organization_id, user_id)
+    :ok
+  end
+
   # ── Housekeeping ────────────────────────────────────────────────────────
 
   @doc """
@@ -344,7 +377,7 @@ defmodule Palee.Application.Finance.PackageRequests do
     lapsed
     |> Enum.map(& &1.user_id)
     |> Enum.uniq()
-    |> Enum.each(&PackageRule.end_waiting(context, &1))
+    |> Enum.each(&closed_without_package(context, &1))
 
     length(lapsed)
   end

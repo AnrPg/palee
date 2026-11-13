@@ -675,6 +675,21 @@ defmodule Palee.Organizations do
       |> Palee.Organizations.Commands.AdmitMember.call(user_id, reason, joined_at)
       |> announce_activation()
 
+  @doc "ADR-642: «Το θέλω» was sent (a guest who started buying becomes a member)."
+  defdelegate purchase_request_sent(organization_id, user_id),
+    to: Palee.Organizations.Commands.MovePurchaseAdmission,
+    as: :request_sent
+
+  @doc "ADR-642: a package started for the person (a purchase admission is complete)."
+  defdelegate purchase_package_started(organization_id, user_id),
+    to: Palee.Organizations.Commands.MovePurchaseAdmission,
+    as: :package_started
+
+  @doc "ADR-642: a request closed with no package; `kept?`: something still holds them."
+  defdelegate purchase_request_closed(organization_id, user_id, kept?),
+    to: Palee.Organizations.Commands.MovePurchaseAdmission,
+    as: :request_closed
+
   def inspect_invitation(token, now \\ DateTime.utc_now()),
     do: InspectInvitation.call(token, now)
 
@@ -769,9 +784,13 @@ defmodule Palee.Organizations do
   defp activated_membership(%{created: false}), do: nil
   defp activated_membership(%{membership: membership}), do: activated_membership(membership)
 
+  # ADR-642: a guest (someone who only started buying) is not activated yet.
   defp activated_membership(%{status: :active, organization_id: org, user_id: user} = membership)
-       when is_binary(org) and is_binary(user),
-       do: membership
+       when is_binary(org) and is_binary(user) do
+    if Palee.Organizations.Domain.MembershipPolicy.guest_only?(Map.get(membership, :roles)),
+      do: nil,
+      else: membership
+  end
 
   defp activated_membership(_result), do: nil
 

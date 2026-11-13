@@ -30,6 +30,14 @@ defmodule Palee.Organizations.Domain.JoinRequestPolicy do
   def admission(nil, _reason), do: :create
   # ADR-595: someone who left the box comes back by any way in, on their own.
   def admission(%{status: :active, left_at: %DateTime{}}, _reason), do: :create
+  # ADR-642: a guest of the box the staff accept becomes a member.
+  def admission(%{status: :active, roles: roles}, :accepted_request)
+      when is_list(roles) and roles != [] do
+    if Palee.Organizations.Domain.MembershipPolicy.guest_only?(roles),
+      do: :create,
+      else: :already_member
+  end
+
   def admission(%{status: :active}, _reason), do: :already_member
   def admission(_former, :accepted_request), do: :create
   def admission(_former, :purchase), do: {:error, :membership_unavailable}

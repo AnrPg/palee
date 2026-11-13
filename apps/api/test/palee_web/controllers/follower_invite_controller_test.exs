@@ -272,6 +272,12 @@ defmodule PaleeWeb.FollowerInviteControllerTest do
       |> post("/api/memberships/join/#{ctx.slug}/package/#{ctx.package.id}")
       |> json_response(201)
 
+      # ADR-642: «Συνέχεια» alone is not membership; «Το θέλω» is.
+      ctx.fan
+      |> as()
+      |> post("/api/org/#{ctx.slug}/me/packages/#{ctx.package.id}/request", %{})
+      |> json_response(201)
+
       assert %{"invite" => nil} =
                ctx.fan
                |> as()

@@ -325,6 +325,8 @@ defmodule Palee.Application.Payments.OnlineSales do
              "provider" => intent.provider,
              "provider_transaction_id" => intent.provider_transaction_id
            }) do
+      # ADR-642: paid, so whoever started buying is a box member now.
+      _moved = Organizations.purchase_package_started(context.organization_id, user_id)
       unless received.replayed, do: book_after_purchase(context, intent)
       {:ok, Palee.Application.Payments.FinanceFulfilment.fulfilled(received)}
     end

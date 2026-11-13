@@ -68,16 +68,17 @@ defmodule PaleeWeb.JoinBoxControllerTest do
              |> post("/api/memberships/join/#{ctx.slug}")
              |> json_response(404)
 
-      assert %{"role" => "member", "organization" => %{"slug" => slug}} =
+      # ADR-642: starting to buy lets them in as a guest of the box; «Το θέλω»
+      # or the payment makes them a member (purchase_admission_test.exs).
+      assert %{"role" => "guest", "organization" => %{"slug" => slug}} =
                ctx.visitor
                |> as()
                |> post("/api/memberships/join/#{ctx.slug}/package/#{ctx.package.id}")
                |> json_response(201)
 
       assert slug == ctx.slug
-      assert standing(ctx, ctx.visitor) == :member
 
-      # Again: already a member.
+      # Again: already in.
       assert ctx.visitor
              |> as()
              |> post("/api/memberships/join/#{ctx.slug}/package/#{ctx.package.id}")

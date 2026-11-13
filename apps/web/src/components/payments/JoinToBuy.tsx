@@ -17,9 +17,24 @@ import { SPARK_GO_STYLE } from "@/lib/spark";
 /**
  * ADR-552: someone who is not a box member yet becomes one by buying (or
  * asking at the desk for) a package the box lists to everyone, whatever the
- * member join link says. Once in, the dialog shows the member checkout.
+ * member join link says. ADR-642: «Συνέχεια» lets them in as a guest of the
+ * box (no member yet), and the dialog moves on to the checkout or the
+ * «Το θέλω» hold; the payment or the request makes them a member.
  */
-export function JoinToBuy({ slug, boxName, packageId, desk = false }: { slug: string; boxName: string; packageId: string; desk?: boolean }) {
+export function JoinToBuy({
+  slug,
+  boxName,
+  packageId,
+  desk = false,
+  onJoined,
+}: {
+  slug: string;
+  boxName: string;
+  packageId: string;
+  desk?: boolean;
+  /** ADR-642: the person is in as a guest of the box until they pay or send «Το θέλω», so the dialog moves on by itself. */
+  onJoined: () => void;
+}) {
   const t = useTranslations("Pay");
   const tUi = useUiTranslations();
   const { tokens, rotate } = useSession();
@@ -30,6 +45,7 @@ export function JoinToBuy({ slug, boxName, packageId, desk = false }: { slug: st
       // A first membership can change the account role, which retires the old token.
       await rotate().catch(() => undefined);
       await queryClient.invalidateQueries({ queryKey: ORGANIZATION_MEMBERSHIPS_KEY });
+      onJoined();
     },
   });
   const refused = join.error instanceof ApiError && join.error.payload?.code === "membership_unavailable";

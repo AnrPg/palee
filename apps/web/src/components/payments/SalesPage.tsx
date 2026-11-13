@@ -259,7 +259,8 @@ function BuyDialog({ slug, boxName, pkg, onClose }: { slug: string; boxName: str
   const memberships = useOrganizationMemberships();
   // Back here after signing in, with the same package open.
   const here = `/b/${encodeURIComponent(slug)}/packages?buy=${encodeURIComponent(pkg.id)}`;
-  const member = (memberships.data ?? []).some((membership) => membership.organization.slug === slug);
+  const [joined, setJoined] = useState(false);
+  const member = joined || (memberships.data ?? []).some((membership) => membership.organization.slug === slug);
 
   return (
     <Dialog onClose={onClose} title={t("buy")} size="sm" variant="sheet" testId="sales-buy">
@@ -282,7 +283,7 @@ function BuyDialog({ slug, boxName, pkg, onClose }: { slug: string; boxName: str
         ) : status !== "authenticated" || memberships.isPending ? (
           <p className="text-sm" style={{ color: "var(--dim)" }}>{t("loading")}</p>
         ) : !member ? (
-          <JoinToBuy slug={slug} boxName={boxName} packageId={pkg.id} />
+          <JoinToBuy slug={slug} boxName={boxName} packageId={pkg.id} onJoined={() => setJoined(true)} />
         ) : (
           <MemberCheckout slug={slug} pkg={pkg} />
         )}

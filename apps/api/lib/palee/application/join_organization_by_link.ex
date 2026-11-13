@@ -24,7 +24,9 @@ defmodule Palee.Application.JoinOrganizationByLink do
   def align_role(user, %{created: true, membership: membership}) do
     role = membership.role
 
-    if user.role in [:member, :athlete] and user.role != role and only_membership?(user.id) do
+    # ADR-642: a guest of the box (someone who only started buying) keeps the account's role.
+    if user.role in [:member, :athlete] and role in [:member, :athlete] and user.role != role and
+         only_membership?(user.id) do
       Identity.update_role(user, role)
     else
       {:ok, user}

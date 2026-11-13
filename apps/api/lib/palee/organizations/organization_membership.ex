@@ -28,6 +28,10 @@ defmodule Palee.Organizations.OrganizationMembership do
     field :left_at, :utc_datetime_usec
     field :left_by, :string
     field :access_until, :date
+    # ADR-642: the person came in through a package of the box and has no
+    # package yet: a guest while they only started buying, a member once
+    # their «Το θέλω» waits; nil once a package started (or any other way in).
+    field :purchase_admission_at, :utc_datetime_usec
 
     timestamps(type: :utc_datetime_usec)
   end
@@ -46,7 +50,8 @@ defmodule Palee.Organizations.OrganizationMembership do
       :invited_by_user_id,
       :coach_scope,
       :notes_visible_to_admins,
-      :home_location_id
+      :home_location_id,
+      :purchase_admission_at
     ])
     |> sync_roles()
     |> validate_required([:organization_id, :user_id, :role, :status])
@@ -71,6 +76,17 @@ defmodule Palee.Organizations.OrganizationMembership do
     |> validate_inclusion(:left_by, ["member", "staff"])
     |> check_constraint(:left_by, name: :organization_memberships_left_by_check)
     |> check_constraint(:left_at, name: :organization_memberships_left_check)
+  end
+
+  @doc """
+  ADR-642: a purchase admission moves on: `roles` (guest ↔ member) and
+  `purchase_admission_at` (nil once a package started).
+  """
+  def purchase_changeset(membership, params) do
+    membership
+    |> cast(params, [:roles, :purchase_admission_at])
+    |> sync_roles()
+    |> validate_length(:roles, min: 1)
   end
 
   @doc "ADR-186: the «Όλα τα καταστήματα» flag; the branches live in their own table."

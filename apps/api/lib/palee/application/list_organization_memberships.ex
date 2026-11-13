@@ -10,6 +10,7 @@ defmodule Palee.Application.ListOrganizationMemberships do
   """
 
   alias Palee.Organizations
+  alias Palee.Organizations.Domain.PurchaseAdmissionPolicy
 
   def call(%{id: user_id}) do
     {:ok,
@@ -27,6 +28,8 @@ defmodule Palee.Application.ListOrganizationMemberships do
      |> Organizations.list_memberships()
      |> Enum.reject(&Organizations.hosting_only?/1)
      |> Enum.filter(&(Organizations.guest_only?(&1) and &1.membership.status == :active))
+     # ADR-642: someone who only started buying is not a desk guest.
+     |> Enum.reject(&PurchaseAdmissionPolicy.marked?(&1.membership))
      |> Enum.map(fn %{organization: organization} ->
        %{id: organization.id, name: organization.name, slug: organization.slug}
      end)}

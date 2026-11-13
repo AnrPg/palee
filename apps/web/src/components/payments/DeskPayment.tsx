@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, type ReactNode } from "react";
 
+import { CLUBS_KEY } from "@/api/community";
 import type { PublicPackage } from "@/api/my-payments";
 import {
   cancelPackageRequest,
@@ -17,7 +18,7 @@ import { useSession } from "@/components/session-provider";
 import { Dialog } from "@/components/ui/Dialog";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { useUiLocale } from "@/i18n/use-ui-locale";
-import { useOrganizationMemberships } from "@/lib/organization-slug";
+import { ORGANIZATION_MEMBERSHIPS_KEY, useOrganizationMemberships } from "@/lib/organization-slug";
 import { FRESHNESS } from "@/lib/query-policy";
 
 import { PackageChoice, perLabel } from "./BuyPackageSheet";
@@ -120,7 +121,8 @@ export function DeskRequestDialog({
   const locale = useUiLocale();
   const { status } = useSession();
   const memberships = useOrganizationMemberships();
-  const member = (memberships.data ?? []).some((membership) => membership.organization.slug === slug);
+  const [joined, setJoined] = useState(false);
+  const member = joined || (memberships.data ?? []).some((membership) => membership.organization.slug === slug);
   const amount = `${money(locale, pkg.base_price_cents, pkg.currency)}${perLabel(tPay, pkg.billing_period)}`;
 
   if (status === "authenticated" && member) {
@@ -143,7 +145,7 @@ export function DeskRequestDialog({
         ) : status !== "authenticated" || memberships.isPending ? (
           <p className="text-sm" style={{ color: "var(--dim)" }}>{t("loading")}</p>
         ) : (
-          <JoinToBuy slug={slug} boxName={boxName} packageId={pkg.id} desk />
+          <JoinToBuy slug={slug} boxName={boxName} packageId={pkg.id} desk onJoined={() => setJoined(true)} />
         )}
       </div>
     </Dialog>
@@ -345,7 +347,13 @@ function useRequestPackage(slug: string) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (packageId: string) => requestPackage(tokens!.access_token, slug, packageId),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: myPackageRequestsKey(slug) }),
+    // ADR-642: «Το θέλω» makes the person a box member, so their boxes change too.
+    onSuccess: () =>
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: myPackageRequestsKey(slug) }),
+        queryClient.invalidateQueries({ queryKey: ORGANIZATION_MEMBERSHIPS_KEY }),
+        queryClient.invalidateQueries({ queryKey: CLUBS_KEY }),
+      ]),
   });
 }
 
@@ -354,7 +362,13 @@ function useCancelRequest(slug: string) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (requestId: string) => cancelPackageRequest(tokens!.access_token, slug, requestId),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: myPackageRequestsKey(slug) }),
+    // ADR-642: taking back the only request of someone who joined by asking ends their membership.
+    onSuccess: () =>
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: myPackageRequestsKey(slug) }),
+        queryClient.invalidateQueries({ queryKey: ORGANIZATION_MEMBERSHIPS_KEY }),
+        queryClient.invalidateQueries({ queryKey: CLUBS_KEY }),
+      ]),
   });
 }
 

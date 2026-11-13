@@ -29,8 +29,12 @@ defmodule Palee.Application.AssignFinanceMemberPackage do
          package_id when is_binary(package_id) <- package_id(params),
          package when not is_nil(package) <- Finance.get_package(package_id),
          :ok <- PackageAssignmentPolicy.can_assign?(package),
-         {:ok, membership} <- ensure_membership(context, user.id, params) do
-      Finance.assign_package(membership.id, package_id, params)
+         {:ok, membership} <- ensure_membership(context, user.id, params),
+         {:ok, subscription} <- Finance.assign_package(membership.id, package_id, params) do
+      # ADR-642: a package completes a purchase admission (a desk guest
+      # sold one by staff, ADR-272, carries no mark and stays a guest).
+      _moved = Organizations.purchase_package_started(context.organization_id, user.id)
+      {:ok, subscription}
     else
       nil -> {:error, :not_found}
       {:error, reason} -> {:error, reason}

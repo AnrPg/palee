@@ -69,7 +69,7 @@ const REQUEST = {
   days_left: 14,
 };
 
-async function stubMember(page: Page, writes: Write[], requests: Array<typeof REQUEST>) {
+async function stubMember(page: Page, writes: Write[], requests: Array<typeof REQUEST>, memberships: unknown[] = [MEMBER_MEMBERSHIP]) {
   await page.context().addCookies([{ name: "palee_locale", value: "el", url: "http://127.0.0.1" }]);
   await page.route("**/api/**", async (route) => {
     const path = tenantless(new URL(route.request().url()).pathname);
@@ -77,7 +77,9 @@ async function stubMember(page: Page, writes: Write[], requests: Array<typeof RE
     if (method !== "GET") writes.push({ method, path, body: route.request().postDataJSON() });
     if (path === "/api/auth/refresh") return json(route, { access_token: tokenFor(MEMBER.id, "member"), refresh_token: "refresh" });
     if (path === "/api/auth/me") return json(route, MEMBER);
-    if (path === "/api/memberships") return json(route, [MEMBER_MEMBERSHIP]);
+    if (path === "/api/memberships") return json(route, memberships);
+    // ADR-642: «Συνέχεια» lets a newcomer in as a guest of the box, not a member yet.
+    if (path === "/api/memberships/join/kypseli/package/unl") return json(route, { ...MEMBER_MEMBERSHIP, role: "guest", roles: ["guest"] }, 201);
     if (path.startsWith("/api/notifications")) return json(route, { notifications: [], unread_count: 0 });
     if (path === "/api/public/boxes/kypseli/packages") return json(route, DESK_SALES);
     // Like the API: the signed-in list needs the person's token (2026-11-10).
@@ -151,6 +153,24 @@ test.describe("a box without online payments: the sales page", () => {
     expect(writes.filter((write) => write.path === "/api/me/packages/unl/request").length).toBeGreaterThan(0);
     await dialog.getByTestId("desk-held-ok").click();
     await expect(dialog).toBeHidden();
+  });
+
+  test("a newcomer's «Συνέχεια» goes straight on to holding the package (ADR-642)", async ({ page }) => {
+    const writes: Write[] = [];
+    await stubMember(page, writes, [], []);
+    await page.goto("/b/kypseli/packages");
+    await page.getByTestId("sales-want-unl").click();
+    const ask = page.getByTestId("desk-pay");
+    await expect(ask).toContainText("Με το αίτημα γίνεσαι μέλος box στο Box Kypseli");
+    const next = ask.getByTestId("join-to-buy");
+    await expect(next).toBeVisible();
+    await next.click({ trial: true });
+    await next.click();
+    // Not in the box's list of members yet (a guest until «Το θέλω»), and the hold opens anyway.
+    const held = page.getByTestId("desk-held");
+    await expect(held.getByTestId("desk-held-until")).toHaveText(/Το κρατάμε 14 ημέρες/);
+    expect(writes.some((write) => write.path === "/api/memberships/join/kypseli/package/unl")).toBe(true);
+    expect(writes.some((write) => write.path === "/api/me/packages/unl/request")).toBe(true);
   });
 });
 

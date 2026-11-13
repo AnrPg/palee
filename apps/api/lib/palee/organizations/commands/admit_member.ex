@@ -1,8 +1,11 @@
 defmodule Palee.Organizations.Commands.AdmitMember do
   @moduledoc """
-  ADR-552: makes an account a box member without the member join link:
-  when it starts to buy a package the box lists to everyone (`:purchase`)
-  or when the staff accept its «Ζήτα να γίνεις μέλος» (`:accepted_request`).
+  ADR-552: lets an account into a box without the member join link: when it
+  starts to buy a package the box lists to everyone (`:purchase`) or when
+  the staff accept its «Ζήτα να γίνεις μέλος» (`:accepted_request`, a box
+  member at once). ADR-642: starting to buy makes the person a guest of the
+  box, marked as a purchase admission; «Το θέλω» or a package makes them a
+  member (`MovePurchaseAdmission`).
   `JoinRequestPolicy.admission/2` decides; a former member is let back in
   only by the staff. Runs under the same carve-out as the join link: the
   person is not a member yet, and the staff who accept may not write
@@ -10,7 +13,7 @@ defmodule Palee.Organizations.Commands.AdmitMember do
   """
 
   alias Palee.Infrastructure.Tenancy.RepoContext
-  alias Palee.Organizations.Domain.{GoLivePolicy, JoinRequestPolicy}
+  alias Palee.Organizations.Domain.{GoLivePolicy, JoinRequestPolicy, PurchaseAdmissionPolicy}
   alias Palee.Organizations.OrganizationStore
 
   def call(organization_id, user_id, reason, joined_at)
@@ -40,13 +43,18 @@ defmodule Palee.Organizations.Commands.AdmitMember do
 
         :create ->
           with {:ok, created} <-
-                 OrganizationStore.add_membership(%{
-                   organization_id: organization.id,
-                   user_id: user_id,
-                   role: :member,
-                   status: :active,
-                   joined_at: joined_at
-                 }) do
+                 OrganizationStore.add_membership(
+                   Map.merge(
+                     %{
+                       organization_id: organization.id,
+                       user_id: user_id,
+                       role: :member,
+                       status: :active,
+                       joined_at: joined_at
+                     },
+                     admitted_as(reason, joined_at)
+                   )
+                 ) do
             {:ok,
              %{organization: organization, membership: created, settings: settings, created: true}}
           end
@@ -59,4 +67,8 @@ defmodule Palee.Organizations.Commands.AdmitMember do
       _unavailable -> {:error, :not_found}
     end
   end
+
+  # ADR-642: a purchase admits a guest until «Το θέλω» or a package.
+  defp admitted_as(:purchase, now), do: PurchaseAdmissionPolicy.admitted(now)
+  defp admitted_as(_reason, _now), do: %{purchase_admission_at: nil}
 end

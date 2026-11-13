@@ -324,6 +324,14 @@ defmodule Palee.Application.PackageRule do
 
   defp since(context), do: Map.get(Finance.get_finance_settings(context), :package_rule_since)
 
+  @doc """
+  ADR-642: whether the person still has a reason to be a box member after a
+  request closed: another request waiting, or a Finance profile (a package
+  now or before).
+  """
+  def keeps_membership?(context, user_id),
+    do: has_profile?(context, user_id) or waiting?(context, user_id)
+
   defp has_profile?(context, user_id),
     do: not is_nil(Finance.get_member_profile(context, user_id))
 
