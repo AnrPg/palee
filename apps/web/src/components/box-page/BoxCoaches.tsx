@@ -75,7 +75,7 @@ function CoachSheet({ coach, onClose }: { coach: Coach; onClose: () => void }) {
         <PersonAvatar name={name} url={coach.avatar_url} size={96} />
         <h2 className="text-xl font-extrabold [overflow-wrap:anywhere]" style={{ color: "var(--text)" }}>{name}</h2>
         {coach.class_types.length > 0 ? (
-          <p className="text-sm" style={{ color: "var(--text-soft)" }}>
+          <p className="text-sm" style={{ color: "var(--text-soft)" }} data-testid="box-coach-teaches">
             <span className="font-bold">{t("coachTeaches")}</span> {coach.class_types.join(" · ")}
           </p>
         ) : null}

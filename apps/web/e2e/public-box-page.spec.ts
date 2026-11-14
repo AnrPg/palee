@@ -219,14 +219,14 @@ test.describe("public box page", () => {
     await coach.click();
     const sheet = page.getByRole("dialog", { name: longCoachName });
     await expect(sheet.getByTestId("box-coach-bio")).toHaveText("Hybrid and endurance, mornings.");
-    await expect(sheet.getByText("Hybrid")).toBeVisible();
+    await expect(sheet.getByTestId("box-coach-teaches")).toHaveText("Teaches: Hybrid");
     await sheet.getByRole("button", { name: "Close" }).first().click();
     await expect(sheet).toBeHidden();
 
     // A coach without a public bio still opens, with what the box shows.
     await page.getByTestId("box-coach").filter({ hasText: "Stelios" }).click();
     const plain = page.getByRole("dialog", { name: "Stelios" });
-    await expect(plain.getByText("CrossFit · Olympic lifting")).toBeVisible();
+    await expect(plain.getByTestId("box-coach-teaches")).toHaveText("Teaches: CrossFit · Olympic lifting");
     await expect(plain.getByTestId("box-coach-bio")).toHaveCount(0);
   });
 
