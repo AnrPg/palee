@@ -93,10 +93,14 @@ defmodule Palee.Application.BoxSite.PublicSite do
     }
 
     sections = BoxSite.visible_sections(settings.section_order, hidden, facts)
+    host = BoxSite.primary_host(box.organization_id)
 
     %{
       slug: box.slug,
-      canonical_url: canonical_url(box),
+      canonical_url: canonical_url(box, host),
+      # ADR-641: the app's box page links the website only once the owner
+      # published it («Δημοσίευση») or it answers on the box's own domain.
+      website_live: not is_nil(Map.get(settings, :published_at)) or not is_nil(host),
       sections: sections,
       template: settings.template,
       palette: settings.palette,
@@ -351,12 +355,10 @@ defmodule Palee.Application.BoxSite.PublicSite do
   defp canonical_language(language, languages),
     do: Enum.find(languages, &(String.downcase(&1) == String.downcase(language || "")))
 
-  defp canonical_url(box) do
-    case BoxSite.primary_host(box.organization_id) do
-      nil -> PublicURL.base_url() <> "/b/" <> box.slug
-      host -> "https://" <> host
-    end
-  end
+  defp canonical_url(box), do: canonical_url(box, BoxSite.primary_host(box.organization_id))
+
+  defp canonical_url(box, nil), do: PublicURL.base_url() <> "/b/" <> box.slug
+  defp canonical_url(_box, host), do: "https://" <> host
 
   @doc "The box behind a custom host, for the web's host rewrite."
   def by_host(host) when is_binary(host) do

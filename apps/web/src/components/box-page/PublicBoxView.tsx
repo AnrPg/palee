@@ -245,7 +245,7 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
           <Logo page={page} className="-mt-10 lg:-mt-16" size={80} desktopSize={120} />
           <div className="min-w-0 lg:flex-1 lg:pb-2">
             <h1 className="mt-2 text-2xl font-extrabold lg:text-4xl lg:tracking-tight" style={{ color: "var(--text)" }}>{page.box.name}</h1>
-            {line || member || (site && !standalone) ? (
+            {line || member || (site?.website_live && !standalone) ? (
               <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm lg:mt-1 lg:text-base" style={{ color: "var(--text-soft)" }}>
                 {line ? <span>{line}</span> : null}
                 {site ? <WebsiteLink site={site} slug={page.box.slug} standalone={standalone} /> : null}
@@ -475,7 +475,8 @@ function InfoCard({
  */
 function WebsiteLink({ site, slug, standalone }: { site: PublicSite; slug: string; standalone: boolean }) {
   const t = useTranslations("BoxPage");
-  if (standalone) return null;
+  // ANR 2026-11-15: no link while the box has neither published its Palee website nor its own domain.
+  if (standalone || !site.website_live) return null;
   const own = !site.canonical_url.endsWith(`/b/${slug}`);
   const href = own ? site.canonical_url : `/b/${slug}?site=1`;
   const label = own ? site.canonical_url.replace(/^https?:\/\//, "").replace(/\/$/, "") : t("websiteOnPalee");

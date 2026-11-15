@@ -549,6 +549,11 @@ defmodule PaleeWeb.Schemas.BoxSite do
       properties: %{
         slug: %Schema{type: :string},
         canonical_url: %Schema{type: :string},
+        website_live: %Schema{
+          type: :boolean,
+          description:
+            "ADR-641: the owner published the website («Δημοσίευση») or it answers on the box's own domain"
+        },
         sections: sections(),
         faq: faq(),
         forms: %Schema{
@@ -676,6 +681,7 @@ defmodule PaleeWeb.Schemas.BoxSite do
         :timetable,
         :tracking,
         :translation,
+        :website_live,
         :wod
       ]
     }

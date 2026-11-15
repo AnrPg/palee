@@ -67,6 +67,7 @@ const site = {
   language: "el",
   languages: ["el", "en"],
   canonical_url: `https://palee.app/b/${slug}`,
+  website_live: true,
   time_zone: "Europe/Athens",
   translation: null,
   about: null,
@@ -98,6 +99,8 @@ const siteEn = {
   class_type_names: { CrossFit: "CrossFit" },
 };
 
+const draftSlug = "site-e2e-unpublished";
+
 let server: Server;
 
 test.beforeAll(async () => {
@@ -107,6 +110,9 @@ test.beforeAll(async () => {
       response.writeHead(status, { "content-type": "application/json" });
       response.end(JSON.stringify(body));
     };
+    // ADR-641: a box whose website was never published («Δημοσίευση») and has no own domain.
+    if (url.startsWith(`/api/public/boxes/${draftSlug}`)) return reply(200, { ...publicBox, box: { ...box, slug: draftSlug } });
+    if (url.startsWith(`/api/public/sites/${draftSlug}`)) return reply(200, { ...site, slug: draftSlug, canonical_url: `https://palee.app/b/${draftSlug}`, website_live: false });
     if (url.startsWith(`/api/public/boxes/${slug}`)) return reply(200, publicBox);
     if (url.startsWith(`/api/public/sites/${slug}`)) return reply(200, /[?&]lang=en\b/.test(url) ? siteEn : site);
     return reply(404, { error: "not_found" });
@@ -836,6 +842,22 @@ test.describe("the box's website from the app's box page", () => {
     await page.goto(`/b/${slug}?site=1`);
     await expect(page.getByTestId("box-website")).toBeVisible();
     await expect(page.getByTestId("site-sections")).toHaveCount(0);
+
+    // ANR 2026-11-15: the website's own pages stay on the website, never the app's box page.
+    const menu = await sitePagesMenu(page);
+    const coaches = menu.getByRole("link", { name: "Coaches" });
+    await expect(coaches).toBeVisible();
+    await coaches.click();
+    await expect(page).toHaveURL(new RegExp(`/b/${slug}/coaches\\?site=1$`));
+    await expect(page.getByTestId("box-website")).toHaveAttribute("data-page", "coaches");
+    await expect(page.getByTestId("site-sections")).toHaveCount(0);
+  });
+
+  test("no «Website» while the box has neither published its website nor its own domain (ANR 2026-11-15)", async ({ page }) => {
+    await asMember(page, [], () => null);
+    await page.goto(`/b/${draftSlug}`);
+    await expect(page.getByRole("heading", { name: box.name }).first()).toBeVisible();
+    await expect(page.getByTestId("box-page-website")).toHaveCount(0);
   });
 });
 

@@ -48053,6 +48053,8 @@ export interface components {
             };
             /** @description The translation this answer is in (ADR-520), null for the box's own */
             translation: string | null;
+            /** @description ADR-641: the owner published the website («Δημοσίευση») or it answers on the box's own domain */
+            website_live: boolean;
             wod: {
                 body: string | null;
                 /** Format: date */
@@ -125113,6 +125115,8 @@ export interface operations {
                         };
                         /** @description The translation this answer is in (ADR-520), null for the box's own */
                         translation: string | null;
+                        /** @description ADR-641: the owner published the website («Δημοσίευση») or it answers on the box's own domain */
+                        website_live: boolean;
                         wod: {
                             body: string | null;
                             /** Format: date */
@@ -169177,6 +169181,8 @@ export interface operations {
                         };
                         /** @description The translation this answer is in (ADR-520), null for the box's own */
                         translation: string | null;
+                        /** @description ADR-641: the owner published the website («Δημοσίευση») or it answers on the box's own domain */
+                        website_live: boolean;
                         wod: {
                             body: string | null;
                             /** Format: date */

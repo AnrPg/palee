@@ -88080,6 +88080,10 @@
             "nullable": true,
             "type": "string"
           },
+          "website_live": {
+            "description": "ADR-641: the owner published the website («Δημοσίευση») or it answers on the box's own domain",
+            "type": "boolean"
+          },
           "wod": {
             "items": {
               "properties": {
@@ -88143,6 +88147,7 @@
           "timetable",
           "tracking",
           "translation",
+          "website_live",
           "wod"
         ],
         "title": "PublicSiteResponse",
@@ -305529,6 +305534,10 @@
                       "nullable": true,
                       "type": "string"
                     },
+                    "website_live": {
+                      "description": "ADR-641: the owner published the website («Δημοσίευση») or it answers on the box's own domain",
+                      "type": "boolean"
+                    },
                     "wod": {
                       "items": {
                         "properties": {
@@ -305592,6 +305601,7 @@
                     "timetable",
                     "tracking",
                     "translation",
+                    "website_live",
                     "wod"
                   ],
                   "title": "PublicSiteResponse",
@@ -433607,6 +433617,10 @@
                       "nullable": true,
                       "type": "string"
                     },
+                    "website_live": {
+                      "description": "ADR-641: the owner published the website («Δημοσίευση») or it answers on the box's own domain",
+                      "type": "boolean"
+                    },
                     "wod": {
                       "items": {
                         "properties": {
@@ -433670,6 +433684,7 @@
                     "timetable",
                     "tracking",
                     "translation",
+                    "website_live",
                     "wod"
                   ],
                   "title": "PublicSiteResponse",

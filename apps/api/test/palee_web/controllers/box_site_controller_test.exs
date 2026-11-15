@@ -96,10 +96,17 @@ defmodule PaleeWeb.BoxSiteControllerTest do
     # The section switch waits for «Δημοσίευση».
     assert settings["draft"] == %{"hidden_sections" => ["coaches"]}
     assert settings["hidden_sections"] == []
-    assert "coaches" in (build_conn() |> get(ctx.public) |> json_response(200))["sections"]
+
+    assert %{"sections" => sections, "website_live" => false} =
+             build_conn() |> get(ctx.public) |> json_response(200)
+
+    assert "coaches" in sections
 
     assert %{"settings" => %{"draft" => nil, "hidden_sections" => ["coaches"]}} =
              ctx |> owner_conn() |> post("#{ctx.admin}/publish") |> json_response(200)
+
+    # ADR-641: once published, the app's box page links the website.
+    assert %{"website_live" => true} = build_conn() |> get(ctx.public) |> json_response(200)
 
     assert %{"code" => "settings_changed_meanwhile"} =
              ctx
