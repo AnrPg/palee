@@ -20274,5 +20274,20 @@
     "submit_debt_forgiven": "أعفِ من الدين",
     "givenBySystem": "من Palee، {when}",
     "reasonRollout": "الحجز يحتاج الآن إلى باقة: 14 يومًا لمن كانوا يتدربون"
+  },
+  "BoxRelation": {
+    "member": "{kind, select, coach {تتدربان معًا} other {عضو في البوكس}}",
+    "memberShort": "{kind, select, coach {تتدربان معًا} other {عضو}}",
+    "menuAria": "عضويتك في {name}",
+    "packageUntil": "{name} · حتى {date}",
+    "noPackage": "لا توجد باقة حاليًا",
+    "payments": "مدفوعاتي",
+    "leave": "{kind, select, coach {إنهاء التدريب…} other {مغادرة البوكس…}}",
+    "cardTitle": "عضويتك",
+    "followHint": "{kind, select, coach {عندما تتابعه ترى منشوراته في موجزك. إذا توقفت، تستمر في التدريب.} other {عندما تتابعه ترى منشورات البوكس في موجزك. إذا توقفت، تبقى عضوًا في البوكس.}}",
+    "stillFollowing": "{kind, select, coach {ما زلت تتابع المدرب وترى منشوراته.} other {ما زلت تتابع البوكس وترى منشوراته.}}",
+    "stopFollowing": "أوقف المتابعة أيضًا",
+    "stoppedFollowing": "{kind, select, coach {لم تعد تتابع المدرب.} other {لم تعد تتابع البوكس.}}",
+    "done": "حسنًا"
   }
 }

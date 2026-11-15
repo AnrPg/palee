@@ -13,6 +13,7 @@ import { useClubRealtime } from "@/components/community/use-community";
 import { EventList } from "@/components/events/EventParts";
 import { useClubEvents } from "@/components/events/use-events";
 import { useSession } from "@/components/session-provider";
+import { BoxRelationCard, type ProviderKind } from "@/components/membership/BoxRelation";
 import { PersonAvatar } from "@/components/social/PersonAvatar";
 import { subscribeNever } from "@/lib/maps";
 import { useMediaQuery } from "@/lib/use-media-query";
@@ -39,7 +40,18 @@ const VIEW_KEYS: Record<View, string> = { feed: "tabFeed", channels: "tabChannel
  * «Όλα» the full list) and the club's members. Phones keep a small
  * Ροή · Κανάλια · Μέλη club switch instead of the column.
  */
-export function BoxClubTab({ club, clubs, onShowEvents }: { club: CommunityClub; clubs: CommunityClub[]; onShowEvents: () => void }) {
+export function BoxClubTab({
+  club,
+  clubs,
+  onShowEvents,
+  relation,
+}: {
+  club: CommunityClub;
+  clubs: CommunityClub[];
+  onShowEvents: () => void;
+  /** «Η συμμετοχή σου» (ANR 2026-11-15, pick 1 C): last in the side column; on phones, under «Μέλη». */
+  relation?: { box: { slug: string; name: string; organizationId: string; kind: ProviderKind }; staff: boolean };
+}) {
   const t = useTranslations("Clubs");
   const tBox = useTranslations("BoxPage");
   const channel = useSyncExternalStore(subscribeNever, readChannel, serverChannel);
@@ -53,7 +65,10 @@ export function BoxClubTab({ club, clubs, onShowEvents }: { club: CommunityClub;
     view === "channels" ? (
       <ClubChannels club={club} onOpen={space.showChannel} />
     ) : view === "members" ? (
-      <MembersTab club={club} />
+      <>
+        <MembersTab club={club} />
+        {relation && !desktop ? <BoxRelationCard box={relation.box} staff={relation.staff} /> : null}
+      </>
     ) : (
       <>
         <ComposePrompt clubs={clubs} clubId={club.id} channelId={space.openChannel?.id} />
@@ -96,7 +111,11 @@ export function BoxClubTab({ club, clubs, onShowEvents }: { club: CommunityClub;
         )}
         {main}
       </div>
-      {desktop ? <SideColumn club={club} space={space} view={view} onShowView={showView} onShowEvents={onShowEvents} /> : null}
+      {desktop ? (
+        <SideColumn club={club} space={space} view={view} onShowView={showView} onShowEvents={onShowEvents}>
+          {relation ? <BoxRelationCard box={relation.box} staff={relation.staff} /> : null}
+        </SideColumn>
+      ) : null}
     </div>
   );
 }
@@ -107,12 +126,15 @@ function SideColumn({
   view,
   onShowView,
   onShowEvents,
+  children,
 }: {
   club: CommunityClub;
   space: ClubSpaceState;
   view: View;
   onShowView: (view: View) => void;
   onShowEvents: () => void;
+  /** Last in the column: the person's own relation with the box. */
+  children?: ReactNode;
 }) {
   const t = useTranslations("Clubs");
   const tBox = useTranslations("BoxPage");
@@ -171,6 +193,7 @@ function SideColumn({
           </div>
         </SideCard>
       ) : null}
+      {children}
     </aside>
   );
 }

@@ -24,6 +24,7 @@ import { useSession } from "@/components/session-provider";
 import { BookingSharingOffer } from "@/components/social/BookingSharing";
 import { FollowButton } from "@/components/social/FollowButton";
 import { BoxRelationChip, JoinBoxButton } from "@/components/social/JoinBoxButton";
+import { MembershipButton } from "@/components/membership/BoxRelation";
 import { FollowRequestsRow } from "@/components/social/FollowRequestsRow";
 import { PeopleResults, PeopleSearchField } from "@/components/social/PeopleSearch";
 import { PersonAvatar } from "@/components/social/PersonAvatar";
@@ -249,9 +250,23 @@ function People({ type }: { type: "user" | "organization" }) {
               href={`/b/${entry.box.slug}`}
               name={entry.box.name}
               image={entry.box.logo_url}
-              detail={<BoxRelationChip status={entry.box.my_join} kind={entry.box.provider_kind} />}
+              detail={entry.box.my_join === "staff" ? <BoxRelationChip status={entry.box.my_join} kind={entry.box.provider_kind} /> : null}
             >
-              <JoinBoxButton slug={entry.box.slug} status={entry.box.my_join} />
+              {/* ANR 2026-11-15 (pick 2): a member's row has «Μέλος ▾», the same as on the box page. */}
+              {entry.box.my_join === "member" ? (
+                <MembershipButton
+                  short
+                  testId="connections-membership"
+                  box={{
+                    slug: entry.box.slug,
+                    name: entry.box.name,
+                    organizationId: entry.box.organization_id,
+                    kind: entry.box.provider_kind === "coach" ? "coach" : "gym",
+                  }}
+                />
+              ) : (
+                <JoinBoxButton slug={entry.box.slug} status={entry.box.my_join} />
+              )}
               <FollowButton targetType="organization" targetId={entry.box.organization_id} initialStatus={entry.status} quiet />
             </Row>
           ) : null

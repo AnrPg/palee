@@ -20274,5 +20274,20 @@
     "submit_debt_forgiven": "Опрости дълга",
     "givenBySystem": "От Palee, {when}",
     "reasonRollout": "Записването вече изисква пакет: 14 дни за вече трениращите"
+  },
+  "BoxRelation": {
+    "member": "{kind, select, coach {Тренирате заедно} other {Член на бокса}}",
+    "memberShort": "{kind, select, coach {Тренирате заедно} other {Член}}",
+    "menuAria": "Членството ти в {name}",
+    "packageUntil": "{name} · до {date}",
+    "noPackage": "В момента няма пакет",
+    "payments": "Моите плащания",
+    "leave": "{kind, select, coach {Край на тренировките…} other {Напусни бокса…}}",
+    "cardTitle": "Твоето членство",
+    "followHint": "{kind, select, coach {Като следваш, виждаш публикациите му в потока. Ако спреш, продължаваш да тренираш.} other {Като следваш, виждаш публикациите на бокса в потока. Ако спреш, оставаш член на бокса.}}",
+    "stillFollowing": "{kind, select, coach {Все още следваш треньора и виждаш публикациите му.} other {Все още следваш бокса и виждаш публикациите му.}}",
+    "stopFollowing": "Спри и да следваш",
+    "stoppedFollowing": "{kind, select, coach {Вече не следваш треньора.} other {Вече не следваш бокса.}}",
+    "done": "Добре"
   }
 }

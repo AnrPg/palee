@@ -298,7 +298,9 @@ test.describe("public box page", () => {
     await expect(club.getByText("Club member", { exact: true })).toHaveCount(0);
     await expect(club.getByRole("button", { name: "Filters", exact: true })).toHaveCount(0);
     await expect(club.getByRole("tab", { name: "Events" })).toHaveCount(0);
-    await expect(page.getByTestId("box-page-role")).toHaveText("Box member");
+    // ANR 2026-11-15: «Box member ▾» beside «Message» says who you are here and opens leaving.
+    await expect(page.getByTestId("box-page-role")).toHaveCount(0);
+    await expect(page.getByTestId("box-membership").locator("visible=true").first()).toHaveText("Box member");
 
     // Members message the box from the header; the club is a tab, so no «Open the club» pill.
     await page.getByRole("tab", { name: "About" }).click();
@@ -311,6 +313,76 @@ test.describe("public box page", () => {
     // One «Events» tab: members see the club's events there.
     await tabs.getByRole("tab", { name: "Events" }).click();
     await expect(page.getByText("No upcoming events.")).toBeVisible();
+  });
+
+  test("a member leaves the box from its page, then stops following too, with no undo (ANR 2026-11-15)", async ({ page }) => {
+    const follows = await signedIn(page, { member: true });
+    follows.push({ target_type: "organization", target_id: "org-1" });
+    const left: unknown[] = [];
+    const unfollowed: string[] = [];
+    await page.route("**/api/org/*/community/wod-today**", (route) =>
+      route.fulfill(json({ date: "2026-10-20", channel_id: null, classes: [], leaderboard: [], logged_by_me: false, score: null, workout: null })),
+    );
+    await page.route("**/api/me/feed**", (route) => route.fulfill(json({ posts: [], pinned: [], next_cursor: null })));
+    await page.route(`**/api/org/${box.slug}/me/membership/leave`, (route) => {
+      left.push(route.request().postDataJSON());
+      return route.fulfill(json({ leaving_on: null, voided_invoice_count: 0, outstanding_cents: 0 }));
+    });
+    await page.route("**/api/me/follows/organization/org-1", (route) => {
+      if (route.request().method() === "DELETE") {
+        unfollowed.push("org-1");
+        return route.fulfill(json({ status: "none" }));
+      }
+      return route.fulfill(json({ status: unfollowed.length ? "none" : "active" }));
+    });
+    await page.goto(`/b/${box.slug}`);
+
+    // Two relations, two buttons beside «Message».
+    const actions = page.getByTestId("box-page-member-actions").locator("visible=true").first();
+    const following = actions.getByTestId("follow-box-following");
+    await expect(following).toHaveText("Following");
+    const membership = actions.getByTestId("box-membership");
+    await expect(membership).toBeVisible();
+    await membership.click();
+    const panel = page.getByTestId("box-membership-panel");
+    await expect(panel).toContainText("No package right now");
+    await expect(panel.getByRole("link", { name: /My payments/ })).toHaveAttribute("href", `/me/payments?box=${box.slug}`);
+    await panel.getByTestId("box-membership-leave").click();
+
+    // ADR-595's one dialog, then «Done» with a quiet «Stop following too».
+    const dialog = page.getByRole("dialog", { name: `Leave ${box.name}` });
+    await expect(dialog.getByText("You will no longer be a member of the box.", { exact: false })).toBeVisible();
+    await dialog.getByRole("button", { name: "Leave now" }).click();
+    await expect.poll(() => left).toEqual([{ reason: null }]);
+    const done = page.getByRole("dialog", { name: "You are no longer a member of the box" });
+    await expect(done.getByText("You still follow the box and see its posts.")).toBeVisible();
+    await done.getByTestId("leave-done-unfollow").click();
+    await expect.poll(() => unfollowed).toEqual(["org-1"]);
+    await expect(done.getByTestId("leave-done-unfollowed")).toHaveText("You no longer follow the box.");
+    await expect(done.getByRole("button", { name: /Undo/ })).toHaveCount(0);
+    await done.getByTestId("leave-done-ok").click();
+    await expect(done).toHaveCount(0);
+  });
+
+  test("the Club tab has a quiet «Your membership» card; «Following ▾» asks before unfollowing", async ({ page, isMobile }) => {
+    const follows = await signedIn(page, { member: true });
+    follows.push({ target_type: "organization", target_id: "org-1" });
+    await page.route("**/api/org/*/community/wod-today**", (route) =>
+      route.fulfill(json({ date: "2026-10-20", channel_id: null, classes: [], leaderboard: [], logged_by_me: false, score: null, workout: null })),
+    );
+    await page.route("**/api/me/feed**", (route) => route.fulfill(json({ posts: [], pinned: [], next_cursor: null })));
+    await page.goto(`/b/${box.slug}`);
+    const club = page.getByTestId("box-club-tab");
+    await expect(club).toBeVisible();
+    // Phones: under «Members»; desktop: last in the side column.
+    if (isMobile) await club.getByRole("tab", { name: "Club members" }).click();
+    const card = page.getByTestId("box-relation-card");
+    await expect(card).toContainText("Your membership");
+    await expect(card.getByTestId("box-relation-card-leave")).toHaveText("Leave the box…");
+    await card.getByTestId("follow-box-following").click();
+    await expect(card.getByText("Stop following this box?", { exact: false })).toBeVisible();
+    await card.getByRole("button", { name: "Cancel" }).click();
+    await expect(card.getByTestId("follow-box-following")).toBeVisible();
   });
 
   test("a box's club link opens the box page when it is published (ADR-590)", async ({ page }) => {

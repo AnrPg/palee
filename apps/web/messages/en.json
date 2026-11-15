@@ -20274,5 +20274,20 @@
     "submit_debt_forgiven": "Forgive the debt",
     "givenBySystem": "By Palee, {when}",
     "reasonRollout": "Booking now needs a package: 14 days for those already training"
+  },
+  "BoxRelation": {
+    "member": "{kind, select, coach {Training together} other {Box member}}",
+    "memberShort": "{kind, select, coach {Training together} other {Member}}",
+    "menuAria": "Your membership at {name}",
+    "packageUntil": "{name} · until {date}",
+    "noPackage": "No package right now",
+    "payments": "My payments",
+    "leave": "{kind, select, coach {Stop training…} other {Leave the box…}}",
+    "cardTitle": "Your membership",
+    "followHint": "{kind, select, coach {Following shows their posts in your feed. If you stop, you keep training.} other {Following shows the box's posts in your feed. If you stop, you stay a box member.}}",
+    "stillFollowing": "{kind, select, coach {You still follow the coach and see their posts.} other {You still follow the box and see its posts.}}",
+    "stopFollowing": "Stop following too",
+    "stoppedFollowing": "{kind, select, coach {You no longer follow the coach.} other {You no longer follow the box.}}",
+    "done": "OK"
   }
 }

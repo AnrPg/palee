@@ -20274,5 +20274,20 @@
     "submit_debt_forgiven": "Perdoar a dívida",
     "givenBySystem": "Pela Palee, {when}",
     "reasonRollout": "Reservar exige agora um pacote: 14 dias para quem já treinava"
+  },
+  "BoxRelation": {
+    "member": "{kind, select, coach {Treinam juntos} other {Membro da box}}",
+    "memberShort": "{kind, select, coach {Treinam juntos} other {Membro}}",
+    "menuAria": "A tua inscrição em {name}",
+    "packageUntil": "{name} · até {date}",
+    "noPackage": "Sem pacote neste momento",
+    "payments": "Os meus pagamentos",
+    "leave": "{kind, select, coach {Deixar de treinar…} other {Sair da box…}}",
+    "cardTitle": "A tua inscrição",
+    "followHint": "{kind, select, coach {Ao seguir, vês as publicações dele no feed. Se deixares, continuas a treinar.} other {Ao seguir, vês as publicações da box no feed. Se deixares, continuas membro da box.}}",
+    "stillFollowing": "{kind, select, coach {Ainda segues o coach e vês as publicações dele.} other {Ainda segues a box e vês as publicações dela.}}",
+    "stopFollowing": "Deixar também de seguir",
+    "stoppedFollowing": "{kind, select, coach {Já não segues o coach.} other {Já não segues a box.}}",
+    "done": "OK"
   }
 }

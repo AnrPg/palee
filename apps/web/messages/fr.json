@@ -20274,5 +20274,20 @@
     "submit_debt_forgiven": "Annuler la dette",
     "givenBySystem": "Par Palee, {when}",
     "reasonRollout": "Réserver demande désormais un forfait : 14 jours pour ceux qui s'entraînaient déjà"
+  },
+  "BoxRelation": {
+    "member": "{kind, select, coach {Vous vous entraînez ensemble} other {Membre de la box}}",
+    "memberShort": "{kind, select, coach {Vous vous entraînez ensemble} other {Membre}}",
+    "menuAria": "Ton adhésion à {name}",
+    "packageUntil": "{name} · jusqu'au {date}",
+    "noPackage": "Aucune formule en ce moment",
+    "payments": "Mes paiements",
+    "leave": "{kind, select, coach {Arrêter les entraînements…} other {Quitter la box…}}",
+    "cardTitle": "Ton adhésion",
+    "followHint": "{kind, select, coach {En le suivant, tu vois ses publications dans ton fil. Si tu arrêtes, tu continues à t'entraîner.} other {En la suivant, tu vois les publications de la box dans ton fil. Si tu arrêtes, tu restes membre de la box.}}",
+    "stillFollowing": "{kind, select, coach {Tu suis encore le coach et tu vois ses publications.} other {Tu suis encore la box et tu vois ses publications.}}",
+    "stopFollowing": "Arrêter aussi de suivre",
+    "stoppedFollowing": "{kind, select, coach {Tu ne suis plus le coach.} other {Tu ne suis plus la box.}}",
+    "done": "OK"
   }
 }

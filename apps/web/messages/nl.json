@@ -20274,5 +20274,20 @@
     "submit_debt_forgiven": "Schuld kwijtschelden",
     "givenBySystem": "Door Palee, {when}",
     "reasonRollout": "Boeken vraagt nu een pakket: 14 dagen voor wie al trainde"
+  },
+  "BoxRelation": {
+    "member": "{kind, select, coach {Jullie trainen samen} other {Boxlid}}",
+    "memberShort": "{kind, select, coach {Jullie trainen samen} other {Lid}}",
+    "menuAria": "Je lidmaatschap bij {name}",
+    "packageUntil": "{name} · tot {date}",
+    "noPackage": "Nu geen pakket",
+    "payments": "Mijn betalingen",
+    "leave": "{kind, select, coach {Stoppen met trainen…} other {De box verlaten…}}",
+    "cardTitle": "Je lidmaatschap",
+    "followHint": "{kind, select, coach {Als je volgt, zie je zijn berichten in je feed. Stop je, dan blijf je trainen.} other {Als je volgt, zie je de berichten van de box in je feed. Stop je, dan blijf je boxlid.}}",
+    "stillFollowing": "{kind, select, coach {Je volgt de coach nog en ziet zijn berichten.} other {Je volgt de box nog en ziet zijn berichten.}}",
+    "stopFollowing": "Ook niet meer volgen",
+    "stoppedFollowing": "{kind, select, coach {Je volgt de coach niet meer.} other {Je volgt de box niet meer.}}",
+    "done": "OK"
   }
 }

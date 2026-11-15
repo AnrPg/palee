@@ -20274,5 +20274,20 @@
     "submit_debt_forgiven": "Списать долг",
     "givenBySystem": "От Palee, {when}",
     "reasonRollout": "Теперь для записи нужен пакет: 14 дней тем, кто уже тренировался"
+  },
+  "BoxRelation": {
+    "member": "{kind, select, coach {Вы тренируетесь вместе} other {Участник бокса}}",
+    "memberShort": "{kind, select, coach {Вы тренируетесь вместе} other {Участник}}",
+    "menuAria": "Твоё участие в {name}",
+    "packageUntil": "{name} · до {date}",
+    "noPackage": "Сейчас нет абонемента",
+    "payments": "Мои платежи",
+    "leave": "{kind, select, coach {Закончить тренировки…} other {Выйти из бокса…}}",
+    "cardTitle": "Твоё участие",
+    "followHint": "{kind, select, coach {Если подписан, видишь его посты в ленте. Если отпишешься, тренировки продолжатся.} other {Если подписан, видишь посты бокса в ленте. Если отпишешься, останешься участником бокса.}}",
+    "stillFollowing": "{kind, select, coach {Ты всё ещё подписан на коуча и видишь его посты.} other {Ты всё ещё подписан на бокс и видишь его посты.}}",
+    "stopFollowing": "Отписаться тоже",
+    "stoppedFollowing": "{kind, select, coach {Ты больше не подписан на коуча.} other {Ты больше не подписан на бокс.}}",
+    "done": "Хорошо"
   }
 }

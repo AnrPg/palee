@@ -133,6 +133,7 @@ export function FollowButton({
           type="button"
           disabled={busy}
           aria-pressed="true"
+          data-testid={targetType === "organization" ? "follow-box-following" : undefined}
           className={base}
           style={{ background: "var(--panel-raised)", color: "var(--text)", border: compact ? "none" : "1px solid var(--border)" }}
           onClick={() => setConfirming(true)}
@@ -140,8 +141,9 @@ export function FollowButton({
           {current === "requested" ? t("requested") : (
             <span className="inline-flex items-center gap-1.5">
               {t("following")}
+              {/* A box or coach: «Ακολουθείς ▾», so it reads as something to press (ANR 2026-11-15). */}
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M20 6 9 17l-5-5" />
+                <path d={targetType === "organization" ? "m6 9 6 6 6-6" : "M20 6 9 17l-5-5"} />
               </svg>
             </span>
           )}

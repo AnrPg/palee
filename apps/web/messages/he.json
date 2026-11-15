@@ -20274,5 +20274,20 @@
     "submit_debt_forgiven": "מחק את החוב",
     "givenBySystem": "מ-Palee, {when}",
     "reasonRollout": "הזמנה דורשת עכשיו חבילה: 14 ימים למי שכבר התאמן"
+  },
+  "BoxRelation": {
+    "member": "{kind, select, coach {מתאמנים יחד} other {חבר/ת בוקס}}",
+    "memberShort": "{kind, select, coach {מתאמנים יחד} other {חבר/ה}}",
+    "menuAria": "החברות שלך ב-{name}",
+    "packageUntil": "{name} · עד {date}",
+    "noPackage": "אין חבילה כרגע",
+    "payments": "התשלומים שלי",
+    "leave": "{kind, select, coach {סיום האימונים…} other {עזיבת הבוקס…}}",
+    "cardTitle": "החברות שלך",
+    "followHint": "{kind, select, coach {כשעוקבים, רואים את הפוסטים שלו בפיד. אם מפסיקים, ממשיכים להתאמן.} other {כשעוקבים, רואים את הפוסטים של הבוקס בפיד. אם מפסיקים, נשארים חברים בבוקס.}}",
+    "stillFollowing": "{kind, select, coach {עדיין עוקבים אחרי המאמן ורואים את הפוסטים שלו.} other {עדיין עוקבים אחרי הבוקס ורואים את הפוסטים שלו.}}",
+    "stopFollowing": "להפסיק גם לעקוב",
+    "stoppedFollowing": "{kind, select, coach {כבר לא עוקבים אחרי המאמן.} other {כבר לא עוקבים אחרי הבוקס.}}",
+    "done": "אישור"
   }
 }

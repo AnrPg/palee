@@ -32,6 +32,7 @@ import { BoxPosts } from "./BoxPosts";
 import { FollowerInviteNotice } from "./FollowerInviteNotice";
 import { GuestBanner } from "./GuestBanner";
 import { JoinBoxAction } from "./JoinBoxAction";
+import { MembershipButton, useBoxBilling, type ProviderKind } from "@/components/membership/BoxRelation";
 import { boxChatHref } from "@/components/trials/box-chat-links";
 
 import { Icon } from "./Icon";
@@ -128,6 +129,11 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
   const signedIn = status === "authenticated" && Boolean(tokens?.access_token);
   const club = clubs.data?.find((entry) => entry.kind === "gym" && entry.organization_id === page.box.organization_id) ?? null;
   const member = Boolean(club) && !standalone;
+  const staff = club?.role === "staff";
+  // A solo coach's athletes see «Προπονείσαι μαζί» (ANR 2026-11-15, pick 7): the kind comes with their billing.
+  const billing = useBoxBilling(page.box.slug, member && !staff);
+  const kind: ProviderKind = billing.provider?.kind === "coach" ? "coach" : "gym";
+  const relationBox = { slug: page.box.slug, name: page.box.name, organizationId: page.box.organization_id, kind };
   const tab = boxTab(hash, member);
   const tabs = TABS.filter((value) => value !== "club" || member);
   const photos = [...(page.profile.cover ? [page.profile.cover] : []), ...page.profile.photos];
@@ -178,6 +184,7 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
       token={signedIn ? tokens!.access_token : null}
       loading={status === "loading" || (signedIn && clubs.isPending)}
       clubId={club?.id ?? null}
+      relation={club ? { box: relationBox, staff } : null}
       onGuestTrial={siteTrial}
       onShare={() => void share()}
     />
@@ -196,6 +203,7 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
       token={signedIn ? tokens!.access_token : null}
       loading={status === "loading" || (signedIn && clubs.isPending)}
       clubId={club?.id ?? null}
+      relation={club ? { box: relationBox, staff } : null}
       onGuestTrial={siteTrial}
       onShare={() => void share()}
       row
@@ -249,10 +257,10 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
               <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm lg:mt-1 lg:text-base" style={{ color: "var(--text-soft)" }}>
                 {line ? <span>{line}</span> : null}
                 {site ? <WebsiteLink site={site} slug={page.box.slug} standalone={standalone} /> : null}
-                {/* ADR-621: who you are here, once, quietly (instead of «Μέλος του club» over the club). */}
-                {member && club ? (
+                {/* ADR-621: who you are here, once, quietly. Members have «Μέλος box ▾» beside «Μήνυμα» instead (ANR 2026-11-15). */}
+                {member && staff ? (
                   <span className="rounded-full px-2.5 py-0.5 text-xs font-bold" style={{ background: "var(--panel-raised)", color: "var(--text-soft)" }} data-testid="box-page-role">
-                    {club.role === "staff" ? t("staffBadge") : t("memberBadge")}
+                    {t("staffBadge")}
                   </span>
                 ) : null}
               </p>
@@ -329,7 +337,7 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
                 (sections ?? <AboutBento page={page} onOpenPhoto={setViewer} aside={info} />)
               ) : tab === "club" && club ? (
                 // ADR-621: the club brings its own side column (events, channels, members).
-                <BoxClubTab club={club} clubs={clubs.data ?? []} onShowEvents={() => select("events")} />
+                <BoxClubTab club={club} clubs={clubs.data ?? []} onShowEvents={() => select("events")} relation={{ box: relationBox, staff }} />
               ) : tab === "schedule" && signedIn ? (
                 // ADR-621: the whole width, so desktop shows the week in seven columns.
                 <VisitorSchedule page={page} token={tokens!.access_token} member={Boolean(club)} />
@@ -531,8 +539,9 @@ function Logo({ page, size = 80, desktopSize, bare = false, className = "" }: { 
 
 /**
  * «Γίνε μέλος box» first, then trial and follow (board 4 Q9, board 6 Q1,
- * ANR 2026-11-07). Members have the «Club» tab, so their actions are a
- * labelled «Μήνυμα» and «Κοινοποίηση» (ADR-621).
+ * ANR 2026-11-07). Members have the «Club» tab, so their actions are
+ * «Μέλος box ▾» (leave), «Ακολουθείς ▾» (unfollow), a labelled «Μήνυμα» and
+ * «Κοινοποίηση» (ADR-621, ANR 2026-11-15).
  * Anyone may write to the box (ADR-282): «Μήνυμα» opens the chat, after
  * signing in when needed.
  */
@@ -541,6 +550,7 @@ function Actions({
   token,
   loading,
   clubId,
+  relation,
   onGuestTrial,
   onShare,
   row = false,
@@ -549,6 +559,8 @@ function Actions({
   token: string | null;
   loading: boolean;
   clubId: string | null;
+  /** Members and staff: «Μέλος box ▾» (not for staff) and «Ακολουθείς ▾» beside «Μήνυμα» (ANR 2026-11-15, picks 1 and 8). */
+  relation: { box: { slug: string; name: string; organizationId: string; kind: ProviderKind }; staff: boolean } | null;
   /** ADR-388: a signed-out visitor asks through the website's request form instead of signing in first. */
   onGuestTrial: (() => void) | null;
   /** Members: the header's own share button (the cover's hides on desktop). */
@@ -577,7 +589,9 @@ function Actions({
   );
   if (clubId)
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-start gap-2" data-testid="box-page-member-actions">
+        {relation && !relation.staff ? <MembershipButton box={relation.box} /> : null}
+        {signedIn ? <FollowButton targetType="organization" targetId={page.box.organization_id} quiet /> : null}
         <Link
           href={chatHref}
           className="flex min-h-11 items-center gap-2 rounded-2xl px-4 text-sm font-bold"

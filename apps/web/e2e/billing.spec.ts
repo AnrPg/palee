@@ -351,7 +351,11 @@ test.describe("billing", () => {
     await dialog.getByRole("button", { name: "Want to say why you are leaving?" }).click();
     await dialog.getByRole("textbox").fill("Moving away");
     await dialog.getByRole("button", { name: "Leave now" }).click();
-    await expect(dialog).toHaveCount(0);
+    // ANR 2026-11-15: a «Done» step first; the page updates once it closes.
+    const done = page.getByRole("dialog", { name: "You are no longer a member of the box" });
+    await expect(done).toContainText("You left the box.");
+    await done.getByTestId("leave-done-ok").click();
+    await expect(done).toHaveCount(0);
     expect(calls[1]).toMatchObject({ method: "POST", body: { reason: "Moving away" } });
 
     await expect(page.getByTestId("billing-leaving")).toContainText("You left the box.");

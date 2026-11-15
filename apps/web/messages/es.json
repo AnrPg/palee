@@ -20274,5 +20274,20 @@
     "submit_debt_forgiven": "Perdonar la deuda",
     "givenBySystem": "Por Palee, {when}",
     "reasonRollout": "Ahora reservar requiere un paquete: 14 días para quien ya entrenaba"
+  },
+  "BoxRelation": {
+    "member": "{kind, select, coach {Entrenáis juntos} other {Miembro del box}}",
+    "memberShort": "{kind, select, coach {Entrenáis juntos} other {Miembro}}",
+    "menuAria": "Tu membresía en {name}",
+    "packageUntil": "{name} · hasta el {date}",
+    "noPackage": "Sin bono ahora mismo",
+    "payments": "Mis pagos",
+    "leave": "{kind, select, coach {Dejar de entrenar…} other {Salir del box…}}",
+    "cardTitle": "Tu membresía",
+    "followHint": "{kind, select, coach {Si lo sigues, ves sus publicaciones en tu feed. Si dejas de seguirlo, sigues entrenando.} other {Si lo sigues, ves las publicaciones del box en tu feed. Si dejas de seguirlo, sigues siendo miembro.}}",
+    "stillFollowing": "{kind, select, coach {Aún sigues al coach y ves sus publicaciones.} other {Aún sigues al box y ves sus publicaciones.}}",
+    "stopFollowing": "Dejar de seguir también",
+    "stoppedFollowing": "{kind, select, coach {Ya no sigues al coach.} other {Ya no sigues al box.}}",
+    "done": "Vale"
   }
 }

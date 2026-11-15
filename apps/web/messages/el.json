@@ -20274,5 +20274,20 @@
     "submit_debt_forgiven": "Χάρισε την οφειλή",
     "givenBySystem": "Από το Palee, {when}",
     "reasonRollout": "Οι κρατήσεις θέλουν πλέον πακέτο: 14 μέρες για όσους ήδη προπονούνταν"
+  },
+  "BoxRelation": {
+    "member": "{kind, select, coach {Προπονείσαι μαζί} other {Μέλος box}}",
+    "memberShort": "{kind, select, coach {Προπονείσαι μαζί} other {Μέλος}}",
+    "menuAria": "Η συμμετοχή σου στο {name}",
+    "packageUntil": "{name} · ως {date}",
+    "noPackage": "Χωρίς πακέτο αυτή τη στιγμή",
+    "payments": "Οι πληρωμές μου",
+    "leave": "{kind, select, coach {Τέλος προπονήσεων…} other {Αποχώρηση από το box…}}",
+    "cardTitle": "Η συμμετοχή σου",
+    "followHint": "{kind, select, coach {Αν ακολουθείς, βλέπεις τα posts του στη ροή σου. Αν σταματήσεις, συνεχίζεις τις προπονήσεις.} other {Αν ακολουθείς, βλέπεις τα posts του box στη ροή σου. Αν σταματήσεις, μένεις μέλος box.}}",
+    "stillFollowing": "{kind, select, coach {Ακολουθείς ακόμη τον coach και βλέπεις τα posts του.} other {Ακολουθείς ακόμη το box και βλέπεις τα posts του.}}",
+    "stopFollowing": "Σταμάτα και να ακολουθείς",
+    "stoppedFollowing": "{kind, select, coach {Δεν ακολουθείς πια τον coach.} other {Δεν ακολουθείς πια το box.}}",
+    "done": "Εντάξει"
   }
 }
