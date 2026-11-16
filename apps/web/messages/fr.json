@@ -18675,7 +18675,9 @@
     "group": {
       "mine": "Déjà écrit par toi",
       "box": "Ta box",
-      "palee": "Palee"
+      "palee": "Palee",
+      "format": "Format",
+      "formatFrequent": "Format · souvent utilisé"
     },
     "keep": "Garder «{text}» tel que je l’ai écrit",
     "keepKey": "Esc",
@@ -20197,7 +20199,11 @@
     "remembered": "Ta box a déjà dit oui",
     "answerFor": "Réponse pour «{typed}»",
     "answerAll": "Réponds à chaque ligne pour publier.",
-    "failed": "Tes réponses n’ont pas été enregistrées. Réessaie."
+    "failed": "Tes réponses n’ont pas été enregistrées. Réessaie.",
+    "timerTitle": "Vérifie le minuteur",
+    "timerDescription": "Le minuteur vient du texte. Est-il correct ?",
+    "timerFromText": "Minuteur du texte :",
+    "timerChange": "Modifier"
   },
   "BoxOnMap": {
     "title": "Ta box n’apparaît pas dans Autour de moi",
@@ -20290,5 +20296,18 @@
     "stopFollowing": "Arrêter aussi de suivre",
     "stoppedFollowing": "{kind, select, coach {Tu ne suis plus le coach.} other {Tu ne suis plus la box.}}",
     "done": "OK"
+  },
+  "TextTimer": {
+    "fromText": "du texte",
+    "change": "Modifier",
+    "found": "{count, plural, one {# trouvé} other {# trouvés}}",
+    "next": "Suivant",
+    "restore": "Depuis le texte : {timer}",
+    "oneTimer": "Le texte libre a un seul minuteur. Divise-le en parties pour un minuteur par partie.",
+    "missingNumber": {
+      "amrap": "Ajoute les minutes, p. ex. «AMRAP 12», pour régler un minuteur.",
+      "emom": "Ajoute les minutes, p. ex. «EMOM 10» ou «E2MOM 20», pour régler un minuteur.",
+      "intervals": "Ajoute effort/repos et tours, p. ex. «40/20 x 8», pour régler un minuteur."
+    }
   }
 }

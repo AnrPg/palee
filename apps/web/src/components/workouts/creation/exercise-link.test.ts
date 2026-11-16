@@ -102,8 +102,8 @@ describe("exercise links in the free-text editor (ADR-570)", () => {
     const e = makeEditor("<p>21 thru</p>");
     e.commands.setTextSelection(8);
     const caret = caretOf(e)!;
-    expect(caret.run.query).toBe("thru");
-    expect(caret.blockStart + caret.run.from).toBe(4);
+    expect(caret.run!.query).toBe("thru");
+    expect(caret.blockStart + caret.run!.from).toBe(4);
 
     e.view.dispatch(e.state.tr.setMeta(exerciseGhostKey, { pos: 8, text: "sters" }));
     expect(e.view.dom.querySelector('[data-testid="exercise-ghost"]')?.textContent).toBe("sters");

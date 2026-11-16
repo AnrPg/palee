@@ -153,20 +153,22 @@ export type ExerciseGhost = { pos: number; text: string };
 
 /**
  * The editor side of the inline suggestions: the grey completion after the
- * caret and the keys the open list takes (`handler`, set by the React hook,
- * returns true for a key it used).
+ * caret and the keys the open list takes (`onKeyDown`, from
+ * `useExerciseSuggestKeys`, returns true for a key it used).
  */
-export const ExerciseSuggestKeys = Extension.create<{ handler: { current: ((event: KeyboardEvent) => boolean) | null } }>({
+export const ExerciseSuggestKeys = Extension.create<{ onKeyDown: ((event: KeyboardEvent) => boolean) | null }>({
   name: "exerciseSuggestKeys",
   // Before the Enter/Tab keymaps of the other extensions.
   priority: 1000,
 
   addOptions() {
-    return { handler: { current: null } };
+    // A function, never a ref object: `configure` deep-merges plain objects
+    // into a copy, which would keep only the handler of the first render.
+    return { onKeyDown: null };
   },
 
   addProseMirrorPlugins() {
-    const handler = this.options.handler;
+    const onKeyDown = this.options.onKeyDown;
     return [
       new Plugin<ExerciseGhost | null>({
         key: exerciseGhostKey,
@@ -180,7 +182,7 @@ export const ExerciseSuggestKeys = Extension.create<{ handler: { current: ((even
           },
         },
         props: {
-          handleKeyDown: (_view, event) => handler.current?.(event) ?? false,
+          handleKeyDown: (_view, event) => onKeyDown?.(event) ?? false,
           decorations(state) {
             const ghost = exerciseGhostKey.getState(state);
             if (!ghost || ghost.pos > state.doc.content.size) return null;

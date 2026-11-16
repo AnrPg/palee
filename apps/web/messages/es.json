@@ -18675,7 +18675,9 @@
     "group": {
       "mine": "Lo has escrito tú",
       "box": "Tu box",
-      "palee": "Palee"
+      "palee": "Palee",
+      "format": "Formato",
+      "formatFrequent": "Formato · lo usas a menudo"
     },
     "keep": "Mantener «{text}» tal como lo escribí",
     "keepKey": "Esc",
@@ -20197,7 +20199,11 @@
     "remembered": "Tu box ya dijo que sí",
     "answerFor": "Respuesta para «{typed}»",
     "answerAll": "Responde cada fila para publicar.",
-    "failed": "No pudimos guardar tus respuestas. Inténtalo de nuevo."
+    "failed": "No pudimos guardar tus respuestas. Inténtalo de nuevo.",
+    "timerTitle": "Revisa el temporizador",
+    "timerDescription": "El temporizador se puso desde el texto. ¿Es correcto?",
+    "timerFromText": "Temporizador del texto:",
+    "timerChange": "Cambiar"
   },
   "BoxOnMap": {
     "title": "Tu box no aparece en Cerca de mí",
@@ -20290,5 +20296,18 @@
     "stopFollowing": "Dejar de seguir también",
     "stoppedFollowing": "{kind, select, coach {Ya no sigues al coach.} other {Ya no sigues al box.}}",
     "done": "Vale"
+  },
+  "TextTimer": {
+    "fromText": "del texto",
+    "change": "Cambiar",
+    "found": "{count, plural, one {# encontrado} other {# encontrados}}",
+    "next": "Siguiente",
+    "restore": "Desde el texto: {timer}",
+    "oneTimer": "El texto libre tiene un temporizador. Divídelo en secciones para un temporizador por sección.",
+    "missingNumber": {
+      "amrap": "Añade los minutos, p. ej. «AMRAP 12», para poner un temporizador.",
+      "emom": "Añade los minutos, p. ej. «EMOM 10» o «E2MOM 20», para poner un temporizador.",
+      "intervals": "Añade trabajo/descanso y rondas, p. ej. «40/20 x 8», para poner un temporizador."
+    }
   }
 }

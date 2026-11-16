@@ -23,12 +23,17 @@ import {
  */
 export function ExerciseMatchesDialog({
   matches,
+  timer = null,
+  onChangeTimer,
   busy,
   error,
   onBack,
   onConfirm,
 }: {
   matches: ExerciseMatch[];
+  /** ADR-650: the timer the text set, written out («AMRAP 12»), to confirm with «Ναι» or change. */
+  timer?: string | null;
+  onChangeTimer?: () => void;
   busy: boolean;
   error: string | null;
   onBack: () => void;
@@ -38,19 +43,24 @@ export function ExerciseMatchesDialog({
   const anatomy = useTranslations("Anatomy");
   const groups = useMemo(() => groupExerciseMatches(matches), [matches]);
   const [answers, setAnswers] = useState<ExerciseMatchAnswers>(() => initialAnswers(groups));
-  const ready = allAnswered(groups, answers);
-  const answerAll = (answer: "yes" | "no") => setAnswers(Object.fromEntries(groups.map((group) => [group.key, answer])));
+  const [timerConfirmed, setTimerConfirmed] = useState(false);
+  const ready = allAnswered(groups, answers) && (timer === null || timerConfirmed);
+  const answerAll = (answer: "yes" | "no") => {
+    setAnswers(Object.fromEntries(groups.map((group) => [group.key, answer])));
+    if (answer === "yes") setTimerConfirmed(true);
+  };
 
   return (
     <Dialog
       onClose={onBack}
       dismissible={!busy}
-      title={t("title")}
-      description={t("description")}
+      title={groups.length > 0 ? t("title") : t("timerTitle")}
+      description={groups.length > 0 ? t("description") : t("timerDescription")}
       size="lg"
       testId="exercise-matches-dialog"
       error={error}
       footerStart={
+        groups.length === 0 ? undefined : (
         <div className="flex flex-wrap gap-2">
           <button type="button" className="rounded-xl px-3 py-2 text-xs font-bold" style={secondary} onClick={() => answerAll("yes")} disabled={busy}>
             {t("allYes")}
@@ -59,6 +69,7 @@ export function ExerciseMatchesDialog({
             {t("allNo")}
           </button>
         </div>
+        )
       }
       footer={
         <>
@@ -78,6 +89,38 @@ export function ExerciseMatchesDialog({
       }
     >
       <ul className="flex flex-col gap-2">
+        {timer !== null ? (
+          <li
+            className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border px-3 py-2"
+            style={{ borderColor: "var(--dim)", background: "var(--card)" }}
+            data-testid="text-timer-row"
+          >
+            <p className="min-w-0 flex-1 text-sm" style={{ color: "var(--text)" }}>
+              {t("timerFromText")} <strong className="tabular-nums">{timer}</strong>
+            </p>
+            <div className="flex gap-2" role="group" aria-label={t("timerFromText")}>
+              <button
+                type="button"
+                aria-pressed={timerConfirmed}
+                className="min-h-10 min-w-11 rounded-xl px-3 text-sm font-bold"
+                style={
+                  timerConfirmed
+                    ? { background: "color-mix(in srgb, var(--success) 16%, var(--card))", color: "var(--success)", border: "1px solid var(--success)" }
+                    : secondary
+                }
+                onClick={() => setTimerConfirmed(true)}
+                disabled={busy}
+              >
+                {t("yes")}
+              </button>
+              {onChangeTimer ? (
+                <button type="button" className="min-h-10 rounded-xl px-3 text-sm font-bold" style={secondary} onClick={onChangeTimer} disabled={busy}>
+                  {t("timerChange")}
+                </button>
+              ) : null}
+            </div>
+          </li>
+        ) : null}
         {groups.map((group) => (
           <MatchRow
             key={group.key}

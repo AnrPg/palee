@@ -10,6 +10,8 @@ import { HighlightedName } from "@/components/exercises/ExerciseNameInput";
 import { rankExerciseSuggestions, useExerciseSuggestions } from "@/hooks/useExerciseSuggestions";
 import { replacementFor, textRunAt, type TextRun } from "@/lib/exercise-text-run";
 import { fold, fuzzy } from "@/lib/structured-plan/fuzzy";
+import type { FreeTextTimerPreset } from "@/lib/free-text-timer";
+import { formatCompletions } from "@/lib/wod-formats/complete";
 
 import { EXERCISE_LINK, exerciseGhostKey, type ExerciseGhost } from "./exercise-link";
 
@@ -17,17 +19,26 @@ const MAX_ITEMS = 6;
 /** ADR-570: Palee's names first (they feed the muscles), then the box's, then mine. */
 const SOURCE_ORDER: ExerciseSuggestionGroup["source"][] = ["palee", "box", "mine"];
 
+/** ADR-650: a WOD format («AMRAP 12», «Tabata») offered above the exercises. */
+type SuggestionSource = ExerciseSuggestionGroup["source"] | "format" | "format_frequent";
+
 export type EditorSuggestion = {
   name: string;
   /** Character offset in the text block where the name replaces the typed words. */
   from: number;
   marks: [number, number][];
-  source: ExerciseSuggestionGroup["source"];
+  source: SuggestionSource;
   /** The catalog exercise the name links to, if any. */
   ref: string | null;
 };
 
-type Caret = { blockStart: number; pos: number; run: TextRun; text: string };
+/** `offset`: the caret's character offset in the block's text; `run`: the words to suggest exercises for. */
+type Caret = { blockStart: number; pos: number; offset: number; run: TextRun | null; text: string };
+
+export type EditorSuggestionOptions = {
+  /** ADR-650: offer WOD formats at the start of a line, the coach's most used timers first. */
+  formats?: { frequent: FreeTextTimerPreset[] } | null;
+};
 
 /**
  * ADR-570: exercise suggestions at the caret of the free-text editor, as in
@@ -38,9 +49,21 @@ type Caret = { blockStart: number; pos: number; run: TextRun; text: string };
  * until it changes; a tap picks a name. Typing on simply ignores it. A name
  * from the catalog links its words to the exercise (`exerciseLink`).
  */
+/**
+ * The link between the editor's `ExerciseSuggestKeys` extension and the
+ * suggestion list: `onKeyDown` goes into the extension (it asks the newest
+ * handler on every key), `handlerRef` into `useEditorExerciseSuggestions`.
+ */
+export function useExerciseSuggestKeys() {
+  const handlerRef = useRef<((event: KeyboardEvent) => boolean) | null>(null);
+  const onKeyDown = useCallback((event: KeyboardEvent) => handlerRef.current?.(event) ?? false, []);
+  return { handlerRef, onKeyDown };
+}
+
 export function useEditorExerciseSuggestions(
   editor: Editor | null,
   handlerRef: MutableRefObject<((event: KeyboardEvent) => boolean) | null>,
+  options: EditorSuggestionOptions = {},
 ) {
   const t = useTranslations("ExerciseNameInput");
   const listId = useId();
@@ -67,8 +90,13 @@ export function useEditorExerciseSuggestions(
     };
   }, [editor]);
 
-  const { groups } = useExerciseSuggestions(caret?.run.query ?? "", { enabled: Boolean(caret), limit: 4 });
-  const items = useMemo(() => (caret ? suggestionsFor(caret.run, caret.text, groups) : []), [caret, groups]);
+  const { groups } = useExerciseSuggestions(caret?.run?.query ?? "", { enabled: Boolean(caret?.run), limit: 4 });
+  const formats = options.formats ?? null;
+  const items = useMemo(() => {
+    if (!caret) return [];
+    const exercises = caret.run ? suggestionsFor(caret.run, caret.text, groups) : [];
+    return [...(formats ? formatSuggestionsFor(caret, formats.frequent) : []), ...exercises].slice(0, MAX_ITEMS);
+  }, [caret, groups, formats]);
   const signature = items.map((item) => `${item.from}:${item.name}`).join("|");
   const open = items.length > 0 && signature !== dismissed;
   const sameList = choice.signature === signature;
@@ -129,7 +157,7 @@ export function useEditorExerciseSuggestions(
   });
 
   // The grey rest of the selected name, when it continues what was typed.
-  const ghostText = selected && caret ? ghostFor(caret.text.slice(selected.from, caret.run.to), selected.name) : null;
+  const ghostText = selected && caret ? ghostFor(caret.text.slice(selected.from, caret.offset), selected.name) : null;
   const ghostPos = caret?.pos ?? null;
   useEffect(() => {
     if (!editor || editor.isDestroyed) return;
@@ -139,11 +167,13 @@ export function useEditorExerciseSuggestions(
     editor.view.dispatch(editor.state.tr.setMeta(exerciseGhostKey, next).setMeta("addToHistory", false));
   }, [editor, ghostText, ghostPos]);
 
+  // The list opens under the first of the words it replaces.
+  const listFrom = items.length ? Math.min(...items.map((item) => item.from)) : 0;
   useLayoutEffect(() => {
     if (!editor || !open || !caret) return;
     const place = () => {
       if (editor.isDestroyed) return;
-      const start = editor.view.coordsAtPos(Math.min(caret.blockStart + caret.run.from, editor.state.doc.content.size));
+      const start = editor.view.coordsAtPos(Math.min(caret.blockStart + listFrom, editor.state.doc.content.size));
       const width = menuRef.current?.getBoundingClientRect().width ?? 260;
       const height = menuRef.current?.getBoundingClientRect().height ?? 0;
       const below = start.bottom + 4;
@@ -157,7 +187,7 @@ export function useEditorExerciseSuggestions(
       window.removeEventListener("resize", place);
       window.removeEventListener("scroll", place, true);
     };
-  }, [editor, open, caret, signature]);
+  }, [editor, open, caret, signature, listFrom]);
 
   // A position measured for an earlier list is not shown for this one.
   const shown = position && position.signature === signature ? position : null;
@@ -200,7 +230,7 @@ export function useEditorExerciseSuggestions(
                   <HighlightedName text={item.name} marks={item.marks} />
                 </span>
                 <span className="shrink-0 text-xs" style={{ color: "var(--muted)" }}>
-                  {t(`group.${item.source}`)}
+                  {t(`group.${item.source === "format_frequent" ? "formatFrequent" : item.source}`)}
                 </span>
               </div>
             ))}
@@ -225,8 +255,24 @@ export function caretOf(editor: Editor): Caret | null {
   // Text and hard breaks take one position per character, so offsets are positions.
   const text = block.textBetween(0, block.content.size, undefined, "\n");
   if (text.length !== block.content.size) return null;
-  const run = textRunAt(text, $pos.parentOffset);
-  return run ? { blockStart: $pos.start(), pos: selection.from, run, text } : null;
+  const offset = $pos.parentOffset;
+  return { blockStart: $pos.start(), pos: selection.from, offset, run: textRunAt(text, offset), text };
+}
+
+const LETTER = /[\p{L}\p{N}]/u;
+
+/** ADR-650: the formats for the start of the caret's line (none inside a word). */
+export function formatSuggestionsFor(caret: Pick<Caret, "offset" | "text">, frequent: FreeTextTimerPreset[]): EditorSuggestion[] {
+  const { offset, text } = caret;
+  if (offset < text.length && LETTER.test(text[offset] ?? "")) return [];
+  const lineStart = text.lastIndexOf("\n", offset - 1) + 1;
+  return formatCompletions(text.slice(lineStart, offset), { frequent }).map((item) => ({
+    name: item.text,
+    from: lineStart + item.from,
+    marks: [],
+    source: item.frequent ? "format_frequent" : "format",
+    ref: null,
+  }));
 }
 
 /** The names to offer for a run, Palee's first; none once the words already are a name. */

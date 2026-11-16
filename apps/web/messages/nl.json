@@ -18675,7 +18675,9 @@
     "group": {
       "mine": "Door jou geschreven",
       "box": "Jouw box",
-      "palee": "Palee"
+      "palee": "Palee",
+      "format": "Vorm",
+      "formatFrequent": "Vorm · gebruik je vaak"
     },
     "keep": "«{text}» houden zoals ik het schreef",
     "keepKey": "Esc",
@@ -20197,7 +20199,11 @@
     "remembered": "Je box zei eerder ja",
     "answerFor": "Antwoord voor «{typed}»",
     "answerAll": "Beantwoord elke regel om te publiceren.",
-    "failed": "Je antwoorden zijn niet opgeslagen. Probeer het opnieuw."
+    "failed": "Je antwoorden zijn niet opgeslagen. Probeer het opnieuw.",
+    "timerTitle": "Controleer de timer",
+    "timerDescription": "De timer is uit de tekst gezet. Klopt hij?",
+    "timerFromText": "Timer uit de tekst:",
+    "timerChange": "Wijzigen"
   },
   "BoxOnMap": {
     "title": "Je box staat niet in In de buurt",
@@ -20290,5 +20296,18 @@
     "stopFollowing": "Ook niet meer volgen",
     "stoppedFollowing": "{kind, select, coach {Je volgt de coach niet meer.} other {Je volgt de box niet meer.}}",
     "done": "OK"
+  },
+  "TextTimer": {
+    "fromText": "uit de tekst",
+    "change": "Wijzigen",
+    "found": "{count, plural, one {# gevonden} other {# gevonden}}",
+    "next": "Volgende",
+    "restore": "Uit de tekst: {timer}",
+    "oneTimer": "Vrije tekst heeft één timer. Splits hem in delen voor een timer per deel.",
+    "missingNumber": {
+      "amrap": "Voeg de minuten toe, bv. «AMRAP 12», om een timer te zetten.",
+      "emom": "Voeg de minuten toe, bv. «EMOM 10» of «E2MOM 20», om een timer te zetten.",
+      "intervals": "Voeg inspanning/rust en rondes toe, bv. «40/20 x 8», om een timer te zetten."
+    }
   }
 }

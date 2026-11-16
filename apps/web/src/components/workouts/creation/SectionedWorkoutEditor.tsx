@@ -4,7 +4,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 import Underline from "@tiptap/extension-underline";
 import { EditorContent, useEditor, type JSONContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState, type MutableRefObject } from "react";
 
@@ -12,7 +12,6 @@ import { ApiError } from "@/api/client";
 import {
   createDraftWorkout,
   fetchAdminWorkout,
-  fetchFrequentTimers,
   FREQUENT_TIMERS_KEY,
   publishWorkoutDraft,
   type WorkoutRecord,
@@ -29,10 +28,12 @@ import {
   buildFreeTextSegments,
   parseFreeTextTimerPreset,
 } from "@/lib/free-text-timer";
-import { FRESHNESS } from "@/lib/query-policy";
+import { findTextTimers } from "@/lib/wod-formats/parse";
+import { FOLLOW_TEXT } from "@/lib/wod-formats/text-timer";
 import {
   describePreset,
   emptySection,
+  withSectionTimer,
   SECTIONED_TEXT_MODE,
   sectionProblems,
   type EditorTextSection,
@@ -46,8 +47,12 @@ import { getFormatLabels, type SectionFormat, type WorkoutType } from "@/types/w
 import { AssistantSwitch } from "./AssistantSwitch";
 import { DraftConflictNotice } from "./DraftConflictNotice";
 import { EditorTabs } from "./EditorTabs";
+import { useEditorExerciseSuggestions, useExerciseSuggestKeys } from "./EditorExerciseSuggestions";
+import { ExerciseSuggestKeys } from "./exercise-link";
 import { SectionScoringField } from "./SectionScoringField";
+import { TextTimerNote } from "./TextTimerNote";
 import { TimerChips } from "./TimerChips";
+import { useFrequentTimers } from "./useFrequentTimers";
 import { WorkoutTypeSelect } from "@/components/workouts/WorkoutTypeSelect";
 import { isWorkoutType } from "@/lib/workout-types";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
@@ -81,20 +86,7 @@ export function SectionedWorkoutEditor({ draftId, folderId = null, onDraftReady,
   const formatLabels = useMemo(() => getFormatLabels(i18n), [i18n]);
   const queryClient = useQueryClient();
   // ADR-571: the coach's three most used timers, as chips on every section.
-  const frequentTimersQuery = useQuery({
-    queryKey: FREQUENT_TIMERS_KEY,
-    enabled: Boolean(accessToken),
-    queryFn: () => fetchFrequentTimers(accessToken!),
-    staleTime: FRESHNESS.reference,
-  });
-  const frequentTimers = useMemo(
-    () =>
-      (frequentTimersQuery.data?.presets ?? []).flatMap((chip) => {
-        const preset = parseFreeTextTimerPreset(chip.preset);
-        return preset && preset.format !== "untimed" ? [preset] : [];
-      }),
-    [frequentTimersQuery.data],
-  );
+  const frequentTimers = useFrequentTimers();
 
   const [title, setTitle] = useState("");
   const [type, setType] = useState<WorkoutType | "">("");
@@ -206,7 +198,8 @@ export function SectionedWorkoutEditor({ draftId, folderId = null, onDraftReady,
 
   function updateSection(key: string, patch: Partial<EditorTextSection>) {
     setServerProblems(null);
-    setSections((current) => current.map((section) => (section.key === key ? { ...section, ...patch } : section)));
+    // ADR-650: a section whose timer follows its text gets the text's timer after every change.
+    setSections((current) => current.map((section) => (section.key === key ? withSectionTimer({ ...section, ...patch }) : section)));
   }
 
   function addSection() {
@@ -432,6 +425,7 @@ function SectionCard({
   onRemove: () => void;
 }) {
   const i18n = useUiTranslations();
+  const textTimerT = useTranslations("TextTimer");
   const [timerOpen, setTimerOpen] = useState(false);
   const [scoringOpen, setScoringOpen] = useState(section.metrics.length > 0);
   const [confirmRemove, setConfirmRemove] = useState(false);
@@ -440,6 +434,10 @@ function SectionCard({
   const textMissing = problems.includes("text_required") || problems.includes("text_too_long");
   const timerMissing = problems.includes("timer_required");
   const scoringInvalid = problems.includes("scoring_invalid");
+  // ADR-650: the timers the section's text asks for.
+  const textTimers = useMemo(() => findTextTimers(section.body), [section.body]);
+  const timerFrom = section.timerFrom ?? FOLLOW_TEXT;
+  const timerFromText = timerFrom.from === "text" && textTimers.timers.length > 0;
 
   useEffect(() => {
     if (autoFocus) titleRef.current?.focus();
@@ -498,6 +496,7 @@ function SectionCard({
           <SectionTextEditor
             document={section.document}
             label={i18n("textSectionTextLabel", { number })}
+            frequentTimers={frequentTimers}
             onChange={(body, document) => onChange({ body, document })}
           />
         ) : null}
@@ -515,16 +514,26 @@ function SectionCard({
             aria-expanded={timerOpen}
             onClick={() => setTimerOpen((open) => !open)}
             className="inline-flex min-h-10 items-center gap-2 rounded-full px-3 text-sm font-bold"
-            style={{
-              background: "var(--panel)",
-              color: "var(--text)",
-              border: `1px solid ${timerMissing ? "var(--danger)" : "var(--border)"}`,
-            }}
+            style={
+              timerFromText && !timerMissing
+                ? {
+                    background: "color-mix(in srgb, var(--success) 14%, var(--panel))",
+                    color: "var(--success)",
+                    border: "1px solid var(--success)",
+                  }
+                : {
+                    background: "var(--panel)",
+                    color: "var(--text)",
+                    border: `1px solid ${timerMissing ? "var(--danger)" : "var(--border)"}`,
+                  }
+            }
+            data-testid="section-timer-button"
           >
             <span aria-hidden="true">⏱</span>
             {section.preset.format === "untimed"
               ? i18n("timerNoTime")
               : describePreset(section.preset, formatLabels[section.preset.format])}
+            {timerFromText ? <span className="text-xs font-semibold opacity-80">· {textTimerT("fromText")}</span> : null}
             <svg aria-hidden="true" viewBox="0 0 20 20" className="h-4 w-4 shrink-0" style={{ color: "var(--muted)", transform: timerOpen ? "rotate(180deg)" : undefined, transition: "transform 120ms" }}>
               <path d="M5 7.5 10 12.5 15 7.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
@@ -548,6 +557,18 @@ function SectionCard({
             </span>
           </button>
         </div>
+        <div className="mt-2 empty:hidden">
+          <TextTimerNote
+            preset={section.preset}
+            source={timerFrom}
+            found={textTimers}
+            formatLabels={formatLabels}
+            oneTimer={false}
+            showChip={false}
+            onRestore={() => onChange({ timerFrom: FOLLOW_TEXT })}
+            onNext={() => onChange({ timerFrom: { from: "text", pick: timerFrom.pick + 1 } })}
+          />
+        </div>
         {timerMissing ? (
           <ErrorNotice variant="field" className="mt-1">
             {i18n("textSectionTimerRequired")}
@@ -559,7 +580,7 @@ function SectionCard({
               preset={section.preset}
               frequent={frequentTimers}
               formatLabels={formatLabels}
-              onChange={(preset) => onChange({ preset })}
+              onChange={(preset) => onChange({ preset, timerFrom: { from: "hand", pick: 0 } })}
             />
           </div>
         ) : null}
@@ -575,21 +596,31 @@ function SectionCard({
   );
 }
 
-function SectionTextEditor({
+const NO_FREQUENT_TIMERS: FreeTextTimerPreset[] = [];
+
+export function SectionTextEditor({
   document,
   label,
+  frequentTimers = NO_FREQUENT_TIMERS,
   onChange,
 }: {
   document: JSONContent;
   label: string;
+  frequentTimers?: FreeTextTimerPreset[];
   onChange: (body: string, document: JSONContent) => void;
 }) {
   const i18n = useUiTranslations();
+  /** ADR-570: the keys the open exercise suggestion list takes (Tab, ↑/↓, Enter, Esc). */
+  const suggestKeys = useExerciseSuggestKeys();
   const editor = useEditor({
     extensions: [
       StarterKit.configure({ link: false, underline: false, heading: { levels: [3, 4] } }),
       Underline,
       Placeholder.configure({ placeholder: i18n("textSectionPlaceholder") }),
+      // The same exercise suggestions as the free-text editor. Without the
+      // assistant nothing parses the sections, so a picked name stays plain
+      // text (no `exerciseLink` mark, no confirmation before publishing).
+      ExerciseSuggestKeys.configure({ onKeyDown: suggestKeys.onKeyDown }),
     ],
     content: document,
     immediatelyRender: false,
@@ -606,7 +637,16 @@ function SectionTextEditor({
     onUpdate: ({ editor: current }) => onChange(current.getText({ blockSeparator: "\n" }), current.getJSON()),
   });
 
-  return <EditorContent editor={editor} />;
+  // ADR-650: WOD formats too, the coach's most used timers first.
+  const suggestionOptions = useMemo(() => ({ formats: { frequent: frequentTimers } }), [frequentTimers]);
+  const { menu } = useEditorExerciseSuggestions(editor, suggestKeys.handlerRef, suggestionOptions);
+
+  return (
+    <>
+      <EditorContent editor={editor} />
+      {menu}
+    </>
+  );
 }
 
 function IconButton({

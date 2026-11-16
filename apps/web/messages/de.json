@@ -18675,7 +18675,9 @@
     "group": {
       "mine": "Von dir",
       "box": "Deine Box",
-      "palee": "Palee"
+      "palee": "Palee",
+      "format": "Format",
+      "formatFrequent": "Format · oft von dir"
     },
     "keep": "«{text}» so behalten, wie ich es geschrieben habe",
     "keepKey": "Esc",
@@ -20197,7 +20199,11 @@
     "remembered": "Deine Box hat schon einmal ja gesagt",
     "answerFor": "Antwort für «{typed}»",
     "answerAll": "Beantworte jede Zeile, um zu veröffentlichen.",
-    "failed": "Deine Antworten wurden nicht gespeichert. Versuch es noch einmal."
+    "failed": "Deine Antworten wurden nicht gespeichert. Versuch es noch einmal.",
+    "timerTitle": "Timer prüfen",
+    "timerDescription": "Der Timer wurde aus dem Text gesetzt. Stimmt er?",
+    "timerFromText": "Timer aus dem Text:",
+    "timerChange": "Ändern"
   },
   "BoxOnMap": {
     "title": "Deine Box erscheint nicht in „In der Nähe“",
@@ -20290,5 +20296,18 @@
     "stopFollowing": "Auch nicht mehr folgen",
     "stoppedFollowing": "{kind, select, coach {Du folgst dem Coach nicht mehr.} other {Du folgst der Box nicht mehr.}}",
     "done": "OK"
+  },
+  "TextTimer": {
+    "fromText": "aus dem Text",
+    "change": "Ändern",
+    "found": "{count, plural, one {# gefunden} other {# gefunden}}",
+    "next": "Nächster",
+    "restore": "Aus dem Text: {timer}",
+    "oneTimer": "Freier Text hat einen Timer. Teile ihn in Abschnitte für einen Timer pro Abschnitt.",
+    "missingNumber": {
+      "amrap": "Schreib die Minuten dazu, z. B. «AMRAP 12», damit ein Timer gesetzt wird.",
+      "emom": "Schreib die Minuten dazu, z. B. «EMOM 10» oder «E2MOM 20», damit ein Timer gesetzt wird.",
+      "intervals": "Schreib Belastung/Pause und Runden, z. B. «40/20 x 8», damit ein Timer gesetzt wird."
+    }
   }
 }

@@ -1,6 +1,8 @@
 import type { JSONContent } from "@tiptap/react";
 
 import { type FreeTextTimerPreset, NO_TIME_PRESET, parseFreeTextTimerPreset } from "@/lib/free-text-timer";
+import { findTextTimers } from "@/lib/wod-formats/parse";
+import { effectiveTimer, FOLLOW_TEXT, loadTimerFrom, type TimerFrom } from "@/lib/wod-formats/text-timer";
 
 /**
  * Workouts written without the assistant (ADR-180) are a list of text
@@ -222,8 +224,23 @@ export type EditorTextSection = {
   document: JSONContent;
   /** ADR-571: «Χωρίς χρόνο» (`untimed`) until the coach picks another timer. */
   preset: FreeTextTimerPreset;
+  /**
+   * ADR-650: whether `preset` follows the section's text («AMRAP 12» picks
+   * its chip) or is the coach's own. Kept on screen only; missing = follows the text.
+   */
+  timerFrom?: TimerFrom;
   metrics: SectionMetric[];
 };
+
+/**
+ * A section after a change: while its timer follows the text, the timer is
+ * the one its text asks for now («Χωρίς χρόνο» when none), ADR-650.
+ */
+export function withSectionTimer(section: EditorTextSection): EditorTextSection {
+  const source = section.timerFrom ?? FOLLOW_TEXT;
+  if (source.from === "hand") return section;
+  return { ...section, preset: effectiveTimer(findTextTimers(section.body), source, section.preset, NO_TIME_PRESET) };
+}
 
 /** Why a section cannot be published yet (same codes the API answers with). */
 export type SectionProblem = {
@@ -271,26 +288,30 @@ export function editorSectionsFrom(
     return (workout.sections ?? []).map((section) => {
       const raw = section as TextSectionSource & { free_text_document?: unknown };
       const body = raw.free_text_body ?? "";
+      const preset = parseFreeTextTimerPreset(raw.timer_preset) ?? NO_TIME_PRESET;
       return {
         key: sectionKey(),
         title: raw.section_metadata?.untitled === true ? "" : (raw.name ?? ""),
         body,
         document: isDocument(raw.free_text_document) ? raw.free_text_document : textToDocument(body),
-        preset: parseFreeTextTimerPreset(raw.timer_preset) ?? NO_TIME_PRESET,
+        preset,
+        timerFrom: loadTimerFrom(body, preset, "untimed"),
         metrics: readMetrics(raw.score_config),
       };
     });
   }
 
   const body = workout.free_text_body ?? "";
-  if (!body.trim()) return [{ ...emptySection(), preset: wholeWorkoutPreset ?? NO_TIME_PRESET }];
+  const preset = wholeWorkoutPreset ?? NO_TIME_PRESET;
+  if (!body.trim()) return [{ ...emptySection(), preset, timerFrom: loadTimerFrom("", preset, "untimed") }];
   return [
     {
       key: sectionKey(),
       title: "",
       body,
       document: isDocument(workout.free_text_document) ? workout.free_text_document : textToDocument(body),
-      preset: wholeWorkoutPreset ?? NO_TIME_PRESET,
+      preset,
+      timerFrom: loadTimerFrom(body, preset, "untimed"),
       metrics: [],
     },
   ];
