@@ -9,10 +9,9 @@
  * - `timer`: the free-text timer it sets (`FreeTextTimerPreset`), or `none`
  *   for the formats that are not a clock (sets, structures, rest, add-ons).
  *   These are still offered while typing, but never set a timer.
- * - `names`: what a coach writes, English and Greek, as written; `aliases`
- *   the same folded (lower case, no accents) plus the structured editor's
- *   search aliases. The translated label of the screen's language is added
- *   at run time.
+ * - `names`: what a coach writes, in every language Palee speaks
+ *   (`locale-words.ts`), as written; `aliases` the same folded (lower case,
+ *   no accents) plus the structured editor's search aliases.
  * - `write`: what a picked suggestion puts in the text (a name the parser
  *   reads back), `null` for the screen's translated label.
  * - `needsNumber`: the timer needs a number after the name («AMRAP 12»);

@@ -173,3 +173,39 @@ describe("docs/product/wod-formats.md", () => {
     expect(keys).toEqual(WOD_FORMATS.map((format) => format.key));
   });
 });
+
+describe("formats in every language Palee speaks (ADR-650)", () => {
+  it.each<[string, FreeTextTimerPreset]>([
+    ["Auf Zeit, Zeitlimit 15", { format: "for_time", duration_seconds: 900 }],
+    ["alle 2 Min x 6", { format: "emom", interval_seconds: 120, rounds: 6 }],
+    ["AMRAP 12 Min", { format: "amrap", duration_seconds: 720 }],
+    ["toutes les 2 min x 5", { format: "emom", interval_seconds: 120, rounds: 5 }],
+    ["Toutes les minutes 10", { format: "emom", interval_seconds: 60, rounds: 10 }],
+    ["Por tiempo, límite 20", { format: "for_time", duration_seconds: 1200 }],
+    ["Cada 2 min x 5", { format: "emom", interval_seconds: 120, rounds: 5 }],
+    ["Ogni 2 minuti x 6", { format: "emom", interval_seconds: 120, rounds: 6 }],
+    ["Elke 2 min x 6", { format: "emom", interval_seconds: 120, rounds: 6 }],
+    ["A cada 2 min x 6", { format: "emom", interval_seconds: 120, rounds: 6 }],
+    ["Каждую минуту 10", { format: "emom", interval_seconds: 60, rounds: 10 }],
+    ["EMOM х 12", { format: "emom", interval_seconds: 60, rounds: 12 }],
+    ["На всеки 2 мин x 6", { format: "emom", interval_seconds: 120, rounds: 6 }],
+    ["כל 2 דקות x 6", { format: "emom", interval_seconds: 120, rounds: 6 }],
+  ])("%s", (line, preset) => expectTimer(line, preset));
+
+  it.each(["Pour le temps", "Per tempo", "Voor tijd", "Por tempo", "На время", "За време", "לזמן", "على الوقت"])("%s is For Time", (line) =>
+    expectTimer(line, { format: "for_time" }),
+  );
+
+  it("keeps the labels equal to the structured editor's translated names", async () => {
+    const { readFileSync } = await import("node:fs");
+    const { resolve } = await import("node:path");
+    const { LOCALE_WORDS } = await import("./locale-words");
+    for (const [locale, words] of Object.entries(LOCALE_WORDS)) {
+      const core = JSON.parse(readFileSync(resolve(__dirname, `../../../messages/${locale}.json`), "utf8")).PlanCore;
+      for (const format of WOD_FORMATS) {
+        const [group, key] = format.labelKey.split(".").slice(1) as ["flow" | "preset", string];
+        expect([locale, format.key, words.labels[format.key]]).toEqual([locale, format.key, core[group][key]]);
+      }
+    }
+  });
+});

@@ -56,8 +56,11 @@ list of them, and additive changes.
 
 - Web only: the API stores the timer the editor sends, as before
   (`workout_metadata.free_text_timer`, a section's `timer_preset`).
-- Formats in other languages are read from their translated labels when a
-  caller passes them; the editors read English and Greek names only, so a
-  suggestion always inserts a name the parser reads back.
+- Formats are read in all twelve languages Palee speaks, all at once (a WOD
+  reads the same for every viewer, and coaches mix English in): the
+  structured editor's translated names plus each language's words for
+  rounds, «every», time cap, work/rest and units (`wod-formats/locale-words.ts`;
+  a test keeps its names equal to the messages). A suggestion always inserts
+  a name the parser reads back.
 - A new flow or preset in the structured catalog appears in the list; its
   timer mapping must be added in `catalog.ts` (the test lists them all).
