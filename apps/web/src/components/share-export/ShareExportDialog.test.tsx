@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { ShareExportDialog, type ShareExportCopy } from "@/components/share-export/ShareExportDialog";
 import type { ExportDocument, ExportFormat } from "@/lib/document-export";
@@ -43,6 +43,10 @@ const document: ExportDocument = {
 };
 
 describe("ShareExportDialog", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("passes the generated file in the selected format to the system share sheet", async () => {
     const share = vi.fn().mockResolvedValue(undefined);
     Object.defineProperty(navigator, "canShare", { configurable: true, value: () => true });
@@ -110,6 +114,11 @@ describe("ShareExportDialog", () => {
       return "blob:export";
     });
     vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => undefined);
+    // The download link is clicked, not followed: jsdom cannot navigate ("Not implemented: navigation").
+    const downloads: string[] = [];
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(function (this: HTMLAnchorElement) {
+      downloads.push(`${this.getAttribute("href")} ${this.download}`);
+    });
     Object.defineProperty(navigator, "canShare", { configurable: true, value: () => false });
     Object.defineProperty(navigator, "share", { configurable: true, value: undefined });
 
@@ -120,5 +129,6 @@ describe("ShareExportDialog", () => {
 
     await waitFor(() => expect(open).toHaveBeenCalledWith("https://drive.google.com/drive/my-drive", "_blank", "noopener,noreferrer"));
     expect(events).toEqual(["open", "download"]);
+    expect(downloads).toEqual([expect.stringMatching(/^blob:export \S+/)]);
   });
 });

@@ -352,7 +352,14 @@ describe("PlatformOrganizationsPage", () => {
     const openLink = within(row!).getByRole("link", { name: "Open organization" });
     expect(openLink).toHaveAttribute("href", "/org/north-harbor/admin");
 
-    fireEvent.click(openLink);
+    // jsdom cannot load another document ("Not implemented: navigation"): keep the click on this page.
+    const stayOnPage = (event: Event) => event.preventDefault();
+    window.document.addEventListener("click", stayOnPage);
+    try {
+      fireEvent.click(openLink);
+    } finally {
+      window.document.removeEventListener("click", stayOnPage);
+    }
 
     expect(window.localStorage.getItem("palee:selected-organization-slug")).toBe("north-harbor");
   });
