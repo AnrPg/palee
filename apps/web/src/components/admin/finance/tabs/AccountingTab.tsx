@@ -17,6 +17,7 @@ import {
   unmatchReconciliationRecord,
   type ReconciliationRecord,
 } from "@/api/finance-accounting";
+import { FinanceCleanupSection } from "@/components/admin/finance/FinanceCleanup";
 import { TipsSummaryCard } from "@/components/admin/collect/TipsSummaryCard";
 import { RefundReceiptDocumentDialog } from "@/components/finance/RefundReceiptDocumentDialog";
 import { useSession } from "@/components/session-provider";
@@ -83,8 +84,16 @@ export function AccountingTab({ locationIds }: { locationIds?: string } = {}) {
       <RefundReceiptsSection locationIds={locationIds} />
       <ReconciliationSection />
       <ExportsSection />
+      {/* The same password-confirmed cleanup as Settings → Finance, last: rarely needed. */}
+      <CleanupSection />
     </div>
   );
+}
+
+function CleanupSection() {
+  const { tokens } = useSession();
+  const token = tokens?.access_token;
+  return token ? <FinanceCleanupSection token={token} /> : null;
 }
 
 function RefundReceiptsSection({ locationIds }: { locationIds?: string }) {
