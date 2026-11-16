@@ -130,6 +130,15 @@ function MultiCheck({
 
 // ── MembersTab ────────────────────────────────────────────────────────────────
 
+// The ledger's quiet foot: members who left the box («former», ADR-595) and
+// finance profiles that never held a package («no_package» — never paid for a
+// subscription). Everything else — including trials, expired and cancelled —
+// stays in the live roster above.
+const BOTTOM_LEDGER_STATUSES = new Set(["former", "no_package"]);
+function isBottomLedgerStatus(status: string): boolean {
+  return BOTTOM_LEDGER_STATUSES.has(status);
+}
+
 /** `locationIds`: the page branch filter (ADR-186 §7); members show at their home branch. */
 export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
   const i18n = useUiTranslations();
@@ -191,6 +200,17 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
 
   const { sort, cycleSort, filters, setFilter, clearFilters, result: filteredMembers } =
     useSortFilter(members);
+
+  // ADR-595: previous members («former») and never-subscribed ghosts
+  // («no_package») drop into a subtle section, collapsed by default, at the
+  // foot of the ledger, so the live roster is not cluttered by people who
+  // left or never paid. Trials, expired and cancelled members stay above.
+  const currentMembers = filteredMembers.filter((member) => !isBottomLedgerStatus(shownStatus(member)));
+  const bottomMembers = filteredMembers.filter((member) => isBottomLedgerStatus(shownStatus(member)));
+  const [showBottomLedger, setShowBottomLedger] = useState(false);
+  // Expand on its own when the roster above is empty (e.g. a filter targeting
+  // former/inactive members), so results are never hidden behind the fold.
+  const bottomOpen = showBottomLedger || currentMembers.length === 0;
 
   const [userQuery, setUserQuery] = useState("");
   const [shareOpen, setShareOpen] = useState(false);
@@ -534,28 +554,74 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
                   </td>
                 </tr>
               ) : (
-                filteredMembers.map((member, i) => (
-                  <MemberRow
-                    key={field(member, "id")}
-                    member={member}
-                    last={i === filteredMembers.length - 1}
-                    showReferrals={showReferrals}
-                    packages={packages}
-                    userOptions={userOptions()}
-                    onUserSearch={setUserQuery}
-                    updatePending={updateMutation.isPending}
-                    assignPending={assignPackageMutation.isPending}
-                    onSave={(body) => updateMutation.mutate({ userId: field(member, "id"), body })}
-                    onAssignPackage={(packageId) =>
-                      assignPackageMutation.mutateAsync({ userId: field(member, "id"), packageId })
-                    }
-                    onOpenPanel={() => setParam({ member: field(member, "id"), tab: "members" })}
-                    onReceivePayment={() => setParam({ receive: field(member, "id"), tab: "members" })}
-                    onOpenReferralWizard={() =>
-                      setParam({ "new-referral": "true", referrer: field(member, "id") })
-                    }
-                  />
-                ))
+                <>
+                  {currentMembers.map((member, i) => (
+                    <MemberRow
+                      key={field(member, "id")}
+                      member={member}
+                      last={i === currentMembers.length - 1 && bottomMembers.length === 0}
+                      showReferrals={showReferrals}
+                      packages={packages}
+                      userOptions={userOptions()}
+                      onUserSearch={setUserQuery}
+                      updatePending={updateMutation.isPending}
+                      assignPending={assignPackageMutation.isPending}
+                      onSave={(body) => updateMutation.mutate({ userId: field(member, "id"), body })}
+                      onAssignPackage={(packageId) =>
+                        assignPackageMutation.mutateAsync({ userId: field(member, "id"), packageId })
+                      }
+                      onOpenPanel={() => setParam({ member: field(member, "id"), tab: "members" })}
+                      onReceivePayment={() => setParam({ receive: field(member, "id"), tab: "members" })}
+                      onOpenReferralWizard={() =>
+                        setParam({ "new-referral": "true", referrer: field(member, "id") })
+                      }
+                    />
+                  ))}
+                  {bottomMembers.length > 0 ? (
+                    <>
+                      <tr>
+                        <td colSpan={showReferrals ? 11 : 9} className="p-0">
+                          <button
+                            type="button"
+                            onClick={() => setShowBottomLedger((open) => !open)}
+                            aria-expanded={bottomOpen}
+                            data-testid="bottom-ledger-toggle"
+                            className="flex w-full items-center gap-2 px-6 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] transition-opacity hover:opacity-80"
+                            style={{ color: "var(--dim)", background: "var(--panel-muted)", borderTop: "1px solid var(--border)" }}
+                          >
+                            <span aria-hidden>{bottomOpen ? "▾" : "▸"}</span>
+                            <span>{i18n("formerInactiveSection")}</span>
+                            <span style={{ opacity: 0.7 }}>· {bottomMembers.length}</span>
+                          </button>
+                        </td>
+                      </tr>
+                      {bottomOpen
+                        ? bottomMembers.map((member, i) => (
+                            <MemberRow
+                              key={field(member, "id")}
+                              member={member}
+                              last={i === bottomMembers.length - 1}
+                              showReferrals={showReferrals}
+                              packages={packages}
+                              userOptions={userOptions()}
+                              onUserSearch={setUserQuery}
+                              updatePending={updateMutation.isPending}
+                              assignPending={assignPackageMutation.isPending}
+                              onSave={(body) => updateMutation.mutate({ userId: field(member, "id"), body })}
+                              onAssignPackage={(packageId) =>
+                                assignPackageMutation.mutateAsync({ userId: field(member, "id"), packageId })
+                              }
+                              onOpenPanel={() => setParam({ member: field(member, "id"), tab: "members" })}
+                              onReceivePayment={() => setParam({ receive: field(member, "id"), tab: "members" })}
+                              onOpenReferralWizard={() =>
+                                setParam({ "new-referral": "true", referrer: field(member, "id") })
+                              }
+                            />
+                          ))
+                        : null}
+                    </>
+                  ) : null}
+                </>
               )}
             </tbody>
           </table>

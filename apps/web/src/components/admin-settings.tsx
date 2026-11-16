@@ -1070,9 +1070,22 @@ function FinanceCleanupSection({ token }: { token: string }) {
                     className="w-full rounded-2xl border px-4 py-3 text-sm outline-none"
                     style={{ background: "var(--bg)", borderColor: "var(--border)", color: "var(--text)" }}
                     type="password"
+                    autoComplete="current-password"
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
                   />
+                  {/* It's the signed-in owner's own login password (same gate as
+                      account deletion / email change), not a separate code. The
+                      reset opens in a new tab so this dialog is not lost. */}
+                  <a
+                    href="/forgot-password"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block text-xs font-semibold hover:opacity-80"
+                    style={{ color: "var(--primary)" }}
+                  >
+                    {i18n("forgotPasswordLink")}
+                  </a>
                 </label>
                 {errorMessage ? <ErrorNotice>{errorMessage}</ErrorNotice> : null}
                 {purgeMutation.isSuccess ? (
