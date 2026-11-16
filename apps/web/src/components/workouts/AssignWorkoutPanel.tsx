@@ -43,6 +43,7 @@ type Props = {
 
 export function AssignWorkoutPanel({ workoutId, onClose, onAssigned }: Props) {
   const i18n = useUiTranslations();
+  const tContent = useTranslations("WorkoutContent");
   const { tokens, signOut } = useSession();
   const [workout, setWorkout] = useState<WorkoutRecord | null>(null);
   const [athletes, setAthletes] = useState<AthleteOption[]>([]);
@@ -425,7 +426,7 @@ export function AssignWorkoutPanel({ workoutId, onClose, onAssigned }: Props) {
           {mode === "day" ? null : (
           <label className="block">
             <span className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: "var(--dim)" }}>
-              {i18n("instructionsdff73a2")}
+              {tContent("instructions")}
             </span>
             <textarea
               className="mt-2 w-full rounded-[1rem] px-4 py-3 text-sm outline-none"

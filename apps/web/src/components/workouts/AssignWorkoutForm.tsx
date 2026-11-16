@@ -4,6 +4,7 @@
 
 
 
+import { useTranslations } from "next-intl";
 import { AssigneeRoleBadge } from "@/components/workouts/AssigneeRoleBadge";
 import {useUiTranslations} from "@/i18n/ui";
 import { localizeAdminAssignmentError, localizeError } from "@/i18n/presentation";
@@ -33,6 +34,7 @@ type AssignWorkoutFormProps = {
 
 export function AssignWorkoutForm({ workoutId }: AssignWorkoutFormProps) {
   const i18n = useUiTranslations();
+  const tContent = useTranslations("WorkoutContent");
   const router = useRouter();
   const organizationSlug = useOrganizationSlug();
   const { tokens, signOut } = useSession();
@@ -309,7 +311,7 @@ export function AssignWorkoutForm({ workoutId }: AssignWorkoutFormProps) {
             </div>
 
             <label className="mt-5 block">
-              <span className="text-sm font-semibold uppercase tracking-[0.22em]" style={{ color: "var(--dim)" }}>{i18n("instructionsdff73a2")}</span>
+              <span className="text-sm font-semibold uppercase tracking-[0.22em]" style={{ color: "var(--dim)" }}>{tContent("instructions")}</span>
               <textarea
                 className="mt-3 min-h-28 w-full rounded-[1rem] px-4 py-3 text-sm outline-none"
                 style={{ background: "var(--panel-muted)", border: "1px solid var(--border)", color: "var(--text)" }}

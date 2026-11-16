@@ -233,11 +233,7 @@
     "archived": "gearchiveerd",
     "classTypes": "Lestypes",
     "selectedCount": "{count} geselecteerd",
-    "selectedAthleteCount": "{count, plural, one {# atleet geselecteerd} other {# atleten geselecteerd}}",
-    "roundCount": "{count, plural, one {# ronde} other {# rondes}}",
-    "optionCount": "{count, plural, one {# optie} other {# opties}}",
     "workoutCount": "{count, plural, one {# workout} other {# workouts}}",
-    "userCount": "{count, plural, one {# gebruiker} other {# gebruikers}}",
     "executionNoteCount": "{count, plural, one {# notitie} other {# notities}}",
     "executionScoreCount": "{count, plural, one {# score} other {# scores}}",
     "clear": "Duidelijk",
@@ -4972,7 +4968,11 @@
     "kpiRetirementStopped": "Gestopt voor het einde",
     "kpiRetirementIdle": "Inactief geworden",
     "apiErrorPackageRequired": "Boeken in deze box vraagt een pakket. Kies er een bij Pakketten; betaal je aan de balie, dan kun je tijdens het wachten één les boeken.",
-    "apiErrorDeclineReasonRequired": "Schrijf waarom de aanvraag wordt afgewezen."
+    "apiErrorDeclineReasonRequired": "Schrijf waarom de aanvraag wordt afgewezen.",
+    "selectedAthleteCount": "{count, plural, one {# atleet geselecteerd} other {# atleten geselecteerd}}",
+    "roundCount": "{count, plural, one {# ronde} other {# rondes}}",
+    "optionCount": "{count, plural, one {# optie} other {# opties}}",
+    "userCount": "{count, plural, one {# gebruiker} other {# gebruikers}}"
   },
   "PrSharing": {
     "gymLabel": "Waar heb je dit PR neergezet?",

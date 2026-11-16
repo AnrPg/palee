@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useUiTranslations } from "@/i18n/ui";
 import React, { useState, type ReactNode } from "react";
 
@@ -32,6 +33,7 @@ const COUNTDOWN_CHOICES = [0, 5, 10, 15];
 /** The coach's remote: drives the class timer every screen in the room follows. */
 export function ClassTimerControl({ slotId }: { slotId: string }) {
   const i18n = useUiTranslations();
+  const tCommon = useTranslations("Common");
   const { tokens } = useSession();
   const organizationSlug = useOrganizationSlug();
   const timer = useClassTimer(tokens?.access_token, slotId);
@@ -324,7 +326,7 @@ export function ClassTimerControl({ slotId }: { slotId: string }) {
           onClose={() => setConfirmReset(false)}
           footer={
             <>
-              <DialogButton onClick={() => setConfirmReset(false)}>{i18n("cancel")}</DialogButton>
+              <DialogButton onClick={() => setConfirmReset(false)}>{tCommon("cancel")}</DialogButton>
               <DialogButton
                 tone="danger"
                 testId="remote-reset-confirm"

@@ -4,6 +4,7 @@
 
 
 
+import { useTranslations } from "next-intl";
 import { AssigneeRoleBadge } from "@/components/workouts/AssigneeRoleBadge";
 import {useUiTranslations} from "@/i18n/ui";
 import { localizeError } from "@/i18n/presentation";
@@ -375,6 +376,7 @@ export function AssignedWorkoutsConsole({
   pageTitle?: string;
 } = {}) {
   const i18n = useUiTranslations();
+  const tContent = useTranslations("WorkoutContent");
   const uiLocale = useUiLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -1350,7 +1352,7 @@ export function AssignedWorkoutsConsole({
 
                         <label className="block">
                           <span className="text-xs font-semibold uppercase tracking-[0.18em]" style={{ color: "var(--dim)" }}>
-                            {i18n("instructionsdff73a2")}
+                            {tContent("instructions")}
                           </span>
                           <textarea
                             className="mt-2 min-h-24 w-full rounded-[0.9rem] px-3 py-2 text-sm outline-none"

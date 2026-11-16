@@ -233,11 +233,7 @@
     "archived": "αρχειοθετημένο",
     "classTypes": "Τύποι τμημάτων",
     "selectedCount": "{count} επιλεγμένα",
-    "selectedAthleteCount": "{count, plural, one {Επιλέχθηκε # αθλητής} other {Επιλέχθηκαν # αθλητές}}",
-    "roundCount": "{count, plural, one {# γύρος} other {# γύροι}}",
-    "optionCount": "{count, plural, one {# επιλογή} other {# επιλογές}}",
     "workoutCount": "{count, plural, one {# προπόνηση} other {# προπονήσεις}}",
-    "userCount": "{count, plural, one {# χρήστης} other {# χρήστες}}",
     "executionNoteCount": "{count, plural, one {# σημείωση} other {# σημειώσεις}}",
     "executionScoreCount": "{count, plural, one {# σκορ} other {# σκορ}}",
     "clear": "Καθάρισμα",
@@ -4972,7 +4968,11 @@
     "kpiRetirementStopped": "Σταμάτησαν πριν τη λήξη",
     "kpiRetirementIdle": "Έμειναν ανενεργοί",
     "apiErrorPackageRequired": "Οι κρατήσεις σε αυτό το box θέλουν πακέτο. Διάλεξε ένα στα Πακέτα· αν πληρώσεις στην υποδοχή, μπορείς να κάνεις μία κράτηση όσο περιμένει.",
-    "apiErrorDeclineReasonRequired": "Γράψε γιατί απορρίπτεται το αίτημα."
+    "apiErrorDeclineReasonRequired": "Γράψε γιατί απορρίπτεται το αίτημα.",
+    "selectedAthleteCount": "{count, plural, one {Επιλέχθηκε # αθλητής} other {Επιλέχθηκαν # αθλητές}}",
+    "roundCount": "{count, plural, one {# γύρος} other {# γύροι}}",
+    "optionCount": "{count, plural, one {# επιλογή} other {# επιλογές}}",
+    "userCount": "{count, plural, one {# χρήστης} other {# χρήστες}}"
   },
   "PrSharing": {
     "gymLabel": "Πού πέτυχες αυτό το PR;",

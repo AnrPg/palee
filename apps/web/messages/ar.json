@@ -233,11 +233,7 @@
     "archived": "مؤرشف",
     "classTypes": "أنواع الحصص",
     "selectedCount": "تم تحديد {count}.",
-    "selectedAthleteCount": "{count, plural, one {تم اختيار رياضي واحد} other {تم اختيار # رياضيين}}",
-    "roundCount": "{count, plural, one {جولة واحدة} other {# جولات}}",
-    "optionCount": "{count, plural, one {خيار واحد} other {# خيارات}}",
     "workoutCount": "{count, plural, one {تمرين واحد} other {# تمارين}}",
-    "userCount": "{count, plural, one {مستخدم واحد} other {# مستخدمين}}",
     "executionNoteCount": "{count, plural, one {ملاحظة واحدة} other {# ملاحظات}}",
     "executionScoreCount": "{count, plural, one {نتيجة واحدة} other {# نتائج}}",
     "clear": "واضح",
@@ -4972,7 +4968,11 @@
     "kpiRetirementStopped": "توقفوا قبل النهاية",
     "kpiRetirementIdle": "أصبحوا غير نشطين",
     "apiErrorPackageRequired": "الحجز في هذا المكان يحتاج إلى باقة. اختر واحدة من الباقات؛ إن كنت ستدفع في الاستقبال يمكنك حجز حصة واحدة أثناء الانتظار.",
-    "apiErrorDeclineReasonRequired": "اكتب سبب رفض الطلب."
+    "apiErrorDeclineReasonRequired": "اكتب سبب رفض الطلب.",
+    "selectedAthleteCount": "{count, plural, one {تم اختيار رياضي واحد} two {تم اختيار رياضيَّين} few {تم اختيار # رياضيين} many {تم اختيار # رياضيًا} other {تم اختيار # رياضي}}",
+    "roundCount": "{count, plural, one {جولة واحدة} two {جولتان} few {# جولات} many {# جولة} other {# جولة}}",
+    "optionCount": "{count, plural, one {خيار واحد} two {خياران} few {# خيارات} many {# خيارًا} other {# خيار}}",
+    "userCount": "{count, plural, one {مستخدم واحد} two {مستخدمان} few {# مستخدمين} many {# مستخدمًا} other {# مستخدم}}"
   },
   "PrSharing": {
     "gymLabel": "أين حققت هذا الرقم القياسي؟",

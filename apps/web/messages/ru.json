@@ -233,11 +233,7 @@
     "archived": "в архиве",
     "classTypes": "Типы занятий",
     "selectedCount": "{count} выбрано",
-    "selectedAthleteCount": "{count, plural, one {Выбран # спортсмен} few {Выбрано # спортсмена} many {Выбрано # спортсменов} other {Выбрано # спортсмена}}",
-    "roundCount": "{count, plural, one {# раунд} few {# раунда} many {# раундов} other {# раунда}}",
-    "optionCount": "{count, plural, one {# вариант} few {# варианта} many {# вариантов} other {# варианта}}",
     "workoutCount": "{count, plural, one {# тренировка} few {# тренировки} many {# тренировок} other {# тренировки}}",
-    "userCount": "{count, plural, one {# пользователь} few {# пользователя} many {# пользователей} other {# пользователя}}",
     "executionNoteCount": "{count, plural, one {# заметка} few {# заметки} many {# заметок} other {# заметки}}",
     "executionScoreCount": "{count, plural, one {# результат} few {# результата} many {# результатов} other {# результата}}",
     "clear": "Очистить",
@@ -4972,7 +4968,11 @@
     "kpiRetirementStopped": "Остановились до конца",
     "kpiRetirementIdle": "Стали неактивны",
     "apiErrorPackageRequired": "Для записи в этот зал нужен пакет. Выберите его в разделе «Пакеты»; если платите на ресепшене, можно записаться на одно занятие, пока запрос ждёт.",
-    "apiErrorDeclineReasonRequired": "Напишите, почему запрос отклонён."
+    "apiErrorDeclineReasonRequired": "Напишите, почему запрос отклонён.",
+    "selectedAthleteCount": "{count, plural, one {Выбран # спортсмен} few {Выбрано # спортсмена} many {Выбрано # спортсменов} other {Выбрано # спортсмена}}",
+    "roundCount": "{count, plural, one {# раунд} few {# раунда} many {# раундов} other {# раунда}}",
+    "optionCount": "{count, plural, one {# вариант} few {# варианта} many {# вариантов} other {# варианта}}",
+    "userCount": "{count, plural, one {# пользователь} few {# пользователя} many {# пользователей} other {# пользователя}}"
   },
   "PrSharing": {
     "gymLabel": "Где ты установил этот PR?",

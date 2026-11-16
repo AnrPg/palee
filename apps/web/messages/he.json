@@ -233,11 +233,7 @@
     "archived": "בארכיון",
     "classTypes": "סוגי שיעורים",
     "selectedCount": "נבחרו {count}",
-    "selectedAthleteCount": "{count, plural, one {נבחר ספורטאי אחד} other {נבחרו # ספורטאים}}",
-    "roundCount": "{count, plural, one {סבב אחד} other {# סבבים}}",
-    "optionCount": "{count, plural, one {אפשרות אחת} other {# אפשרויות}}",
     "workoutCount": "{count, plural, one {אימון אחד} other {# אימונים}}",
-    "userCount": "{count, plural, one {משתמש אחד} other {# משתמשים}}",
     "executionNoteCount": "{count, plural, one {הערה אחת} other {# הערות}}",
     "executionScoreCount": "{count, plural, one {תוצאה אחת} other {# תוצאות}}",
     "clear": "ברור",
@@ -4972,7 +4968,11 @@
     "kpiRetirementStopped": "עצרו לפני הסוף",
     "kpiRetirementIdle": "נשארו לא פעילים",
     "apiErrorPackageRequired": "הזמנה במקום הזה דורשת חבילה. בחרו אחת בחבילות; אם משלמים בקבלה, אפשר להזמין שיעור אחד בזמן ההמתנה.",
-    "apiErrorDeclineReasonRequired": "כתבו למה הבקשה נדחית."
+    "apiErrorDeclineReasonRequired": "כתבו למה הבקשה נדחית.",
+    "selectedAthleteCount": "{count, plural, one {נבחר ספורטאי אחד} other {נבחרו # ספורטאים}}",
+    "roundCount": "{count, plural, one {סבב אחד} other {# סבבים}}",
+    "optionCount": "{count, plural, one {אפשרות אחת} other {# אפשרויות}}",
+    "userCount": "{count, plural, one {משתמש אחד} other {# משתמשים}}"
   },
   "PrSharing": {
     "gymLabel": "איפה קבעת את השיא הזה?",

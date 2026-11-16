@@ -233,11 +233,7 @@
     "archived": "archivé",
     "classTypes": "Types de cours",
     "selectedCount": "{count} sélectionné(s)",
-    "selectedAthleteCount": "{count, plural, one {# athlète sélectionné} other {# athlètes sélectionnés}}",
-    "roundCount": "{count, plural, one {# tour} other {# tours}}",
-    "optionCount": "{count, plural, one {# option} other {# options}}",
     "workoutCount": "{count, plural, one {# entraînement} other {# entraînements}}",
-    "userCount": "{count, plural, one {# utilisateur} other {# utilisateurs}}",
     "executionNoteCount": "{count, plural, one {# note} other {# notes}}",
     "executionScoreCount": "{count, plural, one {# score} other {# scores}}",
     "clear": "Effacer",
@@ -4972,7 +4968,11 @@
     "kpiRetirementStopped": "Arrêtés avant la fin",
     "kpiRetirementIdle": "Restés inactifs",
     "apiErrorPackageRequired": "Réserver dans cette box demande un forfait. Choisis-en un dans Forfaits ; si tu paies à l'accueil, tu peux réserver un cours pendant l'attente.",
-    "apiErrorDeclineReasonRequired": "Écris pourquoi la demande est refusée."
+    "apiErrorDeclineReasonRequired": "Écris pourquoi la demande est refusée.",
+    "selectedAthleteCount": "{count, plural, one {# athlète sélectionné} other {# athlètes sélectionnés}}",
+    "roundCount": "{count, plural, one {# tour} other {# tours}}",
+    "optionCount": "{count, plural, one {# option} other {# options}}",
+    "userCount": "{count, plural, one {# utilisateur} other {# utilisateurs}}"
   },
   "PrSharing": {
     "gymLabel": "Où as-tu réalisé ce PR ?",

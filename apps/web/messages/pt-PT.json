@@ -233,11 +233,7 @@
     "archived": "arquivado",
     "classTypes": "Tipos de aula",
     "selectedCount": "{count} selecionado",
-    "selectedAthleteCount": "{count, plural, one {# atleta selecionado} other {# atletas selecionados}}",
-    "roundCount": "{count, plural, one {# ronda} other {# rondas}}",
-    "optionCount": "{count, plural, one {# opção} other {# opções}}",
     "workoutCount": "{count, plural, one {# treino} other {# treinos}}",
-    "userCount": "{count, plural, one {# utilizador} other {# utilizadores}}",
     "executionNoteCount": "{count, plural, one {# nota} other {# notas}}",
     "executionScoreCount": "{count, plural, one {# pontuação} other {# pontuações}}",
     "clear": "Limpar",
@@ -4972,7 +4968,11 @@
     "kpiRetirementStopped": "Pararam antes do fim",
     "kpiRetirementIdle": "Ficaram inativos",
     "apiErrorPackageRequired": "Reservar nesta box exige um pacote. Escolhe um em Pacotes; se pagares na receção, podes reservar uma aula enquanto espera.",
-    "apiErrorDeclineReasonRequired": "Escreve porque o pedido é recusado."
+    "apiErrorDeclineReasonRequired": "Escreve porque o pedido é recusado.",
+    "selectedAthleteCount": "{count, plural, one {# atleta selecionado} other {# atletas selecionados}}",
+    "roundCount": "{count, plural, one {# ronda} other {# rondas}}",
+    "optionCount": "{count, plural, one {# opção} other {# opções}}",
+    "userCount": "{count, plural, one {# utilizador} other {# utilizadores}}"
   },
   "PrSharing": {
     "gymLabel": "Onde fizeste este PR?",

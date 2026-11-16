@@ -68,6 +68,8 @@ function isAllowedSharedValue(value) {
   return trimmed === ""
     || /^[A-Z0-9_+./ -]+$/.test(trimmed)
     || /^(?:Palee|Palee|CrossFit|Rx|Rx\+|AMRAP|EMOM|RFT|PR|URL|VAPID)$/i.test(trimmed)
+    // «Death by <movement>» is a WOD format name gyms use untranslated, like AMRAP / EMOM.
+    || /^Death by \p{L}+$/iu.test(trimmed)
     // DNS record type names, which providers show in English in every language.
     || /^(?:CNAME flattening|ALIAS|ANAME)(?:\s*\/\s*(?:CNAME flattening|ALIAS|ANAME))+$/.test(trimmed)
     || /^https?:\/\//.test(trimmed)

@@ -233,11 +233,7 @@
     "archived": "архивиран",
     "classTypes": "Видове занятия",
     "selectedCount": "{count} избрани",
-    "selectedAthleteCount": "{count, plural, one {Избран е # спортист} other {Избрани са # спортисти}}",
-    "roundCount": "{count, plural, one {# кръг} other {# кръга}}",
-    "optionCount": "{count, plural, one {# опция} other {# опции}}",
     "workoutCount": "{count, plural, one {# тренировка} other {# тренировки}}",
-    "userCount": "{count, plural, one {# потребител} other {# потребители}}",
     "executionNoteCount": "{count, plural, one {# бележка} other {# бележки}}",
     "executionScoreCount": "{count, plural, one {# резултат} other {# резултата}}",
     "clear": "ясно",
@@ -4972,7 +4968,11 @@
     "kpiRetirementStopped": "Спрели преди края",
     "kpiRetirementIdle": "Останали неактивни",
     "apiErrorPackageRequired": "Записването в този бокс изисква пакет. Избери един в Пакети; ако плащаш на рецепцията, можеш да запишеш един час, докато чака.",
-    "apiErrorDeclineReasonRequired": "Напиши защо заявката се отказва."
+    "apiErrorDeclineReasonRequired": "Напиши защо заявката се отказва.",
+    "selectedAthleteCount": "{count, plural, one {Избран е # спортист} other {Избрани са # спортисти}}",
+    "roundCount": "{count, plural, one {# кръг} other {# кръга}}",
+    "optionCount": "{count, plural, one {# опция} other {# опции}}",
+    "userCount": "{count, plural, one {# потребител} other {# потребители}}"
   },
   "PrSharing": {
     "gymLabel": "Къде постигна този рекорд?",
