@@ -21,6 +21,8 @@
 import { FLOWS, FLOW_KEYS, PRESETS, type PresetKey } from "@/lib/structured-plan/catalog";
 import type { PlanFlow } from "@/lib/structured-plan/types";
 
+import { LOCALE_WORDS } from "./locale-words";
+
 export type WodFormatTimer =
   | { kind: "none" }
   | { kind: "amrap"; durationSeconds: number | null }
@@ -164,9 +166,37 @@ function needsNumber(timer: WodFormatTimer) {
   }
 }
 
+/**
+ * The folded names a translated label gives: the whole label and each of its
+ * names («Σκάλα / πυραμίδα», «Pulserholung (HRR)»), never a short word alone.
+ */
+export function labelNames(label: string): string[] {
+  const parts = label.split(/\s*(?:\/|\(|\))\s*/u).map((part) => fold(part)).filter(Boolean);
+  return [fold(label), ...parts.filter((part) => part.length >= 5 || (parts.length === 1 && part.length >= 2))];
+}
+
+/** What coaches write for a format in the other languages (ADR-650): their own words, then the labels. */
+function localeNames(key: WodFormatKey): string[] {
+  return Object.values(LOCALE_WORDS).flatMap((words) => {
+    const label = words.labels[key];
+    return [...(words.names[key] ?? []), ...(label ? label.split(/\s*(?:\/|\(|\))\s*/u).filter((part) => part.trim().length >= 2) : [])];
+  });
+}
+
 function aliasesOf(key: WodFormatKey, base: string[]) {
-  const all = [...(TEXT_NAMES[key] ?? []), ...base.filter((alias) => !NOT_IN_TEXT.has(alias))];
-  return [...new Set(all.map(fold).filter(Boolean))];
+  const labels = Object.values(LOCALE_WORDS).flatMap((words) => (words.labels[key] ? labelNames(words.labels[key]!) : []));
+  const all = [...(TEXT_NAMES[key] ?? []), ...base.filter((alias) => !NOT_IN_TEXT.has(alias)), ...(Object.values(LOCALE_WORDS).flatMap((words) => words.names[key] ?? []))].map(fold);
+  return [...new Set([...all, ...labels].filter(Boolean))];
+}
+
+function namesOf(key: WodFormatKey) {
+  const seen = new Set<string>();
+  return [...(TEXT_NAMES[key] ?? []), ...localeNames(key)].filter((name) => {
+    const folded = fold(name);
+    if (seen.has(folded)) return false;
+    seen.add(folded);
+    return true;
+  });
 }
 
 function build(): WodFormat[] {
@@ -178,7 +208,7 @@ function build(): WodFormat[] {
       flow: key,
       labelKey: FLOWS[key].labelKey,
       aliases: aliasesOf(key, FLOWS[key].aliases),
-      names: TEXT_NAMES[key] ?? [],
+      names: namesOf(key),
       write: WRITE[key] ?? null,
       needsNumber: needsNumber(timer),
       timer,
@@ -192,7 +222,7 @@ function build(): WodFormat[] {
       flow: preset.flow,
       labelKey: preset.labelKey,
       aliases: aliasesOf(preset.key, preset.aliases),
-      names: TEXT_NAMES[preset.key] ?? [],
+      names: namesOf(preset.key),
       write: WRITE[preset.key] ?? null,
       needsNumber: needsNumber(timer),
       timer,
