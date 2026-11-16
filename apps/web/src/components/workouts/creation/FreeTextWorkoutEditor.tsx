@@ -65,7 +65,7 @@ import { editorSectionsFrom, SECTIONED_TEXT_MODE, sectionsToFreeText } from "@/l
 
 import { AssistantSwitch } from "./AssistantSwitch";
 import { DraftConflictNotice } from "./DraftConflictNotice";
-import { useEditorExerciseSuggestions } from "./EditorExerciseSuggestions";
+import { useEditorExerciseSuggestions, useExerciseSuggestKeys } from "./EditorExerciseSuggestions";
 import { applyExerciseLinks, ExerciseLink, ExerciseSuggestKeys } from "./exercise-link";
 import { ExerciseMatchesDialog } from "./ExerciseMatchesDialog";
 import { EditorTabs } from "./EditorTabs";
@@ -143,7 +143,7 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
   const formatLabels = useMemo(() => getFormatLabels(i18n), [i18n]);
   const loadedDraftRef = useRef<string | null>(null);
   /** ADR-570: the keys the open exercise suggestion list takes (Tab, ↑/↓, Enter, Esc). */
-  const suggestKeysRef = useRef<((event: KeyboardEvent) => boolean) | null>(null);
+  const suggestKeys = useExerciseSuggestKeys();
   /** ADR-570: the exercises found before publishing, waiting for the coach's answers. */
   const [matchCheck, setMatchCheck] = useState<{ matches: ExerciseMatch[]; busy: boolean; error: string | null } | null>(null);
 
@@ -166,7 +166,7 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
       FreeTextEditingAssist,
       AssistantHighlights.configure({ onOpen: setMarkClick }),
       ExerciseLink,
-      ExerciseSuggestKeys.configure({ handler: suggestKeysRef }),
+      ExerciseSuggestKeys.configure({ onKeyDown: suggestKeys.onKeyDown }),
     ],
     content: emptyDocument(),
     immediatelyRender: false,
@@ -294,7 +294,7 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
     applyWorkout(await fetchAdminWorkout(accessToken, draftId));
   }
 
-  const { menu: exerciseSuggestionMenu } = useEditorExerciseSuggestions(editor, suggestKeysRef);
+  const { menu: exerciseSuggestionMenu } = useEditorExerciseSuggestions(editor, suggestKeys.handlerRef);
 
   // ADR-181: the open issues' words are marked in the text, coloured by kind.
   const openIssueList = useMemo(() => (review ? openIssues(review) : []), [review]);

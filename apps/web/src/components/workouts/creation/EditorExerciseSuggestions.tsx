@@ -38,6 +38,17 @@ type Caret = { blockStart: number; pos: number; run: TextRun; text: string };
  * until it changes; a tap picks a name. Typing on simply ignores it. A name
  * from the catalog links its words to the exercise (`exerciseLink`).
  */
+/**
+ * The link between the editor's `ExerciseSuggestKeys` extension and the
+ * suggestion list: `onKeyDown` goes into the extension (it asks the newest
+ * handler on every key), `handlerRef` into `useEditorExerciseSuggestions`.
+ */
+export function useExerciseSuggestKeys() {
+  const handlerRef = useRef<((event: KeyboardEvent) => boolean) | null>(null);
+  const onKeyDown = useCallback((event: KeyboardEvent) => handlerRef.current?.(event) ?? false, []);
+  return { handlerRef, onKeyDown };
+}
+
 export function useEditorExerciseSuggestions(
   editor: Editor | null,
   handlerRef: MutableRefObject<((event: KeyboardEvent) => boolean) | null>,

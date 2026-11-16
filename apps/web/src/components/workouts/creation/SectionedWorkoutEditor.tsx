@@ -46,6 +46,8 @@ import { getFormatLabels, type SectionFormat, type WorkoutType } from "@/types/w
 import { AssistantSwitch } from "./AssistantSwitch";
 import { DraftConflictNotice } from "./DraftConflictNotice";
 import { EditorTabs } from "./EditorTabs";
+import { useEditorExerciseSuggestions, useExerciseSuggestKeys } from "./EditorExerciseSuggestions";
+import { ExerciseSuggestKeys } from "./exercise-link";
 import { SectionScoringField } from "./SectionScoringField";
 import { TimerChips } from "./TimerChips";
 import { WorkoutTypeSelect } from "@/components/workouts/WorkoutTypeSelect";
@@ -575,7 +577,7 @@ function SectionCard({
   );
 }
 
-function SectionTextEditor({
+export function SectionTextEditor({
   document,
   label,
   onChange,
@@ -585,11 +587,17 @@ function SectionTextEditor({
   onChange: (body: string, document: JSONContent) => void;
 }) {
   const i18n = useUiTranslations();
+  /** ADR-570: the keys the open exercise suggestion list takes (Tab, ↑/↓, Enter, Esc). */
+  const suggestKeys = useExerciseSuggestKeys();
   const editor = useEditor({
     extensions: [
       StarterKit.configure({ link: false, underline: false, heading: { levels: [3, 4] } }),
       Underline,
       Placeholder.configure({ placeholder: i18n("textSectionPlaceholder") }),
+      // The same exercise suggestions as the free-text editor. Without the
+      // assistant nothing parses the sections, so a picked name stays plain
+      // text (no `exerciseLink` mark, no confirmation before publishing).
+      ExerciseSuggestKeys.configure({ onKeyDown: suggestKeys.onKeyDown }),
     ],
     content: document,
     immediatelyRender: false,
@@ -606,7 +614,14 @@ function SectionTextEditor({
     onUpdate: ({ editor: current }) => onChange(current.getText({ blockSeparator: "\n" }), current.getJSON()),
   });
 
-  return <EditorContent editor={editor} />;
+  const { menu } = useEditorExerciseSuggestions(editor, suggestKeys.handlerRef);
+
+  return (
+    <>
+      <EditorContent editor={editor} />
+      {menu}
+    </>
+  );
 }
 
 function IconButton({
