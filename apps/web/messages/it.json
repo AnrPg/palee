@@ -18675,7 +18675,9 @@
     "group": {
       "mine": "Già scritti da te",
       "box": "Il tuo box",
-      "palee": "Palee"
+      "palee": "Palee",
+      "format": "Formato",
+      "formatFrequent": "Formato · lo usi spesso"
     },
     "keep": "Tieni «{text}» come l’ho scritto",
     "keepKey": "Esc",
@@ -20197,7 +20199,11 @@
     "remembered": "Il tuo box ha già detto sì",
     "answerFor": "Risposta per «{typed}»",
     "answerAll": "Rispondi a ogni riga per pubblicare.",
-    "failed": "Non siamo riusciti a salvare le risposte. Riprova."
+    "failed": "Non siamo riusciti a salvare le risposte. Riprova.",
+    "timerTitle": "Controlla il timer",
+    "timerDescription": "Il timer è stato impostato dal testo. È giusto?",
+    "timerFromText": "Timer dal testo:",
+    "timerChange": "Cambia"
   },
   "BoxOnMap": {
     "title": "Il tuo box non compare in Intorno a me",
@@ -20290,5 +20296,18 @@
     "stopFollowing": "Smetti anche di seguire",
     "stoppedFollowing": "{kind, select, coach {Non segui più il coach.} other {Non segui più il box.}}",
     "done": "OK"
+  },
+  "TextTimer": {
+    "fromText": "dal testo",
+    "change": "Cambia",
+    "found": "{count, plural, one {# trovato} other {# trovati}}",
+    "next": "Il prossimo",
+    "restore": "Dal testo: {timer}",
+    "oneTimer": "Il testo libero ha un solo timer. Dividilo in sezioni per un timer per sezione.",
+    "missingNumber": {
+      "amrap": "Aggiungi i minuti, es. «AMRAP 12», per impostare un timer.",
+      "emom": "Aggiungi i minuti, es. «EMOM 10» o «E2MOM 20», per impostare un timer.",
+      "intervals": "Aggiungi lavoro/recupero e round, es. «40/20 x 8», per impostare un timer."
+    }
   }
 }

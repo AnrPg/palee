@@ -18675,7 +18675,9 @@
     "group": {
       "mine": "Já escreveste",
       "box": "O teu box",
-      "palee": "Palee"
+      "palee": "Palee",
+      "format": "Formato",
+      "formatFrequent": "Formato · usas muitas vezes"
     },
     "keep": "Manter «{text}» como o escrevi",
     "keepKey": "Esc",
@@ -20197,7 +20199,11 @@
     "remembered": "A tua box já disse que sim",
     "answerFor": "Resposta para «{typed}»",
     "answerAll": "Responde a cada linha para publicar.",
-    "failed": "Não foi possível guardar as respostas. Tenta outra vez."
+    "failed": "Não foi possível guardar as respostas. Tenta outra vez.",
+    "timerTitle": "Verifica o cronómetro",
+    "timerDescription": "O cronómetro foi definido pelo texto. Está certo?",
+    "timerFromText": "Cronómetro do texto:",
+    "timerChange": "Alterar"
   },
   "BoxOnMap": {
     "title": "A tua box não aparece no Perto de mim",
@@ -20290,5 +20296,18 @@
     "stopFollowing": "Deixar também de seguir",
     "stoppedFollowing": "{kind, select, coach {Já não segues o coach.} other {Já não segues a box.}}",
     "done": "OK"
+  },
+  "TextTimer": {
+    "fromText": "do texto",
+    "change": "Alterar",
+    "found": "{count, plural, one {# encontrado} other {# encontrados}}",
+    "next": "O seguinte",
+    "restore": "Do texto: {timer}",
+    "oneTimer": "O texto livre tem um cronómetro. Divide-o em secções para um cronómetro por secção.",
+    "missingNumber": {
+      "amrap": "Acrescenta os minutos, p. ex. «AMRAP 12», para definir um cronómetro.",
+      "emom": "Acrescenta os minutos, p. ex. «EMOM 10» ou «E2MOM 20», para definir um cronómetro.",
+      "intervals": "Acrescenta esforço/descanso e rondas, p. ex. «40/20 x 8», para definir um cronómetro."
+    }
   }
 }

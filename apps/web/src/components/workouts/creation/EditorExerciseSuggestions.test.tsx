@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { EditorContent, useEditor, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { NextIntlClientProvider } from "next-intl";
@@ -21,7 +21,8 @@ import { ExerciseLink, ExerciseSuggestKeys } from "./exercise-link";
 import { SectionTextEditor } from "./SectionedWorkoutEditor";
 
 let freeText: Editor | null = null;
-function FreeTextHost() {
+const FORMATS = { formats: { frequent: [{ format: "amrap", duration_seconds: 720 } as const] } };
+function FreeTextHost({ formats = false }: { formats?: boolean }) {
   const keys = useExerciseSuggestKeys();
   const editor = useEditor({
     extensions: [StarterKit, ExerciseLink, ExerciseSuggestKeys.configure({ onKeyDown: keys.onKeyDown })],
@@ -31,7 +32,7 @@ function FreeTextHost() {
   useEffect(() => {
     freeText = editor;
   }, [editor]);
-  const { menu } = useEditorExerciseSuggestions(editor, keys.handlerRef);
+  const { menu } = useEditorExerciseSuggestions(editor, keys.handlerRef, formats ? FORMATS : undefined);
   return (
     <>
       <EditorContent editor={editor} />
@@ -87,6 +88,34 @@ describe("exercise suggestions in the WOD text editors (ADR-570)", () => {
     await screen.findByTestId("editor-exercise-suggestions");
     fireEvent.keyDown(editor.view.dom, { key: "Escape" });
     await waitFor(() => expect(screen.queryByTestId("editor-exercise-suggestions")).toBeNull());
+  });
+
+  it("offers WOD formats at the start of a line, the coach's most used first (ADR-650)", async () => {
+    render(withIntl(<FreeTextHost formats />));
+    await waitFor(() => expect(freeText).toBeTruthy());
+    const editor = freeText!;
+    fakeLayout(editor);
+    act(() => {
+      editor.chain().focus().insertContent("am").run();
+    });
+    const list = await screen.findByTestId("editor-exercise-suggestions");
+    const options = within(list).getAllByRole("option");
+    expect(options.map((option) => option.textContent)).toEqual(["AMRAP 12Μορφή · συχνό σου", "AMRAP Μορφή"]);
+    fireEvent.keyDown(editor.view.dom, { key: "Tab" });
+    expect(editor.getText()).toBe("AMRAP 12");
+    expect(JSON.stringify(editor.getJSON())).not.toContain("exerciseLink");
+  });
+
+  it("offers no formats in the middle of an exercise line", async () => {
+    render(withIntl(<FreeTextHost formats />));
+    await waitFor(() => expect(freeText).toBeTruthy());
+    const editor = freeText!;
+    fakeLayout(editor);
+    act(() => {
+      editor.chain().focus().insertContent("10 burpees then 5 back sq").run();
+    });
+    const list = await screen.findByTestId("editor-exercise-suggestions");
+    expect(within(list).queryByText("Μορφή")).toBeNull();
   });
 
   it("opens the same list in a text section (WOD assistant off), the picked name plain text", async () => {

@@ -18675,7 +18675,9 @@
     "group": {
       "mine": "كتبته من قبل",
       "box": "صالتك",
-      "palee": "Palee"
+      "palee": "Palee",
+      "format": "الصيغة",
+      "formatFrequent": "الصيغة · تستخدمها كثيرًا"
     },
     "keep": "أبقِ «{text}» كما كتبته",
     "keepKey": "Esc",
@@ -20197,7 +20199,11 @@
     "remembered": "قال صندوقك نعم من قبل",
     "answerFor": "الإجابة عن «{typed}»",
     "answerAll": "أجب عن كل سطر للنشر.",
-    "failed": "تعذّر حفظ إجاباتك. حاول مرة أخرى."
+    "failed": "تعذّر حفظ إجاباتك. حاول مرة أخرى.",
+    "timerTitle": "تحقق من المؤقت",
+    "timerDescription": "تم ضبط المؤقت من النص. هل هو صحيح؟",
+    "timerFromText": "المؤقت من النص:",
+    "timerChange": "تغيير"
   },
   "BoxOnMap": {
     "title": "صالتك لا تظهر في «حولي»",
@@ -20290,5 +20296,18 @@
     "stopFollowing": "أوقف المتابعة أيضًا",
     "stoppedFollowing": "{kind, select, coach {لم تعد تتابع المدرب.} other {لم تعد تتابع البوكس.}}",
     "done": "حسنًا"
+  },
+  "TextTimer": {
+    "fromText": "من النص",
+    "change": "تغيير",
+    "found": "{count, plural, zero {لم يُعثر على شيء} one {عُثر على واحد} two {عُثر على اثنين} few {عُثر على #} many {عُثر على #} other {عُثر على #}}",
+    "next": "التالي",
+    "restore": "من النص: {timer}",
+    "oneTimer": "للنص الحر مؤقت واحد. قسّمه إلى أقسام ليكون لكل قسم مؤقت.",
+    "missingNumber": {
+      "amrap": "أضف الدقائق، مثل «AMRAP 12»، لضبط مؤقت.",
+      "emom": "أضف الدقائق، مثل «EMOM 10» أو «E2MOM 20»، لضبط مؤقت.",
+      "intervals": "أضف العمل/الراحة والجولات، مثل «40/20 x 8»، لضبط مؤقت."
+    }
   }
 }

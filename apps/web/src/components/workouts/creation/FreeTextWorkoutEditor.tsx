@@ -56,8 +56,11 @@ import {
   FREE_TEXT_TIMER_METADATA_KEY,
   type FreeTextTimerPreset,
   parseFreeTextTimerPreset,
+  timerChipLabel,
 } from "@/lib/free-text-timer";
 import { getFormatLabels, type WorkoutType } from "@/types/workout";
+import { findTextTimers } from "@/lib/wod-formats/parse";
+import { effectiveTimer, FOLLOW_TEXT, loadTimerFrom, type TimerFrom } from "@/lib/wod-formats/text-timer";
 
 import { WodGoalsEditorPanel } from "@/components/wod-goals/WodGoalsEditorPanel";
 
@@ -78,6 +81,8 @@ import {
   type MarkClick,
 } from "./assistant-highlights";
 import { FreeTextTimerFields } from "./FreeTextTimerFields";
+import { TextTimerNote } from "./TextTimerNote";
+import { useFrequentTimers } from "./useFrequentTimers";
 
 import { FreeTextAnalysisPanel, IssueCard, type AnalysisStatus } from "./FreeTextAnalysisPanel";
 import { readToken } from "@/lib/theme";
@@ -137,15 +142,34 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
   const [openTab, setOpenTab] = useState<EditorTabKey | null>("details");
   /** ADR-181: the marked words clicked in the text, whose suggestions show above them. */
   const [markClick, setMarkClick] = useState<MarkClick | null>(null);
-  /** Optional timer the athlete gets pre-selected; kept in `workout_metadata`. */
-  const [timerPreset, setTimerPreset] = useState<FreeTextTimerPreset | null>(null);
+  /**
+   * Optional timer the athlete gets pre-selected; kept in `workout_metadata`.
+   * ADR-650: it follows the text («AMRAP 12» sets it) until the coach changes
+   * it by hand (`handTimer`).
+   */
+  const [handTimer, setHandTimer] = useState<FreeTextTimerPreset | null>(null);
+  const [timerFrom, setTimerFrom] = useState<TimerFrom>(FOLLOW_TEXT);
+  const textTimers = useMemo(() => findTextTimers(body), [body]);
+  const timerPreset = effectiveTimer(textTimers, timerFrom, handTimer, null);
+  const setTimerPreset = useCallback((preset: FreeTextTimerPreset | null) => {
+    setHandTimer(preset);
+    setTimerFrom({ from: "hand", pick: 0 });
+  }, []);
+  const frequentTimers = useFrequentTimers();
+  const suggestionOptions = useMemo(() => ({ formats: { frequent: frequentTimers } }), [frequentTimers]);
   const metadataRef = useRef<Record<string, unknown>>({});
   const formatLabels = useMemo(() => getFormatLabels(i18n), [i18n]);
   const loadedDraftRef = useRef<string | null>(null);
   /** ADR-570: the keys the open exercise suggestion list takes (Tab, ↑/↓, Enter, Esc). */
   const suggestKeys = useExerciseSuggestKeys();
   /** ADR-570: the exercises found before publishing, waiting for the coach's answers. */
-  const [matchCheck, setMatchCheck] = useState<{ matches: ExerciseMatch[]; busy: boolean; error: string | null } | null>(null);
+  /** ADR-650: the timer set from the text is confirmed in the same dialog (`timer`). */
+  const [matchCheck, setMatchCheck] = useState<{
+    matches: ExerciseMatch[];
+    timer: FreeTextTimerPreset | null;
+    busy: boolean;
+    error: string | null;
+  } | null>(null);
 
   const editor = useEditor({
     extensions: [
@@ -208,12 +232,15 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
       setReview(hasReview ? storedReview! : null);
       setAnalysisStatus(hasReview ? "ready" : "idle");
       metadataRef.current = workout.workout_metadata ?? {};
-      setTimerPreset(parseFreeTextTimerPreset(metadataRef.current[FREE_TEXT_TIMER_METADATA_KEY]));
+      const storedTimer = parseFreeTextTimerPreset(metadataRef.current[FREE_TEXT_TIMER_METADATA_KEY]);
       // ADR-180: a workout written in sections comes back as one text, a
       // heading per titled section; the assistant reads its timers from it.
       const fromSections =
         workout.authoring_mode === SECTIONED_TEXT_MODE ? sectionsToFreeText(editorSectionsFrom(workout, null)) : null;
       const nextBody = fromSections?.body ?? workout.free_text_body ?? "";
+      // ADR-650: a saved timer the text asks for keeps following the text; any other is the coach's own.
+      setHandTimer(storedTimer);
+      setTimerFrom(loadTimerFrom(nextBody, storedTimer, null));
       setBody(nextBody);
       editor.commands.setContent(fromSections?.document ?? workout.free_text_document ?? textToDocument(nextBody));
       setHtml(editor.getHTML());
@@ -294,7 +321,7 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
     applyWorkout(await fetchAdminWorkout(accessToken, draftId));
   }
 
-  const { menu: exerciseSuggestionMenu } = useEditorExerciseSuggestions(editor, suggestKeys.handlerRef);
+  const { menu: exerciseSuggestionMenu } = useEditorExerciseSuggestions(editor, suggestKeys.handlerRef, suggestionOptions);
 
   // ADR-181: the open issues' words are marked in the text, coloured by kind.
   const openIssueList = useMemo(() => (review ? openIssues(review) : []), [review]);
@@ -353,7 +380,7 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
     try {
       const payload = draftPayload();
       if (payload) await saver.saveNow(payload);
-      await decideExerciseMatches(accessToken, draftId, matchDecisions(groups, answers));
+      if (groups.length > 0) await decideExerciseMatches(accessToken, draftId, matchDecisions(groups, answers));
     } catch (error) {
       setMatchCheck({ ...matchCheck, busy: false, error: error instanceof DraftConflictError ? null : matchesT("failed") });
       return;
@@ -468,7 +495,9 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
 
     // ADR-570: the exercises the matcher finds in the saved text are confirmed
     // first. Nothing found, or the check unavailable, publishes as before.
+    // ADR-650: a timer the text set, and the coach never touched, is confirmed too.
     if (!options.matchesChecked) {
+      const textTimer = timerFrom.from === "text" ? timerPreset : null;
       let matches: ExerciseMatch[] = [];
       try {
         await saver.saveNow(payload);
@@ -479,8 +508,8 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
           return;
         }
       }
-      if (matches.length > 0) {
-        setMatchCheck({ matches, busy: false, error: null });
+      if (matches.length > 0 || textTimer) {
+        setMatchCheck({ matches, timer: textTimer, busy: false, error: null });
         setPublishing(false);
         return;
       }
@@ -619,6 +648,18 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
           </div>
         ) : null}
 
+        <div className="px-4 pt-2 empty:hidden">
+          <TextTimerNote
+            preset={timerPreset}
+            source={timerFrom}
+            found={textTimers}
+            formatLabels={formatLabels}
+            oneTimer
+            onChange={openTab === "timer" ? undefined : () => setOpenTab("timer")}
+            onRestore={() => setTimerFrom(FOLLOW_TEXT)}
+            onNext={() => setTimerFrom((source) => ({ from: "text", pick: source.pick + 1 }))}
+          />
+        </div>
         <div className="min-h-0 min-w-0 flex-1 overflow-auto overflow-x-clip">
           <EditorContent editor={editor} />
         </div>
@@ -626,6 +667,11 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
         {matchCheck ? (
           <ExerciseMatchesDialog
             matches={matchCheck.matches}
+            timer={matchCheck.timer ? timerChipLabel(matchCheck.timer, formatLabels[matchCheck.timer.format]) : null}
+            onChangeTimer={() => {
+              setMatchCheck(null);
+              setOpenTab("timer");
+            }}
             busy={matchCheck.busy}
             error={matchCheck.error}
             onBack={() => setMatchCheck(null)}
