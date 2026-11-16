@@ -20309,5 +20309,58 @@
       "emom": "Schreib die Minuten dazu, z. B. «EMOM 10» oder «E2MOM 20», damit ein Timer gesetzt wird.",
       "intervals": "Schreib Belastung/Pause und Runden, z. B. «40/20 x 8», damit ein Timer gesetzt wird."
     }
+  },
+  "WodFormatsHelp": {
+    "open": "Wie schreibe ich den Timer?",
+    "title": "Timer aus dem, was du schreibst",
+    "intro": "Schreib die Art des Trainings an den Anfang einer Zeile, und der Timer stellt sich von selbst ein. Du kannst ihn vor dem Veröffentlichen immer ändern.",
+    "howTitle": "So geht’s",
+    "step1": "Beginne eine neue Zeile mit dem Namen, z. B. AMRAP. Eine Liste mit Vorschlägen erscheint: Tippe auf den, den du willst.",
+    "step2": "Schreib direkt danach, wie viele Minuten: AMRAP 12.",
+    "step3": "Ein grünes Etikett ⏱ zeigt den Timer. Stimmt er nicht, tippe auf «Ändern».",
+    "tryTitle": "Probier es hier aus",
+    "tryLabel": "Schreib eine Zeile",
+    "tryPlaceholder": "z. B. EMOM 10",
+    "tryNothing": "Noch kein Timer. Beginne mit einem Namen aus den Beispielen unten.",
+    "tryNotAClock": "Diesen Namen kennt es, aber er stellt keinen Timer ein.",
+    "tryResult": "Timer",
+    "examplesTitle": "Beispiele",
+    "youWrite": "Du schreibst",
+    "itRuns": "Was der Timer macht",
+    "tryExample": "Ausprobieren",
+    "tipsTitle": "Gut zu wissen",
+    "tipMinutes": "Eine Zahl allein bedeutet Minuten: AMRAP 12 sind 12 Minuten.",
+    "tipSeconds": "Bei 40/20 sind die Zahlen Sekunden: 40 Arbeit, 20 Pause.",
+    "tipClock": "Du kannst eine Zeit auch mit Doppelpunkt schreiben: 1:30 sind anderthalb Minuten.",
+    "tipLanguages": "Schreib, wie es dir passt: auf Deutsch, auf Englisch oder in jeder Sprache, die Palee spricht.",
+    "tipOneTimer": "Freier Text hat einen Timer. Hat das WOD mehrere Teile mit eigener Zeit, teile es in Abschnitte.",
+    "tipCheck": "Vor dem Veröffentlichen fragen wir noch einmal, ob der Timer stimmt.",
+    "namesTitle": "Alle Namen, die es versteht",
+    "namesTimer": "Diese stellen einen Timer ein",
+    "namesNoTimer": "Diese werden verstanden, stellen aber keinen Timer ein",
+    "examples": {
+      "amrap": "AMRAP 12",
+      "emom": "EMOM 10",
+      "every": "Alle 2 Min x 5",
+      "forTime": "Auf Zeit",
+      "cap": "Auf Zeit, Zeitlimit 15",
+      "tabata": "Tabata",
+      "intervals": "40/20 x 8",
+      "deathBy": "Death by Burpees"
+    },
+    "explain": {
+      "amrap": "Zählt {time}. Du machst so viele Runden, wie du schaffst.",
+      "emom": "Alle {every} fängst du neu an, {rounds, plural, one {# Mal} other {# Mal}}. Insgesamt {total}.",
+      "emomOpen": "Alle {every} fängst du neu an.",
+      "forTime": "Zählt, wie lange du bis zum Ende brauchst.",
+      "forTimeCap": "Zählt, wie lange du bis zum Ende brauchst. Stoppt bei {time}.",
+      "intervals": "{work} Arbeit, {rest} Pause, {rounds, plural, one {# Mal} other {# Mal}}.",
+      "deathBy": "Alle {every} machst du eine Wiederholung mehr, bis du nicht mehr mitkommst."
+    },
+    "time": {
+      "min": "{count, plural, one {# Minute} other {# Minuten}}",
+      "sec": "{count, plural, one {# Sekunde} other {# Sekunden}}",
+      "minSec": "{min} {sec}"
+    }
   }
 }

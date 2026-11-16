@@ -28,7 +28,7 @@ describe("TextTimerNote (ADR-650)", () => {
     );
     expect(screen.getByTestId("text-timer-chip")).toHaveTextContent(/EMOM 10\s*· από το κείμενο/);
     expect(screen.getByText("βρέθηκαν 2")).toBeInTheDocument();
-    expect(screen.getByText(/Χώρισέ το σε τμήματα/)).toBeInTheDocument();
+    expect(screen.getByText(/Χώρισέ το σε ενότητες/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Αλλαγή" }));
     fireEvent.click(screen.getByRole("button", { name: "Το επόμενο" }));
     expect(onChange).toHaveBeenCalled();
@@ -72,5 +72,18 @@ describe("the publish dialog with a timer from the text (ADR-650, Ε1)", () => {
     expect(onConfirm).toHaveBeenCalledWith({});
     fireEvent.click(screen.getByRole("button", { name: "Αλλαγή" }));
     expect(onChangeTimer).toHaveBeenCalled();
+  });
+});
+
+describe("TextTimerNote help (ADR-650)", () => {
+  it("shows the help button whenever the note shows, and nothing when the text has no timer", () => {
+    const found = findTextTimers("AMRAP 12");
+    const help = <button type="button">help</button>;
+    const { rerender } = render(
+      withIntl(<TextTimerNote preset={found.timers[0]!.preset} source={{ from: "text", pick: 0 }} found={found} formatLabels={labels} oneTimer help={help} onRestore={vi.fn()} onNext={vi.fn()} />),
+    );
+    expect(screen.getByRole("button", { name: "help" })).toBeInTheDocument();
+    rerender(withIntl(<TextTimerNote preset={null} source={{ from: "text", pick: 0 }} found={findTextTimers("Back squat")} formatLabels={labels} oneTimer help={help} onRestore={vi.fn()} onNext={vi.fn()} />));
+    expect(screen.queryByRole("button", { name: "help" })).toBeNull();
   });
 });

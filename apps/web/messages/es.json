@@ -20309,5 +20309,58 @@
       "emom": "Añade los minutos, p. ej. «EMOM 10» o «E2MOM 20», para poner un temporizador.",
       "intervals": "Añade trabajo/descanso y rondas, p. ej. «40/20 x 8», para poner un temporizador."
     }
+  },
+  "WodFormatsHelp": {
+    "open": "¿Cómo escribo el temporizador?",
+    "title": "Temporizador a partir de lo que escribes",
+    "intro": "Escribe el tipo de entrenamiento al principio de una línea y el temporizador se pone solo. Siempre puedes cambiarlo antes de publicar.",
+    "howTitle": "Cómo funciona",
+    "step1": "Empieza una línea nueva con el nombre, por ejemplo AMRAP. Aparece una lista de sugerencias: toca la que quieras.",
+    "step2": "Justo después, escribe cuántos minutos: AMRAP 12.",
+    "step3": "Una etiqueta verde ⏱ muestra el temporizador. Si no es correcto, toca «Cambiar».",
+    "tryTitle": "Pruébalo aquí",
+    "tryLabel": "Escribe una línea",
+    "tryPlaceholder": "p. ej. EMOM 10",
+    "tryNothing": "Todavía no hay temporizador. Empieza con un nombre de los ejemplos de abajo.",
+    "tryNotAClock": "Este nombre se entiende, pero no pone un temporizador.",
+    "tryResult": "Temporizador",
+    "examplesTitle": "Ejemplos",
+    "youWrite": "Escribes",
+    "itRuns": "Qué hace el temporizador",
+    "tryExample": "Probar",
+    "tipsTitle": "Bueno saber",
+    "tipMinutes": "Un número solo son minutos: AMRAP 12 son 12 minutos.",
+    "tipSeconds": "En 40/20 los números son segundos: 40 de trabajo, 20 de descanso.",
+    "tipClock": "También puedes escribir un tiempo con dos puntos: 1:30 es un minuto y medio.",
+    "tipLanguages": "Escríbelo como prefieras: en español, en inglés o en cualquier idioma que hable Palee.",
+    "tipOneTimer": "El texto libre tiene un temporizador. Si el WOD tiene varias partes con su propio tiempo, divídelo en secciones.",
+    "tipCheck": "Antes de publicar te preguntamos otra vez si el temporizador es correcto.",
+    "namesTitle": "Todos los nombres que entiende",
+    "namesTimer": "Estos ponen un temporizador",
+    "namesNoTimer": "Estos se entienden, pero no ponen temporizador",
+    "examples": {
+      "amrap": "AMRAP 12",
+      "emom": "EMOM 10",
+      "every": "Cada 2 min x 5",
+      "forTime": "Por tiempo",
+      "cap": "Por tiempo, límite 15",
+      "tabata": "Tabata",
+      "intervals": "40/20 x 8",
+      "deathBy": "Death by burpees"
+    },
+    "explain": {
+      "amrap": "Cuenta {time}. Haces tantas rondas como puedas.",
+      "emom": "Cada {every} empiezas de nuevo, {rounds, plural, one {# vez} other {# veces}}. {total} en total.",
+      "emomOpen": "Cada {every} empiezas de nuevo.",
+      "forTime": "Cuenta cuánto tardas en terminar.",
+      "forTimeCap": "Cuenta cuánto tardas en terminar. Se para a los {time}.",
+      "intervals": "{work} de trabajo, {rest} de descanso, {rounds, plural, one {# vez} other {# veces}}.",
+      "deathBy": "Cada {every} haces una repetición más, hasta que no llegues."
+    },
+    "time": {
+      "min": "{count, plural, one {# minuto} other {# minutos}}",
+      "sec": "{count, plural, one {# segundo} other {# segundos}}",
+      "minSec": "{min} y {sec}"
+    }
   }
 }

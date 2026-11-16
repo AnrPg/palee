@@ -52,6 +52,23 @@ list of them, and additive changes.
   same rules; the timer button turns green with «· από το κείμενο».
   Sections have no publish dialog, so no Ε1 row there.
 
+### Help «Πώς γράφω το χρονόμετρο;» (2026-11-16)
+
+ANR asked for the list as a help box inside the text editors, written for
+coaches who are not at ease with computers or with reading tables. The help
+(`WodFormatsHelp.tsx`, a side panel, a bottom sheet on phones) has no table:
+three numbered steps, a box «Δοκίμασε εδώ» where a line is read by the same
+parser as the editor (green chip plus one plain sentence: «Μετράει 12 λεπτά.
+Κάνεις όσους γύρους προλάβεις.»), examples as «Γράφεις → Τι κάνει το
+χρονόμετρο» cards with «Δοκίμασέ το», a few tips, and every name it
+understands folded away at the end. The examples are messages of each
+language («Auf Zeit, Zeitlimit 15»), and a test reads each one in every
+language, so the help never promises what the editor does not do.
+
+It opens from: the timer tab of the free-text editor, next to the green
+chip (whenever the note shows), the suggestion list while it offers formats,
+and the timer panel of a text section.
+
 ## Consequences
 
 - Web only: the API stores the timer the editor sends, as before

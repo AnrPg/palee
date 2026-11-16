@@ -20309,5 +20309,58 @@
       "emom": "Aggiungi i minuti, es. «EMOM 10» o «E2MOM 20», per impostare un timer.",
       "intervals": "Aggiungi lavoro/recupero e round, es. «40/20 x 8», per impostare un timer."
     }
+  },
+  "WodFormatsHelp": {
+    "open": "Come scrivo il timer?",
+    "title": "Il timer da quello che scrivi",
+    "intro": "Scrivi il tipo di allenamento all’inizio di una riga e il timer si imposta da solo. Puoi sempre cambiarlo prima di pubblicare.",
+    "howTitle": "Come funziona",
+    "step1": "Inizia una nuova riga con il nome, per esempio AMRAP. Compare una lista di suggerimenti: tocca quello che vuoi.",
+    "step2": "Subito dopo, scrivi quanti minuti: AMRAP 12.",
+    "step3": "Un’etichetta verde ⏱ mostra il timer. Se non è giusto, tocca «Cambia».",
+    "tryTitle": "Prova qui",
+    "tryLabel": "Scrivi una riga",
+    "tryPlaceholder": "es. EMOM 10",
+    "tryNothing": "Ancora nessun timer. Inizia con un nome dagli esempi qui sotto.",
+    "tryNotAClock": "Questo nome è capito, ma non imposta un timer.",
+    "tryResult": "Timer",
+    "examplesTitle": "Esempi",
+    "youWrite": "Scrivi",
+    "itRuns": "Cosa fa il timer",
+    "tryExample": "Prova",
+    "tipsTitle": "Buono a sapersi",
+    "tipMinutes": "Un numero da solo sono minuti: AMRAP 12 sono 12 minuti.",
+    "tipSeconds": "In 40/20 i numeri sono secondi: 40 di lavoro, 20 di recupero.",
+    "tipClock": "Puoi scrivere un tempo anche con i due punti: 1:30 è un minuto e mezzo.",
+    "tipLanguages": "Scrivilo come preferisci: in italiano, in inglese o in qualsiasi lingua parli Palee.",
+    "tipOneTimer": "Il testo libero ha un solo timer. Se il WOD ha più parti con il loro tempo, dividilo in sezioni.",
+    "tipCheck": "Prima di pubblicare ti chiediamo di nuovo se il timer è giusto.",
+    "namesTitle": "Tutti i nomi che capisce",
+    "namesTimer": "Questi impostano un timer",
+    "namesNoTimer": "Questi sono capiti, ma non impostano un timer",
+    "examples": {
+      "amrap": "AMRAP 12",
+      "emom": "EMOM 10",
+      "every": "Ogni 2 min x 5",
+      "forTime": "Per tempo",
+      "cap": "Per tempo, limite 15",
+      "tabata": "Tabata",
+      "intervals": "40/20 x 8",
+      "deathBy": "Death by burpees"
+    },
+    "explain": {
+      "amrap": "Conta {time}. Fai quanti più round riesci.",
+      "emom": "Ogni {every} ricominci, {rounds, plural, one {# volta} other {# volte}}. {total} in tutto.",
+      "emomOpen": "Ogni {every} ricominci.",
+      "forTime": "Conta quanto ci metti a finire.",
+      "forTimeCap": "Conta quanto ci metti a finire. Si ferma a {time}.",
+      "intervals": "{work} di lavoro, {rest} di recupero, {rounds, plural, one {# volta} other {# volte}}.",
+      "deathBy": "Ogni {every} fai una ripetizione in più, finché non riesci più a stare al passo."
+    },
+    "time": {
+      "min": "{count, plural, one {# minuto} other {# minuti}}",
+      "sec": "{count, plural, one {# secondo} other {# secondi}}",
+      "minSec": "{min} e {sec}"
+    }
   }
 }

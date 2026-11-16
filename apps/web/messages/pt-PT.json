@@ -20309,5 +20309,58 @@
       "emom": "Acrescenta os minutos, p. ex. «EMOM 10» ou «E2MOM 20», para definir um cronómetro.",
       "intervals": "Acrescenta esforço/descanso e rondas, p. ex. «40/20 x 8», para definir um cronómetro."
     }
+  },
+  "WodFormatsHelp": {
+    "open": "Como escrevo o cronómetro?",
+    "title": "Cronómetro a partir do que escreves",
+    "intro": "Escreve o tipo de treino no início de uma linha e o cronómetro fica definido sozinho. Podes sempre alterá-lo antes de publicar.",
+    "howTitle": "Como funciona",
+    "step1": "Começa uma linha nova com o nome, por exemplo AMRAP. Aparece uma lista de sugestões: toca na que queres.",
+    "step2": "Logo a seguir, escreve quantos minutos: AMRAP 12.",
+    "step3": "Uma etiqueta verde ⏱ mostra o cronómetro. Se não estiver certo, toca em «Alterar».",
+    "tryTitle": "Experimenta aqui",
+    "tryLabel": "Escreve uma linha",
+    "tryPlaceholder": "p. ex. EMOM 10",
+    "tryNothing": "Ainda não há cronómetro. Começa com um nome dos exemplos abaixo.",
+    "tryNotAClock": "Este nome é entendido, mas não define um cronómetro.",
+    "tryResult": "Cronómetro",
+    "examplesTitle": "Exemplos",
+    "youWrite": "Escreves",
+    "itRuns": "O que faz o cronómetro",
+    "tryExample": "Experimentar",
+    "tipsTitle": "Bom saber",
+    "tipMinutes": "Um número sozinho são minutos: AMRAP 12 são 12 minutos.",
+    "tipSeconds": "Em 40/20 os números são segundos: 40 de trabalho, 20 de descanso.",
+    "tipClock": "Também podes escrever um tempo com dois pontos: 1:30 é um minuto e meio.",
+    "tipLanguages": "Escreve como preferires: em português, em inglês ou em qualquer língua que o Palee fale.",
+    "tipOneTimer": "O texto livre tem um cronómetro. Se o WOD tem várias partes com o seu próprio tempo, divide-o em secções.",
+    "tipCheck": "Antes de publicar perguntamos outra vez se o cronómetro está certo.",
+    "namesTitle": "Todos os nomes que entende",
+    "namesTimer": "Estes definem um cronómetro",
+    "namesNoTimer": "Estes são entendidos, mas não definem cronómetro",
+    "examples": {
+      "amrap": "AMRAP 12",
+      "emom": "EMOM 10",
+      "every": "A cada 2 min x 5",
+      "forTime": "Por tempo",
+      "cap": "Por tempo, limite 15",
+      "tabata": "Tabata",
+      "intervals": "40/20 x 8",
+      "deathBy": "Death by burpees"
+    },
+    "explain": {
+      "amrap": "Conta {time}. Fazes tantas rondas quantas conseguires.",
+      "emom": "A cada {every} começas de novo, {rounds, plural, one {# vez} other {# vezes}}. {total} no total.",
+      "emomOpen": "A cada {every} começas de novo.",
+      "forTime": "Conta quanto tempo demoras a terminar.",
+      "forTimeCap": "Conta quanto tempo demoras a terminar. Para aos {time}.",
+      "intervals": "{work} de trabalho, {rest} de descanso, {rounds, plural, one {# vez} other {# vezes}}.",
+      "deathBy": "A cada {every} fazes mais uma repetição, até já não conseguires acompanhar."
+    },
+    "time": {
+      "min": "{count, plural, one {# minuto} other {# minutos}}",
+      "sec": "{count, plural, one {# segundo} other {# segundos}}",
+      "minSec": "{min} e {sec}"
+    }
   }
 }

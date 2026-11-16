@@ -47,6 +47,7 @@ import { getFormatLabels, type SectionFormat, type WorkoutType } from "@/types/w
 import { AssistantSwitch } from "./AssistantSwitch";
 import { DraftConflictNotice } from "./DraftConflictNotice";
 import { EditorTabs } from "./EditorTabs";
+import { WodFormatsHelpButton } from "./WodFormatsHelp";
 import { useEditorExerciseSuggestions, useExerciseSuggestKeys } from "./EditorExerciseSuggestions";
 import { ExerciseSuggestKeys } from "./exercise-link";
 import { SectionScoringField } from "./SectionScoringField";
@@ -565,6 +566,7 @@ function SectionCard({
             formatLabels={formatLabels}
             oneTimer={false}
             showChip={false}
+            help={timerOpen ? null : <WodFormatsHelpButton />}
             onRestore={() => onChange({ timerFrom: FOLLOW_TEXT })}
             onNext={() => onChange({ timerFrom: { from: "text", pick: timerFrom.pick + 1 } })}
           />
@@ -582,6 +584,9 @@ function SectionCard({
               formatLabels={formatLabels}
               onChange={(preset) => onChange({ preset, timerFrom: { from: "hand", pick: 0 } })}
             />
+            <div className="mt-2">
+              <WodFormatsHelpButton />
+            </div>
           </div>
         ) : null}
         {scoringOpen || scoringInvalid ? (

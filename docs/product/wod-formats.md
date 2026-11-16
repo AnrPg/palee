@@ -7,6 +7,7 @@ Tabata stay untranslated. `catalog.test` checks that every key below exists in c
 
 The text editors (free text and text sections) offer every format while a coach types the start of a line,
 and set the timer for the ones that are a clock. A format is read only at the start of a line.
+Coaches see this list as the help «Πώς γράφω το χρονόμετρο;» in the editors (plain steps and examples, no table).
 Bare numbers: minutes after AMRAP, EMOM and a time cap; seconds in a work/rest pair.
 Every language Palee speaks is read (German «Auf Zeit, Zeitlimit 15», French «toutes les 2 min x 5», Russian «Каждую минуту 10», …): the translated names of the structured editor plus each language's words for rounds, «every», cap and units (`apps/web/src/lib/wod-formats/locale-words.ts`).
 

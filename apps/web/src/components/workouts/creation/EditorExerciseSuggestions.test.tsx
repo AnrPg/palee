@@ -116,6 +116,20 @@ describe("exercise suggestions in the WOD text editors (ADR-570)", () => {
     });
     const list = await screen.findByTestId("editor-exercise-suggestions");
     expect(within(list).queryByText("Μορφή")).toBeNull();
+    expect(within(list).queryByTestId("editor-suggestions-format-help")).toBeNull();
+  });
+
+  it("opens the formats help from the list while formats are offered (ADR-650)", async () => {
+    render(withIntl(<FreeTextHost formats />));
+    await waitFor(() => expect(freeText).toBeTruthy());
+    const editor = freeText!;
+    fakeLayout(editor);
+    act(() => {
+      editor.chain().focus().insertContent("em").run();
+    });
+    const list = await screen.findByTestId("editor-exercise-suggestions");
+    fireEvent.click(within(list).getByTestId("editor-suggestions-format-help"));
+    expect(await screen.findByTestId("wod-formats-help")).toHaveTextContent("Χρονόμετρο από αυτό που γράφεις");
   });
 
   it("opens the same list in a text section (WOD assistant off), the picked name plain text", async () => {

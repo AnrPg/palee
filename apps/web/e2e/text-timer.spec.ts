@@ -61,3 +61,31 @@ test("a section's text sets its timer, a change by hand wins, «Από το κε
   await expect(timer).toContainText("από το κείμενο");
   await expect.poll(() => sectionTimers(server.saves.at(-1))).toEqual([expect.objectContaining({ format: "amrap", duration_seconds: 720 })]);
 });
+
+test("«Πώς γράφω το χρονόμετρο;» opens the formats help, where a line can be tried", async ({ page }) => {
+  await stubCoach(page, sectionedDraft);
+  await page.route("**/api/**/admin/workouts/authoring-settings", (route) => json(route, { wod_assistant_enabled: false }));
+  await page.route("**/api/**/admin/workouts/frequent-timers", (route) => json(route, { presets: [] }));
+  await page.route("**/api/**/me/exercise-suggestions**", (route) => json(route, { groups: [] }));
+  await page.goto(`/admin/workouts/new?draft=${draftId}`);
+
+  const section = page.getByTestId("text-section").first();
+  const timer = section.getByTestId("section-timer-button");
+  await expect(timer).toBeVisible();
+  await expect(timer).toBeEnabled();
+  await timer.click();
+  const open = section.getByTestId("wod-formats-help-button");
+  await expect(open).toBeVisible();
+  await expect(open).toBeEnabled();
+  await open.click();
+
+  const help = page.getByTestId("wod-formats-help");
+  await expect(help).toBeVisible();
+  const input = help.getByTestId("wod-formats-help-try");
+  await expect(input).toBeVisible();
+  await input.fill("EMOM 10");
+  await expect(help.getByTestId("wod-formats-help-chip")).toContainText("EMOM");
+  await expect(help.getByTestId("wod-formats-help-result")).toContainText("10 φορές");
+  await page.keyboard.press("Escape");
+  await expect(help).toBeHidden();
+});

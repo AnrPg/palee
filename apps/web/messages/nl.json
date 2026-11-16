@@ -20309,5 +20309,58 @@
       "emom": "Voeg de minuten toe, bv. «EMOM 10» of «E2MOM 20», om een timer te zetten.",
       "intervals": "Voeg inspanning/rust en rondes toe, bv. «40/20 x 8», om een timer te zetten."
     }
+  },
+  "WodFormatsHelp": {
+    "open": "Hoe schrijf ik de timer?",
+    "title": "Timer uit wat je schrijft",
+    "intro": "Schrijf het soort training aan het begin van een regel, en de timer zet zichzelf. Je kunt hem voor het publiceren altijd wijzigen.",
+    "howTitle": "Zo werkt het",
+    "step1": "Begin een nieuwe regel met de naam, bijvoorbeeld AMRAP. Er verschijnt een lijst met suggesties: tik op de juiste.",
+    "step2": "Schrijf er direct achter hoeveel minuten: AMRAP 12.",
+    "step3": "Een groen label ⏱ toont de timer. Klopt hij niet, tik dan op «Wijzigen».",
+    "tryTitle": "Probeer het hier",
+    "tryLabel": "Schrijf een regel",
+    "tryPlaceholder": "bv. EMOM 10",
+    "tryNothing": "Nog geen timer. Begin met een naam uit de voorbeelden hieronder.",
+    "tryNotAClock": "Deze naam wordt begrepen, maar zet geen timer.",
+    "tryResult": "Timer",
+    "examplesTitle": "Voorbeelden",
+    "youWrite": "Je schrijft",
+    "itRuns": "Wat de timer doet",
+    "tryExample": "Probeer",
+    "tipsTitle": "Goed om te weten",
+    "tipMinutes": "Een getal alleen betekent minuten: AMRAP 12 is 12 minuten.",
+    "tipSeconds": "Bij 40/20 zijn de getallen seconden: 40 werk, 20 rust.",
+    "tipClock": "Je kunt een tijd ook met een dubbele punt schrijven: 1:30 is anderhalve minuut.",
+    "tipLanguages": "Schrijf het zoals jij wilt: in het Nederlands, in het Engels of in elke taal die Palee spreekt.",
+    "tipOneTimer": "Vrije tekst heeft één timer. Heeft de WOD meerdere delen met hun eigen tijd, splits hem dan in delen.",
+    "tipCheck": "Voor het publiceren vragen we nog een keer of de timer klopt.",
+    "namesTitle": "Alle namen die het begrijpt",
+    "namesTimer": "Deze zetten een timer",
+    "namesNoTimer": "Deze worden begrepen, maar zetten geen timer",
+    "examples": {
+      "amrap": "AMRAP 12",
+      "emom": "EMOM 10",
+      "every": "Elke 2 min x 5",
+      "forTime": "Voor tijd",
+      "cap": "Voor tijd, limiet 15",
+      "tabata": "Tabata",
+      "intervals": "40/20 x 8",
+      "deathBy": "Death by burpees"
+    },
+    "explain": {
+      "amrap": "Telt {time}. Je doet zoveel rondes als je kunt.",
+      "emom": "Elke {every} begin je opnieuw, {rounds, plural, one {# keer} other {# keer}}. {total} in totaal.",
+      "emomOpen": "Elke {every} begin je opnieuw.",
+      "forTime": "Telt hoe lang je nodig hebt om klaar te zijn.",
+      "forTimeCap": "Telt hoe lang je nodig hebt om klaar te zijn. Stopt bij {time}.",
+      "intervals": "{work} werk, {rest} rust, {rounds, plural, one {# keer} other {# keer}}.",
+      "deathBy": "Elke {every} doe je één herhaling meer, tot je het niet meer bijhoudt."
+    },
+    "time": {
+      "min": "{count, plural, one {# minuut} other {# minuten}}",
+      "sec": "{count, plural, one {# seconde} other {# seconden}}",
+      "minSec": "{min} {sec}"
+    }
   }
 }

@@ -82,6 +82,7 @@ import {
 } from "./assistant-highlights";
 import { FreeTextTimerFields } from "./FreeTextTimerFields";
 import { TextTimerNote } from "./TextTimerNote";
+import { WodFormatsHelpButton } from "./WodFormatsHelp";
 import { useFrequentTimers } from "./useFrequentTimers";
 
 import { FreeTextAnalysisPanel, IssueCard, type AnalysisStatus } from "./FreeTextAnalysisPanel";
@@ -156,7 +157,7 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
     setTimerFrom({ from: "hand", pick: 0 });
   }, []);
   const frequentTimers = useFrequentTimers();
-  const suggestionOptions = useMemo(() => ({ formats: { frequent: frequentTimers } }), [frequentTimers]);
+  const suggestionOptions = useMemo(() => ({ formats: { frequent: frequentTimers, freeText: true } }), [frequentTimers]);
   const metadataRef = useRef<Record<string, unknown>>({});
   const formatLabels = useMemo(() => getFormatLabels(i18n), [i18n]);
   const loadedDraftRef = useRef<string | null>(null);
@@ -615,6 +616,9 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
               <p className="mt-1 text-xs" style={{ color: "var(--muted)" }}>
                 {i18n("attachTimerHint")}
               </p>
+              <div className="mt-1">
+                <WodFormatsHelpButton freeText />
+              </div>
               {timerPreset ? (
                 <FreeTextTimerFields preset={timerPreset} formatLabels={formatLabels} onChange={setTimerPreset} />
               ) : null}
@@ -655,6 +659,7 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
             found={textTimers}
             formatLabels={formatLabels}
             oneTimer
+            help={<WodFormatsHelpButton freeText />}
             onChange={openTab === "timer" ? undefined : () => setOpenTab("timer")}
             onRestore={() => setTimerFrom(FOLLOW_TEXT)}
             onNext={() => setTimerFrom((source) => ({ from: "text", pick: source.pick + 1 }))}

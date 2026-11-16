@@ -20309,5 +20309,58 @@
       "emom": "Ajoute les minutes, p. ex. «EMOM 10» ou «E2MOM 20», pour régler un minuteur.",
       "intervals": "Ajoute effort/repos et tours, p. ex. «40/20 x 8», pour régler un minuteur."
     }
+  },
+  "WodFormatsHelp": {
+    "open": "Comment écrire le minuteur ?",
+    "title": "Le minuteur à partir de ce que tu écris",
+    "intro": "Écris le type d’entraînement au début d’une ligne, et le minuteur se règle tout seul. Tu peux toujours le modifier avant de publier.",
+    "howTitle": "Comment ça marche",
+    "step1": "Commence une nouvelle ligne par le nom, par exemple AMRAP. Une liste de suggestions apparaît : touche celle que tu veux.",
+    "step2": "Juste après, écris combien de minutes : AMRAP 12.",
+    "step3": "Une étiquette verte ⏱ montre le minuteur. S’il n’est pas bon, touche «Modifier».",
+    "tryTitle": "Essaie ici",
+    "tryLabel": "Écris une ligne",
+    "tryPlaceholder": "p. ex. EMOM 10",
+    "tryNothing": "Pas encore de minuteur. Commence par un nom des exemples plus bas.",
+    "tryNotAClock": "Ce nom est compris, mais il ne règle pas de minuteur.",
+    "tryResult": "Minuteur",
+    "examplesTitle": "Exemples",
+    "youWrite": "Tu écris",
+    "itRuns": "Ce que fait le minuteur",
+    "tryExample": "Essayer",
+    "tipsTitle": "Bon à savoir",
+    "tipMinutes": "Un nombre seul veut dire des minutes : AMRAP 12, c’est 12 minutes.",
+    "tipSeconds": "Dans 40/20, les nombres sont des secondes : 40 d’effort, 20 de repos.",
+    "tipClock": "Tu peux aussi écrire une durée avec deux-points : 1:30, c’est une minute et demie.",
+    "tipLanguages": "Écris comme tu veux : en français, en anglais ou dans toute langue que parle Palee.",
+    "tipOneTimer": "Le texte libre a un seul minuteur. Si le WOD a plusieurs parties avec leur propre temps, divise-le en parties.",
+    "tipCheck": "Avant de publier, on te demande encore une fois si le minuteur est bon.",
+    "namesTitle": "Tous les noms qu’il comprend",
+    "namesTimer": "Ceux-ci règlent un minuteur",
+    "namesNoTimer": "Ceux-ci sont compris, mais ne règlent pas de minuteur",
+    "examples": {
+      "amrap": "AMRAP 12",
+      "emom": "EMOM 10",
+      "every": "Toutes les 2 min x 5",
+      "forTime": "Pour le temps",
+      "cap": "Pour le temps, limite 15",
+      "tabata": "Tabata",
+      "intervals": "40/20 x 8",
+      "deathBy": "Death by burpees"
+    },
+    "explain": {
+      "amrap": "Compte {time}. Tu fais autant de tours que tu peux.",
+      "emom": "Toutes les {every}, tu recommences, {rounds, plural, one {# fois} other {# fois}}. {total} en tout.",
+      "emomOpen": "Toutes les {every}, tu recommences.",
+      "forTime": "Compte le temps qu’il te faut pour finir.",
+      "forTimeCap": "Compte le temps qu’il te faut pour finir. S’arrête à {time}.",
+      "intervals": "{work} d’effort, {rest} de repos, {rounds, plural, one {# fois} other {# fois}}.",
+      "deathBy": "Toutes les {every}, tu fais une répétition de plus, jusqu’à ne plus suivre."
+    },
+    "time": {
+      "min": "{count, plural, one {# minute} other {# minutes}}",
+      "sec": "{count, plural, one {# seconde} other {# secondes}}",
+      "minSec": "{min} {sec}"
+    }
   }
 }

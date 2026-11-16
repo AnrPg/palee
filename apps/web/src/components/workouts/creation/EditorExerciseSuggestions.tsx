@@ -13,6 +13,7 @@ import { fold, fuzzy } from "@/lib/structured-plan/fuzzy";
 import type { FreeTextTimerPreset } from "@/lib/free-text-timer";
 import { formatCompletions } from "@/lib/wod-formats/complete";
 
+import { WodFormatsHelp } from "./WodFormatsHelp";
 import { EXERCISE_LINK, exerciseGhostKey, type ExerciseGhost } from "./exercise-link";
 
 const MAX_ITEMS = 6;
@@ -37,7 +38,7 @@ type Caret = { blockStart: number; pos: number; offset: number; run: TextRun | n
 
 export type EditorSuggestionOptions = {
   /** ADR-650: offer WOD formats at the start of a line, the coach's most used timers first. */
-  formats?: { frequent: FreeTextTimerPreset[] } | null;
+  formats?: { frequent: FreeTextTimerPreset[]; freeText?: boolean } | null;
 };
 
 /**
@@ -66,6 +67,8 @@ export function useEditorExerciseSuggestions(
   options: EditorSuggestionOptions = {},
 ) {
   const t = useTranslations("ExerciseNameInput");
+  const helpT = useTranslations("WodFormatsHelp");
+  const [helpOpen, setHelpOpen] = useState(false);
   const listId = useId();
   const [caret, setCaret] = useState<Caret | null>(null);
   // The highlighted name of one list; a new list starts at its first name, not yet chosen with the arrows.
@@ -234,15 +237,37 @@ export function useEditorExerciseSuggestions(
                 </span>
               </div>
             ))}
-            <div className="px-3 pb-1 pt-1 text-[11px]" style={{ color: "var(--muted)" }}>
-              {t("editorHint")}
+            <div className="flex flex-wrap items-center justify-between gap-x-3 px-3 pb-1 pt-1 text-[11px]" style={{ color: "var(--muted)" }}>
+              <span>{t("editorHint")}</span>
+              {items.some((item) => item.source === "format" || item.source === "format_frequent") ? (
+                // ADR-650: what the formats are, without leaving the text.
+                <button
+                  type="button"
+                  className="min-h-8 font-bold underline underline-offset-2"
+                  style={{ color: "var(--primary)" }}
+                  onMouseDown={(event) => event.preventDefault()}
+                  onClick={() => setHelpOpen(true)}
+                  data-testid="editor-suggestions-format-help"
+                >
+                  {helpT("open")}
+                </button>
+              ) : null}
             </div>
           </div>,
           document.body,
         )
       : null;
 
-  return { menu, open };
+  const help = helpOpen ? <WodFormatsHelp freeText={formats?.freeText ?? false} onClose={() => setHelpOpen(false)} /> : null;
+  return {
+    menu: (
+      <>
+        {menu}
+        {help}
+      </>
+    ),
+    open,
+  };
 }
 
 /** The words before the caret in its text block, as a run to suggest for (or null). */

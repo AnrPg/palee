@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import type { ReactNode } from "react";
 
 import { timerChipLabel, type FreeTextTimerPreset } from "@/lib/free-text-timer";
 import type { TextTimers } from "@/lib/wod-formats/parse";
@@ -21,6 +22,8 @@ type Props = {
   onNext: () => void;
   /** False where the timer button itself already shows the timer (text sections). */
   showChip?: boolean;
+  /** «Πώς γράφω το χρονόμετρο;», shown whenever the note is. */
+  help?: ReactNode;
 };
 
 /**
@@ -30,7 +33,7 @@ type Props = {
  * 2» and «Το επόμενο». A format missing its number: how to complete it.
  * Shows nothing when the text says nothing about a timer.
  */
-export function TextTimerNote({ preset, source, found, formatLabels, oneTimer, onChange, onRestore, onNext, showChip = true }: Props) {
+export function TextTimerNote({ preset, source, found, formatLabels, oneTimer, onChange, onRestore, onNext, showChip = true, help }: Props) {
   const t = useTranslations("TextTimer");
   const fromText = source.from === "text" && preset !== null && found.timers.length > 0;
   const textHasTimer = found.timers.length > 0;
@@ -83,6 +86,7 @@ export function TextTimerNote({ preset, source, found, formatLabels, oneTimer, o
             {t("restore", { timer: label(picked.preset) })}
           </button>
         ) : null}
+        {help}
       </div>
       {fromText && oneTimer && found.timers.length > 1 ? (
         <p className="rounded-lg px-2 py-1" style={warning}>

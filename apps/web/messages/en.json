@@ -20309,5 +20309,58 @@
       "emom": "Add the minutes, e.g. «EMOM 10» or «E2MOM 20», to set a timer.",
       "intervals": "Add work/rest and rounds, e.g. «40/20 x 8», to set a timer."
     }
+  },
+  "WodFormatsHelp": {
+    "open": "How do I write the timer?",
+    "title": "Timer from what you write",
+    "intro": "Write the kind of workout at the start of a line, and the timer sets itself. You can always change it before you publish.",
+    "howTitle": "How it works",
+    "step1": "Start a new line with the name, for example AMRAP. A list of suggestions appears: tap the one you want.",
+    "step2": "Right after it, write how many minutes: AMRAP 12.",
+    "step3": "A green label ⏱ shows the timer. If it is not right, tap «Change».",
+    "tryTitle": "Try it here",
+    "tryLabel": "Write a line",
+    "tryPlaceholder": "e.g. EMOM 10",
+    "tryNothing": "No timer yet. Start with a name from the examples below.",
+    "tryNotAClock": "This name is understood, but it does not set a timer.",
+    "tryResult": "Timer",
+    "examplesTitle": "Examples",
+    "youWrite": "You write",
+    "itRuns": "What the timer does",
+    "tryExample": "Try it",
+    "tipsTitle": "Good to know",
+    "tipMinutes": "A number on its own means minutes: AMRAP 12 is 12 minutes.",
+    "tipSeconds": "In 40/20 the numbers are seconds: 40 of work, 20 of rest.",
+    "tipClock": "You can also write a time with a colon: 1:30 is a minute and a half.",
+    "tipLanguages": "Write it the way you like: in English, in Greek or in any language Palee speaks.",
+    "tipOneTimer": "Free text has one timer. If the WOD has several parts with their own time, split it into sections.",
+    "tipCheck": "Before you publish, we ask once more whether the timer is right.",
+    "namesTitle": "All the names it understands",
+    "namesTimer": "These set a timer",
+    "namesNoTimer": "These are understood, but do not set a timer",
+    "examples": {
+      "amrap": "AMRAP 12",
+      "emom": "EMOM 10",
+      "every": "Every 2 min x 5",
+      "forTime": "For Time",
+      "cap": "For Time, cap 15",
+      "tabata": "Tabata",
+      "intervals": "40/20 x 8",
+      "deathBy": "Death by burpees"
+    },
+    "explain": {
+      "amrap": "Counts {time}. You do as many rounds as you can.",
+      "emom": "Every {every} you start again, {rounds, plural, one {# time} other {# times}}. {total} in all.",
+      "emomOpen": "Every {every} you start again.",
+      "forTime": "Counts how long you take to finish.",
+      "forTimeCap": "Counts how long you take to finish. Stops at {time}.",
+      "intervals": "{work} of work, {rest} of rest, {rounds, plural, one {# time} other {# times}}.",
+      "deathBy": "Every {every} you do one more rep, until you can no longer keep up."
+    },
+    "time": {
+      "min": "{count, plural, one {# minute} other {# minutes}}",
+      "sec": "{count, plural, one {# second} other {# seconds}}",
+      "minSec": "{min} {sec}"
+    }
   }
 }
