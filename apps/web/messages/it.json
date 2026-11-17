@@ -4669,6 +4669,10 @@
     "lvlNameRequired": "Ogni livello ha bisogno di un nome.",
     "apiErrorRenewalTurnedOff": "Il membro del box ha disattivato il rinnovo automatico, quindi non si può emettere una fattura di rinnovo.",
     "apiErrorMemberLeaving": "Questo membro del box lascia il box.",
+    "apiErrorSubscriptionNotRemovable": "Questo pacchetto non può più essere rimosso.",
+    "apiErrorInvoiceChoiceRequired": "Scegli se la fattura non pagata viene annullata o resta dovuta.",
+    "apiErrorWriteOffNotAllowed": "Solo chi gestisce la fatturazione può annullare un debito.",
+    "apiErrorRemovalNotUndoable": "La rimozione non può più essere annullata.",
     "apiErrorRenewalChoiceNotAllowed": "Questo pacchetto non ha un rinnovo automatico da modificare.",
     "apiErrorSubscriptionEnded": "Questo pacchetto è già terminato.",
     "apiErrorNotLeaving": "Questo membro del box non sta lasciando il box.",
@@ -20362,5 +20366,28 @@
       "sec": "{count, plural, one {# secondo} other {# secondi}}",
       "minSec": "{min} e {sec}"
     }
+  },
+  "PackageRemoval": {
+    "open": "Rimuovi pacchetto…",
+    "title": "Rimuovere «{package}»?",
+    "titleLoading": "Rimuovi pacchetto",
+    "loading": "Caricamento…",
+    "fromToday": "Da oggi non ha un pacchetto e non prenota nuove lezioni. Resta nel box com'è.",
+    "bookings": "{count, plural, one {Tra un minuto la sua prossima prenotazione viene annullata e viene avvisato.} other {Tra un minuto le sue # prossime prenotazioni vengono annullate e viene avvisato.}}",
+    "unpaidTitle": "Fattura non pagata {amount}",
+    "choiceVoid": "Annullala: non la dovrà",
+    "choiceKeep": "Resta dovuta",
+    "unpaidStays": "I {amount} non pagati restano dovuti, con promemoria.",
+    "restStays": "I {amount} rimanenti restano dovuti.",
+    "paidStays": "Ha pagato {amount}. Il pagamento resta.",
+    "refund": "Rimborsa…",
+    "nothingOpen": "Non c'è nulla di aperto per questo pacchetto.",
+    "reason": "Motivo (facoltativo)",
+    "shareReason": "Il membro lo vede nella notifica",
+    "cancel": "Annulla",
+    "confirm": "Rimuovi pacchetto",
+    "removing": "Rimozione…",
+    "removed": "«{package}» è stato rimosso a {name}.",
+    "undo": "Annulla"
   }
 }

@@ -8775,6 +8775,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/finance/members/{id}/package-removals/{removal_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Undo a package removal while its minute is open (ADR-660) */
+        delete: operations["PaleeWeb.AdminFinanceController.undo_package_removal"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/finance/members/{id}/packages": {
         parameters: {
             query?: never;
@@ -8905,6 +8922,24 @@ export interface paths {
         /** Turn a member's subscription renewal on or off (ADR-220) */
         put: operations["PaleeWeb.AdminFinanceController.set_member_auto_renew"];
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/finance/members/{id}/subscriptions/{subscription_id}/removal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** What removing a member's package would do (ADR-660): unpaid invoices, money kept, bookings */
+        get: operations["PaleeWeb.AdminFinanceController.package_removal_preview"];
+        put?: never;
+        /** Remove a member's package completely from today (ADR-660); undone within a minute, then settled */
+        post: operations["PaleeWeb.AdminFinanceController.remove_package"];
         delete?: never;
         options?: never;
         head?: never;
@@ -102569,6 +102604,46 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminFinanceController.undo_package_removal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                removal_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removal */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        removal: {
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string|null} */
+                            invoice_choice?: "void" | "keep" | null;
+                            package_name: string;
+                            /** Format: date */
+                            removed_on: string;
+                            /** Format: uuid */
+                            subscription_id: string;
+                            /** Format: date-time */
+                            undo_until: string;
+                            /** Format: date-time */
+                            undone_at?: string | null;
+                            voided_invoice_count?: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminFinanceController.assign_package": {
         parameters: {
             query?: never;
@@ -102862,6 +102937,97 @@ export interface operations {
                 content: {
                     "application/json": {
                         [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminFinanceController.package_removal_preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                subscription_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removal preview */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        removal: {
+                            currency?: string | null;
+                            kept_owed_cents: number;
+                            may_write_off: boolean;
+                            package_name: string;
+                            paid_cents: number;
+                            undo_seconds: number;
+                            untouched_invoices: {
+                                currency?: string | null;
+                                /** Format: date */
+                                due_date?: string | null;
+                                /** Format: uuid */
+                                id?: string;
+                                total_cents?: number;
+                            }[];
+                            upcoming_bookings: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminFinanceController.remove_package": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                subscription_id: string;
+            };
+            cookie?: never;
+        };
+        /** @description Removal */
+        requestBody?: {
+            content: {
+                "application/json": {
+                    /** @enum {string|null} */
+                    invoice_choice?: "void" | "keep" | null;
+                    reason?: string | null;
+                    reason_shared?: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Removal */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        removal: {
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string|null} */
+                            invoice_choice?: "void" | "keep" | null;
+                            package_name: string;
+                            /** Format: date */
+                            removed_on: string;
+                            /** Format: uuid */
+                            subscription_id: string;
+                            /** Format: date-time */
+                            undo_until: string;
+                            /** Format: date-time */
+                            undone_at?: string | null;
+                            voided_invoice_count?: number;
+                        };
                     };
                 };
             };

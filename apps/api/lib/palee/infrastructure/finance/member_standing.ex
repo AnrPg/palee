@@ -162,6 +162,7 @@ defmodule Palee.Infrastructure.Finance.MemberStanding do
       ends_on: subscription.ends_on,
       price_cents_snapshot: subscription.price_cents_snapshot,
       package_type: PackageContract.type_from_params(subscription.params_snapshot || %{}),
+      removed_on: subscription.removed_on,
       renews?: SubscriptionCharges.renews?(subscription, membership),
       period_last_day:
         if(SubscriptionCharges.period_months(subscription.billing_period_snapshot),

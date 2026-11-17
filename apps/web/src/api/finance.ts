@@ -213,6 +213,58 @@ export async function undoFinanceMemberLeft(token: string, userId: string) {
   return apiRequest<{ membership: FinanceRecord }>(`/admin/finance/members/${userId}/leave`, { method: "DELETE", token });
 }
 
+/** ADR-660: what removing a member's package would touch. */
+export type PackageRemovalPreview = {
+  package_name: string;
+  untouched_invoices: { id: string; total_cents: number; currency?: string | null; due_date?: string | null }[];
+  kept_owed_cents: number;
+  paid_cents: number;
+  currency?: string | null;
+  upcoming_bookings: number;
+  /** Whether this staff member may cancel the unpaid invoice (manage billing). */
+  may_write_off: boolean;
+  undo_seconds: number;
+};
+
+export type PackageRemoval = {
+  id: string;
+  subscription_id: string;
+  package_name: string;
+  removed_on: string;
+  invoice_choice: "void" | "keep" | null;
+  voided_invoice_count: number;
+  undo_until: string;
+  undone_at?: string | null;
+};
+
+export async function fetchPackageRemovalPreview(token: string, userId: string, subscriptionId: string) {
+  return apiRequest<{ removal: PackageRemovalPreview }>(
+    `/admin/finance/members/${userId}/subscriptions/${encodeURIComponent(subscriptionId)}/removal`,
+    { token },
+  );
+}
+
+/** ADR-660: removes the package from today; it can be undone until `undo_until`. */
+export async function removeFinancePackage(
+  token: string,
+  userId: string,
+  subscriptionId: string,
+  body: { invoice_choice?: "void" | "keep"; reason?: string; reason_shared?: boolean },
+) {
+  return apiRequest<{ removal: PackageRemoval }>(
+    `/admin/finance/members/${userId}/subscriptions/${encodeURIComponent(subscriptionId)}/removal`,
+    { method: "POST", token, body },
+  );
+}
+
+/** ADR-660: «Αναίρεση» while the removal's minute is open. */
+export async function undoPackageRemoval(token: string, userId: string, removalId: string) {
+  return apiRequest<{ removal: PackageRemoval }>(
+    `/admin/finance/members/${userId}/package-removals/${encodeURIComponent(removalId)}`,
+    { method: "DELETE", token },
+  );
+}
+
 export async function assignFinancePackage(token: string, userId: string, body: FinanceRecord) {
   return apiRequest<{ package_subscription: FinanceRecord }>(`/admin/finance/members/${userId}/packages`, {
     method: "POST",

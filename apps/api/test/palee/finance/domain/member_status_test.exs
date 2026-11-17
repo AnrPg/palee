@@ -35,6 +35,30 @@ defmodule Palee.Finance.Domain.MemberStatusTest do
 
   defp derive(overrides \\ %{}), do: MemberStatus.derive(facts(overrides))
 
+  test "ADR-660: a removed last package reads «Χωρίς πακέτο» and gives no access" do
+    removed = subscription(%{status: "cancelled", ends_on: ~D[2026-11-28], removed_on: @today})
+
+    assert %{status: "no_package", lifecycle: "expired"} =
+             derive(%{subscriptions: [removed]})
+
+    # An older package that ended before the removal does not change that.
+    old = subscription(%{starts_on: ~D[2026-08-01], ends_on: ~D[2026-08-31]})
+
+    assert %{status: "no_package", lifecycle: "expired"} =
+             derive(%{subscriptions: [old, removed]})
+
+    # Another package still running decides the status.
+    assert %{status: "active", lifecycle: "active"} =
+             derive(%{subscriptions: [subscription(), removed]})
+
+    # Free access the box gave still opens access without the package.
+    assert %{status: "comped"} =
+             derive(%{
+               subscriptions: [removed],
+               entitlement: %{status: "active", source: "staff_free_access"}
+             })
+  end
+
   test "ADR-612: free access the box gave, without a package, is comped" do
     assert %{status: "comped"} =
              derive(%{

@@ -60,7 +60,9 @@ defmodule Palee.Finance.Domain.MemberStatus do
     * `:left_at`, `:leaving_on`: the membership's leaving (ADR-220);
     * `:subscriptions`: every subscription of the membership (maps with
       `:status`, `:starts_on`, `:ends_on`, `:price_cents_snapshot`,
-      `:package_type`, `:renews?` and `:period_last_day`);
+      `:package_type`, `:renews?`, `:period_last_day` and, ADR-660,
+      `:removed_on`: a package staff removed counts for nothing, and when it
+      was the last one the member reads «Χωρίς πακέτο» with no access);
     * `:frozen?`: a freeze covers today;
     * `:grace_days`: the box's slack after a subscription ends;
     * `:entitlement`: `%{status, source}` from `InvoiceLifecycle.entitlement/1`;
@@ -72,9 +74,12 @@ defmodule Palee.Finance.Domain.MemberStatus do
   def derive(facts) do
     today = Map.fetch!(facts, :today)
     # A subscription that has not begun says nothing yet about today.
-    subscriptions = facts |> Map.get(:subscriptions, []) |> Enum.filter(&started?(&1, today))
+    # ADR-660: a package staff removed gave nothing from that day on.
+    {removed, held} = facts |> Map.get(:subscriptions, []) |> Enum.split_with(&removed?/1)
+    subscriptions = Enum.filter(held, &started?(&1, today))
     current = current_subscription(subscriptions, today)
     base = base_status(current)
+    package_removed? = current == nil and removed_last?(removed, subscriptions)
 
     status =
       cond do
@@ -82,6 +87,8 @@ defmodule Palee.Finance.Domain.MemberStatus do
         leaving?(facts, today) -> "leaving"
         # ADR-612: access without a package that the box gave.
         current == nil and staff_free_access?(facts) -> "comped"
+        # ADR-660: «Χωρίς πακέτο», and no access with it (lifecycle below).
+        package_removed? -> "no_package"
         subscriptions == [] -> no_package_status(facts, today)
         current == nil -> "expired"
         current.status == "paused" or Map.get(facts, :frozen?, false) -> "paused"
@@ -91,7 +98,27 @@ defmodule Palee.Finance.Domain.MemberStatus do
         true -> base
       end
 
-    %{status: status, lifecycle: lifecycle(status, base, current, subscriptions, facts, today)}
+    lifecycle =
+      if package_removed? and status == "no_package",
+        do: "expired",
+        else: lifecycle(status, base, current, subscriptions, facts, today)
+
+    %{status: status, lifecycle: lifecycle}
+  end
+
+  defp removed?(subscription), do: match?(%Date{}, Map.get(subscription, :removed_on))
+
+  # The removal is the last thing that happened to the member's packages:
+  # nothing they still hold ended after it.
+  defp removed_last?([], _held), do: false
+
+  defp removed_last?(removed, held) do
+    removed_on = removed |> Enum.map(& &1.removed_on) |> Enum.max(Date)
+
+    Enum.all?(held, fn subscription ->
+      match?(%Date{}, subscription.ends_on) and
+        Date.compare(subscription.ends_on, removed_on) == :lt
+    end)
   end
 
   @doc """

@@ -3713,6 +3713,13 @@ defmodule PaleeWeb.FallbackController do
     class_paused: {:conflict, "Booking for this class is paused"},
     class_has_bookings: {:conflict, "This class has bookings. Cancel it instead"},
     not_a_client: {:unprocessable_entity, "That person is not a member or athlete here"},
+    # ADR-660: «Αφαίρεση πακέτου».
+    subscription_not_removable: {:conflict, "This package can no longer be removed"},
+    invoice_choice_required:
+      {:unprocessable_entity, "Choose whether the unpaid invoice is cancelled or stays owed"},
+    invalid_invoice_choice: {:unprocessable_entity, "Choose void or keep for the unpaid invoice"},
+    write_off_not_allowed: {:forbidden, "Only staff who manage billing can cancel a debt"},
+    removal_not_undoable: {:conflict, "The removal can no longer be undone"},
     only_athletes_self_assigned: {:unprocessable_entity, "Coaches can take athletes only"},
     not_your_client: {:forbidden, "Not one of your clients"},
     # ADR-395: what a coach may choose the client's fitness card shows.

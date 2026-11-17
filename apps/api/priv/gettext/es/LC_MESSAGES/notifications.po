@@ -950,3 +950,13 @@ msgstr "Elige un paquete"
 
 msgid "%{box} now takes bookings with a package. You can keep booking until %{date}."
 msgstr "%{box} ahora acepta reservas solo con paquete. Puedes reservar hasta el %{date}."
+
+# ADR-660: staff removed the member's package.
+msgid "%{box} removed your package %{package}."
+msgstr "%{box} ha quitado tu paquete %{package}."
+
+msgid "Reason: %{reason}"
+msgstr "Motivo: %{reason}"
+
+msgid "Your package was removed"
+msgstr "Se ha quitado tu paquete"

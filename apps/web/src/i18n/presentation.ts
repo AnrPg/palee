@@ -452,6 +452,12 @@ const API_ERROR_KEYS: Record<string, string> = {
   // ADR-220: renewal choice and leaving the box.
   renewal_turned_off: "apiErrorRenewalTurnedOff",
   member_leaving: "apiErrorMemberLeaving",
+  // ADR-660: «Αφαίρεση πακέτου».
+  subscription_not_removable: "apiErrorSubscriptionNotRemovable",
+  invoice_choice_required: "apiErrorInvoiceChoiceRequired",
+  invalid_invoice_choice: "apiErrorInvoiceChoiceRequired",
+  write_off_not_allowed: "apiErrorWriteOffNotAllowed",
+  removal_not_undoable: "apiErrorRemovalNotUndoable",
   renewal_choice_not_allowed: "apiErrorRenewalChoiceNotAllowed",
   subscription_ended: "apiErrorSubscriptionEnded",
   not_leaving: "apiErrorNotLeaving",

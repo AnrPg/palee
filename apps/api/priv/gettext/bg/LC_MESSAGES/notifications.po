@@ -950,3 +950,13 @@ msgstr "Избери пакет"
 
 msgid "%{box} now takes bookings with a package. You can keep booking until %{date}."
 msgstr "%{box} вече приема записвания само с пакет. Можеш да се записваш до %{date}."
+
+# ADR-660: staff removed the member's package.
+msgid "%{box} removed your package %{package}."
+msgstr "%{box} премахна пакета ти %{package}."
+
+msgid "Reason: %{reason}"
+msgstr "Причина: %{reason}"
+
+msgid "Your package was removed"
+msgstr "Пакетът ти беше премахнат"

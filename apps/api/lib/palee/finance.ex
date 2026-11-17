@@ -459,6 +459,39 @@ defmodule Palee.Finance do
     do:
       scoped(context, fn -> FinanceStore.cancel_subscription(membership_id, subscription_id) end)
 
+  @doc "ADR-660: what removing a package would touch (see `Palee.Application.PackageRemoval`)."
+  def package_removal_preview(context, membership_id, subscription_id),
+    do:
+      scoped(context, fn ->
+        FinanceStore.package_removal_preview(membership_id, subscription_id)
+      end)
+
+  @doc "ADR-660: removes a package completely (see `Palee.Application.PackageRemoval`)."
+  def remove_package(context, membership_id, subscription_id, attrs),
+    do:
+      scoped(context, fn ->
+        FinanceStore.remove_package(membership_id, subscription_id, attrs)
+      end)
+
+  @doc "ADR-660: undoes a package removal while its undo is open."
+  def undo_package_removal(context, membership_id, removal_id, actor_id),
+    do:
+      scoped(context, fn ->
+        FinanceStore.undo_package_removal(membership_id, removal_id, actor_id)
+      end)
+
+  @doc "ADR-660: settles a removal once its undo closed."
+  def settle_package_removal(context, removal_id, now),
+    do: scoped(context, fn -> FinanceStore.settle_package_removal(removal_id, now) end)
+
+  @doc "ADR-660: removals whose undo closed before `now` and that were never settled."
+  def unsettled_package_removal_ids(context, now),
+    do: scoped(context, fn -> FinanceStore.unsettled_package_removal_ids(now) end)
+
+  @doc "ADR-660: records how many upcoming bookings a settled removal cancelled."
+  def record_package_removal_bookings(context, removal_id, count),
+    do: scoped(context, fn -> FinanceStore.record_package_removal_bookings(removal_id, count) end)
+
   defdelegate create_referral_event(params), to: CreateReferralEvent, as: :call
 
   def create_referral_event(context, params),

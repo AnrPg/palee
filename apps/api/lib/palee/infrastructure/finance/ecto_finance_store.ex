@@ -24,6 +24,7 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
     MembershipPackageSubscription,
     MembershipPayment,
     FinancePaymentReversal,
+    PackageRemoval,
     PackageRequest,
     PromotionCampaign,
     PromotionCode,
@@ -49,6 +50,7 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
     OpenCharges,
     PackageCode,
     PackageContract,
+    PackageRemovalPolicy,
     PaymentModelPolicy,
     PromotionRedemptionPolicy,
     ReceivedPayment,
@@ -4290,6 +4292,377 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
         {:error, reason} -> Repo.rollback(reason)
       end
     end)
+  end
+
+  # ── ADR-660: «Αφαίρεση πακέτου» ─────────────────────────────────────────
+
+  # Invoices still owing money; only the unpaid ones nobody paid anything on
+  # (`MemberRenewal.unpaid_untouched?/1`) can be voided with the removal.
+  @open_invoice_statuses ["draft", "issued", "partially_paid", "overdue"]
+
+  @impl true
+  def package_removal_preview(membership_id, subscription_id) do
+    with %Membership{} = membership <- tenant_membership(membership_id),
+         %MembershipPackageSubscription{} = subscription <-
+           tenant_subscription(membership.id, subscription_id),
+         :ok <- PackageRemovalPolicy.removable(subscription) do
+      {:ok, removal_money(membership, subscription)}
+    else
+      nil -> {:error, :not_found}
+      {:error, reason} -> {:error, reason}
+    end
+  end
+
+  @impl true
+  def remove_package(membership_id, subscription_id, attrs) do
+    today = GymClock.today()
+    now = DateTime.utc_now()
+
+    Repo.transaction(fn ->
+      with %Membership{} = membership <- locked_membership(membership_id),
+           %MembershipPackageSubscription{} = subscription <-
+             locked_subscription(membership.id, subscription_id),
+           :ok <- PackageRemovalPolicy.removable(subscription),
+           money = removal_money(membership, subscription),
+           {:ok, choice} <-
+             PackageRemovalPolicy.invoice_choice(
+               money.untouched_invoices,
+               attrs.invoice_choice,
+               attrs.may_write_off?
+             ) do
+        voided =
+          if choice == "void",
+            do: Enum.map(money.untouched_invoices, &void_for_removal!(&1.id, now)),
+            else: []
+
+        subscription
+        |> MembershipPackageSubscription.removal_changeset(%{
+          status: "cancelled",
+          removed_on: today
+        })
+        |> Repo.update()
+        |> ok_or_rollback!()
+
+        leaving = leave_after_removal!(membership, today)
+
+        removal =
+          %{
+            membership_id: membership.id,
+            subscription_id: subscription.id,
+            user_id: membership.user_id,
+            package_name: money.package_name,
+            previous_status: subscription.status,
+            removed_on: today,
+            actor_id: attrs.actor_id,
+            actor_roles: attrs.actor_roles,
+            reason: PackageRemovalPolicy.reason(attrs.reason),
+            reason_shared: attrs.reason_shared == true,
+            invoice_choice: choice,
+            voided_invoices: voided,
+            previous_leaving_on: leaving.previous_leaving_on,
+            previous_expires_on: leaving.previous_expires_on,
+            leaving_changed: leaving.changed?,
+            undo_until: PackageRemovalPolicy.undo_until(now)
+          }
+          |> PackageRemoval.changeset()
+          |> Repo.insert()
+          |> ok_or_rollback!()
+
+        refresh_entitlement_snapshot(membership.id)
+        normalize_package_removal(removal, leaving.leaving_on)
+      else
+        nil -> Repo.rollback(:not_found)
+        {:error, reason} -> Repo.rollback(reason)
+      end
+    end)
+  end
+
+  @impl true
+  def undo_package_removal(membership_id, removal_id, actor_id) do
+    now = DateTime.utc_now()
+
+    Repo.transaction(fn ->
+      with %Membership{} = membership <- locked_membership(membership_id),
+           %PackageRemoval{} = removal <- locked_package_removal(membership.id, removal_id),
+           :ok <- PackageRemovalPolicy.undoable(removal, now),
+           %MembershipPackageSubscription{} = subscription <-
+             locked_subscription(membership.id, removal.subscription_id) do
+        subscription
+        |> MembershipPackageSubscription.removal_changeset(%{
+          status: removal.previous_status,
+          removed_on: nil
+        })
+        |> Repo.update()
+        |> ok_or_rollback!()
+
+        Enum.each(removal.voided_invoices, &restore_voided_invoice!/1)
+
+        if removal.leaving_changed do
+          membership
+          |> Membership.leave_changeset(%{
+            leaving_on: removal.previous_leaving_on,
+            expires_on: removal.previous_expires_on
+          })
+          |> Repo.update()
+          |> ok_or_rollback!()
+        end
+
+        undone =
+          removal
+          |> PackageRemoval.undo_changeset(now, actor_id)
+          |> Repo.update()
+          |> ok_or_rollback!()
+
+        refresh_entitlement_snapshot(membership.id)
+        normalize_package_removal(undone, removal.previous_leaving_on)
+      else
+        nil -> Repo.rollback(:not_found)
+        {:error, reason} -> Repo.rollback(reason)
+      end
+    end)
+  end
+
+  @impl true
+  def settle_package_removal(removal_id, now) do
+    Repo.transaction(fn ->
+      case locked_package_removal(nil, removal_id) do
+        nil ->
+          Repo.rollback(:not_found)
+
+        %PackageRemoval{} = removal ->
+          case PackageRemovalPolicy.settle_step(removal, now) do
+            :settle ->
+              removal
+              |> PackageRemoval.settle_changeset(%{settled_at: now})
+              |> Repo.update()
+              |> ok_or_rollback!()
+              |> then(&{:settle, normalize_package_removal(&1, nil)})
+
+            step ->
+              {step, normalize_package_removal(removal, nil)}
+          end
+      end
+    end)
+  end
+
+  @impl true
+  def unsettled_package_removal_ids(now) do
+    PackageRemoval
+    |> tenant_scope()
+    |> where([r], is_nil(r.undone_at) and is_nil(r.settled_at) and r.undo_until < ^now)
+    |> select([r], r.id)
+    |> Repo.all()
+  end
+
+  @impl true
+  def record_package_removal_bookings(removal_id, count) do
+    case locked_package_removal(nil, removal_id) do
+      nil ->
+        {:error, :not_found}
+
+      %PackageRemoval{} = removal ->
+        removal
+        |> PackageRemoval.settle_changeset(%{cancelled_bookings: count})
+        |> Repo.update()
+        |> case do
+          {:ok, updated} -> {:ok, normalize_package_removal(updated, nil)}
+          {:error, reason} -> {:error, reason}
+        end
+    end
+  end
+
+  # What the package's invoices hold: the unpaid ones nobody paid anything
+  # on (staff choose what happens to them), what is still owed on partly
+  # paid ones (it stays) and what was paid (it stays; a refund is separate).
+  defp removal_money(membership, subscription) do
+    invoices =
+      FinanceInvoice
+      |> tenant_scope()
+      |> where([invoice], invoice.membership_id == ^membership.id)
+      |> where([invoice], invoice.id in subquery(invoice_ids_for_subscription(subscription.id)))
+      |> where([invoice], invoice.status != "void" and is_nil(invoice.deleted_at))
+      |> order_by([invoice], asc: invoice.inserted_at)
+      |> Repo.all()
+      |> Enum.map(fn invoice ->
+        %{
+          invoice: invoice,
+          paid_cents: invoice_paid_cents(invoice.id),
+          credit_applied_cents: invoice_credit_applied_cents(invoice.id)
+        }
+      end)
+
+    {open, _closed} = Enum.split_with(invoices, &(&1.invoice.status in @open_invoice_statuses))
+
+    {untouched, partly_paid} =
+      Enum.split_with(
+        open,
+        &MemberRenewal.unpaid_untouched?(Map.merge(&1, %{status: &1.invoice.status}))
+      )
+
+    %{
+      subscription_id: subscription.id,
+      package_name: subscription_package_name(subscription),
+      untouched_invoices:
+        Enum.map(untouched, fn %{invoice: invoice} ->
+          %{
+            id: invoice.id,
+            total_cents: invoice.total_cents,
+            currency: invoice.currency,
+            due_date: invoice.due_date,
+            status: invoice.status
+          }
+        end),
+      kept_owed_cents:
+        partly_paid
+        |> Enum.map(&max(&1.invoice.total_cents - &1.paid_cents - &1.credit_applied_cents, 0))
+        |> Enum.sum(),
+      paid_cents: invoices |> Enum.map(& &1.paid_cents) |> Enum.sum(),
+      currency: invoices |> Enum.map(& &1.invoice.currency) |> Enum.find(&is_binary/1)
+    }
+  end
+
+  defp subscription_package_name(subscription) do
+    case MembershipPackage |> tenant_scope() |> Repo.get(subscription.membership_package_id) do
+      %MembershipPackage{name: name} when is_binary(name) and name != "" -> name
+      _missing -> subscription.package_code_snapshot
+    end
+  end
+
+  # Voids one invoice for a removal and remembers what undo gives back: its
+  # status and the referral rewards that waited on it.
+  defp void_for_removal!(invoice_id, now) do
+    invoice = locked_invoice(invoice_id) || Repo.rollback(:not_found)
+
+    rewards =
+      ReferralReward
+      |> tenant_scope()
+      |> where([r], r.renewal_invoice_id == ^invoice.id)
+      |> select([r], r.id)
+      |> Repo.all()
+
+    invoice
+    |> FinanceInvoice.changeset(%{status: "void", voided_at: now})
+    |> Repo.update()
+    |> ok_or_rollback!()
+
+    release_referral_discounts(invoice.id)
+
+    %{"id" => invoice.id, "status" => invoice.status, "referral_reward_ids" => rewards}
+  end
+
+  defp restore_voided_invoice!(%{"id" => invoice_id, "status" => status} = voided) do
+    case locked_invoice(invoice_id) do
+      %FinanceInvoice{status: "void"} = invoice ->
+        invoice
+        |> FinanceInvoice.changeset(%{status: status, voided_at: nil})
+        |> Repo.update()
+        |> ok_or_rollback!()
+
+        rewards = Map.get(voided, "referral_reward_ids") || []
+
+        ReferralReward
+        |> tenant_scope()
+        |> where([r], r.id in ^rewards and is_nil(r.renewal_invoice_id))
+        |> Repo.update_all(set: [renewal_invoice_id: invoice.id, updated_at: DateTime.utc_now()])
+
+        refresh_invoice_status(invoice.id) |> ok_or_rollback!()
+
+      # Changed since (deleted, or someone acted on it): left as it is.
+      _other ->
+        :ok
+    end
+  end
+
+  # ADR-595: someone who left kept the package to its last day. Without it
+  # they keep the box until yesterday, or the last day of another package
+  # they still hold.
+  defp leave_after_removal!(%Membership{leaving_on: previous} = membership, today) do
+    remaining =
+      membership.id
+      |> running_subscriptions(today)
+      |> Enum.map(&MemberRenewal.last_day(&1, paid_periods(&1.id), today))
+
+    case PackageRemovalPolicy.leaving_on_after(previous, remaining, today) do
+      nil ->
+        %{
+          changed?: false,
+          leaving_on: previous,
+          previous_leaving_on: previous,
+          previous_expires_on: membership.expires_on
+        }
+
+      %Date{} = leaving_on ->
+        membership
+        |> Membership.leave_changeset(%{
+          leaving_on: leaving_on,
+          expires_on: earliest_date(membership.expires_on, leaving_on)
+        })
+        |> Repo.update()
+        |> ok_or_rollback!()
+
+        %{
+          changed?: true,
+          leaving_on: leaving_on,
+          previous_leaving_on: previous,
+          previous_expires_on: membership.expires_on
+        }
+    end
+  end
+
+  defp locked_package_removal(membership_id, removal_id) do
+    case Ecto.UUID.cast(removal_id) do
+      {:ok, id} ->
+        PackageRemoval
+        |> tenant_scope()
+        |> where([r], r.id == ^id)
+        |> then(fn query ->
+          if membership_id, do: where(query, [r], r.membership_id == ^membership_id), else: query
+        end)
+        |> lock("FOR UPDATE")
+        |> Repo.one()
+
+      :error ->
+        nil
+    end
+  end
+
+  defp tenant_membership(membership_id),
+    do: Membership |> tenant_scope() |> where([m], m.id == ^membership_id) |> Repo.one()
+
+  defp tenant_subscription(membership_id, subscription_id) do
+    case Ecto.UUID.cast(subscription_id) do
+      {:ok, id} ->
+        MembershipPackageSubscription
+        |> tenant_scope()
+        |> where([s], s.id == ^id and s.membership_id == ^membership_id)
+        |> Repo.one()
+
+      :error ->
+        nil
+    end
+  end
+
+  defp normalize_package_removal(%PackageRemoval{} = removal, leaving_on) do
+    %{
+      id: removal.id,
+      membership_id: removal.membership_id,
+      subscription_id: removal.subscription_id,
+      user_id: removal.user_id,
+      package_name: removal.package_name,
+      removed_on: removal.removed_on,
+      actor_id: removal.actor_id,
+      actor_roles: removal.actor_roles,
+      reason: removal.reason,
+      reason_shared: removal.reason_shared,
+      invoice_choice: removal.invoice_choice,
+      voided_invoice_count: length(removal.voided_invoices),
+      leaving_changed: removal.leaving_changed,
+      leaving_on: leaving_on,
+      undo_until: removal.undo_until,
+      undone_at: removal.undone_at,
+      settled_at: removal.settled_at,
+      cancelled_bookings: removal.cancelled_bookings
+    }
   end
 
   defp current_subscription(membership_id) do

@@ -240182,6 +240182,105 @@
         ]
       }
     },
+    "/api/org/{organization_slug}/admin/finance/members/{id}/package-removals/{removal_id}": {
+      "delete": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminFinanceController.undo_package_removal",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "removal_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "removal": {
+                      "properties": {
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "invoice_choice": {
+                          "enum": [
+                            "void",
+                            "keep"
+                          ],
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "package_name": {
+                          "type": "string"
+                        },
+                        "removed_on": {
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "subscription_id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "undo_until": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "undone_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "voided_invoice_count": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "subscription_id",
+                        "package_name",
+                        "removed_on",
+                        "undo_until"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "removal"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Removal"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Undo a package removal while its minute is open (ADR-660)",
+        "tags": [
+          "Admin Finance"
+        ]
+      }
+    },
     "/api/org/{organization_slug}/admin/finance/members/{id}/packages": {
       "post": {
         "callbacks": {},
@@ -240832,6 +240931,244 @@
           }
         ],
         "summary": "Turn a member's subscription renewal on or off (ADR-220)",
+        "tags": [
+          "Admin Finance"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/finance/members/{id}/subscriptions/{subscription_id}/removal": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminFinanceController.package_removal_preview",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "subscription_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "removal": {
+                      "properties": {
+                        "currency": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "kept_owed_cents": {
+                          "type": "integer"
+                        },
+                        "may_write_off": {
+                          "type": "boolean"
+                        },
+                        "package_name": {
+                          "type": "string"
+                        },
+                        "paid_cents": {
+                          "type": "integer"
+                        },
+                        "undo_seconds": {
+                          "type": "integer"
+                        },
+                        "untouched_invoices": {
+                          "items": {
+                            "properties": {
+                              "currency": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "due_date": {
+                                "format": "date",
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "total_cents": {
+                                "type": "integer"
+                              }
+                            },
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "upcoming_bookings": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "package_name",
+                        "untouched_invoices",
+                        "kept_owed_cents",
+                        "paid_cents",
+                        "upcoming_bookings",
+                        "may_write_off",
+                        "undo_seconds"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "removal"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Removal preview"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "What removing a member's package would do (ADR-660): unpaid invoices, money kept, bookings",
+        "tags": [
+          "Admin Finance"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminFinanceController.remove_package",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "subscription_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "invoice_choice": {
+                    "enum": [
+                      "void",
+                      "keep"
+                    ],
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "reason": {
+                    "maxLength": 500,
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "reason_shared": {
+                    "type": "boolean"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          },
+          "description": "Removal",
+          "required": false
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "removal": {
+                      "properties": {
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "invoice_choice": {
+                          "enum": [
+                            "void",
+                            "keep"
+                          ],
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "package_name": {
+                          "type": "string"
+                        },
+                        "removed_on": {
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "subscription_id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "undo_until": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "undone_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "voided_invoice_count": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "subscription_id",
+                        "package_name",
+                        "removed_on",
+                        "undo_until"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "removal"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Removal"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Remove a member's package completely from today (ADR-660); undone within a minute, then settled",
         "tags": [
           "Admin Finance"
         ]

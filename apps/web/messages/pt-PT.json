@@ -4669,6 +4669,10 @@
     "lvlNameRequired": "Cada nível precisa de um nome.",
     "apiErrorRenewalTurnedOff": "O membro da box desativou a renovação automática, por isso não é possível emitir uma fatura de renovação.",
     "apiErrorMemberLeaving": "Este membro da box vai sair da box.",
+    "apiErrorSubscriptionNotRemovable": "Este pacote já não pode ser retirado.",
+    "apiErrorInvoiceChoiceRequired": "Escolhe se a fatura por pagar é anulada ou fica em dívida.",
+    "apiErrorWriteOffNotAllowed": "Só quem gere a faturação pode anular uma dívida.",
+    "apiErrorRemovalNotUndoable": "A remoção já não pode ser anulada.",
     "apiErrorRenewalChoiceNotAllowed": "Este pacote não tem renovação automática para alterar.",
     "apiErrorSubscriptionEnded": "Este pacote já terminou.",
     "apiErrorNotLeaving": "Este membro da box não vai sair.",
@@ -20362,5 +20366,28 @@
       "sec": "{count, plural, one {# segundo} other {# segundos}}",
       "minSec": "{min} e {sec}"
     }
+  },
+  "PackageRemoval": {
+    "open": "Retirar pacote…",
+    "title": "Retirar «{package}»?",
+    "titleLoading": "Retirar pacote",
+    "loading": "A carregar…",
+    "fromToday": "A partir de hoje não tem pacote nem marca novas aulas. Continua na box como está.",
+    "bookings": "{count, plural, one {Dentro de um minuto a próxima marcação é cancelada e é avisado.} other {Dentro de um minuto as # próximas marcações são canceladas e é avisado.}}",
+    "unpaidTitle": "Fatura por pagar {amount}",
+    "choiceVoid": "Anular: deixa de a dever",
+    "choiceKeep": "Fica em dívida",
+    "unpaidStays": "Os {amount} por pagar ficam em dívida, com lembretes.",
+    "restStays": "Os {amount} em falta ficam em dívida.",
+    "paidStays": "Pagou {amount}. O pagamento mantém-se.",
+    "refund": "Devolver dinheiro…",
+    "nothingOpen": "Não há nada em aberto neste pacote.",
+    "reason": "Motivo (opcional)",
+    "shareReason": "O membro vê-o na notificação",
+    "cancel": "Cancelar",
+    "confirm": "Retirar pacote",
+    "removing": "A retirar…",
+    "removed": "«{package}» foi retirado a {name}.",
+    "undo": "Anular"
   }
 }

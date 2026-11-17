@@ -4669,6 +4669,10 @@
     "lvlNameRequired": "كل مستوى يحتاج إلى اسم.",
     "apiErrorRenewalTurnedOff": "أوقف عضو الصالة التجديد التلقائي، لذلك لا يمكن إصدار فاتورة تجديد.",
     "apiErrorMemberLeaving": "هذا العضو يغادر الصالة.",
+    "apiErrorSubscriptionNotRemovable": "لم يعد بالإمكان إزالة هذه الباقة.",
+    "apiErrorInvoiceChoiceRequired": "اختر ما إذا كانت الفاتورة غير المدفوعة تُلغى أم تبقى دَينًا.",
+    "apiErrorWriteOffNotAllowed": "يمكن فقط لمن يدير الفوترة إلغاء الدَّين.",
+    "apiErrorRemovalNotUndoable": "لم يعد بالإمكان التراجع عن الإزالة.",
     "apiErrorRenewalChoiceNotAllowed": "لا يحتوي هذا الاشتراك على تجديد تلقائي يمكن تغييره.",
     "apiErrorSubscriptionEnded": "انتهى هذا الاشتراك بالفعل.",
     "apiErrorNotLeaving": "هذا العضو لا يغادر الصالة.",
@@ -20362,5 +20366,28 @@
       "sec": "{count, plural, two {ثانيتان} few {# ثوانٍ} one {ثانية واحدة} other {# ثانية}}",
       "minSec": "{min} و{sec}"
     }
+  },
+  "PackageRemoval": {
+    "open": "إزالة الباقة…",
+    "title": "إزالة «{package}»؟",
+    "titleLoading": "إزالة الباقة",
+    "loading": "جارٍ التحميل…",
+    "fromToday": "من اليوم لا باقة لديه ولا يحجز حصصًا جديدة. يبقى في البوكس كما هو.",
+    "bookings": "{count, plural, zero {بعد دقيقة لا يُلغى شيء.} one {بعد دقيقة يُلغى حجزه القادم ويُبلَّغ.} two {بعد دقيقة يُلغى حجزاه القادمان ويُبلَّغ.} few {بعد دقيقة تُلغى حجوزاته القادمة الـ# ويُبلَّغ.} many {بعد دقيقة تُلغى حجوزاته القادمة الـ# ويُبلَّغ.} other {بعد دقيقة تُلغى حجوزاته القادمة الـ# ويُبلَّغ.}}",
+    "unpaidTitle": "فاتورة غير مدفوعة {amount}",
+    "choiceVoid": "إلغاؤها: لن يكون مدينًا بها",
+    "choiceKeep": "تبقى دَينًا",
+    "unpaidStays": "يبقى المبلغ غير المدفوع {amount} دَينًا، مع تذكيرات.",
+    "restStays": "يبقى المتبقي {amount} دَينًا.",
+    "paidStays": "دفع {amount}. تبقى الدفعة.",
+    "refund": "استرداد المال…",
+    "nothingOpen": "لا شيء مفتوح لهذه الباقة.",
+    "reason": "السبب (اختياري)",
+    "shareReason": "يراه العضو في الإشعار",
+    "cancel": "إلغاء",
+    "confirm": "إزالة الباقة",
+    "removing": "جارٍ الإزالة…",
+    "removed": "أُزيلت «{package}» من {name}.",
+    "undo": "تراجع"
   }
 }

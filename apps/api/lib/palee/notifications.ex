@@ -981,6 +981,19 @@ defmodule Palee.Notifications do
         url: "/me/payments?box=#{field(payload, :box_slug)}"
       })
 
+  # ADR-660: staff removed the member's package.
+  def process_event("package_removed", payload),
+    do:
+      enqueue_simple(:package_removed, payload, %{
+        organization_id: field(payload, :organization_id),
+        box_name: field(payload, :box_name),
+        package_name: field(payload, :package_name),
+        cancelled_bookings: field(payload, :cancelled_bookings),
+        reason: field(payload, :reason),
+        dedupe_key: "package_removed:#{field(payload, :removal_id)}",
+        url: "/me/payments?box=#{field(payload, :box_slug)}"
+      })
+
   def process_event("workout_rejected", payload), do: enqueue_workout_rejected(payload)
   def process_event("athlete_message_sent", payload), do: enqueue_athlete_message(payload)
   def process_event("chat_message", payload), do: enqueue_chat_message(payload)

@@ -154,6 +154,9 @@ defmodule Palee.Scheduling.Ports.SchedulingStore do
               {:ok, map()} | {:error, term()}
   @callback cancel_active_future_bookings_for_user(TenantContext.t(), Ecto.UUID.t()) ::
               {:ok, [Ecto.UUID.t()]} | {:error, Ecto.Changeset.t()}
+  @doc "ADR-660: how many upcoming class bookings (pending or approved) the person holds."
+  @callback count_active_future_bookings_for_user(TenantContext.t(), Ecto.UUID.t()) ::
+              non_neg_integer()
   @callback substitute_slot_workout(TenantContext.t(), Ecto.UUID.t(), Ecto.UUID.t()) ::
               {:ok, map()} | {:error, :not_found}
   @callback count_classes_today(TenantContext.t()) :: non_neg_integer()

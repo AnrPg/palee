@@ -201,6 +201,29 @@ defmodule Palee.Finance.FinanceStore do
     do: adapter().cancel_subscription(membership_id, subscription_id)
 
   @impl true
+  def package_removal_preview(membership_id, subscription_id),
+    do: adapter().package_removal_preview(membership_id, subscription_id)
+
+  @impl true
+  def remove_package(membership_id, subscription_id, attrs),
+    do: adapter().remove_package(membership_id, subscription_id, attrs)
+
+  @impl true
+  def undo_package_removal(membership_id, removal_id, actor_id),
+    do: adapter().undo_package_removal(membership_id, removal_id, actor_id)
+
+  @impl true
+  def settle_package_removal(removal_id, now),
+    do: adapter().settle_package_removal(removal_id, now)
+
+  @impl true
+  def unsettled_package_removal_ids(now), do: adapter().unsettled_package_removal_ids(now)
+
+  @impl true
+  def record_package_removal_bookings(removal_id, count),
+    do: adapter().record_package_removal_bookings(removal_id, count)
+
+  @impl true
   def create_referral_event(params), do: adapter().create_referral_event(params)
   @impl true
   def update_referral_status(id, status), do: adapter().update_referral_status(id, status)

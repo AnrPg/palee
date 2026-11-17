@@ -2064,6 +2064,25 @@ defmodule PaleeWeb.Router do
       :revoke
     )
 
+    # ADR-660: «Αφαίρεση πακέτου» and its minute of «Αναίρεση».
+    get(
+      "/finance/members/:id/subscriptions/:subscription_id/removal",
+      AdminFinanceController,
+      :package_removal_preview
+    )
+
+    post(
+      "/finance/members/:id/subscriptions/:subscription_id/removal",
+      AdminFinanceController,
+      :remove_package
+    )
+
+    delete(
+      "/finance/members/:id/package-removals/:removal_id",
+      AdminFinanceController,
+      :undo_package_removal
+    )
+
     post("/finance/members/:id/leave", AdminFinanceController, :mark_member_left)
     delete("/finance/members/:id/leave", AdminFinanceController, :undo_member_left)
     post("/finance/members/:id/payments", AdminFinanceController, :record_payment)

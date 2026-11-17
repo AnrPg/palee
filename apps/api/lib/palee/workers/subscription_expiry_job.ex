@@ -27,7 +27,7 @@ defmodule Palee.Workers.SubscriptionExpiryJob do
   use Oban.Worker, queue: :analytics, max_attempts: 3
 
   alias Palee.{Finance, Notifications, Organizations}
-  alias Palee.Application.{PackageRule, RevokeAccess}
+  alias Palee.Application.{PackageRemoval, PackageRule, RevokeAccess}
   alias Palee.Finance.Domain.InvoiceLifecycle
 
   @impl Oban.Worker
@@ -94,6 +94,9 @@ defmodule Palee.Workers.SubscriptionExpiryJob do
     # package (its clients already training get 14 days) and stops when it
     # sells none.
     PackageRule.daily(context)
+
+    # ADR-660: a package removal whose own job never ran is settled here.
+    PackageRemoval.settle_overdue(context)
 
     context
     |> Finance.refresh_entitlement_snapshots()

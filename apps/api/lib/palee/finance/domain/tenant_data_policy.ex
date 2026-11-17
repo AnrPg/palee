@@ -26,6 +26,8 @@ defmodule Palee.Finance.Domain.TenantDataPolicy do
               # ADR-612: gifts and graces reference memberships (and each other:
               # one DELETE removes a grant with its revocation).
               %{table: "finance_member_benefits"},
+              # ADR-660: package removals reference subscriptions and memberships.
+              %{table: "finance_package_removals"},
               %{table: "finance_entitlement_usage_entries"},
               %{table: "finance_credit_ledger_entries"},
               %{table: "finance_payment_reversals"},

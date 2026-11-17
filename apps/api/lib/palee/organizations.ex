@@ -156,6 +156,28 @@ defmodule Palee.Organizations do
     end)
   end
 
+  @doc """
+  ADR-660: the last day a person who left reaches the box changes with the
+  package they kept (staff removed it, or undid that). Nothing changes for
+  someone who has not left.
+  """
+  def set_box_access_until(organization_id, user_id, %Date{} = access_until) do
+    RepoContext.run(%{organization_id: organization_id, user_id: user_id}, fn ->
+      case OrganizationStore.get_membership(organization_id, user_id) do
+        %{left_at: %DateTime{}} ->
+          OrganizationStore.set_membership_leave(organization_id, user_id, %{
+            access_until: access_until
+          })
+
+        nil ->
+          {:error, :not_found}
+
+        membership ->
+          {:ok, membership}
+      end
+    end)
+  end
+
   @doc "ADR-595: staff undo a leave they recorded by mistake: the person is a member again."
   def undo_box_membership_end(organization_id, user_id) do
     RepoContext.run(%{organization_id: organization_id, user_id: user_id}, fn ->

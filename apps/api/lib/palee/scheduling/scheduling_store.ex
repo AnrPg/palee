@@ -289,6 +289,10 @@ defmodule Palee.Scheduling.SchedulingStore do
   def cancel_active_future_bookings_for_user(_user_id), do: missing_tenant()
 
   @impl true
+  def count_active_future_bookings_for_user(context, user_id),
+    do: tenant_call(context, :count_active_future_bookings_for_user, [user_id])
+
+  @impl true
   def substitute_slot_workout(context, slot_id, new_workout_id),
     do: tenant_call(context, :substitute_slot_workout, [slot_id, new_workout_id])
 

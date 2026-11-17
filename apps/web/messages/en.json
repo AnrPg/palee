@@ -4669,6 +4669,10 @@
     "lvlNameRequired": "Every level needs a name.",
     "apiErrorRenewalTurnedOff": "The box member turned automatic renewal off, so no renewal invoice can be issued.",
     "apiErrorMemberLeaving": "This box member is leaving the box.",
+    "apiErrorSubscriptionNotRemovable": "This package can no longer be removed.",
+    "apiErrorInvoiceChoiceRequired": "Choose whether the unpaid invoice is cancelled or stays owed.",
+    "apiErrorWriteOffNotAllowed": "Only staff who manage billing can cancel a debt.",
+    "apiErrorRemovalNotUndoable": "The removal can no longer be undone.",
     "apiErrorRenewalChoiceNotAllowed": "This subscription package has no automatic renewal to change.",
     "apiErrorSubscriptionEnded": "This subscription package has already ended.",
     "apiErrorNotLeaving": "This box member is not leaving.",
@@ -20362,5 +20366,28 @@
       "sec": "{count, plural, one {# second} other {# seconds}}",
       "minSec": "{min} {sec}"
     }
+  },
+  "PackageRemoval": {
+    "open": "Remove package…",
+    "title": "Remove «{package}»?",
+    "titleLoading": "Remove package",
+    "loading": "Loading…",
+    "fromToday": "From today they have no package and cannot book new classes. They stay at the box as they are.",
+    "bookings": "{count, plural, one {After a minute their upcoming booking is cancelled and they are told.} other {After a minute their # upcoming bookings are cancelled and they are told.}}",
+    "unpaidTitle": "Unpaid invoice {amount}",
+    "choiceVoid": "Cancel it: they will not owe it",
+    "choiceKeep": "It stays owed",
+    "unpaidStays": "The unpaid {amount} stays owed, with reminders.",
+    "restStays": "The {amount} left to pay stays owed.",
+    "paidStays": "They paid {amount}. The payment stays.",
+    "refund": "Refund…",
+    "nothingOpen": "Nothing is open for this package.",
+    "reason": "Reason (optional)",
+    "shareReason": "The member sees it in the notification",
+    "cancel": "Cancel",
+    "confirm": "Remove package",
+    "removing": "Removing…",
+    "removed": "«{package}» was removed from {name}.",
+    "undo": "Undo"
   }
 }

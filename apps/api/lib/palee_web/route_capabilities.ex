@@ -540,6 +540,11 @@ defmodule PaleeWeb.RouteCapabilities do
     {W.AdminFinanceController, :mark_member_left} => [:manage_billing],
     {W.AdminFinanceController, :undo_member_left} => [:manage_billing],
     {W.AdminFinanceController, :assign_package} => [:take_payments],
+    # ADR-660: whoever takes payments removes a package; writing its unpaid
+    # invoice off is checked in the use case (manage_billing).
+    {W.AdminFinanceController, :package_removal_preview} => [:take_payments],
+    {W.AdminFinanceController, :remove_package} => [:take_payments],
+    {W.AdminFinanceController, :undo_package_removal} => [:take_payments],
     {W.AdminFinanceController, :record_payment} => [:take_payments],
     # ADR-612: only those who take payments give; the money roles may look.
     {W.AdminMemberBenefitController, :index} => [

@@ -37,6 +37,8 @@ defmodule Palee.Finance.MembershipPackageSubscription do
     field :ends_on_from_renewal_stop, :boolean, default: false
     # ADR-274: the first period start Palee bills by itself (nil: never).
     field :charges_from, :date
+    # ADR-660: the box day staff removed the package («Αφαίρεση πακέτου»).
+    field :removed_on, :date
 
     timestamps(type: :utc_datetime_usec)
   end
@@ -103,6 +105,18 @@ defmodule Palee.Finance.MembershipPackageSubscription do
     |> validate_required([:auto_renew, :renewal_changed_at, :renewal_changed_by])
     |> validate_inclusion(:renewal_changed_by, ["member", "staff"])
     |> validate_date_window()
+  end
+
+  @doc """
+  ADR-660: staff remove the package (`removed_on` set, `cancelled`) or undo
+  that (`removed_on` nil, the status it had). Kept out of `changeset/2` so a
+  plain update cannot mark a package removed.
+  """
+  def removal_changeset(%__MODULE__{} = subscription, params) do
+    subscription
+    |> cast(params, [:status, :removed_on])
+    |> validate_inclusion(:status, ["active", "paused", "cancelled", "expired"])
+    |> check_constraint(:removed_on, name: :subscriptions_removed_check)
   end
 
   defp validate_date_window(changeset) do

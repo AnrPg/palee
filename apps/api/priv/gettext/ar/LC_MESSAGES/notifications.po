@@ -954,3 +954,13 @@ msgstr "اختر باقة"
 
 msgid "%{box} now takes bookings with a package. You can keep booking until %{date}."
 msgstr "يقبل %{box} الآن الحجوزات بباقة فقط. يمكنك الحجز حتى %{date}."
+
+# ADR-660: staff removed the member's package.
+msgid "%{box} removed your package %{package}."
+msgstr "أزال %{box} باقتك %{package}."
+
+msgid "Reason: %{reason}"
+msgstr "السبب: %{reason}"
+
+msgid "Your package was removed"
+msgstr "أُزيلت باقتك"

@@ -4669,6 +4669,10 @@
     "lvlNameRequired": "Elk niveau heeft een naam nodig.",
     "apiErrorRenewalTurnedOff": "Het boxlid heeft automatische verlenging uitgezet, dus er kan geen verlengingsfactuur worden gemaakt.",
     "apiErrorMemberLeaving": "Dit boxlid verlaat de box.",
+    "apiErrorSubscriptionNotRemovable": "Dit pakket kan niet meer worden verwijderd.",
+    "apiErrorInvoiceChoiceRequired": "Kies of de onbetaalde factuur vervalt of verschuldigd blijft.",
+    "apiErrorWriteOffNotAllowed": "Alleen wie de facturatie beheert, kan een schuld kwijtschelden.",
+    "apiErrorRemovalNotUndoable": "Het verwijderen kan niet meer ongedaan worden gemaakt.",
     "apiErrorRenewalChoiceNotAllowed": "Dit pakket heeft geen automatische verlenging om te wijzigen.",
     "apiErrorSubscriptionEnded": "Dit pakket is al afgelopen.",
     "apiErrorNotLeaving": "Dit boxlid vertrekt niet.",
@@ -20362,5 +20366,28 @@
       "sec": "{count, plural, one {# seconde} other {# seconden}}",
       "minSec": "{min} {sec}"
     }
+  },
+  "PackageRemoval": {
+    "open": "Pakket verwijderen…",
+    "title": "«{package}» verwijderen?",
+    "titleLoading": "Pakket verwijderen",
+    "loading": "Laden…",
+    "fromToday": "Vanaf vandaag heeft die persoon geen pakket en boekt geen nieuwe lessen. Die blijft in de box zoals nu.",
+    "bookings": "{count, plural, one {Na een minuut wordt de volgende boeking geannuleerd en krijgt die persoon bericht.} other {Na een minuut worden de # volgende boekingen geannuleerd en krijgt die persoon bericht.}}",
+    "unpaidTitle": "Onbetaalde factuur {amount}",
+    "choiceVoid": "Laten vervallen: niets meer verschuldigd",
+    "choiceKeep": "Blijft verschuldigd",
+    "unpaidStays": "De onbetaalde {amount} blijft verschuldigd, met herinneringen.",
+    "restStays": "De resterende {amount} blijft verschuldigd.",
+    "paidStays": "{amount} betaald. De betaling blijft.",
+    "refund": "Terugbetalen…",
+    "nothingOpen": "Voor dit pakket staat niets open.",
+    "reason": "Reden (optioneel)",
+    "shareReason": "Het lid ziet die in de melding",
+    "cancel": "Annuleren",
+    "confirm": "Pakket verwijderen",
+    "removing": "Verwijderen…",
+    "removed": "«{package}» is verwijderd bij {name}.",
+    "undo": "Ongedaan maken"
   }
 }

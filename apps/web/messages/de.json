@@ -4669,6 +4669,10 @@
     "lvlNameRequired": "Jede Stufe braucht einen Namen.",
     "apiErrorRenewalTurnedOff": "Das Box-Mitglied hat die automatische Verlängerung ausgeschaltet, daher kann keine Verlängerungsrechnung erstellt werden.",
     "apiErrorMemberLeaving": "Dieses Box-Mitglied verlässt die Box.",
+    "apiErrorSubscriptionNotRemovable": "Dieses Paket kann nicht mehr entfernt werden.",
+    "apiErrorInvoiceChoiceRequired": "Wähle, ob die unbezahlte Rechnung storniert wird oder offen bleibt.",
+    "apiErrorWriteOffNotAllowed": "Nur wer die Abrechnung verwaltet, kann eine Schuld erlassen.",
+    "apiErrorRemovalNotUndoable": "Das Entfernen kann nicht mehr rückgängig gemacht werden.",
     "apiErrorRenewalChoiceNotAllowed": "Dieses Paket hat keine automatische Verlängerung, die man ändern kann.",
     "apiErrorSubscriptionEnded": "Dieses Paket ist bereits abgelaufen.",
     "apiErrorNotLeaving": "Dieses Box-Mitglied verlässt die Box nicht.",
@@ -20362,5 +20366,28 @@
       "sec": "{count, plural, one {# Sekunde} other {# Sekunden}}",
       "minSec": "{min} {sec}"
     }
+  },
+  "PackageRemoval": {
+    "open": "Paket entfernen…",
+    "title": "«{package}» entfernen?",
+    "titleLoading": "Paket entfernen",
+    "loading": "Wird geladen…",
+    "fromToday": "Ab heute hat die Person kein Paket und bucht keine neuen Kurse. Sie bleibt in der Box wie bisher.",
+    "bookings": "{count, plural, one {Nach einer Minute wird die nächste Buchung storniert und die Person benachrichtigt.} other {Nach einer Minute werden die # nächsten Buchungen storniert und die Person benachrichtigt.}}",
+    "unpaidTitle": "Unbezahlte Rechnung {amount}",
+    "choiceVoid": "Stornieren: nichts mehr geschuldet",
+    "choiceKeep": "Bleibt offen",
+    "unpaidStays": "Die unbezahlten {amount} bleiben offen, mit Erinnerungen.",
+    "restStays": "Die restlichen {amount} bleiben offen.",
+    "paidStays": "{amount} bezahlt. Die Zahlung bleibt.",
+    "refund": "Erstatten…",
+    "nothingOpen": "Für dieses Paket ist nichts offen.",
+    "reason": "Grund (optional)",
+    "shareReason": "Das Mitglied sieht ihn in der Benachrichtigung",
+    "cancel": "Abbrechen",
+    "confirm": "Paket entfernen",
+    "removing": "Wird entfernt…",
+    "removed": "«{package}» wurde bei {name} entfernt.",
+    "undo": "Rückgängig"
   }
 }

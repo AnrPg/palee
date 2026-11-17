@@ -285,6 +285,10 @@ defmodule Palee.Scheduling do
     to: CancelUserBookingsForRoleTransition,
     as: :call
 
+  @doc "ADR-660: how many upcoming class bookings the person holds at the box."
+  def count_active_future_bookings_for_user(%{organization_id: _} = context, user_id),
+    do: Palee.Scheduling.SchedulingStore.count_active_future_bookings_for_user(context, user_id)
+
   def substitute_slot_workout(context, slot_id, new_workout_id),
     do:
       Palee.Scheduling.SchedulingStore.substitute_slot_workout(

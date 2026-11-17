@@ -4,6 +4,7 @@
 
 
 
+import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
 
 import type { FinanceRecord } from "@/api/finance";
@@ -21,14 +22,17 @@ interface Props {
   pending: boolean;
   /** Resolves once the package is assigned; a rejection keeps the menu open with the reason. */
   onAssign: (packageId: string) => Promise<unknown>;
+  /** ADR-660: «Αφαίρεση πακέτου…» for the package the member holds now. */
+  onRemove?: () => void;
 }
 
 /**
  * The ledger's «Ανάθεση» menu for a πακέτο συνδρομής. It is a ui/Popover, so
  * a press on the package list (its own portal) counts as inside the menu.
  */
-export function InlineAssignPackage({ currentCode, currentLabel, packages, pending, onAssign }: Props) {
+export function InlineAssignPackage({ currentCode, currentLabel, packages, pending, onAssign, onRemove }: Props) {
   const i18n = useUiTranslations();
+  const t = useTranslations("PackageRemoval");
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState("");
   const [error, setError] = useState<unknown>(null);
@@ -124,6 +128,20 @@ export function InlineAssignPackage({ currentCode, currentLabel, packages, pendi
           <ErrorNotice variant="field" className="mt-2">
             {localizeError(error, i18n)}
           </ErrorNotice>
+        ) : null}
+        {onRemove && (currentLabel || currentCode) ? (
+          <button
+            type="button"
+            onClick={() => {
+              close();
+              onRemove();
+            }}
+            className="mt-3 w-full pt-3 text-start text-sm font-semibold"
+            style={{ borderTop: "1px solid var(--border)", color: "var(--danger)" }}
+            data-testid="package-remove-open"
+          >
+            {t("open")}
+          </button>
         ) : null}
       </Popover>
     </div>

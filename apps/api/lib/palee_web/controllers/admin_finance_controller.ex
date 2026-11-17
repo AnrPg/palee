@@ -26,6 +26,7 @@ defmodule PaleeWeb.AdminFinanceController do
     GenerateFinanceRenewalInvoice,
     MembershipRenewal,
     IssueFinanceInvoice,
+    PackageRemoval,
     ListFinanceCleanupRecords,
     ListFinanceMembers,
     ListFinancePackages,
@@ -1083,6 +1084,152 @@ defmodule PaleeWeb.AdminFinanceController do
              (conn.body_params || %{})["auto_renew"]
            ) do
       json(conn, %{package_subscription: subscription})
+    end
+  end
+
+  @removal_id_parameter %Parameter{
+    name: :removal_id,
+    in: :path,
+    required: true,
+    schema: %Schema{type: :string, format: :uuid}
+  }
+
+  @removal_schema %Schema{
+    type: :object,
+    properties: %{
+      id: %Schema{type: :string, format: :uuid},
+      subscription_id: %Schema{type: :string, format: :uuid},
+      package_name: %Schema{type: :string},
+      removed_on: %Schema{type: :string, format: :date},
+      invoice_choice: %Schema{type: :string, enum: ["void", "keep"], nullable: true},
+      voided_invoice_count: %Schema{type: :integer},
+      undo_until: %Schema{type: :string, format: :"date-time"},
+      undone_at: %Schema{type: :string, format: :"date-time", nullable: true}
+    },
+    required: [:id, :subscription_id, :package_name, :removed_on, :undo_until]
+  }
+
+  operation(:package_removal_preview,
+    summary:
+      "What removing a member's package would do (ADR-660): unpaid invoices, money kept, bookings",
+    parameters: [@id_parameter, @subscription_id_parameter],
+    responses: [
+      ok:
+        {"Removal preview", "application/json",
+         %Schema{
+           type: :object,
+           properties: %{
+             removal: %Schema{
+               type: :object,
+               properties: %{
+                 package_name: %Schema{type: :string},
+                 untouched_invoices: %Schema{
+                   type: :array,
+                   items: %Schema{
+                     type: :object,
+                     properties: %{
+                       id: %Schema{type: :string, format: :uuid},
+                       total_cents: %Schema{type: :integer},
+                       currency: %Schema{type: :string, nullable: true},
+                       due_date: %Schema{type: :string, format: :date, nullable: true}
+                     }
+                   }
+                 },
+                 kept_owed_cents: %Schema{type: :integer},
+                 paid_cents: %Schema{type: :integer},
+                 currency: %Schema{type: :string, nullable: true},
+                 upcoming_bookings: %Schema{type: :integer},
+                 may_write_off: %Schema{type: :boolean},
+                 undo_seconds: %Schema{type: :integer}
+               },
+               required: [
+                 :package_name,
+                 :untouched_invoices,
+                 :kept_owed_cents,
+                 :paid_cents,
+                 :upcoming_bookings,
+                 :may_write_off,
+                 :undo_seconds
+               ]
+             }
+           },
+           required: [:removal]
+         }}
+    ]
+  )
+
+  def package_removal_preview(conn, params) do
+    with {:ok, preview} <-
+           PackageRemoval.preview(
+             conn.assigns.tenant_context,
+             param_id(params),
+             params["subscription_id"]
+           ) do
+      json(conn, %{removal: preview})
+    end
+  end
+
+  operation(:remove_package,
+    summary:
+      "Remove a member's package completely from today (ADR-660); undone within a minute, then settled",
+    parameters: [@id_parameter, @subscription_id_parameter],
+    request_body:
+      {"Removal", "application/json",
+       %Schema{
+         type: :object,
+         properties: %{
+           invoice_choice: %Schema{type: :string, enum: ["void", "keep"], nullable: true},
+           reason: %Schema{type: :string, nullable: true, maxLength: 500},
+           reason_shared: %Schema{type: :boolean}
+         }
+       }},
+    responses: [
+      created:
+        {"Removal", "application/json",
+         %Schema{
+           type: :object,
+           properties: %{removal: @removal_schema},
+           required: [:removal]
+         }}
+    ]
+  )
+
+  def remove_package(conn, params) do
+    with {:ok, removal} <-
+           PackageRemoval.remove(
+             conn.assigns.tenant_context,
+             param_id(params),
+             params["subscription_id"],
+             conn.body_params || %{}
+           ) do
+      conn
+      |> put_status(:created)
+      |> json(%{removal: removal})
+    end
+  end
+
+  operation(:undo_package_removal,
+    summary: "Undo a package removal while its minute is open (ADR-660)",
+    parameters: [@id_parameter, @removal_id_parameter],
+    responses: [
+      ok:
+        {"Removal", "application/json",
+         %Schema{
+           type: :object,
+           properties: %{removal: @removal_schema},
+           required: [:removal]
+         }}
+    ]
+  )
+
+  def undo_package_removal(conn, params) do
+    with {:ok, removal} <-
+           PackageRemoval.undo(
+             conn.assigns.tenant_context,
+             param_id(params),
+             params["removal_id"]
+           ) do
+      json(conn, %{removal: removal})
     end
   end
 

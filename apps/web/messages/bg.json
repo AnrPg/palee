@@ -4669,6 +4669,10 @@
     "lvlNameRequired": "Всяко ниво трябва да има име.",
     "apiErrorRenewalTurnedOff": "Членът на залата изключи автоматичното подновяване, затова не може да се издаде фактура за подновяване.",
     "apiErrorMemberLeaving": "Този член напуска залата.",
+    "apiErrorSubscriptionNotRemovable": "Този пакет вече не може да бъде премахнат.",
+    "apiErrorInvoiceChoiceRequired": "Избери дали неплатената фактура се анулира, или остава дълг.",
+    "apiErrorWriteOffNotAllowed": "Само който управлява плащанията може да опрости дълг.",
+    "apiErrorRemovalNotUndoable": "Премахването вече не може да бъде отменено.",
     "apiErrorRenewalChoiceNotAllowed": "Този пакет няма автоматично подновяване за промяна.",
     "apiErrorSubscriptionEnded": "Този пакет вече е изтекъл.",
     "apiErrorNotLeaving": "Този член не напуска залата.",
@@ -20362,5 +20366,28 @@
       "sec": "{count, plural, one {# секунда} other {# секунди}}",
       "minSec": "{min} и {sec}"
     }
+  },
+  "PackageRemoval": {
+    "open": "Премахни пакета…",
+    "title": "Премахване на «{package}»?",
+    "titleLoading": "Премахни пакета",
+    "loading": "Зареждане…",
+    "fromToday": "От днес няма пакет и не записва нови часове. Остава в бокса както е.",
+    "bookings": "{count, plural, one {След минута следващата му резервация се отменя и той е уведомен.} other {След минута следващите му # резервации се отменят и той е уведомен.}}",
+    "unpaidTitle": "Неплатена фактура {amount}",
+    "choiceVoid": "Анулирай я: няма да я дължи",
+    "choiceKeep": "Остава дълг",
+    "unpaidStays": "Неплатените {amount} остават дълг, с напомняния.",
+    "restStays": "Оставащите {amount} остават дълг.",
+    "paidStays": "Плати {amount}. Плащането остава.",
+    "refund": "Възстанови сумата…",
+    "nothingOpen": "Няма нищо отворено за този пакет.",
+    "reason": "Причина (по желание)",
+    "shareReason": "Членът я вижда в известието",
+    "cancel": "Отказ",
+    "confirm": "Премахни пакета",
+    "removing": "Премахване…",
+    "removed": "«{package}» беше премахнат от {name}.",
+    "undo": "Отмени"
   }
 }

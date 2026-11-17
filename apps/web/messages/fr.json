@@ -4669,6 +4669,10 @@
     "lvlNameRequired": "Chaque niveau a besoin d'un nom.",
     "apiErrorRenewalTurnedOff": "Le membre de la box a désactivé le renouvellement automatique : aucune facture de renouvellement ne peut être émise.",
     "apiErrorMemberLeaving": "Ce membre quitte la box.",
+    "apiErrorSubscriptionNotRemovable": "Cette formule ne peut plus être retirée.",
+    "apiErrorInvoiceChoiceRequired": "Choisis si la facture impayée est annulée ou reste due.",
+    "apiErrorWriteOffNotAllowed": "Seules les personnes qui gèrent la facturation peuvent annuler une dette.",
+    "apiErrorRemovalNotUndoable": "Le retrait ne peut plus être annulé.",
     "apiErrorRenewalChoiceNotAllowed": "Ce forfait n'a pas de renouvellement automatique à modifier.",
     "apiErrorSubscriptionEnded": "Ce forfait est déjà terminé.",
     "apiErrorNotLeaving": "Ce membre ne quitte pas la box.",
@@ -20362,5 +20366,28 @@
       "sec": "{count, plural, one {# seconde} other {# secondes}}",
       "minSec": "{min} {sec}"
     }
+  },
+  "PackageRemoval": {
+    "open": "Retirer la formule…",
+    "title": "Retirer «{package}» ?",
+    "titleLoading": "Retirer la formule",
+    "loading": "Chargement…",
+    "fromToday": "Dès aujourd'hui, plus de formule ni de nouvelles réservations. La personne reste à la box comme avant.",
+    "bookings": "{count, plural, one {Dans une minute, sa prochaine réservation est annulée et la personne est prévenue.} other {Dans une minute, ses # prochaines réservations sont annulées et la personne est prévenue.}}",
+    "unpaidTitle": "Facture impayée {amount}",
+    "choiceVoid": "L'annuler : plus rien à payer",
+    "choiceKeep": "Reste due",
+    "unpaidStays": "Les {amount} impayés restent dus, avec rappels.",
+    "restStays": "Les {amount} restants restent dus.",
+    "paidStays": "{amount} payés. Le paiement reste.",
+    "refund": "Rembourser…",
+    "nothingOpen": "Rien n'est ouvert pour cette formule.",
+    "reason": "Raison (facultatif)",
+    "shareReason": "Le membre la voit dans la notification",
+    "cancel": "Annuler",
+    "confirm": "Retirer la formule",
+    "removing": "Retrait…",
+    "removed": "«{package}» a été retiré à {name}.",
+    "undo": "Annuler le retrait"
   }
 }

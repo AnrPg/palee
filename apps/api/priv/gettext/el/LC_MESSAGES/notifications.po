@@ -950,3 +950,13 @@ msgstr "Διάλεξε πακέτο"
 
 msgid "%{box} now takes bookings with a package. You can keep booking until %{date}."
 msgstr "Το %{box} δέχεται πλέον κρατήσεις με πακέτο. Μπορείς να κάνεις κρατήσεις ως τις %{date}."
+
+# ADR-660: staff removed the member's package.
+msgid "%{box} removed your package %{package}."
+msgstr "Το %{box} αφαίρεσε το πακέτο σου «%{package}»."
+
+msgid "Reason: %{reason}"
+msgstr "Λόγος: %{reason}"
+
+msgid "Your package was removed"
+msgstr "Το πακέτο σου αφαιρέθηκε"

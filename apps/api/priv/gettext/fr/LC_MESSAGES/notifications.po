@@ -950,3 +950,13 @@ msgstr "Choisis un forfait"
 
 msgid "%{box} now takes bookings with a package. You can keep booking until %{date}."
 msgstr "%{box} accepte désormais les réservations avec un forfait. Tu peux réserver jusqu'au %{date}."
+
+# ADR-660: staff removed the member's package.
+msgid "%{box} removed your package %{package}."
+msgstr "%{box} a retiré ta formule %{package}."
+
+msgid "Reason: %{reason}"
+msgstr "Raison : %{reason}"
+
+msgid "Your package was removed"
+msgstr "Ta formule a été retirée"

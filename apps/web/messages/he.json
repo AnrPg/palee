@@ -4669,6 +4669,10 @@
     "lvlNameRequired": "לכל רמה צריך שם.",
     "apiErrorRenewalTurnedOff": "חבר הבוקס כיבה את החידוש האוטומטי, ולכן אי אפשר להפיק חשבונית חידוש.",
     "apiErrorMemberLeaving": "חבר זה עוזב את הבוקס.",
+    "apiErrorSubscriptionNotRemovable": "כבר אי אפשר להסיר את החבילה הזו.",
+    "apiErrorInvoiceChoiceRequired": "בחר אם החשבונית שלא שולמה מבוטלת או נשארת חוב.",
+    "apiErrorWriteOffNotAllowed": "רק מי שמנהל את החיובים יכול לבטל חוב.",
+    "apiErrorRemovalNotUndoable": "כבר אי אפשר לבטל את ההסרה.",
     "apiErrorRenewalChoiceNotAllowed": "לחבילה זו אין חידוש אוטומטי שאפשר לשנות.",
     "apiErrorSubscriptionEnded": "החבילה הזו כבר הסתיימה.",
     "apiErrorNotLeaving": "חבר זה לא עוזב את הבוקס.",
@@ -20362,5 +20366,28 @@
       "sec": "{count, plural, one {שנייה אחת} other {# שניות}}",
       "minSec": "{min} ו־{sec}"
     }
+  },
+  "PackageRemoval": {
+    "open": "הסרת חבילה…",
+    "title": "להסיר את «{package}»?",
+    "titleLoading": "הסרת חבילה",
+    "loading": "טוען…",
+    "fromToday": "מהיום אין לו חבילה והוא לא מזמין שיעורים חדשים. הוא נשאר בבוקס כמו שהוא.",
+    "bookings": "{count, plural, one {בעוד דקה ההזמנה הבאה שלו מבוטלת והוא מקבל הודעה.} other {בעוד דקה # ההזמנות הבאות שלו מבוטלות והוא מקבל הודעה.}}",
+    "unpaidTitle": "חשבונית שלא שולמה {amount}",
+    "choiceVoid": "לבטל: הוא לא יחוב אותה",
+    "choiceKeep": "נשארת חוב",
+    "unpaidStays": "ה-{amount} שלא שולמו נשארים חוב, עם תזכורות.",
+    "restStays": "היתרה {amount} נשארת חוב.",
+    "paidStays": "שילם {amount}. התשלום נשאר.",
+    "refund": "החזר כספי…",
+    "nothingOpen": "אין שום דבר פתוח בחבילה הזו.",
+    "reason": "סיבה (לא חובה)",
+    "shareReason": "החבר רואה אותה בהודעה",
+    "cancel": "ביטול",
+    "confirm": "הסרת חבילה",
+    "removing": "מסיר…",
+    "removed": "«{package}» הוסרה מ-{name}.",
+    "undo": "ביטול ההסרה"
   }
 }

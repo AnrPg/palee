@@ -35,6 +35,9 @@ import { ShareExportDialog } from "@/components/share-export/ShareExportDialog";
 import { useShareExport } from "@/components/share-export/useShareExport";
 import { ReferralEventWizard } from "@/components/admin/finance/ReferralEventWizard";
 import { InlineAssignPackage } from "@/components/admin/finance/shared/InlineAssignPackage";
+import { PackageRemovedToast } from "@/components/admin/finance/shared/PackageRemovedToast";
+import { RemovePackageDialog } from "@/components/admin/finance/shared/RemovePackageDialog";
+import type { PackageRemoval } from "@/api/finance";
 import { SortableHeader } from "@/components/admin/finance/shared/SortableHeader";
 import {
   useSortFilter,
@@ -257,6 +260,10 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
       await queryClient.invalidateQueries({ queryKey: ["admin", "finance", "members"] });
     },
   });
+
+  // ADR-660: the package being removed, then the minute its «Αναίρεση» lasts.
+  const [removing, setRemoving] = useState<{ member: FinanceRecord; subscriptionId: string } | null>(null);
+  const [removed, setRemoved] = useState<{ userId: string; nickname: string; removal: PackageRemoval } | null>(null);
 
   const assignPackageMutation = useMutation({
     mutationFn: ({ userId, packageId }: { userId: string; packageId: string }) =>
@@ -575,6 +582,7 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
                       onOpenReferralWizard={() =>
                         setParam({ "new-referral": "true", referrer: field(member, "id") })
                       }
+                      onRemovePackage={(subscriptionId) => setRemoving({ member, subscriptionId })}
                     />
                   ))}
                   {bottomMembers.length > 0 ? (
@@ -616,6 +624,7 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
                               onOpenReferralWizard={() =>
                                 setParam({ "new-referral": "true", referrer: field(member, "id") })
                               }
+                              onRemovePackage={(subscriptionId) => setRemoving({ member, subscriptionId })}
                             />
                           ))
                         : null}
@@ -633,6 +642,35 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
           userId={field(openMember, "id")}
           nickname={field(openMember, "nickname")}
           onClose={() => setParam({ member: null })}
+        />
+      ) : null}
+
+      {removing ? (
+        <RemovePackageDialog
+          userId={field(removing.member, "id")}
+          memberName={field(removing.member, "nickname")}
+          subscriptionId={removing.subscriptionId}
+          onClose={() => setRemoving(null)}
+          onOpenRefund={() => {
+            const userId = field(removing.member, "id");
+            setRemoving(null);
+            setParam({ member: userId, tab: "members" });
+          }}
+          onRemoved={(removal) => {
+            const userId = field(removing.member, "id");
+            setRemoving(null);
+            setRemoved({ userId, nickname: field(removing.member, "nickname"), removal });
+            void queryClient.invalidateQueries({ queryKey: ["admin", "finance"] });
+          }}
+        />
+      ) : null}
+
+      {removed ? (
+        <PackageRemovedToast
+          nickname={removed.nickname}
+          removal={removed.removal}
+          userId={removed.userId}
+          onDone={() => setRemoved(null)}
         />
       ) : null}
 
@@ -681,6 +719,7 @@ function MemberRow({
   onOpenPanel,
   onReceivePayment,
   onOpenReferralWizard,
+  onRemovePackage,
 }: {
   member: FinanceRecord;
   last: boolean;
@@ -696,6 +735,8 @@ function MemberRow({
   onOpenPanel: () => void;
   onReceivePayment: () => void;
   onOpenReferralWizard: () => void;
+  /** ADR-660: «Αφαίρεση πακέτου…» for the package the member holds now. */
+  onRemovePackage: (subscriptionId: string) => void;
 }) {
   const i18n = useUiTranslations();
   const receiveT = useTranslations("ReceivePayment");
@@ -787,6 +828,7 @@ function MemberRow({
           packages={packages}
           pending={assignPending}
           onAssign={onAssignPackage}
+          onRemove={activeSub ? () => onRemovePackage(field(activeSub, "id")) : undefined}
         />
       </td>
 

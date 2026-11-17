@@ -82,6 +82,26 @@ defmodule Palee.Finance.Ports.FinanceStore do
   @callback referral_outcomes([Ecto.UUID.t()]) :: %{Ecto.UUID.t() => map()}
   @callback cancel_subscription(Ecto.UUID.t(), Ecto.UUID.t()) ::
               {:ok, map()} | {:error, term()}
+  @doc "ADR-660: what removing a package would touch (its invoices and money)."
+  @callback package_removal_preview(Ecto.UUID.t(), Ecto.UUID.t()) ::
+              {:ok, map()} | {:error, term()}
+  @doc """
+  ADR-660: removes a package (`attrs`: `invoice_choice`, `may_write_off?`,
+  `actor_id`, `actor_roles`, `reason`, `reason_shared`).
+  """
+  @callback remove_package(Ecto.UUID.t(), Ecto.UUID.t(), map()) ::
+              {:ok, map()} | {:error, term()}
+  @doc "ADR-660: undoes a removal while its undo is open."
+  @callback undo_package_removal(Ecto.UUID.t(), Ecto.UUID.t(), Ecto.UUID.t()) ::
+              {:ok, map()} | {:error, term()}
+  @doc "ADR-660: `{:settle | :wait | :skip, removal}` for a removal at `now`."
+  @callback settle_package_removal(Ecto.UUID.t(), DateTime.t()) ::
+              {:ok, {:settle | :wait | :skip, map()}} | {:error, term()}
+  @doc "ADR-660: removals whose undo closed before `now` that were never settled."
+  @callback unsettled_package_removal_ids(DateTime.t()) :: [Ecto.UUID.t()]
+  @doc "ADR-660: how many upcoming bookings the settled removal cancelled."
+  @callback record_package_removal_bookings(Ecto.UUID.t(), non_neg_integer()) ::
+              {:ok, map()} | {:error, term()}
   @callback extend_current_subscription(Ecto.UUID.t(), pos_integer()) ::
               {:ok, map()} | {:error, term()}
   @callback create_referral_event(map()) :: {:ok, map()} | {:error, term()}

@@ -4669,6 +4669,10 @@
     "lvlNameRequired": "Cada nivel necesita un nombre.",
     "apiErrorRenewalTurnedOff": "El miembro del box desactivó la renovación automática, así que no se puede emitir una factura de renovación.",
     "apiErrorMemberLeaving": "Este miembro del box se va del box.",
+    "apiErrorSubscriptionNotRemovable": "Este paquete ya no se puede quitar.",
+    "apiErrorInvoiceChoiceRequired": "Elige si la factura impagada se anula o sigue pendiente.",
+    "apiErrorWriteOffNotAllowed": "Solo quien gestiona la facturación puede anular una deuda.",
+    "apiErrorRemovalNotUndoable": "Ya no se puede deshacer.",
     "apiErrorRenewalChoiceNotAllowed": "Este paquete no tiene renovación automática que cambiar.",
     "apiErrorSubscriptionEnded": "Este paquete ya terminó.",
     "apiErrorNotLeaving": "Este miembro del box no se va.",
@@ -20362,5 +20366,28 @@
       "sec": "{count, plural, one {# segundo} other {# segundos}}",
       "minSec": "{min} y {sec}"
     }
+  },
+  "PackageRemoval": {
+    "open": "Quitar paquete…",
+    "title": "¿Quitar «{package}»?",
+    "titleLoading": "Quitar paquete",
+    "loading": "Cargando…",
+    "fromToday": "Desde hoy no tiene paquete y no reserva clases nuevas. Sigue en el box como está.",
+    "bookings": "{count, plural, one {En un minuto se cancela su próxima reserva y se le avisa.} other {En un minuto se cancelan sus # próximas reservas y se le avisa.}}",
+    "unpaidTitle": "Factura impagada {amount}",
+    "choiceVoid": "Anular: no la deberá",
+    "choiceKeep": "Sigue como deuda",
+    "unpaidStays": "Los {amount} impagados siguen como deuda, con recordatorios.",
+    "restStays": "Los {amount} pendientes siguen como deuda.",
+    "paidStays": "Pagó {amount}. El pago se mantiene.",
+    "refund": "Devolver dinero…",
+    "nothingOpen": "No hay nada pendiente de este paquete.",
+    "reason": "Motivo (opcional)",
+    "shareReason": "El miembro lo ve en la notificación",
+    "cancel": "Cancelar",
+    "confirm": "Quitar paquete",
+    "removing": "Quitando…",
+    "removed": "Se quitó «{package}» a {name}.",
+    "undo": "Deshacer"
   }
 }

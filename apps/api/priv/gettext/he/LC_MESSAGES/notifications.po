@@ -950,3 +950,13 @@ msgstr "בחרו חבילה"
 
 msgid "%{box} now takes bookings with a package. You can keep booking until %{date}."
 msgstr "%{box} מקבל עכשיו הזמנות רק עם חבילה. אפשר להזמין עד %{date}."
+
+# ADR-660: staff removed the member's package.
+msgid "%{box} removed your package %{package}."
+msgstr "%{box} הסיר את החבילה שלך %{package}."
+
+msgid "Reason: %{reason}"
+msgstr "סיבה: %{reason}"
+
+msgid "Your package was removed"
+msgstr "החבילה שלך הוסרה"

@@ -1397,6 +1397,23 @@ defmodule Palee.Infrastructure.Scheduling.EctoSchedulingStore do
     end)
   end
 
+  @impl true
+  def count_active_future_bookings_for_user(%{organization_id: organization_id}, user_id) do
+    now = DateTime.utc_now() |> DateTime.truncate(:second)
+
+    Booking
+    |> join(:inner, [booking], slot in ScheduledClass, on: slot.id == booking.scheduled_class_id)
+    |> where(
+      [booking, slot],
+      booking.organization_id == ^organization_id and
+        slot.organization_id == ^organization_id and booking.user_id == ^user_id and
+        booking.status in [:pending, :approved] and slot.scheduled_at >= ^now
+    )
+    |> select([booking, _slot], count(booking.id))
+    |> Repo.one()
+    |> Kernel.||(0)
+  end
+
   defp maybe_cancel_timeout_job(nil), do: :ok
 
   defp maybe_cancel_timeout_job(job_id) do

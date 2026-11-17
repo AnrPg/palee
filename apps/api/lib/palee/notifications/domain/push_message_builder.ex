@@ -1120,6 +1120,36 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
     }
   end
 
+  # ADR-660.
+  def build("package_removed", payload, localize) do
+    cancelled = payload["cancelled_bookings"] || 0
+
+    lines =
+      [
+        localize.("%{box} removed your package %{package}.", %{
+          box: payload["box_name"],
+          package: payload["package_name"]
+        }),
+        if(cancelled > 0,
+          do: localize.("Your upcoming bookings were cancelled: %{count}.", %{count: cancelled})
+        ),
+        case payload["reason"] do
+          reason when is_binary(reason) and reason != "" ->
+            localize.("Reason: %{reason}", %{reason: reason})
+
+          _none ->
+            nil
+        end
+      ]
+      |> Enum.reject(&is_nil/1)
+
+    %{
+      title: localize.("Your package was removed", %{}),
+      body: Enum.join(lines, " "),
+      url: payload["url"] || "/me/payments"
+    }
+  end
+
   def build("package_rule_grace", payload, localize) do
     %{
       title: localize.("Choose a package", %{}),
