@@ -39,6 +39,45 @@ function trackServerRenders(page: Page) {
   };
 }
 
+type InstrumentedPage = { goto: Page["goto"]; settleServerRenders: () => Promise<void> };
+const instrumented = new WeakMap<Page, InstrumentedPage>();
+
+/**
+ * Makes `goto`, `reload` and `close` of a page wait for its server renders (bounded)
+ * and `goto`/`reload` for hydration. Once per page: the context applies it to every
+ * page it opens, the shared `page` fixture included. A spec that closes a page itself
+ * (offline-message-delivery: "survives page close") used to cut a render mid-stream,
+ * seen as "⨯ Error: The destination stream closed early." in the dev server log.
+ * Returns the unwrapped `goto` (for the teardown's about:blank) and the settle step.
+ */
+function instrumentPage(page: Page): InstrumentedPage {
+  const existing = instrumented.get(page);
+  if (existing) return existing;
+  const goto = page.goto.bind(page);
+  const reload = page.reload.bind(page);
+  const close = page.close.bind(page);
+  const settleServerRenders = trackServerRenders(page);
+  page.goto = async (...args: Parameters<Page["goto"]>) => {
+    await settleServerRenders();
+    const response = await goto(...args);
+    await waitForHydration(page);
+    return response;
+  };
+  page.reload = async (...args: Parameters<Page["reload"]>) => {
+    await settleServerRenders();
+    const response = await reload(...args);
+    await waitForHydration(page);
+    return response;
+  };
+  page.close = async (...args: Parameters<Page["close"]>) => {
+    await settleServerRenders();
+    return close(...args);
+  };
+  const result = { goto, settleServerRenders };
+  instrumented.set(page, result);
+  return result;
+}
+
 /** Whether a spec has its stub API server (playwright.config's `stubApiPort`) up right now. */
 function stubApiListening(): Promise<boolean> {
   return new Promise((resolve) => {
@@ -80,24 +119,15 @@ export const test = base.extend({
       if (await stubApiListening()) return route.continue();
       return route.fulfill({ status: 404, contentType: "application/json", body: JSON.stringify({ error: "not_stubbed" }) });
     });
+    // Pages a spec opens itself (`context.newPage()`) leave the same way as the shared one.
+    context.on("page", (opened) => {
+      instrumentPage(opened);
+    });
     await provide(context);
+    await Promise.all(context.pages().map((open) => instrumentPage(open).settleServerRenders()));
   },
   page: async ({ page }, provide) => {
-    const goto = page.goto.bind(page);
-    const reload = page.reload.bind(page);
-    const settleServerRenders = trackServerRenders(page);
-    page.goto = async (...args: Parameters<Page["goto"]>) => {
-      await settleServerRenders();
-      const response = await goto(...args);
-      await waitForHydration(page);
-      return response;
-    };
-    page.reload = async (...args: Parameters<Page["reload"]>) => {
-      await settleServerRenders();
-      const response = await reload(...args);
-      await waitForHydration(page);
-      return response;
-    };
+    const { goto, settleServerRenders } = instrumentPage(page);
     await provide(page);
     // Teardown removes the routes before it closes the page, so a fetch the page fires
     // in that gap (a poll, a refetch on blur) skips the fallback above and is proxied to
