@@ -16,7 +16,7 @@ defmodule Palee.Workouts.Domain.ExerciseDescriptors do
   base exercise's catalog ref.
   """
 
-  alias Palee.Workouts.Domain.{FreeTextDocument, FreeTextExercises, PlanWorkload}
+  alias Palee.Workouts.Domain.{FreeTextDocument, FreeTextExercises, PlanWorkload, SectionedText}
   alias Palee.Workouts.Domain.WorkoutDsl.ExerciseCatalog
 
   def from_workout(%{sections: sections}) when is_list(sections) do
@@ -36,7 +36,9 @@ defmodule Palee.Workouts.Domain.ExerciseDescriptors do
   when the coach gave one, else 1.
 
   Structured and Quick Text workouts read their sections (a draft's sections
-  come from its draft data); a structured plan section (ADR-270) weighs each
+  come from its draft data, also while a published workout is being edited);
+  a sectioned text workout (ADR-180) is read as the text its sections
+  compose, a draft's too; a structured plan section (ADR-270) weighs each
   exercise by the sets its plan prescribes. A free-text workout without sections is read
   line by line (`FreeTextExercises`). Names are resolved leniently (a plural
   such as "Thrusters" matches "Thruster"); an unresolved exercise keeps a
@@ -54,21 +56,46 @@ defmodule Palee.Workouts.Domain.ExerciseDescriptors do
   # ADR-570: a document with exercise links (picked or confirmed by the
   # coach) is read with them; otherwise the body is read line by line.
   defp free_text_exercises(workout) do
-    document =
-      field(workout, :free_text_document) ||
-        field(field(workout, :draft_data), :free_text_document)
+    %{document: document, body: body} = free_text(workout)
 
     if FreeTextDocument.links?(document),
       do: document |> FreeTextDocument.lines() |> FreeTextExercises.from_lines(),
-      else: FreeTextExercises.from_text(free_text_body(workout))
+      else: FreeTextExercises.from_text(body)
   end
 
-  # A draft keeps its body in the draft data until it is published.
-  defp free_text_body(workout),
-    do: field(workout, :free_text_body) || field(field(workout, :draft_data), :free_text_body)
+  # The text the coach is working on: an unpublished edit (draft data, only
+  # on staff reads) wins over the published text. A sectioned draft (ADR-180)
+  # keeps its text in its sections until publishing composes the body, so it
+  # is composed here the same way.
+  defp free_text(workout) do
+    draft = field(workout, :draft_data)
+
+    cond do
+      is_map(draft) and SectionedText.sectioned?(draft) ->
+        SectionedText.draft_text(field(draft, :sections))
+
+      is_map(draft) and is_binary(field(draft, :free_text_body)) ->
+        %{document: field(draft, :free_text_document), body: field(draft, :free_text_body)}
+
+      true ->
+        %{
+          document: field(workout, :free_text_document) || field(draft, :free_text_document),
+          body: field(workout, :free_text_body) || field(draft, :free_text_body)
+        }
+    end
+  end
+
+  # Sections the coach is editing (a draft's own) win over published ones.
+  defp sections(workout) do
+    case workout |> field(:draft_data) |> field(:sections) do
+      [_ | _] = draft_sections -> draft_sections
+      _none -> field(workout, :sections) || []
+    end
+  end
 
   defp section_exercises(workout) do
-    (field(workout, :sections) || [])
+    workout
+    |> sections()
     |> Enum.filter(&is_map/1)
     |> Enum.flat_map(&weighted_exercises/1)
     |> Enum.filter(&is_map/1)

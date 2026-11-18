@@ -125,6 +125,32 @@ defmodule Palee.Workouts.Domain.SectionedText do
   defp timer_preset(nil), do: TimerPresets.parse(%{"format" => "untimed"})
   defp timer_preset(raw), do: TimerPresets.parse(raw)
 
+  @doc """
+  The plain text and rich text a sectioned draft would publish, read
+  leniently (no timer or length checks): what goal suggestion and the
+  exercise check read before the workout is published. Sections without
+  text are left out. Returns `%{body, document}`.
+  """
+  def draft_text(sections) when is_list(sections) do
+    sections =
+      for {%{} = section, index} <- Enum.with_index(sections, 1),
+          body = section |> value(:free_text_body) |> trimmed(),
+          body != "" do
+        title = section |> value(:name) |> trimmed()
+
+        %{
+          "name" => if(title == "", do: Integer.to_string(index), else: title),
+          "free_text_body" => body,
+          "free_text_document" => document(value(section, :free_text_document), body),
+          "section_metadata" => %{"untitled" => title == ""}
+        }
+      end
+
+    %{body: compose_body(sections), document: compose_document(sections)}
+  end
+
+  def draft_text(_sections), do: %{body: "", document: compose_document([])}
+
   @doc "The workout's plain text: each section's title (when it has one) above its text."
   def compose_body(sections) do
     Enum.map_join(sections, "\n\n", fn section ->

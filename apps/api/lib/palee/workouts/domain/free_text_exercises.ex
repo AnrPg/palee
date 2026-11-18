@@ -10,10 +10,12 @@ defmodule Palee.Workouts.Domain.FreeTextExercises do
       Pull-ups
 
   yields thruster and pull-up. A line naming nothing known is reported as
-  one unmatched exercise; blank and pure-number lines are skipped. A leading
+  one unmatched exercise; blank and pure-number lines are skipped. A count
+  written against a name ("20xBack Extension") does not hide it. A leading
   `5x5` or `5 x 3` on a line is read as its set count.
   """
 
+  alias Palee.Workouts.Domain.WodWords
   alias Palee.Workouts.Domain.WorkoutDsl.ExerciseCatalog
 
   @max_lines 80
@@ -151,15 +153,15 @@ defmodule Palee.Workouts.Domain.FreeTextExercises do
   end
 
   # Words that can name a movement: no numbers, loads or units. Text in
-  # brackets (loads, scaling notes) is dropped.
-  @noise ~w(x kg kgs lb lbs m km cal cals rep reps round rounds rft amrap emom for time min mins sec secs of then rest)
+  # brackets (loads, scaling notes) is dropped. A count glued to a word
+  # ("20xBack Extension") is split off by `WodWords`.
+  @noise ~w(x χ kg kgs lb lbs m km cal cals rep reps round rounds rft amrap emom for time min mins sec secs of then rest)
   defp words(text) do
     text
     |> String.downcase()
     |> String.replace(~r/\([^)]*\)|\[[^\]]*\]/u, " ")
-    |> String.replace(~r/[^\p{L}\p{N}&'\s-]+/u, " ")
-    |> String.replace(~r/[\s_-]+/u, " ")
-    |> String.split(" ", trim: true)
+    |> WodWords.tokens()
+    |> Enum.flat_map(&String.split(&1, "-", trim: true))
     |> Enum.reject(&(Regex.match?(~r/\d/u, &1) or &1 in @noise))
   end
 

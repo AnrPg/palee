@@ -4,7 +4,8 @@ import { fold, fuzzy } from "@/lib/structured-plan/fuzzy";
  * ADR-461: the words just typed before the caret in a free text (a note),
  * the candidates for an exercise name. A run stops at a line break, a
  * punctuation mark or a word that starts with a digit ("5x5 back sq" →
- * "back sq", while "T2B" stays one word); it holds at most
+ * "back sq", while "T2B" stays one word); a count glued to a name is split
+ * off ("20xBack ext" → "Back ext"); it holds at most
  * three words and needs three letters or digits. `null` while the caret is inside a
  * word (more letters follow) or nothing fits.
  */
@@ -13,6 +14,8 @@ export type TextRun = { from: number; to: number; words: { text: string; at: num
 const STOP = /[\n\r,;.:!?()[\]{}"«»@+*/=#%]/u;
 const LETTER = /[\p{L}&]/u;
 const MAX_WORDS = 3;
+/** Mirrors the API's `WodWords`: digits, decimals, a multiplier sign and a hyphen before letters. */
+const GLUED_COUNT = /^(\d+(?:[.,]\d+)?[xX×χΧ]?-?)(?![xX×χΧ]?\d)(\p{L}.*)$/u;
 
 export function textRunAt(text: string, caret: number): TextRun | null {
   if (caret < 0 || caret > text.length) return null;
@@ -21,7 +24,16 @@ export function textRunAt(text: string, caret: number): TextRun | null {
   while (start > 0 && !STOP.test(text[start - 1]!)) start -= 1;
   const segment = text.slice(start, caret);
   const words: { text: string; at: number }[] = [];
-  for (const match of segment.matchAll(/[^\s]+/gu)) words.push({ text: match[0], at: start + (match.index ?? 0) });
+  for (const match of segment.matchAll(/[^\s]+/gu)) {
+    const at = start + (match.index ?? 0);
+    // A count glued to the name ("20xBack", "10Burpees", "5χΚάμψεις") is a
+    // number of its own, so the name after it still counts.
+    const glued = GLUED_COUNT.exec(match[0]);
+    if (glued) {
+      words.push({ text: glued[1]!, at });
+      words.push({ text: glued[2]!, at: at + glued[1]!.length });
+    } else words.push({ text: match[0], at });
+  }
   let lastNumber = -1;
   words.forEach((w, i) => {
     if (/^\d/.test(w.text)) lastNumber = i;

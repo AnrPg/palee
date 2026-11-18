@@ -129,6 +129,14 @@ describe("suggestions at the caret (ADR-570)", () => {
     expect(items[0]!.from).toBe(3);
   });
 
+  it("reads a name typed right after a count (20xBack ext)", () => {
+    const text = "20xBack ext";
+    const run = textRunAt(text, text.length)!;
+    expect(run.query).toBe("Back ext");
+    expect(run.from).toBe(3);
+    expect(textRunAt("5x5", 3)).toBeNull();
+  });
+
   it("offers nothing once the words already are a name", () => {
     const text = "21 Thruster";
     expect(suggestionsFor(textRunAt(text, text.length)!, text, groups)).toEqual([]);

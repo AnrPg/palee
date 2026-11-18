@@ -174,9 +174,10 @@ defmodule Palee.Application.ExerciseMatches do
         &Workouts.exercise_catalog_search_aliases/1
       )
 
+  # The coach's unpublished edit wins over the published text.
   defp document(workout) do
-    workout_field(workout, :free_text_document) ||
-      workout_field(workout_field(workout, :draft_data), :free_text_document)
+    workout_field(workout_field(workout, :draft_data), :free_text_document) ||
+      workout_field(workout, :free_text_document)
   end
 
   defp workout_field(%{} = map, key), do: Map.get(map, key) || Map.get(map, Atom.to_string(key))

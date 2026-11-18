@@ -34,6 +34,15 @@ defmodule Palee.Workouts.Domain.ExerciseMatcherTest do
     assert [{"Σχοινάκι διπλό", "double-under", :fuzzy}] = found("Σχοινάκι διπλό", names)
   end
 
+  test "a count glued to the name is split off, offsets on the name", %{names: names} do
+    line = "20xBack Extension"
+    assert [%{exercise_ref: "back-extension"} = match] = ExerciseMatcher.match_line(line, names)
+    assert String.slice(line, match.from, match.to - match.from) == "Back Extension"
+    assert [{"Burpees", "burpee", _kind}] = found("10Burpees", names)
+    assert [{"Thrusters", "thruster", :exact}] = found("3×Thrusters", names)
+    assert [] = found("5x5", names)
+  end
+
   test "noise, numbers, brackets and unknown words match nothing", %{names: names} do
     assert [] = found("21-15-9", names)
     assert [] = found("rest 2 min", names)

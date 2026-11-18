@@ -25,9 +25,10 @@ defmodule Palee.Workouts.Domain.ExerciseMatcher do
   """
 
   alias Palee.Transliteration
+  alias Palee.Workouts.Domain.WodWords
 
   @max_window 4
-  @noise ~w(x kg kgs lb lbs m km cal cals rep reps round rounds rft amrap emom for time min mins sec secs of then rest and με και the a every each on off)
+  @noise ~w(x χ kg kgs lb lbs m km cal cals rep reps round rounds rft amrap emom for time min mins sec secs of then rest and με και the a every each on off)
 
   @type name_entry :: %{
           exercise_ref: String.t(),
@@ -79,14 +80,15 @@ defmodule Palee.Workouts.Domain.ExerciseMatcher do
   # -- Scanning ---------------------------------------------------------------
 
   # Runs of consecutive word tokens `[{word, from, to}]`; noise, numbers and
-  # bracketed text break a run.
+  # bracketed text break a run. A count glued to a word ("20xBack") is its
+  # own token (`WodWords`), so the word after it is still read.
   defp runs(line) do
     brackets =
       ~r/\([^)]*\)|\[[^\]]*\]/u
       |> Regex.scan(line, return: :index)
       |> Enum.map(fn [{start, len}] -> {cp(line, start), cp(line, start + len)} end)
 
-    ~r/[\p{L}\p{N}][\p{L}\p{N}'’&-]*/u
+    WodWords.pattern()
     |> Regex.scan(line, return: :index)
     |> Enum.map(fn [{start, len}] ->
       from = cp(line, start)
