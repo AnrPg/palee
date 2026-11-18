@@ -18,13 +18,9 @@ defmodule Palee.Notifications.GroupKeyBackfillTest do
 
   # The test alias runs the migrations in this VM first, so the module is
   # usually loaded already; requiring the file again redefines it (a warning).
-  setup_all do
-    unless Code.ensure_loaded?(NotificationGroupKey) do
-      Code.require_file(Application.app_dir(:palee, @migration_file))
-    end
-
-    :ok
-  end
+  # At compile time, so the calls below resolve.
+  unless Code.ensure_loaded?(NotificationGroupKey),
+    do: Code.require_file(Application.app_dir(:palee, @migration_file))
 
   test "the backfill writes the keys the app writes" do
     user = user_fixture()

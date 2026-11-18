@@ -84,10 +84,10 @@ defmodule Palee.MixProject do
       {:redix, "~> 1.3"},
       {:web_push_elixir, "~> 0.8.0"},
       {:dns_cluster, "~> 0.2.0"},
-      {:bandit, "~> 1.12.4"},
+      {:bandit, "~> 1.15"},
       {:ex_aws, "~> 2.5"},
       {:ex_aws_s3, "~> 2.5"},
-      {:hackney, "~> 4.7.2"},
+      {:hackney, "~> 4.10"},
       # ADR-245: Swiss QR-bill and myDATA QR codes (pure Elixir, no NIFs).
       {:eqrcode, "~> 0.2.1"},
       # ADR-280: property tests of the suggestions engine.
