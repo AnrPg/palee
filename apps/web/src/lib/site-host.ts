@@ -11,6 +11,7 @@ export type SiteHost = { slug: string; primaryHost: string | null; primary: bool
 type CacheEntry = { value: SiteHost | null; expiresAt: number };
 
 const POSITIVE_TTL_MS = 5 * 60_000;
+const LOOKUP_TIMEOUT_MS = 1_500;
 const NEGATIVE_TTL_MS = 60_000;
 const defaultCache = new Map<string, CacheEntry>();
 
@@ -76,7 +77,12 @@ export async function lookupSiteHost(
   if (cached && cached.expiresAt > now()) return cached.value;
   let value: SiteHost | null = null;
   try {
-    const response = await fetchImpl(`${apiOrigin}/api/public/sites/by-host/${encodeURIComponent(key)}`, { headers: INTERNAL_API_HEADERS });
+    const response = await fetchImpl(`${apiOrigin}/api/public/sites/by-host/${encodeURIComponent(key)}`, {
+      headers: INTERNAL_API_HEADERS,
+      // The proxy waits on this for every request to a box's own domain: a slow
+      // API must not hold the page, it answers as an unknown host and retries soon.
+      signal: AbortSignal.timeout(LOOKUP_TIMEOUT_MS),
+    });
     if (response.ok) {
       const body = (await response.json()) as { slug: string; primary: boolean; primary_host: string | null };
       value = { slug: body.slug, primary: body.primary, primaryHost: body.primary_host };

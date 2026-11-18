@@ -66,6 +66,16 @@ describe("box website on its own domain", () => {
     expect(await lookupSiteHost("unknown.gr", { apiOrigin: "http://api", fetchImpl, now, cache })).toBeNull();
   });
 
+  it("answers an unknown host when the API does not reply in time", async () => {
+    // A fetch that only ends when its signal aborts, as a hung API connection does.
+    // AbortSignal.timeout runs on Node's own timer, so this waits the real 1.5 s.
+    const fetchImpl = vi.fn(
+      (_url: string | URL | Request, init?: RequestInit) =>
+        new Promise<Response>((_resolve, reject) => init?.signal?.addEventListener("abort", () => reject(init.signal!.reason))),
+    ) as unknown as typeof fetch;
+    expect(await lookupSiteHost("slow.gr", { apiOrigin: "http://api", fetchImpl, now: () => 0, cache: new Map() })).toBeNull();
+  });
+
   it("sends the app's own pages on a box's domain to the app's address", () => {
     const env = { NEXT_PUBLIC_SITE_URL: "https://palee.app" };
     expect(appPageRedirect("/events/42", "?from=site", env)).toBe("https://palee.app/events/42?from=site");

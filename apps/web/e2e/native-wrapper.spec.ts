@@ -1,3 +1,4 @@
+import { expectStatus } from "./support/http";
 import { expect, test, type Page } from "./support/test";
 
 // Phase 3 M9 (ADR-171): the store apps wrap this same web app. In a browser
@@ -75,10 +76,11 @@ window.Capacitor = {
 };`;
 
 test.describe("store app wrapper", () => {
-  test("app-link files are not served until the store ids are configured", async ({ request }) => {
-    expect((await request.get("/.well-known/apple-app-site-association")).status()).toBe(404);
-    expect((await request.get("/.well-known/assetlinks.json")).status()).toBe(404);
-  });
+  for (const file of ["apple-app-site-association", "assetlinks.json"]) {
+    test(`${file} is not served until the store ids are configured`, async ({ request }) => {
+      await expectStatus(request, `/.well-known/${file}`, 404);
+    });
+  }
 
   test("in a browser both phone-health rows keep «With the app»", async ({ page }) => {
     await devicesPage(page);
