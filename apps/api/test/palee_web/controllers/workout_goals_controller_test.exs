@@ -55,7 +55,7 @@ defmodule PaleeWeb.WorkoutGoalsControllerTest do
     stimulus: "Unbroken sets"
   }
 
-  defp save_goals(conn, ctx, extra \\ %{}) do
+  defp save_goals(conn, ctx, extra) do
     conn
     |> recycle()
     |> put_bearer_token(ctx.owner)

@@ -12,8 +12,19 @@ defmodule Palee.Notifications.GroupKeyBackfillTest do
   alias Palee.Notifications
   alias Palee.Organizations
 
-  Code.require_file("priv/repo/migrations/20271112100000_notification_group_key.exs")
   alias Palee.Repo.Migrations.NotificationGroupKey
+
+  @migration_file "priv/repo/migrations/20271112100000_notification_group_key.exs"
+
+  # The test alias runs the migrations in this VM first, so the module is
+  # usually loaded already; requiring the file again redefines it (a warning).
+  setup_all do
+    unless Code.ensure_loaded?(NotificationGroupKey) do
+      Code.require_file(Application.app_dir(:palee, @migration_file))
+    end
+
+    :ok
+  end
 
   test "the backfill writes the keys the app writes" do
     user = user_fixture()
