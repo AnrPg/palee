@@ -335,8 +335,14 @@ test.describe("partners", () => {
     const ideas = page.getByTestId("partner-suggestions");
     await expect(ideas).toContainText("You don't share a box. Ideas near you both:");
     await expect(ideas).toContainText("you both train: Weekend · 2.1 and 3 km away");
-    await ideas.getByRole("button", { name: "Suggest" }).click();
-    expect(posted).toEqual([{ kind: "event", id: "event-1" }]);
+    // The click resolves once the tap is dispatched; the POST leaves afterwards
+    // (mutation scheduling), so on a loaded runner the route has not run yet.
+    // Wait for the button to be visible and enabled, then poll for the request.
+    const suggest = ideas.getByRole("button", { name: "Suggest" });
+    await expect(suggest).toBeVisible();
+    await expect(suggest).toBeEnabled();
+    await suggest.click();
+    await expect.poll(() => posted).toEqual([{ kind: "event", id: "event-1" }]);
     await expect(page.getByTestId("partner-plan")).toHaveAttribute("href", "/events/event-1");
 
     await page.getByTestId("partner-go-together").click();
