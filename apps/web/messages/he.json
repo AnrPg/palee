@@ -9410,7 +9410,7 @@
       "atlas": "אטלס ›",
       "openInAtlas": "פתיחת {muscle} באטלס",
       "atlasTitle": "אטלס אנטומי",
-      "backToGoals": "‹ יעדים"
+      "backToGoals": "יעדים"
     },
     "felt": {
       "title": "מה הרגשת?",
@@ -9443,7 +9443,7 @@
   "Atlas": {
     "title": "אטלס אנטומי",
     "back": "התקדמות",
-    "backToWod": "‹ חזרה",
+    "backToWod": "חזרה",
     "mode": {
       "label": "תצוגה",
       "wod": "ה-WOD הזה",

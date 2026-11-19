@@ -182,7 +182,7 @@ describe("AtlasScreen", () => {
     fireEvent.click(within(panel).getByRole("button", { name: /Thighs/ }));
     fireEvent.click(await within(panel).findByRole("button", { name: /Hamstrings/ }));
     expect(await within(panel).findByTestId("atlas-wod-role")).toHaveTextContent("Not a target of this WOD.");
-    expect(screen.getByTestId("atlas-back")).toHaveTextContent("‹ Back");
+    expect(screen.getByTestId("atlas-back")).toHaveTextContent("Back");
   });
 
   it("heat-map mode shows the legend with its caveat", async () => {

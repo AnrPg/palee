@@ -124,6 +124,8 @@ describe("WodGoalsStripView", () => {
   });
 
   it("shows one quiet row per kind and opens the sheet with every role", async () => {
+    // The atlas step reads the box's exercises of the muscle opened.
+    apiRequest.mockImplementation(async (path?: string) => (String(path).startsWith("/anatomy/nodes/") ? { node_id: "glutes", videos_included: true, exercises: [] } : {}));
     wrap(<WodGoalsStripView goals={goals} />);
     const block = screen.getByTestId("wod-goals-strip");
     expect(block).toHaveAccessibleName("Goals");

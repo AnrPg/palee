@@ -9410,7 +9410,7 @@
       "atlas": "Άτλαντας ›",
       "openInAtlas": "{muscle} στον άτλαντα",
       "atlasTitle": "Ανατομικός άτλαντας",
-      "backToGoals": "‹ Στόχοι"
+      "backToGoals": "Στόχοι"
     },
     "felt": {
       "title": "Τι ένιωσες;",
@@ -9443,7 +9443,7 @@
   "Atlas": {
     "title": "Ανατομικός άτλαντας",
     "back": "Πρόοδος",
-    "backToWod": "‹ Πίσω",
+    "backToWod": "Πίσω",
     "mode": {
       "label": "Προβολή",
       "wod": "Αυτό το WOD",

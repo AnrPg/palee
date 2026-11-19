@@ -9410,7 +9410,7 @@
       "atlas": "Атлас ›",
       "openInAtlas": "Открыть «{muscle}» в атласе",
       "atlasTitle": "Анатомический атлас",
-      "backToGoals": "‹ Цели"
+      "backToGoals": "Цели"
     },
     "felt": {
       "title": "Что ты почувствовал(а)?",
@@ -9443,7 +9443,7 @@
   "Atlas": {
     "title": "Анатомический атлас",
     "back": "Прогресс",
-    "backToWod": "‹ Назад",
+    "backToWod": "Назад",
     "mode": {
       "label": "Вид",
       "wod": "Этот WOD",

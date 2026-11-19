@@ -9410,7 +9410,7 @@
       "atlas": "الأطلس ›",
       "openInAtlas": "فتح {muscle} في الأطلس",
       "atlasTitle": "الأطلس التشريحي",
-      "backToGoals": "‹ الأهداف"
+      "backToGoals": "الأهداف"
     },
     "felt": {
       "title": "بماذا شعرت؟",
@@ -9443,7 +9443,7 @@
   "Atlas": {
     "title": "الأطلس التشريحي",
     "back": "التقدّم",
-    "backToWod": "‹ رجوع",
+    "backToWod": "رجوع",
     "mode": {
       "label": "العرض",
       "wod": "هذا الـWOD",

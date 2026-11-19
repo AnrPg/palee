@@ -9410,7 +9410,7 @@
       "atlas": "Atlante ›",
       "openInAtlas": "Apri {muscle} nell’atlante",
       "atlasTitle": "Atlante anatomico",
-      "backToGoals": "‹ Obiettivi"
+      "backToGoals": "Obiettivi"
     },
     "felt": {
       "title": "Cosa hai sentito?",
@@ -9443,7 +9443,7 @@
   "Atlas": {
     "title": "Atlante anatomico",
     "back": "Progressi",
-    "backToWod": "‹ Indietro",
+    "backToWod": "Indietro",
     "mode": {
       "label": "Vista",
       "wod": "Questo WOD",

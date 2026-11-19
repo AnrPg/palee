@@ -10,6 +10,7 @@ import { fetchMyAtlas, myAtlasKey, type MyAtlas } from "@/api/atlas";
 import { AnatomyFigure } from "@/components/anatomy/AnatomyFigure";
 import { ClientPage, LoadingLine, QueryProblem } from "@/components/client/ClientPage";
 import { useSession } from "@/components/session-provider";
+import { BackButton } from "@/components/ui/BackLink";
 import { RoleLegend, Segmented } from "@/components/wod-goals/GoalChips";
 import {
   aboutNodeId,
@@ -95,9 +96,9 @@ export function AtlasScreen() {
       title={t("title")}
       actions={
         hasWod ? (
-          <button type="button" onClick={back} className="text-sm font-semibold" style={{ color: "var(--primary)" }} data-testid="atlas-back">
+          <BackButton onClick={back} data-testid="atlas-back">
             {t("backToWod")}
-          </button>
+          </BackButton>
         ) : (
           <Link href="/journal/progress" className="text-sm font-semibold" style={{ color: "var(--primary)" }}>
             {t("back")}

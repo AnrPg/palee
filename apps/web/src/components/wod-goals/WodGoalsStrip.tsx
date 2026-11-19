@@ -10,6 +10,7 @@ export type GoalsShown = Pick<MemberWorkoutGoals, "muscles" | "qualities" | "sti
 import { AnatomyFigure } from "@/components/anatomy/AnatomyFigure";
 import { AnatomyThumb } from "@/components/anatomy/AnatomyThumb";
 import { Sheet, SheetButton } from "@/components/community/Sheet";
+import { BackButton } from "@/components/ui/BackLink";
 import { WodAtlasView, type WodAtlasContext } from "@/components/anatomy/atlas/WodAtlasView";
 import type { MuscleNodeId } from "@/lib/anatomy/taxonomy";
 import { goalHighlights, musclesByRole, summaryMuscleIds } from "@/lib/wod-goals/goals";
@@ -146,15 +147,9 @@ export function WodGoalsSheet({
     return (
       <Sheet title={t("sheet.atlasTitle")} labelId={labelId} onClose={onClose} footer={<SheetButton onClick={onClose}>{t("sheet.close")}</SheetButton>}>
         <div className="flex flex-col gap-3">
-          <button
-            type="button"
-            onClick={() => setAtlasOn(null)}
-            className="self-start text-sm font-semibold"
-            style={{ color: "var(--primary)" }}
-            data-testid="wod-goals-atlas-back"
-          >
+          <BackButton onClick={() => setAtlasOn(null)} className="min-h-11 self-start text-sm font-semibold" data-testid="wod-goals-atlas-back">
             {t("sheet.backToGoals")}
-          </button>
+          </BackButton>
           <WodAtlasView muscles={goals.muscles} context={atlas} initialNode={atlasOn === "body" ? null : atlasOn} />
         </div>
       </Sheet>

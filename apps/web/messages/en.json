@@ -9410,7 +9410,7 @@
       "atlas": "Atlas ›",
       "openInAtlas": "Open {muscle} in the atlas",
       "atlasTitle": "Anatomy atlas",
-      "backToGoals": "‹ Goals"
+      "backToGoals": "Goals"
     },
     "felt": {
       "title": "How did it feel?",
@@ -9443,7 +9443,7 @@
   "Atlas": {
     "title": "Anatomy atlas",
     "back": "Progress",
-    "backToWod": "‹ Back",
+    "backToWod": "Back",
     "mode": {
       "label": "View",
       "wod": "This WOD",

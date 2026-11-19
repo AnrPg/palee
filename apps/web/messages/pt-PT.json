@@ -9410,7 +9410,7 @@
       "atlas": "Atlas ›",
       "openInAtlas": "Abrir {muscle} no atlas",
       "atlasTitle": "Atlas anatómico",
-      "backToGoals": "‹ Objetivos"
+      "backToGoals": "Objetivos"
     },
     "felt": {
       "title": "O que sentiu?",
@@ -9443,7 +9443,7 @@
   "Atlas": {
     "title": "Atlas anatómico",
     "back": "Progresso",
-    "backToWod": "‹ Voltar",
+    "backToWod": "Voltar",
     "mode": {
       "label": "Vista",
       "wod": "Este WOD",
