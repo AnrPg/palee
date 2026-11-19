@@ -154,6 +154,37 @@ describe("AtlasScreen", () => {
     expect(await within(panel).findByText("Exercises show once a box is selected.")).toBeInTheDocument();
   });
 
+  it("opened from a WOD, shows all its muscles by role and keeps them while drilling down", async () => {
+    search = new URLSearchParams("primary=quadriceps&secondary=glutes&stabilizer=erector-spinae");
+    wrap();
+    expect(await screen.findByRole("radio", { name: "This WOD" })).toBeChecked();
+    const panel = await screen.findByTestId("atlas-panel");
+    await within(panel).findByRole("heading", { name: "Muscles in this WOD" });
+    const list = within(panel).getByTestId("atlas-wod-muscles");
+    expect(list).toHaveTextContent("PrimaryQuadriceps");
+    expect(list).toHaveTextContent("SecondaryGlutes");
+    expect(list).toHaveTextContent("StabilizingErector spinae");
+    expect(screen.getByTestId("atlas-figure")).toHaveTextContent("Stabilizing");
+
+    fireEvent.click(within(list).getByRole("button", { name: /Glutes/ }));
+    expect(replace).toHaveBeenCalledWith(
+      "/journal/atlas?primary=quadriceps&secondary=glutes&stabilizer=erector-spinae&node=glutes",
+      { scroll: false },
+    );
+    await within(panel).findByRole("heading", { name: "Glutes" });
+    expect(within(panel).getByTestId("atlas-wod-role")).toHaveTextContent("In this WOD: Secondary");
+
+    fireEvent.click(within(panel).getByRole("navigation", { name: "Level" }).querySelector("button")!);
+    await within(panel).findByRole("heading", { name: "Muscles in this WOD" });
+    // «Explore» lists the regions again, and a muscle outside the WOD says so.
+    fireEvent.click(screen.getByRole("radio", { name: "Explore" }));
+    await within(panel).findByRole("heading", { name: "Whole body" });
+    fireEvent.click(within(panel).getByRole("button", { name: /Thighs/ }));
+    fireEvent.click(await within(panel).findByRole("button", { name: /Hamstrings/ }));
+    expect(await within(panel).findByTestId("atlas-wod-role")).toHaveTextContent("Not a target of this WOD.");
+    expect(screen.getByTestId("atlas-back")).toHaveTextContent("‹ Back");
+  });
+
   it("heat-map mode shows the legend with its caveat", async () => {
     wrap();
     fireEvent.click(await screen.findByRole("radio", { name: "My coverage" }));

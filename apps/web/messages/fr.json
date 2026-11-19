@@ -9441,8 +9441,10 @@
   "Atlas": {
     "title": "Atlas anatomique",
     "back": "Progrès",
+    "backToWod": "‹ Retour",
     "mode": {
       "label": "Vue",
+      "wod": "Ce WOD",
       "explore": "Explorer",
       "heat": "Ma couverture"
     },
@@ -9489,6 +9491,17 @@
       "role": {
         "primary": "Principal",
         "secondary": "Secondaire"
+      }
+    },
+    "wod": {
+      "title": "Muscles de ce WOD",
+      "hint": "Tous les muscles que ce WOD fait travailler, avec leur rôle. Touche-en un dans la liste ou sur la figure.",
+      "role": "Dans ce WOD : {role}",
+      "notInWod": "Pas une cible de ce WOD.",
+      "roles": {
+        "primary": "Principal",
+        "secondary": "Secondaire",
+        "stabilizer": "Stabilisation"
       }
     }
   },

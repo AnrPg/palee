@@ -195,11 +195,21 @@ test("the goals sheet opens the atlas on a muscle; the panel, breadcrumb, figure
   await page.getByTestId("wod-goals-open").click();
   const sheet = page.getByRole("dialog", { name: "Workout goals" });
   await sheet.getByTestId("wod-goals-atlas-link").click();
-  // The first visit compiles the route in the dev server.
-  await expect(page).toHaveURL(/\/journal\/atlas\?node=quadriceps$/, { timeout: 60_000 });
+  // The first visit compiles the route in the dev server. The atlas carries
+  // every muscle of the WOD, not only the first one.
+  await expect(page).toHaveURL(/\/journal\/atlas\?primary=quadriceps,latissimus-dorsi&secondary=glutes$/, { timeout: 60_000 });
 
   const panel = page.getByTestId("atlas-panel");
+  await expect(page.getByRole("radio", { name: "This WOD" })).toBeChecked();
+  await expect(panel.getByRole("heading", { name: "Muscles in this WOD" })).toBeVisible();
+  const wodMuscles = panel.getByTestId("atlas-wod-muscles");
+  await expect(wodMuscles).toContainText("Quadriceps");
+  await expect(wodMuscles).toContainText("Latissimus dorsi");
+  await expect(wodMuscles).toContainText("Glutes");
+  await wodMuscles.getByRole("button", { name: "Quadriceps" }).click();
+  await expect(page).toHaveURL(/primary=quadriceps,latissimus-dorsi&secondary=glutes&node=quadriceps$/);
   await expect(panel.getByRole("heading", { name: "Quadriceps" })).toBeVisible();
+  await expect(panel.getByTestId("atlas-wod-role")).toHaveText("In this WOD: Primary");
   await expect(panel).toContainText("Straighten the knee");
   const sets = panel.getByTestId("atlas-your-sets");
   await expect(sets).toContainText("34.5 sets");
@@ -215,7 +225,9 @@ test("the goals sheet opens the atlas on a muscle; the panel, breadcrumb, figure
   await waitForFigure(figure);
   await expect(figure).toHaveAttribute("data-anatomy-status", "ready");
   await expect(figure).toHaveAttribute("data-anatomy-framed", "quadriceps");
-  await expect(figure).toHaveAttribute("aria-label", /Primary: Quadriceps/);
+  // «This WOD» keeps every muscle of the WOD painted in its role.
+  await expect(figure).toHaveAttribute("aria-label", /Primary: Quadriceps and Latissimus dorsi/);
+  await expect(figure).toHaveAttribute("aria-label", /Secondary: Glutes/);
   await shot(page, "atlas-group");
 
   // A head, then up the breadcrumb.
@@ -227,6 +239,8 @@ test("the goals sheet opens the atlas on a muscle; the panel, breadcrumb, figure
   await expect(panel.getByRole("heading", { name: "Thighs" })).toBeVisible();
   await expect(panel.getByRole("button", { name: /Hamstrings/ })).toContainText("9 sets");
   await crumbs.getByRole("button", { name: "Body" }).click();
+  await expect(panel.getByRole("heading", { name: "Muscles in this WOD" })).toBeVisible();
+  await page.getByRole("radio", { name: "Explore" }).click();
   await expect(panel.getByRole("heading", { name: "Whole body" })).toBeVisible();
   // The figure animates only while on screen (below the panel on a phone).
   await figure.scrollIntoViewIfNeeded();

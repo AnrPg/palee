@@ -10,7 +10,7 @@ import { atlasNodeExercisesKey, fetchAtlasNodeExercises, fetchMyAtlas, myAtlasKe
 import { AnatomyFigure } from "@/components/anatomy/AnatomyFigure";
 import { ClientPage, LoadingLine, QueryProblem } from "@/components/client/ClientPage";
 import { useSession } from "@/components/session-provider";
-import { Segmented } from "@/components/wod-goals/GoalChips";
+import { RoleDot, RoleLegend, Segmented } from "@/components/wod-goals/GoalChips";
 import {
   aboutNodeId,
   ATLAS_RANGES,
@@ -24,10 +24,15 @@ import {
   feltCount,
   heatHighlights,
   indexCoverage,
+  parseWodMuscles,
+  WOD_ROLES,
+  wodHighlights,
+  wodRoleOf,
   type AtlasMode,
   type AtlasRange,
   type CoverageIndex,
   type CoverageLevel,
+  type WodMuscle,
 } from "@/lib/anatomy/atlas";
 import { childrenOf, isMuscleNodeId, muscleNode, type MuscleNodeId } from "@/lib/anatomy/taxonomy";
 
@@ -46,7 +51,8 @@ const EXERCISES_SHOWN = 5;
  * member's own sets in the range with a coverage level, what they felt, and
  * the exercises that train it with the gym's videos. «Η κάλυψή μου» paints
  * the body by recent volume. `?node=` opens it on a node (WOD goals,
- * Πρόοδος › Μυϊκή κάλυψη).
+ * Πρόοδος › Μυϊκή κάλυψη); `?primary=&secondary=&stabilizer=` carry a WOD's
+ * muscles and open «Αυτό το WOD», which paints them all in their roles.
  */
 export function AtlasScreen() {
   const t = useTranslations("Atlas");
@@ -56,8 +62,11 @@ export function AtlasScreen() {
   const token = tokens?.access_token ?? null;
 
   const initial = searchParams.get("node");
+  // The WOD comes with the link and never changes on this page.
+  const [wod] = useState<WodMuscle[]>(() => parseWodMuscles(searchParams));
+  const hasWod = wod.length > 0;
   const [selected, setSelected] = useState<MuscleNodeId | null>(initial && isMuscleNodeId(initial) ? initial : null);
-  const [mode, setMode] = useState<AtlasMode>("explore");
+  const [mode, setMode] = useState<AtlasMode>(hasWod ? "wod" : "explore");
   const [range, setRange] = useState<AtlasRange>(DEFAULT_ATLAS_RANGE);
 
   const atlas = useQuery({
@@ -68,22 +77,35 @@ export function AtlasScreen() {
   });
   const index = useMemo(() => indexCoverage(atlas.data?.nodes), [atlas.data]);
   const highlights = useMemo(
-    () => (mode === "heat" ? heatHighlights(index, selected) : exploreHighlights(selected)),
-    [index, mode, selected],
+    () => (mode === "heat" ? heatHighlights(index, selected) : mode === "wod" ? wodHighlights(wod) : exploreHighlights(selected)),
+    [index, mode, selected, wod],
   );
 
   const select = (id: MuscleNodeId | null) => {
     setSelected(id);
-    router.replace(atlasHref(id), { scroll: false });
+    router.replace(atlasHref(id, wod), { scroll: false });
+  };
+
+  // Coming from a WOD, «Πίσω» returns to it (the class, the day, the workout);
+  // opened directly, the page has no history and goes to Πρόοδος.
+  const back = () => {
+    if (window.history.length > 1) router.back();
+    else router.push("/journal/progress");
   };
 
   return (
     <ClientPage
       title={t("title")}
       actions={
-        <Link href="/journal/progress" className="text-sm font-semibold" style={{ color: "var(--primary)" }}>
-          {t("back")}
-        </Link>
+        hasWod ? (
+          <button type="button" onClick={back} className="text-sm font-semibold" style={{ color: "var(--primary)" }} data-testid="atlas-back">
+            {t("backToWod")}
+          </button>
+        ) : (
+          <Link href="/journal/progress" className="text-sm font-semibold" style={{ color: "var(--primary)" }}>
+            {t("back")}
+          </Link>
+        )
       }
     >
       <div className="flex flex-col gap-3">
@@ -92,6 +114,7 @@ export function AtlasScreen() {
           value={mode}
           onChange={setMode}
           options={[
+            ...(hasWod ? [{ value: "wod" as const, label: t("mode.wod") }] : []),
             { value: "explore", label: t("mode.explore") },
             { value: "heat", label: t("mode.heat") },
           ]}
@@ -128,7 +151,7 @@ export function AtlasScreen() {
             focus={selected}
             onPick={(id) => select(id)}
           />
-          {mode === "heat" ? <HeatLegend /> : null}
+          {mode === "heat" ? <HeatLegend /> : mode === "wod" ? <RoleLegend /> : null}
         </div>
         <section
           aria-live="polite"
@@ -142,7 +165,7 @@ export function AtlasScreen() {
           ) : atlas.isError ? (
             <QueryProblem error={atlas.error} onRetry={() => void atlas.refetch()} />
           ) : (
-            <NodePanel selected={selected} index={index} atlas={atlas.data ?? null} range={range} onSelect={select} token={token} />
+            <NodePanel selected={selected} index={index} atlas={atlas.data ?? null} range={range} onSelect={select} token={token} wod={hasWod ? wod : null} wodMode={mode === "wod"} />
           )}
         </section>
       </div>
@@ -209,6 +232,8 @@ function NodePanel({
   range,
   onSelect,
   token,
+  wod,
+  wodMode,
 }: {
   selected: MuscleNodeId | null;
   index: CoverageIndex;
@@ -216,12 +241,26 @@ function NodePanel({
   range: AtlasRange;
   onSelect: (id: MuscleNodeId | null) => void;
   token: string | null;
+  /** The WOD the atlas was opened from, if any. */
+  wod: WodMuscle[] | null;
+  /** «Αυτό το WOD» is the view: the body level lists the WOD's muscles instead of the regions. */
+  wodMode: boolean;
 }) {
   const t = useTranslations("Atlas");
   const anatomy = useTranslations("Anatomy");
   const node = muscleNode(selected);
   const sessions = atlas?.sessions ?? 0;
   const unrecognized = atlas?.exercises?.unrecognized ?? 0;
+
+  if (!node && wod && wodMode) {
+    return (
+      <>
+        <h2 className="text-xl font-extrabold" style={{ color: "var(--text)" }}>{t("wod.title")}</h2>
+        <p className="text-sm" style={{ color: "var(--text-soft)" }}>{t("wod.hint")}</p>
+        <WodMuscleList wod={wod} onSelect={onSelect} />
+      </>
+    );
+  }
 
   if (!node) {
     return (
@@ -244,6 +283,7 @@ function NodePanel({
       <h2 className="text-xl font-extrabold" style={{ color: "var(--text)" }} data-testid="atlas-node-title">
         {anatomy(`muscle.${node.id}`)}
       </h2>
+      {wod ? <WodRoleLine wod={wod} nodeId={node.id} /> : null}
       {aboutId ? <p className="text-sm" style={{ color: "var(--text-soft)" }}>{anatomy(`about.${aboutId}`)}</p> : null}
       {heads.length > 0 ? (
         <div className="flex flex-col gap-1">
@@ -276,6 +316,53 @@ function NodePanel({
         <NodeExercises nodeId={node.id} token={token} />
       )}
     </>
+  );
+}
+
+/** «Σε αυτό το WOD: Κύριος» under the node's name, or that the WOD does not aim at it. */
+function WodRoleLine({ wod, nodeId }: { wod: WodMuscle[]; nodeId: MuscleNodeId }) {
+  const t = useTranslations("Atlas");
+  const role = wodRoleOf(wod, nodeId);
+  return (
+    <p className="flex items-center gap-1.5 text-sm font-semibold" style={{ color: "var(--text-soft)" }} data-testid="atlas-wod-role">
+      {role ? <RoleDot role={role} /> : null}
+      {role ? t("wod.role", { role: t(`wod.roles.${role}`) }) : t("wod.notInWod")}
+    </p>
+  );
+}
+
+/** The WOD's muscles by role; each opens its node. */
+function WodMuscleList({ wod, onSelect }: { wod: WodMuscle[]; onSelect: (id: MuscleNodeId) => void }) {
+  const goals = useTranslations("WodGoals");
+  const anatomy = useTranslations("Anatomy");
+  return (
+    <div className="flex flex-col gap-3" data-testid="atlas-wod-muscles">
+      {WOD_ROLES.map((role) => {
+        const muscles = wod.filter((muscle) => muscle.role === role);
+        if (muscles.length === 0) return null;
+        return (
+          <section key={role} className="flex flex-col gap-1.5">
+            <h3 className="text-xs font-semibold" style={{ color: "var(--text-soft)" }}>{goals(`legend.${role}`)}</h3>
+            <ul className="flex flex-col gap-1.5">
+              {muscles.map((muscle) => (
+                <li key={muscle.id}>
+                  <button
+                    type="button"
+                    onClick={() => onSelect(muscle.id)}
+                    className="flex min-h-11 w-full items-center gap-3 rounded-xl px-3 py-2 text-start"
+                    style={{ background: "var(--panel-raised, var(--card))", border: "1px solid var(--border)" }}
+                  >
+                    <RoleDot role={role} />
+                    <span className="min-w-0 flex-1 truncate text-sm font-semibold" style={{ color: "var(--text)" }}>{anatomy(`muscle.${muscle.id}`)}</span>
+                    <span aria-hidden="true" style={{ color: "var(--dim)" }}>›</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </section>
+        );
+      })}
+    </div>
   );
 }
 

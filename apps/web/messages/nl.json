@@ -9441,8 +9441,10 @@
   "Atlas": {
     "title": "Anatomische atlas",
     "back": "Voortgang",
+    "backToWod": "‹ Terug",
     "mode": {
       "label": "Weergave",
+      "wod": "Deze WOD",
       "explore": "Verkennen",
       "heat": "Mijn dekking"
     },
@@ -9489,6 +9491,17 @@
       "role": {
         "primary": "Hoofd",
         "secondary": "Ondersteunend"
+      }
+    },
+    "wod": {
+      "title": "Spieren van deze WOD",
+      "hint": "Alle spieren die deze WOD traint, met hun rol. Tik er een aan in de lijst of op de figuur.",
+      "role": "In deze WOD: {role}",
+      "notInWod": "Geen doel van deze WOD.",
+      "roles": {
+        "primary": "Primair",
+        "secondary": "Secundair",
+        "stabilizer": "Stabilisatie"
       }
     }
   },

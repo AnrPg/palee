@@ -134,10 +134,12 @@ describe("WodGoalsStripView", () => {
     const sheet = screen.getByRole("dialog", { name: "Workout goals" });
     expect(sheet).toHaveTextContent("Erector spinae");
     expect(sheet).toHaveTextContent("Stabilizing");
-    // The atlas opens on the main muscle, or on the muscle tapped (ADR-164).
-    expect(screen.getByTestId("wod-goals-atlas-link")).toHaveAttribute("href", "/journal/atlas?node=quadriceps");
+    // The atlas carries every muscle of the WOD in its role, opened on the
+    // whole body or on the muscle tapped (ADR-164).
+    const wod = "primary=quadriceps&secondary=glutes&stabilizer=erector-spinae";
+    expect(screen.getByTestId("wod-goals-atlas-link")).toHaveAttribute("href", `/journal/atlas?${wod}`);
     fireEvent.click(screen.getByRole("button", { name: "Open Glutes in the atlas" }));
-    expect(push).toHaveBeenCalledWith("/journal/atlas?node=glutes");
+    expect(push).toHaveBeenCalledWith(`/journal/atlas?${wod}&node=glutes`);
     // The thumbnail turns visible in a microtask; let it inside act.
     await act(async () => {});
   });

@@ -13,7 +13,8 @@ export const DEFAULT_ATLAS_RANGE: AtlasRange = "4w";
 export const COVERAGE_LEVELS = ["none", "low", "medium", "high"] as const;
 export type CoverageLevel = (typeof COVERAGE_LEVELS)[number];
 
-export type AtlasMode = "explore" | "heat";
+/** «Αυτό το WOD» paints every muscle of the WOD a member or coach came from. */
+export type AtlasMode = "wod" | "explore" | "heat";
 
 /** One node of the member's coverage, as the API returns it (missing fields tolerated). */
 export type NodeCoverage = {
@@ -113,7 +114,74 @@ export function heatHighlights(index: CoverageIndex, selected: MuscleNodeId | nu
   return highlights;
 }
 
-/** `/journal/atlas`, optionally opened on a node (from WOD goals or Πρόοδος › Μυϊκή κάλυψη). */
-export function atlasHref(nodeId?: MuscleNodeId | null): string {
-  return nodeId && muscleNode(nodeId) ? `/journal/atlas?node=${encodeURIComponent(nodeId)}` : "/journal/atlas";
+/** A WOD's muscle in its role, as the atlas carries it in the URL. */
+export const WOD_ROLES = ["primary", "secondary", "stabilizer"] as const;
+export type WodRole = (typeof WOD_ROLES)[number];
+export type WodMuscle = { id: MuscleNodeId; role: WodRole };
+
+/**
+ * The WOD's muscles as query params, one list per role
+ * (`primary=a,b&secondary=c&stabilizer=d`): readable, bookmarkable, and
+ * independent of who may fetch the workout (a coach's draft, a member's class).
+ */
+export function wodAtlasParams(muscles: readonly WodMuscle[]): URLSearchParams {
+  const params = new URLSearchParams();
+  for (const role of WOD_ROLES) {
+    const ids = muscles.filter((muscle) => muscle.role === role && muscleNode(muscle.id)).map((muscle) => muscle.id);
+    if (ids.length > 0) params.set(role, [...new Set(ids)].join(","));
+  }
+  return params;
+}
+
+/**
+ * Reads the WOD's muscles back from the URL: unknown ids are dropped and a
+ * muscle listed under two roles keeps the stronger one, in role order.
+ */
+export function parseWodMuscles(params: Pick<URLSearchParams, "get">): WodMuscle[] {
+  const seen = new Set<MuscleNodeId>();
+  const muscles: WodMuscle[] = [];
+  for (const role of WOD_ROLES) {
+    for (const raw of (params.get(role) ?? "").split(",")) {
+      const id = raw.trim();
+      if (!id || seen.has(id) || !muscleNode(id)) continue;
+      seen.add(id);
+      muscles.push({ id, role });
+    }
+  }
+  return muscles;
+}
+
+/** The role a node plays in the WOD: its own, or else the strongest of the heads below it or the group above it. */
+export function wodRoleOf(muscles: readonly WodMuscle[], id: MuscleNodeId | null): WodRole | null {
+  const node = muscleNode(id);
+  if (!node) return null;
+  const direct = muscles.find((muscle) => muscle.id === node.id);
+  if (direct) return direct.role;
+  const related = muscles.filter((muscle) => {
+    const other = muscleNode(muscle.id);
+    if (!other) return false;
+    if (node.kind === "region") return atlasPath(other.id)[0]?.id === node.id;
+    if (node.kind === "group") return other.groupId === node.id;
+    return other.id === node.groupId;
+  });
+  for (const role of WOD_ROLES) if (related.some((muscle) => muscle.role === role)) return role;
+  return null;
+}
+
+/** «Αυτό το WOD»: every muscle of the WOD in its role colour, whatever is selected. */
+export function wodHighlights(muscles: readonly WodMuscle[]): AnatomyHighlights {
+  const highlights: AnatomyHighlights = {};
+  for (const muscle of muscles) if (muscleNode(muscle.id)) highlights[muscle.id] = muscle.role;
+  return highlights;
+}
+
+/**
+ * `/journal/atlas`, optionally opened on a node (from WOD goals or Πρόοδος ›
+ * Μυϊκή κάλυψη) and on a WOD's muscles («Αυτό το WOD»).
+ */
+export function atlasHref(nodeId?: MuscleNodeId | null, wod: readonly WodMuscle[] = []): string {
+  const params = wodAtlasParams(wod);
+  if (nodeId && muscleNode(nodeId)) params.set("node", nodeId);
+  const query = params.toString().replace(/%2C/gi, ",");
+  return query ? `/journal/atlas?${query}` : "/journal/atlas";
 }

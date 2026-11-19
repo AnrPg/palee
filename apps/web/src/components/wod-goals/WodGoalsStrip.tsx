@@ -85,7 +85,8 @@ export function WodGoalsStripView({ goals, className = "" }: { goals: GoalsShown
 
 /**
  * All the goals, stabilizers included, on the interactive figure. A muscle
- * opens the anatomy atlas on it (ADR-164); «Άτλαντας» opens it on the main one.
+ * opens the anatomy atlas on it (ADR-164) and «Άτλαντας» on the whole body, both
+ * with every muscle of the WOD painted in its role («Αυτό το WOD»).
  */
 export function WodGoalsSheet({ goals, onClose }: { goals: GoalsShown; onClose: () => void }) {
   const t = useTranslations("WodGoals");
@@ -100,7 +101,7 @@ export function WodGoalsSheet({ goals, onClose }: { goals: GoalsShown; onClose: 
             <AnatomyFigure highlights={goalHighlights(goals.muscles)} view="both" interactive size="card" />
             <div className="flex flex-wrap items-center justify-between gap-2">
               <RoleLegend />
-              <Link href={atlasHref(goals.muscles[0]?.id)} className="text-xs font-semibold" style={{ color: "var(--primary)" }} data-testid="wod-goals-atlas-link">
+              <Link href={atlasHref(null, goals.muscles)} className="text-xs font-semibold" style={{ color: "var(--primary)" }} data-testid="wod-goals-atlas-link">
                 {t("sheet.atlas")}
               </Link>
             </div>
@@ -113,7 +114,7 @@ export function WodGoalsSheet({ goals, onClose }: { goals: GoalsShown; onClose: 
                       key={muscle.id}
                       label={anatomy(`muscle.${muscle.id}`)}
                       role={muscle.role}
-                      onPress={() => router.push(atlasHref(muscle.id))}
+                      onPress={() => router.push(atlasHref(muscle.id, goals.muscles))}
                       pressLabel={t("sheet.openInAtlas", { muscle: anatomy(`muscle.${muscle.id}`) })}
                     />
                   ))}

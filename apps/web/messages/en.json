@@ -9441,8 +9441,10 @@
   "Atlas": {
     "title": "Anatomy atlas",
     "back": "Progress",
+    "backToWod": "‹ Back",
     "mode": {
       "label": "View",
+      "wod": "This WOD",
       "explore": "Explore",
       "heat": "My coverage"
     },
@@ -9489,6 +9491,17 @@
       "role": {
         "primary": "Main",
         "secondary": "Assisting"
+      }
+    },
+    "wod": {
+      "title": "Muscles in this WOD",
+      "hint": "Every muscle this WOD works, in its role. Tap one in the list or on the figure.",
+      "role": "In this WOD: {role}",
+      "notInWod": "Not a target of this WOD.",
+      "roles": {
+        "primary": "Primary",
+        "secondary": "Secondary",
+        "stabilizer": "Stabilizer"
       }
     }
   },

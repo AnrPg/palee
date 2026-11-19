@@ -9441,8 +9441,10 @@
   "Atlas": {
     "title": "Anatomie-Atlas",
     "back": "Fortschritt",
+    "backToWod": "‹ Zurück",
     "mode": {
       "label": "Ansicht",
+      "wod": "Dieses WOD",
       "explore": "Erkunden",
       "heat": "Meine Abdeckung"
     },
@@ -9489,6 +9491,17 @@
       "role": {
         "primary": "Haupt",
         "secondary": "Unterstützend"
+      }
+    },
+    "wod": {
+      "title": "Muskeln dieses WODs",
+      "hint": "Alle Muskeln, die dieses WOD trainiert, mit ihrer Rolle. Tippe einen in der Liste oder an der Figur an.",
+      "role": "In diesem WOD: {role}",
+      "notInWod": "Kein Ziel dieses WODs.",
+      "roles": {
+        "primary": "Hauptmuskel",
+        "secondary": "Hilfsmuskel",
+        "stabilizer": "Stabilisierung"
       }
     }
   },
