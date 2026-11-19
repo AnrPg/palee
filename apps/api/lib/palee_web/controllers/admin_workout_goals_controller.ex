@@ -1,7 +1,8 @@
 defmodule PaleeWeb.AdminWorkoutGoalsController do
   @moduledoc """
-  Staff read and save of a workout's WOD goals, and the coach totals of
-  «τι ένιωσες» on a workout or a scheduled class (ADR-163).
+  Staff read and save of a workout's WOD goals, the coach totals of
+  «τι ένιωσες» on a workout or a scheduled class (ADR-163), and a class's
+  «Φορτίο προγράμματος» (ADR-670).
   """
 
   use PaleeWeb, :controller
@@ -9,6 +10,7 @@ defmodule PaleeWeb.AdminWorkoutGoalsController do
 
   alias Palee.Application.{
     ExerciseMatches,
+    GetClassProgrammeLoad,
     GetGoalFeedbackSummary,
     GetWorkoutGoals,
     SaveWorkoutGoals
@@ -107,6 +109,23 @@ defmodule PaleeWeb.AdminWorkoutGoalsController do
   def class_feedback_summary(conn, %{id: id}) do
     with {:ok, result} <-
            GetGoalFeedbackSummary.for_scheduled_class(conn.assigns.tenant_context, id) do
+      json(conn, result)
+    end
+  end
+
+  operation(:class_programme_load,
+    summary: "Muscle groups the same class worked in the previous 7 days (programme load)",
+    description:
+      "ADR-670: classes of the same class type at the same branch in the 7 gym days before this one; each WOD once per day, with its saved, inherited or suggested goals. Reads the programme only, never members' entries.",
+    parameters: [%{@id | description: "Scheduled class (slot) ID"}],
+    responses: [
+      ok: {"Programme load", "application/json", WorkoutGoals.programme_load()},
+      not_found: {"Not found", "application/json", @error}
+    ]
+  )
+
+  def class_programme_load(conn, %{id: id}) do
+    with {:ok, result} <- GetClassProgrammeLoad.call(conn.assigns.tenant_context, id) do
       json(conn, result)
     end
   end

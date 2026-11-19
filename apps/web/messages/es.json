@@ -9408,7 +9408,9 @@
       "title": "Objetivos del entrenamiento",
       "close": "Cerrar",
       "atlas": "Atlas ›",
-      "openInAtlas": "Abrir {muscle} en el atlas"
+      "openInAtlas": "Abrir {muscle} en el atlas",
+      "atlasTitle": "Atlas anatómico",
+      "backToGoals": "‹ Objetivos"
     },
     "felt": {
       "title": "¿Qué sentiste?",
@@ -9503,6 +9505,22 @@
         "secondary": "Secundario",
         "stabilizer": "Estabilización"
       }
+    },
+    "fullAtlas": "Atlas completo ›",
+    "load": {
+      "title": "Carga del programa",
+      "hint": "{count, plural, =0 {Ningún WOD en la misma clase en los 7 días anteriores.} one {Músculos que trabajó # WOD de la misma clase en los 7 días anteriores, según el programa.} other {Músculos que trabajaron # WODs de la misma clase en los 7 días anteriores, según el programa.}}",
+      "repeat": "Ya 2 o más veces: {muscles}.",
+      "empty": "Ningún músculo trabajado en la misma clase en los 7 días anteriores.",
+      "count": "{count, plural, one {# WOD} other {# WODs}}",
+      "node": "En {count, plural, one {# WOD} other {# WODs}} de la clase en los 7 días anteriores: {days}.",
+      "nodeNone": "No se trabajó en la clase en los 7 días anteriores."
+    },
+    "athlete": {
+      "mode": "Cobertura: {name}",
+      "pick": "Atleta",
+      "yours": "{name} · {range}",
+      "hint": "Los músculos del WOD con la cobertura de {name}, solo de lo que comparte con los coaches del box."
     }
   },
   "Seasons": {

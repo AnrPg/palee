@@ -27,7 +27,7 @@ defmodule Palee.Application.GetClientTrainingDepth do
   def call(%{organization_id: organization_id} = context, client_id, params, today)
       when is_binary(organization_id) do
     with {:ok, range} <- range(Map.get(params, "range")),
-         {:ok, client_id} <- authorize(context, client_id) do
+         {:ok, client_id} <- authorize_client(context, client_id) do
       {:ok,
        TrainingDepth.build(context, range, today,
          user_id: client_id,
@@ -47,7 +47,12 @@ defmodule Palee.Application.GetClientTrainingDepth do
       else: {:error, [range: "has an unknown value"]}
   end
 
-  defp authorize(context, client_id) do
+  @doc """
+  The client id when the acting coach may read this client's training here
+  (`view_client_training`, active member of the gym); shared with the
+  client atlas (ADR-670).
+  """
+  def authorize_client(context, client_id) do
     with {:ok, client_id} <- cast(client_id),
          true <- Organizations.acting_user_coaches?(context) || {:error, :forbidden},
          true <-

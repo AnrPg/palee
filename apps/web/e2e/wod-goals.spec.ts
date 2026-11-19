@@ -192,6 +192,20 @@ test("the library preview shows the WOD's goals, the suggestion while none are s
   await expect(strip).toContainText("Quadriceps");
   await expect(strip).toContainText("Stamina");
   await expect(strip.getByTestId("wod-goals-open")).toBeVisible();
+
+  // ADR-670: «Atlas ›» opens inside the sheet with every muscle of the WOD;
+  // staff stay on the Αρχείο and never see a journal link.
+  await strip.getByTestId("wod-goals-open").click();
+  const sheet = page.getByRole("dialog", { name: "Workout goals" });
+  await expect(sheet.getByTestId("wod-goals-atlas-link")).toBeVisible();
+  await sheet.getByTestId("wod-goals-atlas-link").click();
+  const atlas = page.getByRole("dialog", { name: "Anatomy atlas" });
+  await expect(atlas.getByTestId("wod-atlas-title")).toHaveText("Muscles in this WOD");
+  await expect(atlas.getByTestId("atlas-wod-muscles")).toContainText("Quadriceps");
+  await expect(atlas.getByTestId("wod-atlas-full")).toHaveCount(0);
+  await expect(page).toHaveURL(/\/admin\/workouts/);
+  await atlas.getByTestId("wod-goals-atlas-back").click();
+  await expect(page.getByRole("dialog", { name: "Workout goals" })).toBeVisible();
 });
 
 // ── Member ───────────────────────────────────────────────────────────────────

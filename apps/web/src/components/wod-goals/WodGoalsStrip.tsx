@@ -1,8 +1,6 @@
 "use client";
 
 import { useId, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useFormatter, useTranslations } from "next-intl";
 
 import type { MemberWorkoutGoals } from "@/api/wod-goals";
@@ -12,20 +10,49 @@ export type GoalsShown = Pick<MemberWorkoutGoals, "muscles" | "qualities" | "sti
 import { AnatomyFigure } from "@/components/anatomy/AnatomyFigure";
 import { AnatomyThumb } from "@/components/anatomy/AnatomyThumb";
 import { Sheet, SheetButton } from "@/components/community/Sheet";
-import { atlasHref } from "@/lib/anatomy/atlas";
+import { WodAtlasView, type WodAtlasContext } from "@/components/anatomy/atlas/WodAtlasView";
+import type { MuscleNodeId } from "@/lib/anatomy/taxonomy";
 import { goalHighlights, musclesByRole, summaryMuscleIds } from "@/lib/wod-goals/goals";
 
 import { MuscleChip, RoleLegend, ToggleChip } from "./GoalChips";
-import { useWorkoutGoals } from "./use-wod-goals";
+import { useAdminWorkoutGoals, useWorkoutGoals } from "./use-wod-goals";
 
 /**
  * The member's goals strip (Q3) inside a workout card: fetches the
  * workout's visible goals and renders nothing while they are missing,
  * hidden, loading or failed, so the card never changes shape for them.
  */
-export function WodGoalsStrip({ workoutId, className = "" }: { workoutId: string | null | undefined; className?: string }) {
+export function WodGoalsStrip({
+  workoutId,
+  className = "",
+  atlas,
+}: {
+  workoutId: string | null | undefined;
+  className?: string;
+  /** Where the atlas inside the sheet was opened from (ADR-670); a member's by default. */
+  atlas?: WodAtlasContext;
+}) {
   const goals = useWorkoutGoals(workoutId);
-  return <WodGoalsStripView goals={goals.data?.goals ?? null} className={className} />;
+  return <WodGoalsStripView goals={goals.data?.goals ?? null} className={className} atlas={atlas} />;
+}
+
+/**
+ * Staff's goals block under a WOD they look at (the Αρχείο preview, a class
+ * on the schedule): the coach's saved goals, else the live suggestion from
+ * the exercises, in the same quiet block members see. `atlas` says where it
+ * sits, which decides what the atlas adds (ADR-670).
+ */
+export function StaffWodGoalsStrip({
+  workoutId,
+  atlas,
+  className = "",
+}: {
+  workoutId: string;
+  atlas: WodAtlasContext;
+  className?: string;
+}) {
+  const goals = useAdminWorkoutGoals(workoutId);
+  return <WodGoalsStripView goals={goals.data?.goals ?? null} className={className} atlas={atlas} />;
 }
 
 /**
@@ -34,7 +61,15 @@ export function WodGoalsStrip({ workoutId, className = "" }: { workoutId: string
  * value is left out. The small figure opens the sheet with every muscle and
  * the atlas.
  */
-export function WodGoalsStripView({ goals, className = "" }: { goals: GoalsShown | null; className?: string }) {
+export function WodGoalsStripView({
+  goals,
+  className = "",
+  atlas = MEMBER_ATLAS,
+}: {
+  goals: GoalsShown | null;
+  className?: string;
+  atlas?: WodAtlasContext;
+}) {
   const t = useTranslations("WodGoals");
   const anatomy = useTranslations("Anatomy");
   const format = useFormatter();
@@ -78,21 +113,54 @@ export function WodGoalsStripView({ goals, className = "" }: { goals: GoalsShown
           </button>
         ) : null}
       </div>
-      {open ? <WodGoalsSheet goals={goals} onClose={() => setOpen(false)} /> : null}
+      {open ? <WodGoalsSheet goals={goals} atlas={atlas} onClose={() => setOpen(false)} /> : null}
     </section>
   );
 }
 
+const MEMBER_ATLAS: WodAtlasContext = { kind: "member" };
+
 /**
- * All the goals, stabilizers included, on the interactive figure. A muscle
- * opens the anatomy atlas on it (ADR-164) and «Άτλαντας» on the whole body, both
- * with every muscle of the WOD painted in its role («Αυτό το WOD»).
+ * All the goals, stabilizers included, on the interactive figure.
+ * ADR-670: «Άτλαντας ›» (or a muscle) opens the WOD's atlas as a second step
+ * of this same sheet, with every muscle of the WOD in its role; «‹ Στόχοι»
+ * returns and «Κλείσιμο» leaves the person where they were (the preview,
+ * the class), so staff never leave the admin and nobody loses the WOD.
  */
-export function WodGoalsSheet({ goals, onClose }: { goals: GoalsShown; onClose: () => void }) {
+export function WodGoalsSheet({
+  goals,
+  onClose,
+  atlas = MEMBER_ATLAS,
+}: {
+  goals: GoalsShown;
+  onClose: () => void;
+  atlas?: WodAtlasContext;
+}) {
   const t = useTranslations("WodGoals");
   const anatomy = useTranslations("Anatomy");
-  const router = useRouter();
   const labelId = useId();
+  // null: the goals; otherwise the atlas, opened on a muscle or on the whole body ("body").
+  const [atlasOn, setAtlasOn] = useState<MuscleNodeId | "body" | null>(null);
+
+  if (atlasOn) {
+    return (
+      <Sheet title={t("sheet.atlasTitle")} labelId={labelId} onClose={onClose} footer={<SheetButton onClick={onClose}>{t("sheet.close")}</SheetButton>}>
+        <div className="flex flex-col gap-3">
+          <button
+            type="button"
+            onClick={() => setAtlasOn(null)}
+            className="self-start text-sm font-semibold"
+            style={{ color: "var(--primary)" }}
+            data-testid="wod-goals-atlas-back"
+          >
+            {t("sheet.backToGoals")}
+          </button>
+          <WodAtlasView muscles={goals.muscles} context={atlas} initialNode={atlasOn === "body" ? null : atlasOn} />
+        </div>
+      </Sheet>
+    );
+  }
+
   return (
     <Sheet title={t("sheet.title")} labelId={labelId} onClose={onClose} footer={<SheetButton onClick={onClose}>{t("sheet.close")}</SheetButton>}>
       <div className="flex flex-col gap-4">
@@ -101,9 +169,15 @@ export function WodGoalsSheet({ goals, onClose }: { goals: GoalsShown; onClose: 
             <AnatomyFigure highlights={goalHighlights(goals.muscles)} view="both" interactive size="card" />
             <div className="flex flex-wrap items-center justify-between gap-2">
               <RoleLegend />
-              <Link href={atlasHref(null, goals.muscles)} className="text-xs font-semibold" style={{ color: "var(--primary)" }} data-testid="wod-goals-atlas-link">
+              <button
+                type="button"
+                onClick={() => setAtlasOn("body")}
+                className="text-xs font-semibold"
+                style={{ color: "var(--primary)" }}
+                data-testid="wod-goals-atlas-link"
+              >
                 {t("sheet.atlas")}
-              </Link>
+              </button>
             </div>
             {musclesByRole(goals.muscles).map(([role, muscles]) => (
               <div key={role} className="flex flex-col gap-1">
@@ -114,7 +188,7 @@ export function WodGoalsSheet({ goals, onClose }: { goals: GoalsShown; onClose: 
                       key={muscle.id}
                       label={anatomy(`muscle.${muscle.id}`)}
                       role={muscle.role}
-                      onPress={() => router.push(atlasHref(muscle.id, goals.muscles))}
+                      onPress={() => setAtlasOn(muscle.id)}
                       pressLabel={t("sheet.openInAtlas", { muscle: anatomy(`muscle.${muscle.id}`) })}
                     />
                   ))}

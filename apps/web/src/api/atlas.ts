@@ -23,3 +23,21 @@ export function fetchMyAtlas(token: string, range: AtlasRange) {
 export function fetchAtlasNodeExercises(token: string, nodeId: string) {
   return apiRequest<AtlasNodeExercises>(`/anatomy/nodes/${encodeURIComponent(nodeId)}/exercises`, { token });
 }
+
+/** ADR-670: a client's coverage for their coach, from what they share with this gym. */
+export const clientAtlasKey = (userId: string, range: AtlasRange) => ["staff", "clients", userId, "atlas", range] as const;
+
+/** Tenant-scoped: the gym the coach is working in. */
+export function fetchClientAtlas(token: string, userId: string, range: AtlasRange) {
+  return apiRequest<MyAtlas>(`/staff/clients/${encodeURIComponent(userId)}/atlas?range=${encodeURIComponent(range)}`, { token });
+}
+
+/** ADR-670 «Φορτίο προγράμματος»: what the same class worked in the previous 7 days. */
+export type ClassProgrammeLoad = components["schemas"]["ClassProgrammeLoad"];
+export type ProgrammeLoadGroup = components["schemas"]["ProgrammeLoadGroup"];
+
+export const classProgrammeLoadKey = (classId: string) => ["admin", "schedule", "slots", classId, "programme-load"] as const;
+
+export function fetchClassProgrammeLoad(token: string, classId: string) {
+  return apiRequest<ClassProgrammeLoad>(`/admin/schedule/slots/${encodeURIComponent(classId)}/programme-load`, { token });
+}

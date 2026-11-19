@@ -195,6 +195,13 @@ test("the goals sheet opens the atlas on a muscle; the panel, breadcrumb, figure
   await page.getByTestId("wod-goals-open").click();
   const sheet = page.getByRole("dialog", { name: "Workout goals" });
   await sheet.getByTestId("wod-goals-atlas-link").click();
+  // ADR-670: the atlas opens inside the sheet with every muscle of the WOD;
+  // «Full atlas ›» leads to the member's own atlas in the journal.
+  const inSheet = page.getByRole("dialog", { name: "Anatomy atlas" });
+  await expect(inSheet.getByTestId("wod-atlas-title")).toHaveText("Muscles in this WOD");
+  await expect(inSheet.getByTestId("atlas-wod-muscles")).toContainText("Latissimus dorsi");
+  await expect(page).toHaveURL(/\/box/);
+  await inSheet.getByTestId("wod-atlas-full").click();
   // The first visit compiles the route in the dev server. The atlas carries
   // every muscle of the WOD, not only the first one.
   await expect(page).toHaveURL(/\/journal\/atlas\?primary=quadriceps,latissimus-dorsi&secondary=glutes$/, { timeout: 60_000 });

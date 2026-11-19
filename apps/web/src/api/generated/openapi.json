@@ -29147,6 +29147,82 @@
         "title": "CheckInVisitors",
         "type": "object"
       },
+      "ClassProgrammeLoad": {
+        "description": "Muscle groups the same class (class type, branch) worked in the gym days [from, to] before it, from the WODs' goals.",
+        "properties": {
+          "days": {
+            "description": "Window length in gym days",
+            "type": "integer"
+          },
+          "from": {
+            "format": "date",
+            "type": "string"
+          },
+          "muscles": {
+            "description": "Most WODs first",
+            "items": {
+              "properties": {
+                "dates": {
+                  "items": {
+                    "format": "date",
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "id": {
+                  "description": "Muscle group id",
+                  "type": "string"
+                },
+                "primary": {
+                  "type": "integer"
+                },
+                "secondary": {
+                  "type": "integer"
+                },
+                "stabilizer": {
+                  "type": "integer"
+                },
+                "wods": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "id",
+                "wods",
+                "primary",
+                "secondary",
+                "stabilizer",
+                "dates"
+              ],
+              "title": "ProgrammeLoadGroup",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "scheduled_class_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "to": {
+            "format": "date",
+            "type": "string"
+          },
+          "wods": {
+            "description": "WODs counted (each once per gym day)",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "scheduled_class_id",
+          "days",
+          "from",
+          "to",
+          "wods",
+          "muscles"
+        ],
+        "title": "ClassProgrammeLoad",
+        "type": "object"
+      },
       "ClassRoom": {
         "properties": {
           "area": {
@@ -81322,6 +81398,43 @@
           }
         },
         "title": "ProgrammeInput",
+        "type": "object"
+      },
+      "ProgrammeLoadGroup": {
+        "properties": {
+          "dates": {
+            "items": {
+              "format": "date",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "id": {
+            "description": "Muscle group id",
+            "type": "string"
+          },
+          "primary": {
+            "type": "integer"
+          },
+          "secondary": {
+            "type": "integer"
+          },
+          "stabilizer": {
+            "type": "integer"
+          },
+          "wods": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "wods",
+          "primary",
+          "secondary",
+          "stabilizer",
+          "dates"
+        ],
+        "title": "ProgrammeLoadGroup",
         "type": "object"
       },
       "ProgrammeOutlineDay": {
@@ -295612,6 +295725,140 @@
         ]
       }
     },
+    "/api/org/{organization_slug}/admin/schedule/slots/{id}/programme-load": {
+      "get": {
+        "callbacks": {},
+        "description": "ADR-670: classes of the same class type at the same branch in the 7 gym days before this one; each WOD once per day, with its saved, inherited or suggested goals. Reads the programme only, never members' entries.",
+        "operationId": "PaleeWeb.AdminWorkoutGoalsController.class_programme_load",
+        "parameters": [
+          {
+            "description": "Scheduled class (slot) ID",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Muscle groups the same class (class type, branch) worked in the gym days [from, to] before it, from the WODs' goals.",
+                  "properties": {
+                    "days": {
+                      "description": "Window length in gym days",
+                      "type": "integer"
+                    },
+                    "from": {
+                      "format": "date",
+                      "type": "string"
+                    },
+                    "muscles": {
+                      "description": "Most WODs first",
+                      "items": {
+                        "properties": {
+                          "dates": {
+                            "items": {
+                              "format": "date",
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "id": {
+                            "description": "Muscle group id",
+                            "type": "string"
+                          },
+                          "primary": {
+                            "type": "integer"
+                          },
+                          "secondary": {
+                            "type": "integer"
+                          },
+                          "stabilizer": {
+                            "type": "integer"
+                          },
+                          "wods": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "wods",
+                          "primary",
+                          "secondary",
+                          "stabilizer",
+                          "dates"
+                        ],
+                        "title": "ProgrammeLoadGroup",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "scheduled_class_id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "to": {
+                      "format": "date",
+                      "type": "string"
+                    },
+                    "wods": {
+                      "description": "WODs counted (each once per gym day)",
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "scheduled_class_id",
+                    "days",
+                    "from",
+                    "to",
+                    "wods",
+                    "muscles"
+                  ],
+                  "title": "ClassProgrammeLoad",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Programme load"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Muscle groups the same class worked in the previous 7 days (programme load)",
+        "tags": [
+          "Workouts"
+        ]
+      }
+    },
     "/api/org/{organization_slug}/admin/schedule/slots/{id}/state": {
       "post": {
         "callbacks": {},
@@ -373005,6 +373252,240 @@
         "summary": "«Σήμερα»: the spaces due for cleaning today, with their floor plans",
         "tags": [
           "Cleaning log"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/staff/clients/{user_id}/atlas": {
+      "get": {
+        "callbacks": {},
+        "description": "ADR-670: same rules as the client's progress depth (ADR-165); same shape as the member's own atlas.",
+        "operationId": "PaleeWeb.AnatomyAtlasController.client",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "range",
+            "required": false,
+            "schema": {
+              "default": "4w",
+              "enum": [
+                "1w",
+                "4w",
+                "12w"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "exercises": {
+                      "properties": {
+                        "recognized": {
+                          "type": "integer"
+                        },
+                        "unrecognized": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "recognized",
+                        "unrecognized"
+                      ],
+                      "title": "AtlasExerciseCounts",
+                      "type": "object"
+                    },
+                    "felt_entries": {
+                      "type": "integer"
+                    },
+                    "from": {
+                      "format": "date",
+                      "type": "string"
+                    },
+                    "nodes": {
+                      "description": "Only nodes with sets or felt entries, in tree order",
+                      "items": {
+                        "properties": {
+                          "felt": {
+                            "description": "Entries in the range the member felt it in",
+                            "type": "integer"
+                          },
+                          "id": {
+                            "description": "Taxonomy node id (region, group or head)",
+                            "type": "string"
+                          },
+                          "kind": {
+                            "enum": [
+                              "region",
+                              "group",
+                              "head"
+                            ],
+                            "type": "string"
+                          },
+                          "level": {
+                            "enum": [
+                              "none",
+                              "low",
+                              "medium",
+                              "high"
+                            ],
+                            "type": "string"
+                          },
+                          "per_week": {
+                            "type": "number"
+                          },
+                          "sets": {
+                            "description": "Weighted sets in the range: primary 1, secondary 0.5, stabilizer 0",
+                            "type": "number"
+                          },
+                          "top_exercises": {
+                            "items": {
+                              "properties": {
+                                "exercise_ref": {
+                                  "type": "string"
+                                },
+                                "label": {
+                                  "type": "string"
+                                },
+                                "sets": {
+                                  "type": "number"
+                                }
+                              },
+                              "required": [
+                                "exercise_ref",
+                                "label",
+                                "sets"
+                              ],
+                              "title": "AtlasTopExercise",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "kind",
+                          "sets",
+                          "per_week",
+                          "level",
+                          "felt",
+                          "top_exercises"
+                        ],
+                        "title": "AtlasNodeCoverage",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "range": {
+                      "enum": [
+                        "1w",
+                        "4w",
+                        "12w"
+                      ],
+                      "type": "string"
+                    },
+                    "sessions": {
+                      "description": "Workouts done in the range",
+                      "type": "integer"
+                    },
+                    "taxonomy_version": {
+                      "type": "integer"
+                    },
+                    "thresholds": {
+                      "description": "Weighted sets per week from which medium and high start; any set is low",
+                      "properties": {
+                        "high": {
+                          "type": "number"
+                        },
+                        "medium": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "medium",
+                        "high"
+                      ],
+                      "title": "AtlasThresholds",
+                      "type": "object"
+                    },
+                    "to": {
+                      "format": "date",
+                      "type": "string"
+                    },
+                    "weeks": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "range",
+                    "weeks",
+                    "from",
+                    "to",
+                    "taxonomy_version",
+                    "thresholds",
+                    "sessions",
+                    "felt_entries",
+                    "exercises",
+                    "nodes"
+                  ],
+                  "title": "MyAtlas",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Atlas coverage"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "A client's muscle coverage for the atlas, from what they share with this gym's coaches",
+        "tags": [
+          "Anatomy"
         ]
       }
     },

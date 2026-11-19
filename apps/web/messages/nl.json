@@ -9408,7 +9408,9 @@
       "title": "Trainingsdoelen",
       "close": "Sluiten",
       "atlas": "Atlas ›",
-      "openInAtlas": "{muscle} openen in de atlas"
+      "openInAtlas": "{muscle} openen in de atlas",
+      "atlasTitle": "Anatomische atlas",
+      "backToGoals": "‹ Doelen"
     },
     "felt": {
       "title": "Wat voelde je?",
@@ -9503,6 +9505,22 @@
         "secondary": "Secundair",
         "stabilizer": "Stabilisatie"
       }
+    },
+    "fullAtlas": "Hele atlas ›",
+    "load": {
+      "title": "Programmabelasting",
+      "hint": "{count, plural, =0 {Geen WOD in dezelfde les in de afgelopen 7 dagen.} one {Spieren die # WOD van dezelfde les in de afgelopen 7 dagen trainde, volgens het programma.} other {Spieren die # WODs van dezelfde les in de afgelopen 7 dagen trainden, volgens het programma.}}",
+      "repeat": "Al 2 keer of vaker: {muscles}.",
+      "empty": "Geen spier getraind in dezelfde les in de afgelopen 7 dagen.",
+      "count": "{count, plural, one {# WOD} other {# WODs}}",
+      "node": "In {count, plural, one {# WOD} other {# WODs}} van de les in de afgelopen 7 dagen: {days}.",
+      "nodeNone": "Niet getraind in deze les in de afgelopen 7 dagen."
+    },
+    "athlete": {
+      "mode": "Dekking: {name}",
+      "pick": "Atleet",
+      "yours": "{name} · {range}",
+      "hint": "De spieren van de WOD met de dekking van {name}, alleen uit wat die deelt met de coaches van de box."
     }
   },
   "Seasons": {

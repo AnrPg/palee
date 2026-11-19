@@ -120,6 +120,24 @@ defmodule PaleeWeb.TrainingDepthControllerTest do
     end
   end
 
+  describe "GET /api/org/:slug/staff/clients/:id/atlas (ADR-670)" do
+    test "the client's coach sees the client's atlas from shared entries only", ctx do
+      log!(ctx, %{})
+      log!(ctx, %{journal_visibility: "private"})
+      path = "#{ctx.staff}/clients/#{ctx.member.id}/atlas"
+
+      body = authed(ctx, ctx.coach) |> get(path) |> json_response(200)
+      assert body["range"] == "4w"
+      assert body["sessions"] == 1
+      assert is_list(body["nodes"])
+
+      assert authed(ctx, ctx.coach) |> get("#{path}?range=12w") |> json_response(200)
+      assert authed(ctx, ctx.coach) |> get("#{path}?range=2w") |> json_response(422)
+      assert authed(ctx, ctx.other_coach) |> get(path) |> json_response(403)
+      assert authed(ctx, ctx.member) |> get(path) |> json_response(403)
+    end
+  end
+
   defp add!(organization, user, role) do
     {:ok, membership} =
       Organizations.add_membership(%{

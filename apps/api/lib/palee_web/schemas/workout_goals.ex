@@ -249,6 +249,42 @@ defmodule PaleeWeb.Schemas.WorkoutGoals do
   def taxonomy, do: @taxonomy
   def feedback_summary, do: @feedback_summary
 
+  # -- ADR-670: «Φορτίο προγράμματος» of a class ----------------------------------
+
+  def programme_load do
+    %Schema{
+      title: "ClassProgrammeLoad",
+      type: :object,
+      description:
+        "Muscle groups the same class (class type, branch) worked in the gym days [from, to] before it, from the WODs' goals.",
+      properties: %{
+        scheduled_class_id: %Schema{type: :string, format: :uuid},
+        days: %Schema{type: :integer, description: "Window length in gym days"},
+        from: %Schema{type: :string, format: :date},
+        to: %Schema{type: :string, format: :date},
+        wods: %Schema{type: :integer, description: "WODs counted (each once per gym day)"},
+        muscles: %Schema{
+          type: :array,
+          description: "Most WODs first",
+          items: %Schema{
+            title: "ProgrammeLoadGroup",
+            type: :object,
+            properties: %{
+              id: %Schema{type: :string, description: "Muscle group id"},
+              wods: %Schema{type: :integer},
+              primary: %Schema{type: :integer},
+              secondary: %Schema{type: :integer},
+              stabilizer: %Schema{type: :integer},
+              dates: %Schema{type: :array, items: %Schema{type: :string, format: :date}}
+            },
+            required: [:id, :wods, :primary, :secondary, :stabilizer, :dates]
+          }
+        }
+      },
+      required: [:scheduled_class_id, :days, :from, :to, :wods, :muscles]
+    }
+  end
+
   # -- ADR-570: exercise matches of a free-text workout -------------------------
 
   def exercise_matches do

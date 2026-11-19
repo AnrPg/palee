@@ -12515,6 +12515,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/schedule/slots/{id}/programme-load": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Muscle groups the same class worked in the previous 7 days (programme load)
+         * @description ADR-670: classes of the same class type at the same branch in the 7 gym days before this one; each WOD once per day, with its saved, inherited or suggested goals. Reads the programme only, never members' entries.
+         */
+        get: operations["PaleeWeb.AdminWorkoutGoalsController.class_programme_load"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/schedule/slots/{id}/state": {
         parameters: {
             query?: never;
@@ -17494,6 +17514,26 @@ export interface paths {
         };
         /** «Σήμερα»: the spaces due for cleaning today, with their floor plans */
         get: operations["PaleeWeb.CleaningController.today"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/staff/clients/{user_id}/atlas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A client's muscle coverage for the atlas, from what they share with this gym's coaches
+         * @description ADR-670: same rules as the client's progress depth (ADR-165); same shape as the member's own atlas.
+         */
+        get: operations["PaleeWeb.AnatomyAtlasController.client"];
         put?: never;
         post?: never;
         delete?: never;
@@ -30157,6 +30197,32 @@ export interface components {
                 /** Format: uuid */
                 user_id: string;
             }[];
+        };
+        /**
+         * ClassProgrammeLoad
+         * @description Muscle groups the same class (class type, branch) worked in the gym days [from, to] before it, from the WODs' goals.
+         */
+        ClassProgrammeLoad: {
+            /** @description Window length in gym days */
+            days: number;
+            /** Format: date */
+            from: string;
+            /** @description Most WODs first */
+            muscles: {
+                dates: string[];
+                /** @description Muscle group id */
+                id: string;
+                primary: number;
+                secondary: number;
+                stabilizer: number;
+                wods: number;
+            }[];
+            /** Format: uuid */
+            scheduled_class_id: string;
+            /** Format: date */
+            to: string;
+            /** @description WODs counted (each once per gym day) */
+            wods: number;
         };
         /** ClassRoom */
         ClassRoom: {
@@ -46032,6 +46098,16 @@ export interface components {
             sessions_per_week?: number | null;
             summary?: string | null;
             title?: string;
+        };
+        /** ProgrammeLoadGroup */
+        ProgrammeLoadGroup: {
+            dates: string[];
+            /** @description Muscle group id */
+            id: string;
+            primary: number;
+            secondary: number;
+            stabilizer: number;
+            wods: number;
         };
         /**
          * ProgrammeOutlineDay
@@ -121692,6 +121768,62 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminWorkoutGoalsController.class_programme_load": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Scheduled class (slot) ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Programme load */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Window length in gym days */
+                        days: number;
+                        /** Format: date */
+                        from: string;
+                        /** @description Most WODs first */
+                        muscles: {
+                            dates: string[];
+                            /** @description Muscle group id */
+                            id: string;
+                            primary: number;
+                            secondary: number;
+                            stabilizer: number;
+                            wods: number;
+                        }[];
+                        /** Format: uuid */
+                        scheduled_class_id: string;
+                        /** Format: date */
+                        to: string;
+                        /** @description WODs counted (each once per gym day) */
+                        wods: number;
+                    };
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code?: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminScheduleController.change_state": {
         parameters: {
             query?: never;
@@ -148995,6 +149127,96 @@ export interface operations {
                             /** Format: uuid */
                             user_id?: string | null;
                         }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AnatomyAtlasController.client": {
+        parameters: {
+            query?: {
+                range?: "1w" | "4w" | "12w";
+            };
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Atlas coverage */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** AtlasExerciseCounts */
+                        exercises: {
+                            recognized: number;
+                            unrecognized: number;
+                        };
+                        felt_entries: number;
+                        /** Format: date */
+                        from: string;
+                        /** @description Only nodes with sets or felt entries, in tree order */
+                        nodes: {
+                            /** @description Entries in the range the member felt it in */
+                            felt: number;
+                            /** @description Taxonomy node id (region, group or head) */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "region" | "group" | "head";
+                            /** @enum {string} */
+                            level: "none" | "low" | "medium" | "high";
+                            per_week: number;
+                            /** @description Weighted sets in the range: primary 1, secondary 0.5, stabilizer 0 */
+                            sets: number;
+                            top_exercises: {
+                                exercise_ref: string;
+                                label: string;
+                                sets: number;
+                            }[];
+                        }[];
+                        /** @enum {string} */
+                        range: "1w" | "4w" | "12w";
+                        /** @description Workouts done in the range */
+                        sessions: number;
+                        taxonomy_version: number;
+                        /**
+                         * AtlasThresholds
+                         * @description Weighted sets per week from which medium and high start; any set is low
+                         */
+                        thresholds: {
+                            high: number;
+                            medium: number;
+                        };
+                        /** Format: date */
+                        to: string;
+                        weeks: number;
+                    };
+                };
+            };
+            /** @description Not found */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error?: string;
+                    };
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error?: string;
                     };
                 };
             };

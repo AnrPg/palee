@@ -1160,6 +1160,8 @@ defmodule PaleeWeb.Router do
     get("/clients/:user_id/wellness-summary", ClientWellnessSummaryController, :show)
     # ADR-165: a client's coverage, qualities and load from shared entries.
     get("/clients/:user_id/progress-depth", TrainingDepthController, :client)
+    # ADR-670: a client's atlas coverage, for the atlas of a WOD assigned to them.
+    get("/clients/:user_id/atlas", AnatomyAtlasController, :client)
     # ADR-395: what a client's fitness card shows, set by their coach.
     get("/clients/:user_id/fitness-display", ClientFitnessDisplayController, :show)
     put("/clients/:user_id/fitness-display", ClientFitnessDisplayController, :update)
@@ -1698,6 +1700,13 @@ defmodule PaleeWeb.Router do
       "/schedule/slots/:id/goal-feedback-summary",
       AdminWorkoutGoalsController,
       :class_feedback_summary
+    )
+
+    # ADR-670: «Φορτίο προγράμματος», what the same class worked the previous 7 days.
+    get(
+      "/schedule/slots/:id/programme-load",
+      AdminWorkoutGoalsController,
+      :class_programme_load
     )
 
     patch("/bookings/:id/approve", AdminScheduleController, :approve_booking)

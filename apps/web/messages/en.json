@@ -9408,7 +9408,9 @@
       "title": "Workout goals",
       "close": "Close",
       "atlas": "Atlas ›",
-      "openInAtlas": "Open {muscle} in the atlas"
+      "openInAtlas": "Open {muscle} in the atlas",
+      "atlasTitle": "Anatomy atlas",
+      "backToGoals": "‹ Goals"
     },
     "felt": {
       "title": "How did it feel?",
@@ -9503,6 +9505,22 @@
         "secondary": "Secondary",
         "stabilizer": "Stabilizer"
       }
+    },
+    "fullAtlas": "Full atlas ›",
+    "load": {
+      "title": "Programme load",
+      "hint": "{count, plural, =0 {No WOD in the same class in the previous 7 days.} one {Muscles # WOD of the same class worked in the previous 7 days, from the programme.} other {Muscles # WODs of the same class worked in the previous 7 days, from the programme.}}",
+      "repeat": "Already 2 or more times: {muscles}.",
+      "empty": "No muscle was worked in the same class in the previous 7 days.",
+      "count": "{count, plural, one {# WOD} other {# WODs}}",
+      "node": "In {count, plural, one {# WOD} other {# WODs}} of the class in the previous 7 days: {days}.",
+      "nodeNone": "Not worked in the class in the previous 7 days."
+    },
+    "athlete": {
+      "mode": "Coverage: {name}",
+      "pick": "Athlete",
+      "yours": "{name} · {range}",
+      "hint": "The WOD's muscles with {name}'s coverage, only from what they share with the box's coaches."
     }
   },
   "Seasons": {

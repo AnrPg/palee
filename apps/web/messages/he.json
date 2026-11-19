@@ -9408,7 +9408,9 @@
       "title": "יעדי האימון",
       "close": "סגירה",
       "atlas": "אטלס ›",
-      "openInAtlas": "פתיחת {muscle} באטלס"
+      "openInAtlas": "פתיחת {muscle} באטלס",
+      "atlasTitle": "אטלס אנטומי",
+      "backToGoals": "‹ יעדים"
     },
     "felt": {
       "title": "מה הרגשת?",
@@ -9503,6 +9505,22 @@
         "secondary": "משני",
         "stabilizer": "ייצוב"
       }
+    },
+    "fullAtlas": "האטלס המלא ›",
+    "load": {
+      "title": "עומס התוכנית",
+      "hint": "{count, plural, =0 {אין WOD באותו שיעור ב-7 הימים הקודמים.} one {שרירים ש-WOD אחד של אותו שיעור עבד ב-7 הימים הקודמים, לפי התוכנית.} other {שרירים ש-# WOD של אותו שיעור עבדו ב-7 הימים הקודמים, לפי התוכנית.}}",
+      "repeat": "כבר פעמיים או יותר: {muscles}.",
+      "empty": "אף שריר לא עבד באותו שיעור ב-7 הימים הקודמים.",
+      "count": "{count, plural, one {WOD אחד} other {# WOD}}",
+      "node": "ב-{count, plural, one {WOD אחד} other {# WOD}} של השיעור ב-7 הימים הקודמים: {days}.",
+      "nodeNone": "לא עבד בשיעור ב-7 הימים הקודמים."
+    },
+    "athlete": {
+      "mode": "כיסוי: {name}",
+      "pick": "ספורטאי",
+      "yours": "{name} · {range}",
+      "hint": "שרירי ה-WOD עם הכיסוי של {name}, רק ממה שמשותף עם המאמנים של ה-box."
     }
   },
   "Seasons": {

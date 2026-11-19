@@ -57,6 +57,7 @@ import { formatMinutes } from "@/lib/duration-parts";
 import { YourTime } from "@/components/zoned-time";
 import { ClassRoomDialog } from "@/components/spaces/ClassRoomDialog";
 import { Dialog } from "@/components/ui/Dialog";
+import { StaffWodGoalsStrip } from "@/components/wod-goals/WodGoalsStrip";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { MoreMenu } from "@/components/ui/MoreMenu";
 import { ClassNoticeDialog } from "@/components/channels/ClassNoticeDialog";
@@ -825,6 +826,11 @@ export function SlotPopup({
                 ) : null}
               </>
             )}
+
+            {/* ADR-670: the class's goals for staff; its atlas adds «Φορτίο προγράμματος». */}
+            {isAdmin && slot.workout ? (
+              <StaffWodGoalsStrip workoutId={slot.workout.id} atlas={{ kind: "class", classId: slot.id }} className="mt-4" />
+            ) : null}
 
             {!isAdmin && slot.workout && ownBookingActive ? (
               <div className="mt-5">

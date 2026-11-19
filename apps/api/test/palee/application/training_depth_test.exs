@@ -1,6 +1,6 @@
 defmodule Palee.Application.TrainingDepthTest do
   @moduledoc """
-  ADR-165 under real Row Level Security: the member's Πρόοδος depth sections
+  ADR-165 (and the client atlas, ADR-670) under real Row Level Security: the member's Πρόοδος depth sections
   (coverage summary, qualities, load) across providers with the range and
   source filter, and a coach's view of a client built only from entries the
   client shares with that gym, for the client's own coach (or a head coach).
@@ -12,7 +12,7 @@ defmodule Palee.Application.TrainingDepthTest do
 
   import Palee.TestFixtures
 
-  alias Palee.Application.{GetClientTrainingDepth, GetMyTrainingDepth}
+  alias Palee.Application.{GetClientAtlas, GetClientTrainingDepth, GetMyTrainingDepth}
   alias Palee.Execution.{TrainingLogEntry, WorkoutExecution}
   alias Palee.Identity.UserContext
   alias Palee.Journal.GoalFeedback
@@ -235,6 +235,34 @@ defmodule Palee.Application.TrainingDepthTest do
 
     assert {:error, [range: _]} =
              GetClientTrainingDepth.call(ctx.coach_ctx, ctx.member.id, %{"range" => "2w"})
+  end
+
+  test "a coach's atlas of a client counts only what the client shares with the gym", ctx do
+    log!(ctx.member, ctx.box, %{performed_exercises: [%{"name" => "Back Squat", "sets" => 5}]})
+
+    log!(ctx.member, ctx.box, %{
+      performed_exercises: [%{"name" => "Bench Press", "sets" => 6}],
+      journal_visibility: "private"
+    })
+
+    assert {:ok, atlas} = GetClientAtlas.call(ctx.coach_ctx, ctx.member.id, %{"range" => "4w"})
+    assert atlas.range == "4w"
+    assert atlas.sessions == 1
+    ids = Enum.map(atlas.nodes, & &1.id)
+    assert "quadriceps" in ids
+    refute "pectoralis-major" in ids
+
+    # The member's own atlas sees both entries.
+    assert {:ok, own} = Palee.Application.GetMyAtlas.call(ctx.member_ctx, %{"range" => "4w"})
+    assert own.sessions == 2
+
+    # A head coach sees it; a coach without the client and an outsider do not.
+    assert {:ok, %{sessions: 1}} = GetClientAtlas.call(ctx.owner_ctx, ctx.member.id, %{})
+    assert {:error, :not_your_client} = GetClientAtlas.call(ctx.stranger_ctx, ctx.member.id, %{})
+    assert {:error, :not_found} = GetClientAtlas.call(ctx.coach_ctx, ctx.outsider.id, %{})
+
+    assert {:error, :organization_context_required} =
+             GetClientAtlas.call(ctx.member_ctx, ctx.member.id, %{})
   end
 
   defp org!(name) do

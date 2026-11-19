@@ -2,6 +2,7 @@ defmodule PaleeWeb.WorkoutGoalsControllerTest do
   @moduledoc "ADR-163 WOD goal, «τι ένιωσες» and taxonomy endpoints (requests run RLS-enforced)."
   use PaleeWeb.ConnCase, async: false
 
+  import Ecto.Query, only: [from: 2]
   import Palee.AnalyticsHelpers
 
   alias Palee.Application.LogTrainingEntry
@@ -32,6 +33,7 @@ defmodule PaleeWeb.WorkoutGoalsControllerTest do
     %{
       org: org,
       owner: owner,
+      staff: staff,
       member: member,
       member_context: member_context,
       athlete: athlete,
@@ -135,6 +137,44 @@ defmodule PaleeWeb.WorkoutGoalsControllerTest do
       |> recycle()
       |> put_bearer_token(other_owner)
       |> put("/api/org/#{other_org.slug}/admin/workouts/#{ctx.workout.id}/goals", @goals)
+      |> json_response(404)
+    end
+  end
+
+  describe "programme load of a class (ADR-670)" do
+    test "staff get the muscles the same class worked the previous 7 days; members do not",
+         %{conn: conn} = ctx do
+      target = TestFixtures.slot_fixture(ctx.workout, %{tenant_context: ctx.staff})
+
+      earlier =
+        TestFixtures.slot_fixture(ctx.workout, %{
+          tenant_context: ctx.staff,
+          class_type_id: target.class_type_id
+        })
+
+      Repo.update_all(
+        from(class in Palee.Scheduling.ScheduledClass, where: class.id == ^earlier.id),
+        set: [scheduled_at: DateTime.add(target.scheduled_at, -2 * 86_400)]
+      )
+
+      path = "/api/org/#{ctx.org.slug}/admin/schedule/slots/#{target.id}/programme-load"
+      body = conn |> put_bearer_token(ctx.owner) |> get(path) |> json_response(200)
+      assert body["scheduled_class_id"] == target.id
+      assert body["days"] == 7
+      assert body["wods"] == 1
+      # No saved goals: the suggestion from thrusters and pull-ups.
+      ids = Enum.map(body["muscles"], & &1["id"])
+      assert "quadriceps" in ids
+      assert "latissimus-dorsi" in ids
+
+      conn |> recycle() |> put_bearer_token(ctx.member) |> get(path) |> json_response(403)
+
+      conn
+      |> recycle()
+      |> put_bearer_token(ctx.owner)
+      |> get(
+        "/api/org/#{ctx.org.slug}/admin/schedule/slots/#{Ecto.UUID.generate()}/programme-load"
+      )
       |> json_response(404)
     end
   end

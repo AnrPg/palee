@@ -284,7 +284,18 @@ export function AssignedWorkoutPanel({
                     freeTextBody={assignment.workout.free_text_body}
                     freeTextDocument={assignment.workout.free_text_document}
                   />
-                  <WodGoalsStrip workoutId={assignment.master_workout_id} className="mt-3" />
+                  <WodGoalsStrip
+                    workoutId={assignment.master_workout_id}
+                    className="mt-3"
+                    // ADR-670: a coach sees the athletes' coverage, never their own.
+                    atlas={
+                      isAdmin
+                        ? (assignment.athletes ?? []).length > 0
+                          ? { kind: "athlete", athletes: (assignment.athletes ?? []).map((athlete) => ({ id: athlete.id, name: athlete.nickname })) }
+                          : { kind: "library" }
+                        : undefined
+                    }
+                  />
                 </section>
 
                 {/* Admin controls */}

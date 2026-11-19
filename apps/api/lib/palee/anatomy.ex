@@ -17,6 +17,7 @@ defmodule Palee.Anatomy do
     GoalSuggestion,
     MuscleTaxonomy,
     NodeExercises,
+    ProgrammeLoad,
     QualityProfile
   }
 
@@ -92,4 +93,7 @@ defmodule Palee.Anatomy do
 
   @doc "Sets and felt entries per fitness quality, with a 0..1 radar score."
   def quality_profile(performances, felt), do: QualityProfile.build(performances, felt)
+
+  @doc "ADR-670 «Φορτίο προγράμματος»: muscle groups the WODs of a window aimed at, by role."
+  def programme_load(wods), do: ProgrammeLoad.build(wods)
 end

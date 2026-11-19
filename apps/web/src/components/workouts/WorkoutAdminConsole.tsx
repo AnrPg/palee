@@ -29,8 +29,7 @@ import { USER_SYNC_EVENT, type UserSyncDetail } from "@/lib/user-sync";
 import { AssignWorkoutPanel } from "@/components/workouts/AssignWorkoutPanel";
 import { WorkoutEditModal } from "@/components/workouts/WorkoutEditModal";
 import { WorkoutPreviewDetail } from "@/components/workouts/WorkoutPreviewDetail";
-import { WodGoalsStripView } from "@/components/wod-goals/WodGoalsStrip";
-import { useAdminWorkoutGoals } from "@/components/wod-goals/use-wod-goals";
+import { StaffWodGoalsStrip } from "@/components/wod-goals/WodGoalsStrip";
 import { PlanSummaryList } from "@/components/workouts/plan-view/PlanSummaryList";
 import { readPlanSummary } from "@/components/workouts/plan-view/read";
 import { LibraryIconDialog } from "@/components/workouts/library/LibraryIconDialog";
@@ -1025,11 +1024,12 @@ function LibraryWorkoutPreview({ workout, token }: { workout: WorkoutRecord; tok
 
 /**
  * The workout's goals (muscles, qualities, stimulus) under the preview, in
- * the same quiet «Στόχοι» block members see (ADR-551, mockup 4 A): the
- * coach's saved goals, else the live suggestion from the exercises. Nothing
- * is shown while they load, fail or are empty.
+ * the same quiet «Στόχοι» block members see (ADR-551, mockup 4 A). A WOD of
+ * the Αρχείο belongs to nobody yet, so its atlas shows the WOD alone
+ * (ADR-670).
  */
 function LibraryWorkoutGoals({ workoutId }: { workoutId: string }) {
-  const goals = useAdminWorkoutGoals(workoutId);
-  return <WodGoalsStripView goals={goals.data?.goals ?? null} className="mt-4" />;
+  return <StaffWodGoalsStrip workoutId={workoutId} atlas={LIBRARY_ATLAS} className="mt-4" />;
 }
+
+const LIBRARY_ATLAS = { kind: "library" } as const;

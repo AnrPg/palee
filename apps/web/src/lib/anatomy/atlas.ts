@@ -175,6 +175,24 @@ export function wodHighlights(muscles: readonly WodMuscle[]): AnatomyHighlights 
   return highlights;
 }
 
+/** One group of «Φορτίο προγράμματος» (ADR-670): how many of the class's recent WODs aimed at it. */
+export type ProgrammeLoadEntry = { id: MuscleNodeId; wods: number };
+
+/** 1 WOD low, 2 medium, 3 or more high: the heat colours of «Φορτίο προγράμματος». */
+export function programmeLoadLevel(wods: number): CoverageLevel {
+  if (!Number.isFinite(wods) || wods <= 0) return "none";
+  return wods >= 3 ? "high" : wods === 2 ? "medium" : "low";
+}
+
+export function programmeLoadHighlights(groups: readonly ProgrammeLoadEntry[] | null | undefined): AnatomyHighlights {
+  const highlights: AnatomyHighlights = {};
+  for (const group of groups ?? []) {
+    const level = programmeLoadLevel(group.wods);
+    if (level !== "none" && muscleNode(group.id)) highlights[group.id] = HEAT_ROLE[level];
+  }
+  return highlights;
+}
+
 /**
  * `/journal/atlas`, optionally opened on a node (from WOD goals or Πρόοδος ›
  * Μυϊκή κάλυψη) and on a WOD's muscles («Αυτό το WOD»).

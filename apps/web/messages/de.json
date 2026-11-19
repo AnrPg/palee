@@ -9408,7 +9408,9 @@
       "title": "Workout-Ziele",
       "close": "Schließen",
       "atlas": "Atlas ›",
-      "openInAtlas": "{muscle} im Atlas öffnen"
+      "openInAtlas": "{muscle} im Atlas öffnen",
+      "atlasTitle": "Anatomie-Atlas",
+      "backToGoals": "‹ Ziele"
     },
     "felt": {
       "title": "Wie hat es sich angefühlt?",
@@ -9503,6 +9505,22 @@
         "secondary": "Hilfsmuskel",
         "stabilizer": "Stabilisierung"
       }
+    },
+    "fullAtlas": "Ganzer Atlas ›",
+    "load": {
+      "title": "Programmbelastung",
+      "hint": "{count, plural, =0 {Kein WOD im selben Kurs in den letzten 7 Tagen.} one {Muskeln, die # WOD desselben Kurses in den letzten 7 Tagen trainiert hat, laut Programm.} other {Muskeln, die # WODs desselben Kurses in den letzten 7 Tagen trainiert haben, laut Programm.}}",
+      "repeat": "Schon 2 Mal oder öfter: {muscles}.",
+      "empty": "In den letzten 7 Tagen wurde im selben Kurs kein Muskel trainiert.",
+      "count": "{count, plural, one {# WOD} other {# WODs}}",
+      "node": "In {count, plural, one {# WOD} other {# WODs}} des Kurses in den letzten 7 Tagen: {days}.",
+      "nodeNone": "In den letzten 7 Tagen in diesem Kurs nicht trainiert."
+    },
+    "athlete": {
+      "mode": "Abdeckung: {name}",
+      "pick": "Athlet",
+      "yours": "{name} · {range}",
+      "hint": "Die Muskeln des WODs mit der Abdeckung von {name}, nur aus dem, was mit den Coaches der Box geteilt wird."
     }
   },
   "Seasons": {

@@ -14,10 +14,24 @@ defmodule Palee.Application.GetMyAtlas do
   alias Palee.Application.AthleteTrainingVolume
   alias Palee.{Anatomy, Workouts}
 
-  def call(context, params, today \\ Date.utc_today()) do
+  def call(context, params, today \\ Date.utc_today()), do: build(context, params, today, [])
+
+  @doc """
+  The atlas coverage for `params["range"]`, read with `AthleteTrainingVolume`
+  `load_opts` (`[]` for the member's own; `user_id:` and `scope: {:coach,
+  organization_id}` for a coach reading a client, ADR-670).
+  """
+  def build(context, params, today, load_opts) do
     with {:ok, range, weeks} <- Anatomy.parse_coverage_range(params["range"]) do
       from = Date.add(today, -(7 * weeks - 1))
-      volume = AthleteTrainingVolume.load(context, DateTime.new!(from, ~T[00:00:00], "Etc/UTC"))
+
+      volume =
+        AthleteTrainingVolume.load(
+          context,
+          DateTime.new!(from, ~T[00:00:00], "Etc/UTC"),
+          load_opts
+        )
+
       coverage = Anatomy.coverage(volume.performances, volume.felt, weeks)
 
       {:ok,

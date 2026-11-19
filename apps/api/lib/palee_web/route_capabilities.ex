@@ -245,6 +245,8 @@ defmodule PaleeWeb.RouteCapabilities do
     # ADR-163: coach totals of a class's «τι ένιωσες»; row security decides
     # which entries count (a coach of the gym, the entry's rung).
     {W.AdminWorkoutGoalsController, :class_feedback_summary} => [:manage_workouts, :run_classes],
+    # ADR-670: «Φορτίο προγράμματος» beside the class's goals, for whoever runs or programmes it.
+    {W.AdminWorkoutGoalsController, :class_programme_load} => [:manage_workouts, :run_classes],
 
     # Finance
     {W.AdminFinanceAccountingController, :refund_receipts} => [
@@ -625,6 +627,8 @@ defmodule PaleeWeb.RouteCapabilities do
     # ADR-165: coverage, qualities and load from shared entries; the use
     # case also requires the coach role and the client in scope.
     {W.TrainingDepthController, :client} => [:view_client_training],
+    # ADR-670: a client's atlas coverage, same rule as their progress depth.
+    {W.AnatomyAtlasController, :client} => [:view_client_training],
     # ADR-395: a client's fitness card; the use case also requires an
     # active coaching relationship (owners who do not coach them get 403).
     {W.ClientFitnessDisplayController, :show} => [:view_client_training],

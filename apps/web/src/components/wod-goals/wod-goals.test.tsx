@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NextIntlClientProvider } from "next-intl";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -134,12 +134,26 @@ describe("WodGoalsStripView", () => {
     const sheet = screen.getByRole("dialog", { name: "Workout goals" });
     expect(sheet).toHaveTextContent("Erector spinae");
     expect(sheet).toHaveTextContent("Stabilizing");
-    // The atlas carries every muscle of the WOD in its role, opened on the
-    // whole body or on the muscle tapped (ADR-164).
-    const wod = "primary=quadriceps&secondary=glutes&stabilizer=erector-spinae";
-    expect(screen.getByTestId("wod-goals-atlas-link")).toHaveAttribute("href", `/journal/atlas?${wod}`);
-    fireEvent.click(screen.getByRole("button", { name: "Open Glutes in the atlas" }));
-    expect(push).toHaveBeenCalledWith(`/journal/atlas?${wod}&node=glutes`);
+    // ADR-670: the atlas opens inside the same sheet, never another page.
+    fireEvent.click(screen.getByTestId("wod-goals-atlas-link"));
+    const atlas = await screen.findByRole("dialog", { name: "Anatomy atlas" });
+    expect(push).not.toHaveBeenCalled();
+    expect(within(atlas).getByTestId("wod-atlas-title")).toHaveTextContent("Muscles in this WOD");
+    const list = within(atlas).getByTestId("atlas-wod-muscles");
+    expect(list).toHaveTextContent("Quadriceps");
+    expect(list).toHaveTextContent("Glutes");
+    expect(list).toHaveTextContent("Erector spinae");
+    // A member's sheet links to their own atlas in the Ημερολόγιο, with the WOD.
+    expect(within(atlas).getByTestId("wod-atlas-full")).toHaveAttribute(
+      "href",
+      "/journal/atlas?primary=quadriceps&secondary=glutes&stabilizer=erector-spinae",
+    );
+    fireEvent.click(within(atlas).getByTestId("wod-goals-atlas-back"));
+    // A muscle opens the atlas on it.
+    fireEvent.click(await screen.findByRole("button", { name: "Open Glutes in the atlas" }));
+    const opened = await screen.findByRole("dialog", { name: "Anatomy atlas" });
+    expect(within(opened).getByTestId("wod-atlas-title")).toHaveTextContent("Glutes");
+    expect(within(opened).getByTestId("atlas-wod-role")).toHaveTextContent("In this WOD: Secondary");
     // The thumbnail turns visible in a microtask; let it inside act.
     await act(async () => {});
   });
