@@ -20420,5 +20420,33 @@
     "removing": "Rimozione…",
     "removed": "«{package}» è stato rimosso a {name}.",
     "undo": "Annulla"
+  },
+  "StaffClass": {
+    "settingsTitle": "Impostazioni della lezione",
+    "settingsOpen": "Impostazioni della lezione: {booked} su {capacity} prenotati, approvazione {approval}, risposta {answer}",
+    "stripBookings": "prenotati",
+    "stripApproval": "approvazione",
+    "stripAnswer": "risposta",
+    "waitlist": "Lista d’attesa",
+    "duration": "Durata",
+    "space": "Spazio",
+    "phaseSoon": "Tra {minutes}′",
+    "phaseLive": "Ora",
+    "phaseEnded": "Conclusa",
+    "pendingTitle": "{count, plural, one {# richiesta di prenotazione in attesa} other {# richieste di prenotazione in attesa}}",
+    "people": "Partecipanti",
+    "bookedCount": "{booked} su {capacity}",
+    "arrivedCount": "{arrived} presenti su {booked}",
+    "arrived": "Presente",
+    "arrivedQuestion": "Presente?",
+    "markArrived": "Segna {name} come presente",
+    "wodActions": "Azioni del WOD",
+    "editWod": "Modifica WOD",
+    "changeWod": "Cambia WOD",
+    "noWodTitle": "Ancora nessun WOD",
+    "noWodBody": "I partecipanti lo vedranno appena lo imposti.",
+    "startClass": "Inizia la lezione",
+    "wallScreen": "Schermo a parete",
+    "barLabel": "Azioni della lezione"
   }
 }

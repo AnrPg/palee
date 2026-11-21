@@ -20420,5 +20420,33 @@
     "removing": "جارٍ الإزالة…",
     "removed": "أُزيلت «{package}» من {name}.",
     "undo": "تراجع"
+  },
+  "StaffClass": {
+    "settingsTitle": "إعدادات الحصة",
+    "settingsOpen": "إعدادات الحصة: {booked} من {capacity} محجوز، الموافقة {approval}، الرد {answer}",
+    "stripBookings": "محجوز",
+    "stripApproval": "الموافقة",
+    "stripAnswer": "الرد",
+    "waitlist": "قائمة الانتظار",
+    "duration": "المدة",
+    "space": "المساحة",
+    "phaseSoon": "بعد {minutes}′",
+    "phaseLive": "الآن",
+    "phaseEnded": "انتهت",
+    "pendingTitle": "{count, plural, one {طلب حجز واحد بانتظار الرد} other {# طلبات حجز بانتظار الرد}}",
+    "people": "المشاركون",
+    "bookedCount": "{booked} من {capacity}",
+    "arrivedCount": "حضر {arrived} من {booked}",
+    "arrived": "حضر",
+    "arrivedQuestion": "حضر؟",
+    "markArrived": "سجّل حضور {name}",
+    "wodActions": "إجراءات WOD",
+    "editWod": "تعديل WOD",
+    "changeWod": "تغيير WOD",
+    "noWodTitle": "لا يوجد WOD بعد",
+    "noWodBody": "سيراه المشاركون بمجرد أن تحدده.",
+    "startClass": "ابدأ الحصة",
+    "wallScreen": "شاشة الحائط",
+    "barLabel": "إجراءات الحصة"
   }
 }

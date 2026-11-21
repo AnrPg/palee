@@ -127,7 +127,9 @@ test.describe("Schedule › variation for several people", () => {
 
     await page.goto("/admin/schedule");
     await page.getByRole("button", { name: /CrossFit/ }).first().click();
-    await page.getByRole("button", { name: "Separate WOD for people" }).click();
+    // ANR pick (2026-11-21): it lives in the WOD card's ⋯.
+    await page.getByTestId("workout-more-actions").click();
+    await page.getByRole("menuitem", { name: "Separate WOD for people" }).click();
 
     const dialog = page.getByRole("dialog", { name: "Variation for several people" });
     await expect(dialog).toBeVisible();
@@ -168,7 +170,9 @@ test.describe("Schedule › variation for several people", () => {
     await asOwner(page);
     await page.goto("/admin/schedule");
     await page.getByRole("button", { name: /CrossFit/ }).first().click();
-    await page.getByRole("button", { name: "Separate WOD for people" }).click();
+    // ANR pick (2026-11-21): it lives in the WOD card's ⋯.
+    await page.getByTestId("workout-more-actions").click();
+    await page.getByRole("menuitem", { name: "Separate WOD for people" }).click();
 
     const dialog = page.getByRole("dialog", { name: "Variation for several people" });
     await dialog.getByRole("button", { name: "Select all" }).click();

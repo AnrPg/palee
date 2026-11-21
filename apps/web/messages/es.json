@@ -20420,5 +20420,33 @@
     "removing": "Quitando…",
     "removed": "Se quitó «{package}» a {name}.",
     "undo": "Deshacer"
+  },
+  "StaffClass": {
+    "settingsTitle": "Ajustes de la clase",
+    "settingsOpen": "Ajustes de la clase: {booked} de {capacity} reservadas, aprobación {approval}, respuesta {answer}",
+    "stripBookings": "reservas",
+    "stripApproval": "aprobación",
+    "stripAnswer": "respuesta",
+    "waitlist": "Lista de espera",
+    "duration": "Duración",
+    "space": "Espacio",
+    "phaseSoon": "En {minutes}′",
+    "phaseLive": "Ahora",
+    "phaseEnded": "Terminada",
+    "pendingTitle": "{count, plural, one {# solicitud de reserva espera} other {# solicitudes de reserva esperan}}",
+    "people": "Participantes",
+    "bookedCount": "{booked} de {capacity}",
+    "arrivedCount": "{arrived} de {booked} han llegado",
+    "arrived": "Llegó",
+    "arrivedQuestion": "¿Llegó?",
+    "markArrived": "Marcar que {name} llegó",
+    "wodActions": "Acciones del WOD",
+    "editWod": "Editar WOD",
+    "changeWod": "Cambiar WOD",
+    "noWodTitle": "Aún no hay WOD",
+    "noWodBody": "Los participantes lo verán en cuanto lo elijas.",
+    "startClass": "Empezar la clase",
+    "wallScreen": "Pantalla de pared",
+    "barLabel": "Acciones de la clase"
   }
 }

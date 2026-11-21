@@ -20420,5 +20420,33 @@
     "removing": "Removing…",
     "removed": "«{package}» was removed from {name}.",
     "undo": "Undo"
+  },
+  "StaffClass": {
+    "settingsTitle": "Class settings",
+    "settingsOpen": "Class settings: {booked} of {capacity} booked, approval {approval}, answer {answer}",
+    "stripBookings": "booked",
+    "stripApproval": "approval",
+    "stripAnswer": "answer",
+    "waitlist": "Waitlist",
+    "duration": "Length",
+    "space": "Space",
+    "phaseSoon": "In {minutes}′",
+    "phaseLive": "Now",
+    "phaseEnded": "Finished",
+    "pendingTitle": "{count, plural, one {# booking request is waiting} other {# booking requests are waiting}}",
+    "people": "Participants",
+    "bookedCount": "{booked} of {capacity}",
+    "arrivedCount": "{arrived} of {booked} here",
+    "arrived": "Here",
+    "arrivedQuestion": "Here?",
+    "markArrived": "Mark {name} as here",
+    "wodActions": "WOD actions",
+    "editWod": "Edit WOD",
+    "changeWod": "Change WOD",
+    "noWodTitle": "No WOD yet",
+    "noWodBody": "Participants see it as soon as you set it.",
+    "startClass": "Start class",
+    "wallScreen": "Wall screen",
+    "barLabel": "Class actions"
   }
 }

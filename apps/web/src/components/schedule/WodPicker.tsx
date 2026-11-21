@@ -50,8 +50,8 @@ function useDebounced<T>(value: T, delay: number) {
   return debounced;
 }
 
-/** The suggestions a class gets, shared by the field's one-tap chips and the picker. */
-function useSuggestions(token: string, date: string | null, classTypeId: string | null | undefined) {
+/** The suggestions a class gets, shared by the field's one-tap chips, the picker and the class page's empty WOD card. */
+export function useWodSuggestions(token: string, date: string | null, classTypeId: string | null | undefined) {
   return useQuery({
     queryKey: ["workout-choices", "suggested", date, classTypeId ?? null],
     enabled: Boolean(token && date),
@@ -100,7 +100,7 @@ export function WodPicker({
   const triggerRef = useRef<HTMLButtonElement>(null);
   const [open, setOpen] = useState(false);
 
-  const suggestions = useSuggestions(token, date, classTypeId);
+  const suggestions = useWodSuggestions(token, date, classTypeId);
   // The chosen WOD's name: from the pick itself, else fetched once by id
   // (editing a class, or coming back from "+ New WOD").
   const chosen = useQuery({
@@ -241,7 +241,8 @@ export function WodPicker({
   );
 }
 
-function WodPickerDialog({
+/** The picker itself: suggestions first, then the whole library by search. */
+export function WodPickerDialog({
   label,
   token,
   value,
@@ -259,7 +260,7 @@ function WodPickerDialog({
   value: string | null;
   date: string | null;
   classTypeName?: string | null;
-  suggestions: ReturnType<typeof useSuggestions>["data"];
+  suggestions: ReturnType<typeof useWodSuggestions>["data"];
   suggestionsLoading: boolean;
   noneHint?: string;
   onChoose: (choice: WorkoutChoice | null) => void;

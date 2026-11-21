@@ -481,6 +481,9 @@ export function cssVariablesForTheme(theme: AppTheme): Record<string, string> {
  * `:root`, each theme on `html[data-theme=…]`. The root layout inlines it,
  * so the page paints in the right colours before any script runs.
  */
+/** The theme whose tokens a `data-surface="deep"` element takes. */
+export const DEEP_SURFACE_THEME: ThemeSlug = "graphite";
+
 export function themeStylesheet(): string {
   const block = (selector: string, theme: AppTheme) =>
     `${selector}{color-scheme:${theme.scheme};${Object.entries(cssVariablesForTheme(theme))
@@ -489,6 +492,10 @@ export function themeStylesheet(): string {
   return [
     block(":root", APP_THEMES[DEFAULT_THEME_SLUG]),
     ...THEME_SLUGS.map((slug) => block(`html[data-theme="${slug}"]`, APP_THEMES[slug])),
+    // Deep, the one hero surface of a screen (BRAND.md): everything inside it,
+    // nested cards, chips and text included, takes the dark theme's tokens, so
+    // it reads the same in both themes without colours of its own.
+    block(`[data-surface="deep"]`, APP_THEMES[DEEP_SURFACE_THEME]),
   ].join("\n");
 }
 

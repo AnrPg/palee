@@ -20420,5 +20420,33 @@
     "removing": "Αφαίρεση…",
     "removed": "Το «{package}» αφαιρέθηκε · {name}",
     "undo": "Αναίρεση"
+  },
+  "StaffClass": {
+    "settingsTitle": "Ρυθμίσεις τμήματος",
+    "settingsOpen": "Ρυθμίσεις τμήματος: {booked} από {capacity}, έγκριση {approval}, απάντηση {answer}",
+    "stripBookings": "κρατήσεις",
+    "stripApproval": "έγκριση",
+    "stripAnswer": "απάντηση",
+    "waitlist": "Λίστα αναμονής",
+    "duration": "Διάρκεια",
+    "space": "Χώρος",
+    "phaseSoon": "Σε {minutes}′",
+    "phaseLive": "Τώρα",
+    "phaseEnded": "Ολοκληρώθηκε",
+    "pendingTitle": "{count, plural, one {# αίτημα κράτησης περιμένει} other {# αιτήματα κράτησης περιμένουν}}",
+    "people": "Συμμετέχοντες",
+    "bookedCount": "{booked} από {capacity}",
+    "arrivedCount": "{arrived, plural, one {# ήρθε} other {# ήρθαν}} από {booked}",
+    "arrived": "Ήρθε",
+    "arrivedQuestion": "Ήρθε;",
+    "markArrived": "Σημείωσε ότι ήρθε: {name}",
+    "wodActions": "Ενέργειες WOD",
+    "editWod": "Επεξεργασία WOD",
+    "changeWod": "Αλλαγή WOD",
+    "noWodTitle": "Δεν έχει WOD ακόμα",
+    "noWodBody": "Οι συμμετέχοντες θα το δουν μόλις το ορίσεις.",
+    "startClass": "Έναρξη τμήματος",
+    "wallScreen": "Οθόνη τοίχου",
+    "barLabel": "Ενέργειες τμήματος"
   }
 }

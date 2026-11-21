@@ -20420,5 +20420,33 @@
     "removing": "Verwijderen…",
     "removed": "«{package}» is verwijderd bij {name}.",
     "undo": "Ongedaan maken"
+  },
+  "StaffClass": {
+    "settingsTitle": "Lesinstellingen",
+    "settingsOpen": "Lesinstellingen: {booked} van {capacity} geboekt, goedkeuring {approval}, antwoord {answer}",
+    "stripBookings": "geboekt",
+    "stripApproval": "goedkeuring",
+    "stripAnswer": "antwoord",
+    "waitlist": "Wachtlijst",
+    "duration": "Duur",
+    "space": "Ruimte",
+    "phaseSoon": "Over {minutes}′",
+    "phaseLive": "Nu",
+    "phaseEnded": "Afgelopen",
+    "pendingTitle": "{count, plural, one {# boekingsverzoek wacht} other {# boekingsverzoeken wachten}}",
+    "people": "Deelnemers",
+    "bookedCount": "{booked} van {capacity}",
+    "arrivedCount": "{arrived} van {booked} aanwezig",
+    "arrived": "Aanwezig",
+    "arrivedQuestion": "Aanwezig?",
+    "markArrived": "{name} als aanwezig markeren",
+    "wodActions": "WOD-acties",
+    "editWod": "WOD bewerken",
+    "changeWod": "WOD wijzigen",
+    "noWodTitle": "Nog geen WOD",
+    "noWodBody": "Deelnemers zien het zodra je het instelt.",
+    "startClass": "Les starten",
+    "wallScreen": "Wandscherm",
+    "barLabel": "Lesacties"
   }
 }

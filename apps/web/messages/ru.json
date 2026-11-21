@@ -20420,5 +20420,33 @@
     "removing": "Удаление…",
     "removed": "Пакет «{package}» удалён у {name}.",
     "undo": "Отменить"
+  },
+  "StaffClass": {
+    "settingsTitle": "Настройки занятия",
+    "settingsOpen": "Настройки занятия: {booked} из {capacity} записано, подтверждение {approval}, ответ {answer}",
+    "stripBookings": "записано",
+    "stripApproval": "подтверждение",
+    "stripAnswer": "ответ",
+    "waitlist": "Лист ожидания",
+    "duration": "Длительность",
+    "space": "Зал",
+    "phaseSoon": "Через {minutes}′",
+    "phaseLive": "Сейчас",
+    "phaseEnded": "Завершено",
+    "pendingTitle": "{count, plural, one {# заявка на запись ждёт} few {# заявки на запись ждут} many {# заявок на запись ждут} other {# заявки на запись ждут}}",
+    "people": "Участники",
+    "bookedCount": "{booked} из {capacity}",
+    "arrivedCount": "Пришли {arrived} из {booked}",
+    "arrived": "Пришёл",
+    "arrivedQuestion": "Пришёл?",
+    "markArrived": "Отметить, что {name} пришёл",
+    "wodActions": "Действия с WOD",
+    "editWod": "Изменить WOD",
+    "changeWod": "Сменить WOD",
+    "noWodTitle": "WOD пока нет",
+    "noWodBody": "Участники увидят его, как только вы его выберете.",
+    "startClass": "Начать занятие",
+    "wallScreen": "Экран на стене",
+    "barLabel": "Действия с занятием"
   }
 }

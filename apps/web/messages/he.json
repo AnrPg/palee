@@ -20420,5 +20420,33 @@
     "removing": "מסיר…",
     "removed": "«{package}» הוסרה מ-{name}.",
     "undo": "ביטול ההסרה"
+  },
+  "StaffClass": {
+    "settingsTitle": "הגדרות השיעור",
+    "settingsOpen": "הגדרות השיעור: {booked} מתוך {capacity} רשומים, אישור {approval}, מענה {answer}",
+    "stripBookings": "רשומים",
+    "stripApproval": "אישור",
+    "stripAnswer": "מענה",
+    "waitlist": "רשימת המתנה",
+    "duration": "משך",
+    "space": "חלל",
+    "phaseSoon": "בעוד {minutes}′",
+    "phaseLive": "עכשיו",
+    "phaseEnded": "הסתיים",
+    "pendingTitle": "{count, plural, one {בקשת הזמנה אחת ממתינה} other {# בקשות הזמנה ממתינות}}",
+    "people": "משתתפים",
+    "bookedCount": "{booked} מתוך {capacity}",
+    "arrivedCount": "הגיעו {arrived} מתוך {booked}",
+    "arrived": "הגיע",
+    "arrivedQuestion": "הגיע?",
+    "markArrived": "סמן ש{name} הגיע",
+    "wodActions": "פעולות WOD",
+    "editWod": "עריכת WOD",
+    "changeWod": "החלפת WOD",
+    "noWodTitle": "עדיין אין WOD",
+    "noWodBody": "המשתתפים יראו אותו ברגע שתגדיר אותו.",
+    "startClass": "התחלת השיעור",
+    "wallScreen": "מסך קיר",
+    "barLabel": "פעולות השיעור"
   }
 }

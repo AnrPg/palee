@@ -20420,5 +20420,33 @@
     "removing": "Wird entfernt…",
     "removed": "«{package}» wurde bei {name} entfernt.",
     "undo": "Rückgängig"
+  },
+  "StaffClass": {
+    "settingsTitle": "Kurseinstellungen",
+    "settingsOpen": "Kurseinstellungen: {booked} von {capacity} gebucht, Freigabe {approval}, Antwort {answer}",
+    "stripBookings": "gebucht",
+    "stripApproval": "Freigabe",
+    "stripAnswer": "Antwort",
+    "waitlist": "Warteliste",
+    "duration": "Dauer",
+    "space": "Raum",
+    "phaseSoon": "In {minutes}′",
+    "phaseLive": "Jetzt",
+    "phaseEnded": "Beendet",
+    "pendingTitle": "{count, plural, one {# Buchungsanfrage wartet} other {# Buchungsanfragen warten}}",
+    "people": "Teilnehmende",
+    "bookedCount": "{booked} von {capacity}",
+    "arrivedCount": "{arrived} von {booked} da",
+    "arrived": "Da",
+    "arrivedQuestion": "Da?",
+    "markArrived": "{name} als anwesend markieren",
+    "wodActions": "WOD-Aktionen",
+    "editWod": "WOD bearbeiten",
+    "changeWod": "WOD ändern",
+    "noWodTitle": "Noch kein WOD",
+    "noWodBody": "Die Teilnehmenden sehen es, sobald du es festlegst.",
+    "startClass": "Kurs starten",
+    "wallScreen": "Wandbildschirm",
+    "barLabel": "Kursaktionen"
   }
 }

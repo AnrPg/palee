@@ -20420,5 +20420,33 @@
     "removing": "A retirar…",
     "removed": "«{package}» foi retirado a {name}.",
     "undo": "Anular"
+  },
+  "StaffClass": {
+    "settingsTitle": "Definições da aula",
+    "settingsOpen": "Definições da aula: {booked} de {capacity} reservadas, aprovação {approval}, resposta {answer}",
+    "stripBookings": "reservas",
+    "stripApproval": "aprovação",
+    "stripAnswer": "resposta",
+    "waitlist": "Lista de espera",
+    "duration": "Duração",
+    "space": "Espaço",
+    "phaseSoon": "Daqui a {minutes}′",
+    "phaseLive": "Agora",
+    "phaseEnded": "Terminada",
+    "pendingTitle": "{count, plural, one {# pedido de reserva à espera} other {# pedidos de reserva à espera}}",
+    "people": "Participantes",
+    "bookedCount": "{booked} de {capacity}",
+    "arrivedCount": "{arrived} de {booked} chegaram",
+    "arrived": "Chegou",
+    "arrivedQuestion": "Chegou?",
+    "markArrived": "Marcar que {name} chegou",
+    "wodActions": "Ações do WOD",
+    "editWod": "Editar WOD",
+    "changeWod": "Mudar de WOD",
+    "noWodTitle": "Ainda sem WOD",
+    "noWodBody": "Os participantes veem-no assim que o definires.",
+    "startClass": "Começar a aula",
+    "wallScreen": "Ecrã de parede",
+    "barLabel": "Ações da aula"
   }
 }

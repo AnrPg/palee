@@ -20420,5 +20420,33 @@
     "removing": "Retrait…",
     "removed": "«{package}» a été retiré à {name}.",
     "undo": "Annuler le retrait"
+  },
+  "StaffClass": {
+    "settingsTitle": "Réglages du cours",
+    "settingsOpen": "Réglages du cours : {booked} sur {capacity} réservés, validation {approval}, réponse {answer}",
+    "stripBookings": "réservés",
+    "stripApproval": "validation",
+    "stripAnswer": "réponse",
+    "waitlist": "Liste d’attente",
+    "duration": "Durée",
+    "space": "Espace",
+    "phaseSoon": "Dans {minutes}′",
+    "phaseLive": "Maintenant",
+    "phaseEnded": "Terminé",
+    "pendingTitle": "{count, plural, one {# demande de réservation en attente} other {# demandes de réservation en attente}}",
+    "people": "Participants",
+    "bookedCount": "{booked} sur {capacity}",
+    "arrivedCount": "{arrived} présents sur {booked}",
+    "arrived": "Présent",
+    "arrivedQuestion": "Présent ?",
+    "markArrived": "Marquer {name} comme présent",
+    "wodActions": "Actions du WOD",
+    "editWod": "Modifier le WOD",
+    "changeWod": "Changer de WOD",
+    "noWodTitle": "Pas encore de WOD",
+    "noWodBody": "Les participants le verront dès que tu le définis.",
+    "startClass": "Démarrer le cours",
+    "wallScreen": "Écran mural",
+    "barLabel": "Actions du cours"
   }
 }
