@@ -1,5 +1,6 @@
 "use client";
 
+import { useNewWorkoutForAssignment } from "./NewWorkoutPurpose";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState, type MutableRefObject } from "react";
@@ -59,6 +60,7 @@ type Props = {
  * draft conflicts and publishes.
  */
 export function StructuredPlanWorkoutEditor({ draftId, folderId = null, onDraftReady, onPublished, handleRef }: Props) {
+  const awaitingFiling = useNewWorkoutForAssignment();
   const i18n = useUiTranslations();
   const assistantT = useTranslations("WorkoutAssistant");
   const goalsT = useTranslations("WodGoals");
@@ -102,13 +104,13 @@ export function StructuredPlanWorkoutEditor({ draftId, folderId = null, onDraftR
   useEffect(() => {
     if (!accessToken || draftId || loadedDraftRef.current === "creating") return;
     loadedDraftRef.current = "creating";
-    createDraftWorkout(accessToken, folderId)
+    createDraftWorkout(accessToken, folderId, { awaitingFiling })
       .then((draft) => onDraftReady(draft.id))
       .catch(() => {
         loadedDraftRef.current = null;
         setLoadFailed(true);
       });
-  }, [accessToken, draftId, folderId, onDraftReady]);
+  }, [accessToken, awaitingFiling, draftId, folderId, onDraftReady]);
 
   const buildPayload = useCallback(() => planPayload(usePlanEditorStore.getState().serialize(), typeRef.current, metadataRef.current), []);
 

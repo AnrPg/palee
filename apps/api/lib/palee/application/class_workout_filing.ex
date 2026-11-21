@@ -14,6 +14,7 @@ defmodule Palee.Application.ClassWorkoutFiling do
   """
 
   alias Palee.Application.{FileWorkoutCopy, WorkoutLibraryFolders}
+  alias Palee.Workouts
 
   @doc """
   Runs `persist.(context, params)` with `master_workout_id` swapped for the
@@ -34,6 +35,22 @@ defmodule Palee.Application.ClassWorkoutFiling do
       end
     end
   end
+
+  @doc """
+  ADR-680: creating a class files nothing, except a WOD made for that class
+  («+ Νέο WOD» in the class form), which moves into the class's day folder so
+  it never stays at the library root.
+  """
+  def with_class_made_workout(context, params, persist) do
+    if made_for_it?(context, value(params, :master_workout_id)),
+      do: with_filed_workout(context, params, persist),
+      else: persist.(context, params)
+  end
+
+  defp made_for_it?(context, workout_id) when is_binary(workout_id) and workout_id != "",
+    do: match?(%{awaiting_filing: true}, Workouts.get_workout_for_admin(context, workout_id))
+
+  defp made_for_it?(_context, _none), do: false
 
   defp file_and_persist(context, params, persist, workout_id, folder_id) do
     with {:ok, filed} <-

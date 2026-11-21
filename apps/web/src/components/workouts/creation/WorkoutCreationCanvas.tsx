@@ -4,6 +4,7 @@
 
 
 
+import { useNewWorkoutForAssignment } from "./NewWorkoutPurpose";
 import {useUiTranslations} from "@/i18n/ui";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -156,6 +157,7 @@ type Props = {
 };
 
 export function WorkoutCreationCanvas({ embedded = false, initialDraftId = null, onCancel, onPublished }: Props) {
+  const awaitingFiling = useNewWorkoutForAssignment();
   const i18n = useUiTranslations();
   const { tokens } = useSession();
   const router = useRouter();
@@ -278,7 +280,7 @@ export function WorkoutCreationCanvas({ embedded = false, initialDraftId = null,
         })
         .catch(() => { draftLoadedRef.current = true; });
     } else {
-      createDraftWorkout(tokens.access_token, targetFolderId)
+      createDraftWorkout(tokens.access_token, targetFolderId, { awaitingFiling })
         .then((draft) => {
           initDraft(draft.id, draft.dsl_source_revision ?? 0);
           draftLoadedRef.current = true;
@@ -293,7 +295,7 @@ export function WorkoutCreationCanvas({ embedded = false, initialDraftId = null,
           setSaveStatus("error");
         });
     }
-  }, [draftId, embedded, initDraft, loadFromDraftData, organizationSlug, router, setSaveStatus, targetFolderId, tokens?.access_token, urlDraftId]);
+  }, [awaitingFiling, draftId, embedded, initDraft, loadFromDraftData, organizationSlug, router, setSaveStatus, targetFolderId, tokens?.access_token, urlDraftId]);
 
   // On remount (navigated away and back to the same draft URL), draftId is already set in
   // the Zustand store but draftLoadedRef is false (refs reset on unmount). Re-fetch to

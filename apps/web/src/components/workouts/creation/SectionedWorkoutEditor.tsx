@@ -1,5 +1,6 @@
 "use client";
 
+import { useNewWorkoutForAssignment } from "./NewWorkoutPurpose";
 import Placeholder from "@tiptap/extension-placeholder";
 import Underline from "@tiptap/extension-underline";
 import { EditorContent, useEditor, type JSONContent } from "@tiptap/react";
@@ -78,6 +79,7 @@ type Props = {
  * athletes run those timers one section at a time. Nothing is parsed.
  */
 export function SectionedWorkoutEditor({ draftId, folderId = null, onDraftReady, onPublished, assistantAvailable, onUseAssistant, saveHandleRef }: Props) {
+  const awaitingFiling = useNewWorkoutForAssignment();
   const i18n = useUiTranslations();
   const assistantT = useTranslations("WorkoutAssistant");
   const goalsT = useTranslations("WodGoals");
@@ -115,13 +117,13 @@ export function SectionedWorkoutEditor({ draftId, folderId = null, onDraftReady,
   useEffect(() => {
     if (!accessToken || draftId || loadedDraftRef.current === "creating") return;
     loadedDraftRef.current = "creating";
-    createDraftWorkout(accessToken, folderId)
+    createDraftWorkout(accessToken, folderId, { awaitingFiling })
       .then((draft) => onDraftReady(draft.id))
       .catch(() => {
         loadedDraftRef.current = null;
         setLoadFailed(true);
       });
-  }, [accessToken, draftId, folderId, onDraftReady]);
+  }, [accessToken, awaitingFiling, draftId, folderId, onDraftReady]);
 
   /** Puts a stored draft into the editor and arms autosave at its revision. */
   const applyWorkout = useCallback(

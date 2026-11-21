@@ -14,12 +14,42 @@ defmodule Palee.Application.FileWorkoutCopy do
 
   With `reuse_copy: true` a published copy of the same workout already filed in
   the folder is reused (e.g. several classes on the same day share one WOD).
+
+  ADR-680: a workout made for this purpose (`awaiting_filing`, from «+ Νέο WOD»
+  inside a day, class, athlete or member screen) is *moved* into the folder
+  instead, so it lives only there and never also at the library root.
   """
   def ensure_in_folder(context, workout_id, folder_id, opts \\ []) do
     case Workouts.get_workout_for_admin(context, workout_id) do
       nil -> {:error, :workout_not_found}
-      %{folder_id: ^folder_id} = workout -> {:ok, workout}
+      %{folder_id: ^folder_id} = workout -> settle_in_place(context, workout)
+      %{awaiting_filing: true} = workout -> move(context, workout, folder_id)
       _elsewhere -> reuse_or_copy(context, workout_id, folder_id, opts[:reuse_copy] == true)
+    end
+  end
+
+  # Already where it belongs (e.g. created inside that folder): the next
+  # filing of it is an ordinary one.
+  defp settle_in_place(context, %{awaiting_filing: true} = workout) do
+    with {:ok, _metadata} <-
+           Workouts.update_library_metadata(context, workout.id, %{awaiting_filing: false}) do
+      {:ok,
+       workout |> Map.put(:awaiting_filing, false) |> Map.put(:settled_from, workout.folder_id)}
+    end
+  end
+
+  defp settle_in_place(_context, workout), do: {:ok, workout}
+
+  defp move(context, workout, folder_id) do
+    with {:ok, _metadata} <-
+           Workouts.update_library_metadata(context, workout.id, %{
+             folder_id: folder_id,
+             awaiting_filing: false
+           }) do
+      {:ok,
+       workout
+       |> Map.merge(%{folder_id: folder_id, awaiting_filing: false})
+       |> Map.put(:settled_from, workout.folder_id)}
     end
   end
 
@@ -37,7 +67,20 @@ defmodule Palee.Application.FileWorkoutCopy do
   defp reuse_or_copy(context, workout_id, folder_id, false),
     do: copy(context, workout_id, folder_id, copy_goals: false)
 
-  @doc "Deletes a copy made by `ensure_in_folder/3` when the step it was made for failed."
+  @doc """
+  Undoes `ensure_in_folder/4` when the step it was made for failed: deletes a
+  fresh copy, or puts a moved workout back where it was, still awaiting filing.
+  """
+  def discard(context, %{settled_from: folder_id} = workout, _original_id) do
+    _result =
+      Workouts.update_library_metadata(context, workout.id, %{
+        folder_id: folder_id,
+        awaiting_filing: true
+      })
+
+    :ok
+  end
+
   def discard(_context, %{id: id}, id), do: :ok
   def discard(_context, %{reused: true}, _original_id), do: :ok
 

@@ -227,6 +227,7 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
           draft_data: workout.draft_data,
           folder_id: workout.folder_id,
           source_workout_id: workout.source_workout_id,
+          awaiting_filing: workout.awaiting_filing,
           icon: workout.icon,
           icon_source: workout.icon_source,
           benchmark_key: workout.benchmark_key,
@@ -238,6 +239,7 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
           |> Repo.preload(@workout_preloads)
           |> normalize_workout(audience: :staff)
           |> Map.put(:draft_data, workout.draft_data)
+          |> Map.put(:awaiting_filing, workout.awaiting_filing)
           |> Map.merge(authoring_state(workout))
         else
           base
@@ -577,7 +579,12 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
 
       workout ->
         workout
-        |> Ecto.Changeset.cast(params, [:folder_id, :source_workout_id, :library_visibility])
+        |> Ecto.Changeset.cast(params, [
+          :folder_id,
+          :source_workout_id,
+          :library_visibility,
+          :awaiting_filing
+        ])
         |> Ecto.Changeset.validate_inclusion(:library_visibility, ["shared", "personal"])
         |> Ecto.Changeset.foreign_key_constraint(:folder_id)
         |> Ecto.Changeset.foreign_key_constraint(:source_workout_id)
@@ -588,7 +595,8 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
              %{
                id: updated.id,
                folder_id: updated.folder_id,
-               source_workout_id: updated.source_workout_id
+               source_workout_id: updated.source_workout_id,
+               awaiting_filing: updated.awaiting_filing
              }}
 
           error ->

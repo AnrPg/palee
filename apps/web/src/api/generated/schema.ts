@@ -128748,6 +128748,7 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
+                    awaiting_filing?: boolean;
                     /** Format: uuid */
                     folder_id?: string | null;
                 };

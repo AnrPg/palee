@@ -1,5 +1,6 @@
 "use client";
 
+import { useNewWorkoutForAssignment } from "./NewWorkoutPurpose";
 import CharacterCount from "@tiptap/extension-character-count";
 import Highlight from "@tiptap/extension-highlight";
 import Link from "@tiptap/extension-link";
@@ -89,6 +90,7 @@ export function QuickTextWorkoutEditor({
   onPublished,
   onSwitchToStructured,
 }: Props) {
+  const awaitingFiling = useNewWorkoutForAssignment();
   const i18n = useUiTranslations();
   const { tokens } = useSession();
   const accessToken = tokens?.access_token;
@@ -249,13 +251,13 @@ export function QuickTextWorkoutEditor({
     if (!tokens?.access_token || draftId || loadedDraftRef.current === "creating") return;
 
     loadedDraftRef.current = "creating";
-    createDraftWorkout(tokens.access_token, folderId)
+    createDraftWorkout(tokens.access_token, folderId, { awaitingFiling })
       .then((draft) => onDraftReady(draft.id))
       .catch(() => {
         loadedDraftRef.current = null;
         setLoadFailed(true);
       });
-  }, [draftId, folderId, onDraftReady, tokens?.access_token]);
+  }, [awaitingFiling, draftId, folderId, onDraftReady, tokens?.access_token]);
 
   /** Puts the stored source into the editor and arms autosave at its revision. */
   const applyAuthoring = useCallback(

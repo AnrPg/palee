@@ -1,5 +1,6 @@
 "use client";
 
+import { useNewWorkoutForAssignment } from "./NewWorkoutPurpose";
 import CharacterCount from "@tiptap/extension-character-count";
 import Highlight from "@tiptap/extension-highlight";
 import Link from "@tiptap/extension-link";
@@ -107,6 +108,7 @@ type AsideTab = "assistant" | "preview";
 type EditorTabKey = "details" | "timer" | "goals" | "tools";
 
 export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, onPublished, onUseSections, saveHandleRef }: Props) {
+  const awaitingFiling = useNewWorkoutForAssignment();
   const i18n = useUiTranslations();
   const assistantT = useTranslations("WorkoutAssistant");
   const goalsT = useTranslations("WodGoals");
@@ -214,13 +216,13 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
     if (!accessToken || draftId || loadedDraftRef.current === "creating") return;
 
     loadedDraftRef.current = "creating";
-    createDraftWorkout(accessToken, folderId)
+    createDraftWorkout(accessToken, folderId, { awaitingFiling })
       .then((draft) => onDraftReady(draft.id))
       .catch(() => {
         loadedDraftRef.current = null;
         setLoadFailed(true);
       });
-  }, [accessToken, draftId, folderId, onDraftReady]);
+  }, [accessToken, awaitingFiling, draftId, folderId, onDraftReady]);
 
   /** Puts a stored draft into the editor and arms autosave at its revision. */
   const applyWorkout = useCallback(

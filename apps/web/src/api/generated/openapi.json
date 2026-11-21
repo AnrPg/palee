@@ -314470,6 +314470,9 @@
               "schema": {
                 "additionalProperties": false,
                 "properties": {
+                  "awaiting_filing": {
+                    "type": "boolean"
+                  },
                   "folder_id": {
                     "format": "uuid",
                     "nullable": true,
