@@ -20238,7 +20238,10 @@
     "timerTitle": "Controlla il timer",
     "timerDescription": "Il timer è stato impostato dal testo. È giusto?",
     "timerFromText": "Timer dal testo:",
-    "timerChange": "Cambia"
+    "timerChange": "Cambia",
+    "checkFailed": "Non è stato possibile controllare gli esercizi. Se pubblichi ora, quelli con il nome scritto male non conteranno per i muscoli.",
+    "retryCheck": "Riprova",
+    "publishUnchecked": "Pubblica senza controllo"
   },
   "BoxOnMap": {
     "title": "Il tuo box non compare in Intorno a me",

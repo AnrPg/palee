@@ -13,8 +13,12 @@ defmodule Palee.Workouts.Ports.GoalStore do
           source: String.t(),
           taxonomy_version: pos_integer(),
           updated_by_id: Ecto.UUID.t() | nil,
-          updated_at: DateTime.t()
+          updated_at: DateTime.t(),
+          suggestion_basis: basis() | nil
         }
+
+  @typedoc "ADR-671: the suggestion edited goals were last reconciled with."
+  @type basis :: %{muscles: [%{id: String.t(), role: String.t()}], qualities: [String.t()]}
 
   @type resolved :: %{goals: goals() | nil, inherited_from: Ecto.UUID.t() | nil}
 

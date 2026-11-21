@@ -13,7 +13,7 @@ defmodule Palee.Application.SaveWorkoutGoals do
   """
 
   alias Palee.Anatomy
-  alias Palee.Application.GetWorkoutGoals
+  alias Palee.Application.{GetWorkoutGoals, GrowEditedGoals}
   alias Palee.Application.WorkoutGoalsPresenter, as: Presenter
   alias Palee.Workouts
 
@@ -33,7 +33,9 @@ defmodule Palee.Application.SaveWorkoutGoals do
         visible_to_members: visible_value(context, visible, resolved),
         source: source(muscles, goals.qualities, suggestion),
         taxonomy_version: Anatomy.taxonomy_version(),
-        updated_by_id: context.user_id
+        updated_by_id: context.user_id,
+        # ADR-671: what later exercises are compared with.
+        suggestion_basis: GrowEditedGoals.basis(suggestion)
       }
 
       with {:ok, saved} <- Workouts.put_workout_goals(context, workout_id, attrs) do

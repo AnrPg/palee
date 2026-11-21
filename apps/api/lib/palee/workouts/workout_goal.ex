@@ -23,11 +23,13 @@ defmodule Palee.Workouts.WorkoutGoal do
     field(:source, :string, default: "suggested")
     field(:taxonomy_version, :integer)
     field(:updated_by_id, :binary_id)
+    # ADR-671: the suggestion edited goals were last reconciled with.
+    field(:suggestion_basis, :map)
 
     timestamps(type: :utc_datetime_usec)
   end
 
-  @fields ~w(muscles qualities stimulus visible_to_members source taxonomy_version updated_by_id)a
+  @fields ~w(muscles qualities stimulus visible_to_members source taxonomy_version updated_by_id suggestion_basis)a
 
   def changeset(%__MODULE__{} = goal, attrs) do
     goal
