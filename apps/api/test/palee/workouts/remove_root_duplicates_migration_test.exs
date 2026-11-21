@@ -1,6 +1,6 @@
 defmodule Palee.Workouts.RemoveRootDuplicatesMigrationTest do
   @moduledoc """
-  ADR-680: the 20271121110000 migration removes the root original of a WOD
+  ADR-680: the 20271121130000 migration removes the root original of a WOD
   that was made for a day, class, athlete or member and filed as a copy,
   keeping the copy (with the original's goals), and leaves templates alone.
   """
@@ -12,9 +12,9 @@ defmodule Palee.Workouts.RemoveRootDuplicatesMigrationTest do
 
   alias Palee.{Organizations, Repo, Workouts}
 
-  @version 20_271_121_110_000
+  @version 20_271_121_130_000
   @migration Palee.Repo.Migrations.RemoveRootDuplicatesOfFiledWods
-  @migration_file "priv/repo/migrations/20271121110000_remove_root_duplicates_of_filed_wods.exs"
+  @migration_file "priv/repo/migrations/20271121130000_remove_root_duplicates_of_filed_wods.exs"
 
   setup_all do
     unless Code.ensure_loaded?(@migration) do
