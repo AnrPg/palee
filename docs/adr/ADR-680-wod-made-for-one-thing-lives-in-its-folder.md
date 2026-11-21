@@ -39,4 +39,11 @@ so that WOD stayed only at the root.
 ## Consequences
 
 - No more root duplicates for new WODs; goals stay on the WOD itself.
-- Existing duplicates are left as they are until ANR decides on a cleanup.
+- Existing duplicates (ANR chose «Αυτόματο καθάρισμα»): migration
+  `20271121110000` removes a root WOD only when it is a published shared
+  non-benchmark, has exactly one copy, that copy is in a day/athlete/member
+  system folder, was made within a day after it, it was not edited after the
+  copy, and nothing else uses it (classes, series, day WODs, assignments,
+  logs, executions, snapshots, plan sets, scaling suggestions, programmes).
+  Its goals move to the copy first. A one-day-old template used exactly once
+  this way looks the same and is removed too; its copy keeps everything.
