@@ -1,14 +1,14 @@
 "use client";
 
+import { useNewWorkoutForAssignment } from "./NewWorkoutPurpose";
 import Placeholder from "@tiptap/extension-placeholder";
-import Underline from "@tiptap/extension-underline";
 import { EditorContent, useEditor, type JSONContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState, type MutableRefObject } from "react";
 
 import { ApiError } from "@/api/client";
+import { decideExerciseMatches, fetchExerciseMatches, type ExerciseMatch } from "@/api/exercise-matches";
 import {
   createDraftWorkout,
   fetchAdminWorkout,
@@ -18,6 +18,7 @@ import {
 } from "@/api/workouts";
 import { useSession } from "@/components/session-provider";
 import { useDraftSaver } from "@/hooks/useDraftSaver";
+import { groupExerciseMatches, linkFor, matchDecisions, type ExerciseMatchAnswers } from "@/lib/exercise-match-answers";
 import { DraftConflictError, type DraftSaveStatus } from "@/lib/draft-saver";
 import { WodGoalsEditorPanel } from "@/components/wod-goals/WodGoalsEditorPanel";
 import { useUiTranslations } from "@/i18n/ui";
@@ -50,7 +51,10 @@ import { DraftConflictNotice } from "./DraftConflictNotice";
 import { EditorTabs } from "./EditorTabs";
 import { WodFormatsHelpButton } from "./WodFormatsHelp";
 import { useEditorExerciseSuggestions, useExerciseSuggestKeys } from "./EditorExerciseSuggestions";
-import { ExerciseSuggestKeys } from "./exercise-link";
+import { ExerciseCheckFailedNotice } from "./ExerciseCheckFailedNotice";
+import { ExerciseMatchesDialog } from "./ExerciseMatchesDialog";
+import { ExerciseSuggestKeys, type LinkSpan } from "./exercise-link";
+import { linkSectionDocument, sectionContentExtensions } from "./section-text-schema";
 import { SectionScoringField } from "./SectionScoringField";
 import { TextTimerNote } from "./TextTimerNote";
 import { TimerChips } from "./TimerChips";
@@ -76,9 +80,14 @@ type Props = {
 /**
  * ADR-180: a workout written without the assistant. The coach adds sections
  * («+ Προσθήκη ενότητας»), writes each one's text and picks its own timer;
- * athletes run those timers one section at a time. Nothing is parsed.
+ * athletes run those timers one section at a time. The assistant parses
+ * nothing here, but the exercises are still checked before publishing
+ * (ADR-570 / ADR-671): the same «Αναγνωρίσαμε ασκήσεις» dialog as the
+ * free-text editor, answered section by section, so every exercise counts
+ * for the muscles and qualities.
  */
 export function SectionedWorkoutEditor({ draftId, folderId = null, onDraftReady, onPublished, assistantAvailable, onUseAssistant, saveHandleRef }: Props) {
+  const awaitingFiling = useNewWorkoutForAssignment();
   const i18n = useUiTranslations();
   const assistantT = useTranslations("WorkoutAssistant");
   const goalsT = useTranslations("WodGoals");
@@ -108,6 +117,11 @@ export function SectionedWorkoutEditor({ draftId, folderId = null, onDraftReady,
   const [showProblems, setShowProblems] = useState(false);
   const [serverProblems, setServerProblems] = useState<SectionProblem[] | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const matchesT = useTranslations("ExerciseMatches");
+  /** ADR-671: the exercises found before publishing, waiting for the coach's answers. */
+  const [matchCheck, setMatchCheck] = useState<{ matches: ExerciseMatch[]; busy: boolean; error: string | null } | null>(null);
+  /** ADR-671: the exercise check could not run; the coach retries or publishes without it. */
+  const [checkFailed, setCheckFailed] = useState(false);
   /** The settings tab open above the sections (none: all the room for writing). */
   const [openTab, setOpenTab] = useState<"details" | "goals" | null>("details");
   const [focusKey, setFocusKey] = useState<string | null>(null);
@@ -117,13 +131,13 @@ export function SectionedWorkoutEditor({ draftId, folderId = null, onDraftReady,
   useEffect(() => {
     if (!accessToken || draftId || loadedDraftRef.current === "creating") return;
     loadedDraftRef.current = "creating";
-    createDraftWorkout(accessToken, folderId)
+    createDraftWorkout(accessToken, folderId, { awaitingFiling })
       .then((draft) => onDraftReady(draft.id))
       .catch(() => {
         loadedDraftRef.current = null;
         setLoadFailed(true);
       });
-  }, [accessToken, draftId, folderId, onDraftReady]);
+  }, [accessToken, awaitingFiling, draftId, folderId, onDraftReady]);
 
   /** Puts a stored draft into the editor and arms autosave at its revision. */
   const applyWorkout = useCallback(
@@ -243,18 +257,46 @@ export function SectionedWorkoutEditor({ draftId, folderId = null, onDraftReady,
     onUseAssistant();
   }
 
-  async function publish() {
+  /**
+   * Publishes the sections. ADR-671: the exercises the matcher finds in the
+   * saved sections are confirmed first (`ExerciseMatchesDialog`); nothing
+   * found publishes at once. A check that could not run says so
+   * (`ExerciseCheckFailedNotice`) instead of publishing silently.
+   * `sections` are the ones to publish when the state has not caught up yet
+   * (right after the answers were linked).
+   */
+  async function publish(options: { matchesChecked?: boolean; sections?: EditorTextSection[] } = {}) {
     if (!accessToken || !draftId) return;
     setNotice(null);
     setServerProblems(null);
+    setCheckFailed(false);
     if (problems.length > 0 || titleMissing || typeMissing) {
       setShowProblems(true);
       return;
     }
 
     setPublishing(true);
+    const payload = options.sections ? sectionedPayload(title, types, options.sections, metadataRef.current) : buildPayload();
+
+    if (!options.matchesChecked) {
+      let matches: ExerciseMatch[];
+      try {
+        await saver.saveNow(payload);
+        matches = await fetchExerciseMatches(accessToken, draftId);
+      } catch (error) {
+        setPublishing(false);
+        // A conflict is explained by the notice above the sections.
+        if (!(error instanceof DraftConflictError)) setCheckFailed(true);
+        return;
+      }
+      if (matches.length > 0) {
+        setMatchCheck({ matches, busy: false, error: null });
+        setPublishing(false);
+        return;
+      }
+    }
+
     try {
-      const payload = buildPayload();
       // The final save and the publish run back to back in the save queue.
       await saver.saveNow(payload, async (revision) => {
         saver.close();
@@ -278,6 +320,27 @@ export function SectionedWorkoutEditor({ draftId, folderId = null, onDraftReady,
     } finally {
       setPublishing(false);
     }
+  }
+
+  /** ADR-671: the coach answered every found exercise: link the words in their sections, save, remember, publish. */
+  async function confirmExerciseMatches(answers: ExerciseMatchAnswers) {
+    if (!accessToken || !draftId || !matchCheck) return;
+    setMatchCheck({ ...matchCheck, busy: true, error: null });
+    const groups = groupExerciseMatches(matchCheck.matches);
+    const linked = linkSections(
+      sections,
+      groups.flatMap((group) => group.matches.map((match) => ({ match, ...linkFor(match, answers[group.key]!) }))),
+    );
+    setSections(linked);
+    try {
+      await saver.saveNow(sectionedPayload(title, types, linked, metadataRef.current));
+      if (groups.length > 0) await decideExerciseMatches(accessToken, draftId, matchDecisions(groups, answers));
+    } catch (error) {
+      setMatchCheck({ ...matchCheck, busy: false, error: error instanceof DraftConflictError ? null : matchesT("failed") });
+      return;
+    }
+    setMatchCheck(null);
+    await publish({ matchesChecked: true, sections: linked });
   }
 
   return (
@@ -388,7 +451,13 @@ export function SectionedWorkoutEditor({ draftId, folderId = null, onDraftReady,
       </button>
 
       <footer className="sticky bottom-(--bottom-nav-space) flex flex-wrap items-center justify-between gap-3 border-t py-3" style={{ borderColor: "var(--dim)", background: "var(--bg)" }}>
-        {notice ? (
+        {checkFailed ? (
+          <ExerciseCheckFailedNotice
+            busy={publishing}
+            onRetry={() => void publish()}
+            onPublishAnyway={() => void publish({ matchesChecked: true })}
+          />
+        ) : notice ? (
           <ErrorNotice variant="text">{notice}</ErrorNotice>
         ) : (
           <span className="text-xs" style={{ color: "var(--muted)" }}>
@@ -409,6 +478,15 @@ export function SectionedWorkoutEditor({ draftId, folderId = null, onDraftReady,
           {publishing ? i18n("quickTextPublishing") : i18n("quickTextPublish")}
         </button>
       </footer>
+      {matchCheck ? (
+        <ExerciseMatchesDialog
+          matches={matchCheck.matches}
+          busy={matchCheck.busy}
+          error={matchCheck.error}
+          onBack={() => setMatchCheck(null)}
+          onConfirm={(answers) => void confirmExerciseMatches(answers)}
+        />
+      ) : null}
     </div>
   );
 }
@@ -522,6 +600,7 @@ function SectionCard({
             document={section.document}
             label={i18n("textSectionTextLabel", { number })}
             frequentTimers={frequentTimers}
+            contentVersion={section.contentVersion ?? 0}
             onChange={(body, document) => onChange({ body, document })}
           />
         ) : null}
@@ -631,11 +710,14 @@ export function SectionTextEditor({
   document,
   label,
   frequentTimers = NO_FREQUENT_TIMERS,
+  contentVersion = 0,
   onChange,
 }: {
   document: JSONContent;
   label: string;
   frequentTimers?: FreeTextTimerPreset[];
+  /** ADR-671: a new value puts `document` into the editor (it was replaced from outside). */
+  contentVersion?: number;
   onChange: (body: string, document: JSONContent) => void;
 }) {
   const i18n = useUiTranslations();
@@ -643,12 +725,10 @@ export function SectionTextEditor({
   const suggestKeys = useExerciseSuggestKeys();
   const editor = useEditor({
     extensions: [
-      StarterKit.configure({ link: false, underline: false, heading: { levels: [3, 4] } }),
-      Underline,
+      // ADR-671: with `exerciseLink`, a name picked from the suggestions is
+      // linked to its exercise, as in the free-text editor.
+      ...sectionContentExtensions(),
       Placeholder.configure({ placeholder: i18n("textSectionPlaceholder") }),
-      // The same exercise suggestions as the free-text editor. Without the
-      // assistant nothing parses the sections, so a picked name stays plain
-      // text (no `exerciseLink` mark, no confirmation before publishing).
       ExerciseSuggestKeys.configure({ onKeyDown: suggestKeys.onKeyDown }),
     ],
     content: document,
@@ -665,6 +745,14 @@ export function SectionTextEditor({
     },
     onUpdate: ({ editor: current }) => onChange(current.getText({ blockSeparator: "\n" }), current.getJSON()),
   });
+
+  // ADR-671: answers linked outside the editor are shown in it, without an update round trip.
+  const shownVersion = useRef(contentVersion);
+  useEffect(() => {
+    if (!editor || shownVersion.current === contentVersion) return;
+    shownVersion.current = contentVersion;
+    editor.commands.setContent(document, { emitUpdate: false });
+  }, [contentVersion, document, editor]);
 
   // ADR-650: WOD formats too, the coach's most used timers first.
   const suggestionOptions = useMemo(() => ({ formats: { frequent: frequentTimers } }), [frequentTimers]);
@@ -705,6 +793,30 @@ function IconButton({
 }
 
 type SectionedDraftPayload = ReturnType<typeof sectionedPayload>;
+
+/**
+ * ADR-671: the sections with the coach's answers put into their documents as
+ * exercise links. A match names its section by its place in the saved
+ * sections, the same order as on screen.
+ */
+export function linkSections(
+  sections: EditorTextSection[],
+  answered: { match: ExerciseMatch; ref: string | null; checked: string | null }[],
+): EditorTextSection[] {
+  const bySection = new Map<number, LinkSpan[]>();
+  for (const { match, ref, checked } of answered) {
+    const index = typeof match.section === "number" ? match.section : 0;
+    const spans = bySection.get(index) ?? [];
+    spans.push({ line: match.line, from: match.from, to: match.to, typed: match.typed, ref, checked });
+    bySection.set(index, spans);
+  }
+  return sections.map((section, index) => {
+    const spans = bySection.get(index);
+    if (!spans) return section;
+    const { document, applied } = linkSectionDocument(section.document, spans);
+    return applied > 0 ? { ...section, document, contentVersion: (section.contentVersion ?? 0) + 1 } : section;
+  });
+}
 
 function sectionedPayload(
   title: string,

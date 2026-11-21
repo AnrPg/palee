@@ -36472,12 +36472,12 @@ export interface components {
             folded: string;
             /** @description Character offset in the line */
             from: number;
-            /** @description line:from:to */
+            /** @description [section:]line:from:to */
             id: string;
             /** @enum {string} */
             kind: "exact" | "fuzzy" | "changed";
             label: string;
-            /** @description Text block index in the document */
+            /** @description Text block index in the document (in the section's own document when `section` is set) */
             line: number;
             muscles: {
                 /** @description Taxonomy group or head id */
@@ -36488,6 +36488,8 @@ export interface components {
             qualities: string[];
             /** @description The box confirmed this match before */
             remembered: boolean;
+            /** @description ADR-671: the section (0-based, in the draft's order) of a sectioned workout; null for one document */
+            section?: number | null;
             to: number;
             /** @description The words as written */
             typed: string;
@@ -36508,12 +36510,12 @@ export interface components {
                 folded: string;
                 /** @description Character offset in the line */
                 from: number;
-                /** @description line:from:to */
+                /** @description [section:]line:from:to */
                 id: string;
                 /** @enum {string} */
                 kind: "exact" | "fuzzy" | "changed";
                 label: string;
-                /** @description Text block index in the document */
+                /** @description Text block index in the document (in the section's own document when `section` is set) */
                 line: number;
                 muscles: {
                     /** @description Taxonomy group or head id */
@@ -36524,6 +36526,8 @@ export interface components {
                 qualities: string[];
                 /** @description The box confirmed this match before */
                 remembered: boolean;
+                /** @description ADR-671: the section (0-based, in the draft's order) of a sectioned workout; null for one document */
+                section?: number | null;
                 to: number;
                 /** @description The words as written */
                 typed: string;
@@ -129235,6 +129239,7 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
+                    awaiting_filing?: boolean;
                     /** Format: uuid */
                     folder_id?: string | null;
                 };
@@ -132632,12 +132637,12 @@ export interface operations {
                             folded: string;
                             /** @description Character offset in the line */
                             from: number;
-                            /** @description line:from:to */
+                            /** @description [section:]line:from:to */
                             id: string;
                             /** @enum {string} */
                             kind: "exact" | "fuzzy" | "changed";
                             label: string;
-                            /** @description Text block index in the document */
+                            /** @description Text block index in the document (in the section's own document when `section` is set) */
                             line: number;
                             muscles: {
                                 /** @description Taxonomy group or head id */
@@ -132648,6 +132653,8 @@ export interface operations {
                             qualities: string[];
                             /** @description The box confirmed this match before */
                             remembered: boolean;
+                            /** @description ADR-671: the section (0-based, in the draft's order) of a sectioned workout; null for one document */
+                            section?: number | null;
                             to: number;
                             /** @description The words as written */
                             typed: string;

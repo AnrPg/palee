@@ -156,6 +156,17 @@ defmodule Palee.Workouts.Domain.SectionedText do
 
   def draft_text(_sections), do: %{body: "", document: compose_document([])}
 
+  @doc """
+  ADR-671: one section's rich text as saved (its editor JSON, else
+  paragraphs from its plain text), for the exercise check before publishing.
+  """
+  def section_document(%{} = section) do
+    body = section |> value(:free_text_body) |> trimmed()
+    document(value(section, :free_text_document), body)
+  end
+
+  def section_document(_section), do: document(nil, "")
+
   @doc "The workout's plain text: each section's title (when it has one) above its text."
   def compose_body(sections) do
     Enum.map_join(sections, "\n\n", fn section ->

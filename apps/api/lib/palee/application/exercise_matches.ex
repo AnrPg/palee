@@ -17,32 +17,34 @@ defmodule Palee.Application.ExerciseMatches do
 
   Nothing found is a normal outcome. The editor turns the answers into links
   in the document (a «Όχι» is a link without an exercise) and saves it;
-  `decide/3` then updates the box's memory and folds the new suggestion into
-  goals the coach already edited, only adding muscles or promoting their
-  roles (`Anatomy.merge_goals_up/2`).
+  `decide/3` then updates the box's memory and folds what the suggestion
+  gained into goals the coach already edited, only adding muscles or
+  promoting their roles (`GrowEditedGoals`, ADR-671).
   """
 
   alias Palee.Anatomy
-  alias Palee.Application.WorkoutGoalsPresenter, as: Presenter
+  alias Palee.Application.GrowEditedGoals
   alias Palee.Workouts
-  alias Palee.Workouts.Domain.{ExerciseMatcher, FreeTextDocument}
+  alias Palee.Workouts.Domain.{ExerciseMatcher, FreeTextDocument, SectionedText}
 
   @max_decisions 200
 
   def list(context, workout_id) do
     with {:ok, workout} <- fetch_workout(context, workout_id) do
-      lines = workout |> document() |> FreeTextDocument.lines()
+      parts = parts(workout)
       names = catalog_names()
-      rejected = rejected_words(lines)
+      rejected = parts |> Enum.flat_map(&elem(&1, 1)) |> rejected_words()
 
       found =
-        Enum.flat_map(lines, fn line ->
-          linked? = fn {from, to} -> Enum.any?(line.links, &(&1.from < to and from < &1.to)) end
+        Enum.flat_map(parts, fn {section, lines} ->
+          Enum.flat_map(lines, fn line ->
+            linked? = fn {from, to} -> Enum.any?(line.links, &(&1.from < to and from < &1.to)) end
 
-          line.text
-          |> ExerciseMatcher.match_line(names, linked?)
-          |> Enum.reject(&MapSet.member?(rejected, ExerciseMatcher.folded(&1.typed)))
-          |> Enum.map(&Map.put(&1, :line, line.index))
+            line.text
+            |> ExerciseMatcher.match_line(names, linked?)
+            |> Enum.reject(&MapSet.member?(rejected, ExerciseMatcher.folded(&1.typed)))
+            |> Enum.map(&Map.merge(&1, %{line: line.index, section: section}))
+          end)
         end)
 
       memory =
@@ -60,7 +62,10 @@ defmodule Palee.Application.ExerciseMatches do
           )
         end)
 
-      {:ok, %{matches: matches ++ changed_links(lines, names)}}
+      changed =
+        Enum.flat_map(parts, fn {section, lines} -> changed_links(lines, names, section) end)
+
+      {:ok, %{matches: matches ++ changed}}
     end
   end
 
@@ -81,41 +86,11 @@ defmodule Palee.Application.ExerciseMatches do
           DateTime.utc_now()
         )
 
-      {:ok, %{goals_updated: merge_edited_goals(context, workout)}}
+      {:ok, %{goals_updated: GrowEditedGoals.call(context, workout)}}
     end
   end
 
-  # Goals the coach edited only grow from the new suggestion.
-  defp merge_edited_goals(context, workout) do
-    case Workouts.get_workout_goals(context, workout.id) do
-      %{source: "edited"} = saved ->
-        suggestion = Presenter.suggestion(workout)
-        merged = Anatomy.merge_goals_up(saved, suggestion)
-
-        if Enum.sort(merged.muscles) == Enum.sort(saved.muscles) and
-             Enum.sort(merged.qualities) == Enum.sort(saved.qualities) do
-          false
-        else
-          {:ok, _goals} =
-            Workouts.put_workout_goals(context, workout.id, %{
-              muscles: merged.muscles,
-              qualities: merged.qualities,
-              stimulus: saved.stimulus,
-              visible_to_members: saved.visible_to_members,
-              source: "edited",
-              taxonomy_version: Anatomy.taxonomy_version(),
-              updated_by_id: context.user_id
-            })
-
-          true
-        end
-
-      _suggested_or_none ->
-        false
-    end
-  end
-
-  defp changed_links(lines, names) do
+  defp changed_links(lines, names, section) do
     for line <- lines,
         %{ref: ref} = link when is_binary(ref) <- line.links,
         ExerciseMatcher.folded(link.text) != link.checked,
@@ -125,6 +100,7 @@ defmodule Palee.Application.ExerciseMatches do
       present(
         %{
           line: line.index,
+          section: section,
           from: link.from,
           to: link.to,
           typed: link.text,
@@ -143,8 +119,11 @@ defmodule Palee.Application.ExerciseMatches do
   defp present(match, kind, remembered) do
     targets = Anatomy.exercise_targets(match.exercise_ref) || %{muscles: [], qualities: []}
 
+    section = Map.get(match, :section)
+
     %{
-      id: "#{match.line}:#{match.from}:#{match.to}",
+      id: Enum.join(Enum.reject([section, match.line, match.from, match.to], &is_nil/1), ":"),
+      section: section,
       line: match.line,
       from: match.from,
       to: match.to,
@@ -174,7 +153,28 @@ defmodule Palee.Application.ExerciseMatches do
         &Workouts.exercise_catalog_search_aliases/1
       )
 
-  # The coach's unpublished edit wins over the published text.
+  # The text the check reads, as `[{section, lines}]`. A sectioned draft
+  # (ADR-180) keeps each section's text in its own document until publishing
+  # composes them, so it is read section by section (`section` = its
+  # 0-based place among the draft's sections, how the editor answers it,
+  # ADR-671); any other workout is one document (`section` nil), the
+  # coach's unpublished edit winning over the published text.
+  defp parts(workout) do
+    draft = workout_field(workout, :draft_data)
+
+    case is_map(draft) and SectionedText.sectioned?(draft) and workout_field(draft, :sections) do
+      [_ | _] = sections ->
+        sections
+        |> Enum.with_index()
+        |> Enum.map(fn {section, index} ->
+          {index, section |> SectionedText.section_document() |> FreeTextDocument.lines()}
+        end)
+
+      _single ->
+        [{nil, workout |> document() |> FreeTextDocument.lines()}]
+    end
+  end
+
   defp document(workout) do
     workout_field(workout_field(workout, :draft_data), :free_text_document) ||
       workout_field(workout, :free_text_document)

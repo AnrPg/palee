@@ -20279,7 +20279,10 @@
     "timerTitle": "Verifica o cronómetro",
     "timerDescription": "O cronómetro foi definido pelo texto. Está certo?",
     "timerFromText": "Cronómetro do texto:",
-    "timerChange": "Alterar"
+    "timerChange": "Alterar",
+    "checkFailed": "Não foi possível verificar os exercícios. Se publicares agora, os que têm o nome mal escrito não contam para os músculos.",
+    "retryCheck": "Tentar novamente",
+    "publishUnchecked": "Publicar sem verificar"
   },
   "BoxOnMap": {
     "title": "A tua box não aparece no Perto de mim",

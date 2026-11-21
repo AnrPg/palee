@@ -504,9 +504,15 @@ export async function createWorkout(token: string, payload: CreateWorkoutRequest
   });
 }
 
+/**
+ * Creates an empty draft, in `folderId` when given (`null` = library root).
+ * `awaitingFiling` (ADR-680): the WOD is made for one day, class, athlete or
+ * member, and moves into that folder when it is assigned.
+ */
 export async function createDraftWorkout(
   token: string,
   folderId?: string | null,
+  options: { awaitingFiling?: boolean } = {},
 ): Promise<{
   id: string;
   status?: string;
@@ -523,7 +529,9 @@ export async function createDraftWorkout(
   }>("/admin/workouts", {
     method: "POST",
     token,
-    ...(folderId ? { body: { folder_id: folderId } } : {}),
+    ...(folderId || options.awaitingFiling
+      ? { body: { ...(folderId ? { folder_id: folderId } : {}), ...(options.awaitingFiling ? { awaiting_filing: true } : {}) } }
+      : {}),
   });
 
   return response.draft;

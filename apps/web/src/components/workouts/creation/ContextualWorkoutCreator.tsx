@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Dialog } from "@/components/ui/Dialog";
 import { useUiTranslations } from "@/i18n/ui";
 
+import { NewWorkoutForAssignment } from "./NewWorkoutPurpose";
 import { WorkoutAuthoringModes } from "./WorkoutAuthoringModes";
 
 /**
@@ -71,7 +72,10 @@ export function ContextualWorkoutCreator({
       testId="contextual-wod-creator"
     >
       <div className="min-h-0 flex-1 overflow-y-auto" aria-busy={assigning}>
-        <WorkoutAuthoringModes embedded initialDraftId={draftId} onPublished={(id) => void published(id)} onCancel={onClose} />
+        {/* ADR-680: the WOD is for this one thing, so it is filed only in its folder. */}
+        <NewWorkoutForAssignment>
+          <WorkoutAuthoringModes embedded initialDraftId={draftId} onPublished={(id) => void published(id)} onCancel={onClose} />
+        </NewWorkoutForAssignment>
       </div>
     </Dialog>
   );

@@ -25,6 +25,9 @@ defmodule Palee.Workouts.MasterWorkout do
     field :source_workout_id, :binary_id
     # ADR-125: `personal` copies (member programming) stay out of the library.
     field :library_visibility, :string, default: "shared"
+    # ADR-680: made for one day, class, athlete or member; moved (not copied)
+    # into that folder the first time it is filed.
+    field :awaiting_filing, :boolean, default: false
     field :is_team_workout, :boolean, default: false
     field :subtitle, :string
     field :description, :string

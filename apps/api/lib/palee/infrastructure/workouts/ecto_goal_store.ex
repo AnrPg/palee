@@ -104,7 +104,8 @@ defmodule Palee.Infrastructure.Workouts.EctoGoalStore do
           visible_to_members: goal.visible_to_members,
           source: goal.source,
           taxonomy_version: goal.taxonomy_version,
-          updated_by_id: goal.updated_by_id
+          updated_by_id: goal.updated_by_id,
+          suggestion_basis: goal.suggestion_basis
         })
         |> Repo.insert()
         |> case do
@@ -175,9 +176,19 @@ defmodule Palee.Infrastructure.Workouts.EctoGoalStore do
       source: goal.source,
       taxonomy_version: goal.taxonomy_version,
       updated_by_id: goal.updated_by_id,
-      updated_at: goal.updated_at
+      updated_at: goal.updated_at,
+      suggestion_basis: basis(goal.suggestion_basis)
     }
   end
+
+  defp basis(%{} = basis) do
+    %{
+      muscles: Enum.map(Map.get(basis, "muscles") || Map.get(basis, :muscles) || [], &muscle/1),
+      qualities: Map.get(basis, "qualities") || Map.get(basis, :qualities) || []
+    }
+  end
+
+  defp basis(_none), do: nil
 
   defp muscle(item) do
     %{

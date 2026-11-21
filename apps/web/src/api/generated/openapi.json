@@ -48320,7 +48320,7 @@
             "type": "integer"
           },
           "id": {
-            "description": "line:from:to",
+            "description": "[section:]line:from:to",
             "type": "string"
           },
           "kind": {
@@ -48335,7 +48335,7 @@
             "type": "string"
           },
           "line": {
-            "description": "Text block index in the document",
+            "description": "Text block index in the document (in the section's own document when `section` is set)",
             "type": "integer"
           },
           "muscles": {
@@ -48373,6 +48373,11 @@
           "remembered": {
             "description": "The box confirmed this match before",
             "type": "boolean"
+          },
+          "section": {
+            "description": "ADR-671: the section (0-based, in the draft's order) of a sectioned workout; null for one document",
+            "nullable": true,
+            "type": "integer"
           },
           "to": {
             "type": "integer"
@@ -48451,7 +48456,7 @@
                   "type": "integer"
                 },
                 "id": {
-                  "description": "line:from:to",
+                  "description": "[section:]line:from:to",
                   "type": "string"
                 },
                 "kind": {
@@ -48466,7 +48471,7 @@
                   "type": "string"
                 },
                 "line": {
-                  "description": "Text block index in the document",
+                  "description": "Text block index in the document (in the section's own document when `section` is set)",
                   "type": "integer"
                 },
                 "muscles": {
@@ -48504,6 +48509,11 @@
                 "remembered": {
                   "description": "The box confirmed this match before",
                   "type": "boolean"
+                },
+                "section": {
+                  "description": "ADR-671: the section (0-based, in the draft's order) of a sectioned workout; null for one document",
+                  "nullable": true,
+                  "type": "integer"
                 },
                 "to": {
                   "type": "integer"
@@ -315457,6 +315467,9 @@
               "schema": {
                 "additionalProperties": false,
                 "properties": {
+                  "awaiting_filing": {
+                    "type": "boolean"
+                  },
                   "folder_id": {
                     "format": "uuid",
                     "nullable": true,
@@ -327349,7 +327362,7 @@
                             "type": "integer"
                           },
                           "id": {
-                            "description": "line:from:to",
+                            "description": "[section:]line:from:to",
                             "type": "string"
                           },
                           "kind": {
@@ -327364,7 +327377,7 @@
                             "type": "string"
                           },
                           "line": {
-                            "description": "Text block index in the document",
+                            "description": "Text block index in the document (in the section's own document when `section` is set)",
                             "type": "integer"
                           },
                           "muscles": {
@@ -327402,6 +327415,11 @@
                           "remembered": {
                             "description": "The box confirmed this match before",
                             "type": "boolean"
+                          },
+                          "section": {
+                            "description": "ADR-671: the section (0-based, in the draft's order) of a sectioned workout; null for one document",
+                            "nullable": true,
+                            "type": "integer"
                           },
                           "to": {
                             "type": "integer"

@@ -2,6 +2,7 @@ defmodule Palee.Application.CreateScheduledSlot do
   alias Palee.Application.{
     ClassLocation,
     ClassSpace,
+    ClassWorkoutFiling,
     DayWorkouts,
     ScheduleRealtime,
     TrackAnalyticsEvent
@@ -20,7 +21,8 @@ defmodule Palee.Application.CreateScheduledSlot do
          {:ok, _class_type} <- fetch_class_type(context, class_type_id),
          :ok <- ClassLocation.check(context, params),
          :ok <- ClassSpace.check(context, params),
-         {:ok, slot} <- create_slot(context, params),
+         {:ok, slot} <-
+           ClassWorkoutFiling.with_class_made_workout(context, params, &create_slot/2),
          {:ok, [slot]} <- inherit_day_workout(context, [slot]) do
       broadcast_slot_created(slot)
       TrackAnalyticsEvent.call("class_slot_created", context, slot)
@@ -52,7 +54,10 @@ defmodule Palee.Application.CreateScheduledSlot do
     with {:ok, _workout} <- fetch_workout(context, value(params, :master_workout_id)),
          {:ok, _class_type} <- fetch_class_type(context, value(params, :class_type_id)),
          :ok <- ClassSpace.check_all(context, items),
-         {:ok, slots} <- ClassLocation.create_all(context, items, &create_slot(context, &1)),
+         {:ok, slots} <-
+           ClassWorkoutFiling.with_class_made_workout(context, params, fn context, _params ->
+             ClassLocation.create_all(context, items, &create_slot(context, &1))
+           end),
          {:ok, slots} <- inherit_day_workout(context, slots) do
       Enum.each(slots, fn slot ->
         broadcast_slot_created(slot)

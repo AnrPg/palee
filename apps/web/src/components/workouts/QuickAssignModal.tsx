@@ -14,6 +14,7 @@ import { listAdminWorkouts, type WorkoutRecord } from "@/api/workouts";
 import { workoutColor } from "@/lib/workout-colors";
 import { useWorkoutCreationStore } from "@/stores/workout-creation";
 import { WorkoutCreationCanvas } from "@/components/workouts/creation/WorkoutCreationCanvas";
+import { NewWorkoutForAssignment } from "@/components/workouts/creation/NewWorkoutPurpose";
 import { AthleteInjuryWarningsPanel } from "@/components/wellbeing/InjuryWarnings";
 import { Dialog } from "@/components/ui/Dialog";
 import { DateInput } from "@/components/ui/DateInput";
@@ -400,11 +401,14 @@ export function QuickAssignModal({ accessToken, defaultDate, onClose, onAssigned
           size="full"
           variant="center"
         >
-            <WorkoutCreationCanvas
-              embedded
-              onCancel={closeWorkoutCreator}
-              onPublished={handleWorkoutPublished}
-            />
+            {/* ADR-680: made for these athletes, so it is filed in their folders only. */}
+            <NewWorkoutForAssignment>
+              <WorkoutCreationCanvas
+                embedded
+                onCancel={closeWorkoutCreator}
+                onPublished={handleWorkoutPublished}
+              />
+            </NewWorkoutForAssignment>
         </Dialog>
       ) : null}
     </>

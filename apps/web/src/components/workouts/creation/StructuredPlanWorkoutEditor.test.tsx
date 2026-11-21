@@ -8,6 +8,7 @@ import el from "../../../../messages/el.json";
 import { backSquat, differentRounds } from "@/components/workouts/plan-view/plan-fixtures";
 import { usePlanEditorStore } from "@/stores/structured-plan";
 
+import { NewWorkoutForAssignment } from "./NewWorkoutPurpose";
 import { StructuredPlanWorkoutEditor, type PlanEditorHandle } from "./StructuredPlanWorkoutEditor";
 
 const api = vi.hoisted(() => ({
@@ -82,6 +83,29 @@ beforeEach(() => {
 });
 
 describe("StructuredPlanWorkoutEditor", () => {
+  // ADR-680: a WOD started for one day, class, athlete or member is marked so
+  // the server files it only in that thing's folder.
+  it("creates a new draft that awaits filing only when made for an assignment", async () => {
+    const { onDraftReady } = renderEditor({ draftId: null });
+    await waitFor(() => expect(onDraftReady).toHaveBeenCalledWith("new"));
+    expect(api.createDraftWorkout).toHaveBeenCalledWith("token", null, { awaitingFiling: false });
+
+    vi.clearAllMocks();
+    api.createDraftWorkout.mockResolvedValue({ id: "made-for" });
+    const onReady = vi.fn();
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <NextIntlClientProvider locale="el" messages={el}>
+          <NewWorkoutForAssignment>
+            <StructuredPlanWorkoutEditor draftId={null} onDraftReady={onReady} onPublished={vi.fn()} handleRef={{ current: null }} />
+          </NewWorkoutForAssignment>
+        </NextIntlClientProvider>
+      </QueryClientProvider>,
+    );
+    await waitFor(() => expect(onReady).toHaveBeenCalledWith("made-for"));
+    expect(api.createDraftWorkout).toHaveBeenCalledWith("token", null, { awaitingFiling: true });
+  });
+
   it("loads a plan draft into the editor store", async () => {
     api.fetchAdminWorkout.mockResolvedValue(workout());
     renderEditor();

@@ -132,7 +132,7 @@ describe("exercise suggestions in the WOD text editors (ADR-570)", () => {
     expect(await screen.findByTestId("wod-formats-help")).toHaveTextContent("Χρονόμετρο από αυτό που γράφεις");
   });
 
-  it("opens the same list in a text section (WOD assistant off), the picked name plain text", async () => {
+  it("opens the same list in a text section (WOD assistant off) and links the picked name (ADR-671)", async () => {
     const onChange = vi.fn();
     const { container } = render(withIntl(<SectionTextEditor document={{ type: "doc", content: [] }} label="Τμήμα" onChange={onChange} />));
     await waitFor(() => expect(container.querySelector(".ProseMirror")).toBeTruthy());
@@ -146,6 +146,23 @@ describe("exercise suggestions in the WOD text editors (ADR-570)", () => {
     fireEvent.keyDown(editor.view.dom, { key: "Tab" });
     expect(editor.getText()).toBe("Back Squat");
     expect(onChange).toHaveBeenLastCalledWith("Back Squat", expect.anything());
-    expect(JSON.stringify(editor.getJSON())).not.toContain("exerciseLink");
+    expect(JSON.stringify(editor.getJSON())).toContain('"ref":"back-squat"');
+  });
+
+  it("always opens right under the line being written, even near the bottom of the screen", async () => {
+    render(withIntl(<FreeTextHost />));
+    await waitFor(() => expect(freeText).toBeTruthy());
+    const editor = freeText!;
+    const lineBottom = window.innerHeight - 20;
+    vi.spyOn(editor.view, "coordsAtPos").mockReturnValue({ top: lineBottom - 18, bottom: lineBottom, left: 40, right: 40 });
+    act(() => {
+      editor.chain().focus().insertContent("back sq").run();
+    });
+    const list = await screen.findByTestId("editor-exercise-suggestions");
+    await waitFor(() => expect(list.style.visibility).toBe("visible"));
+    expect(list.style.top).toBe(`${lineBottom + 4}px`);
+    // Short room below: the list scrolls inside instead of jumping above the line.
+    expect(list.style.maxHeight).toBe("120px");
+    expect(list.style.overflowY).toBe("auto");
   });
 });

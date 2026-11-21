@@ -191,7 +191,10 @@ defmodule Palee.Application.ProgramUserWorkout do
     with %{} = workout <-
            Workouts.get_workout(context, source_id) || {:error, :workout_not_found},
          {:ok, _metadata} <-
-           Workouts.update_library_metadata(context, source_id, %{folder_id: folder_id}) do
+           Workouts.update_library_metadata(context, source_id, %{
+             folder_id: folder_id,
+             awaiting_filing: false
+           }) do
       {:ok, Map.put(workout, :folder_id, folder_id)}
     end
   end

@@ -234,6 +234,12 @@ export type EditorTextSection = {
   metrics: SectionMetric[];
   /** ADR-690 (2C): the section's types; the WOD's types are the sections' union. */
   types?: string[];
+  /**
+   * ADR-671: bumped when `document` is replaced from outside the section's
+   * editor (the coach's answers to the exercise check), so the editor shows it.
+   * Kept on screen only.
+   */
+  contentVersion?: number;
 };
 
 /**
