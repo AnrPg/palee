@@ -48,7 +48,7 @@ about every other match before publishing (ADR-570). Three gaps remained:
 
 ## Consequences
 
-- Migration `20271121100000_workout_goals_suggestion_basis` (nullable `map`).
+- Migration `20271121110000_workout_goals_suggestion_basis` (nullable `map`).
 - The OpenAPI `ExerciseMatch` gains nullable `section`; `id` is
   `[section:]line:from:to`.
 - Tests: `exercise_check_sections_test.exs`, the ADR-570 controller test
