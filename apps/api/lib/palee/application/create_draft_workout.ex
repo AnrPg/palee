@@ -12,11 +12,18 @@ defmodule Palee.Application.CreateDraftWorkout do
 
   def call(context, admin), do: call(context, admin, nil)
 
-  @doc "Creates an empty draft, filed in `folder_id` when given (`nil` = library root)."
-  def call(context, admin, folder_id) do
+  @doc """
+  Creates an empty draft, filed in `folder_id` when given (`nil` = library root).
+
+  `awaiting_filing: true` (ADR-680): the WOD is made for one day, class,
+  athlete or member, so its first filing moves it into that folder instead of
+  copying it, and it never stays at the library root.
+  """
+  def call(context, admin, folder_id, opts \\ []) do
     with :ok <- validate_folder(context, folder_id),
          {:ok, draft} <- Workouts.create_draft(context, admin),
-         {:ok, draft} <- file_draft(context, draft, folder_id) do
+         {:ok, draft} <- file_draft(context, draft, folder_id),
+         {:ok, draft} <- mark_awaiting_filing(context, draft, opts[:awaiting_filing] == true) do
       broadcast_admin_refresh([context, draft], "draft_created", draft.id)
       TrackAnalyticsEvent.call("workout_created", context, draft)
       {:ok, draft}
@@ -37,6 +44,15 @@ defmodule Palee.Application.CreateDraftWorkout do
     with {:ok, _metadata} <-
            Workouts.update_library_metadata(context, draft.id, %{folder_id: folder_id}) do
       {:ok, Map.put(draft, :folder_id, folder_id)}
+    end
+  end
+
+  defp mark_awaiting_filing(_context, draft, false), do: {:ok, draft}
+
+  defp mark_awaiting_filing(context, draft, true) do
+    with {:ok, _metadata} <-
+           Workouts.update_library_metadata(context, draft.id, %{awaiting_filing: true}) do
+      {:ok, Map.put(draft, :awaiting_filing, true)}
     end
   end
 

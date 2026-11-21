@@ -20238,7 +20238,10 @@
     "timerTitle": "Check the timer",
     "timerDescription": "The timer was set from the text. Is it right?",
     "timerFromText": "Timer from the text:",
-    "timerChange": "Change"
+    "timerChange": "Change",
+    "checkFailed": "The exercises could not be checked. If you publish now, any with a misspelt name won't count toward the muscles.",
+    "retryCheck": "Try again",
+    "publishUnchecked": "Publish without checking"
   },
   "BoxOnMap": {
     "title": "Your box doesn't show in Around me",

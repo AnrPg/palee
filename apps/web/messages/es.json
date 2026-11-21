@@ -20238,7 +20238,10 @@
     "timerTitle": "Revisa el temporizador",
     "timerDescription": "El temporizador se puso desde el texto. ¿Es correcto?",
     "timerFromText": "Temporizador del texto:",
-    "timerChange": "Cambiar"
+    "timerChange": "Cambiar",
+    "checkFailed": "No se pudieron comprobar los ejercicios. Si publicas ahora, los que tengan el nombre mal escrito no contarán para los músculos.",
+    "retryCheck": "Reintentar",
+    "publishUnchecked": "Publicar sin comprobar"
   },
   "BoxOnMap": {
     "title": "Tu box no aparece en Cerca de mí",

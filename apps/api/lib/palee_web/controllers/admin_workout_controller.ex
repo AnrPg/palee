@@ -103,6 +103,23 @@ defmodule PaleeWeb.AdminWorkoutController do
     }
   }
 
+  @create_body %RequestBody{
+    required: false,
+    content: %{
+      "application/json" => %MediaType{
+        schema: %Schema{
+          type: :object,
+          additionalProperties: false,
+          properties: %{
+            folder_id: %Schema{type: :string, format: :uuid, nullable: true},
+            # ADR-680: made for one day, class, athlete or member.
+            awaiting_filing: %Schema{type: :boolean}
+          }
+        }
+      }
+    }
+  }
+
   @id_param %Parameter{
     name: :id,
     in: :path,
@@ -140,7 +157,7 @@ defmodule PaleeWeb.AdminWorkoutController do
 
   operation(:create,
     summary: "Create an empty workout draft, optionally inside a library folder",
-    request_body: @folder_target_body,
+    request_body: @create_body,
     responses: [
       created:
         {"Draft", "application/json",
@@ -258,7 +275,9 @@ defmodule PaleeWeb.AdminWorkoutController do
   def create(conn, _params) do
     admin = GuardianPlug.current_resource(conn)
 
-    case CreateDraftWorkout.call(conn.assigns.tenant_context, admin, folder_id(conn)) do
+    case CreateDraftWorkout.call(conn.assigns.tenant_context, admin, folder_id(conn),
+           awaiting_filing: awaiting_filing?(conn)
+         ) do
       {:ok, draft} ->
         conn
         |> put_status(:created)
@@ -306,9 +325,18 @@ defmodule PaleeWeb.AdminWorkoutController do
            Palee.Workouts.update_library_metadata(
              conn.assigns.tenant_context,
              id,
-             conn.body_params
+             library_move(conn.body_params)
            ) do
       json(conn, metadata)
+    end
+  end
+
+  # A coach moving a WOD files it by hand: it is no longer waiting to be
+  # moved into the folder of what it was made for (ADR-680).
+  defp library_move(body) do
+    case Map.fetch(body, "folder_id") do
+      {:ok, folder_id} -> %{folder_id: folder_id, awaiting_filing: false}
+      :error -> %{}
     end
   end
 
@@ -456,6 +484,10 @@ defmodule PaleeWeb.AdminWorkoutController do
       json(conn, result)
     end
   end
+
+  # CastAndValidate leaves the body atom-keyed; read either spelling.
+  defp awaiting_filing?(%{body_params: body}),
+    do: Map.get(body, :awaiting_filing, Map.get(body, "awaiting_filing")) == true
 
   defp folder_id(conn) do
     case conn.body_params do

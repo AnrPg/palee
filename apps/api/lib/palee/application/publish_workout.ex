@@ -4,6 +4,7 @@ defmodule Palee.Application.PublishWorkout do
   alias Palee.Application.{
     BroadcastUserSync,
     ExerciseNameIndex,
+    GrowEditedGoals,
     LoggedWorkoutChangeNotice,
     SuggestWorkoutIcon,
     TenantStaffRecipients,
@@ -22,9 +23,13 @@ defmodule Palee.Application.PublishWorkout do
     slot_ids = Scheduling.list_slot_ids_for_workout(context, id)
     is_republish = assignment_targets != [] or booking_targets != []
 
-    with :ok <- keep_plan(context, id, params),
+    previous = Workouts.get_workout_for_admin(context, id)
+
+    with :ok <- PlanPrescriptions.check_save(previous, params),
          {:ok, workout} <- Workouts.publish_workout(context, id, params),
          :ok <- apply_substitution(context, substitute_for, workout.id) do
+      # ADR-671: new exercises reach goals the coach edited by hand.
+      grow_edited_goals(context, workout.id, previous)
       Workouts.delete_superseded_drafts(context, id, workout.created_by_id)
       SuggestWorkoutIcon.enqueue(context, workout.id)
       # ADR-461: the WOD's exercise names join the box's suggestions.
@@ -86,9 +91,21 @@ defmodule Palee.Application.PublishWorkout do
   defp without(targets, user_ids),
     do: Enum.reject(targets, &(Map.get(&1, :user_id) in user_ids))
 
-  # ADR-270: a legacy editor's save never silently drops a structured plan.
-  defp keep_plan(context, id, params),
-    do: context |> Workouts.get_workout_for_admin(id) |> PlanPrescriptions.check_save(params)
+  # ADR-671: read back as published, so the goals grow from the published text.
+  # A failure here never fails the publish; the goals stay as they were.
+  defp grow_edited_goals(context, workout_id, previous) do
+    case Workouts.get_workout_for_admin(context, workout_id) do
+      %{} = published -> GrowEditedGoals.call(context, published, previous)
+      _missing -> false
+    end
+  rescue
+    error ->
+      Logger.error(
+        "grow_edited_goals failed workout_id=#{workout_id}: #{Exception.message(error)}"
+      )
+
+      false
+  end
 
   defp parse_substitute_for(params) do
     case Map.get(params, "substitute_for") do

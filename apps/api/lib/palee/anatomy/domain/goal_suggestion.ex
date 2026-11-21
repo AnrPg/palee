@@ -62,6 +62,29 @@ defmodule Palee.Anatomy.Domain.GoalSuggestion do
     }
   end
 
+  @doc """
+  ADR-671: what a suggestion gained since `basis` (an earlier suggestion of
+  the same workout): the muscles it names with a stronger role than the
+  basis gave them (or that the basis lacked) and the qualities the basis
+  lacked. Folded into edited goals with `merge_up/2`, this adds only what new
+  exercises bring, so a muscle the coach removed stays removed. A nil basis
+  gains the whole suggestion.
+  """
+  def gained(nil, suggested), do: Map.take(suggested, [:muscles, :qualities])
+
+  def gained(%{muscles: basis_muscles, qualities: basis_qualities}, %{
+        muscles: suggested,
+        qualities: suggested_qualities
+      }) do
+    rank = fn role -> ExerciseTargets.role_rank(role_atom(role)) end
+    held = Map.new(basis_muscles, &{&1.id, rank.(&1.role)})
+
+    %{
+      muscles: Enum.filter(suggested, &(rank.(&1.role) > Map.get(held, &1.id, 0))),
+      qualities: suggested_qualities -- basis_qualities
+    }
+  end
+
   defp role_atom(role) when is_atom(role), do: role
   defp role_atom("primary"), do: :primary
   defp role_atom("secondary"), do: :secondary

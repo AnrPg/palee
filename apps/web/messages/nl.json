@@ -20238,7 +20238,10 @@
     "timerTitle": "Controleer de timer",
     "timerDescription": "De timer is uit de tekst gezet. Klopt hij?",
     "timerFromText": "Timer uit de tekst:",
-    "timerChange": "Wijzigen"
+    "timerChange": "Wijzigen",
+    "checkFailed": "De oefeningen konden niet worden gecontroleerd. Als je nu publiceert, tellen oefeningen met een verkeerd gespelde naam niet mee voor de spieren.",
+    "retryCheck": "Opnieuw proberen",
+    "publishUnchecked": "Publiceren zonder controle"
   },
   "BoxOnMap": {
     "title": "Je box staat niet in In de buurt",

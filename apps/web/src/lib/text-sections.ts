@@ -230,6 +230,12 @@ export type EditorTextSection = {
    */
   timerFrom?: TimerFrom;
   metrics: SectionMetric[];
+  /**
+   * ADR-671: bumped when `document` is replaced from outside the section's
+   * editor (the coach's answers to the exercise check), so the editor shows it.
+   * Kept on screen only.
+   */
+  contentVersion?: number;
 };
 
 /**

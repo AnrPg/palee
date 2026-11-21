@@ -17,6 +17,8 @@ import { WodFormatsHelp } from "./WodFormatsHelp";
 import { EXERCISE_LINK, exerciseGhostKey, type ExerciseGhost } from "./exercise-link";
 
 const MAX_ITEMS = 6;
+/** The list keeps at least this much height under the line, scrolling inside. */
+const MIN_LIST_HEIGHT = 120;
 /** ADR-570: Palee's names first (they feed the muscles), then the box's, then mine. */
 const SOURCE_ORDER: ExerciseSuggestionGroup["source"][] = ["palee", "box", "mine"];
 
@@ -74,7 +76,7 @@ export function useEditorExerciseSuggestions(
   // The highlighted name of one list; a new list starts at its first name, not yet chosen with the arrows.
   const [choice, setChoice] = useState({ signature: "", index: 0, navigated: false });
   const [dismissed, setDismissed] = useState<string | null>(null);
-  const [position, setPosition] = useState<{ signature: string; top: number; left: number } | null>(null);
+  const [position, setPosition] = useState<{ signature: string; top: number; left: number; maxHeight: number } | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -170,25 +172,36 @@ export function useEditorExerciseSuggestions(
     editor.view.dispatch(editor.state.tr.setMeta(exerciseGhostKey, next).setMeta("addToHistory", false));
   }, [editor, ghostText, ghostPos]);
 
-  // The list opens under the first of the words it replaces.
+  // The list always opens right under the line being written (never above
+  // it, whatever its length), starting at the first of the words it
+  // replaces. When the room below is short it scrolls inside instead of
+  // jumping above the line.
   const listFrom = items.length ? Math.min(...items.map((item) => item.from)) : 0;
   useLayoutEffect(() => {
     if (!editor || !open || !caret) return;
     const place = () => {
       if (editor.isDestroyed) return;
-      const start = editor.view.coordsAtPos(Math.min(caret.blockStart + listFrom, editor.state.doc.content.size));
+      const size = editor.state.doc.content.size;
+      const start = editor.view.coordsAtPos(Math.min(caret.blockStart + listFrom, size));
+      const line = editor.view.coordsAtPos(Math.min(caret.pos, size));
       const width = menuRef.current?.getBoundingClientRect().width ?? 260;
-      const height = menuRef.current?.getBoundingClientRect().height ?? 0;
-      const below = start.bottom + 4;
-      const top = below + height > window.innerHeight - 8 && start.top - 4 - height > 8 ? start.top - 4 - height : below;
-      setPosition({ signature, top, left: Math.max(8, Math.min(start.left, window.innerWidth - width - 8)) });
+      const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+      const top = line.bottom + 4;
+      setPosition({
+        signature,
+        top,
+        left: Math.max(8, Math.min(start.left, window.innerWidth - width - 8)),
+        maxHeight: Math.max(MIN_LIST_HEIGHT, viewportHeight - top - 8),
+      });
     };
     place();
     window.addEventListener("resize", place);
     window.addEventListener("scroll", place, true);
+    window.visualViewport?.addEventListener("resize", place);
     return () => {
       window.removeEventListener("resize", place);
       window.removeEventListener("scroll", place, true);
+      window.visualViewport?.removeEventListener("resize", place);
     };
   }, [editor, open, caret, signature, listFrom]);
 
@@ -208,6 +221,8 @@ export function useEditorExerciseSuggestions(
               zIndex: "var(--z-popover)",
               top: shown?.top ?? -9999,
               left: shown?.left ?? -9999,
+              maxHeight: shown?.maxHeight,
+              overflowY: "auto",
               visibility: shown ? "visible" : "hidden",
               background: "var(--panel)",
               border: "1px solid var(--border)",

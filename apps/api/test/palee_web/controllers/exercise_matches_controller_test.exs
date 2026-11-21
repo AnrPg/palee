@@ -151,8 +151,11 @@ defmodule PaleeWeb.ExerciseMatchesControllerTest do
       |> get("/api/org/#{org.slug}/admin/workouts/#{id}/goals")
       |> json_response(200)
 
+    # ADR-671: only what the confirmed pull-ups bring is added; the thrusters
+    # were already in the text when the coach set quadriceps to stabilizer,
+    # so that choice stays.
     muscles = goals["goals"]["muscles"]
-    assert %{"id" => "quadriceps", "role" => "primary"} in muscles
+    assert %{"id" => "quadriceps", "role" => "stabilizer"} in muscles
     assert %{"id" => "obliques", "role" => "primary"} in muscles
     assert %{"id" => "latissimus-dorsi", "role" => "primary"} in muscles
     assert goals["goals"]["source"] == "edited"
