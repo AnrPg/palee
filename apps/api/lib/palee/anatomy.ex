@@ -51,6 +51,9 @@ defmodule Palee.Anatomy do
   @doc "ADR-570: a new suggestion folded into edited goals, only adding or promoting."
   def merge_goals_up(current, suggested), do: GoalSuggestion.merge_up(current, suggested)
 
+  @doc "ADR-671: what a suggestion gained since an earlier one (`basis`)."
+  def goals_gained(basis, suggested), do: GoalSuggestion.gained(basis, suggested)
+
   @doc "Suggested goals from `[%{exercise_ref, weight}]` (deterministic, ADR-163 D3)."
   def suggest_goals(exercises), do: GoalSuggestion.suggest(exercises)
 

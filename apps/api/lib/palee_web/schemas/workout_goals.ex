@@ -298,8 +298,18 @@ defmodule PaleeWeb.Schemas.WorkoutGoals do
             title: "ExerciseMatch",
             type: :object,
             properties: %{
-              id: %Schema{type: :string, description: "line:from:to"},
-              line: %Schema{type: :integer, description: "Text block index in the document"},
+              id: %Schema{type: :string, description: "[section:]line:from:to"},
+              section: %Schema{
+                type: :integer,
+                nullable: true,
+                description:
+                  "ADR-671: the section (0-based, in the draft's order) of a sectioned workout; null for one document"
+              },
+              line: %Schema{
+                type: :integer,
+                description:
+                  "Text block index in the document (in the section's own document when `section` is set)"
+              },
               from: %Schema{type: :integer, description: "Character offset in the line"},
               to: %Schema{type: :integer},
               typed: %Schema{type: :string, description: "The words as written"},
