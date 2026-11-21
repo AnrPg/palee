@@ -5,6 +5,8 @@ import type { WorkoutDslVocabulary } from "@/lib/workout-dsl-suggestions";
 import type { FreeTextTimerPreset } from "@/lib/free-text-timer";
 import type { PlanSection } from "@/lib/structured-plan/types";
 import type { LoadMode, LoadProgression, PrescriptionUnit, WorkoutType } from "@/types/workout";
+import type { BoxWorkoutKind, WorkoutKindCatalogue } from "@/lib/workout-kinds";
+import type { WorkoutTypeFamily } from "@/lib/workout-types";
 
 export type ScaleLevel = {
   id?: string;
@@ -130,6 +132,8 @@ export type WorkoutExerciseRecord = {
 
 export type WorkoutSectionRecord = {
   id?: string;
+  /** ADR-690: a sectioned WOD's section types; the WOD's types are their union. */
+  types?: string[];
   parent_section_id?: string | null;
   name: string;
   order: number;
@@ -212,7 +216,12 @@ export type WorkoutAuthoringMode = "structured" | "quick_text" | "free_text" | "
 export type WorkoutRecord = {
   id: string;
   title: string;
-  type: string;
+  /** Deprecated (ADR-690): the first built-in kind of `types`, or null. */
+  type: string | null;
+  /** ADR-690: every type of the WOD (kind keys and `box:<id>`); none is the main one. */
+  types?: string[];
+  /** ADR-690: the families of `types`, each once, in catalogue order. */
+  families?: string[];
   is_team_workout?: boolean;
   /** ADR-394: the benchmark the coach tagged the WOD with. */
   benchmark_key?: string | null;
@@ -309,11 +318,40 @@ export async function listScaleLevels(token: string) {
   return response.scale_levels ?? [];
 }
 
+// --- ADR-690: workout types ---
+
+export const WORKOUT_KINDS_KEY = ["admin", "workout-kinds"] as const;
+
+export function listWorkoutKinds(token: string) {
+  return apiRequest<WorkoutKindCatalogue>("/admin/workout-kinds", { token });
+}
+
+export function createWorkoutKind(token: string, body: { label: string; family: WorkoutTypeFamily }) {
+  return apiRequest<{ workout_kind: BoxWorkoutKind }>("/admin/workout-kinds", { token, method: "POST", body });
+}
+
+export function updateWorkoutKind(token: string, id: string, body: { label?: string; family?: WorkoutTypeFamily; hidden?: boolean }) {
+  return apiRequest<{ workout_kind: BoxWorkoutKind }>(`/admin/workout-kinds/${id}`, { token, method: "PATCH", body });
+}
+
+export function mergeWorkoutKind(token: string, id: string, into: string) {
+  return apiRequest<{ workout_kind: BoxWorkoutKind; workouts: number }>(`/admin/workout-kinds/${id}/merge`, {
+    token,
+    method: "POST",
+    body: { into },
+  });
+}
+
 export type FreeTextWorkoutAnalysis = components["schemas"]["FreeTextWorkoutAnalysis"];
 
 /** ADR-180: what the workout editor may offer in this gym. */
 /** ADR-180 / ADR-275: what the editor may offer in this gym. */
-export type WodAssistantAvailability = { wod_assistant_enabled: boolean; workout_types?: string[] };
+export type WodAssistantAvailability = {
+  wod_assistant_enabled: boolean;
+  workout_types?: string[];
+  /** ADR-690: the Palee additions and the box's own types. */
+  workout_kinds?: WorkoutKindCatalogue;
+};
 
 export const WOD_ASSISTANT_AVAILABILITY_KEY = ["admin", "workouts", "authoring-settings"] as const;
 

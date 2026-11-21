@@ -18,7 +18,12 @@ defmodule Palee.Gamification.Domain.AchievementRules do
     "outdoor" => {"type_outdoor_mastery", "Explorer"}
   }
 
-  def milestone_badges(stats, type_counts) do
+  @doc """
+  The milestone badges for `stats` and `family_counts` (ADR-690: a WOD
+  counts once in each family it has). A key may also be a kind, read as its
+  family.
+  """
+  def milestone_badges(stats, family_counts) do
     workout_badges =
       @attendance_thresholds
       |> Enum.filter(&((stats.total_workouts || 0) >= &1))
@@ -35,9 +40,9 @@ defmodule Palee.Gamification.Domain.AchievementRules do
       |> Enum.map(&"streak_#{&1}")
 
     mastery_badges =
-      type_counts
-      |> Enum.reduce(%{}, fn {type, count}, acc ->
-        case WorkoutType.family(type) do
+      family_counts
+      |> Enum.reduce(%{}, fn {key, count}, acc ->
+        case family_of(key) do
           nil -> acc
           family -> Map.update(acc, family, count, &(&1 + count))
         end
@@ -115,5 +120,9 @@ defmodule Palee.Gamification.Domain.AchievementRules do
         |> String.split()
         |> Enum.map_join(" ", &String.capitalize/1)
     end
+  end
+
+  defp family_of(key) do
+    if key in WorkoutType.family_keys(), do: key, else: WorkoutType.family(key)
   end
 end

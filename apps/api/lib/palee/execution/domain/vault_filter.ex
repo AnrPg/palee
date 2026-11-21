@@ -8,6 +8,7 @@ defmodule Palee.Execution.Domain.VaultFilter do
   """
 
   alias Palee.Execution.Domain.WorkoutIdentity
+  alias Palee.Workouts.Domain.WorkoutType
   alias Palee.Identity.Domain.FilterFields
 
   @version 1
@@ -103,7 +104,34 @@ defmodule Palee.Execution.Domain.VaultFilter do
         (is_nil(to) or Date.compare(on, to) != :gt)
 
   defp discipline?(%{disciplines: []}, _attempt), do: true
-  defp discipline?(%{disciplines: list}, attempt), do: to_string(attempt.type) in list
+  # ADR-690: an attempt has one or more types (a box's own type reads as its
+  # family); it passes when any of them is chosen, or is in a chosen kind's
+  # family.
+  defp discipline?(%{disciplines: list}, attempt) do
+    types = attempt |> Map.get(:types) |> List.wrap() |> Enum.map(&to_string/1)
+
+    types =
+      if types == [],
+        do: attempt |> Map.get(:type) |> List.wrap() |> Enum.map(&to_string/1),
+        else: types
+
+    chosen_families = list |> Enum.map(&WorkoutType.family/1) |> MapSet.new()
+
+    Enum.any?(types, &(&1 in list)) or
+      attempt
+      |> Map.get(:families, [])
+      |> List.wrap()
+      |> Enum.any?(&(MapSet.member?(chosen_families, &1) and every_kind_of_family?(&1, list)))
+  end
+
+  # A box type joins a family filter only when the whole family was chosen
+  # (the web sends a family as all of its kinds).
+  defp every_kind_of_family?(family, list) do
+    case Enum.find(WorkoutType.families(), &(elem(&1, 0) == family)) do
+      {_family, kinds} -> Enum.all?(kinds, &(&1 in list))
+      nil -> false
+    end
+  end
 
   defp benchmark?(%{benchmark: nil}, _attempt), do: true
 

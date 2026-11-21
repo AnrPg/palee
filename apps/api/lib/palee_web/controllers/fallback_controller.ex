@@ -1,6 +1,25 @@
 defmodule PaleeWeb.FallbackController do
   use PaleeWeb, :controller
 
+  # ADR-690: box workout types and the Palee team's decisions.
+  @workout_kind_errors %{
+    unknown_workout_type:
+      {:unprocessable_entity, "One of the workout types is not available in this box"},
+    workout_kind_exists: {:conflict, "The box already has a workout type with this name"},
+    workout_kind_label_too_short:
+      {:unprocessable_entity, "A workout type needs at least 2 letters"},
+    workout_kind_label_too_long:
+      {:unprocessable_entity, "A workout type has at most 40 characters"},
+    invalid_workout_kind: {:unprocessable_entity, "Choose another workout type"},
+    invalid_workout_kind_family: {:unprocessable_entity, "Choose a family for the workout type"},
+    invalid_workout_kind_decision: {:unprocessable_entity, "Choose adopt, alias or keep"},
+    invalid_workout_kind_key:
+      {:unprocessable_entity, "Use lowercase letters, digits and _ for a new key"},
+    workout_kind_key_taken: {:conflict, "This key is already a Palee workout type"},
+    workout_kind_labels_required:
+      {:unprocessable_entity, "Give the type a name in every language"}
+  }
+
   # ADR-184: business accounts. `business_not_activated` is the one stable code
   # every going-live action of a demo business answers; the web shows it as
   # «Ενεργοποίηση από την ομάδα Palee» with the way to ask for it.
@@ -173,6 +192,14 @@ defmodule PaleeWeb.FallbackController do
       when is_map_key(@open_platform_detail_errors, reason) do
     {status, message} = Map.fetch!(@open_platform_detail_errors, reason)
     package_contract_error(conn, status, to_string(reason), message, details)
+  end
+
+  def call(conn, {:error, reason}) when is_map_key(@workout_kind_errors, reason) do
+    {status, message} = Map.fetch!(@workout_kind_errors, reason)
+
+    conn
+    |> put_status(status)
+    |> json(%{code: to_string(reason), error: message})
   end
 
   def call(conn, {:error, reason}) when is_map_key(@space_errors, reason) do

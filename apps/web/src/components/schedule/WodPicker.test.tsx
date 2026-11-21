@@ -19,6 +19,8 @@ vi.mock("@/api/workout-choices", () => ({
   fetchSuggestedWorkoutChoices: (...args: unknown[]) => fetchSuggestedWorkoutChoices(...args),
 }));
 vi.mock("@/api/workouts", () => ({
+  WOD_ASSISTANT_AVAILABILITY_KEY: ["authoring-settings"],
+  fetchWorkoutAuthoringSettings: vi.fn(async () => ({ wod_assistant_enabled: false })),
   fetchAdminWorkout: vi.fn(async (_token: string, id: string) => ({ id, title: `Workout ${id}`, type: "strength" })),
   listWorkoutFolders: vi.fn(async () => [{ id: "f1", name: "Benchmarks", parent_id: null }]),
 }));

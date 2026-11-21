@@ -1,0 +1,20 @@
+msgid ""
+msgstr ""
+"Language: de\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "New workout types to review: %{count}"
+msgstr "Neue Trainingsarten zur Prüfung: %{count}"
+
+msgid "Boxes added these workout types. Each one is in its box's list already; decide whether it joins the Palee list for everyone."
+msgstr "Boxen haben diese Trainingsarten hinzugefügt. Jede steht schon in der Liste ihrer Box; entscheide, ob sie für alle in die Palee-Liste kommt."
+
+msgid "«%{label}»: %{boxes} boxes, %{suggestions} public page suggestions"
+msgstr "«%{label}»: %{boxes} Boxen, %{suggestions} Vorschläge von öffentlichen Seiten"
+
+msgid "Open the queue"
+msgstr "Warteschlange öffnen"
+
+msgid "You get this email because you review workout types for Palee."
+msgstr "Du bekommst diese E-Mail, weil du Trainingsarten für Palee prüfst."

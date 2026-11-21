@@ -1,4 +1,5 @@
 import type { WorkoutFolder, WorkoutRecord } from "@/api/workouts";
+import { workoutKindFamilies } from "@/lib/workout-kinds";
 import { workoutTypeFamily, type WorkoutTypeFamily } from "@/lib/workout-types";
 
 /** Folders the app maintains are recognised by their `system_key`, never by name. */
@@ -39,9 +40,18 @@ const WORKOUT_FAMILY_ICONS: Record<WorkoutTypeFamily, string> = {
   recovery: "💆",
 };
 
+/** ADR-690: a WOD whose types span several families. */
+export const MIXED_WORKOUT_ICON = "🔀";
+
 export function workoutIcon(type: string | null | undefined) {
   const family = workoutTypeFamily(type);
   return family ? WORKOUT_FAMILY_ICONS[family] : "🏋️";
+}
+
+/** ADR-690: one family's icon, or the «μικτή προπόνηση» icon for several. */
+export function workoutFamiliesIcon(families: readonly WorkoutTypeFamily[]) {
+  if (families.length > 1) return MIXED_WORKOUT_ICON;
+  return families[0] ? WORKOUT_FAMILY_ICONS[families[0]] : "🏋️";
 }
 
 /**
@@ -82,8 +92,8 @@ export function ruleIcon(text: string | null | undefined) {
 }
 
 /** A workout's icon: the coach's or AI's stored choice, else keyword rules, else its type. */
-export function resolveWorkoutIcon(workout: Pick<WorkoutRecord, "icon" | "title" | "type">) {
-  return workout.icon || ruleIcon(workout.title) || workoutIcon(workout.type);
+export function resolveWorkoutIcon(workout: Pick<WorkoutRecord, "icon" | "title" | "type" | "types" | "families">) {
+  return workout.icon || ruleIcon(workout.title) || workoutFamiliesIcon(workoutKindFamilies(workout));
 }
 
 /** Folders use rules only: system folders by kind, coach folders by name. */

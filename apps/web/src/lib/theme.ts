@@ -522,9 +522,30 @@ const WORKOUT_FAMILY_TOKENS: Record<WorkoutTypeFamily, keyof ThemeTokens> = {
   outdoor: "workoutOutdoor",
 };
 
-export function workoutTypeColor(type: string): string {
-  const family = workoutTypeFamily(type.toLowerCase().replace(/[^a-z0-9]+/g, "_"));
+export function workoutTypeColor(type: string | null | undefined): string {
+  const family = type ? workoutTypeFamily(type.toLowerCase().replace(/[^a-z0-9]+/g, "_")) : null;
   return family ? tokenVar(WORKOUT_FAMILY_TOKENS[family]) : tokenVar("primary");
+}
+
+/** ADR-275 / ADR-690: the colour of a workout family. */
+export function workoutFamilyColor(family: WorkoutTypeFamily | null | undefined): string {
+  return family ? tokenVar(WORKOUT_FAMILY_TOKENS[family]) : tokenVar("primary");
+}
+
+/**
+ * ADR-690: a WOD's look from its families (there is no main type). One
+ * family: its colour. Several: `color` is the first family's (text and
+ * tints), `stripe` splits a bar into every family's colour in catalogue
+ * order, so a mixed WOD shows all of them.
+ */
+export function workoutFamiliesLook(families: readonly WorkoutTypeFamily[]): { color: string; stripe: string; mixed: boolean } {
+  const color = workoutFamilyColor(families[0]);
+  if (families.length < 2) return { color, stripe: color, mixed: false };
+  const step = 100 / families.length;
+  const stops = families
+    .map((family, index) => `${workoutFamilyColor(family)} ${(index * step).toFixed(2)}% ${((index + 1) * step).toFixed(2)}%`)
+    .join(", ");
+  return { color, stripe: `linear-gradient(180deg, ${stops})`, mixed: true };
 }
 
 export const SERIES_TOKENS: readonly (keyof ThemeTokens)[] = [

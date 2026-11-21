@@ -15195,6 +15195,47 @@
       "title": "סוגי אימון",
       "description": "הסוגים שמאמנים יכולים לבחור ל-WOD",
       "hint": "הקש על סוג כדי להסתיר אותו בעורכי ה-WOD. WOD שכבר יש לו סוג מוסתר שומר עליו."
+    },
+    "boxType": "סוג של הבוקס",
+    "field": {
+      "newType": "+ סוג חדש „{name}”",
+      "newGroup": "סוג חדש",
+      "remove": "הסרה: {name}",
+      "listLabel": "סוגי אימון",
+      "searchMore": "חיפוש סוג נוסף",
+      "nothing": "לא נמצא סוג",
+      "addMore": "+ סוג נוסף",
+      "fromSections": "נלקחים מהסוגים של החלקים.",
+      "sectionPlaceholder": "סוג החלק (לא חובה)"
+    },
+    "create": {
+      "title": "סוג אימון חדש",
+      "hint": "הוא נכנס מיד לרשימה של הבוקס. צוות Palee רואה אותו ויכול להוסיף אותו לכולם.",
+      "name": "שם",
+      "didYouMean": "אולי התכוונת ל…",
+      "family": "משפחה",
+      "familyHint": "ממנה הוא מקבל צבע וסמל, והוא נספר בסטטיסטיקות ובתגים.",
+      "cancel": "ביטול",
+      "submit": "יצירה"
+    },
+    "box": {
+      "title": "הסוגים של הבוקס",
+      "hint": "סוגים שהמאמנים שלכם יצרו. שנו שם או משפחה, הסתירו או מזגו עם סוג אחר.",
+      "empty": "כשמאמן יוצר סוג משלו ב-WOD, הוא מופיע כאן.",
+      "rename": "שם הסוג",
+      "family": "משפחה",
+      "hide": "הסתרה",
+      "show": "הצגה",
+      "hiddenNote": "מוסתר ביצירת WOD",
+      "merge": "מיזוג עם סוג אחר",
+      "mergeInto": "מיזוג עם…",
+      "mergeQuestion": "אימוני WOD עם „{name}” יקבלו את הסוג האחר. להמשיך?",
+      "mergeConfirm": "מיזוג"
+    },
+    "adopted": {
+      "title": "צוות Palee בדק את הסוג שלכם",
+      "bodyAdopt": "„{name}” הוא עכשיו סוג לכולם. {count, plural, =0 {ה-WOD שלכם כבר מעודכנים.} one {WOD אחד השתנה אוטומטית.} other {# WOD השתנו אוטומטית.}}",
+      "bodyAlias": "„{name}” הוא עכשיו הסוג „{target}”. {count, plural, =0 {ה-WOD שלכם כבר מעודכנים.} one {WOD אחד השתנה אוטומטית.} other {# WOD השתנו אוטומטית.}}"
     }
   },
   "Equipment": {
@@ -20420,5 +20461,33 @@
     "removing": "מסיר…",
     "removed": "«{package}» הוסרה מ-{name}.",
     "undo": "ביטול ההסרה"
+  },
+  "PlatformWorkoutKinds": {
+    "back": "ארגונים",
+    "title": "סוגי אימון",
+    "subtitle": "שמות סוגים שבוקסים יצרו, יחד עם ענפי „הציעו” מהדף הציבורי. שם אחד, שורה אחת.",
+    "forbidden": "רק צוות Palee רואה את הדף הזה.",
+    "loadError": "הרשימה לא נטענה.",
+    "loading": "טוען…",
+    "empty": "אין שמות שממתינים.",
+    "pending": "ממתינים",
+    "decided": "הוחלט",
+    "status_pending": "ממתין",
+    "status_adopted": "סוג חדש: {target}",
+    "status_aliased": "זהה ל-{target}",
+    "status_kept": "נשאר בבוקסים",
+    "boxes": "{count, plural, one {בוקס אחד} other {# בוקסים}}",
+    "suggestions": "{count, plural, one {הצעת ענף אחת} other {# הצעות ענף}}",
+    "votes": "{family}: {count}",
+    "keep": "נשאר בבוקסים",
+    "alias": "זהה ל…",
+    "aliasTarget": "סוג קיים",
+    "aliasConfirm": "מיזוג",
+    "adopt": "סוג חדש לכולם",
+    "key": "מפתח",
+    "keyHint": "אותיות לטיניות קטנות, ספרות ו-_. לא משתנה אחר כך.",
+    "family": "משפחה",
+    "names": "שם בכל שפה",
+    "adoptConfirm": "הוספה לכולם"
   }
 }

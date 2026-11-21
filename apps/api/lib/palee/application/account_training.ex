@@ -80,6 +80,7 @@ defmodule Palee.Application.AccountTraining do
       key: entry.workout_key,
       title: entry.title,
       type: entry.workout_type,
+      types: Map.get(entry, :workout_types) || List.wrap(entry.workout_type),
       at: at,
       on: DateTime.to_date(at),
       tz: entry.performed_at_tz,
@@ -101,6 +102,8 @@ defmodule Palee.Application.AccountTraining do
       key: execution.workout_key,
       title: execution.workout_title,
       type: execution.workout_type && to_string(execution.workout_type),
+      types: execution_types(execution),
+      families: Map.get(execution, :workout_families) || [],
       at: execution.completed_at_utc,
       on: DateTime.to_date(execution.completed_at_utc),
       tz: execution.completed_at_tz,
@@ -111,6 +114,13 @@ defmodule Palee.Application.AccountTraining do
       duration_seconds: div(execution.total_elapsed_ms || 0, 1000),
       scores: scores(execution.section_scores)
     }
+  end
+
+  defp execution_types(execution) do
+    case Map.get(execution, :workout_types) do
+      [_ | _] = types -> types
+      _ -> execution.workout_type |> List.wrap() |> Enum.map(&to_string/1)
+    end
   end
 
   # Sections of one workout identity match across providers by name.

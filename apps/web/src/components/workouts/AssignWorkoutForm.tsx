@@ -18,7 +18,6 @@ import { deleteWorkout, fetchAdminWorkout, type WorkoutRecord } from "@/api/work
 import { useSession } from "@/components/session-provider";
 import { formatLocalDate } from "@/lib/local-date";
 import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
-import { SemanticLabel } from "@/components/semantic-label";
 import { AthleteInjuryWarningsPanel } from "@/components/wellbeing/InjuryWarnings";
 import { DateInput } from "@/components/ui/DateInput";
 import { useQuery } from "@tanstack/react-query";
@@ -27,6 +26,7 @@ import { AppliesToBranches, defaultAppliesTo, showsAppliesTo } from "@/component
 import { membershipLocationScope, type LocationScope } from "@/lib/location-scope";
 import { useSelectedMembershipRole } from "@/lib/membership-role";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { WorkoutTypesText } from "@/components/workouts/WorkoutTypeSelect";
 
 type AssignWorkoutFormProps = {
   workoutId: string;
@@ -229,7 +229,7 @@ export function AssignWorkoutForm({ workoutId }: AssignWorkoutFormProps) {
             ) : (
               <>
                 <h2 className="mt-3 text-2xl font-semibold" style={{ color: "var(--text)" }}>{workout.title}</h2>
-                <p className="mt-2 text-sm uppercase tracking-[0.18em] text-[var(--primary)]"><SemanticLabel value={workout.type} /></p>
+                <p className="mt-2 text-sm uppercase tracking-[0.18em] text-[var(--primary)]"><WorkoutTypesText workout={workout} /></p>
                 <div className="mt-5 space-y-3">
                   {workout.sections.map((section) => (
                     <div key={section.id ?? (workout.id) + "-" + (section.order)} className="rounded-[1.3rem] p-4" style={{ background: "var(--panel-muted)", border: "1px solid var(--border)" }}>

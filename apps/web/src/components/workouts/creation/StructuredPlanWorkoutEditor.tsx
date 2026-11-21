@@ -8,8 +8,8 @@ import { ApiError } from "@/api/client";
 import { createDraftWorkout, fetchAdminWorkout, listScaleLevels, publishWorkoutDraft, type WorkoutRecord } from "@/api/workouts";
 import { useSession } from "@/components/session-provider";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
-import { WorkoutTypeSelect } from "@/components/workouts/WorkoutTypeSelect";
-import { isWorkoutType } from "@/lib/workout-types";
+import { WorkoutTypesField } from "@/components/workouts/WorkoutTypesField";
+import { workoutKindRefs } from "@/lib/workout-kinds";
 import { WodGoalsEditorPanel } from "@/components/wod-goals/WodGoalsEditorPanel";
 import { PlanEditor, type PlanLevel } from "@/components/workouts/plan-editor";
 import { useDraftSaver } from "@/hooks/useDraftSaver";
@@ -17,7 +17,6 @@ import { useUiTranslations } from "@/i18n/ui";
 import { DraftConflictError, type DraftSaveStatus } from "@/lib/draft-saver";
 import { timeline } from "@/lib/structured-plan";
 import { usePlanEditorStore } from "@/stores/structured-plan";
-import type { WorkoutType } from "@/types/workout";
 
 import { DraftConflictNotice } from "./DraftConflictNotice";
 import { EditorTabs } from "./EditorTabs";
@@ -67,7 +66,7 @@ export function StructuredPlanWorkoutEditor({ draftId, folderId = null, onDraftR
   const { tokens } = useSession();
   const accessToken = tokens?.access_token;
 
-  const [type, setType] = useState<WorkoutType | "">("");
+  const [types, setTypes] = useState<string[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [loadFailed, setLoadFailed] = useState(false);
   const [draftSaves, setDraftSaves] = useState(0);
@@ -82,7 +81,7 @@ export function StructuredPlanWorkoutEditor({ draftId, folderId = null, onDraftR
   const [notice, setNotice] = useState<string | null>(null);
   const [openTab, setOpenTab] = useState<"details" | "goals" | null>(null);
   const metadataRef = useRef<Record<string, unknown>>({});
-  const typeRef = useRef<WorkoutType | "">("");
+  const typesRef = useRef<string[]>([]);
   const loadedDraftRef = useRef<string | null>(null);
 
   const title = usePlanEditorStore((state) => state.title);
@@ -110,19 +109,19 @@ export function StructuredPlanWorkoutEditor({ draftId, folderId = null, onDraftR
       });
   }, [accessToken, draftId, folderId, onDraftReady]);
 
-  const buildPayload = useCallback(() => planPayload(usePlanEditorStore.getState().serialize(), typeRef.current, metadataRef.current), []);
+  const buildPayload = useCallback(() => planPayload(usePlanEditorStore.getState().serialize(), typesRef.current, metadataRef.current), []);
 
   /** Puts a stored draft into the plan editor and arms autosave at its revision. */
   const applyWorkout = useCallback(
     (workout: WorkoutRecord) => {
-      const nextType = isWorkoutType(workout.type) ? workout.type : "";
-      typeRef.current = nextType;
-      setType(nextType);
+      const nextTypes = workoutKindRefs(workout);
+      typesRef.current = nextTypes;
+      setTypes(nextTypes);
       metadataRef.current = workout.workout_metadata ?? {};
       usePlanEditorStore.getState().load(planDocumentFrom(workout));
       // A new plan opens its first section on step Ροή.
       if (usePlanEditorStore.getState().sections.length === 0) usePlanEditorStore.getState().addSection();
-      setOpenTab(workout.title?.trim() && nextType ? null : "details");
+      setOpenTab(workout.title?.trim() && nextTypes.length > 0 ? null : "details");
       saver.start(workout.dsl_source_revision ?? 0);
       setLoaded(true);
       // A text workout switched to structured is saved as a plan right away.
@@ -154,9 +153,9 @@ export function StructuredPlanWorkoutEditor({ draftId, folderId = null, onDraftR
     });
   }, [buildPayload, loaded, saver]);
 
-  function changeType(next: WorkoutType) {
-    typeRef.current = next;
-    setType(next);
+  function changeTypes(next: string[]) {
+    typesRef.current = next;
+    setTypes(next);
     if (loaded) saver.schedule(buildPayload());
   }
 
@@ -169,7 +168,7 @@ export function StructuredPlanWorkoutEditor({ draftId, folderId = null, onDraftR
       switchToText: async () => {
         const doc = usePlanEditorStore.getState().serialize();
         const body = planToText(doc, (key, values) => viewT(key, values), levelLabels);
-        await saver.saveNow(freeTextPayload(doc.title, typeRef.current, body, metadataRef.current));
+        await saver.saveNow(freeTextPayload(doc.title, typesRef.current, body, metadataRef.current));
       },
     };
     return () => {
@@ -197,9 +196,9 @@ export function StructuredPlanWorkoutEditor({ draftId, folderId = null, onDraftR
   async function publish() {
     if (!accessToken || !draftId) return;
     setNotice(null);
-    if (titleMissing || !type || empty || problems.length > 0) {
+    if (titleMissing || types.length === 0 || empty || problems.length > 0) {
       setShowProblems(true);
-      if (titleMissing || !type) setOpenTab("details");
+      if (titleMissing || types.length === 0) setOpenTab("details");
       return;
     }
     setPublishing(true);
@@ -227,9 +226,9 @@ export function StructuredPlanWorkoutEditor({ draftId, folderId = null, onDraftR
     }
   }
 
-  const footerProblem = showProblems && (titleMissing || !type || empty || problems.length > 0);
+  const footerProblem = showProblems && (titleMissing || types.length === 0 || empty || problems.length > 0);
   const footerText =
-    showProblems && (titleMissing || !type)
+    showProblems && (titleMissing || types.length === 0)
       ? i18n("sectionedEditorNeedsTitleAndType")
       : showProblems && empty
         ? viewT("editor.planEmpty")
@@ -252,7 +251,7 @@ export function StructuredPlanWorkoutEditor({ draftId, folderId = null, onDraftR
               key: "details",
               icon: "📝",
               label: i18n("workoutDetails9366821"),
-              badge: showProblems && !type ? <span aria-hidden="true" style={{ color: "var(--danger)" }}>●</span> : undefined,
+              badge: showProblems && types.length === 0 ? <span aria-hidden="true" style={{ color: "var(--danger)" }}>●</span> : undefined,
             },
             { key: "goals", icon: "🎯", label: goalsT("title") },
           ]}
@@ -265,20 +264,20 @@ export function StructuredPlanWorkoutEditor({ draftId, folderId = null, onDraftR
           }
         >
           {openTab === "details" ? (
-            <div className="grid gap-3 p-4 sm:max-w-xs">
-              <label className="block">
+            <div className="grid gap-3 p-4 sm:max-w-md">
+              <div className="block">
                 <span className="text-xs font-bold uppercase tracking-[0.18em]" style={{ color: "var(--dim)" }}>
                   {i18n("workoutType34a530c")}
                 </span>
-                <WorkoutTypeSelect
-                  className="mt-1 w-full rounded-xl border px-3 py-2 text-sm outline-none"
-                  style={{ background: "var(--card)", borderColor: showProblems && !type ? "var(--danger)" : "var(--dim)", color: "var(--text)" }}
-                  value={type}
-                  onChange={changeType}
-                  placeholder={assistantT("chooseType")}
-                  invalid={showProblems && !type}
-                />
-              </label>
+                <div className="mt-1">
+                  <WorkoutTypesField
+                    value={types}
+                    onChange={changeTypes}
+                    placeholder={assistantT("chooseType")}
+                    invalid={showProblems && types.length === 0}
+                  />
+                </div>
+              </div>
             </div>
           ) : null}
           {openTab === "goals" ? (

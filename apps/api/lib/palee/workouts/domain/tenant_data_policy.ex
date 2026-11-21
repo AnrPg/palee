@@ -31,7 +31,9 @@ defmodule Palee.Workouts.Domain.TenantDataPolicy do
               %{table: "master_workouts"},
               %{table: "workout_folders"},
               # ADR-128: after exercise_variations, which reference it.
-              %{table: "scale_levels"}
+              %{table: "scale_levels"},
+              # ADR-690: the box's own workout types (WODs name them by id).
+              %{table: "organization_workout_kinds"}
             ]
           })
 

@@ -142,6 +142,11 @@ defmodule PaleeWeb.RouteCapabilities do
 
     # Gym settings and facility
     {W.AdminSettingsController, :show} => [:manage_settings, :manage_finance_settings],
+    # ADR-690: whoever writes WODs adds a type; owners and admins manage them.
+    {W.AdminWorkoutKindController, :index} => [:manage_workouts, :manage_settings],
+    {W.AdminWorkoutKindController, :create} => [:manage_workouts],
+    {W.AdminWorkoutKindController, :update} => [:manage_settings],
+    {W.AdminWorkoutKindController, :merge} => [:manage_settings],
     {W.AdminSettingsController, :update} => [:manage_settings],
     {W.AdminSettingsController, :update_time_zone} => [:manage_settings],
     # ADR-186: a branch-scoped manager edits only their branches (checked per

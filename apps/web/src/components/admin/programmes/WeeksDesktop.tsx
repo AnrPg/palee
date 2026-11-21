@@ -8,7 +8,7 @@ import { useWorkoutTypeLabels } from "@/components/workouts/WorkoutTypeSelect";
 import { inputClass, inputStyle, secondaryButtonClass, secondaryButtonStyle } from "@/components/staff/staff-ui";
 import { MoreMenu } from "@/components/ui/MoreMenu";
 import { DAYS_PER_WEEK, MAX_WEEKS } from "@/components/programmes/programme-grid";
-import { workoutTypeColor } from "@/lib/theme";
+import { workoutFamiliesLook } from "@/lib/theme";
 import type { WorkoutTypeFamily } from "@/lib/workout-types";
 
 import { WodLine } from "./editor-ui";
@@ -419,10 +419,10 @@ function DayCell({
           const wod = byId.get(id);
           return (
             <span key={id} className="flex min-w-0 items-stretch gap-1.5">
-              <i aria-hidden="true" className="w-1 shrink-0 rounded-full" style={{ background: wod ? workoutTypeColor(wod.type) : "var(--dim)" }} />
+              <i aria-hidden="true" className="w-1 shrink-0 rounded-full" style={{ background: wod && wod.families.length > 0 ? workoutFamiliesLook(wod.families).stripe : "var(--dim)" }} />
               <span className="min-w-0">
                 <span className="block truncate text-xs font-semibold" style={{ color: "var(--text)" }}>{titles[index]}</span>
-                {wod && ids.length === 1 ? <span className="block truncate text-[0.7rem]" style={{ color: "var(--muted)" }}>{labels.family(wod.type)}</span> : null}
+                {wod && ids.length === 1 ? <span className="block truncate text-[0.7rem]" style={{ color: "var(--muted)" }}>{wod.families.map(labels.family).join(" · ")}</span> : null}
               </span>
             </span>
           );

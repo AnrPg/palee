@@ -24272,6 +24272,59 @@
         "title": "BoxVocabulary",
         "type": "object"
       },
+      "BoxWorkoutKind": {
+        "properties": {
+          "family": {
+            "enum": [
+              "functional",
+              "strength",
+              "gymnastics",
+              "endurance",
+              "mind_body",
+              "combat",
+              "dance",
+              "outdoor",
+              "recovery"
+            ],
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "label": {
+            "description": "As the box typed it, in every language",
+            "type": "string"
+          },
+          "merged_into": {
+            "nullable": true,
+            "type": "string"
+          },
+          "ref": {
+            "description": "A workout type reference: a Palee kind key or `box:<id>`",
+            "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "hidden",
+              "merged"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "ref",
+          "label",
+          "family",
+          "status",
+          "merged_into"
+        ],
+        "title": "BoxWorkoutKind",
+        "type": "object"
+      },
       "BuddyCandidates": {
         "properties": {
           "candidates": {
@@ -122232,6 +122285,110 @@
             "description": "Off: no assistant; workouts are written in text sections with a timer each",
             "type": "boolean"
           },
+          "workout_kinds": {
+            "properties": {
+              "additions": {
+                "items": {
+                  "properties": {
+                    "family": {
+                      "enum": [
+                        "functional",
+                        "strength",
+                        "gymnastics",
+                        "endurance",
+                        "mind_body",
+                        "combat",
+                        "dance",
+                        "outdoor",
+                        "recovery"
+                      ],
+                      "type": "string"
+                    },
+                    "key": {
+                      "type": "string"
+                    },
+                    "labels": {
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "description": "One label per locale",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "key",
+                    "family",
+                    "labels"
+                  ],
+                  "title": "WorkoutKindAddition",
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "box": {
+                "items": {
+                  "properties": {
+                    "family": {
+                      "enum": [
+                        "functional",
+                        "strength",
+                        "gymnastics",
+                        "endurance",
+                        "mind_body",
+                        "combat",
+                        "dance",
+                        "outdoor",
+                        "recovery"
+                      ],
+                      "type": "string"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "label": {
+                      "description": "As the box typed it, in every language",
+                      "type": "string"
+                    },
+                    "merged_into": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "ref": {
+                      "description": "A workout type reference: a Palee kind key or `box:<id>`",
+                      "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum": [
+                        "active",
+                        "hidden",
+                        "merged"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "ref",
+                    "label",
+                    "family",
+                    "status",
+                    "merged_into"
+                  ],
+                  "title": "BoxWorkoutKind",
+                  "type": "object"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "additions",
+              "box"
+            ],
+            "title": "WorkoutKindCatalogue",
+            "type": "object"
+          },
           "workout_types": {
             "description": "ADR-275: the workout kinds this gym's editors offer, in catalogue order",
             "items": {
@@ -122242,7 +122399,8 @@
         },
         "required": [
           "wod_assistant_enabled",
-          "workout_types"
+          "workout_types",
+          "workout_kinds"
         ],
         "title": "WorkoutAuthoringSettings",
         "type": "object"
@@ -123517,6 +123675,12 @@
       },
       "WorkoutChoice": {
         "properties": {
+          "families": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "folder_id": {
             "format": "uuid",
             "nullable": true,
@@ -123538,7 +123702,17 @@
             "type": "string"
           },
           "type": {
+            "description": "Deprecated (ADR-690)",
+            "nullable": true,
             "type": "string"
+          },
+          "types": {
+            "description": "Workout type references (ADR-690): Palee kind keys or `box:<id>`",
+            "items": {
+              "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+              "type": "string"
+            },
+            "type": "array"
           },
           "updated_at": {
             "format": "date-time",
@@ -124397,6 +124571,205 @@
           "taxonomy_version"
         ],
         "title": "WorkoutGoalSuggestion",
+        "type": "object"
+      },
+      "WorkoutKindAddition": {
+        "properties": {
+          "family": {
+            "enum": [
+              "functional",
+              "strength",
+              "gymnastics",
+              "endurance",
+              "mind_body",
+              "combat",
+              "dance",
+              "outdoor",
+              "recovery"
+            ],
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "labels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "One label per locale",
+            "type": "object"
+          }
+        },
+        "required": [
+          "key",
+          "family",
+          "labels"
+        ],
+        "title": "WorkoutKindAddition",
+        "type": "object"
+      },
+      "WorkoutKindCandidate": {
+        "properties": {
+          "boxes": {
+            "description": "Boxes that made it a type",
+            "type": "integer"
+          },
+          "decided_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "decision": {
+            "additionalProperties": true,
+            "nullable": true,
+            "type": "object"
+          },
+          "family_votes": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "description": "Family => boxes that chose it",
+            "type": "object"
+          },
+          "first_seen_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "profile_suggestions": {
+            "description": "Public page «Πρότεινέ το» discipline suggestions with this name",
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "adopted",
+              "aliased",
+              "kept"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "status",
+          "boxes",
+          "family_votes",
+          "profile_suggestions",
+          "first_seen_at"
+        ],
+        "title": "WorkoutKindCandidate",
+        "type": "object"
+      },
+      "WorkoutKindCatalogue": {
+        "properties": {
+          "additions": {
+            "items": {
+              "properties": {
+                "family": {
+                  "enum": [
+                    "functional",
+                    "strength",
+                    "gymnastics",
+                    "endurance",
+                    "mind_body",
+                    "combat",
+                    "dance",
+                    "outdoor",
+                    "recovery"
+                  ],
+                  "type": "string"
+                },
+                "key": {
+                  "type": "string"
+                },
+                "labels": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "description": "One label per locale",
+                  "type": "object"
+                }
+              },
+              "required": [
+                "key",
+                "family",
+                "labels"
+              ],
+              "title": "WorkoutKindAddition",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "box": {
+            "items": {
+              "properties": {
+                "family": {
+                  "enum": [
+                    "functional",
+                    "strength",
+                    "gymnastics",
+                    "endurance",
+                    "mind_body",
+                    "combat",
+                    "dance",
+                    "outdoor",
+                    "recovery"
+                  ],
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "label": {
+                  "description": "As the box typed it, in every language",
+                  "type": "string"
+                },
+                "merged_into": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "ref": {
+                  "description": "A workout type reference: a Palee kind key or `box:<id>`",
+                  "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "active",
+                    "hidden",
+                    "merged"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "ref",
+                "label",
+                "family",
+                "status",
+                "merged_into"
+              ],
+              "title": "BoxWorkoutKind",
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "additions",
+          "box"
+        ],
+        "title": "WorkoutKindCatalogue",
         "type": "object"
       },
       "WorkoutLeaderboard": {
@@ -192818,6 +193191,146 @@
         ]
       }
     },
+    "/api/me/workout-kinds": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.WorkoutKindLookupController.index",
+        "parameters": [
+          {
+            "description": "Comma-separated references (`box:<id>` are looked up; at most 200)",
+            "in": "query",
+            "name": "refs",
+            "required": false,
+            "schema": {
+              "maxLength": 12000,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "additions": {
+                      "items": {
+                        "properties": {
+                          "family": {
+                            "enum": [
+                              "functional",
+                              "strength",
+                              "gymnastics",
+                              "endurance",
+                              "mind_body",
+                              "combat",
+                              "dance",
+                              "outdoor",
+                              "recovery"
+                            ],
+                            "type": "string"
+                          },
+                          "key": {
+                            "type": "string"
+                          },
+                          "labels": {
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "description": "One label per locale",
+                            "type": "object"
+                          }
+                        },
+                        "required": [
+                          "key",
+                          "family",
+                          "labels"
+                        ],
+                        "title": "WorkoutKindAddition",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "box": {
+                      "items": {
+                        "properties": {
+                          "family": {
+                            "enum": [
+                              "functional",
+                              "strength",
+                              "gymnastics",
+                              "endurance",
+                              "mind_body",
+                              "combat",
+                              "dance",
+                              "outdoor",
+                              "recovery"
+                            ],
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "label": {
+                            "description": "As the box typed it, in every language",
+                            "type": "string"
+                          },
+                          "merged_into": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "ref": {
+                            "description": "A workout type reference: a Palee kind key or `box:<id>`",
+                            "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "active",
+                              "hidden",
+                              "merged"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "ref",
+                          "label",
+                          "family",
+                          "status",
+                          "merged_into"
+                        ],
+                        "title": "BoxWorkoutKind",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "additions",
+                    "box"
+                  ],
+                  "title": "WorkoutKindCatalogue",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Catalogue"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Labels and families of workout type references",
+        "tags": [
+          "Workouts"
+        ]
+      }
+    },
     "/api/memberships": {
       "get": {
         "callbacks": {},
@@ -201732,65 +202245,8 @@
                             "type": "integer"
                           },
                           "type_filter": {
-                            "enum": [
-                              "crossfit",
-                              "functional_fitness",
-                              "hyrox",
-                              "hiit",
-                              "bootcamp",
-                              "circuit_training",
-                              "strength",
-                              "powerlifting",
-                              "olympic_lifting",
-                              "bodybuilding",
-                              "strongman",
-                              "kettlebell",
-                              "gymnastics",
-                              "calisthenics",
-                              "artistic_gymnastics",
-                              "rhythmic_gymnastics",
-                              "trampoline_tumbling",
-                              "acrobatics",
-                              "parkour",
-                              "aerobics",
-                              "running",
-                              "cycling",
-                              "indoor_cycling",
-                              "rowing",
-                              "swimming",
-                              "endurance",
-                              "yoga",
-                              "pilates",
-                              "barre",
-                              "flexibility",
-                              "mobility",
-                              "stretching",
-                              "tai_chi_qigong",
-                              "boxing",
-                              "kickboxing",
-                              "muay_thai",
-                              "mma",
-                              "bjj_grappling",
-                              "wrestling",
-                              "martial_arts",
-                              "self_defense",
-                              "judo",
-                              "karate",
-                              "taekwondo",
-                              "kung_fu",
-                              "krav_maga",
-                              "dance",
-                              "dance_fitness",
-                              "pole_aerial",
-                              "ballet",
-                              "contemporary_dance",
-                              "latin_dance",
-                              "street_dance",
-                              "outdoor_training",
-                              "climbing_bouldering",
-                              "skateboarding",
-                              "recovery"
-                            ],
+                            "description": "A workout type reference (ADR-690): a Palee kind key or `box:<id>`",
+                            "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
                             "type": "string"
                           }
                         },
@@ -202091,65 +202547,8 @@
                             "type": "integer"
                           },
                           "type_filter": {
-                            "enum": [
-                              "crossfit",
-                              "functional_fitness",
-                              "hyrox",
-                              "hiit",
-                              "bootcamp",
-                              "circuit_training",
-                              "strength",
-                              "powerlifting",
-                              "olympic_lifting",
-                              "bodybuilding",
-                              "strongman",
-                              "kettlebell",
-                              "gymnastics",
-                              "calisthenics",
-                              "artistic_gymnastics",
-                              "rhythmic_gymnastics",
-                              "trampoline_tumbling",
-                              "acrobatics",
-                              "parkour",
-                              "aerobics",
-                              "running",
-                              "cycling",
-                              "indoor_cycling",
-                              "rowing",
-                              "swimming",
-                              "endurance",
-                              "yoga",
-                              "pilates",
-                              "barre",
-                              "flexibility",
-                              "mobility",
-                              "stretching",
-                              "tai_chi_qigong",
-                              "boxing",
-                              "kickboxing",
-                              "muay_thai",
-                              "mma",
-                              "bjj_grappling",
-                              "wrestling",
-                              "martial_arts",
-                              "self_defense",
-                              "judo",
-                              "karate",
-                              "taekwondo",
-                              "kung_fu",
-                              "krav_maga",
-                              "dance",
-                              "dance_fitness",
-                              "pole_aerial",
-                              "ballet",
-                              "contemporary_dance",
-                              "latin_dance",
-                              "street_dance",
-                              "outdoor_training",
-                              "climbing_bouldering",
-                              "skateboarding",
-                              "recovery"
-                            ],
+                            "description": "A workout type reference (ADR-690): a Palee kind key or `box:<id>`",
+                            "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
                             "type": "string"
                           }
                         },
@@ -314381,6 +314780,558 @@
         ]
       }
     },
+    "/api/org/{organization_slug}/admin/workout-kinds": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminWorkoutKindController.index",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "additions": {
+                      "items": {
+                        "properties": {
+                          "family": {
+                            "enum": [
+                              "functional",
+                              "strength",
+                              "gymnastics",
+                              "endurance",
+                              "mind_body",
+                              "combat",
+                              "dance",
+                              "outdoor",
+                              "recovery"
+                            ],
+                            "type": "string"
+                          },
+                          "key": {
+                            "type": "string"
+                          },
+                          "labels": {
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "description": "One label per locale",
+                            "type": "object"
+                          }
+                        },
+                        "required": [
+                          "key",
+                          "family",
+                          "labels"
+                        ],
+                        "title": "WorkoutKindAddition",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "box": {
+                      "items": {
+                        "properties": {
+                          "family": {
+                            "enum": [
+                              "functional",
+                              "strength",
+                              "gymnastics",
+                              "endurance",
+                              "mind_body",
+                              "combat",
+                              "dance",
+                              "outdoor",
+                              "recovery"
+                            ],
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "label": {
+                            "description": "As the box typed it, in every language",
+                            "type": "string"
+                          },
+                          "merged_into": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "ref": {
+                            "description": "A workout type reference: a Palee kind key or `box:<id>`",
+                            "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "active",
+                              "hidden",
+                              "merged"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "ref",
+                          "label",
+                          "family",
+                          "status",
+                          "merged_into"
+                        ],
+                        "title": "BoxWorkoutKind",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "additions",
+                    "box"
+                  ],
+                  "title": "WorkoutKindCatalogue",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Catalogue"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The box's view of every workout type: the Palee additions and its own types",
+        "tags": [
+          "Admin Workouts"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminWorkoutKindController.create",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "family": {
+                    "enum": [
+                      "functional",
+                      "strength",
+                      "gymnastics",
+                      "endurance",
+                      "mind_body",
+                      "combat",
+                      "dance",
+                      "outdoor",
+                      "recovery"
+                    ],
+                    "type": "string"
+                  },
+                  "label": {
+                    "maxLength": 80,
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "label",
+                  "family"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "workout_kind": {
+                      "properties": {
+                        "family": {
+                          "enum": [
+                            "functional",
+                            "strength",
+                            "gymnastics",
+                            "endurance",
+                            "mind_body",
+                            "combat",
+                            "dance",
+                            "outdoor",
+                            "recovery"
+                          ],
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "label": {
+                          "description": "As the box typed it, in every language",
+                          "type": "string"
+                        },
+                        "merged_into": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "ref": {
+                          "description": "A workout type reference: a Palee kind key or `box:<id>`",
+                          "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "active",
+                            "hidden",
+                            "merged"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "ref",
+                        "label",
+                        "family",
+                        "status",
+                        "merged_into"
+                      ],
+                      "title": "BoxWorkoutKind",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "workout_kind"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "The type"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invalid"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Add a workout type to the box (shown again if it was hidden)",
+        "tags": [
+          "Admin Workouts"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/workout-kinds/{id}": {
+      "patch": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminWorkoutKindController.update",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "family": {
+                    "enum": [
+                      "functional",
+                      "strength",
+                      "gymnastics",
+                      "endurance",
+                      "mind_body",
+                      "combat",
+                      "dance",
+                      "outdoor",
+                      "recovery"
+                    ],
+                    "type": "string"
+                  },
+                  "hidden": {
+                    "type": "boolean"
+                  },
+                  "label": {
+                    "maxLength": 80,
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "workout_kind": {
+                      "properties": {
+                        "family": {
+                          "enum": [
+                            "functional",
+                            "strength",
+                            "gymnastics",
+                            "endurance",
+                            "mind_body",
+                            "combat",
+                            "dance",
+                            "outdoor",
+                            "recovery"
+                          ],
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "label": {
+                          "description": "As the box typed it, in every language",
+                          "type": "string"
+                        },
+                        "merged_into": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "ref": {
+                          "description": "A workout type reference: a Palee kind key or `box:<id>`",
+                          "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "active",
+                            "hidden",
+                            "merged"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "ref",
+                        "label",
+                        "family",
+                        "status",
+                        "merged_into"
+                      ],
+                      "title": "BoxWorkoutKind",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "workout_kind"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "The type"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invalid"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Rename a box type, change its family, or hide/show it",
+        "tags": [
+          "Admin Workouts"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/workout-kinds/{id}/merge": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminWorkoutKindController.merge",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "into": {
+                    "description": "A workout type reference: a Palee kind key or `box:<id>`",
+                    "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "into"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "workout_kind": {
+                      "properties": {
+                        "family": {
+                          "enum": [
+                            "functional",
+                            "strength",
+                            "gymnastics",
+                            "endurance",
+                            "mind_body",
+                            "combat",
+                            "dance",
+                            "outdoor",
+                            "recovery"
+                          ],
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "label": {
+                          "description": "As the box typed it, in every language",
+                          "type": "string"
+                        },
+                        "merged_into": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "ref": {
+                          "description": "A workout type reference: a Palee kind key or `box:<id>`",
+                          "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "active",
+                            "hidden",
+                            "merged"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "ref",
+                        "label",
+                        "family",
+                        "status",
+                        "merged_into"
+                      ],
+                      "title": "BoxWorkoutKind",
+                      "type": "object"
+                    },
+                    "workouts": {
+                      "description": "WODs moved to the other type",
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "workout_kind",
+                    "workouts"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Merged"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invalid"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Merge a box type into another type; the box's WODs move to it",
+        "tags": [
+          "Admin Workouts"
+        ]
+      }
+    },
     "/api/org/{organization_slug}/admin/workouts": {
       "get": {
         "callbacks": {},
@@ -314565,6 +315516,110 @@
                       "description": "Off: no assistant; workouts are written in text sections with a timer each",
                       "type": "boolean"
                     },
+                    "workout_kinds": {
+                      "properties": {
+                        "additions": {
+                          "items": {
+                            "properties": {
+                              "family": {
+                                "enum": [
+                                  "functional",
+                                  "strength",
+                                  "gymnastics",
+                                  "endurance",
+                                  "mind_body",
+                                  "combat",
+                                  "dance",
+                                  "outdoor",
+                                  "recovery"
+                                ],
+                                "type": "string"
+                              },
+                              "key": {
+                                "type": "string"
+                              },
+                              "labels": {
+                                "additionalProperties": {
+                                  "type": "string"
+                                },
+                                "description": "One label per locale",
+                                "type": "object"
+                              }
+                            },
+                            "required": [
+                              "key",
+                              "family",
+                              "labels"
+                            ],
+                            "title": "WorkoutKindAddition",
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "box": {
+                          "items": {
+                            "properties": {
+                              "family": {
+                                "enum": [
+                                  "functional",
+                                  "strength",
+                                  "gymnastics",
+                                  "endurance",
+                                  "mind_body",
+                                  "combat",
+                                  "dance",
+                                  "outdoor",
+                                  "recovery"
+                                ],
+                                "type": "string"
+                              },
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "label": {
+                                "description": "As the box typed it, in every language",
+                                "type": "string"
+                              },
+                              "merged_into": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "ref": {
+                                "description": "A workout type reference: a Palee kind key or `box:<id>`",
+                                "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                                "type": "string"
+                              },
+                              "status": {
+                                "enum": [
+                                  "active",
+                                  "hidden",
+                                  "merged"
+                                ],
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "ref",
+                              "label",
+                              "family",
+                              "status",
+                              "merged_into"
+                            ],
+                            "title": "BoxWorkoutKind",
+                            "type": "object"
+                          },
+                          "type": "array"
+                        }
+                      },
+                      "required": [
+                        "additions",
+                        "box"
+                      ],
+                      "title": "WorkoutKindCatalogue",
+                      "type": "object"
+                    },
                     "workout_types": {
                       "description": "ADR-275: the workout kinds this gym's editors offer, in catalogue order",
                       "items": {
@@ -314575,7 +315630,8 @@
                   },
                   "required": [
                     "wod_assistant_enabled",
-                    "workout_types"
+                    "workout_types",
+                    "workout_kinds"
                   ],
                   "title": "WorkoutAuthoringSettings",
                   "type": "object"
@@ -314740,6 +315796,12 @@
                     "workouts": {
                       "items": {
                         "properties": {
+                          "families": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
                           "folder_id": {
                             "format": "uuid",
                             "nullable": true,
@@ -314761,7 +315823,17 @@
                             "type": "string"
                           },
                           "type": {
+                            "description": "Deprecated (ADR-690)",
+                            "nullable": true,
                             "type": "string"
+                          },
+                          "types": {
+                            "description": "Workout type references (ADR-690): Palee kind keys or `box:<id>`",
+                            "items": {
+                              "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                              "type": "string"
+                            },
+                            "type": "array"
                           },
                           "updated_at": {
                             "format": "date-time",
@@ -314842,6 +315914,12 @@
                     "newest": {
                       "items": {
                         "properties": {
+                          "families": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
                           "folder_id": {
                             "format": "uuid",
                             "nullable": true,
@@ -314863,7 +315941,17 @@
                             "type": "string"
                           },
                           "type": {
+                            "description": "Deprecated (ADR-690)",
+                            "nullable": true,
                             "type": "string"
+                          },
+                          "types": {
+                            "description": "Workout type references (ADR-690): Palee kind keys or `box:<id>`",
+                            "items": {
+                              "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                              "type": "string"
+                            },
+                            "type": "array"
                           },
                           "updated_at": {
                             "format": "date-time",
@@ -314884,6 +315972,12 @@
                     "recent": {
                       "items": {
                         "properties": {
+                          "families": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
                           "folder_id": {
                             "format": "uuid",
                             "nullable": true,
@@ -314905,7 +315999,17 @@
                             "type": "string"
                           },
                           "type": {
+                            "description": "Deprecated (ADR-690)",
+                            "nullable": true,
                             "type": "string"
+                          },
+                          "types": {
+                            "description": "Workout type references (ADR-690): Palee kind keys or `box:<id>`",
+                            "items": {
+                              "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                              "type": "string"
+                            },
+                            "type": "array"
                           },
                           "updated_at": {
                             "format": "date-time",
@@ -314926,6 +316030,12 @@
                     "same_day": {
                       "items": {
                         "properties": {
+                          "families": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
                           "folder_id": {
                             "format": "uuid",
                             "nullable": true,
@@ -314947,7 +316057,17 @@
                             "type": "string"
                           },
                           "type": {
+                            "description": "Deprecated (ADR-690)",
+                            "nullable": true,
                             "type": "string"
+                          },
+                          "types": {
+                            "description": "Workout type references (ADR-690): Palee kind keys or `box:<id>`",
+                            "items": {
+                              "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                              "type": "string"
+                            },
+                            "type": "array"
                           },
                           "updated_at": {
                             "format": "date-time",
@@ -317575,6 +318695,24 @@
                         "estimated_duration_seconds": {
                           "nullable": true,
                           "type": "integer"
+                        },
+                        "families": {
+                          "description": "ADR-690: the families of `types`, each once, in catalogue order",
+                          "items": {
+                            "enum": [
+                              "functional",
+                              "strength",
+                              "gymnastics",
+                              "endurance",
+                              "mind_body",
+                              "combat",
+                              "dance",
+                              "outdoor",
+                              "recovery"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
                         },
                         "free_text_body": {
                           "nullable": true,
@@ -321293,6 +322431,14 @@
                                       ],
                                       "title": "SectionTimerPreset",
                                       "type": "object"
+                                    },
+                                    "types": {
+                                      "description": "Workout type references (ADR-690): Palee kind keys or `box:<id>`",
+                                      "items": {
+                                        "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                                        "type": "string"
+                                      },
+                                      "type": "array"
                                     }
                                   },
                                   "required": [
@@ -321353,6 +322499,14 @@
                                 ],
                                 "title": "SectionTimerPreset",
                                 "type": "object"
+                              },
+                              "types": {
+                                "description": "Workout type references (ADR-690): Palee kind keys or `box:<id>`",
+                                "items": {
+                                  "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                                  "type": "string"
+                                },
+                                "type": "array"
                               }
                             },
                             "required": [
@@ -321384,7 +322538,17 @@
                           "type": "string"
                         },
                         "type": {
+                          "description": "Deprecated (ADR-690): the first Palee kind of `types`, else null. Read `types`.",
+                          "nullable": true,
                           "type": "string"
+                        },
+                        "types": {
+                          "description": "Workout type references (ADR-690): Palee kind keys or `box:<id>`",
+                          "items": {
+                            "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                            "type": "string"
+                          },
+                          "type": "array"
                         },
                         "updated_at": {
                           "format": "date-time",
@@ -325442,6 +326606,14 @@
                                 ],
                                 "title": "SectionTimerPreset",
                                 "type": "object"
+                              },
+                              "types": {
+                                "description": "Workout type references (ADR-690): Palee kind keys or `box:<id>`",
+                                "items": {
+                                  "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                                  "type": "string"
+                                },
+                                "type": "array"
                               }
                             },
                             "required": [
@@ -325502,6 +326674,14 @@
                           ],
                           "title": "SectionTimerPreset",
                           "type": "object"
+                        },
+                        "types": {
+                          "description": "Workout type references (ADR-690): Palee kind keys or `box:<id>`",
+                          "items": {
+                            "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                            "type": "string"
+                          },
+                          "type": "array"
                         }
                       },
                       "required": [
@@ -325527,6 +326707,7 @@
                     "type": "string"
                   },
                   "type": {
+                    "description": "Deprecated (ADR-690): read as `types: [type]`",
                     "enum": [
                       "crossfit",
                       "functional_fitness",
@@ -325588,6 +326769,14 @@
                     ],
                     "nullable": true,
                     "type": "string"
+                  },
+                  "types": {
+                    "description": "Workout type references (ADR-690): Palee kind keys or `box:<id>`",
+                    "items": {
+                      "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                      "type": "string"
+                    },
+                    "type": "array"
                   },
                   "workout_metadata": {
                     "additionalProperties": true,
@@ -331027,6 +332216,14 @@
                                 ],
                                 "title": "SectionTimerPreset",
                                 "type": "object"
+                              },
+                              "types": {
+                                "description": "Workout type references (ADR-690): Palee kind keys or `box:<id>`",
+                                "items": {
+                                  "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                                  "type": "string"
+                                },
+                                "type": "array"
                               }
                             },
                             "required": [
@@ -331087,6 +332284,14 @@
                           ],
                           "title": "SectionTimerPreset",
                           "type": "object"
+                        },
+                        "types": {
+                          "description": "Workout type references (ADR-690): Palee kind keys or `box:<id>`",
+                          "items": {
+                            "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                            "type": "string"
+                          },
+                          "type": "array"
                         }
                       },
                       "required": [
@@ -331112,6 +332317,7 @@
                     "type": "string"
                   },
                   "type": {
+                    "description": "Deprecated (ADR-690): read as `types: [type]`",
                     "enum": [
                       "crossfit",
                       "functional_fitness",
@@ -331173,6 +332379,14 @@
                     ],
                     "nullable": true,
                     "type": "string"
+                  },
+                  "types": {
+                    "description": "Workout type references (ADR-690): Palee kind keys or `box:<id>`",
+                    "items": {
+                      "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                      "type": "string"
+                    },
+                    "type": "array"
                   },
                   "workout_metadata": {
                     "additionalProperties": true,
@@ -332547,6 +333761,24 @@
                         "estimated_duration_seconds": {
                           "nullable": true,
                           "type": "integer"
+                        },
+                        "families": {
+                          "description": "ADR-690: the families of `types`, each once, in catalogue order",
+                          "items": {
+                            "enum": [
+                              "functional",
+                              "strength",
+                              "gymnastics",
+                              "endurance",
+                              "mind_body",
+                              "combat",
+                              "dance",
+                              "outdoor",
+                              "recovery"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
                         },
                         "free_text_body": {
                           "nullable": true,
@@ -336265,6 +337497,14 @@
                                       ],
                                       "title": "SectionTimerPreset",
                                       "type": "object"
+                                    },
+                                    "types": {
+                                      "description": "Workout type references (ADR-690): Palee kind keys or `box:<id>`",
+                                      "items": {
+                                        "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                                        "type": "string"
+                                      },
+                                      "type": "array"
                                     }
                                   },
                                   "required": [
@@ -336325,6 +337565,14 @@
                                 ],
                                 "title": "SectionTimerPreset",
                                 "type": "object"
+                              },
+                              "types": {
+                                "description": "Workout type references (ADR-690): Palee kind keys or `box:<id>`",
+                                "items": {
+                                  "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                                  "type": "string"
+                                },
+                                "type": "array"
                               }
                             },
                             "required": [
@@ -336356,7 +337604,17 @@
                           "type": "string"
                         },
                         "type": {
+                          "description": "Deprecated (ADR-690): the first Palee kind of `types`, else null. Read `types`.",
+                          "nullable": true,
                           "type": "string"
+                        },
+                        "types": {
+                          "description": "Workout type references (ADR-690): Palee kind keys or `box:<id>`",
+                          "items": {
+                            "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                            "type": "string"
+                          },
+                          "type": "array"
                         },
                         "updated_at": {
                           "format": "date-time",
@@ -398212,6 +399470,24 @@
                           "nullable": true,
                           "type": "integer"
                         },
+                        "families": {
+                          "description": "ADR-690: the families of `types`, each once, in catalogue order",
+                          "items": {
+                            "enum": [
+                              "functional",
+                              "strength",
+                              "gymnastics",
+                              "endurance",
+                              "mind_body",
+                              "combat",
+                              "dance",
+                              "outdoor",
+                              "recovery"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
                         "free_text_body": {
                           "nullable": true,
                           "type": "string"
@@ -401929,6 +403205,14 @@
                                       ],
                                       "title": "SectionTimerPreset",
                                       "type": "object"
+                                    },
+                                    "types": {
+                                      "description": "Workout type references (ADR-690): Palee kind keys or `box:<id>`",
+                                      "items": {
+                                        "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                                        "type": "string"
+                                      },
+                                      "type": "array"
                                     }
                                   },
                                   "required": [
@@ -401989,6 +403273,14 @@
                                 ],
                                 "title": "SectionTimerPreset",
                                 "type": "object"
+                              },
+                              "types": {
+                                "description": "Workout type references (ADR-690): Palee kind keys or `box:<id>`",
+                                "items": {
+                                  "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                                  "type": "string"
+                                },
+                                "type": "array"
                               }
                             },
                             "required": [
@@ -402020,7 +403312,17 @@
                           "type": "string"
                         },
                         "type": {
+                          "description": "Deprecated (ADR-690): the first Palee kind of `types`, else null. Read `types`.",
+                          "nullable": true,
                           "type": "string"
+                        },
+                        "types": {
+                          "description": "Workout type references (ADR-690): Palee kind keys or `box:<id>`",
+                          "items": {
+                            "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                            "type": "string"
+                          },
+                          "type": "array"
                         },
                         "updated_at": {
                           "format": "date-time",
@@ -404130,6 +405432,24 @@
                           "estimated_duration_seconds": {
                             "nullable": true,
                             "type": "integer"
+                          },
+                          "families": {
+                            "description": "ADR-690: the families of `types`, each once, in catalogue order",
+                            "items": {
+                              "enum": [
+                                "functional",
+                                "strength",
+                                "gymnastics",
+                                "endurance",
+                                "mind_body",
+                                "combat",
+                                "dance",
+                                "outdoor",
+                                "recovery"
+                              ],
+                              "type": "string"
+                            },
+                            "type": "array"
                           },
                           "free_text_body": {
                             "nullable": true,
@@ -407848,6 +409168,14 @@
                                         ],
                                         "title": "SectionTimerPreset",
                                         "type": "object"
+                                      },
+                                      "types": {
+                                        "description": "Workout type references (ADR-690): Palee kind keys or `box:<id>`",
+                                        "items": {
+                                          "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                                          "type": "string"
+                                        },
+                                        "type": "array"
                                       }
                                     },
                                     "required": [
@@ -407908,6 +409236,14 @@
                                   ],
                                   "title": "SectionTimerPreset",
                                   "type": "object"
+                                },
+                                "types": {
+                                  "description": "Workout type references (ADR-690): Palee kind keys or `box:<id>`",
+                                  "items": {
+                                    "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                                    "type": "string"
+                                  },
+                                  "type": "array"
                                 }
                               },
                               "required": [
@@ -407939,7 +409275,17 @@
                             "type": "string"
                           },
                           "type": {
+                            "description": "Deprecated (ADR-690): the first Palee kind of `types`, else null. Read `types`.",
+                            "nullable": true,
                             "type": "string"
+                          },
+                          "types": {
+                            "description": "Workout type references (ADR-690): Palee kind keys or `box:<id>`",
+                            "items": {
+                              "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                              "type": "string"
+                            },
+                            "type": "array"
                           },
                           "updated_at": {
                             "format": "date-time",
@@ -409315,6 +410661,24 @@
                         "estimated_duration_seconds": {
                           "nullable": true,
                           "type": "integer"
+                        },
+                        "families": {
+                          "description": "ADR-690: the families of `types`, each once, in catalogue order",
+                          "items": {
+                            "enum": [
+                              "functional",
+                              "strength",
+                              "gymnastics",
+                              "endurance",
+                              "mind_body",
+                              "combat",
+                              "dance",
+                              "outdoor",
+                              "recovery"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
                         },
                         "free_text_body": {
                           "nullable": true,
@@ -413033,6 +414397,14 @@
                                       ],
                                       "title": "SectionTimerPreset",
                                       "type": "object"
+                                    },
+                                    "types": {
+                                      "description": "Workout type references (ADR-690): Palee kind keys or `box:<id>`",
+                                      "items": {
+                                        "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                                        "type": "string"
+                                      },
+                                      "type": "array"
                                     }
                                   },
                                   "required": [
@@ -413093,6 +414465,14 @@
                                 ],
                                 "title": "SectionTimerPreset",
                                 "type": "object"
+                              },
+                              "types": {
+                                "description": "Workout type references (ADR-690): Palee kind keys or `box:<id>`",
+                                "items": {
+                                  "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                                  "type": "string"
+                                },
+                                "type": "array"
                               }
                             },
                             "required": [
@@ -413124,7 +414504,17 @@
                           "type": "string"
                         },
                         "type": {
+                          "description": "Deprecated (ADR-690): the first Palee kind of `types`, else null. Read `types`.",
+                          "nullable": true,
                           "type": "string"
+                        },
+                        "types": {
+                          "description": "Workout type references (ADR-690): Palee kind keys or `box:<id>`",
+                          "items": {
+                            "pattern": "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$",
+                            "type": "string"
+                          },
+                          "type": "array"
                         },
                         "updated_at": {
                           "format": "date-time",
@@ -427498,6 +428888,420 @@
           }
         ],
         "summary": "Mark a suggestion added to its list or declined",
+        "tags": [
+          "Platform"
+        ]
+      }
+    },
+    "/api/platform/workout-kinds": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformWorkoutKindController.index",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "additions": {
+                      "items": {
+                        "properties": {
+                          "family": {
+                            "enum": [
+                              "functional",
+                              "strength",
+                              "gymnastics",
+                              "endurance",
+                              "mind_body",
+                              "combat",
+                              "dance",
+                              "outdoor",
+                              "recovery"
+                            ],
+                            "type": "string"
+                          },
+                          "key": {
+                            "type": "string"
+                          },
+                          "labels": {
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "description": "One label per locale",
+                            "type": "object"
+                          }
+                        },
+                        "required": [
+                          "key",
+                          "family",
+                          "labels"
+                        ],
+                        "title": "WorkoutKindAddition",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "decided": {
+                      "items": {
+                        "properties": {
+                          "boxes": {
+                            "description": "Boxes that made it a type",
+                            "type": "integer"
+                          },
+                          "decided_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "decision": {
+                            "additionalProperties": true,
+                            "nullable": true,
+                            "type": "object"
+                          },
+                          "family_votes": {
+                            "additionalProperties": {
+                              "type": "integer"
+                            },
+                            "description": "Family => boxes that chose it",
+                            "type": "object"
+                          },
+                          "first_seen_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "label": {
+                            "type": "string"
+                          },
+                          "profile_suggestions": {
+                            "description": "Public page «Πρότεινέ το» discipline suggestions with this name",
+                            "type": "integer"
+                          },
+                          "status": {
+                            "enum": [
+                              "pending",
+                              "adopted",
+                              "aliased",
+                              "kept"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "label",
+                          "status",
+                          "boxes",
+                          "family_votes",
+                          "profile_suggestions",
+                          "first_seen_at"
+                        ],
+                        "title": "WorkoutKindCandidate",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "pending": {
+                      "items": {
+                        "properties": {
+                          "boxes": {
+                            "description": "Boxes that made it a type",
+                            "type": "integer"
+                          },
+                          "decided_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "decision": {
+                            "additionalProperties": true,
+                            "nullable": true,
+                            "type": "object"
+                          },
+                          "family_votes": {
+                            "additionalProperties": {
+                              "type": "integer"
+                            },
+                            "description": "Family => boxes that chose it",
+                            "type": "object"
+                          },
+                          "first_seen_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "label": {
+                            "type": "string"
+                          },
+                          "profile_suggestions": {
+                            "description": "Public page «Πρότεινέ το» discipline suggestions with this name",
+                            "type": "integer"
+                          },
+                          "status": {
+                            "enum": [
+                              "pending",
+                              "adopted",
+                              "aliased",
+                              "kept"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "label",
+                          "status",
+                          "boxes",
+                          "family_votes",
+                          "profile_suggestions",
+                          "first_seen_at"
+                        ],
+                        "title": "WorkoutKindCandidate",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "pending",
+                    "decided",
+                    "additions"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Queue"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Workout type names waiting for the Palee team, and the latest decisions",
+        "tags": [
+          "Platform"
+        ]
+      }
+    },
+    "/api/platform/workout-kinds/{id}/decision": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformWorkoutKindController.decide",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "decision": {
+                    "enum": [
+                      "adopt",
+                      "alias",
+                      "keep"
+                    ],
+                    "type": "string"
+                  },
+                  "family": {
+                    "enum": [
+                      "functional",
+                      "strength",
+                      "gymnastics",
+                      "endurance",
+                      "mind_body",
+                      "combat",
+                      "dance",
+                      "outdoor",
+                      "recovery"
+                    ],
+                    "type": "string"
+                  },
+                  "key": {
+                    "pattern": "^[a-z][a-z0-9_]{1,47}$",
+                    "type": "string"
+                  },
+                  "labels": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "ar": {
+                        "maxLength": 80,
+                        "type": "string"
+                      },
+                      "bg": {
+                        "maxLength": 80,
+                        "type": "string"
+                      },
+                      "de": {
+                        "maxLength": 80,
+                        "type": "string"
+                      },
+                      "el": {
+                        "maxLength": 80,
+                        "type": "string"
+                      },
+                      "en": {
+                        "maxLength": 80,
+                        "type": "string"
+                      },
+                      "es": {
+                        "maxLength": 80,
+                        "type": "string"
+                      },
+                      "fr": {
+                        "maxLength": 80,
+                        "type": "string"
+                      },
+                      "he": {
+                        "maxLength": 80,
+                        "type": "string"
+                      },
+                      "it": {
+                        "maxLength": 80,
+                        "type": "string"
+                      },
+                      "nl": {
+                        "maxLength": 80,
+                        "type": "string"
+                      },
+                      "pt_PT": {
+                        "maxLength": 80,
+                        "type": "string"
+                      },
+                      "ru": {
+                        "maxLength": 80,
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "target": {
+                    "pattern": "^[a-z][a-z0-9_]{1,47}$",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "decision"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "boxes": {
+                      "description": "Boxes that made it a type",
+                      "type": "integer"
+                    },
+                    "decided_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "decision": {
+                      "additionalProperties": true,
+                      "nullable": true,
+                      "type": "object"
+                    },
+                    "family_votes": {
+                      "additionalProperties": {
+                        "type": "integer"
+                      },
+                      "description": "Family => boxes that chose it",
+                      "type": "object"
+                    },
+                    "first_seen_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "profile_suggestions": {
+                      "description": "Public page «Πρότεινέ το» discipline suggestions with this name",
+                      "type": "integer"
+                    },
+                    "status": {
+                      "enum": [
+                        "pending",
+                        "adopted",
+                        "aliased",
+                        "kept"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "label",
+                    "status",
+                    "boxes",
+                    "family_votes",
+                    "profile_suggestions",
+                    "first_seen_at"
+                  ],
+                  "title": "WorkoutKindCandidate",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Decided"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not pending"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invalid"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Decide a name: a new kind for everyone, the same as a kind, or kept for the boxes",
         "tags": [
           "Platform"
         ]

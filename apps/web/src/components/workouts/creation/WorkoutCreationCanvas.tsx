@@ -170,7 +170,7 @@ export function WorkoutCreationCanvas({ embedded = false, initialDraftId = null,
   const setSaveStatus = useWorkoutCreationStore((state) => state.setSaveStatus);
   const setDraftRevision = useWorkoutCreationStore((state) => state.setDraftRevision);
   const title = useWorkoutCreationStore((state) => state.title);
-  const type = useWorkoutCreationStore((state) => state.type);
+  const types = useWorkoutCreationStore((state) => state.types);
   const isTeamWorkout = useWorkoutCreationStore((state) => state.isTeamWorkout);
   const sections = useWorkoutCreationStore((state) => state.sections);
   const toApiPayload = useWorkoutCreationStore((state) => state.toApiPayload);
@@ -417,7 +417,7 @@ export function WorkoutCreationCanvas({ embedded = false, initialDraftId = null,
     return () => {
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     };
-  }, [draftId, isTeamWorkout, sections, setDraftRevision, setSaveStatus, title, toApiPayload, tokens?.access_token, type]);
+  }, [draftId, isTeamWorkout, sections, setDraftRevision, setSaveStatus, title, toApiPayload, tokens?.access_token, types]);
 
   // Leaving the editor or hiding the page sends the change still waiting
   // for the autosave delay instead of dropping it.

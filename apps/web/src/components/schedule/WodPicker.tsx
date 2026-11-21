@@ -14,10 +14,8 @@ import { CollapsibleFilterBar } from "@/components/filters/CollapsibleFilterBar"
 import { resolveWorkoutIcon } from "@/components/workouts/library/library-folders";
 import { Dialog } from "@/components/ui/Dialog";
 import { Select } from "@/components/ui/Select";
-import { semanticLabel } from "@/i18n/presentation";
-import { useWorkoutTypeLabels, workoutTypeOptionGroups } from "@/components/workouts/WorkoutTypeSelect";
+import { useWorkoutTypeLabels, workoutTypeOptionGroups, WorkoutTypesText } from "@/components/workouts/WorkoutTypeSelect";
 import { offeredWorkoutTypeGroups } from "@/lib/workout-types";
-import { useUiTranslations } from "@/i18n/ui";
 import { SPARK_CREATE_STYLE } from "@/lib/spark";
 
 /**
@@ -93,7 +91,6 @@ export function WodPicker({
   variant?: "field" | "actions";
 }) {
   const t = useTranslations("Schedule");
-  const i18n = useUiTranslations();
   const queryClient = useQueryClient();
   const id = useId();
   const labelId = `${id}-label`;
@@ -108,7 +105,7 @@ export function WodPicker({
     enabled: Boolean(token && value),
     queryFn: async (): Promise<WorkoutChoice> => {
       const workout = await fetchAdminWorkout(token, value!);
-      return { id: workout.id, title: workout.title, type: workout.type, icon: workout.icon ?? null };
+      return { id: workout.id, title: workout.title, type: workout.type, types: workout.types ?? [], families: workout.families ?? [], icon: workout.icon ?? null } as WorkoutChoice;
     },
     staleTime: Infinity,
   });
@@ -176,7 +173,7 @@ export function WodPicker({
                   {selected ? selected.title : value ? t("wodPickerChosen") : t("wodPickerNone")}
                 </span>
                 <span className="block truncate text-xs font-normal" style={{ color: "var(--muted)" }}>
-                  {selected ? semanticLabel(selected.type, i18n) : value ? "" : t("wodPickerTapToChoose")}
+                  {selected ? <WorkoutTypesText workout={selected} /> : value ? "" : t("wodPickerTapToChoose")}
                 </span>
               </span>
               {value ? null : (
@@ -267,7 +264,6 @@ function WodPickerDialog({
   onClose: () => void;
 }) {
   const t = useTranslations("Schedule");
-  const i18n = useUiTranslations();
   const typeLabels = useWorkoutTypeLabels();
   const locale = useLocale();
   const listId = useId();
@@ -414,7 +410,7 @@ function WodPickerDialog({
                     selected={(option.choice?.id ?? null) === value}
                     icon={option.choice ? resolveWorkoutIcon(option.choice) : "○"}
                     title={option.choice ? option.choice.title : t("wodPickerNone")}
-                    detail={option.choice ? semanticLabel(option.choice.type, i18n) : noneHint ?? t("wodPickerNoneHint")}
+                    detail={option.choice ? <WorkoutTypesText workout={option.choice} /> : noneHint ?? t("wodPickerNoneHint")}
                     onHover={() => setActive(position)}
                     onChoose={() => onChoose(option.choice)}
                   />
@@ -482,7 +478,7 @@ function ChoiceRow({
   selected: boolean;
   icon: string;
   title: string;
-  detail: string;
+  detail: ReactNode;
   onHover: () => void;
   onChoose: () => void;
 }) {

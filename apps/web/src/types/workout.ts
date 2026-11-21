@@ -168,7 +168,8 @@ export type DraftWorkoutState = {
   draftId: string | null;
   draftRevision: number | null;
   title: string;
-  type: WorkoutType | null;
+  /** ADR-690: every type of the WOD; none is the main one. */
+  types: string[];
   isTeamWorkout: boolean;
   sections: DraftSection[];
 };

@@ -62,6 +62,7 @@ defmodule Palee.Organizations.Ports.OrganizationStore do
   @callback list_organization_memberships(Ecto.UUID.t()) :: [OrganizationMembership.t()]
   @callback list_active_membership_user_ids(Ecto.UUID.t()) :: [Ecto.UUID.t()]
   @callback list_staff_user_ids(Ecto.UUID.t()) :: [Ecto.UUID.t()]
+  @callback list_owner_user_ids(Ecto.UUID.t() | nil) :: [Ecto.UUID.t()]
   @callback list_member_roles(Ecto.UUID.t(), [String.t()] | nil, Ecto.UUID.t() | nil) :: [map()]
   @callback list_membership_organization_ids([Ecto.UUID.t()]) :: %{
               Ecto.UUID.t() => [Ecto.UUID.t()]

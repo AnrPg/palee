@@ -1,0 +1,20 @@
+msgid ""
+msgstr ""
+"Language: bg\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "New workout types to review: %{count}"
+msgstr "Нови видове тренировки за преглед: %{count}"
+
+msgid "Boxes added these workout types. Each one is in its box's list already; decide whether it joins the Palee list for everyone."
+msgstr "Боксове добавиха тези видове тренировки. Всеки вече е в списъка на своя бокс; реши дали да влезе в списъка на Palee за всички."
+
+msgid "«%{label}»: %{boxes} boxes, %{suggestions} public page suggestions"
+msgstr "«%{label}»: %{boxes} бокса, %{suggestions} предложения от публични страници"
+
+msgid "Open the queue"
+msgstr "Отвори опашката"
+
+msgid "You get this email because you review workout types for Palee."
+msgstr "Получаваш този имейл, защото преглеждаш видове тренировки за Palee."

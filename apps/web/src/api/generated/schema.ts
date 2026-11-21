@@ -5296,6 +5296,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/me/workout-kinds": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Labels and families of workout type references */
+        get: operations["PaleeWeb.WorkoutKindLookupController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/memberships": {
         parameters: {
             query?: never;
@@ -13959,6 +13976,58 @@ export interface paths {
         patch: operations["PaleeWeb.AdminWorkoutFolderController.update"];
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/workout-kinds": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's view of every workout type: the Palee additions and its own types */
+        get: operations["PaleeWeb.AdminWorkoutKindController.index"];
+        put?: never;
+        /** Add a workout type to the box (shown again if it was hidden) */
+        post: operations["PaleeWeb.AdminWorkoutKindController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/workout-kinds/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Rename a box type, change its family, or hide/show it */
+        patch: operations["PaleeWeb.AdminWorkoutKindController.update"];
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/workout-kinds/{id}/merge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Merge a box type into another type; the box's WODs move to it */
+        post: operations["PaleeWeb.AdminWorkoutKindController.merge"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/workouts": {
         parameters: {
             query?: never;
@@ -20447,6 +20516,40 @@ export interface paths {
         head?: never;
         /** Mark a suggestion added to its list or declined */
         patch: operations["PaleeWeb.PlatformTagSuggestionController.resolve"];
+        trace?: never;
+    };
+    "/api/platform/workout-kinds": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Workout type names waiting for the Palee team, and the latest decisions */
+        get: operations["PaleeWeb.PlatformWorkoutKindController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/platform/workout-kinds/{id}/decision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Decide a name: a new kind for everyone, the same as a kind, or kept for the boxes */
+        post: operations["PaleeWeb.PlatformWorkoutKindController.decide"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/pr-sharing": {
@@ -28680,6 +28783,20 @@ export interface components {
                 key: string;
             }[];
             services: ("personal_training" | "small_group_training" | "open_gym" | "nutrition_coaching" | "online_coaching" | "corporate")[];
+        };
+        /** BoxWorkoutKind */
+        BoxWorkoutKind: {
+            /** @enum {string} */
+            family: "functional" | "strength" | "gymnastics" | "endurance" | "mind_body" | "combat" | "dance" | "outdoor" | "recovery";
+            /** Format: uuid */
+            id: string;
+            /** @description As the box typed it, in every language */
+            label: string;
+            merged_into: string | null;
+            /** @description A workout type reference: a Palee kind key or `box:<id>` */
+            ref: string;
+            /** @enum {string} */
+            status: "active" | "hidden" | "merged";
         };
         /** BuddyCandidates */
         BuddyCandidates: {
@@ -58373,6 +58490,31 @@ export interface components {
         WorkoutAuthoringSettings: {
             /** @description Off: no assistant; workouts are written in text sections with a timer each */
             wod_assistant_enabled: boolean;
+            /** WorkoutKindCatalogue */
+            workout_kinds: {
+                additions: {
+                    /** @enum {string} */
+                    family: "functional" | "strength" | "gymnastics" | "endurance" | "mind_body" | "combat" | "dance" | "outdoor" | "recovery";
+                    key: string;
+                    /** @description One label per locale */
+                    labels: {
+                        [key: string]: string;
+                    };
+                }[];
+                box: {
+                    /** @enum {string} */
+                    family: "functional" | "strength" | "gymnastics" | "endurance" | "mind_body" | "combat" | "dance" | "outdoor" | "recovery";
+                    /** Format: uuid */
+                    id: string;
+                    /** @description As the box typed it, in every language */
+                    label: string;
+                    merged_into: string | null;
+                    /** @description A workout type reference: a Palee kind key or `box:<id>` */
+                    ref: string;
+                    /** @enum {string} */
+                    status: "active" | "hidden" | "merged";
+                }[];
+            };
             /** @description ADR-275: the workout kinds this gym's editors offer, in catalogue order */
             workout_types: string[];
         };
@@ -58693,6 +58835,7 @@ export interface components {
         };
         /** WorkoutChoice */
         WorkoutChoice: {
+            families?: string[];
             /** Format: uuid */
             folder_id?: string | null;
             icon?: string | null;
@@ -58700,7 +58843,10 @@ export interface components {
             /** Format: uuid */
             id: string;
             title: string;
-            type: string;
+            /** @description Deprecated (ADR-690) */
+            type: string | null;
+            /** @description Workout type references (ADR-690): Palee kind keys or `box:<id>` */
+            types?: string[];
             /** Format: date-time */
             updated_at?: string | null;
         };
@@ -58926,6 +59072,64 @@ export interface components {
             qualities: string[];
             taxonomy_version: number;
             unmatched_exercises: number;
+        };
+        /** WorkoutKindAddition */
+        WorkoutKindAddition: {
+            /** @enum {string} */
+            family: "functional" | "strength" | "gymnastics" | "endurance" | "mind_body" | "combat" | "dance" | "outdoor" | "recovery";
+            key: string;
+            /** @description One label per locale */
+            labels: {
+                [key: string]: string;
+            };
+        };
+        /** WorkoutKindCandidate */
+        WorkoutKindCandidate: {
+            /** @description Boxes that made it a type */
+            boxes: number;
+            /** Format: date-time */
+            decided_at?: string | null;
+            decision?: {
+                [key: string]: unknown;
+            } | null;
+            /** @description Family => boxes that chose it */
+            family_votes: {
+                [key: string]: number;
+            };
+            /** Format: date-time */
+            first_seen_at: string;
+            /** Format: uuid */
+            id: string;
+            label: string;
+            /** @description Public page «Πρότεινέ το» discipline suggestions with this name */
+            profile_suggestions: number;
+            /** @enum {string} */
+            status: "pending" | "adopted" | "aliased" | "kept";
+        };
+        /** WorkoutKindCatalogue */
+        WorkoutKindCatalogue: {
+            additions: {
+                /** @enum {string} */
+                family: "functional" | "strength" | "gymnastics" | "endurance" | "mind_body" | "combat" | "dance" | "outdoor" | "recovery";
+                key: string;
+                /** @description One label per locale */
+                labels: {
+                    [key: string]: string;
+                };
+            }[];
+            box: {
+                /** @enum {string} */
+                family: "functional" | "strength" | "gymnastics" | "endurance" | "mind_body" | "combat" | "dance" | "outdoor" | "recovery";
+                /** Format: uuid */
+                id: string;
+                /** @description As the box typed it, in every language */
+                label: string;
+                merged_into: string | null;
+                /** @description A workout type reference: a Palee kind key or `box:<id>` */
+                ref: string;
+                /** @enum {string} */
+                status: "active" | "hidden" | "merged";
+            }[];
         };
         /** WorkoutLeaderboard */
         WorkoutLeaderboard: {
@@ -85107,6 +85311,52 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.WorkoutKindLookupController.index": {
+        parameters: {
+            query?: {
+                /** @description Comma-separated references (`box:<id>` are looked up; at most 200) */
+                refs?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Catalogue */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        additions: {
+                            /** @enum {string} */
+                            family: "functional" | "strength" | "gymnastics" | "endurance" | "mind_body" | "combat" | "dance" | "outdoor" | "recovery";
+                            key: string;
+                            /** @description One label per locale */
+                            labels: {
+                                [key: string]: string;
+                            };
+                        }[];
+                        box: {
+                            /** @enum {string} */
+                            family: "functional" | "strength" | "gymnastics" | "endurance" | "mind_body" | "combat" | "dance" | "outdoor" | "recovery";
+                            /** Format: uuid */
+                            id: string;
+                            /** @description As the box typed it, in every language */
+                            label: string;
+                            merged_into: string | null;
+                            /** @description A workout type reference: a Palee kind key or `box:<id>` */
+                            ref: string;
+                            /** @enum {string} */
+                            status: "active" | "hidden" | "merged";
+                        }[];
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.OrganizationAccessController.memberships": {
         parameters: {
             query?: never;
@@ -88717,8 +88967,8 @@ export interface operations {
                         count: number;
                     } | {
                         count: number;
-                        /** @enum {string} */
-                        type_filter: "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "recovery";
+                        /** @description A workout type reference (ADR-690): a Palee kind key or `box:<id>` */
+                        type_filter: string;
                     } | {
                         count: number;
                         increment_per_completion: number;
@@ -88847,8 +89097,8 @@ export interface operations {
                         count: number;
                     } | {
                         count: number;
-                        /** @enum {string} */
-                        type_filter: "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "recovery";
+                        /** @description A workout type reference (ADR-690): a Palee kind key or `box:<id>` */
+                        type_filter: string;
                     } | {
                         count: number;
                         increment_per_completion: number;
@@ -128692,6 +128942,229 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminWorkoutKindController.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Catalogue */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        additions: {
+                            /** @enum {string} */
+                            family: "functional" | "strength" | "gymnastics" | "endurance" | "mind_body" | "combat" | "dance" | "outdoor" | "recovery";
+                            key: string;
+                            /** @description One label per locale */
+                            labels: {
+                                [key: string]: string;
+                            };
+                        }[];
+                        box: {
+                            /** @enum {string} */
+                            family: "functional" | "strength" | "gymnastics" | "endurance" | "mind_body" | "combat" | "dance" | "outdoor" | "recovery";
+                            /** Format: uuid */
+                            id: string;
+                            /** @description As the box typed it, in every language */
+                            label: string;
+                            merged_into: string | null;
+                            /** @description A workout type reference: a Palee kind key or `box:<id>` */
+                            ref: string;
+                            /** @enum {string} */
+                            status: "active" | "hidden" | "merged";
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminWorkoutKindController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    family: "functional" | "strength" | "gymnastics" | "endurance" | "mind_body" | "combat" | "dance" | "outdoor" | "recovery";
+                    label: string;
+                };
+            };
+        };
+        responses: {
+            /** @description The type */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** BoxWorkoutKind */
+                        workout_kind: {
+                            /** @enum {string} */
+                            family: "functional" | "strength" | "gymnastics" | "endurance" | "mind_body" | "combat" | "dance" | "outdoor" | "recovery";
+                            /** Format: uuid */
+                            id: string;
+                            /** @description As the box typed it, in every language */
+                            label: string;
+                            merged_into: string | null;
+                            /** @description A workout type reference: a Palee kind key or `box:<id>` */
+                            ref: string;
+                            /** @enum {string} */
+                            status: "active" | "hidden" | "merged";
+                        };
+                    };
+                };
+            };
+            /** @description Invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminWorkoutKindController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    family?: "functional" | "strength" | "gymnastics" | "endurance" | "mind_body" | "combat" | "dance" | "outdoor" | "recovery";
+                    hidden?: boolean;
+                    label?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description The type */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** BoxWorkoutKind */
+                        workout_kind: {
+                            /** @enum {string} */
+                            family: "functional" | "strength" | "gymnastics" | "endurance" | "mind_body" | "combat" | "dance" | "outdoor" | "recovery";
+                            /** Format: uuid */
+                            id: string;
+                            /** @description As the box typed it, in every language */
+                            label: string;
+                            merged_into: string | null;
+                            /** @description A workout type reference: a Palee kind key or `box:<id>` */
+                            ref: string;
+                            /** @enum {string} */
+                            status: "active" | "hidden" | "merged";
+                        };
+                    };
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminWorkoutKindController.merge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description A workout type reference: a Palee kind key or `box:<id>` */
+                    into: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Merged */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** BoxWorkoutKind */
+                        workout_kind: {
+                            /** @enum {string} */
+                            family: "functional" | "strength" | "gymnastics" | "endurance" | "mind_body" | "combat" | "dance" | "outdoor" | "recovery";
+                            /** Format: uuid */
+                            id: string;
+                            /** @description As the box typed it, in every language */
+                            label: string;
+                            merged_into: string | null;
+                            /** @description A workout type reference: a Palee kind key or `box:<id>` */
+                            ref: string;
+                            /** @enum {string} */
+                            status: "active" | "hidden" | "merged";
+                        };
+                        /** @description WODs moved to the other type */
+                        workouts: number;
+                    };
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminWorkoutController.index": {
         parameters: {
             query?: never;
@@ -128801,6 +129274,31 @@ export interface operations {
                     "application/json": {
                         /** @description Off: no assistant; workouts are written in text sections with a timer each */
                         wod_assistant_enabled: boolean;
+                        /** WorkoutKindCatalogue */
+                        workout_kinds: {
+                            additions: {
+                                /** @enum {string} */
+                                family: "functional" | "strength" | "gymnastics" | "endurance" | "mind_body" | "combat" | "dance" | "outdoor" | "recovery";
+                                key: string;
+                                /** @description One label per locale */
+                                labels: {
+                                    [key: string]: string;
+                                };
+                            }[];
+                            box: {
+                                /** @enum {string} */
+                                family: "functional" | "strength" | "gymnastics" | "endurance" | "mind_body" | "combat" | "dance" | "outdoor" | "recovery";
+                                /** Format: uuid */
+                                id: string;
+                                /** @description As the box typed it, in every language */
+                                label: string;
+                                merged_into: string | null;
+                                /** @description A workout type reference: a Palee kind key or `box:<id>` */
+                                ref: string;
+                                /** @enum {string} */
+                                status: "active" | "hidden" | "merged";
+                            }[];
+                        };
                         /** @description ADR-275: the workout kinds this gym's editors offer, in catalogue order */
                         workout_types: string[];
                     };
@@ -128867,6 +129365,7 @@ export interface operations {
                         has_more: boolean;
                         next_offset: number | null;
                         workouts: {
+                            families?: string[];
                             /** Format: uuid */
                             folder_id?: string | null;
                             icon?: string | null;
@@ -128874,7 +129373,10 @@ export interface operations {
                             /** Format: uuid */
                             id: string;
                             title: string;
-                            type: string;
+                            /** @description Deprecated (ADR-690) */
+                            type: string | null;
+                            /** @description Workout type references (ADR-690): Palee kind keys or `box:<id>` */
+                            types?: string[];
                             /** Format: date-time */
                             updated_at?: string | null;
                         }[];
@@ -128907,6 +129409,7 @@ export interface operations {
                         /** Format: date */
                         date: string;
                         newest: {
+                            families?: string[];
                             /** Format: uuid */
                             folder_id?: string | null;
                             icon?: string | null;
@@ -128914,11 +129417,15 @@ export interface operations {
                             /** Format: uuid */
                             id: string;
                             title: string;
-                            type: string;
+                            /** @description Deprecated (ADR-690) */
+                            type: string | null;
+                            /** @description Workout type references (ADR-690): Palee kind keys or `box:<id>` */
+                            types?: string[];
                             /** Format: date-time */
                             updated_at?: string | null;
                         }[];
                         recent: {
+                            families?: string[];
                             /** Format: uuid */
                             folder_id?: string | null;
                             icon?: string | null;
@@ -128926,11 +129433,15 @@ export interface operations {
                             /** Format: uuid */
                             id: string;
                             title: string;
-                            type: string;
+                            /** @description Deprecated (ADR-690) */
+                            type: string | null;
+                            /** @description Workout type references (ADR-690): Palee kind keys or `box:<id>` */
+                            types?: string[];
                             /** Format: date-time */
                             updated_at?: string | null;
                         }[];
                         same_day: {
+                            families?: string[];
                             /** Format: uuid */
                             folder_id?: string | null;
                             icon?: string | null;
@@ -128938,7 +129449,10 @@ export interface operations {
                             /** Format: uuid */
                             id: string;
                             title: string;
-                            type: string;
+                            /** @description Deprecated (ADR-690) */
+                            type: string | null;
+                            /** @description Workout type references (ADR-690): Palee kind keys or `box:<id>` */
+                            types?: string[];
                             /** Format: date-time */
                             updated_at?: string | null;
                         }[];
@@ -129738,6 +130252,8 @@ export interface operations {
                             dsl_version?: 1 | null;
                             equipment?: string[];
                             estimated_duration_seconds?: number | null;
+                            /** @description ADR-690: the families of `types`, each once, in catalogue order */
+                            families?: ("functional" | "strength" | "gymnastics" | "endurance" | "mind_body" | "combat" | "dance" | "outdoor" | "recovery")[];
                             free_text_body?: string | null;
                             free_text_document?: {
                                 [key: string]: unknown;
@@ -130690,6 +131206,8 @@ export interface operations {
                                         rounds?: number | null;
                                         work_seconds?: number | null;
                                     } | null;
+                                    /** @description Workout type references (ADR-690): Palee kind keys or `box:<id>` */
+                                    types?: string[];
                                 }[];
                                 subtitle?: string | null;
                                 timer_config?: {
@@ -130705,13 +131223,18 @@ export interface operations {
                                     rounds?: number | null;
                                     work_seconds?: number | null;
                                 } | null;
+                                /** @description Workout type references (ADR-690): Palee kind keys or `box:<id>` */
+                                types?: string[];
                             }[];
                             /** @enum {string} */
                             status?: "draft" | "published";
                             subtitle?: string | null;
                             tags?: string[];
                             title: string;
-                            type: string;
+                            /** @description Deprecated (ADR-690): the first Palee kind of `types`, else null. Read `types`. */
+                            type: string | null;
+                            /** @description Workout type references (ADR-690): Palee kind keys or `box:<id>` */
+                            types?: string[];
                             /** Format: date-time */
                             updated_at?: string | null;
                             workout_metadata?: {
@@ -131838,6 +132361,8 @@ export interface operations {
                                 rounds?: number | null;
                                 work_seconds?: number | null;
                             } | null;
+                            /** @description Workout type references (ADR-690): Palee kind keys or `box:<id>` */
+                            types?: string[];
                         }[];
                         subtitle?: string | null;
                         timer_config?: {
@@ -131853,12 +132378,19 @@ export interface operations {
                             rounds?: number | null;
                             work_seconds?: number | null;
                         } | null;
+                        /** @description Workout type references (ADR-690): Palee kind keys or `box:<id>` */
+                        types?: string[];
                     }[];
                     subtitle?: string | null;
                     tags?: string[];
                     title?: string | null;
-                    /** @enum {string|null} */
+                    /**
+                     * @description Deprecated (ADR-690): read as `types: [type]`
+                     * @enum {string|null}
+                     */
                     type?: "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "recovery" | null;
+                    /** @description Workout type references (ADR-690): Palee kind keys or `box:<id>` */
+                    types?: string[];
                     workout_metadata?: {
                         [key: string]: unknown;
                     };
@@ -133482,6 +134014,8 @@ export interface operations {
                                 rounds?: number | null;
                                 work_seconds?: number | null;
                             } | null;
+                            /** @description Workout type references (ADR-690): Palee kind keys or `box:<id>` */
+                            types?: string[];
                         }[];
                         subtitle?: string | null;
                         timer_config?: {
@@ -133497,12 +134031,19 @@ export interface operations {
                             rounds?: number | null;
                             work_seconds?: number | null;
                         } | null;
+                        /** @description Workout type references (ADR-690): Palee kind keys or `box:<id>` */
+                        types?: string[];
                     }[];
                     subtitle?: string | null;
                     tags?: string[];
                     title?: string | null;
-                    /** @enum {string|null} */
+                    /**
+                     * @description Deprecated (ADR-690): read as `types: [type]`
+                     * @enum {string|null}
+                     */
                     type?: "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "recovery" | null;
+                    /** @description Workout type references (ADR-690): Palee kind keys or `box:<id>` */
+                    types?: string[];
                     workout_metadata?: {
                         [key: string]: unknown;
                     };
@@ -133855,6 +134396,8 @@ export interface operations {
                             dsl_version?: 1 | null;
                             equipment?: string[];
                             estimated_duration_seconds?: number | null;
+                            /** @description ADR-690: the families of `types`, each once, in catalogue order */
+                            families?: ("functional" | "strength" | "gymnastics" | "endurance" | "mind_body" | "combat" | "dance" | "outdoor" | "recovery")[];
                             free_text_body?: string | null;
                             free_text_document?: {
                                 [key: string]: unknown;
@@ -134807,6 +135350,8 @@ export interface operations {
                                         rounds?: number | null;
                                         work_seconds?: number | null;
                                     } | null;
+                                    /** @description Workout type references (ADR-690): Palee kind keys or `box:<id>` */
+                                    types?: string[];
                                 }[];
                                 subtitle?: string | null;
                                 timer_config?: {
@@ -134822,13 +135367,18 @@ export interface operations {
                                     rounds?: number | null;
                                     work_seconds?: number | null;
                                 } | null;
+                                /** @description Workout type references (ADR-690): Palee kind keys or `box:<id>` */
+                                types?: string[];
                             }[];
                             /** @enum {string} */
                             status?: "draft" | "published";
                             subtitle?: string | null;
                             tags?: string[];
                             title: string;
-                            type: string;
+                            /** @description Deprecated (ADR-690): the first Palee kind of `types`, else null. Read `types`. */
+                            type: string | null;
+                            /** @description Workout type references (ADR-690): Palee kind keys or `box:<id>` */
+                            types?: string[];
                             /** Format: date-time */
                             updated_at?: string | null;
                             workout_metadata?: {
@@ -157687,6 +158237,8 @@ export interface operations {
                             dsl_version?: 1 | null;
                             equipment?: string[];
                             estimated_duration_seconds?: number | null;
+                            /** @description ADR-690: the families of `types`, each once, in catalogue order */
+                            families?: ("functional" | "strength" | "gymnastics" | "endurance" | "mind_body" | "combat" | "dance" | "outdoor" | "recovery")[];
                             free_text_body?: string | null;
                             free_text_document?: {
                                 [key: string]: unknown;
@@ -158639,6 +159191,8 @@ export interface operations {
                                         rounds?: number | null;
                                         work_seconds?: number | null;
                                     } | null;
+                                    /** @description Workout type references (ADR-690): Palee kind keys or `box:<id>` */
+                                    types?: string[];
                                 }[];
                                 subtitle?: string | null;
                                 timer_config?: {
@@ -158654,13 +159208,18 @@ export interface operations {
                                     rounds?: number | null;
                                     work_seconds?: number | null;
                                 } | null;
+                                /** @description Workout type references (ADR-690): Palee kind keys or `box:<id>` */
+                                types?: string[];
                             }[];
                             /** @enum {string} */
                             status?: "draft" | "published";
                             subtitle?: string | null;
                             tags?: string[];
                             title: string;
-                            type: string;
+                            /** @description Deprecated (ADR-690): the first Palee kind of `types`, else null. Read `types`. */
+                            type: string | null;
+                            /** @description Workout type references (ADR-690): Palee kind keys or `box:<id>` */
+                            types?: string[];
                             /** Format: date-time */
                             updated_at?: string | null;
                             workout_metadata?: {
@@ -159268,6 +159827,8 @@ export interface operations {
                             dsl_version?: 1 | null;
                             equipment?: string[];
                             estimated_duration_seconds?: number | null;
+                            /** @description ADR-690: the families of `types`, each once, in catalogue order */
+                            families?: ("functional" | "strength" | "gymnastics" | "endurance" | "mind_body" | "combat" | "dance" | "outdoor" | "recovery")[];
                             free_text_body?: string | null;
                             free_text_document?: {
                                 [key: string]: unknown;
@@ -160220,6 +160781,8 @@ export interface operations {
                                         rounds?: number | null;
                                         work_seconds?: number | null;
                                     } | null;
+                                    /** @description Workout type references (ADR-690): Palee kind keys or `box:<id>` */
+                                    types?: string[];
                                 }[];
                                 subtitle?: string | null;
                                 timer_config?: {
@@ -160235,13 +160798,18 @@ export interface operations {
                                     rounds?: number | null;
                                     work_seconds?: number | null;
                                 } | null;
+                                /** @description Workout type references (ADR-690): Palee kind keys or `box:<id>` */
+                                types?: string[];
                             }[];
                             /** @enum {string} */
                             status?: "draft" | "published";
                             subtitle?: string | null;
                             tags?: string[];
                             title: string;
-                            type: string;
+                            /** @description Deprecated (ADR-690): the first Palee kind of `types`, else null. Read `types`. */
+                            type: string | null;
+                            /** @description Workout type references (ADR-690): Palee kind keys or `box:<id>` */
+                            types?: string[];
                             /** Format: date-time */
                             updated_at?: string | null;
                             workout_metadata?: {
@@ -160586,6 +161154,8 @@ export interface operations {
                             dsl_version?: 1 | null;
                             equipment?: string[];
                             estimated_duration_seconds?: number | null;
+                            /** @description ADR-690: the families of `types`, each once, in catalogue order */
+                            families?: ("functional" | "strength" | "gymnastics" | "endurance" | "mind_body" | "combat" | "dance" | "outdoor" | "recovery")[];
                             free_text_body?: string | null;
                             free_text_document?: {
                                 [key: string]: unknown;
@@ -161538,6 +162108,8 @@ export interface operations {
                                         rounds?: number | null;
                                         work_seconds?: number | null;
                                     } | null;
+                                    /** @description Workout type references (ADR-690): Palee kind keys or `box:<id>` */
+                                    types?: string[];
                                 }[];
                                 subtitle?: string | null;
                                 timer_config?: {
@@ -161553,13 +162125,18 @@ export interface operations {
                                     rounds?: number | null;
                                     work_seconds?: number | null;
                                 } | null;
+                                /** @description Workout type references (ADR-690): Palee kind keys or `box:<id>` */
+                                types?: string[];
                             }[];
                             /** @enum {string} */
                             status?: "draft" | "published";
                             subtitle?: string | null;
                             tags?: string[];
                             title: string;
-                            type: string;
+                            /** @description Deprecated (ADR-690): the first Palee kind of `types`, else null. Read `types`. */
+                            type: string | null;
+                            /** @description Workout type references (ADR-690): Palee kind keys or `box:<id>` */
+                            types?: string[];
                             /** Format: date-time */
                             updated_at?: string | null;
                             workout_metadata?: {
@@ -166831,6 +167408,166 @@ export interface operations {
             };
             /** @description Not pending */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformWorkoutKindController.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Queue */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        additions: {
+                            /** @enum {string} */
+                            family: "functional" | "strength" | "gymnastics" | "endurance" | "mind_body" | "combat" | "dance" | "outdoor" | "recovery";
+                            key: string;
+                            /** @description One label per locale */
+                            labels: {
+                                [key: string]: string;
+                            };
+                        }[];
+                        decided: {
+                            /** @description Boxes that made it a type */
+                            boxes: number;
+                            /** Format: date-time */
+                            decided_at?: string | null;
+                            decision?: {
+                                [key: string]: unknown;
+                            } | null;
+                            /** @description Family => boxes that chose it */
+                            family_votes: {
+                                [key: string]: number;
+                            };
+                            /** Format: date-time */
+                            first_seen_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            label: string;
+                            /** @description Public page «Πρότεινέ το» discipline suggestions with this name */
+                            profile_suggestions: number;
+                            /** @enum {string} */
+                            status: "pending" | "adopted" | "aliased" | "kept";
+                        }[];
+                        pending: {
+                            /** @description Boxes that made it a type */
+                            boxes: number;
+                            /** Format: date-time */
+                            decided_at?: string | null;
+                            decision?: {
+                                [key: string]: unknown;
+                            } | null;
+                            /** @description Family => boxes that chose it */
+                            family_votes: {
+                                [key: string]: number;
+                            };
+                            /** Format: date-time */
+                            first_seen_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            label: string;
+                            /** @description Public page «Πρότεινέ το» discipline suggestions with this name */
+                            profile_suggestions: number;
+                            /** @enum {string} */
+                            status: "pending" | "adopted" | "aliased" | "kept";
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformWorkoutKindController.decide": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    decision: "adopt" | "alias" | "keep";
+                    /** @enum {string} */
+                    family?: "functional" | "strength" | "gymnastics" | "endurance" | "mind_body" | "combat" | "dance" | "outdoor" | "recovery";
+                    key?: string;
+                    labels?: {
+                        ar?: string;
+                        bg?: string;
+                        de?: string;
+                        el?: string;
+                        en?: string;
+                        es?: string;
+                        fr?: string;
+                        he?: string;
+                        it?: string;
+                        nl?: string;
+                        pt_PT?: string;
+                        ru?: string;
+                    };
+                    target?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Decided */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Boxes that made it a type */
+                        boxes: number;
+                        /** Format: date-time */
+                        decided_at?: string | null;
+                        decision?: {
+                            [key: string]: unknown;
+                        } | null;
+                        /** @description Family => boxes that chose it */
+                        family_votes: {
+                            [key: string]: number;
+                        };
+                        /** Format: date-time */
+                        first_seen_at: string;
+                        /** Format: uuid */
+                        id: string;
+                        label: string;
+                        /** @description Public page «Πρότεινέ το» discipline suggestions with this name */
+                        profile_suggestions: number;
+                        /** @enum {string} */
+                        status: "pending" | "adopted" | "aliased" | "kept";
+                    };
+                };
+            };
+            /** @description Not pending */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Invalid */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };

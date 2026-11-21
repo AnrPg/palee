@@ -11,6 +11,7 @@ defmodule Palee.Gamification.Commands.RecordWorkoutCompletion do
 
   alias Palee.Gamification.{GamificationSetting, GamificationStore}
   alias Palee.TimeZones.ZonedTime
+  alias Palee.Workouts.Domain.WorkoutKinds
 
   def call(
         %{
@@ -62,10 +63,17 @@ defmodule Palee.Gamification.Commands.RecordWorkoutCompletion do
         today
       )
 
+    # ADR-690: a WOD has one or more types; it counts once per type and once
+    # per family.
     type_counts = workout_type_counts(completed_executions, workout_lookup)
-    current_type = get_workout_type(current_execution, workout_lookup)
+    family_counts = workout_family_counts(completed_executions, workout_lookup)
+    current_types = get_workout_types(current_execution, workout_lookup)
     total_prev = max(0, length(completed_executions) - 1)
-    prev_type_count = max(0, Map.get(type_counts, current_type, 0) - 1)
+
+    prev_type_count =
+      current_types
+      |> Enum.map(&max(0, Map.get(type_counts, &1, 0) - 1))
+      |> Enum.min(fn -> 0 end)
 
     GamificationStore.transaction(fn ->
       existing_stats = GamificationStore.lock_user_stats(user_id) || %{longest_streak: 0}
@@ -82,7 +90,8 @@ defmodule Palee.Gamification.Commands.RecordWorkoutCompletion do
         )
 
       completion_facts = %{
-        workout_type: current_type,
+        workout_type: List.first(current_types),
+        workout_types: current_types,
         pr_count: length(pr_scores),
         scale_level_slug: current_execution.scale_level_slug,
         consistency_score: streaks.consistency_score,
@@ -127,7 +136,7 @@ defmodule Palee.Gamification.Commands.RecordWorkoutCompletion do
            {:ok, _stats} <- GamificationStore.upsert_user_stats(stats),
            {:ok, _badges} <-
              persist_achievements(
-               AchievementRules.milestone_badges(stats, type_counts),
+               AchievementRules.milestone_badges(stats, family_counts),
                user_id,
                organization_id,
                completed_at
@@ -310,12 +319,18 @@ defmodule Palee.Gamification.Commands.RecordWorkoutCompletion do
     {:cont, {:ok, %{completions: acc.completions, increments: acc.increments ++ new_increment}}}
   end
 
-  defp get_workout_type(execution, workout_lookup) do
-    case workout_lookup[execution.master_workout_id] do
-      %{type: type} when is_binary(type) -> type
-      _ -> nil
-    end
+  defp get_workout_types(execution, workout_lookup) do
+    workout_types(workout_lookup[execution.master_workout_id])
   end
+
+  # The WOD's type references; an old map with only `type` counts as one.
+  defp workout_types(%{types: [_ | _] = types}), do: Enum.map(types, &to_string/1)
+  defp workout_types(%{type: type}) when is_binary(type) and type != "", do: [type]
+  defp workout_types(%{type: type}) when is_atom(type) and not is_nil(type), do: [to_string(type)]
+  defp workout_types(_workout), do: []
+
+  defp workout_families(%{families: [_ | _] = families}), do: families
+  defp workout_families(workout), do: WorkoutKinds.families(workout_types(workout))
 
   defp team_workout_count_for_challenge(challenge, completed_executions, workout_lookup) do
     completed_executions
@@ -380,11 +395,24 @@ defmodule Palee.Gamification.Commands.RecordWorkoutCompletion do
   end
 
   defp workout_type_counts(executions, workout_lookup) do
-    executions
-    |> Enum.reduce(%{}, fn execution, acc ->
+    Enum.reduce(executions, %{}, fn execution, acc ->
+      workout_lookup[execution.master_workout_id]
+      |> workout_types()
+      |> Enum.uniq()
+      |> Enum.reduce(acc, &Map.update(&2, &1, 1, fn count -> count + 1 end))
+    end)
+  end
+
+  defp workout_family_counts(executions, workout_lookup) do
+    Enum.reduce(executions, %{}, fn execution, acc ->
       case workout_lookup[execution.master_workout_id] do
-        %{type: type} when is_binary(type) -> Map.update(acc, type, 1, &(&1 + 1))
-        _ -> acc
+        nil ->
+          acc
+
+        workout ->
+          workout
+          |> workout_families()
+          |> Enum.reduce(acc, &Map.update(&2, &1, 1, fn count -> count + 1 end))
       end
     end)
   end

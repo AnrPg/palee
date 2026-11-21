@@ -15195,6 +15195,47 @@
       "title": "Tipi di allenamento",
       "description": "I tipi che i coach possono scegliere per un WOD",
       "hint": "Tocca un tipo per nasconderlo negli editor dei WOD. Un WOD che ha già un tipo nascosto lo mantiene."
+    },
+    "boxType": "Tipo del box",
+    "field": {
+      "newType": "+ Nuovo tipo «{name}»",
+      "newGroup": "Nuovo tipo",
+      "remove": "Rimuovi: {name}",
+      "listLabel": "Tipi di allenamento",
+      "searchMore": "Cerca un altro tipo",
+      "nothing": "Nessun tipo trovato",
+      "addMore": "+ Un altro tipo",
+      "fromSections": "Presi dai tipi delle sezioni.",
+      "sectionPlaceholder": "Tipo della sezione (facoltativo)"
+    },
+    "create": {
+      "title": "Nuovo tipo di allenamento",
+      "hint": "Entra subito nella lista del box. Il team Palee lo vede e può aggiungerlo per tutti.",
+      "name": "Nome",
+      "didYouMean": "Forse intendevi…",
+      "family": "Famiglia",
+      "familyHint": "Da lei prende colore e icona, e conta in statistiche e badge.",
+      "cancel": "Annulla",
+      "submit": "Crea"
+    },
+    "box": {
+      "title": "Tipi del box",
+      "hint": "Tipi creati dai vostri coach. Rinominali, cambia famiglia, nascondili o uniscili a un altro.",
+      "empty": "Quando un coach crea un suo tipo in un WOD, compare qui.",
+      "rename": "Nome del tipo",
+      "family": "Famiglia",
+      "hide": "Nascondi",
+      "show": "Mostra",
+      "hiddenNote": "Nascosto nella creazione dei WOD",
+      "merge": "Unisci a un altro tipo",
+      "mergeInto": "Unisci a…",
+      "mergeQuestion": "I WOD con «{name}» avranno l’altro tipo. Continuare?",
+      "mergeConfirm": "Unisci"
+    },
+    "adopted": {
+      "title": "Il team Palee ha esaminato il vostro tipo",
+      "bodyAdopt": "«{name}» ora è un tipo per tutti. {count, plural, =0 {I vostri WOD sono già aggiornati.} one {# WOD è cambiato automaticamente.} other {# WOD sono cambiati automaticamente.}}",
+      "bodyAlias": "«{name}» ora è il tipo «{target}». {count, plural, =0 {I vostri WOD sono già aggiornati.} one {# WOD è cambiato automaticamente.} other {# WOD sono cambiati automaticamente.}}"
     }
   },
   "Equipment": {
@@ -20420,5 +20461,33 @@
     "removing": "Rimozione…",
     "removed": "«{package}» è stato rimosso a {name}.",
     "undo": "Annulla"
+  },
+  "PlatformWorkoutKinds": {
+    "back": "Organizzazioni",
+    "title": "Tipi di allenamento",
+    "subtitle": "Nomi di tipi creati dai box, insieme alle discipline «Proponila» della pagina pubblica. Un nome, una riga.",
+    "forbidden": "Solo il team Palee vede questa pagina.",
+    "loadError": "L’elenco non si è caricato.",
+    "loading": "Caricamento…",
+    "empty": "Nessun nome in attesa.",
+    "pending": "In attesa",
+    "decided": "Decisi",
+    "status_pending": "In attesa",
+    "status_adopted": "Nuovo tipo: {target}",
+    "status_aliased": "Uguale a {target}",
+    "status_kept": "Resta ai box",
+    "boxes": "{count, plural, one {# box} other {# box}}",
+    "suggestions": "{count, plural, one {# proposta di disciplina} other {# proposte di disciplina}}",
+    "votes": "{family}: {count}",
+    "keep": "Resta ai box",
+    "alias": "Uguale a…",
+    "aliasTarget": "Tipo esistente",
+    "aliasConfirm": "Unisci",
+    "adopt": "Nuovo tipo per tutti",
+    "key": "Chiave",
+    "keyHint": "Minuscole latine, cifre e _. Non cambia dopo.",
+    "family": "Famiglia",
+    "names": "Nome in ogni lingua",
+    "adoptConfirm": "Aggiungi per tutti"
   }
 }

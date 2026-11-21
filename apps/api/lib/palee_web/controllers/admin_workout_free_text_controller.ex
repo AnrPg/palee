@@ -176,9 +176,10 @@ defmodule PaleeWeb.AdminWorkoutFreeTextController do
                items: %Schema{type: :string},
                description:
                  "ADR-275: the workout kinds this gym's editors offer, in catalogue order"
-             }
+             },
+             workout_kinds: PaleeWeb.Schemas.WorkoutKinds.catalogue()
            },
-           required: [:wod_assistant_enabled, :workout_types]
+           required: [:wod_assistant_enabled, :workout_types, :workout_kinds]
          }}
     ]
   )
@@ -240,7 +241,12 @@ defmodule PaleeWeb.AdminWorkoutFreeTextController do
 
     json(conn, %{
       wod_assistant_enabled: Organizations.wod_assistant_enabled?(context),
-      workout_types: Organizations.workout_types(context)
+      workout_types: Organizations.workout_types(context),
+      # ADR-690: the Palee additions and the box's own types.
+      workout_kinds:
+        PaleeWeb.Schemas.WorkoutKinds.render_catalogue(
+          Palee.Application.WorkoutKinds.catalogue(context)
+        )
     })
   end
 

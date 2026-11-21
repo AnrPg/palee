@@ -22,7 +22,10 @@ const api = vi.hoisted(() => ({
 }));
 
 vi.mock("@/api/workouts", () => api);
-vi.mock("@/components/session-provider", () => ({ useSession: () => ({ tokens: { access_token: "token" } }) }));
+vi.mock("@/components/session-provider", () => {
+  const session = { tokens: { access_token: "token" } };
+  return { useSession: () => session, useOptionalSession: () => session };
+});
 vi.mock("@/i18n/ui", () => ({ useUiTranslations: () => (key: string) => key }));
 vi.mock("@/components/wod-goals/WodGoalsEditorPanel", () => ({ WodGoalsEditorPanel: () => null }));
 // The editor UI is its own module (plan-editor/); here only its store matters.
@@ -99,7 +102,7 @@ describe("StructuredPlanWorkoutEditor", () => {
     expect(id).toBe("d1");
     expect(payload).toMatchObject({
       title: "Δευτέρα",
-      type: "strength",
+      types: ["strength"],
       authoring_mode: "structured_plan",
       expected_source_revision: 4,
       workout_metadata: { plan_note: "Ζέσταμα" },
@@ -156,7 +159,7 @@ describe("StructuredPlanWorkoutEditor", () => {
     expect(handleRef.current?.hasContent()).toBe(true);
     await act(() => handleRef.current!.switchToText());
     const payload = api.updateDraftWorkout.mock.calls.at(-1)![2];
-    expect(payload).toMatchObject({ authoring_mode: "free_text", type: "strength" });
+    expect(payload).toMatchObject({ authoring_mode: "free_text", types: ["strength"] });
     expect(payload.free_text_body).toBe(
       ["Ζέσταμα", "", "Γύροι · For Time", "6 γύροι · όριο 20′", "Γύρος 1, 3, 5:", "  Row 500 m", "  Burpee 15", "Γύρος 2, 4, 6:", "  Run 400 m", "  Wall Ball 20", "Σκορ: Χρόνος"].join("\n"),
     );

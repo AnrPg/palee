@@ -9,12 +9,12 @@ type Translate = (key: string, values?: Record<string, string | number>) => stri
 export type PublishProblem = { message: string; cell: GridCell | null };
 
 export function structuredProblems(
-  state: Pick<DraftWorkoutState, "title" | "type" | "sections">,
+  state: Pick<DraftWorkoutState, "title" | "types" | "sections">,
   i18n: Translate,
 ): PublishProblem[] {
   const problems: PublishProblem[] = [];
   if (!state.title.trim()) problems.push({ message: i18n("missingWorkoutTitlebb8efa0"), cell: { rowKey: "w", col: "title" } });
-  if (!state.type) problems.push({ message: i18n("missingWorkoutTypedd14f84"), cell: { rowKey: "w", col: "type" } });
+  if (state.types.length === 0) problems.push({ message: i18n("missingWorkoutTypedd14f84"), cell: { rowKey: "w", col: "type" } });
   if (state.sections.length === 0) problems.push({ message: i18n("addAtLeastOneSectioncf462d3"), cell: null });
 
   state.sections.forEach((section, sectionIndex) => {

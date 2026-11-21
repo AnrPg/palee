@@ -91,6 +91,8 @@ defmodule Palee.Organizations.OrganizationStore do
 
   @impl true
   def list_staff_user_ids(organization_id), do: impl().list_staff_user_ids(organization_id)
+  @impl true
+  def list_owner_user_ids(organization_id), do: impl().list_owner_user_ids(organization_id)
 
   @impl true
   def list_member_roles(organization_id, roles, user_id),
