@@ -128,9 +128,13 @@ defmodule Palee.Application.CheckInActions do
     end
   end
 
-  defp undo_trial_attend(_context, nil, _trial_was), do: :ok
+  @doc """
+  A trial seat whose «Ήρθε» was taken back: the trial goes back from
+  attended to `trial_was` (`booked` when unknown).
+  """
+  def undo_trial_attend(_context, nil, _trial_was), do: :ok
 
-  defp undo_trial_attend(%{organization_id: organization_id}, booking_id, trial_was) do
+  def undo_trial_attend(%{organization_id: organization_id}, booking_id, trial_was) do
     box = %{organization_id: organization_id}
     previous = if trial_was in ["booked", "no_show"], do: trial_was, else: "booked"
 

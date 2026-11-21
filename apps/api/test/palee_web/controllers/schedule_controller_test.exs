@@ -204,6 +204,14 @@ defmodule PaleeWeb.ScheduleControllerTest do
     member_slot = schedule_slot.(member_conn)
     assert member_slot["bookings"] == []
     assert member_slot["current_user_booking"]["attendance_status"] == "attended"
+
+    # Staff take «Ήρθε» back: the booking stays, without attendance.
+    attendance_path =
+      "/api/org/#{slug}/admin/schedule/slots/#{slot["id"]}/attendance/#{member.id}"
+
+    assert admin_conn |> recycle() |> delete(attendance_path) |> response(204) == ""
+    assert %{"attendance_status" => nil, "status" => "approved"} = roster_entry.()
+    assert admin_conn |> recycle() |> delete(attendance_path) |> json_response(404)
   end
 
   test "the day view (days=1) lists only that day's classes", %{conn: conn} do

@@ -8,12 +8,14 @@ import type { ScheduleSlot } from "@/api/schedule";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { localizeError } from "@/i18n/presentation";
 import { useUiTranslations } from "@/i18n/ui";
+import { SPARK_ACTIVE_STYLE } from "@/lib/spark";
 
 /**
  * ADR-230, staff: where the class's WOD comes from. An inherited WOD says
  * so (it changes with the day's WOD); a class with its own WOD on a day that
  * has one names the day's WOD and offers «Επαναφορά στο WOD ημέρας». Shows
- * nothing when the day has no WOD for this class.
+ * nothing when the day has no WOD for this class. Sits at the top of the
+ * class page's WOD card.
  */
 export function ClassDayWorkoutNote({
   slot,
@@ -48,11 +50,9 @@ export function ClassDayWorkoutNote({
 
   if (slot.workout_source === "day") {
     return (
-      <p className="mt-3 flex flex-wrap items-center gap-2 text-xs" style={{ color: "var(--muted)" }} data-testid="class-day-wod-note">
-        <span
-          className="rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em]"
-          style={{ background: "color-mix(in srgb, var(--primary) 12%, transparent)", color: "var(--primary)" }}
-        >
+      <p className="flex flex-wrap items-center gap-2 text-xs" style={{ color: "var(--muted)" }} data-testid="class-day-wod-note">
+        {/* Spark: a WOD tag (BRAND.md). */}
+        <span className="rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em]" style={SPARK_ACTIVE_STYLE}>
           {t("dayWodLabel")}
         </span>
         {t("slotFromDayWod")}
@@ -63,7 +63,7 @@ export function ClassDayWorkoutNote({
   if (slot.workout_source !== "class" || !dayWorkout) return null;
 
   return (
-    <div className="mt-3 space-y-2" data-testid="class-day-wod-note">
+    <div className="space-y-2" data-testid="class-day-wod-note">
       <p className="flex flex-wrap items-center gap-2 text-xs" style={{ color: "var(--muted)" }}>
         <span>{t("slotOwnWod", { title: dayWorkout.workout?.title ?? "WOD" })}</span>
         {isPast ? null : (

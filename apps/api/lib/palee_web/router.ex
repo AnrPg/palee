@@ -1723,6 +1723,12 @@ defmodule PaleeWeb.Router do
       :record_attendance
     )
 
+    delete(
+      "/schedule/slots/:slot_id/attendance/:user_id",
+      AdminScheduleController,
+      :remove_attendance
+    )
+
     get("/athletes/:id/drill-down", AdminCoachingController, :drill_down)
     get("/finance/summary", AdminFinanceController, :summary)
     # ADR-240–242: legal identity, fiscal documents, journal, closings.

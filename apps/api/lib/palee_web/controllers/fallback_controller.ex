@@ -3598,6 +3598,7 @@ defmodule PaleeWeb.FallbackController do
     check_in_not_open: {:conflict, "Check-in opens 30 minutes before the class"},
     check_in_closed: {:conflict, "The class has ended"},
     attendance_already_recorded: {:conflict, "Your attendance was already recorded"},
+    attendance_not_removable: {:conflict, "Only «Here» can be taken back"},
     attendance_requires_approved_booking: {:conflict, "Only an approved booking can check in"},
     add_on_base_required:
       {:unprocessable_entity, "The member needs a compatible membership first"},

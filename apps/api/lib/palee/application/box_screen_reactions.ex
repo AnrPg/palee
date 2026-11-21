@@ -19,6 +19,9 @@ defmodule Palee.Application.BoxScreenReactions do
   def handle_event(:attendance_recorded, %{organization_id: organization_id} = event),
     do: BoxScreenSignals.hint(organization_id, "attendance", event[:scheduled_class_id])
 
+  def handle_event(:attendance_removed, %{organization_id: organization_id} = event),
+    do: BoxScreenSignals.hint(organization_id, "attendance", event[:scheduled_class_id])
+
   def handle_event(:class_cancelled, %{organization_id: organization_id} = event),
     do: BoxScreenSignals.hint(organization_id, "class_cancelled", event[:scheduled_class_id])
 

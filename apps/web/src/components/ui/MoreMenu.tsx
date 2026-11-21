@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, type CSSProperties } from "react";
 
 import { Popover } from "./Popover";
 
@@ -27,6 +27,7 @@ export function MoreMenu({
   testId,
   variant = "plain",
   showHints = false,
+  trigger,
 }: {
   /** Accessible name of the ⋯ button and of the menu. */
   label: string;
@@ -36,6 +37,11 @@ export function MoreMenu({
   variant?: "plain" | "pill" | "tile";
   /** Show each item's `hint` under its label (a screen's «?» help mode). */
   showHints?: boolean;
+  /**
+   * A worded button instead of ⋯ that opens the same menu (a page's bottom
+   * bar offering «Επεξεργασία τμήματος» next to the ⋯ at its top).
+   */
+  trigger?: { text: string; className: string; style: CSSProperties };
 }) {
   const [open, setOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -72,27 +78,31 @@ export function MoreMenu({
       <button
         ref={buttonRef}
         type="button"
-        aria-label={label}
+        aria-label={trigger ? undefined : label}
         aria-haspopup="menu"
         aria-expanded={open}
         data-testid={testId}
         onClick={() => setOpen((value) => !value)}
         className={
-          variant === "pill"
+          trigger
+            ? trigger.className
+            : variant === "pill"
             ? "flex h-10 min-w-10 items-center justify-center rounded-full px-3 text-lg font-bold leading-none"
             : variant === "tile"
               ? "flex h-full min-h-14 w-14 items-center justify-center rounded-2xl text-xl font-bold"
               : "flex h-11 w-11 items-center justify-center rounded-full text-lg font-bold"
         }
         style={
-          variant === "pill"
+          trigger
+            ? trigger.style
+            : variant === "pill"
             ? { background: "var(--card)", color: "var(--text-soft)" }
             : variant === "tile"
               ? { background: "var(--panel)", border: "1px solid var(--border)", color: "var(--text)" }
               : { color: "var(--dim)" }
         }
       >
-        <span aria-hidden="true">⋯</span>
+        {trigger ? trigger.text : <span aria-hidden="true">⋯</span>}
       </button>
       <Popover
         anchorRef={buttonRef}

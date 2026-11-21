@@ -296676,6 +296676,51 @@
       }
     },
     "/api/org/{organization_slug}/admin/schedule/slots/{slot_id}/attendance/{user_id}": {
+      "delete": {
+        "callbacks": {},
+        "description": "The attendance record goes and the booking stays. A visit staff's «Here» used is held again.",
+        "operationId": "PaleeWeb.AdminScheduleController.remove_attendance",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slot_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "user_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Attendance taken back"
+          },
+          "404": {
+            "description": "No attendance recorded"
+          },
+          "409": {
+            "description": "Only «Here» can be taken back"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Take back a «Here» (attended) for a user in a class slot",
+        "tags": [
+          "Admin Schedule"
+        ]
+      },
       "post": {
         "callbacks": {},
         "operationId": "PaleeWeb.AdminScheduleController.record_attendance",

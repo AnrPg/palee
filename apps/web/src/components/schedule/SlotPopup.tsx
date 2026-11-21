@@ -7,7 +7,6 @@
 import {useUiTranslations} from "@/i18n/ui";
 import { localizeError } from "@/i18n/presentation";
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 
 import { ApiError } from "@/api/client";
@@ -23,26 +22,14 @@ import {
 } from "@/api/schedule";
 import { downloadIcsEvent } from "@/lib/ics";
 import { WorkoutPreviewDetail, type PreviewSection } from "@/components/workouts/WorkoutPreviewDetail";
-import { WorkoutEditModal } from "@/components/workouts/WorkoutEditModal";
 import { workoutTypeColor } from "@/lib/workout-colors";
-import { ClassStateNotice, classActionsFor } from "@/components/schedule/ClassState";
-import { ClassWorkoutNotice, classWorkoutNoticeKind } from "@/components/schedule/ClassWorkoutNotice";
-import { ClassDayWorkoutNote } from "@/components/schedule/ClassDayWorkoutNote";
+import { ClassStateNotice } from "@/components/schedule/ClassState";
 import type { DayWorkout } from "@/api/day-workouts";
 import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
 import Link from "next/link";
-import {
-  InjuryWarningBadge,
-  MyInjuryWarningsPanel,
-  RosterInjuryWarningsPanel,
-  useSlotInjuryWarnings,
-} from "@/components/wellbeing/InjuryWarnings";
-import { warningLevelFor, warningLevelsByUser } from "@/lib/injury-warnings";
-import { AdminSlotRoster } from "@/components/schedule/AdminSlotRoster";
-import { fetchClassVisitBadges, visitBadgesKey } from "@/api/training-floor";
-import { FeltSummaryCard } from "@/components/wod-goals/FeltSummaryCard";
+import { MyInjuryWarningsPanel } from "@/components/wellbeing/InjuryWarnings";
 import { GuestBookingPanel } from "@/components/schedule/GuestBookingPanel";
-import { ClassVariationDialog } from "@/components/schedule/ClassVariationDialog";
+import { StaffClassPage } from "@/components/schedule/staff-class/StaffClassPage";
 import {
   isEventSlot,
   localizeMemberBookingError,
@@ -57,10 +44,7 @@ import { formatMinutes } from "@/lib/duration-parts";
 import { YourTime } from "@/components/zoned-time";
 import { ClassRoomDialog } from "@/components/spaces/ClassRoomDialog";
 import { Dialog } from "@/components/ui/Dialog";
-import { StaffWodGoalsStrip } from "@/components/wod-goals/WodGoalsStrip";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
-import { MoreMenu } from "@/components/ui/MoreMenu";
-import { ClassNoticeDialog } from "@/components/channels/ClassNoticeDialog";
 
 // ADR-179: on the gym's clock (`zone`), its city added when the viewer's differs.
 function formatDateTime(locale: string, isoString: string, zone: string | null) {
@@ -105,44 +89,57 @@ type SlotPopupProps = {
   dayWorkout?: DayWorkout | null;
 };
 
-export function SlotPopup({
+/**
+ * A class's page. Staff and coaches get their own page (StaffClassPage, ANR
+ * pick A of 2026-11-21); members keep the booking page below.
+ */
+export function SlotPopup(props: SlotPopupProps) {
+  if (props.isAdmin) {
+    return (
+      <StaffClassPage
+        slot={props.slot}
+        timeZone={props.timeZone ?? null}
+        accessToken={props.accessToken}
+        onClose={props.onClose}
+        onEdit={props.onEdit}
+        onDuplicate={props.onDuplicate}
+        onDelete={props.onDelete}
+        onClassAction={props.onClassAction}
+        onApproveBooking={props.onApproveBooking}
+        onRejectBooking={props.onRejectBooking}
+        onSlotChanged={props.onSlotChanged}
+        coaches={props.coaches}
+        canProgramVariations={props.canProgramVariations ?? false}
+        dayWorkout={props.dayWorkout ?? null}
+      />
+    );
+  }
+  return <MemberClassPage {...props} />;
+}
+
+function MemberClassPage({
   slot,
   timeZone = null,
-  isAdmin,
   accessToken,
   onClose,
   onBook,
-  onEdit,
-  onDuplicate,
-  onDelete,
-  onClassAction,
-  onApproveBooking,
-  onRejectBooking,
   onCancelBooking,
   onSlotChanged,
   locations,
   coaches,
   guestsIncluded = false,
-  canProgramVariations = false,
-  dayWorkout = null,
 }: SlotPopupProps) {
   const i18n = useUiTranslations();
   const t = useTranslations("Schedule");
   const spaceT = useTranslations("Spaces");
-  const tSms = useTranslations("Sms");
   const [roomOpen, setRoomOpen] = useState(false);
-  // W3 screen 4 Γ (ADR-385): «Ενημέρωση συμμετεχόντων», the app first, SMS for the rest.
-  const [noticeOpen, setNoticeOpen] = useState(false);
   const rulesT = useTranslations("BookingRules");
   const locale = useLocale();
   const organizationSlug = useOrganizationSlug();
   const isPast = new Date(slot.scheduled_at) <= new Date();
   const memberState = memberSlotState(slot);
-  const canBook = !isAdmin && memberState.kind === "bookable";
-  const canJoinWaitlist = !isAdmin && memberState.kind === "waitlist_open";
-  // ADR-200: pause/resume, cancel/restore and delete apply to upcoming classes only.
-  const stateActions = isAdmin && onClassAction && !isPast ? classActionsFor(slot) : [];
-  const workoutNotice = classWorkoutNoticeKind(slot);
+  const canBook = memberState.kind === "bookable";
+  const canJoinWaitlist = memberState.kind === "waitlist_open";
   const locationName = slotLocationName(slot, locations);
   const coachName = slotCoachName(slot, coaches);
   const creditCost = slotCreditCost(slot);
@@ -154,32 +151,7 @@ export function SlotPopup({
   const [messageError, setMessageError] = useState<string | null>(null);
   const [cancelling, setCancelling] = useState(false);
   const [cancelError, setCancelError] = useState<string | null>(null);
-  const [editWorkoutOpen, setEditWorkoutOpen] = useState(false);
-  const [variationOpen, setVariationOpen] = useState(false);
   const [activeScale, setActiveScale] = useState<string | null>(null);
-  // ADR-124: informational injury warnings for booked members (staff) and
-  // for the member's own booking. Never blocks booking or attendance.
-  const hasBookedMembers = slot.bookings.some(
-    (booking) => booking.status === "approved" || booking.status === "pending",
-  );
-  const slotInjuryWarnings = useSlotInjuryWarnings(
-    accessToken,
-    slot.id,
-    isAdmin && Boolean(slot.workout) && hasBookedMembers,
-  );
-  const injuryLevels = warningLevelsByUser(slotInjuryWarnings.data?.athletes ?? []);
-  // ADR-359 (ANR mockup e1 B): who is new in this class. A role without the
-  // right (403) simply sees no badges.
-  const visitBadges = useQuery({
-    queryKey: visitBadgesKey(slot.id),
-    queryFn: () => fetchClassVisitBadges(accessToken, slot.id),
-    enabled: isAdmin && hasBookedMembers && Boolean(accessToken),
-    retry: false,
-    staleTime: 60_000,
-  });
-  const bookingNames = new Map(
-    slot.bookings.map((booking) => [booking.user_id, booking.user_nickname ?? booking.user_id]),
-  );
   const ownBookingActive =
     slot.current_user_booking?.status === "approved" || slot.current_user_booking?.status === "pending";
 
@@ -278,18 +250,13 @@ export function SlotPopup({
           : i18n("bookingIsUnavailableForThisSlot8a07037");
 
   // ADR-226: how long a booking request waits for staff, in words.
-  const approvalWaitValue = slot.auto_approve
-    ? rulesT("answerInstant")
-    : slot.booking_timeout_minutes === null
-      ? rulesT("untilStart")
-      : formatMinutes(slot.booking_timeout_minutes, locale);
   const approvalWaitChip =
     slot.booking_timeout_minutes === null
       ? rulesT("answerByStart")
       : rulesT("answerWithin", { duration: formatMinutes(slot.booking_timeout_minutes, locale) });
   const typeColor = workoutTypeColor(slot.class_type.slug);
 
-  // ADR-202: the space of the class; staff also see a clash with another class or a closure.
+  // ADR-202: the space of the class (staff also see clashes, on their own page).
   const spaceChips =
     slot.space || slot.space_unavailable || slot.space_overlap ? (
       <>
@@ -379,9 +346,8 @@ export function SlotPopup({
             </p>
           </div>
 
-          {/* Members keep a quiet calendar button; staff find it under ⋯. A
-              cancelled class has nothing to add. */}
-          {!isAdmin && !slot.cancelled_at ? (
+          {/* A quiet calendar button; a cancelled class has nothing to add. */}
+          {!slot.cancelled_at ? (
             <button
               className="mt-3 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-semibold transition-colors"
               style={{ border: "1px solid var(--border)", color: "var(--text-soft)" }}
@@ -392,125 +358,10 @@ export function SlotPopup({
             </button>
           ) : null}
 
-          {isAdmin ? (
-            <ClassDayWorkoutNote
-              slot={slot}
-              dayWorkout={dayWorkout}
-              accessToken={accessToken}
-              isPast={isPast}
-              onChanged={onSlotChanged}
-            />
-          ) : null}
+          <ClassStateNotice slot={slot} className="mt-4" />
 
-          {/* The state carries its own way back (restore, resume) for staff. */}
-          <ClassStateNotice
-            slot={slot}
-            className="mt-4"
-            onAction={stateActions.some((action) => action === "restore" || action === "resume") ? onClassAction : undefined}
-          />
-
-          {/* Class actions: only Edit stays in view; the rest sit behind ⋯ so
-              the row never overflows on a phone or in a long language.
-              Destructive ones come last. */}
-          {isAdmin ? (
-            <div className="mt-4 flex flex-wrap items-center gap-2" data-testid="class-actions">
-              <button
-                className="whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition-colors"
-                style={{ background: "var(--text)", color: "var(--bg)" }}
-                onClick={onEdit}
-                type="button"
-              >
-                {i18n("editSlot4754d1f")}
-              </button>
-              <MoreMenu
-                variant="pill"
-                label={t("classMoreActions")}
-                testId="class-more-actions"
-                items={[
-                  ...(onDuplicate ? [{ label: t("duplicateClass"), onSelect: onDuplicate }] : []),
-                  ...(slot.cancelled_at ? [] : [{ label: i18n("addToCalendar4f05cd6"), onSelect: addToCalendar }]),
-                  ...(hasBookedMembers && !isPast ? [{ label: tSms("noticeTitle"), onSelect: () => setNoticeOpen(true) }] : []),
-                  ...stateActions
-                    .filter((action) => action !== "restore" && action !== "resume" && action !== "delete")
-                    .map((action) => ({
-                      label: t(`classAction_${action}`),
-                      onSelect: () => onClassAction?.(action),
-                      tone: action === "cancel" ? ("danger" as const) : undefined,
-                    })),
-                  ...(onDelete || onClassAction
-                    ? [
-                        {
-                          label: i18n("deletef6fdbe4"),
-                          onSelect: () => (onClassAction ? onClassAction("delete") : onDelete?.()),
-                          tone: "danger" as const,
-                        },
-                      ]
-                    : []),
-                ]}
-              />
-            </div>
-          ) : null}
-
-          {/* Only a draft (hidden from clients until it has a WOD) warns; a
-              series class without its WOD offers the same buttons calmly on
-              the WOD card, since it stays bookable and staff get reminders. */}
-          {isAdmin && workoutNotice === "draft" ? (
-            <ClassWorkoutNotice slot={slot} accessToken={accessToken} timeZone={timeZone} onLinked={onSlotChanged} />
-          ) : null}
-
-          {/* The class's coach (ADR-100); members see it in their summary strip. */}
-          {isAdmin && coachName ? (
-            <p
-              className="mt-4 inline-block rounded-full px-3 py-1 text-xs font-semibold"
-              data-testid="slot-coach"
-              style={{ background: "var(--panel-muted)", border: "1px solid var(--border)", color: "var(--muted)" }}
-            >
-              {t("classCoachChip", { coach: coachName })}
-            </p>
-          ) : null}
-
-          {/* Compact info strip (admin sees full detail; members get a summary) */}
-          {isAdmin ? (
-            <div className="mt-6 grid gap-4 md:grid-cols-3">
-              <div
-                className="rounded-[1.4rem] p-4"
-                style={{ background: "var(--panel-muted)", border: "1px solid var(--border)" }}
-              >
-                <p className="text-xs font-semibold uppercase tracking-[0.22em]" style={{ color: "var(--dim)" }}>
-                  {i18n("capacity45bd908")}
-                </p>
-                <p className="mt-2 text-2xl font-semibold" style={{ color: "var(--text)" }}>
-                  {slot.approved_booking_count}/{slot.capacity}
-                </p>
-              </div>
-              <div
-                className="rounded-[1.4rem] p-4"
-                style={{ background: "var(--panel-muted)", border: "1px solid var(--border)" }}
-              >
-                <p className="text-xs font-semibold uppercase tracking-[0.22em]" style={{ color: "var(--dim)" }}>
-                  {i18n("approval8cc047a")}
-                </p>
-                <p className="mt-2 text-base font-semibold" style={{ color: "var(--text)" }}>
-                  {slot.auto_approve ? i18n("autoc614ba7") : i18n("manual4e836fd")}
-                </p>
-              </div>
-              <div
-                className="rounded-[1.4rem] p-4"
-                style={{ background: "var(--panel-muted)", border: "1px solid var(--border)" }}
-              >
-                <p className="text-xs font-semibold uppercase tracking-[0.22em]" style={{ color: "var(--dim)" }}>
-                  {rulesT("answerTime")}
-                </p>
-                <p className="mt-2 text-sm font-semibold" style={{ color: "var(--text)" }} data-testid="slot-approval-wait">
-                  {approvalWaitValue}
-                </p>
-                {slot.auto_approve ? null : (
-                  <p className="mt-1 text-xs" style={{ color: "var(--muted)" }}>{rulesT("answerTimeHelp")}</p>
-                )}
-              </div>
-            </div>
-          ) : (
-            <div className="mt-4 flex flex-wrap gap-2">
+          {/* The class in a few chips. */}
+          <div className="mt-4 flex flex-wrap gap-2">
               <span
                 className="rounded-full px-3 py-1 text-xs font-semibold"
                 style={{ background: "var(--panel-muted)", border: "1px solid var(--border)", color: "var(--muted)" }}
@@ -569,13 +420,10 @@ export function SlotPopup({
                   {i18n("requiresApproval4ecb6f5")} · {approvalWaitChip}
                 </span>
               )}
-            </div>
-          )}
-
-          {isAdmin && spaceChips ? <div className="mt-4 flex flex-wrap gap-2">{spaceChips}</div> : null}
+          </div>
 
           {/* Pending-approval banner */}
-          {slot.current_user_booking?.status === "pending" && !isAdmin ? (
+          {slot.current_user_booking?.status === "pending" ? (
             <div
               className="mt-5 rounded-[1.4rem] px-5 py-4 text-sm"
               style={{
@@ -593,7 +441,7 @@ export function SlotPopup({
           ) : null}
 
           {/* Approved booking confirmation */}
-          {slot.current_user_booking?.status === "approved" && !isAdmin ? (
+          {slot.current_user_booking?.status === "approved" ? (
             <div
               className="mt-5 rounded-[1.4rem] px-5 py-4 text-sm"
               style={{
@@ -610,31 +458,21 @@ export function SlotPopup({
             </div>
           ) : null}
 
-          {/* Class timer: coach remote + wall display for staff, live clock for booked members */}
-          {isAdmin || slot.current_user_booking?.status === "approved" ? (
+          {/* The class's live clock, for a booked member. */}
+          {slot.current_user_booking?.status === "approved" ? (
             <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label={i18n("classTimerLinksLabel")}>
-              {isAdmin ? (
-                <Link
-                  href={adminHref(`/class-timer/${slot.id}/control`, organizationSlug)}
-                  className="rounded-full px-4 py-2 text-sm font-semibold"
-                  style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}
-                >
-                  {i18n("classTimerRemoteLink")}
-                </Link>
-              ) : null}
               <Link
                 href={adminHref(`/class-timer/${slot.id}/display`, organizationSlug)}
-                target={isAdmin ? "_blank" : undefined}
                 className="rounded-full px-4 py-2 text-sm font-semibold"
                 style={{ border: "1px solid var(--border)", color: "var(--text-soft)" }}
               >
-                {isAdmin ? i18n("classTimerDisplayLink") : i18n("classTimerFollowLink")}
+                {i18n("classTimerFollowLink")}
               </Link>
             </div>
           ) : null}
 
           {/* Waitlist place — never shown as a booking */}
-          {memberState.kind === "waitlisted" && !isAdmin ? (
+          {memberState.kind === "waitlisted" ? (
             <div
               className="mt-5 rounded-[1.4rem] px-5 py-4 text-sm"
               style={{
@@ -663,19 +501,16 @@ export function SlotPopup({
             </div>
           ) : null}
 
-          {!isAdmin ? (
-            <GuestBookingPanel
-              accessToken={accessToken}
-              guestsIncluded={guestsIncluded}
-              onChanged={() => onSlotChanged?.()}
-              slot={slot}
-            />
-          ) : null}
+          <GuestBookingPanel
+            accessToken={accessToken}
+            guestsIncluded={guestsIncluded}
+            onChanged={() => onSlotChanged?.()}
+            slot={slot}
+          />
 
           {/* Cancel booking action */}
           {slot.current_user_booking &&
-            (slot.current_user_booking.status === "pending" || slot.current_user_booking.status === "approved") &&
-            !isAdmin ? (
+            (slot.current_user_booking.status === "pending" || slot.current_user_booking.status === "approved") ? (
             <div className="mt-3">
               {cancelError ? (
                 <ErrorNotice variant="field" className="mb-2">{cancelError}</ErrorNotice>
@@ -700,7 +535,7 @@ export function SlotPopup({
               Informational only: members start it from My workouts. Staff
               program it from the user's profile or, for several attendees at
               once, with «Variation for…» below (ADR-201). */}
-          {!isAdmin && slot.my_version ? (
+          {slot.my_version ? (
             <section
               className="mt-8 rounded-[1.8rem] p-5"
               style={{
@@ -745,36 +580,10 @@ export function SlotPopup({
               <h3 className="min-w-0 text-lg font-semibold" style={{ color: "var(--text)" }}>
                 {slot.workout?.title ? `${i18n("workout39463a5")} · ${slot.workout.title}` : i18n("workout39463a5")}
               </h3>
-              {/* Only the workout's own actions here; the class's are at the top. */}
-              {isAdmin && (slot.workout || canProgramVariations) ? (
-                // On a phone the row takes the card's width and each label stays whole.
-                <div className="flex w-full flex-wrap gap-2 sm:w-auto" data-testid="workout-actions">
-                  {slot.workout ? (
-                    <button
-                      className="grow whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition-colors sm:grow-0"
-                      style={{ background: "var(--card)", color: "var(--text-soft)" }}
-                      onClick={() => setEditWorkoutOpen(true)}
-                      type="button"
-                    >
-                      {i18n("editWorkoutd299ce5")}
-                    </button>
-                  ) : null}
-                  {canProgramVariations ? (
-                    <button
-                      className="grow whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition-colors sm:grow-0"
-                      style={{ background: "var(--card)", color: "var(--text-soft)" }}
-                      onClick={() => setVariationOpen(true)}
-                      type="button"
-                    >
-                      {i18n("groupVariationAction")}
-                    </button>
-                  ) : null}
-                </div>
-              ) : null}
             </div>
 
             {/* Scale chips — member-facing global scale selector */}
-            {!isAdmin && allScales.length > 0 ? (
+            {allScales.length > 0 ? (
               <div className="mb-4 flex flex-wrap gap-1.5">
                 <button
                   type="button"
@@ -810,29 +619,19 @@ export function SlotPopup({
               <WorkoutPreviewDetail
                 sections={slot.workout.sections}
                 content={slot.workout.content}
-                activeScaleOverride={!isAdmin ? activeScale : undefined}
-                hideScaleChips={!isAdmin}
+                activeScaleOverride={activeScale}
+                hideScaleChips
                 authoringMode={slot.workout.authoring_mode}
                 freeTextBody={slot.workout.free_text_body}
                 freeTextDocument={slot.workout.free_text_document}
               />
             ) : (
-              <>
-                <p className="text-sm" style={{ color: "var(--dim)" }}>
-                  {i18n("noWorkoutAssignedToThisSlotac3ec23")}
-                </p>
-                {isAdmin && workoutNotice && workoutNotice !== "draft" ? (
-                  <ClassWorkoutNotice slot={slot} accessToken={accessToken} timeZone={timeZone} onLinked={onSlotChanged} calm />
-                ) : null}
-              </>
+              <p className="text-sm" style={{ color: "var(--dim)" }}>
+                {i18n("noWorkoutAssignedToThisSlotac3ec23")}
+              </p>
             )}
 
-            {/* ADR-670: the class's goals for staff; its atlas adds «Φορτίο προγράμματος». */}
-            {isAdmin && slot.workout ? (
-              <StaffWodGoalsStrip workoutId={slot.workout.id} atlas={{ kind: "class", classId: slot.id }} className="mt-4" />
-            ) : null}
-
-            {!isAdmin && slot.workout && ownBookingActive ? (
+            {slot.workout && ownBookingActive ? (
               <div className="mt-5">
                 <MyInjuryWarningsPanel
                   accessToken={accessToken}
@@ -880,9 +679,8 @@ export function SlotPopup({
             ) : null}
           </section>
 
-          {/* Chat section (members only) */}
-          {!isAdmin ? (
-            <section
+          {/* Chat with the coach. */}
+          <section
               className="mt-6 rounded-[1.8rem] p-5"
               style={{ background: "var(--panel-muted)", border: "1px solid var(--border)" }}
             >
@@ -939,61 +737,13 @@ export function SlotPopup({
                   ) : null}
                 </div>
               )}
-            </section>
-          ) : null}
+          </section>
 
-          {/* Admin: what members felt in this class (WOD goals, ADR-163) */}
-          {isAdmin && slot.workout && isPast ? <FeltSummaryCard source={{ kind: "slot", id: slot.id }} className="mt-4" /> : null}
-
-          {/* Admin: bookings list */}
-          {isAdmin ? (
-            <AdminSlotRoster
-              slot={slot}
-              onApproveBooking={onApproveBooking}
-              onRejectBooking={onRejectBooking}
-              header={
-                slotInjuryWarnings.data ? (
-                  <RosterInjuryWarningsPanel
-                    accessToken={accessToken}
-                    slotId={slot.id}
-                    workoutId={slotInjuryWarnings.data.workout_id}
-                    athletes={slotInjuryWarnings.data.athletes}
-                    level={slotInjuryWarnings.data.level}
-                    nameFor={(userId) => bookingNames.get(userId) ?? i18n("injuryWarningUnknownPerson")}
-                  />
-                ) : slotInjuryWarnings.isError ? (
-                  <ErrorNotice variant="field">
-                    {i18n("injuryWarningLoadFailed")}
-                  </ErrorNotice>
-                ) : null
-              }
-              badgeFor={(booking) => <InjuryWarningBadge level={warningLevelFor(injuryLevels, booking.user_id)} />}
-              visits={visitBadges.data?.people}
-            />
-          ) : null}
         </div>
       </Dialog>
 
-      {noticeOpen && isAdmin ? <ClassNoticeDialog slotId={slot.id} cancelled={Boolean(slot.cancelled_at)} onClose={() => setNoticeOpen(false)} /> : null}
 
-      {editWorkoutOpen && slot.workout && isAdmin ? (
-        <WorkoutEditModal
-          workoutId={slot.workout.id}
-          workoutTitle={slot.workout.title}
-          accessToken={accessToken}
-          context={{ kind: "slot", sourceId: slot.id, sourceLabel: i18n("classOnDate", { date: slot.scheduled_at }) }}
-          onClose={() => setEditWorkoutOpen(false)}
-        />
-      ) : null}
 
-      {variationOpen && isAdmin && canProgramVariations ? (
-        <ClassVariationDialog
-          slot={slot}
-          accessToken={accessToken}
-          onClose={() => setVariationOpen(false)}
-          onProgrammed={onSlotChanged}
-        />
-      ) : null}
 
       {roomOpen && slot.space ? (
         <ClassRoomDialog slotId={slot.id} spaceName={slot.space.name} onClose={() => setRoomOpen(false)} />

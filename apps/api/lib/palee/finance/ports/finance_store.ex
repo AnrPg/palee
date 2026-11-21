@@ -55,7 +55,7 @@ defmodule Palee.Finance.Ports.FinanceStore do
               String.t(),
               Ecto.UUID.t(),
               atom(),
-              :finalize | :release,
+              :finalize | :release | :reopen,
               map()
             ) :: {:ok, map()} | {:error, term()}
   @callback list_expiring_memberships(non_neg_integer()) :: [map()]
