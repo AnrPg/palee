@@ -263,6 +263,47 @@ test.describe("member schedule", () => {
     await expect(sheet).toHaveCount(0);
   });
 
+  test("a WOD written in text sections shows every section's exercises, not only its titles", async ({ page }) => {
+    await page.route("**/api/org/*/schedule?**", (route) =>
+      route.fulfill(
+        json({
+          start_date: localDate(),
+          end_date: localDate(13),
+          days: 14,
+          class_types: [crossfit],
+          coaches: [],
+          slots: [
+            slot("s-8", crossfit, 7, {
+              workout: {
+                id: "wod-8",
+                title: "Strength",
+                type: "strength",
+                authoring_mode: "sectioned_text",
+                free_text_body: "A. Strength\nBack squat 5x5\n\nB. Wod\nAMRAP 12\n10 thrusters",
+                sections: [
+                  { id: "ts-1", name: "A. Strength", order: 1, exercises: [], free_text_body: "Back squat 5x5" },
+                  { id: "ts-2", name: "B. Wod", order: 2, exercises: [], free_text_body: "AMRAP 12\n10 thrusters" },
+                ],
+              },
+            }),
+          ],
+        }),
+      ),
+    );
+    await page.goto("/box/schedule");
+    const sheet = page.getByRole("dialog", { name: "CrossFit" });
+    const card = page.getByRole("main").getByRole("button", { name: /CrossFit/ }).first();
+    await expect(card).toBeVisible();
+    await expect(async () => {
+      await card.click();
+      await expect(sheet).toBeVisible({ timeout: 2_000 });
+    }).toPass({ timeout: 20_000 });
+    await expect(sheet.getByText("A. Strength")).toBeVisible();
+    await expect(sheet.getByText("Back squat 5x5")).toBeVisible();
+    await expect(sheet.getByText("B. Wod")).toBeVisible();
+    await expect(sheet.getByText(/10 thrusters/)).toBeVisible();
+  });
+
   test("a cancelled class offers nothing to add to a calendar", async ({ page }) => {
     await page.route("**/api/org/*/schedule?**", (route) =>
       route.fulfill(

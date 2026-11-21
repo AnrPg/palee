@@ -308,6 +308,90 @@ defmodule PaleeWeb.ClassesWithoutWodTest do
     assert [%{"name" => "A", "free_text_body" => "Back squat 5x5"}] = copy["sections"]
   end
 
+  test "the schedule shows a sectioned WOD's whole text to staff and members, not only its section titles",
+       ctx do
+    %{conn: conn} = ctx
+
+    workout =
+      publish_text_wod(conn, ctx, %{
+        title: "Sectioned schedule WOD",
+        type: "strength",
+        authoring_mode: "sectioned_text",
+        sections: [
+          %{
+            name: "A. Strength",
+            order: 1,
+            exercises: [],
+            free_text_body: "Back squat 5x5",
+            timer_preset: %{format: "emom", interval_seconds: 120, rounds: 5}
+          },
+          %{
+            name: "B. Wod",
+            order: 2,
+            exercises: [],
+            free_text_body: "AMRAP 12\n10 thrusters\n10 pull-ups",
+            timer_preset: %{format: "amrap", duration_seconds: 720}
+          }
+        ]
+      })
+
+    slot = create_draft(conn, ctx)
+
+    conn
+    |> recycle()
+    |> json_conn(ctx.admin)
+    |> put(
+      path("/admin/schedule/slots/#{slot["id"]}/workout"),
+      Jason.encode!(%{master_workout_id: workout["id"]})
+    )
+    |> json_response(200)
+
+    for user <- [ctx.admin, ctx.member] do
+      assert [%{"workout" => preview}] =
+               conn |> recycle() |> schedule(user) |> Enum.filter(&(&1["id"] == slot["id"]))
+
+      assert preview["authoring_mode"] == "sectioned_text"
+
+      assert [
+               %{
+                 "name" => "A. Strength",
+                 "free_text_body" => "Back squat 5x5",
+                 "timer_preset" => %{"format" => "emom"}
+               },
+               %{"name" => "B. Wod", "free_text_body" => "AMRAP 12\n10 thrusters\n10 pull-ups"}
+             ] = preview["sections"]
+    end
+  end
+
+  test "the schedule shows a free-text WOD's whole text to members", ctx do
+    %{conn: conn} = ctx
+
+    workout =
+      publish_text_wod(conn, ctx, %{
+        title: "Free text schedule WOD",
+        type: "crossfit",
+        authoring_mode: "free_text",
+        free_text_body: "AMRAP 20\n10 pull-ups",
+        sections: []
+      })
+
+    slot = create_draft(conn, ctx)
+
+    conn
+    |> recycle()
+    |> json_conn(ctx.admin)
+    |> put(
+      path("/admin/schedule/slots/#{slot["id"]}/workout"),
+      Jason.encode!(%{master_workout_id: workout["id"]})
+    )
+    |> json_response(200)
+
+    assert [%{"workout" => preview}] =
+             conn |> recycle() |> schedule(ctx.member) |> Enum.filter(&(&1["id"] == slot["id"]))
+
+    assert preview["free_text_body"] == "AMRAP 20\n10 pull-ups"
+  end
+
   test "a free-text WOD links to a class and its copy keeps the text", ctx do
     %{conn: conn} = ctx
 

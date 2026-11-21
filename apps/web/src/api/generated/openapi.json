@@ -116793,6 +116793,15 @@
                 "workout": {
                   "nullable": true,
                   "properties": {
+                    "authoring_mode": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "free_text_body": {
+                      "description": "A free-text WOD's whole text (its exercises live there).",
+                      "nullable": true,
+                      "type": "string"
+                    },
                     "id": {
                       "type": "string"
                     },
@@ -116814,6 +116823,11 @@
                           "format": {
                             "type": "string"
                           },
+                          "free_text_body": {
+                            "description": "ADR-180: a text section's whole text (its exercises live there).",
+                            "nullable": true,
+                            "type": "string"
+                          },
                           "id": {
                             "type": "string"
                           },
@@ -116832,6 +116846,10 @@
                             "additionalProperties": true,
                             "nullable": true,
                             "type": "object"
+                          },
+                          "untitled": {
+                            "description": "ADR-180: a text section the coach left without a title.",
+                            "type": "boolean"
                           }
                         },
                         "type": "object"
@@ -310662,6 +310680,15 @@
                           "workout": {
                             "nullable": true,
                             "properties": {
+                              "authoring_mode": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "free_text_body": {
+                                "description": "A free-text WOD's whole text (its exercises live there).",
+                                "nullable": true,
+                                "type": "string"
+                              },
                               "id": {
                                 "type": "string"
                               },
@@ -310683,6 +310710,11 @@
                                     "format": {
                                       "type": "string"
                                     },
+                                    "free_text_body": {
+                                      "description": "ADR-180: a text section's whole text (its exercises live there).",
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
                                     "id": {
                                       "type": "string"
                                     },
@@ -310701,6 +310733,10 @@
                                       "additionalProperties": true,
                                       "nullable": true,
                                       "type": "object"
+                                    },
+                                    "untitled": {
+                                      "description": "ADR-180: a text section the coach left without a title.",
+                                      "type": "boolean"
                                     }
                                   },
                                   "type": "object"
@@ -353032,6 +353068,15 @@
                           "workout": {
                             "nullable": true,
                             "properties": {
+                              "authoring_mode": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "free_text_body": {
+                                "description": "A free-text WOD's whole text (its exercises live there).",
+                                "nullable": true,
+                                "type": "string"
+                              },
                               "id": {
                                 "type": "string"
                               },
@@ -353053,6 +353098,11 @@
                                     "format": {
                                       "type": "string"
                                     },
+                                    "free_text_body": {
+                                      "description": "ADR-180: a text section's whole text (its exercises live there).",
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
                                     "id": {
                                       "type": "string"
                                     },
@@ -353071,6 +353121,10 @@
                                       "additionalProperties": true,
                                       "nullable": true,
                                       "type": "object"
+                                    },
+                                    "untitled": {
+                                      "description": "ADR-180: a text section the coach left without a title.",
+                                      "type": "boolean"
                                     }
                                   },
                                   "type": "object"
@@ -369615,6 +369669,8 @@
                             "type": "string"
                           },
                           "workout": {
+                            "additionalProperties": true,
+                            "description": "The whole WOD, the same preview a class carries (sections with their exercises or text).",
                             "nullable": true,
                             "properties": {
                               "id": {
@@ -369848,6 +369904,7 @@
                           },
                           "workout": {
                             "additionalProperties": true,
+                            "description": "The class's whole WOD: every section with its exercises, or (free-text and sectioned WODs) its text.",
                             "nullable": true,
                             "properties": {
                               "focus": {
@@ -369866,6 +369923,15 @@
                                   "type": "string"
                                 },
                                 "type": "array"
+                              },
+                              "free_text_body": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "free_text_document": {
+                                "additionalProperties": true,
+                                "nullable": true,
+                                "type": "object"
                               }
                             },
                             "type": "object"

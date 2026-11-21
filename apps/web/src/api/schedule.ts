@@ -97,6 +97,13 @@ export type WorkoutPreviewSection = {
   score_config?: Record<string, unknown> | null;
   timer_config?: Record<string, unknown> | null;
   content?: WorkoutContentEntry[];
+  section_metadata?: Record<string, unknown> | null;
+  /** ADR-180: a text section's text, rich text and timer (sectioned workouts). */
+  free_text_body?: string | null;
+  free_text_document?: Record<string, unknown> | null;
+  timer_preset?: unknown;
+  /** ADR-270: the section as written in the structured plan editor. */
+  plan?: unknown;
   exercises: WorkoutPreviewExercise[];
 };
 

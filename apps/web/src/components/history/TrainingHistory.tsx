@@ -189,6 +189,12 @@ function LogEntry({ entry, kind }: { entry: TrainingHistoryEntry; kind: Training
         </div>
       </header>
 
+      {!entry.workout?.sections?.length && entry.workout?.free_text_body?.trim() ? (
+        <p className="mt-3 whitespace-pre-line text-xs leading-5" style={{ color: "var(--muted)" }}>
+          {entry.workout.free_text_body.trim()}
+        </p>
+      ) : null}
+
       {entry.workout?.sections?.length ? (
         <ul className="mt-3 space-y-2">
           {entry.workout.sections.map((section) => {
@@ -197,7 +203,7 @@ function LogEntry({ entry, kind }: { entry: TrainingHistoryEntry; kind: Training
               <li key={section.id} className={section.nested ? "ms-4" : undefined}>
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>
-                    {section.name}
+                    {section.untitled ? null : section.name}
                     {section.format !== "untimed" ? (
                       <span className="ms-2 rounded-full px-2 py-0.5 text-[11px] font-bold" style={{ background: "var(--panel)", color: "var(--primary)" }}>
                         <SemanticLabel value={section.format} />
@@ -213,6 +219,11 @@ function LogEntry({ entry, kind }: { entry: TrainingHistoryEntry; kind: Training
                 {section.exercises?.length ? (
                   <p className="text-xs leading-5" style={{ color: "var(--muted)" }}>
                     {section.exercises.map((exercise) => exerciseText(exercise)).join(" · ")}
+                  </p>
+                ) : section.free_text_body?.trim() ? (
+                  // ADR-180: a text section's exercises are its text.
+                  <p className="whitespace-pre-line text-xs leading-5" style={{ color: "var(--muted)" }}>
+                    {section.free_text_body.trim()}
                   </p>
                 ) : null}
               </li>

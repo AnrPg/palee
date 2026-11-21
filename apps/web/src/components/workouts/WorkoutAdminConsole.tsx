@@ -6,7 +6,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
-import { useQuery } from "@tanstack/react-query";
 
 import { ApiError } from "@/api/client";
 import {
@@ -14,7 +13,6 @@ import {
   createWorkoutFolder,
   deleteWorkoutFolder,
   deleteWorkout,
-  fetchAdminWorkout,
   listWorkoutFolders,
   listAdminWorkouts,
   moveWorkoutToFolder,
@@ -28,7 +26,7 @@ import { HoverHint } from "@/components/HelpTooltip";
 import { USER_SYNC_EVENT, type UserSyncDetail } from "@/lib/user-sync";
 import { AssignWorkoutPanel } from "@/components/workouts/AssignWorkoutPanel";
 import { WorkoutEditModal } from "@/components/workouts/WorkoutEditModal";
-import { WorkoutPreviewDetail } from "@/components/workouts/WorkoutPreviewDetail";
+import { StaffWorkoutPreview } from "@/components/workouts/StaffWorkoutPreview";
 import { StaffWodGoalsStrip } from "@/components/wod-goals/WodGoalsStrip";
 import { PlanSummaryList } from "@/components/workouts/plan-view/PlanSummaryList";
 import { readPlanSummary } from "@/components/workouts/plan-view/read";
@@ -991,32 +989,9 @@ export function WorkoutAdminConsole() {
  * timers and scoring, or its exercises with every parameter.
  */
 function LibraryWorkoutPreview({ workout, token }: { workout: WorkoutRecord; token: string | null }) {
-  const i18n = useUiTranslations();
-  const full = useQuery({
-    queryKey: ["admin-workout-preview", workout.id, workout.updated_at ?? null],
-    enabled: Boolean(token),
-    queryFn: () => fetchAdminWorkout(token!, workout.id),
-    staleTime: 60_000,
-  });
-
-  if (!full.data) {
-    return (
-      <p className="text-sm" role="status" style={{ color: "var(--muted)" }}>
-        {full.isError ? i18n("apiErrorRequestFailed") : i18n("workoutPreviewLoading")}
-      </p>
-    );
-  }
-
   return (
     <>
-      <WorkoutPreviewDetail
-        sections={full.data.sections}
-        content={full.data.content}
-        initiallyExpanded
-        authoringMode={full.data.authoring_mode}
-        freeTextBody={full.data.free_text_body}
-        freeTextDocument={full.data.free_text_document}
-      />
+      <StaffWorkoutPreview workoutId={workout.id} token={token} version={workout.updated_at ?? null} />
       <LibraryWorkoutGoals workoutId={workout.id} />
     </>
   );

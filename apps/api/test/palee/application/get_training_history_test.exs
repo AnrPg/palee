@@ -53,6 +53,7 @@ defmodule Palee.Application.GetTrainingLogTest do
       organization: organization,
       context: context,
       member_context: member_context,
+      admin: admin,
       member: member,
       workout: workout,
       class_type: class_type
@@ -78,6 +79,36 @@ defmodule Palee.Application.GetTrainingLogTest do
     )
     |> Ecto.Changeset.put_change(:section_scores, scores)
     |> Repo.insert!()
+  end
+
+  test "a WOD written in text sections carries each section's whole text (ADR-180)", ctx do
+    # Stored as the sectioned editor publishes it: the text lives in the
+    # sections and in the composed body, not in exercises.
+    workout = workout_fixture(ctx.admin, %{tenant_context: ctx.context, title: "Sectioned"})
+    section_id = hd(workout.sections).id
+
+    Repo.update_all(from(w in "master_workouts", where: w.id == type(^workout.id, :binary_id)),
+      set: [authoring_mode: "sectioned_text", free_text_body: "A. Strength\nBack squat 5x5"]
+    )
+
+    Repo.update_all(from(s in "workout_sections", where: s.id == type(^section_id, :binary_id)),
+      set: [name: "A. Strength", free_text_body: "Back squat 5x5"]
+    )
+
+    Repo.delete_all(
+      from(e in "workout_exercises", where: e.workout_section_id == type(^section_id, :binary_id))
+    )
+
+    execution!(ctx, %{master_workout_id: workout.id})
+
+    assert {:ok, %{entries: [entry]}} =
+             GetTrainingHistory.call(ctx.context, ctx.member.id, %{"kind" => "workouts"})
+
+    assert entry.workout.authoring_mode in ["sectioned_text", :sectioned_text]
+    assert entry.workout.free_text_body =~ "Back squat 5x5"
+
+    assert [%{name: "A. Strength", untitled: false, free_text_body: "Back squat 5x5"}] =
+             entry.workout.sections
   end
 
   test "workouts are paged newest first with the workout and the performance", ctx do
