@@ -14,7 +14,8 @@ defmodule Palee.Application.Finance.PackageRequests do
   «Εκκρεμεί πληρωμή» (`activate_unpaid/3`: the package starts now and its
   charge is owed, so the box's reminders, grace days and lock follow it).
   «Απόρριψη» (`decline/4`) always says why, and the person hears it. While
-  a request waits, the person may book one class (`PackageRule`).
+  a request waits, the person may book as many classes as the box allows
+  (ADR-717, `PackageRule`).
   """
 
   alias Palee.Application.{AssignFinanceMemberPackage, PackageRule, ReceiveFinancePayment}
@@ -142,8 +143,16 @@ defmodule Palee.Application.Finance.PackageRequests do
       |> Identity.list_by_ids()
       |> Map.new(&{&1.id, &1})
 
+    # ADR-717: how many classes each person booked while waiting.
+    used = PackageRule.wait_bookings_used_by(context, Enum.map(requests, & &1.user_id))
+    allowed = PackageRule.wait_bookings_allowed(context)
+
     Enum.map(requests, fn request ->
-      request |> present(today) |> Map.put(:person, person(Map.get(people, request.user_id)))
+      request
+      |> present(today)
+      |> Map.put(:person, person(Map.get(people, request.user_id)))
+      |> Map.put(:wait_bookings_used, Map.get(used, request.user_id, 0))
+      |> Map.put(:wait_bookings_allowed, allowed)
     end)
   end
 
@@ -367,7 +376,7 @@ defmodule Palee.Application.Finance.PackageRequests do
 
   @doc """
   Closes as `lapsed` the requests whose 14 days ended. Returns how many.
-  ADR-633: whoever booked their one class while waiting and still has no
+  ADR-633: whoever booked their classes while waiting and still has no
   profile loses their upcoming bookings.
   """
   def lapse(context, now \\ DateTime.utc_now()) do
@@ -399,7 +408,6 @@ defmodule Palee.Application.Finance.PackageRequests do
       hold_until: request.hold_until,
       hold_days: PackageRequestPolicy.hold_days(),
       days_left: PackageRequestPolicy.days_left(request, today),
-      first_class_at: Map.get(request, :first_class_at),
       decline_reason: Map.get(request, :decline_reason)
     }
   end

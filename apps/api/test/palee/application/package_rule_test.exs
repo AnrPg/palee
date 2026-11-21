@@ -1,8 +1,9 @@
 defmodule Palee.Application.PackageRuleTest do
   @moduledoc """
   ADR-633: «Χωρίς πακέτο, χωρίς κράτηση». In a box that sells packages a
-  client books only with a package or a grace with an end; one class while
-  their first «Το θέλω» waits, once per person and box. The rule starts by
+  client books only with a package or a grace with an end; while their «Το
+  θέλω» waits, as many classes as the box says (ADR-717, default 3), counted
+  per person and box. The rule starts by
   itself the first day the box sells a package, and the clients already
   training get 14 days from the system. Staff activate (paid or payment
   pending) or decline with a reason.
@@ -167,38 +168,126 @@ defmodule Palee.Application.PackageRuleTest do
     assert Enum.any?(PackageRule.rollout(ctx.owner_context).people, &(&1.user_id == user.id))
   end
 
-  test "someone new books nothing without a package, then one class while «Το θέλω» waits",
+  defp set_wait_bookings(ctx, count) do
+    {:ok, _settings} =
+      Finance.update_finance_settings(ctx.owner_context, %{"package_wait_bookings" => count})
+  end
+
+  test "someone new books nothing without a package, then the box's 3 classes while «Το θέλω» waits",
        ctx do
     package = start_rule(ctx)
     {user, context} = newcomer(ctx, "rule_newcomer")
 
-    assert %{rule: true, package_required: true, first_class_available: false} =
+    assert %{rule: true, package_required: true, wait_bookings_allowed: 3, wait_bookings_left: 0} =
              PackageRule.standing(context, user.id)
 
     assert {:error, :finance_package_required} = book(context, user, slot(ctx))
 
     {:ok, %{request: request}} = PackageRequests.request(context, package.id)
 
-    assert %{first_class_available: true, package_required: false, pending_request: true} =
+    assert %{wait_bookings_left: 3, package_required: false, pending_request: true} =
              PackageRule.standing(context, user.id)
 
     first = slot(ctx)
     assert {:ok, booking} = book(context, user, first)
+    assert {:ok, _second} = book(context, user, slot(ctx))
+    assert {:ok, _third} = book(context, user, slot(ctx))
     assert {:error, :finance_package_required} = book(context, user, slot(ctx))
 
-    # Once per person and box, whatever happens to that booking.
+    assert %{wait_bookings_used: 3, wait_bookings_left: 0, package_required: true} =
+             PackageRule.standing(context, user.id)
+
+    # Counted whatever happens to the booking: a cancel gives nothing back.
     assert {:ok, _withdrawn} =
              Palee.Application.WithdrawBooking.call(context, user.id, booking.id)
 
     assert {:error, :finance_package_required} = book(context, user, slot(ctx))
 
-    stored =
-      Finance.with_tenant_context(context, fn ->
-        Palee.Finance.PackageRequestStore.get(request.id)
-      end)
+    # The desk sees how many of the box's number they used.
+    assert [%{id: id, wait_bookings_used: 3, wait_bookings_allowed: 3}] =
+             PackageRequests.for_desk(ctx.owner_context)
 
-    assert stored.first_class_scheduled_class_id == first.id
-    assert %DateTime{} = stored.first_class_at
+    assert id == request.id
+  end
+
+  test "the box chooses the number: 0 means none, raising it opens more, lowering keeps what was booked",
+       ctx do
+    package = start_rule(ctx)
+    set_wait_bookings(ctx, 0)
+    {user, context} = newcomer(ctx, "rule_number")
+    {:ok, _result} = PackageRequests.request(context, package.id)
+
+    assert %{wait_bookings_allowed: 0, wait_bookings_left: 0, package_required: true} =
+             PackageRule.standing(context, user.id)
+
+    assert {:error, :finance_package_required} = book(context, user, slot(ctx))
+
+    set_wait_bookings(ctx, 2)
+    assert {:ok, kept} = book(context, user, slot(ctx))
+    assert {:ok, _second} = book(context, user, slot(ctx))
+
+    set_wait_bookings(ctx, 1)
+    assert {:error, :finance_package_required} = book(context, user, slot(ctx))
+
+    assert Finance.with_tenant_context(ctx.owner_context, fn ->
+             Repo.get(Palee.Scheduling.Booking, kept.id)
+           end)
+
+    assert {:error, %Ecto.Changeset{}} =
+             Finance.update_finance_settings(ctx.owner_context, %{"package_wait_bookings" => 21})
+
+    assert {:error, %Ecto.Changeset{}} =
+             Finance.update_finance_settings(ctx.owner_context, %{"package_wait_bookings" => -1})
+  end
+
+  test "the count is per person and box for good: a new «Το θέλω» does not start it again",
+       ctx do
+    package = start_rule(ctx)
+    set_wait_bookings(ctx, 1)
+    {user, context} = newcomer(ctx, "rule_again")
+    {:ok, %{request: request}} = PackageRequests.request(context, package.id)
+    assert {:ok, _booking} = book(context, user, slot(ctx))
+    assert {:ok, _cancelled} = PackageRequests.cancel(context, request.id)
+
+    {:ok, %{request: _again}} = PackageRequests.request(context, package.id)
+
+    assert %{pending_request: true, wait_bookings_used: 1, wait_bookings_left: 0} =
+             PackageRule.standing(context, user.id)
+
+    assert {:error, :finance_package_required} = book(context, user, slot(ctx))
+  end
+
+  test "the same class booked again after a cancel counts once", ctx do
+    package = start_rule(ctx)
+    set_wait_bookings(ctx, 2)
+    {user, context} = newcomer(ctx, "rule_rebook")
+    {:ok, _result} = PackageRequests.request(context, package.id)
+    class = slot(ctx)
+    assert {:ok, booking} = book(context, user, class)
+
+    assert {:ok, _withdrawn} =
+             Palee.Application.WithdrawBooking.call(context, user.id, booking.id)
+
+    assert {:ok, _again} = book(context, user, class)
+
+    assert %{wait_bookings_used: 1, wait_bookings_left: 1} =
+             PackageRule.standing(context, user.id)
+  end
+
+  test "two bookings at once cannot both take the last class", ctx do
+    package = start_rule(ctx)
+    set_wait_bookings(ctx, 1)
+    {user, context} = newcomer(ctx, "rule_race")
+    {:ok, _result} = PackageRequests.request(context, package.id)
+    slots = [slot(ctx), slot(ctx), slot(ctx)]
+
+    results =
+      slots
+      |> Task.async_stream(fn slot -> book(context, user, slot) end, max_concurrency: 3)
+      |> Enum.map(fn {:ok, result} -> result end)
+
+    assert Enum.count(results, &match?({:ok, _}, &1)) == 1
+    assert %{wait_bookings_used: 1} = PackageRule.standing(context, user.id)
   end
 
   test "«Απόρριψη» needs a reason, the person hears it and their waiting class goes", ctx do

@@ -103165,11 +103165,6 @@ export interface operations {
                             currency: string;
                             days_left: number;
                             decline_reason?: string | null;
-                            /**
-                             * Format: date-time
-                             * @description ADR-633: when the one class while waiting was booked on this request
-                             */
-                            first_class_at?: string | null;
                             hold_days: number;
                             /**
                              * Format: date
@@ -103198,6 +103193,10 @@ export interface operations {
                             status: "pending" | "activated" | "cancelled" | "lapsed" | "declined";
                             /** Format: uuid */
                             user_id: string;
+                            /** @description Staff queue only (ADR-717): the box's number of classes while waiting */
+                            wait_bookings_allowed?: number;
+                            /** @description Staff queue only (ADR-717): classes the person booked while waiting, at this box */
+                            wait_bookings_used?: number;
                         }[];
                     };
                 };
@@ -103226,11 +103225,6 @@ export interface operations {
                             currency: string;
                             days_left: number;
                             decline_reason?: string | null;
-                            /**
-                             * Format: date-time
-                             * @description ADR-633: when the one class while waiting was booked on this request
-                             */
-                            first_class_at?: string | null;
                             hold_days: number;
                             /**
                              * Format: date
@@ -103259,6 +103253,10 @@ export interface operations {
                             status: "pending" | "activated" | "cancelled" | "lapsed" | "declined";
                             /** Format: uuid */
                             user_id: string;
+                            /** @description Staff queue only (ADR-717): the box's number of classes while waiting */
+                            wait_bookings_allowed?: number;
+                            /** @description Staff queue only (ADR-717): classes the person booked while waiting, at this box */
+                            wait_bookings_used?: number;
                         };
                         /** Format: uuid */
                         subscription_id?: string | null;
@@ -103300,11 +103298,6 @@ export interface operations {
                             currency: string;
                             days_left: number;
                             decline_reason?: string | null;
-                            /**
-                             * Format: date-time
-                             * @description ADR-633: when the one class while waiting was booked on this request
-                             */
-                            first_class_at?: string | null;
                             hold_days: number;
                             /**
                              * Format: date
@@ -103333,6 +103326,10 @@ export interface operations {
                             status: "pending" | "activated" | "cancelled" | "lapsed" | "declined";
                             /** Format: uuid */
                             user_id: string;
+                            /** @description Staff queue only (ADR-717): the box's number of classes while waiting */
+                            wait_bookings_allowed?: number;
+                            /** @description Staff queue only (ADR-717): classes the person booked while waiting, at this box */
+                            wait_bookings_used?: number;
                         };
                     };
                 };
@@ -103368,11 +103365,6 @@ export interface operations {
                             currency: string;
                             days_left: number;
                             decline_reason?: string | null;
-                            /**
-                             * Format: date-time
-                             * @description ADR-633: when the one class while waiting was booked on this request
-                             */
-                            first_class_at?: string | null;
                             hold_days: number;
                             /**
                              * Format: date
@@ -103401,6 +103393,10 @@ export interface operations {
                             status: "pending" | "activated" | "cancelled" | "lapsed" | "declined";
                             /** Format: uuid */
                             user_id: string;
+                            /** @description Staff queue only (ADR-717): the box's number of classes while waiting */
+                            wait_bookings_allowed?: number;
+                            /** @description Staff queue only (ADR-717): classes the person booked while waiting, at this box */
+                            wait_bookings_used?: number;
                         };
                     };
                 };
@@ -122891,6 +122887,8 @@ export interface operations {
                             /** Format: date-time */
                             inserted_at?: string | null;
                             package_modules?: string[];
+                            /** @description Classes a person may book while their «Το θέλω» request waits to be paid at the front desk, counted per person and box (0 = none until the desk activates the package) */
+                            package_wait_bookings: number;
                             payment_reminder_interval_days: number;
                             /** @description Also remind the member on the day after it ended; then every payment_reminder_interval_days until they renew or leave */
                             subscription_day_after_reminder: boolean;
@@ -122972,6 +122970,8 @@ export interface operations {
                         /** @enum {string} */
                         document_mode?: "invoice" | "receipt";
                         package_modules?: ("group_classes" | "online_coaching" | "open_gym" | "events" | "personal_training" | "digital_content" | "corporate_clients")[];
+                        /** @description Classes a person may book while their «Το θέλω» request waits to be paid at the front desk, counted per person and box (0 = none until the desk activates the package) */
+                        package_wait_bookings?: number;
                         payment_reminder_interval_days?: number;
                         /** @description Also remind the member on the day after it ended; then every payment_reminder_interval_days until they renew or leave */
                         subscription_day_after_reminder?: boolean;
@@ -123032,6 +123032,8 @@ export interface operations {
                             /** Format: date-time */
                             inserted_at?: string | null;
                             package_modules?: string[];
+                            /** @description Classes a person may book while their «Το θέλω» request waits to be paid at the front desk, counted per person and box (0 = none until the desk activates the package) */
+                            package_wait_bookings: number;
                             payment_reminder_interval_days: number;
                             /** @description Also remind the member on the day after it ended; then every payment_reminder_interval_days until they renew or leave */
                             subscription_day_after_reminder: boolean;
@@ -141844,11 +141846,6 @@ export interface operations {
                             currency: string;
                             days_left: number;
                             decline_reason?: string | null;
-                            /**
-                             * Format: date-time
-                             * @description ADR-633: when the one class while waiting was booked on this request
-                             */
-                            first_class_at?: string | null;
                             hold_days: number;
                             /**
                              * Format: date
@@ -141877,6 +141874,10 @@ export interface operations {
                             status: "pending" | "activated" | "cancelled" | "lapsed" | "declined";
                             /** Format: uuid */
                             user_id: string;
+                            /** @description Staff queue only (ADR-717): the box's number of classes while waiting */
+                            wait_bookings_allowed?: number;
+                            /** @description Staff queue only (ADR-717): classes the person booked while waiting, at this box */
+                            wait_bookings_used?: number;
                         }[];
                     };
                 };
@@ -141905,11 +141906,6 @@ export interface operations {
                             currency: string;
                             days_left: number;
                             decline_reason?: string | null;
-                            /**
-                             * Format: date-time
-                             * @description ADR-633: when the one class while waiting was booked on this request
-                             */
-                            first_class_at?: string | null;
                             hold_days: number;
                             /**
                              * Format: date
@@ -141938,6 +141934,10 @@ export interface operations {
                             status: "pending" | "activated" | "cancelled" | "lapsed" | "declined";
                             /** Format: uuid */
                             user_id: string;
+                            /** @description Staff queue only (ADR-717): the box's number of classes while waiting */
+                            wait_bookings_allowed?: number;
+                            /** @description Staff queue only (ADR-717): classes the person booked while waiting, at this box */
+                            wait_bookings_used?: number;
                         };
                     };
                 };
@@ -141960,12 +141960,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        first_class_available: boolean;
                         /** @description Booking is refused now */
                         package_required: boolean;
                         pending_request: boolean;
                         /** @description The box books only with a package */
                         rule: boolean;
+                        /** @description ADR-717: classes the box lets a person book while «Το θέλω» waits */
+                        wait_bookings_allowed: number;
+                        wait_bookings_left: number;
+                        wait_bookings_used: number;
                     };
                 };
             };
@@ -142142,11 +142145,6 @@ export interface operations {
                             currency: string;
                             days_left: number;
                             decline_reason?: string | null;
-                            /**
-                             * Format: date-time
-                             * @description ADR-633: when the one class while waiting was booked on this request
-                             */
-                            first_class_at?: string | null;
                             hold_days: number;
                             /**
                              * Format: date
@@ -142175,6 +142173,10 @@ export interface operations {
                             status: "pending" | "activated" | "cancelled" | "lapsed" | "declined";
                             /** Format: uuid */
                             user_id: string;
+                            /** @description Staff queue only (ADR-717): the box's number of classes while waiting */
+                            wait_bookings_allowed?: number;
+                            /** @description Staff queue only (ADR-717): classes the person booked while waiting, at this box */
+                            wait_bookings_used?: number;
                         };
                     };
                 };
@@ -142191,11 +142193,6 @@ export interface operations {
                             currency: string;
                             days_left: number;
                             decline_reason?: string | null;
-                            /**
-                             * Format: date-time
-                             * @description ADR-633: when the one class while waiting was booked on this request
-                             */
-                            first_class_at?: string | null;
                             hold_days: number;
                             /**
                              * Format: date
@@ -142224,6 +142221,10 @@ export interface operations {
                             status: "pending" | "activated" | "cancelled" | "lapsed" | "declined";
                             /** Format: uuid */
                             user_id: string;
+                            /** @description Staff queue only (ADR-717): the box's number of classes while waiting */
+                            wait_bookings_allowed?: number;
+                            /** @description Staff queue only (ADR-717): classes the person booked while waiting, at this box */
+                            wait_bookings_used?: number;
                         };
                     };
                 };

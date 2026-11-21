@@ -28,6 +28,9 @@ defmodule Palee.Finance.FinanceSetting do
     # ADR-633: since when clients book only with a package (nil: the box
     # sells no package). Set and cleared by the daily run, never by a form.
     field :package_rule_since, :utc_datetime_usec
+    # ADR-717: classes a person may book while their «Το θέλω» waits for the
+    # front desk, per person and box (0 = none until the desk activates).
+    field :package_wait_bookings, :integer, default: 3
 
     timestamps(type: :utc_datetime_usec)
   end
@@ -45,7 +48,8 @@ defmodule Palee.Finance.FinanceSetting do
       :document_mode,
       :package_modules,
       :package_audience,
-      :featured_package_id
+      :featured_package_id,
+      :package_wait_bookings
     ])
     |> validate_required([
       :payment_reminder_interval_days,
@@ -61,6 +65,13 @@ defmodule Palee.Finance.FinanceSetting do
     |> validate_number(:subscription_grace_days,
       greater_than_or_equal_to: 0,
       less_than_or_equal_to: 60
+    )
+    |> validate_number(:package_wait_bookings,
+      greater_than_or_equal_to: 0,
+      less_than_or_equal_to: 20
+    )
+    |> check_constraint(:package_wait_bookings,
+      name: :finance_settings_package_wait_bookings_check
     )
     |> validate_inclusion(:entitlement_enforcement_mode, [
       "observe",

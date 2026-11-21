@@ -26,17 +26,29 @@ defmodule Palee.Finance.Ports.PackageRequestStore do
   @callback lapse_before(Date.t(), DateTime.t()) :: [request()]
 
   @doc """
-  ADR-633: takes the person's one class while their request waits, on the
-  oldest request open on `today`: `{:ok, request}`, or `{:error,
-  :first_class_used}` (already taken at this box, by any request) or
-  `{:error, :no_pending_request}`.
+  ADR-717: counts a class booked while the person's request waits, against
+  the box's `allowed` number (per person and box, for good). On success
+  `{:ok, {:claimed, id}}` (give it back with `release_wait_booking/1` if
+  the booking is not made) or `{:ok, {:counted, id}}` (this class was
+  already counted, e.g. booked again after a cancel). Otherwise `{:error,
+  :wait_bookings_used}` or `{:error, :no_pending_request}`.
   """
-  @callback claim_first_class(Ecto.UUID.t(), Ecto.UUID.t(), Date.t(), DateTime.t()) ::
-              {:ok, request()} | {:error, :first_class_used | :no_pending_request}
+  @callback claim_wait_booking(
+              Ecto.UUID.t(),
+              Ecto.UUID.t(),
+              non_neg_integer(),
+              Date.t(),
+              DateTime.t()
+            ) ::
+              {:ok, {:claimed | :counted, Ecto.UUID.t()}}
+              | {:error, :wait_bookings_used | :no_pending_request}
 
-  @doc "Gives the one class back when the booking it was taken for was not made."
-  @callback release_first_class(Ecto.UUID.t()) :: :ok
+  @doc "Gives a counted class back when the booking it was taken for was not made."
+  @callback release_wait_booking(Ecto.UUID.t()) :: :ok
 
-  @doc "The request the person's one class was taken on at this box, if any."
-  @callback first_class(Ecto.UUID.t()) :: request() | nil
+  @doc "How many classes the person booked while waiting, at this box."
+  @callback wait_bookings_used(Ecto.UUID.t()) :: non_neg_integer()
+
+  @doc "The same for several people: `%{user_id => count}` (missing = 0)."
+  @callback wait_bookings_used_by([Ecto.UUID.t()]) :: %{Ecto.UUID.t() => non_neg_integer()}
 end

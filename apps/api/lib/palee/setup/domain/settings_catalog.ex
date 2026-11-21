@@ -36,6 +36,7 @@ defmodule Palee.Setup.Domain.SettingsCatalog do
     {"finance.document_mode", :derive, "invoice", false},
     {"finance.package_modules", :derive, ["group_classes", "online_coaching"], true},
     {"finance.subscription_grace_days", :advanced, 3, true},
+    {"finance.package_wait_bookings", :basic, 3, false},
     {"finance.subscription_expiry_reminder_days", :advanced, 5, true},
     {"finance.subscription_end_day_reminder", :advanced, true, false},
     {"finance.subscription_day_after_reminder", :advanced, true, false},

@@ -274,7 +274,7 @@ test("the desk sees «Περιμένουν πληρωμή», opens the person's 
 test("the desk activates with payment pending, or declines with a reason", async ({ page }) => {
   const writes: Write[] = [];
   let open = [
-    { ...REQUEST, person: { user_id: "maria", display_name: "Μαρία Κωνσταντίνου", handle: "maria", avatar_url: null }, first_class_at: "2026-10-31T09:00:00Z" },
+    { ...REQUEST, person: { user_id: "maria", display_name: "Μαρία Κωνσταντίνου", handle: "maria", avatar_url: null }, wait_bookings_used: 2, wait_bookings_allowed: 3 },
     { ...REQUEST, id: "req-2", user_id: "nikos", person: { user_id: "nikos", display_name: "Νίκος Π.", handle: "nikos", avatar_url: null } },
   ];
   await page.context().addCookies([{ name: "palee_locale", value: "el", url: "http://127.0.0.1" }]);
@@ -309,7 +309,9 @@ test("the desk activates with payment pending, or declines with a reason", async
   });
 
   await page.goto("/admin/finance?tab=queues&queue=awaiting");
-  await expect(page.getByTestId("desk-first-class-req-1")).toHaveText("Έκανε τη μία κράτηση της αναμονής");
+  // ADR-717: how many of the box's bookings before payment they made.
+  await expect(page.getByTestId("desk-wait-bookings-req-1")).toHaveText("Έκανε 2 από 3 κρατήσεις πριν την πληρωμή");
+  await expect(page.getByTestId("desk-wait-bookings-req-2")).toHaveCount(0);
   await expect(page.getByTestId("package-rule-person-eleni")).toContainText("Ελένη Μ.");
 
   await page.getByTestId("desk-collect-req-1").click();

@@ -189,11 +189,16 @@ defmodule PaleeWeb.Schemas.Payments do
         },
         hold_days: @int,
         days_left: @int,
-        first_class_at: %Schema{
-          type: :string,
-          format: :"date-time",
-          nullable: true,
-          description: "ADR-633: when the one class while waiting was booked on this request"
+        wait_bookings_used: %Schema{
+          type: :integer,
+          minimum: 0,
+          description:
+            "Staff queue only (ADR-717): classes the person booked while waiting, at this box"
+        },
+        wait_bookings_allowed: %Schema{
+          type: :integer,
+          minimum: 0,
+          description: "Staff queue only (ADR-717): the box's number of classes while waiting"
         },
         decline_reason: %{@text | nullable: true},
         person: %Schema{
@@ -252,10 +257,23 @@ defmodule PaleeWeb.Schemas.Payments do
       properties: %{
         rule: %Schema{type: :boolean, description: "The box books only with a package"},
         pending_request: %Schema{type: :boolean},
-        first_class_available: %Schema{type: :boolean},
+        wait_bookings_allowed: %Schema{
+          type: :integer,
+          minimum: 0,
+          description: "ADR-717: classes the box lets a person book while «Το θέλω» waits"
+        },
+        wait_bookings_used: %Schema{type: :integer, minimum: 0},
+        wait_bookings_left: %Schema{type: :integer, minimum: 0},
         package_required: %Schema{type: :boolean, description: "Booking is refused now"}
       },
-      required: [:rule, :pending_request, :first_class_available, :package_required]
+      required: [
+        :rule,
+        :pending_request,
+        :wait_bookings_allowed,
+        :wait_bookings_used,
+        :wait_bookings_left,
+        :package_required
+      ]
     }
   end
 

@@ -20,9 +20,9 @@ const api = vi.hoisted(() => ({
   dismissPackagesNotice: vi.fn(),
 }));
 const settings = vi.hoisted(() => ({
-  fetchAdminSettings: vi.fn(async () => ({ finance: { subscription_grace_days: 7 } })),
-  updateAdminSettings: vi.fn(async (_token: string, body: { finance: { subscription_grace_days: number } }) => ({
-    finance: { subscription_grace_days: body.finance.subscription_grace_days },
+  fetchAdminSettings: vi.fn(async () => ({ finance: { subscription_grace_days: 7, package_wait_bookings: 3 } })),
+  updateAdminSettings: vi.fn(async (_token: string, body: { finance: Record<string, number> }) => ({
+    finance: { subscription_grace_days: 7, package_wait_bookings: 3, ...body.finance },
   })),
 }));
 
@@ -150,6 +150,30 @@ describe("OnlinePaymentsSettings", () => {
     chooseOption(grace, "14 ημέρες");
     await waitFor(() =>
       expect(settings.updateAdminSettings).toHaveBeenCalledWith("token", { finance: { subscription_grace_days: 14 } }),
+    );
+  });
+
+  // ADR-717: how many classes someone books while «Το θέλω» waits for the desk,
+  // with or without an online provider.
+  it("sets the bookings before payment at the desk, without and with a provider", async () => {
+    api.fetchPaymentAccount.mockResolvedValue(status(null));
+    const { unmount } = wrap("el");
+    const select = await screen.findByRole("combobox", { name: "Κρατήσεις πριν την πληρωμή" });
+    expect(select).toHaveTextContent("3 κρατήσεις");
+    expect(screen.getByTestId("wait-bookings-setting")).toHaveTextContent("Μετράνε μία φορά ανά άτομο");
+    const { chooseOption } = await import("@/components/ui/select-test-utils");
+    chooseOption(select, "Καμία");
+    await waitFor(() =>
+      expect(settings.updateAdminSettings).toHaveBeenCalledWith("token", { finance: { package_wait_bookings: 0 } }),
+    );
+    unmount();
+
+    api.fetchPaymentAccount.mockResolvedValue(status(ACCOUNT));
+    wrap("en");
+    const connected = await screen.findByRole("combobox", { name: "Bookings before payment" });
+    chooseOption(connected, "5 bookings");
+    await waitFor(() =>
+      expect(settings.updateAdminSettings).toHaveBeenCalledWith("token", { finance: { package_wait_bookings: 5 } }),
     );
   });
 

@@ -32,11 +32,11 @@ The setup recipes (CP-H2, same ADR) set most of the «Derive» rows in one step 
 
 | Verdict | Count | What it means for the screen |
 |---|---|---|
-| Basic | 16 | The main settings screen |
+| Basic | 17 | The main settings screen |
 | Advanced | 39 | One «Προχωρημένα» section per area, closed by default |
 | Derive | 10 | Set by the app or by a setup recipe |
 | Remove (UI) | 4 | Hidden from owners; kept for the Palee team or internal use |
-| **Total business settings** | **69** | including the 5 class-type fields (§J); plus ≈50 per-package fields (§K) |
+| **Total business settings** | **70** | including the 5 class-type fields (§J); plus ≈50 per-package fields (§K) |
 
 The counts are checked by `test/palee/setup/domain/settings_catalog_test.exs` against the catalog in
 code, so this table and the code cannot drift apart.
@@ -73,6 +73,7 @@ Table `finance_settings`; `PATCH /admin/settings` section `finance`.
 | `finance.document_mode` | `invoice` | — | **Derive** (from the country profile, ADR-240; Greece issues receipts for B2C) |
 | `finance.package_modules` | `group_classes`, `online_coaching` | Owner, once | **Derive** (from the setup recipe: open gym, personal training, …), editable in «Προχωρημένα» |
 | `finance.subscription_grace_days` | 3 | Owner, rarely | **Advanced** |
+| `finance.package_wait_bookings` («Κρατήσεις πριν την πληρωμή») | 3 | Owner, once | **Basic** (ADR-717: classes booked while «Το θέλω» waits for the front desk; Ρυθμίσεις › Πληρωμές) |
 | `finance.subscription_expiry_reminder_days` | 5 | Owner, rarely | **Advanced** |
 | `finance.subscription_end_day_reminder` | on | Owner, rarely | **Advanced** (ADR-500: remind on the day it ends) |
 | `finance.subscription_day_after_reminder` | on | Owner, rarely | **Advanced** (ADR-500: remind the day after, then every `payment_reminder_interval_days`) |

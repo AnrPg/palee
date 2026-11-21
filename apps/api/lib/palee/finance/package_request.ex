@@ -24,9 +24,6 @@ defmodule Palee.Finance.PackageRequest do
     field :closed_by_id, :binary_id
     field :membership_package_subscription_id, :binary_id
     field :membership_payment_id, :binary_id
-    # ADR-633: the one class booked while the first request waited.
-    field :first_class_at, :utc_datetime_usec
-    field :first_class_scheduled_class_id, :binary_id
     field :decline_reason, :string
 
     timestamps(type: :utc_datetime_usec)
