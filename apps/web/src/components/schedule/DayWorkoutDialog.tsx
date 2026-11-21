@@ -19,6 +19,7 @@ import { WodPicker } from "@/components/schedule/WodPicker";
 import { Dialog, DialogButton } from "@/components/ui/Dialog";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { ContextualWorkoutCreator } from "@/components/workouts/creation/ContextualWorkoutCreator";
+import { WorkoutPreviewDetail } from "@/components/workouts/WorkoutPreviewDetail";
 import { localizeError } from "@/i18n/presentation";
 import { useUiTranslations } from "@/i18n/ui";
 
@@ -237,6 +238,19 @@ export function DayWorkoutDialog({
                         </button>
                       </div>
                     </div>
+                    {/* The whole WOD, never its name alone. */}
+                    {rule.workout?.sections ? (
+                      <div className="mt-3" data-testid="day-wod-preview">
+                        <WorkoutPreviewDetail
+                          sections={rule.workout.sections}
+                          content={rule.workout.content}
+                          authoringMode={rule.workout.authoring_mode}
+                          freeTextBody={rule.workout.free_text_body}
+                          freeTextDocument={rule.workout.free_text_document}
+                          initiallyExpanded
+                        />
+                      </div>
+                    ) : null}
                     {confirmRemove === rule.id ? (
                       <div className="mt-3 flex flex-wrap items-center gap-2 text-xs" style={{ color: "var(--text-soft)" }}>
                         <span className="flex-1">{t("dayWodRemoveConfirm", { count })}</span>

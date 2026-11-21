@@ -116,6 +116,9 @@ defmodule PaleeWeb.ScheduleController do
                    workout: %Schema{
                      type: :object,
                      nullable: true,
+                     additionalProperties: true,
+                     description:
+                       "The whole WOD, the same preview a class carries (sections with their exercises or text).",
                      properties: %{
                        id: %Schema{type: :string, format: :uuid},
                        title: %Schema{type: :string},
@@ -219,7 +222,15 @@ defmodule PaleeWeb.ScheduleController do
                      type: :object,
                      nullable: true,
                      additionalProperties: true,
+                     description:
+                       "The class's whole WOD: every section with its exercises, or (free-text and sectioned WODs) its text.",
                      properties: %{
+                       free_text_body: %Schema{type: :string, nullable: true},
+                       free_text_document: %Schema{
+                         type: :object,
+                         nullable: true,
+                         additionalProperties: true
+                       },
                        focus: %Schema{
                          type: :array,
                          description: "What the workout trains, read from its movements.",

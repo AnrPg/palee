@@ -20,7 +20,15 @@ const rule = {
   class_type_id: null,
   location_id: null,
   master_workout_id: "w-fran-day",
-  workout: { id: "w-fran-day", title: "Fran", type: "crossfit" },
+  // The whole WOD, as the schedule carries it: the dialog shows it, not only its name.
+  workout: {
+    id: "w-fran-day",
+    title: "Fran",
+    type: "crossfit",
+    authoring_mode: "sectioned_text",
+    content: [],
+    sections: [{ id: "fran-a", name: "A. Metcon", order: 1, exercises: [], free_text_body: "21-15-9\nThrusters 43 kg\nPull-ups" }],
+  },
 };
 
 type Slot = ReturnType<typeof slot>;
@@ -246,6 +254,10 @@ test.describe("Schedule › day WOD", () => {
     const list = page.getByTestId("day-wod-list");
     await expect(list).toContainText("All classes");
     await expect(list).toContainText("1 class follows it");
+    const wod = list.getByTestId("day-wod-preview");
+    await expect(wod).toContainText("A. Metcon");
+    await expect(wod).toContainText("Thrusters 43 kg");
+    await expect(wod).toContainText("Pull-ups");
     await list.getByRole("button", { name: "Remove" }).click();
     await expect(list).toContainText("Remove it? The 1 class that took it falls back to a broader day WOD, or has none.");
     await list.getByRole("button", { name: "Yes, remove" }).click();

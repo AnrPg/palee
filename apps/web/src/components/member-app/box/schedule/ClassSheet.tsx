@@ -32,6 +32,7 @@ import { localizeError } from "@/i18n/presentation";
 import { useUiTranslations } from "@/i18n/ui";
 import { fetchBookingInvite } from "@/api/training-floor";
 import { downloadIcsEvent, saveIcs } from "@/lib/ics";
+import { readTextSections, SECTIONED_TEXT_MODE } from "@/lib/text-sections";
 import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
 import { dateKeyInZone, formatInZone, zonedText } from "@/lib/zoned-time";
 import { YourTime } from "@/components/zoned-time";
@@ -39,16 +40,29 @@ import { Dialog } from "@/components/ui/Dialog";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { ClassStateNotice } from "@/components/schedule/ClassState";
 
-/** The WOD as the sheet shows it (board 2, Q7): each part with its movement names. */
-export function wodOutline(workout: WorkoutPreview) {
-  return [...workout.sections]
+/**
+ * The WOD as the sheet shows it (board 2, Q7): each part with all its
+ * movements. A part written as text (ADR-180) shows its whole text, since
+ * its exercises live there; a WOD whose parts carry no movements at all
+ * (free text) is shown as its text instead (`[]`).
+ */
+export function wodOutline(workout: WorkoutPreview): { id: string; name: string; movements: string[]; text: string }[] {
+  if (workout.authoring_mode === SECTIONED_TEXT_MODE) {
+    return readTextSections(workout)
+      .map((section) => ({ id: section.id, name: section.title, movements: [], text: section.body.trim() }))
+      .filter((section) => section.text || section.name);
+  }
+  const outline = [...workout.sections]
     .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
     .map((section) => ({
       id: section.id,
       name: section.name,
       movements: [...section.exercises].sort((a, b) => a.order - b.order).map((exercise) => exercise.name),
+      text: "",
     }))
     .filter((section) => section.movements.length > 0 || section.name);
+  const noMovements = outline.every((section) => section.movements.length === 0);
+  return noMovements && workout.free_text_body?.trim() ? [] : outline;
 }
 
 /**
@@ -535,6 +549,11 @@ function WodOutline({ workout }: { workout: WorkoutPreview }) {
           {section.movements.length > 0 ? (
             <p className="text-sm" style={{ color: "var(--text-soft)" }}>
               {section.movements.join(" · ")}
+            </p>
+          ) : null}
+          {section.text ? (
+            <p className="whitespace-pre-line text-sm" style={{ color: "var(--text-soft)" }}>
+              {section.text}
             </p>
           ) : null}
         </li>

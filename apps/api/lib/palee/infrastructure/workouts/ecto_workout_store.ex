@@ -1273,6 +1273,10 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
       # ADR-180: execution builds a sectioned workout's timers (and checks its
       # athletes' section results) from the mode.
       authoring_mode: workout.authoring_mode,
+      # ADR-224: the flat fields stay for every reader; a free-text WOD's
+      # exercises are in its text, so a member's read must carry it too.
+      free_text_body: workout.free_text_body,
+      free_text_document: workout.free_text_document,
       created_by_id: workout.created_by_id,
       folder_id: workout.folder_id,
       source_workout_id: workout.source_workout_id,
@@ -1287,15 +1291,7 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
     normalized
     |> Map.put(:available_scale_levels, WorkoutMaterializer.available_scales(normalized))
     # ADR-224: what the workout says, in the shape of how it was written.
-    |> Map.put(
-      :body,
-      WorkoutBody.build(
-        Map.merge(normalized, %{
-          free_text_body: workout.free_text_body,
-          free_text_document: workout.free_text_document
-        })
-      )
-    )
+    |> Map.put(:body, WorkoutBody.build(normalized))
   end
 
   defp normalize_assignment(%AssignedWorkout{} = assignment) do

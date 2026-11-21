@@ -39,7 +39,7 @@ defmodule Palee.Application.GetScheduleCalendar do
          # ADR-230: staff see and edit the WOD of each day.
          day_workouts:
            if(admin_role?(context, actor),
-             do: DayWorkouts.list(context, start_date, end_date),
+             do: context |> DayWorkouts.list(start_date, end_date) |> with_whole_wods(context),
              else: []
            ),
          days: days,
@@ -336,6 +336,24 @@ defmodule Palee.Application.GetScheduleCalendar do
     end)
   end
 
+  # The day's WOD is shown whole (its sections with all their exercises or
+  # text), like a class's, never by its title alone.
+  defp with_whole_wods(day_workouts, context) do
+    previews =
+      day_workouts
+      |> Enum.map(& &1.master_workout_id)
+      |> Enum.reject(&is_nil/1)
+      |> Enum.uniq()
+      |> Map.new(&{&1, context |> Workouts.get_workout(&1) |> preview_workout()})
+
+    Enum.map(day_workouts, fn day_workout ->
+      case Map.get(previews, day_workout.master_workout_id) do
+        nil -> day_workout
+        preview -> Map.put(day_workout, :workout, preview)
+      end
+    end)
+  end
+
   defp preview_workout(nil), do: nil
 
   defp preview_workout(workout) do
@@ -345,16 +363,29 @@ defmodule Palee.Application.GetScheduleCalendar do
       type: workout.type,
       # ADR-270: a structured plan workout previews as its plan (`plan-view`).
       authoring_mode: Map.get(workout, :authoring_mode),
+      # The whole WOD, never only its section titles: a free-text or sectioned
+      # (ADR-180) workout keeps its exercises in its text, not in `exercises`.
+      free_text_body: Map.get(workout, :free_text_body),
+      free_text_document: Map.get(workout, :free_text_document),
+      content: Map.get(workout, :content),
       focus: Workouts.workout_focus(workout),
       sections:
         Enum.map(workout.sections || [], fn section ->
           %{
             id: section.id,
+            parent_section_id: Map.get(section, :parent_section_id),
             name: section.name,
+            subtitle: Map.get(section, :subtitle),
             order: section.order,
             scoreable: section.scoreable,
             score_config: section.score_config,
             timer_config: section.timer_config,
+            note: Map.get(section, :note),
+            content: Map.get(section, :content),
+            section_metadata: Map.get(section, :section_metadata),
+            free_text_body: Map.get(section, :free_text_body),
+            free_text_document: Map.get(section, :free_text_document),
+            timer_preset: Map.get(section, :timer_preset),
             plan: Map.get(section, :plan),
             prescription: Map.get(section, :prescription),
             exercises:

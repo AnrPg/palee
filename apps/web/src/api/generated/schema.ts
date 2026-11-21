@@ -56735,6 +56735,9 @@ export interface components {
                 } | null;
                 source?: string | null;
                 workout: {
+                    authoring_mode?: string | null;
+                    /** @description A free-text WOD's whole text (its exercises live there). */
+                    free_text_body?: string | null;
                     id?: string;
                     sections?: {
                         exercises?: {
@@ -56743,6 +56746,8 @@ export interface components {
                         /** @description ADR-270: the flow of a structured plan section */
                         flow?: string | null;
                         format?: string;
+                        /** @description ADR-180: a text section's whole text (its exercises live there). */
+                        free_text_body?: string | null;
                         id?: string;
                         name?: string | null;
                         nested?: boolean;
@@ -56750,6 +56755,8 @@ export interface components {
                         timer_config?: {
                             [key: string]: unknown;
                         } | null;
+                        /** @description ADR-180: a text section the coach left without a title. */
+                        untitled?: boolean;
                     }[];
                     title?: string | null;
                     type?: string | null;
@@ -127208,6 +127215,9 @@ export interface operations {
                             } | null;
                             source?: string | null;
                             workout: {
+                                authoring_mode?: string | null;
+                                /** @description A free-text WOD's whole text (its exercises live there). */
+                                free_text_body?: string | null;
                                 id?: string;
                                 sections?: {
                                     exercises?: {
@@ -127216,6 +127226,8 @@ export interface operations {
                                     /** @description ADR-270: the flow of a structured plan section */
                                     flow?: string | null;
                                     format?: string;
+                                    /** @description ADR-180: a text section's whole text (its exercises live there). */
+                                    free_text_body?: string | null;
                                     id?: string;
                                     name?: string | null;
                                     nested?: boolean;
@@ -127223,6 +127235,8 @@ export interface operations {
                                     timer_config?: {
                                         [key: string]: unknown;
                                     } | null;
+                                    /** @description ADR-180: a text section the coach left without a title. */
+                                    untitled?: boolean;
                                 }[];
                                 title?: string | null;
                                 type?: string | null;
@@ -141265,6 +141279,9 @@ export interface operations {
                             } | null;
                             source?: string | null;
                             workout: {
+                                authoring_mode?: string | null;
+                                /** @description A free-text WOD's whole text (its exercises live there). */
+                                free_text_body?: string | null;
                                 id?: string;
                                 sections?: {
                                     exercises?: {
@@ -141273,6 +141290,8 @@ export interface operations {
                                     /** @description ADR-270: the flow of a structured plan section */
                                     flow?: string | null;
                                     format?: string;
+                                    /** @description ADR-180: a text section's whole text (its exercises live there). */
+                                    free_text_body?: string | null;
                                     id?: string;
                                     name?: string | null;
                                     nested?: boolean;
@@ -141280,6 +141299,8 @@ export interface operations {
                                     timer_config?: {
                                         [key: string]: unknown;
                                     } | null;
+                                    /** @description ADR-180: a text section the coach left without a title. */
+                                    untitled?: boolean;
                                 }[];
                                 title?: string | null;
                                 type?: string | null;
@@ -147762,12 +147783,15 @@ export interface operations {
                             location_id: string | null;
                             /** Format: uuid */
                             master_workout_id: string;
-                            workout?: {
+                            /** @description The whole WOD, the same preview a class carries (sections with their exercises or text). */
+                            workout?: ({
                                 /** Format: uuid */
                                 id?: string;
                                 title?: string;
                                 type?: string | null;
-                            } | null;
+                            } & {
+                                [key: string]: unknown;
+                            }) | null;
                         } & {
                             [key: string]: unknown;
                         })[];
@@ -147836,9 +147860,14 @@ export interface operations {
                             space_unavailable?: boolean;
                             /** @description ADR-551: the member's access has closed, so the class comes without its WOD. */
                             wod_locked?: boolean;
+                            /** @description The class's whole WOD: every section with its exercises, or (free-text and sectioned WODs) its text. */
                             workout?: ({
                                 /** @description What the workout trains, read from its movements. */
                                 focus?: ("strength" | "endurance" | "gymnastics" | "olympic_lifting" | "mobility" | "legs" | "core" | "upper_body")[];
+                                free_text_body?: string | null;
+                                free_text_document?: {
+                                    [key: string]: unknown;
+                                } | null;
                             } & {
                                 [key: string]: unknown;
                             }) | null;
