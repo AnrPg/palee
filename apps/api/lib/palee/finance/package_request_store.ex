@@ -22,11 +22,13 @@ defmodule Palee.Finance.PackageRequestStore do
   @impl true
   def lapse_before(today, now), do: adapter().lapse_before(today, now)
   @impl true
-  def claim_first_class(user_id, scheduled_class_id, today, now),
-    do: adapter().claim_first_class(user_id, scheduled_class_id, today, now)
+  def claim_wait_booking(user_id, scheduled_class_id, allowed, today, now),
+    do: adapter().claim_wait_booking(user_id, scheduled_class_id, allowed, today, now)
 
   @impl true
-  def release_first_class(request_id), do: adapter().release_first_class(request_id)
+  def release_wait_booking(wait_booking_id), do: adapter().release_wait_booking(wait_booking_id)
   @impl true
-  def first_class(user_id), do: adapter().first_class(user_id)
+  def wait_bookings_used(user_id), do: adapter().wait_bookings_used(user_id)
+  @impl true
+  def wait_bookings_used_by(user_ids), do: adapter().wait_bookings_used_by(user_ids)
 end

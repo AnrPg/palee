@@ -80,7 +80,7 @@ defmodule Palee.Application.SubmitBooking do
          :ok <- documents_gate(Keyword.get(opts, :documents_gate, true), context, user_id, now),
          :ok <- check_booking_window(context, user_id, slot, now, opts),
          :ok <- check_booking_limits(context, user_id, slot, now, opts),
-         # ADR-633: no package, no booking (but one class while waiting).
+         # ADR-633: no package, no booking (but the box's classes while waiting, ADR-717).
          {:ok, rule} <-
            PackageRule.check_booking(context, actor, slot, Keyword.get(opts, :package_rule, true)),
          request = BookingPolicy.entitlement_request(slot),

@@ -10,10 +10,15 @@ defmodule Palee.Application.PackageRule do
       judged by their package as before (no package, an ended one or an
       overdue debt already refuse). Staff, staff placing someone and the
       platform's admins are not touched.
-    * **One class while waiting**: someone whose first «Το θέλω» waits for
-      the desk may book one class, once per person and box, whatever
-      happens to that booking. If the request is declined or lapses, their
-      upcoming bookings are cancelled (`end_waiting/2`).
+    * **Classes while waiting** (ADR-717): someone whose «Το θέλω» waits
+      for the desk may book as many classes as the box's
+      `package_wait_bookings` says (default 3, 0 = none). They are counted
+      per person and box for good (a new request does not start again),
+      whatever happens to each booking; the same class booked again after a
+      cancel counts once. Lowering the number keeps the bookings already
+      made and refuses new ones until the count is under it. If the request
+      is declined or lapses, their upcoming bookings are cancelled
+      (`end_waiting/2`).
     * **Start and rollout** (`daily/2`, from `SubscriptionExpiryJob`): the
       rule starts the first day the box sells a package. The clients already
       training then without a profile get a 14-day free access from the
@@ -40,8 +45,8 @@ defmodule Palee.Application.PackageRule do
   @doc """
   Whether `actor` may book `slot` as far as the rule goes:
   `{:ok, :open}` (the rule does not apply, or their profile decides),
-  `{:ok, {:first_class, request_id}}` (the one class while waiting; give it
-  back with `release/2` if the booking is not made), or
+  `{:ok, {:wait_booking, claim}}` (a class while waiting; give it back with
+  `release/2` if the booking is not made), or
   `{:error, :finance_package_required}`.
   """
   def check_booking(context, actor, slot, enabled? \\ true)
@@ -56,15 +61,15 @@ defmodule Palee.Application.PackageRule do
       not on?(context) -> {:ok, :open}
       is_nil(Organizations.buyer_role(context, user_id)) -> {:ok, :open}
       has_profile?(context, user_id) -> {:ok, :open}
-      true -> claim_first_class(context, user_id, slot)
+      true -> claim_wait_booking(context, user_id, slot)
     end
   end
 
   def check_booking(_context, _actor, _slot, _enabled?), do: {:ok, :open}
 
-  @doc "Gives the one class back when its booking was not made."
-  def release(context, {:first_class, request_id}) do
-    scoped(context, fn -> PackageRequestStore.release_first_class(request_id) end)
+  @doc "Gives a class while waiting back when its booking was not made."
+  def release(context, {:wait_booking, {:claimed, wait_booking_id}}) do
+    scoped(context, fn -> PackageRequestStore.release_wait_booking(wait_booking_id) end)
   end
 
   def release(_context, _rule), do: :ok
@@ -73,9 +78,11 @@ defmodule Palee.Application.PackageRule do
   def on?(context), do: not is_nil(since(context))
 
   @doc """
-  What the person sees before booking (ADR-633), for the booking screens:
-  `rule` (whether it holds for them), `package_required` (they would be
-  refused now), `first_class_available` and `pending_request`.
+  What the person sees before booking (ADR-633/717), for the booking
+  screens: `rule` (whether it holds for them), `package_required` (they
+  would be refused now), `pending_request`, and the classes while waiting:
+  `wait_bookings_allowed` (the box's number), `wait_bookings_used` and
+  `wait_bookings_left`.
   """
   def standing(%{organization_id: organization_id} = context, user_id)
       when is_binary(organization_id) do
@@ -86,49 +93,77 @@ defmodule Palee.Application.PackageRule do
     if applies? do
       today = Organizations.local_today(organization_id)
 
+      allowed = wait_bookings_allowed(context)
+
       {pending, used} =
         scoped(context, fn ->
           {PackageRequestStore.list_open(today, user_id: user_id) != [],
-           not is_nil(PackageRequestStore.first_class(user_id))}
+           PackageRequestStore.wait_bookings_used(user_id)}
         end)
+
+      left = if pending, do: max(allowed - used, 0), else: 0
 
       %{
         rule: true,
         pending_request: pending,
-        first_class_available: pending and not used,
-        package_required: not (pending and not used)
+        wait_bookings_allowed: allowed,
+        wait_bookings_used: used,
+        wait_bookings_left: left,
+        package_required: left == 0
       }
     else
-      %{
-        rule: false,
-        pending_request: false,
-        first_class_available: false,
-        package_required: false
-      }
+      not_applying(context)
     end
   end
 
-  def standing(_context, _user_id),
-    do: %{
+  def standing(context, _user_id), do: not_applying(context)
+
+  defp not_applying(context) do
+    %{
       rule: false,
       pending_request: false,
-      first_class_available: false,
+      wait_bookings_allowed: wait_bookings_allowed(context),
+      wait_bookings_used: 0,
+      wait_bookings_left: 0,
       package_required: false
     }
+  end
 
-  defp claim_first_class(context, user_id, slot) do
+  @doc """
+  ADR-717: how many classes a person may book at the box while their «Το
+  θέλω» waits for the desk (the box's setting, 3 unless changed).
+  """
+  def wait_bookings_allowed(%{organization_id: organization_id} = context)
+      when is_binary(organization_id),
+      do: Map.get(Finance.get_finance_settings(context), :package_wait_bookings, 3)
+
+  def wait_bookings_allowed(_context), do: 3
+
+  @doc "ADR-717: `%{user_id => classes booked while waiting}` at the box (missing = 0)."
+  def wait_bookings_used_by(context, user_ids),
+    do: scoped(context, fn -> PackageRequestStore.wait_bookings_used_by(user_ids) end)
+
+  defp claim_wait_booking(context, user_id, slot) do
     today = Organizations.local_today(context.organization_id)
+    allowed = wait_bookings_allowed(context)
 
     case scoped(context, fn ->
-           PackageRequestStore.claim_first_class(user_id, slot.id, today, DateTime.utc_now())
+           PackageRequestStore.claim_wait_booking(
+             user_id,
+             slot.id,
+             allowed,
+             today,
+             DateTime.utc_now()
+           )
          end) do
-      {:ok, request} ->
+      {:ok, {how, wait_booking_id} = claim} ->
         Logger.info(
-          "package_rule_first_class organization_id=#{context.organization_id} " <>
-            "user_id=#{user_id} request_id=#{request.id} scheduled_class_id=#{slot.id}"
+          "package_rule_wait_booking organization_id=#{context.organization_id} " <>
+            "user_id=#{user_id} wait_booking_id=#{wait_booking_id} how=#{how} " <>
+            "allowed=#{allowed} scheduled_class_id=#{slot.id}"
         )
 
-        {:ok, {:first_class, request.id}}
+        {:ok, {:wait_booking, claim}}
 
       {:error, reason} ->
         Logger.info(
@@ -142,7 +177,7 @@ defmodule Palee.Application.PackageRule do
 
   @doc """
   A request closed without a package (declined, lapsed): if the person
-  still has no profile and nothing else waiting, their upcoming bookings (the one class) go, the
+  still has no profile and nothing else waiting, their upcoming bookings (the classes while waiting) go, the
   places and visits are released.
   """
   def end_waiting(context, user_id) do

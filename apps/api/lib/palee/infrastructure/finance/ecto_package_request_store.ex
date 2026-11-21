@@ -5,7 +5,7 @@ defmodule Palee.Infrastructure.Finance.EctoPackageRequestStore do
 
   import Ecto.Query
 
-  alias Palee.Finance.PackageRequest
+  alias Palee.Finance.{PackageRequest, PackageWaitBooking}
   alias Palee.Infrastructure.Tenancy.RepoContext
   alias Palee.Repo
 
@@ -141,68 +141,101 @@ defmodule Palee.Infrastructure.Finance.EctoPackageRequestStore do
   end
 
   @impl true
-  def claim_first_class(user_id, scheduled_class_id, %Date{} = today, %DateTime{} = now) do
+  def claim_wait_booking(user_id, scheduled_class_id, allowed, %Date{} = today, %DateTime{} = now)
+      when is_integer(allowed) and allowed >= 0 do
     Repo.transaction(fn ->
-      cond do
-        first_class(user_id) ->
-          Repo.rollback(:first_class_used)
+      # One person's bookings are counted one at a time, so two at once
+      # cannot both take the last place.
+      lock_person!(user_id)
 
-        request = oldest_open_locked(user_id, today) ->
-          request
-          |> Ecto.Changeset.change(
-            first_class_at: now,
-            first_class_scheduled_class_id: scheduled_class_id
-          )
-          |> Ecto.Changeset.unique_constraint([:organization_id, :user_id],
-            name: :finance_package_requests_one_first_class_index
-          )
-          |> Repo.update()
-          |> case do
-            {:ok, claimed} -> normalize(claimed)
-            # Two bookings at once: the index lets only one take it.
-            {:error, _changeset} -> Repo.rollback(:first_class_used)
-          end
+      request = oldest_open(user_id, today)
+      counted = request && counted_for_class(user_id, scheduled_class_id)
+
+      cond do
+        is_nil(request) ->
+          Repo.rollback(:no_pending_request)
+
+        counted ->
+          # The same class booked again after a cancel: already counted.
+          {:counted, counted.id}
+
+        wait_bookings_used(user_id) >= allowed ->
+          Repo.rollback(:wait_bookings_used)
 
         true ->
-          Repo.rollback(:no_pending_request)
+          %PackageWaitBooking{
+            user_id: user_id,
+            package_request_id: request.id,
+            scheduled_class_id: scheduled_class_id,
+            booked_at: now
+          }
+          |> Ecto.Changeset.change()
+          |> Ecto.Changeset.unique_constraint([:organization_id, :user_id, :scheduled_class_id],
+            name: :finance_package_wait_bookings_one_per_class_index
+          )
+          |> Repo.insert()
+          |> case do
+            {:ok, row} -> {:claimed, row.id}
+            {:error, _changeset} -> Repo.rollback(:wait_bookings_used)
+          end
       end
     end)
   end
 
-  defp oldest_open_locked(user_id, today) do
+  defp lock_person!(user_id) do
+    organization_id = RepoContext.current_setting("app.organization_id")
+
+    Repo.query!("SELECT pg_advisory_xact_lock(hashtextextended($1, 717))", [
+      "package_wait_bookings:#{organization_id}:#{user_id}"
+    ])
+  end
+
+  defp counted_for_class(user_id, scheduled_class_id) do
+    PackageWaitBooking
+    |> tenant_scope()
+    |> where([w], w.user_id == ^user_id and w.scheduled_class_id == ^scheduled_class_id)
+    |> Repo.one()
+  end
+
+  defp oldest_open(user_id, today) do
     PackageRequest
     |> tenant_scope()
     |> where([r], r.user_id == ^user_id and r.status == "pending" and r.hold_until >= ^today)
     |> order_by([r], asc: r.inserted_at, asc: r.id)
     |> limit(1)
-    |> lock("FOR UPDATE")
     |> Repo.one()
   end
 
   @impl true
-  def release_first_class(request_id) do
-    PackageRequest
+  def release_wait_booking(wait_booking_id) do
+    PackageWaitBooking
     |> tenant_scope()
-    |> where([r], r.id == ^request_id)
-    |> Repo.update_all(
-      set: [
-        first_class_at: nil,
-        first_class_scheduled_class_id: nil,
-        updated_at: DateTime.utc_now()
-      ]
-    )
+    |> where([w], w.id == ^wait_booking_id)
+    |> Repo.delete_all()
 
     :ok
   end
 
   @impl true
-  def first_class(user_id) do
-    PackageRequest
+  def wait_bookings_used(user_id) do
+    PackageWaitBooking
     |> tenant_scope()
-    |> where([r], r.user_id == ^user_id and not is_nil(r.first_class_at))
-    |> limit(1)
+    |> where([w], w.user_id == ^user_id)
+    |> select([w], count(w.id))
     |> Repo.one()
-    |> normalize()
+  end
+
+  @impl true
+  def wait_bookings_used_by([]), do: %{}
+
+  def wait_bookings_used_by(user_ids) when is_list(user_ids) do
+    PackageWaitBooking
+    |> tenant_scope()
+    |> where([w], w.user_id in ^user_ids)
+    |> group_by([w], w.user_id)
+    |> select([w], {w.user_id, count(w.id)})
+    |> Repo.all()
+    |> Map.new()
   end
 
   defp tenant_scope(queryable) do

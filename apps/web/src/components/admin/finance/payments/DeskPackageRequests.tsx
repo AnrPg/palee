@@ -112,9 +112,9 @@ export function DeskPackageRequestRows({
               <span className="text-xs" style={{ color: "var(--muted)" }}>
                 {t("removedIn", { days: row.days_left, date: holdDateLabel(locale, row.hold_until) })}
               </span>
-              {row.first_class_at ? (
-                <span className="text-xs font-semibold" style={{ color: "var(--amber)" }} data-testid={`desk-first-class-${row.id}`}>
-                  {t("firstClassBooked")}
+              {row.wait_bookings_used ? (
+                <span className="text-xs font-semibold" style={{ color: "var(--amber)" }} data-testid={`desk-wait-bookings-${row.id}`}>
+                  {t("waitBookingsUsed", { used: row.wait_bookings_used, allowed: row.wait_bookings_allowed ?? row.wait_bookings_used })}
                 </span>
               ) : null}
             </span>

@@ -46,6 +46,8 @@ const SETTINGS_KEY = ["admin", "settings"] as const;
 
 /** Grace days offered in «Περίοδος χάριτος» (Finance's `subscription_grace_days`, 0–60). */
 const GRACE_CHOICES = [0, 1, 2, 3, 5, 7, 10, 14, 21, 30];
+/** ADR-717: classes a person may book while «Το θέλω» waits (`package_wait_bookings`, 0–20). */
+export const WAIT_BOOKING_CHOICES = [0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20];
 
 type Sheet = { provider: PaymentProvider; mode: "redirect" | "keys" } | null;
 
@@ -144,6 +146,7 @@ export function OnlinePaymentsSettings({ token }: { token: string }) {
           <OfferCard providers={providers} onChoose={choose} />
         )}
         {connectMutation.isError ? <ErrorNotice>{paymentErrorText(connectMutation.error, t, ui)}</ErrorNotice> : null}
+        <WaitBookingsCard token={token} />
         <Advanced hint={t("advancedHintKeys")}>
           <PaymentKeysForm token={token} status={status} provider={providers[0] ?? DEFAULT_PROVIDER} />
         </Advanced>
@@ -260,6 +263,52 @@ function Advanced({ hint, children }: { hint: string; children: ReactNode }) {
       </button>
       {open ? <div className="space-y-1 border-t px-5 pb-5 pt-2" style={{ borderColor: "var(--border)" }}>{children}</div> : null}
     </div>
+  );
+}
+
+/**
+ * ADR-717 «Κρατήσεις πριν την πληρωμή»: how many classes someone may book
+ * while their «Το θέλω» waits to be paid at the front desk. Shown with or
+ * without an online provider, since packages can be paid at the desk either way.
+ */
+export function WaitBookingsCard({ token }: { token: string }) {
+  const t = useTranslations("OnlinePayments");
+  const ui = useUiTranslations();
+  const queryClient = useQueryClient();
+  const settingsQuery = useQuery({ queryKey: SETTINGS_KEY, queryFn: () => fetchAdminSettings(token) });
+  const mutation = useMutation({
+    mutationFn: (count: number) => updateAdminSettings(token, { finance: { package_wait_bookings: count } }),
+    onSuccess: (data) => queryClient.setQueryData(SETTINGS_KEY, data),
+  });
+  const current = settingsQuery.data?.finance?.package_wait_bookings;
+  const choices = current === undefined || WAIT_BOOKING_CHOICES.includes(current) ? WAIT_BOOKING_CHOICES : [...WAIT_BOOKING_CHOICES, current].sort((a, b) => a - b);
+
+  return (
+    <Card>
+      <div className="flex flex-wrap items-center gap-3" data-testid="wait-bookings-setting">
+        <div className="min-w-0 flex-[1_1_16rem]">
+          <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>{t("waitBookings")}</p>
+          <p className="text-xs leading-5" style={{ color: "var(--dim)" }}>{t("waitBookingsHint")}</p>
+        </div>
+        {current === undefined ? null : (
+          <Select
+            aria-label={t("waitBookings")}
+            value={String(current)}
+            disabled={mutation.isPending}
+            onValueChange={(value: string) => mutation.mutate(Number(value))}
+            className="min-w-[8.5rem]"
+            data-testid="wait-bookings-select"
+          >
+            {choices.map((count) => (
+              <option key={count} value={String(count)}>
+                {t("waitBookingsCount", { count })}
+              </option>
+            ))}
+          </Select>
+        )}
+      </div>
+      {mutation.isError ? <ErrorNotice variant="field">{paymentErrorText(mutation.error, t, ui)}</ErrorNotice> : null}
+    </Card>
   );
 }
 
@@ -408,6 +457,8 @@ function ConnectedView({
         )}
         {optionsMutation.isError ? <ErrorNotice variant="field">{paymentErrorText(optionsMutation.error, t, ui)}</ErrorNotice> : null}
       </Card>
+
+      <WaitBookingsCard token={token} />
 
       <Advanced hint={t("advancedHint")}>
         <SettingRow title={t("retries")} hint={t("retriesHint")}>

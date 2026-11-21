@@ -222,7 +222,7 @@ function CandidateRow({ candidate, additions, token }: { candidate: WorkoutKindC
                   maxLength={40}
                   onChange={(event) => setNames((current) => ({ ...current, [code]: event.target.value }))}
                   className={field}
-                  dir={code === "ar" || code === "he" ? "rtl" : undefined}
+                  dir={textDirection(code)}
                 />
               </label>
             ))}
@@ -236,4 +236,9 @@ function CandidateRow({ candidate, additions, token }: { candidate: WorkoutKindC
       {decide.error ? <ErrorNotice>{localizeError(decide.error, i18n)}</ErrorNotice> : null}
     </li>
   );
+}
+
+/** Right-to-left inputs for the languages written that way. */
+function textDirection(code: string): "rtl" | undefined {
+  return code === "ar" || code === "he" ? "rtl" : undefined;
 }

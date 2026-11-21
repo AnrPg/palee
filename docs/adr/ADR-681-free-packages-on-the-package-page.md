@@ -26,7 +26,7 @@ ANR picked 1A, 2A, 3A, small decisions α, β, γ yes and δ no.
   `activate_unpaid`, which assigns the package with `billing: :none`, so no
   charge is issued and nothing is owed. `collect/4` has no money to record and
   refuses (a receipt of 0).
-- **β, one class while waiting (ADR-633)** applies unchanged.
+- **β, bookings while waiting** follow the box's «Κρατήσεις πριν την πληρωμή» (ADR-717, which replaced ADR-633's one class).
 - **γ, the desk can still give any package by hand.** This is unchanged.
 - **The person is told when it starts.** A request activated without the person at the desk
   (`activate_unpaid`, free or owed) sends the new notification

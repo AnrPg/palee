@@ -241787,12 +241787,6 @@
                             "nullable": true,
                             "type": "string"
                           },
-                          "first_class_at": {
-                            "description": "ADR-633: when the one class while waiting was booked on this request",
-                            "format": "date-time",
-                            "nullable": true,
-                            "type": "string"
-                          },
                           "hold_days": {
                             "type": "integer"
                           },
@@ -241862,6 +241856,16 @@
                           "user_id": {
                             "format": "uuid",
                             "type": "string"
+                          },
+                          "wait_bookings_allowed": {
+                            "description": "Staff queue only (ADR-717): the box's number of classes while waiting",
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          "wait_bookings_used": {
+                            "description": "Staff queue only (ADR-717): classes the person booked while waiting, at this box",
+                            "minimum": 0,
+                            "type": "integer"
                           }
                         },
                         "required": [
@@ -241938,12 +241942,6 @@
                           "nullable": true,
                           "type": "string"
                         },
-                        "first_class_at": {
-                          "description": "ADR-633: when the one class while waiting was booked on this request",
-                          "format": "date-time",
-                          "nullable": true,
-                          "type": "string"
-                        },
                         "hold_days": {
                           "type": "integer"
                         },
@@ -242013,6 +242011,16 @@
                         "user_id": {
                           "format": "uuid",
                           "type": "string"
+                        },
+                        "wait_bookings_allowed": {
+                          "description": "Staff queue only (ADR-717): the box's number of classes while waiting",
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "wait_bookings_used": {
+                          "description": "Staff queue only (ADR-717): classes the person booked while waiting, at this box",
+                          "minimum": 0,
+                          "type": "integer"
                         }
                       },
                       "required": [
@@ -242125,12 +242133,6 @@
                           "nullable": true,
                           "type": "string"
                         },
-                        "first_class_at": {
-                          "description": "ADR-633: when the one class while waiting was booked on this request",
-                          "format": "date-time",
-                          "nullable": true,
-                          "type": "string"
-                        },
                         "hold_days": {
                           "type": "integer"
                         },
@@ -242200,6 +242202,16 @@
                         "user_id": {
                           "format": "uuid",
                           "type": "string"
+                        },
+                        "wait_bookings_allowed": {
+                          "description": "Staff queue only (ADR-717): the box's number of classes while waiting",
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "wait_bookings_used": {
+                          "description": "Staff queue only (ADR-717): classes the person booked while waiting, at this box",
+                          "minimum": 0,
+                          "type": "integer"
                         }
                       },
                       "required": [
@@ -242299,12 +242311,6 @@
                           "nullable": true,
                           "type": "string"
                         },
-                        "first_class_at": {
-                          "description": "ADR-633: when the one class while waiting was booked on this request",
-                          "format": "date-time",
-                          "nullable": true,
-                          "type": "string"
-                        },
                         "hold_days": {
                           "type": "integer"
                         },
@@ -242374,6 +242380,16 @@
                         "user_id": {
                           "format": "uuid",
                           "type": "string"
+                        },
+                        "wait_bookings_allowed": {
+                          "description": "Staff queue only (ADR-717): the box's number of classes while waiting",
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "wait_bookings_used": {
+                          "description": "Staff queue only (ADR-717): classes the person booked while waiting, at this box",
+                          "minimum": 0,
+                          "type": "integer"
                         }
                       },
                       "required": [
@@ -299074,6 +299090,12 @@
                           },
                           "type": "array"
                         },
+                        "package_wait_bookings": {
+                          "description": "Classes a person may book while their «Το θέλω» request waits to be paid at the front desk, counted per person and box (0 = none until the desk activates the package)",
+                          "maximum": 20,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
                         "payment_reminder_interval_days": {
                           "minimum": 1,
                           "type": "integer"
@@ -299110,6 +299132,7 @@
                         "subscription_end_day_reminder",
                         "subscription_day_after_reminder",
                         "subscription_grace_days",
+                        "package_wait_bookings",
                         "document_mode"
                       ],
                       "type": "object"
@@ -299401,6 +299424,12 @@
                         "type": "array",
                         "uniqueItems": true
                       },
+                      "package_wait_bookings": {
+                        "description": "Classes a person may book while their «Το θέλω» request waits to be paid at the front desk, counted per person and box (0 = none until the desk activates the package)",
+                        "maximum": 20,
+                        "minimum": 0,
+                        "type": "integer"
+                      },
                       "payment_reminder_interval_days": {
                         "minimum": 1,
                         "type": "integer"
@@ -299622,6 +299651,12 @@
                           },
                           "type": "array"
                         },
+                        "package_wait_bookings": {
+                          "description": "Classes a person may book while their «Το θέλω» request waits to be paid at the front desk, counted per person and box (0 = none until the desk activates the package)",
+                          "maximum": 20,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
                         "payment_reminder_interval_days": {
                           "minimum": 1,
                           "type": "integer"
@@ -299658,6 +299693,7 @@
                         "subscription_end_day_reminder",
                         "subscription_day_after_reminder",
                         "subscription_grace_days",
+                        "package_wait_bookings",
                         "document_mode"
                       ],
                       "type": "object"
@@ -355622,12 +355658,6 @@
                             "nullable": true,
                             "type": "string"
                           },
-                          "first_class_at": {
-                            "description": "ADR-633: when the one class while waiting was booked on this request",
-                            "format": "date-time",
-                            "nullable": true,
-                            "type": "string"
-                          },
                           "hold_days": {
                             "type": "integer"
                           },
@@ -355697,6 +355727,16 @@
                           "user_id": {
                             "format": "uuid",
                             "type": "string"
+                          },
+                          "wait_bookings_allowed": {
+                            "description": "Staff queue only (ADR-717): the box's number of classes while waiting",
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          "wait_bookings_used": {
+                            "description": "Staff queue only (ADR-717): classes the person booked while waiting, at this box",
+                            "minimum": 0,
+                            "type": "integer"
                           }
                         },
                         "required": [
@@ -355772,12 +355812,6 @@
                           "nullable": true,
                           "type": "string"
                         },
-                        "first_class_at": {
-                          "description": "ADR-633: when the one class while waiting was booked on this request",
-                          "format": "date-time",
-                          "nullable": true,
-                          "type": "string"
-                        },
                         "hold_days": {
                           "type": "integer"
                         },
@@ -355847,6 +355881,16 @@
                         "user_id": {
                           "format": "uuid",
                           "type": "string"
+                        },
+                        "wait_bookings_allowed": {
+                          "description": "Staff queue only (ADR-717): the box's number of classes while waiting",
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "wait_bookings_used": {
+                          "description": "Staff queue only (ADR-717): classes the person booked while waiting, at this box",
+                          "minimum": 0,
+                          "type": "integer"
                         }
                       },
                       "required": [
@@ -355899,9 +355943,6 @@
               "application/json": {
                 "schema": {
                   "properties": {
-                    "first_class_available": {
-                      "type": "boolean"
-                    },
                     "package_required": {
                       "description": "Booking is refused now",
                       "type": "boolean"
@@ -355912,12 +355953,27 @@
                     "rule": {
                       "description": "The box books only with a package",
                       "type": "boolean"
+                    },
+                    "wait_bookings_allowed": {
+                      "description": "ADR-717: classes the box lets a person book while «Το θέλω» waits",
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "wait_bookings_left": {
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "wait_bookings_used": {
+                      "minimum": 0,
+                      "type": "integer"
                     }
                   },
                   "required": [
                     "rule",
                     "pending_request",
-                    "first_class_available",
+                    "wait_bookings_allowed",
+                    "wait_bookings_used",
+                    "wait_bookings_left",
                     "package_required"
                   ],
                   "type": "object"
@@ -356425,12 +356481,6 @@
                           "nullable": true,
                           "type": "string"
                         },
-                        "first_class_at": {
-                          "description": "ADR-633: when the one class while waiting was booked on this request",
-                          "format": "date-time",
-                          "nullable": true,
-                          "type": "string"
-                        },
                         "hold_days": {
                           "type": "integer"
                         },
@@ -356500,6 +356550,16 @@
                         "user_id": {
                           "format": "uuid",
                           "type": "string"
+                        },
+                        "wait_bookings_allowed": {
+                          "description": "Staff queue only (ADR-717): the box's number of classes while waiting",
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "wait_bookings_used": {
+                          "description": "Staff queue only (ADR-717): classes the person booked while waiting, at this box",
+                          "minimum": 0,
+                          "type": "integer"
                         }
                       },
                       "required": [
@@ -356549,12 +356609,6 @@
                           "nullable": true,
                           "type": "string"
                         },
-                        "first_class_at": {
-                          "description": "ADR-633: when the one class while waiting was booked on this request",
-                          "format": "date-time",
-                          "nullable": true,
-                          "type": "string"
-                        },
                         "hold_days": {
                           "type": "integer"
                         },
@@ -356624,6 +356678,16 @@
                         "user_id": {
                           "format": "uuid",
                           "type": "string"
+                        },
+                        "wait_bookings_allowed": {
+                          "description": "Staff queue only (ADR-717): the box's number of classes while waiting",
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "wait_bookings_used": {
+                          "description": "Staff queue only (ADR-717): classes the person booked while waiting, at this box",
+                          "minimum": 0,
+                          "type": "integer"
                         }
                       },
                       "required": [

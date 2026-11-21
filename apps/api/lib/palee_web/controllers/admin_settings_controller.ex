@@ -72,6 +72,15 @@ defmodule PaleeWeb.AdminSettingsController do
       "Slack days after a subscription ends or an invoice falls overdue before the member loses access"
   }
 
+  # ADR-717: classes booked while «Το θέλω» waits for the front desk.
+  @package_wait_bookings_schema %Schema{
+    type: :integer,
+    minimum: 0,
+    maximum: 20,
+    description:
+      "Classes a person may book while their «Το θέλω» request waits to be paid at the front desk, counted per person and box (0 = none until the desk activates the package)"
+  }
+
   @finance_settings_schema %Schema{
     type: :object,
     properties: %{
@@ -81,6 +90,7 @@ defmodule PaleeWeb.AdminSettingsController do
       subscription_end_day_reminder: @end_day_reminder_schema,
       subscription_day_after_reminder: @day_after_reminder_schema,
       subscription_grace_days: @grace_days_schema,
+      package_wait_bookings: @package_wait_bookings_schema,
       document_mode: %Schema{type: :string, enum: ["invoice", "receipt"]},
       package_modules: %Schema{type: :array, items: %Schema{type: :string}},
       inserted_at: %Schema{type: :string, format: :"date-time", nullable: true},
@@ -92,6 +102,7 @@ defmodule PaleeWeb.AdminSettingsController do
       :subscription_end_day_reminder,
       :subscription_day_after_reminder,
       :subscription_grace_days,
+      :package_wait_bookings,
       :document_mode
     ]
   }
@@ -236,6 +247,7 @@ defmodule PaleeWeb.AdminSettingsController do
           subscription_end_day_reminder: @end_day_reminder_schema,
           subscription_day_after_reminder: @day_after_reminder_schema,
           subscription_grace_days: @grace_days_schema,
+          package_wait_bookings: @package_wait_bookings_schema,
           document_mode: %Schema{type: :string, enum: ["invoice", "receipt"]},
           package_modules: %Schema{
             type: :array,
