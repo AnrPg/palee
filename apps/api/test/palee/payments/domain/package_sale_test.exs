@@ -30,6 +30,50 @@ defmodule Palee.Payments.Domain.PackageSaleTest do
     end
   end
 
+  describe "ADR-681: free packages" do
+    @chosen ~U[2026-10-01 10:00:00Z]
+
+    test "are listed to ask for, with or without online payments, until the owner turns them off" do
+      for offer <- [@connected, @not_connected] do
+        free = package(base_price_cents: 0, sold_online: false)
+        assert PackageSale.visibility(free, offer) == "free_listed"
+        assert PackageSale.listed?(free, offer)
+        assert PackageSale.how(free, offer) == "ask"
+
+        on = package(base_price_cents: 0, sold_online: true, sold_online_chosen_at: @chosen)
+        assert PackageSale.visibility(on, offer) == "free_listed"
+
+        off = package(base_price_cents: 0, sold_online: false, sold_online_chosen_at: @chosen)
+        assert PackageSale.visibility(off, offer) == "free"
+        refute PackageSale.listed?(off, offer)
+        assert PackageSale.how(off, offer) == nil
+      end
+    end
+
+    test "are never listed retired or sold only with something else" do
+      refute PackageSale.listed?(package(base_price_cents: 0, active: false), @connected)
+
+      for type <- ~w(add_on shared corporate) do
+        refute PackageSale.listed?(
+                 package(base_price_cents: 0, sold_online: false, package_type: type),
+                 @connected
+               )
+      end
+    end
+
+    test "never open online on connecting and are not paid" do
+      refute PackageSale.opens?(package(base_price_cents: 0, sold_online: false), @connected)
+      assert PackageSale.free?(package(base_price_cents: 0))
+      refute PackageSale.free?(package([]))
+    end
+
+    test "paid packages are bought online or asked for at the desk" do
+      assert PackageSale.how(package([]), @connected) == "buy"
+      assert PackageSale.how(package([]), @not_connected) == "ask"
+      assert PackageSale.how(package(sold_online: false), @connected) == nil
+    end
+  end
+
   describe "visibility/2" do
     test "a paid package sold online with a provider is visible" do
       assert PackageSale.visibility(package([]), @connected) == "visible"
@@ -39,8 +83,14 @@ defmodule Palee.Payments.Domain.PackageSaleTest do
       assert PackageSale.visibility(package(active: false, base_price_cents: 0), @connected) ==
                "inactive"
 
-      assert PackageSale.visibility(package(base_price_cents: 0, sold_online: false), @connected) ==
-               "free"
+      kept_off =
+        package(
+          base_price_cents: 0,
+          sold_online: false,
+          sold_online_chosen_at: ~U[2026-10-01 10:00:00Z]
+        )
+
+      assert PackageSale.visibility(kept_off, @connected) == "free"
 
       assert PackageSale.visibility(package(sold_online: false), @connected) == "off"
 

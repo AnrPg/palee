@@ -126,7 +126,8 @@ defmodule Palee.Notifications.Domain.NotificationCategories do
         document_signature_requested health_certificate_expiring
         box_review_moderated box_review_report_decided
         join_request_accepted join_request_declined box_membership_ended
-        package_request_declined package_rule_grace package_removed
+        package_request_declined package_request_activated package_rule_grace
+        package_removed
       )
     }
   ]

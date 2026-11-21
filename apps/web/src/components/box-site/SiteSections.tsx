@@ -10,6 +10,7 @@ import { fetchPublicPackages, publicPackagesKey } from "@/api/my-payments";
 import type { PublicBoxPage } from "@/api/social";
 import { ABOUT_GROUP, AboutTab, type AboutPart } from "@/components/box-page/AboutTab";
 import { BoxBento, type BentoItem } from "@/components/box-page/BoxBento";
+import { FreeTag } from "@/components/payments/PackagePrice";
 import { GoogleReviews, ReviewItem, ReviewSummary } from "@/components/reviews/ReviewParts";
 import { nextSlotAt, timetableByDay, type SiteLanguage } from "@/lib/public-site";
 import { siteTextFor } from "@/lib/site-translations";
@@ -293,7 +294,12 @@ function PackagesSection({ site, basePath }: { site: PublicSite; basePath: strin
                 </span>
               ) : null}
               <b className="text-sm">{siteTextFor(site.texts, "package", item.id, "name", item.name)}</b>
-              <span className="text-2xl font-extrabold tracking-tight">{formatCents(item.base_price_cents, item.currency, locale)}</span>
+              {item.base_price_cents === 0 ? (
+                // ADR-681: a free package the box shows.
+                <FreeTag />
+              ) : (
+                <span className="text-2xl font-extrabold tracking-tight">{formatCents(item.base_price_cents, item.currency, locale)}</span>
+              )}
               {item.description ? (
                 <span className="line-clamp-2 text-sm" style={{ opacity: 0.75 }}>
                   {siteTextFor(site.texts, "package", item.id, "description", item.description)}

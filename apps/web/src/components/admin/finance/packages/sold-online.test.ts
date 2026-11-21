@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { badgeKey, canSellOnline, fixLink, isHidden, isSoldOnline, onlineVisibility, salesPageHref, soldOnlineCount } from "./sold-online";
+import { badgeKey, canSellOnline, fixLink, isFreeVisibility, isHidden, isSoldOnline, onlineVisibility, salesPageHref, soldOnlineCount } from "./sold-online";
 
 describe("sold-online (ADR-271)", () => {
   it("reads the API's online_visibility and never guesses a rule", () => {
@@ -15,6 +15,7 @@ describe("sold-online (ADR-271)", () => {
     expect(badgeKey("purpose_off")).toBe("badgeHidden");
     expect(badgeKey("off")).toBeNull();
     expect(badgeKey("free")).toBeNull();
+    expect(badgeKey("free_listed")).toBe("badgeFree");
   });
 
   it("offers a fix only where the owner can fix it, in Ρυθμίσεις › Πληρωμές", () => {
@@ -32,10 +33,19 @@ describe("sold-online (ADR-271)", () => {
     expect(isSoldOnline({ sold_online: true, online_visibility: "visible" })).toBe(true);
   });
 
-  it("does not let free or retired packages be switched on", () => {
-    expect(canSellOnline("free")).toBe(false);
+  it("does not let retired packages be switched on", () => {
     expect(canSellOnline("inactive")).toBe(false);
     expect(canSellOnline("off")).toBe(true);
+  });
+
+  it("ADR-681: a free package is switched on to show it on the package page", () => {
+    expect(canSellOnline("free")).toBe(true);
+    expect(isFreeVisibility("free")).toBe(true);
+    expect(isFreeVisibility("free_listed")).toBe(true);
+    expect(isFreeVisibility("visible")).toBe(false);
+    expect(isSoldOnline({ sold_online: false, online_visibility: "free_listed" })).toBe(true);
+    expect(isSoldOnline({ sold_online: true, online_visibility: "free" })).toBe(false);
+    expect(isSoldOnline({ sold_online: false, online_visibility: "free" })).toBe(false);
   });
 
   it("counts N of M among the packages the API says can be sold online", () => {
@@ -44,6 +54,7 @@ describe("sold-online (ADR-271)", () => {
       { sold_online: true, online_visibility: "purpose_off" },
       { sold_online: false, online_visibility: "off" },
       { sold_online: false, online_visibility: "free" },
+      { sold_online: true, online_visibility: "free_listed" },
     ];
     expect(soldOnlineCount(packages)).toEqual({ count: 2, total: 3 });
   });

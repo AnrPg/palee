@@ -1083,14 +1083,17 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
 
   # ADR-633: «Το θέλω» to pay at the desk; the queue holds «Ενεργοποίηση»
   # and «Απόρριψη».
+  # ADR-681: a free package has nothing to pay.
   def build("package_requested", payload, localize) do
+    names = %{nickname: payload["person_nickname"], package: payload["package_name"]}
+
     %{
       title: localize.("A package to activate", %{}),
       body:
-        localize.("%{nickname} wants %{package} and will pay at the front desk.", %{
-          nickname: payload["person_nickname"],
-          package: payload["package_name"]
-        }),
+        if(payload["free"] == true,
+          do: localize.("%{nickname} wants the free package %{package}.", names),
+          else: localize.("%{nickname} wants %{package} and will pay at the front desk.", names)
+        ),
       url: payload["url"] || "/admin/finance"
     }
   end
@@ -1115,6 +1118,19 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
           box: payload["box_name"],
           package: payload["package_name"],
           reason: payload["reason"]
+        }),
+      url: payload["url"] || "/me/payments"
+    }
+  end
+
+  # ADR-681.
+  def build("package_request_activated", payload, localize) do
+    %{
+      title: localize.("Your package has started", %{}),
+      body:
+        localize.("%{box} activated %{package}. You can book classes.", %{
+          box: payload["box_name"],
+          package: payload["package_name"]
         }),
       url: payload["url"] || "/me/payments"
     }

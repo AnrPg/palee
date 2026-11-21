@@ -934,6 +934,9 @@ msgstr "Пакет ждёт активации"
 msgid "%{nickname} wants %{package} and will pay at the front desk."
 msgstr "%{nickname} хочет %{package} и оплатит на ресепшене."
 
+msgid "%{nickname} wants the free package %{package}."
+msgstr "%{nickname} хочет бесплатный пакет %{package}."
+
 msgid "Booking now needs a package"
 msgstr "Теперь для записи нужен пакет"
 
@@ -945,6 +948,12 @@ msgstr "Ваш запрос пакета отклонён"
 
 msgid "%{box} declined %{package}: %{reason}"
 msgstr "%{box} отклонил %{package}: %{reason}"
+
+msgid "Your package has started"
+msgstr "Ваш пакет начал действовать"
+
+msgid "%{box} activated %{package}. You can book classes."
+msgstr "%{box} активировал %{package}. Можно записываться на занятия."
 
 msgid "Choose a package"
 msgstr "Выберите пакет"

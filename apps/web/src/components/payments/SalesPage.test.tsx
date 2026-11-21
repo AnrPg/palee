@@ -160,6 +160,38 @@ describe("Σελίδα αγοράς πακέτων (mockup s5 option C)", () => 
     expect(screen.queryByRole("button", { name: "Αγορά" })).toBeNull();
   });
 
+  it("ADR-681: a free package the box shows reads «Δωρεάν» and is asked for, beside packages bought online", async () => {
+    const free = pkg("Πρώτη εβδομάδα", { base_price_cents: 0, how: "ask" });
+    vi.mocked(fetchPublicPackages).mockResolvedValue({
+      packages: [free, pkg("Unlimited", { base_price_cents: 7500, how: "buy" })],
+      online_payments: true,
+      provider: "viva",
+      withdrawal_days: 14,
+      own_only: false,
+    } as never);
+    renderPage();
+    const card = await screen.findByTestId("sales-package-Πρώτη εβδομάδα");
+    expect(within(card).getByTestId("package-free")).toHaveTextContent(el.Pay.free);
+    expect(within(card).getByRole("button", { name: el.DeskPay.want })).toBeInTheDocument();
+    expect(within(screen.getByTestId("sales-package-Unlimited")).getByRole("button", { name: "Αγορά" })).toBeInTheDocument();
+    expect(screen.queryByTestId("sales-desk-note")).toBeNull();
+
+    // A visitor learns the box activates it with no payment, then signs in.
+    fireEvent.click(within(card).getByRole("button", { name: el.DeskPay.want }));
+    await waitFor(() => expect(state.replace).toHaveBeenCalledWith("/b/box-kypseli/packages?buy=%CE%A0%CF%81%CF%8E%CF%84%CE%B7+%CE%B5%CE%B2%CE%B4%CE%BF%CE%BC%CE%AC%CE%B4%CE%B1", { scroll: false }));
+  });
+
+  it("ADR-681: the free package's window has no payment steps", async () => {
+    const free = pkg("Πρώτη εβδομάδα", { base_price_cents: 0, how: "ask" });
+    vi.mocked(fetchPublicPackages).mockResolvedValue({ packages: [free], online_payments: true, provider: "viva", withdrawal_days: 14, own_only: false } as never);
+    state.search = `buy=${encodeURIComponent("Πρώτη εβδομάδα")}`;
+    renderPage();
+    const dialog = await screen.findByTestId("desk-pay");
+    expect(within(dialog).getByTestId("desk-free-intro")).toHaveTextContent(el.DeskPay.freeIntro);
+    expect(within(dialog).queryByText(el.DeskPay.stepTell)).toBeNull();
+    expect(within(dialog).getByText(el.DeskPay.freeSignIn)).toBeInTheDocument();
+  });
+
   it("ADR-553: a member shown only their own package can renew it, with a quiet line under it", async () => {
     state.status = "authenticated";
     state.memberships = [{ organization: { slug: "box-kypseli" } }];

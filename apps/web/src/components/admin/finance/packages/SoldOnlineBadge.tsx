@@ -10,14 +10,15 @@ import { badgeKey, isSoldOnline, onlineVisibility } from "./sold-online";
 /**
  * The list's «Online» badge (ADR-271): «Online · δεν φαίνεται» in the warning
  * colour when members cannot see it yet; «Στην υποδοχή» (ADR-291) when members
- * see it and ask for it to pay at the front desk.
+ * see it and ask for it to pay at the front desk; «Δωρεάν · στη σελίδα»
+ * (ADR-681) for a free package people see and ask for.
  */
 export function SoldOnlineBadge({ pkg }: { pkg: FinanceRecord }) {
   const t = useTranslations("SoldOnline");
   const key = isSoldOnline(pkg) ? badgeKey(onlineVisibility(pkg)) : null;
   if (!key) return null;
   const style =
-    key === "badge"
+    key === "badge" || key === "badgeFree"
       ? SPARK_ACTIVE_STYLE
       : key === "badgeDesk"
         ? { background: "var(--panel-raised)", border: "1px solid var(--border)", color: "var(--text)" }

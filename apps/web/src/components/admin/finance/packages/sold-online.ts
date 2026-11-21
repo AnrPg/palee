@@ -8,7 +8,7 @@ import type { FinanceRecord } from "@/api/finance";
  * is repeated here.
  */
 
-export const ONLINE_VISIBILITIES = ["visible", "free", "off", "purpose_off", "no_provider", "inactive"] as const;
+export const ONLINE_VISIBILITIES = ["visible", "free", "free_listed", "off", "purpose_off", "no_provider", "inactive"] as const;
 export type OnlineVisibility = (typeof ONLINE_VISIBILITIES)[number];
 
 export function onlineVisibility(pkg: FinanceRecord | null | undefined): OnlineVisibility {
@@ -22,12 +22,22 @@ export function onlineVisibility(pkg: FinanceRecord | null | undefined): OnlineV
  * ask for («Το θέλω») and pay at the front desk.
  */
 export function isSoldOnline(pkg: FinanceRecord | null | undefined): boolean {
-  return pkg?.sold_online === true || onlineVisibility(pkg) === "no_provider";
+  const visibility = onlineVisibility(pkg);
+  if (visibility === "free") return false;
+  return pkg?.sold_online === true || visibility === "no_provider" || visibility === "free_listed";
 }
 
-/** The switch cannot be turned on for a free or retired package. */
+/** The switch cannot be turned on for a retired package. */
 export function canSellOnline(visibility: OnlineVisibility): boolean {
-  return visibility !== "free" && visibility !== "inactive";
+  return visibility !== "inactive";
+}
+
+/**
+ * ADR-681: a free package is shown, never sold: the switch reads
+ * «Φαίνεται στη Σελίδα πακέτων» and the box activates it without payment.
+ */
+export function isFreeVisibility(visibility: OnlineVisibility): boolean {
+  return visibility === "free" || visibility === "free_listed";
 }
 
 /** Marked «Πωλείται online» but members do not see it yet: shown in the warning colour. */
@@ -35,10 +45,11 @@ export function isHidden(visibility: OnlineVisibility): boolean {
   return visibility === "purpose_off";
 }
 
-/** The list badge: «Online», «Στην υποδοχή» (ADR-291), «Online · δεν φαίνεται», or none. */
-export function badgeKey(visibility: OnlineVisibility): "badge" | "badgeDesk" | "badgeHidden" | null {
+/** The list badge: «Online», «Στην υποδοχή» (ADR-291), «Δωρεάν · στη σελίδα» (ADR-681), «Online · δεν φαίνεται», or none. */
+export function badgeKey(visibility: OnlineVisibility): "badge" | "badgeDesk" | "badgeFree" | "badgeHidden" | null {
   if (visibility === "visible") return "badge";
   if (visibility === "no_provider") return "badgeDesk";
+  if (visibility === "free_listed") return "badgeFree";
   if (isHidden(visibility)) return "badgeHidden";
   return null;
 }
@@ -59,6 +70,10 @@ export function salesPageHref(slug: string | null): string | null {
 
 /** «Πωλούνται online: N από M»: of the packages that can be sold online (per the API), how many are. */
 export function soldOnlineCount(packages: FinanceRecord[]): { count: number; total: number } {
-  const sellable = packages.filter((pkg) => canSellOnline(onlineVisibility(pkg)));
+  // ADR-681: free packages are shown, not sold, so they are not counted.
+  const sellable = packages.filter((pkg) => {
+    const visibility = onlineVisibility(pkg);
+    return canSellOnline(visibility) && !isFreeVisibility(visibility);
+  });
   return { count: sellable.filter(isSoldOnline).length, total: sellable.length };
 }

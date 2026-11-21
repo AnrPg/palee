@@ -32,13 +32,18 @@ defmodule Palee.Application.Payments.OnlineSales do
   def public_packages(slug, user_id \\ nil) do
     with {:ok, _box, context} <- PublicBox.resolve(slug) do
       view = PackageAudience.view(context, user_id)
+      offer = Payments.package_offer(context)
 
       {:ok,
        %{
          packages:
            Enum.map(
              view.packages,
-             &(&1 |> public_package() |> held(view.held) |> featured(view.featured))
+             &(&1
+               |> public_package()
+               |> held(view.held)
+               |> featured(view.featured)
+               |> Map.put(:how, PackageSale.how(&1, offer)))
            ),
          own_only: view.own_only,
          online_payments: Payments.available?(context, "packages"),

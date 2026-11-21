@@ -54,7 +54,7 @@ defmodule Palee.Finance.PackageRequest do
       :hold_until
     ])
     |> validate_inclusion(:source, PackageRequestPolicy.sources())
-    |> validate_number(:price_cents_snapshot, greater_than: 0)
+    |> validate_number(:price_cents_snapshot, greater_than_or_equal_to: 0)
     |> unique_constraint([:organization_id, :user_id, :membership_package_id],
       name: :finance_package_requests_one_pending_index
     )

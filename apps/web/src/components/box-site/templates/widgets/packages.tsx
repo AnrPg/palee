@@ -10,7 +10,7 @@ import { packagesInOrder } from "../site-data";
 import { money, usePeriodLabel, useSite, useSiteText } from "../site-context";
 import { usePreviewGuard } from "./social";
 
-export type PackageView = { id: string; name: string; description: string; price: string; per: string; trial: boolean; raw: PublicPackage };
+export type PackageView = { id: string; name: string; description: string; price: string; per: string; trial: boolean; free: boolean; raw: PublicPackage };
 
 /** The packages in the page's language, the trial first. */
 export function usePackages(): PackageView[] {
@@ -22,10 +22,22 @@ export function usePackages(): PackageView[] {
     name: siteTextFor(site.texts, "package", pkg.id, "name", pkg.name),
     description: pkg.description ? siteTextFor(site.texts, "package", pkg.id, "description", pkg.description) : "",
     price: pkg.base_price_cents > 0 ? money(pkg.base_price_cents, pkg.currency, locale) : t("free"),
-    per: per(pkg.billing_period, pkg.package_type),
+    // A free package has no «τον μήνα».
+    per: pkg.base_price_cents === 0 ? "" : per(pkg.billing_period, pkg.package_type),
     trial: pkg.package_type === "trial",
+    free: pkg.base_price_cents === 0,
     raw: pkg,
   }));
+}
+
+/** The price, or «Δωρεάν» as a tag in the site's accent (ADR-681: a free package the box shows). */
+export function PriceText({ pkg }: { pkg: PackageView }) {
+  if (!pkg.free) return <>{pkg.price}</>;
+  return (
+    <span className="freetag" data-testid="site-package-free">
+      {pkg.price}
+    </span>
+  );
 }
 
 /** The sales page of the app (sign-in, «Πριν πληρώσεις»), where buying happens (ADR-248). */
@@ -80,7 +92,7 @@ export function PackageCardsA({ limit }: { limit?: number }) {
       {(shown.length ? shown : list.slice(0, limit)).map((pkg, index) => (
         <div key={pkg.id} className="pkg" data-rv="up" style={{ "--d": `${index * 110}ms` } as CSSProperties}>
           <b>{pkg.name}</b>
-          <div className="p">{pkg.price}</div>
+          <div className="p"><PriceText pkg={pkg} /></div>
           {pkg.per ? <span className="muted">{pkg.per}</span> : null}
           <p className="desc">{pkg.description}</p>
           <PackageAction pkg={pkg} className={`btn ${index === 0 ? "" : "ghost"}`} style={{ width: "100%" }} />
@@ -100,7 +112,7 @@ export function PackageTiles() {
         <div key={pkg.id} className="tile pkgtile ld-pop" style={{ "--i": index } as CSSProperties}>
           <span className="k">{pkg.per}</span>
           <span className="v">{pkg.name}</span>
-          <span className="price">{pkg.price}</span>
+          <span className="price"><PriceText pkg={pkg} /></span>
           {pkg.description ? (
             <span className="muted" style={{ fontSize: 14 }}>
               {pkg.description}
@@ -129,7 +141,7 @@ export function PackageMenu() {
             ) : null}
           </div>
           <div className="p">
-            {pkg.price}
+            <PriceText pkg={pkg} />
             {pkg.per ? <small>{pkg.per}</small> : null}
           </div>
           <div className="act">
@@ -219,7 +231,7 @@ export function PackageStack() {
                 {pkg.description ? <p className="muted" style={{ marginTop: 6 }}>{pkg.description}</p> : null}
               </div>
               <div className="row">
-                <span className="p">{pkg.price}</span>
+                <span className="p"><PriceText pkg={pkg} /></span>
                 <PackageAction pkg={pkg} />
               </div>
             </div>

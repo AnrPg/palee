@@ -870,6 +870,7 @@ defmodule Palee.Notifications do
              package_name: field(payload, :package_name),
              price_cents: field(payload, :price_cents),
              currency: field(payload, :currency),
+             free: field(payload, :free) == true,
              dedupe_key: "package_requested:#{request_id}:#{staff_id}",
              url: "/admin/finance?tab=queues&queue=awaiting"
            }) do
@@ -909,6 +910,19 @@ defmodule Palee.Notifications do
         cancelled_bookings: field(payload, :cancelled_bookings),
         box_name: field(payload, :box_name),
         dedupe_key: "package_request_declined:#{field(payload, :package_request_id)}",
+        url: "/me/payments?box=#{field(payload, :box_slug)}"
+      })
+
+  # ADR-681: the box activated the package the person asked for.
+  def process_event("package_request_activated", payload),
+    do:
+      enqueue_simple(:package_request_activated, payload, %{
+        organization_id: field(payload, :organization_id),
+        package_request_id: field(payload, :package_request_id),
+        package_name: field(payload, :package_name),
+        box_name: field(payload, :box_name),
+        free: field(payload, :free) == true,
+        dedupe_key: "package_request_activated:#{field(payload, :package_request_id)}",
         url: "/me/payments?box=#{field(payload, :box_slug)}"
       })
 

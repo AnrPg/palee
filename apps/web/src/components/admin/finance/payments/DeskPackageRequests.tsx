@@ -79,6 +79,7 @@ export function DeskPackageRequestRows({
   canAct?: boolean;
 }) {
   const t = useTranslations("DeskPay");
+  const tPay = useTranslations("Pay");
   const locale = useUiLocale();
   const [activating, setActivating] = useState<DeskPackageRequest | null>(null);
   const [declining, setDeclining] = useState<DeskPackageRequest | null>(null);
@@ -87,7 +88,8 @@ export function DeskPackageRequestRows({
     <>
       {rows.length === 0 ? empty : null}
       {rows.map((row, index) => {
-        const amount = new Intl.NumberFormat(locale, { style: "currency", currency: row.currency }).format(row.price_cents / 100);
+        // ADR-681: a free package says so; there is nothing to collect.
+        const amount = row.price_cents === 0 ? tPay("free") : new Intl.NumberFormat(locale, { style: "currency", currency: row.currency }).format(row.price_cents / 100);
         const name = row.person?.display_name || row.person?.handle || t("someone");
         return (
           <div
@@ -206,10 +208,12 @@ function Avatar({ url, name }: { url: string | null; name: string }) {
 /**
  * «Ενεργοποίηση»: «Εισπράχθηκαν X €» (how the money was handed over, then
  * the box's receipt or invoice) or «Εκκρεμεί πληρωμή» (the package starts
- * and the charge stays owed). Nothing is picked for staff.
+ * and the charge stays owed). Nothing is picked for staff. ADR-681: a free
+ * package has neither; «Ενεργοποίηση» starts it.
  */
 function ActivateDialog({ request, onClose }: { request: DeskPackageRequest; onClose: () => void }) {
   const t = useTranslations("DeskPay");
+  const tPay = useTranslations("Pay");
   const tReceive = useTranslations("ReceivePayment");
   const i18n = useUiTranslations();
   const locale = useUiLocale();
@@ -222,7 +226,9 @@ function ActivateDialog({ request, onClose }: { request: DeskPackageRequest; onC
   const name = request.person?.display_name || request.person?.handle || t("someone");
   const money = (cents: number, currency = request.currency) =>
     new Intl.NumberFormat(locale, { style: "currency", currency }).format(cents / 100);
-  const amount = money(request.price_cents);
+  // ADR-681: a free package is only activated: nothing collected, nothing owed.
+  const free = request.price_cents === 0;
+  const amount = free ? tPay("free") : money(request.price_cents);
 
   const refresh = () =>
     Promise.all([
@@ -232,7 +238,7 @@ function ActivateDialog({ request, onClose }: { request: DeskPackageRequest; onC
 
   const mutation = useMutation({
     mutationFn: async () => {
-      if (how === "paid") {
+      if (how === "paid" && !free) {
         const result = await collectPackageRequest(tokens!.access_token, slug!, request.id, { payment_method: method! });
         return result.received as unknown as ReceivedPayment;
       }
@@ -248,7 +254,7 @@ function ActivateDialog({ request, onClose }: { request: DeskPackageRequest; onC
 
   if (received) return <ReceivedView received={received} nickname={name} money={money} onClose={onClose} />;
 
-  const ready = how === "unpaid" || (how === "paid" && method !== null);
+  const ready = free || how === "unpaid" || (how === "paid" && method !== null);
   const choice = (value: "paid" | "unpaid", label: string, hint: string) => {
     const on = how === value;
     return (
@@ -281,7 +287,7 @@ function ActivateDialog({ request, onClose }: { request: DeskPackageRequest; onC
         <div className="flex flex-wrap w-full gap-2">
           <DialogButton onClick={onClose}>{t("close")}</DialogButton>
           <DialogButton tone="primary" disabled={!ready || mutation.isPending} onClick={() => mutation.mutate()} testId="desk-collect-confirm">
-            {how === "unpaid" ? t("activateUnpaidConfirm") : t("activatePaid", { amount })}
+            {free ? t("activate") : how === "unpaid" ? t("activateUnpaidConfirm") : t("activatePaid", { amount })}
           </DialogButton>
         </div>
       }
@@ -290,10 +296,14 @@ function ActivateDialog({ request, onClose }: { request: DeskPackageRequest; onC
         <p className="text-sm" style={{ color: "var(--text)" }}>
           <b>{request.package_name}</b> · {amount}
         </p>
-        <div role="radiogroup" aria-label={t("activateTitle")} className="flex flex-col gap-2">
-          {choice("paid", t("activatePaid", { amount }), t("collectHint"))}
-          {choice("unpaid", t("activateUnpaid"), t("activateUnpaidHint", { amount }))}
-        </div>
+        {free ? (
+          <p className="text-sm" style={{ color: "var(--text-soft)" }} data-testid="desk-activate-free">{t("freeActivateHint")}</p>
+        ) : (
+          <div role="radiogroup" aria-label={t("activateTitle")} className="flex flex-col gap-2">
+            {choice("paid", t("activatePaid", { amount }), t("collectHint"))}
+            {choice("unpaid", t("activateUnpaid"), t("activateUnpaidHint", { amount }))}
+          </div>
+        )}
         {how === "paid" ? (
           <div role="radiogroup" aria-label={tReceive("method")} className="flex flex-wrap gap-2">
             {COLLECT_METHODS.map((option) => {

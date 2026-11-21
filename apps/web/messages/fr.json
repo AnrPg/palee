@@ -13562,7 +13562,9 @@
     "joinToBuyMessage": "Écrire à la box",
     "ownOnly": "{count, plural, one {Ton forfait d'abonnement est {packages}.} other {Tes forfaits d'abonnement sont {packages}.}} Contacte la box pour en découvrir d'autres.",
     "askBoxForPackages": "Demande à la box ses forfaits d'abonnement.",
-    "contactBox": "Contacter la box"
+    "contactBox": "Contacter la box",
+    "free": "Gratuit",
+    "trialFree": "Cours d'essai gratuit"
   },
   "CsvImport": {
     "crumbLabel": "Fil d’Ariane",
@@ -14348,7 +14350,7 @@
     "deskOnly": "Uniquement à l'accueil",
     "hint_visible": "Sur la page de vente et dans l'app du membre du box. Le reçu est émis tout seul.",
     "hint_off": "Vendu uniquement à l'accueil.",
-    "hint_free": "Les forfaits d'abonnement gratuits ne sont pas vendus en ligne.",
+    "hint_free": "Masqué : toi seul le donnes, depuis le compte du membre.",
     "hint_inactive": "Forfait d'abonnement inactif : pas en vente.",
     "hint_purpose_off": "Pas encore visible : ce type de forfait est désactivé dans « Ce qui se paie en ligne ».",
     "fix_purpose_off": "L'activer",
@@ -14365,7 +14367,11 @@
     "payNone": "Aucun forfait d'abonnement n'est vendu en ligne",
     "payNoneHint": "Les membres du box n'ont rien à acheter. Active « Vendu en ligne » sur les forfaits voulus.",
     "packagesLink": "Forfaits d'abonnement",
-    "badgeDesk": "À l’accueil"
+    "badgeDesk": "À l’accueil",
+    "titleFree": "Visible sur la page de vente",
+    "subtitleFree": "Sur la page de vente et le site, comme « Gratuit » avec « Je le veux »",
+    "hint_free_listed": "Visible comme « Gratuit » avec « Je le veux ». Tu l'actives sans encaissement.",
+    "badgeFree": "Gratuit · sur la page"
   },
   "PlanView": {
     "label": "Entraînement structuré",
@@ -15587,7 +15593,15 @@
     "rolloutTitle": "S'entraînent sans forfait encore quelques jours",
     "rolloutBody": "Depuis le {date}, réserver dans cette box demande un forfait. Ces membres s'entraînaient sans et réservent jusqu'à leur date.",
     "rolloutUntil": "Jusqu'au {date}",
-    "rolloutHasPackage": "A un forfait"
+    "rolloutHasPackage": "A un forfait",
+    "freeTitle": "Forfait gratuit",
+    "freeIntro": "La box l'active sans paiement.",
+    "freeSignIn": "Connecte-toi pour le demander à la box.",
+    "freeHeldTitle": "Tu l'as demandé",
+    "freeHeldBody": "La box l'activera bientôt et nous te préviendrons. D'ici là, tu peux réserver un cours.",
+    "freePending": "En attente d'activation",
+    "freePendingBody": "La box l'activera. Nous le gardons jusqu'au {date}.",
+    "freeActivateHint": "Forfait gratuit : il commence aujourd'hui, sans encaissement ni dette."
   },
   "Sms": {
     "connectionsTitle": "Connexions",

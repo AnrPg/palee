@@ -20,6 +20,7 @@ import { JoinToBuy } from "./JoinToBuy";
 import { perLabel } from "./BuyPackageSheet";
 import { providerLabel, salesPageSections } from "./checkout-flow";
 import { BeforePaying, money, usePackageCheckout } from "./PackageCheckout";
+import { isFreePackage, PackagePrice } from "./PackagePrice";
 
 /**
  * The box's public sales page (mockup s5 option C), `/b/[slug]/packages`:
@@ -28,7 +29,8 @@ import { BeforePaying, money, usePackageCheckout } from "./PackageCheckout";
  * «Πριν πληρώσεις» as the app, with the same legal rules (ADR-248). In the
  * store apps digital-only packages are not offered (ADR-256). ADR-291: a box
  * without online payments shows its packages with «Το θέλω» instead, paid at
- * the front desk; nothing offers a payment the box cannot take.
+ * the front desk; nothing offers a payment the box cannot take. ADR-681: a
+ * free package the box shows reads «Δωρεάν» and is asked for the same way.
  */
 export function SalesPage({ page, line }: { page: PublicBoxPage; line: string }) {
   const t = useTranslations("Pay");
@@ -40,7 +42,9 @@ export function SalesPage({ page, line }: { page: PublicBoxPage; line: string })
   const sales = useBoxSales(slug);
   const { status } = useSession();
   const desk = sales.desk;
-  const shown = desk ? sales.deskPackages : sales.packages;
+  // ADR-681: what is bought online and what is asked for («Το θέλω»: at the
+  // desk, or free and activated by the box) side by side, each with its button.
+  const shown = sales.listed;
   const { trial, top, more } = salesPageSections(shown);
   const [all, setAll] = useState(false);
   const requested = searchParams.get("buy");
@@ -96,7 +100,9 @@ export function SalesPage({ page, line }: { page: PublicBoxPage; line: string })
       {trial ? (
         <section className="flex flex-col gap-2 rounded-3xl p-5" style={{ background: "var(--deep)", color: "var(--deep-contrast)" }} data-testid="sales-trial">
           <p className="text-xs font-bold uppercase tracking-[0.14em]" style={{ opacity: 0.7 }}>{t("firstTime")}</p>
-          <h2 className="text-xl font-extrabold">{t("trialFor", { price: money(locale, trial.base_price_cents, trial.currency) })}</h2>
+          <h2 className="text-xl font-extrabold">
+            {isFreePackage(trial) ? t("trialFree") : t("trialFor", { price: money(locale, trial.base_price_cents, trial.currency) })}
+          </h2>
           <p className="text-sm" style={{ opacity: 0.85 }}>{trial.description || t("trialPitch")}</p>
           <button
             type="button"
@@ -105,7 +111,7 @@ export function SalesPage({ page, line }: { page: PublicBoxPage; line: string })
             style={SPARK_GO_STYLE}
             data-testid="sales-trial-buy"
           >
-            {desk ? tDesk("want") : t("bookTrial")}
+            {sales.asks(trial) ? tDesk("want") : t("bookTrial")}
           </button>
         </section>
       ) : null}
@@ -124,13 +130,10 @@ export function SalesPage({ page, line }: { page: PublicBoxPage; line: string })
             >
               <h2 className="break-words text-base font-bold" style={{ color: "var(--text)" }}>{pkg.name}</h2>
               <p>
-                <span className="text-2xl font-extrabold tabular-nums" style={{ color: "var(--text)" }}>
-                  {money(locale, pkg.base_price_cents, pkg.currency)}
-                </span>
-                <span className="text-xs" style={{ color: "var(--dim)" }}>{perLabel(t, pkg.billing_period)}</span>
+                <PackagePrice pkg={pkg} large />
               </p>
               {pkg.description ? <p className="text-xs" style={{ color: "var(--text-soft)" }}>{pkg.description}</p> : null}
-              {desk ? (
+              {sales.asks(pkg) ? (
                 <WantButton primary={index === 0} onClick={() => open(pkg)} testId={`sales-want-${pkg.id}`} />
               ) : (
                 <BuyButton primary={index === 0} renew={pkg.held && sales.ownOnly} onClick={() => open(pkg)} />
@@ -165,11 +168,10 @@ export function SalesPage({ page, line }: { page: PublicBoxPage; line: string })
                     {pkg.description ? <p className="text-xs" style={{ color: "var(--dim)" }}>{pkg.description}</p> : null}
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
-                    <span className="text-sm font-bold tabular-nums" style={{ color: "var(--text)" }}>
-                      {money(locale, pkg.base_price_cents, pkg.currency)}
-                      {perLabel(t, pkg.billing_period)}
+                    <span className="text-sm font-bold tabular-nums">
+                      <PackagePrice pkg={pkg} />
                     </span>
-                    {desk ? (
+                    {sales.asks(pkg) ? (
                       <WantButton small onClick={() => open(pkg)} testId={`sales-want-${pkg.id}`} />
                     ) : (
                       <BuyButton small onClick={() => open(pkg)} />
@@ -208,7 +210,7 @@ export function SalesPage({ page, line }: { page: PublicBoxPage; line: string })
         <p className="text-center text-xs" style={{ color: "var(--dim)" }}>{t("paymentsVia", { provider })}</p>
       ) : null}
 
-      {buying && desk ? (
+      {buying && sales.asks(buying) ? (
         <DeskRequestDialog
           slug={slug}
           boxName={page.box.name}

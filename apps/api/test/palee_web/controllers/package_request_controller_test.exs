@@ -85,7 +85,10 @@ defmodule PaleeWeb.PackageRequestControllerTest do
       |> json_response(200)
 
     assert page["online_payments"] == false
-    assert Enum.map(page["packages"], & &1["name"]) == ["Μηνιαίο απεριόριστο"]
+
+    # ADR-681: the free package is listed too, asked for like the paid one.
+    assert page["packages"] |> Enum.map(&{&1["name"], &1["how"]}) |> Enum.sort() ==
+             [{"Δωρεάν γνωριμία", "ask"}, {"Μηνιαίο απεριόριστο", "ask"}]
   end
 
   test "a member asks for a package and it waits 14 days, granting nothing",
@@ -119,19 +122,46 @@ defmodule PaleeWeb.PackageRequestControllerTest do
     assert profile == nil or (profile[:subscriptions] || []) == []
   end
 
-  test "free packages and packages the owner keeps off cannot be asked for",
+  test "packages the owner keeps off cannot be asked for, free or paid",
        %{conn: conn} = ctx do
-    assert %{"code" => "package_not_for_sale"} =
-             conn |> ask(ctx, ctx.free) |> json_response(409)
+    for package <- [ctx.free, ctx.monthly] do
+      {:ok, _off} =
+        Finance.update_package(ctx.context, package.id, %{
+          sold_online: false,
+          sold_online_chosen_at: DateTime.utc_now()
+        })
 
-    {:ok, _off} =
-      Finance.update_package(ctx.context, ctx.monthly.id, %{
-        sold_online: false,
-        sold_online_chosen_at: DateTime.utc_now()
-      })
+      assert %{"code" => "package_not_for_sale"} =
+               conn |> ask(ctx, package) |> json_response(409)
+    end
+  end
 
-    assert %{"code" => "package_not_for_sale"} =
-             conn |> ask(ctx, ctx.monthly) |> json_response(409)
+  test "ADR-681: a free package is asked for and «Ενεργοποίηση» starts it with nothing owed",
+       %{conn: conn} = ctx do
+    request = conn |> ask(ctx, ctx.free) |> json_response(201) |> Map.fetch!("request")
+    assert request["price_cents"] == 0
+    assert [%{"id" => id}] = desk_queue(conn, ctx)
+    assert id == request["id"]
+
+    # There is no money to record.
+    refute conn |> collect(ctx, request["id"]) |> Map.fetch!(:status) == 200
+
+    activated =
+      conn
+      |> put_bearer_token(ctx.admin)
+      |> post(admin_path(ctx, "/finance/package-requests/#{request["id"]}/activate-unpaid"), %{})
+      |> json_response(200)
+
+    assert activated["request"]["status"] == "activated"
+    assert activated["subscription_id"]
+
+    profile = Finance.get_member_profile(ctx.context, ctx.member.id)
+    assert [subscription] = profile.package_subscriptions
+    assert subscription.status == "active"
+    assert subscription.price_cents_snapshot == 0
+    # Nothing charged, nothing owed.
+    assert profile.invoices == []
+    assert desk_queue(conn, ctx) == []
   end
 
   test "the desk sees who asked and «Είσπραξη» activates the package", %{conn: conn} = ctx do

@@ -4,14 +4,14 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-import { fetchMyPackages, fetchPublicPackages, myPackagesKey, publicPackagesKey } from "@/api/my-payments";
+import { fetchMyPackages, fetchPublicPackages, myPackagesKey, publicPackagesKey, type PublicPackage } from "@/api/my-payments";
 import { useSession } from "@/components/session-provider";
 import { nativePlatform } from "@/lib/platform";
 import { FRESHNESS } from "@/lib/query-policy";
 
 import { BuyPackageSheet } from "./BuyPackageSheet";
 import { buyableHere, renewalPackages } from "./checkout-flow";
-import { deskMode, deskPackages } from "./desk-payment";
+import { asksFor, deskMode, deskPackages } from "./desk-payment";
 import { DeskRenewDialog } from "./DeskPayment";
 
 /**
@@ -39,9 +39,15 @@ export function useBoxSales(slug: string | null | undefined) {
   // Read the answer defensively: an answer without a list (an old API, a
   // stub) shows no packages instead of breaking the page.
   const data = query.data ? { ...query.data, packages: Array.isArray(query.data.packages) ? query.data.packages : [] } : undefined;
-  const packages = data?.online_payments ? buyableHere(data.packages, nativePlatform()) : [];
+  const buyable = data?.online_payments ? buyableHere(data.packages.filter((pkg) => !asksFor(pkg, data)), nativePlatform()) : [];
+  // ADR-681: the package page lists what is bought here and what is asked
+  // for («Το θέλω»: at the desk, or free), in the box's order.
+  const listed = (data?.packages ?? []).filter((pkg) => asksFor(pkg, data) || buyable.includes(pkg));
   return {
-    packages,
+    packages: buyable,
+    listed,
+    /** Whether a listed package is asked for with «Το θέλω» (ADR-291, ADR-681). */
+    asks: (pkg: PublicPackage) => asksFor(pkg, data),
     desk: deskMode(data),
     deskPackages: deskPackages(data),
     provider: data?.provider ?? null,

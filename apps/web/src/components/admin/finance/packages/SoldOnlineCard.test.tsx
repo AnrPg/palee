@@ -74,12 +74,23 @@ describe("SoldOnlineCard (ADR-271, mockup p1 A)", () => {
     expect(screen.getByRole("link", { name: /Settings › Payments/ })).toBeVisible();
   });
 
-  it("does not let a free package be sold online", () => {
-    wrap(<SoldOnlineCard token="token" pkg={{ ...PACKAGE, base_price_cents: 0, sold_online: false, online_visibility: "free" }} />);
-    const toggle = screen.getByRole("switch", { name: "Πωλείται online" });
-    expect(toggle).toBeDisabled();
+  it("ADR-681: shows a free package on the package page with the same switch", async () => {
+    const hidden = { ...PACKAGE, base_price_cents: 0, sold_online: false, online_visibility: "free" };
+    api.updateFinancePackage.mockResolvedValue({ package: { ...hidden, sold_online: true, online_visibility: "free_listed" } });
+    wrap(<SoldOnlineCard token="token" pkg={hidden} />);
+    const toggle = screen.getByRole("switch", { name: "Φαίνεται στη Σελίδα πακέτων" });
+    expect(toggle).toBeEnabled();
     expect(toggle).toHaveAttribute("aria-checked", "false");
-    expect(screen.getByTestId("sold-online-hint")).toHaveTextContent("Τα δωρεάν πακέτα συνδρομής δεν πωλούνται online.");
+    expect(screen.getByTestId("sold-online-hint")).toHaveTextContent("Κρυφό: το δίνεις μόνο εσύ, από τον λογαριασμό του μέλους.");
+
+    fireEvent.click(toggle);
+    await waitFor(() => expect(api.updateFinancePackage).toHaveBeenCalledWith("token", "pkg-1", { sold_online: true }));
+  });
+
+  it("ADR-681: says a listed free package is asked for and activated without payment", () => {
+    wrap(<SoldOnlineCard token="token" pkg={{ ...PACKAGE, base_price_cents: 0, sold_online: false, online_visibility: "free_listed" }} />);
+    expect(screen.getByRole("switch", { name: "Φαίνεται στη Σελίδα πακέτων" })).toHaveAttribute("aria-checked", "true");
+    expect(screen.getByTestId("sold-online-hint")).toHaveTextContent("Φαίνεται ως «Δωρεάν» με «Το θέλω». Το ενεργοποιείς χωρίς είσπραξη.");
   });
 
   it("keeps a refused save inside the card", async () => {

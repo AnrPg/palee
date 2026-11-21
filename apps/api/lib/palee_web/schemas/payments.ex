@@ -555,6 +555,12 @@ defmodule PaleeWeb.Schemas.Payments do
         featured: %Schema{
           type: :boolean,
           description: "ADR-596: the box features it («Προτεινόμενο»; only on the package lists)"
+        },
+        how: %Schema{
+          type: :string,
+          enum: ["buy", "ask"],
+          description:
+            "ADR-681: bought online (`buy`) or asked for with «Το θέλω» (`ask`: paid at the front desk, or free and activated by the box); only on the package lists"
         }
       },
       required: [

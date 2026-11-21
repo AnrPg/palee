@@ -13562,7 +13562,9 @@
     "joinToBuyMessage": "Message the box",
     "ownOnly": "{count, plural, one {Your subscription package is {packages}.} other {Your subscription packages are {packages}.}} Contact the box to explore more plans.",
     "askBoxForPackages": "Ask the box about its subscription packages.",
-    "contactBox": "Contact the box"
+    "contactBox": "Contact the box",
+    "free": "Free",
+    "trialFree": "Free trial class"
   },
   "CsvImport": {
     "crumbLabel": "Breadcrumb",
@@ -14348,7 +14350,7 @@
     "deskOnly": "Front desk only",
     "hint_visible": "On the sales page and in the box member's app. The receipt is issued automatically.",
     "hint_off": "Sold only at the front desk.",
-    "hint_free": "Free subscription packages are not sold online.",
+    "hint_free": "Hidden: only you give it, from the member's account.",
     "hint_inactive": "Inactive subscription package: not on sale.",
     "hint_purpose_off": "Not visible yet: this kind of package is off in “What is paid online”.",
     "fix_purpose_off": "Turn it on",
@@ -14365,7 +14367,11 @@
     "payNone": "No subscription package is sold online",
     "payNoneHint": "Box members have nothing to buy. Turn on “Sold online” in the packages you want.",
     "packagesLink": "Subscription packages",
-    "badgeDesk": "At the front desk"
+    "badgeDesk": "At the front desk",
+    "titleFree": "Shown on the sales page",
+    "subtitleFree": "On the sales page and the website, as “Free” with “I want this”",
+    "hint_free_listed": "Shown as “Free” with “I want this”. You activate it with nothing to collect.",
+    "badgeFree": "Free · on the page"
   },
   "PlanCore": {
     "flow": {
@@ -15587,7 +15593,15 @@
     "rolloutTitle": "Training without a package, for a few more days",
     "rolloutBody": "Since {date}, booking at this box needs a package. These members were training without one and keep booking until their date.",
     "rolloutUntil": "Until {date}",
-    "rolloutHasPackage": "Has a package"
+    "rolloutHasPackage": "Has a package",
+    "freeTitle": "Free package",
+    "freeIntro": "The box activates it with no payment.",
+    "freeSignIn": "Sign in to ask the box for it.",
+    "freeHeldTitle": "You asked for it",
+    "freeHeldBody": "The box will activate it soon and we will let you know. Until then you can book one class.",
+    "freePending": "Waiting for activation",
+    "freePendingBody": "The box will activate it. We hold it until {date}.",
+    "freeActivateHint": "Free package: it starts today, with nothing to collect and nothing owed."
   },
   "Sms": {
     "connectionsTitle": "Connections",

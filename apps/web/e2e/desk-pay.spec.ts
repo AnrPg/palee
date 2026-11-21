@@ -328,3 +328,57 @@ test("the desk activates with payment pending, or declines with a reason", async
   await expect(page.getByTestId("desk-request-req-2")).toHaveCount(0);
   expect(writes.find((write) => write.path.endsWith("/req-2/decline"))?.body).toEqual({ reason: "Ζήτησε λάθος πακέτο" });
 });
+
+test("ADR-681: the desk activates a free package with nothing to collect", async ({ page }) => {
+  const writes: Write[] = [];
+  let open = [
+    {
+      ...REQUEST,
+      id: "req-free",
+      package_name: "Πρώτη εβδομάδα",
+      price_cents: 0,
+      person: { user_id: "maria", display_name: "Μαρία Κωνσταντίνου", handle: "maria", avatar_url: null },
+    },
+  ];
+  await page.context().addCookies([{ name: "palee_locale", value: "el", url: "http://127.0.0.1" }]);
+  await page.route("**/api/**", async (route) => {
+    const path = tenantless(new URL(route.request().url()).pathname);
+    const method = route.request().method();
+    if (method !== "GET") writes.push({ method, path, body: route.request().postDataJSON() });
+    if (path === "/api/auth/refresh") return json(route, { access_token: tokenFor(DESK.id, "admin"), refresh_token: "refresh" });
+    if (path === "/api/auth/me") return json(route, DESK);
+    if (path === "/api/memberships") return json(route, [DESK_MEMBERSHIP]);
+    if (path.startsWith("/api/notifications")) return json(route, { notifications: [], unread_count: 0 });
+    if (path === "/api/admin/finance/queues") return json(route, { queues: {} });
+    if (path === "/api/admin/finance/package-catalog") return json(route, { types: [], modules: [] });
+    if (path.startsWith("/api/admin/finance/members")) return json(route, { members: [], meta: {} });
+    if (path === "/api/admin/payments/attention") return json(route, { payments: [], total: 0 });
+    if (path === "/api/join-link") return json(route, { member: { enabled: false }, athlete: { enabled: false, key: null } });
+    if (path === "/api/admin/finance/package-requests") return json(route, { requests: open });
+    if (path === "/api/admin/finance/package-rule") return json(route, { since: null, people: [] });
+    if (path === "/api/admin/finance/package-requests/req-free/activate-unpaid") {
+      open = [];
+      return json(route, { request: { ...REQUEST, id: "req-free", price_cents: 0, status: "activated" }, subscription_id: "sub-1" });
+    }
+    return json(route, {});
+  });
+
+  await page.goto("/admin/finance?tab=queues&queue=awaiting");
+  const row = page.getByTestId("desk-request-req-free");
+  await expect(row).toContainText("Πρώτη εβδομάδα · Δωρεάν");
+  const button = row.getByTestId("desk-collect-req-free");
+  await expect(button).toBeVisible();
+  await expect(button).toBeEnabled();
+  await button.click();
+
+  const dialog = page.getByTestId("desk-collect");
+  await expect(dialog.getByTestId("desk-activate-free")).toHaveText("Δωρεάν πακέτο: ξεκινά σήμερα, χωρίς είσπραξη και χωρίς οφειλή.");
+  await expect(dialog.getByTestId("desk-activate-paid")).toHaveCount(0);
+  const confirm = dialog.getByTestId("desk-collect-confirm");
+  await expect(confirm).toBeEnabled();
+  await expect(confirm).toHaveText("Ενεργοποίηση");
+  await confirm.click();
+  await expect(page.getByTestId("desk-request-req-free")).toHaveCount(0);
+  await expect.poll(() => writes.some((write) => write.path.endsWith("/req-free/activate-unpaid"))).toBe(true);
+  expect(writes.some((write) => write.path.endsWith("/req-free/collect"))).toBe(false);
+});

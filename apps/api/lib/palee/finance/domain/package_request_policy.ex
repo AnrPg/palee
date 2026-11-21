@@ -7,6 +7,9 @@ defmodule Palee.Finance.Domain.PackageRequestPolicy do
     * A request is not a subscription: it grants no access and owes nothing.
     * The desk's «Είσπραξη» records the money and assigns the package in
       one step (`activated`).
+    * ADR-681: a free package (price 0) is asked for the same way, with or
+      without online payments, and «Ενεργοποίηση» assigns it with nothing
+      to collect or owe.
     * The person can take it back (`cancelled`) while it is pending.
     * The desk may decline it (`declined`, ADR-633), always with a reason
       the person reads.
@@ -41,14 +44,18 @@ defmodule Palee.Finance.Domain.PackageRequestPolicy do
     do: max(Date.diff(until, today), 0)
 
   @doc """
-  Whether a package can be asked for at the desk: active, with a price (a
-  free package needs no payment), and sold on its own (not an add-on, a
-  shared or a corporate package).
+  Whether a package can be asked for («Το θέλω»): active, with a price (ADR-681:
+  also 0, a free package the box activates without payment), and sold on
+  its own (not an add-on, a shared or a corporate package).
   """
   def requestable?(package) when is_map(package) do
     package[:active] == true and is_integer(package[:base_price_cents]) and
-      package.base_price_cents > 0 and package[:package_type] not in @needs_more
+      package.base_price_cents >= 0 and package[:package_type] not in @needs_more
   end
 
   def requestable?(_package), do: false
+
+  @doc "ADR-681: a request for a free package is activated, never collected."
+  def free?(%{price_cents_snapshot: 0}), do: true
+  def free?(_request), do: false
 end

@@ -28,9 +28,16 @@ defmodule Palee.Finance.Domain.PackageRequestPolicyTest do
 
     assert Policy.requestable?(package)
     refute Policy.requestable?(%{package | active: false})
-    refute Policy.requestable?(%{package | base_price_cents: 0})
+    # ADR-681: a free package is asked for too, and activated without payment.
+    assert Policy.requestable?(%{package | base_price_cents: 0})
+    refute Policy.requestable?(%{package | base_price_cents: nil})
     refute Policy.requestable?(%{package | package_type: "add_on"})
     refute Policy.requestable?(%{package | package_type: "corporate"})
     refute Policy.requestable?(nil)
+  end
+
+  test "ADR-681: a request at a price of 0 is free" do
+    assert Policy.free?(%{price_cents_snapshot: 0})
+    refute Policy.free?(%{price_cents_snapshot: 7_000})
   end
 end

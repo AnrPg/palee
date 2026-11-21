@@ -249,6 +249,12 @@ defmodule Palee.Application.PackageRuleTest do
     membership = Finance.get_member_profile(ctx.owner_context, user.id).membership
     assert Finance.membership_outstanding_balance_cents(ctx.owner_context, membership.id) == 6_000
 
+    # ADR-681: the person hears it started.
+    assert_enqueued(
+      worker: Palee.Workers.NotificationEventJob,
+      args: %{"event" => "package_request_activated"}
+    )
+
     # A retry finds it closed.
     assert {:error, :package_request_closed} =
              PackageRequests.activate_unpaid(ctx.owner_context, request.id, ctx.owner.id)
@@ -268,7 +274,7 @@ defmodule Palee.Application.PackageRuleTest do
     )
   end
 
-  test "the four notifications reach their people in their words", ctx do
+  test "the package notifications reach their people in their words", ctx do
     {user, _context} = newcomer(ctx, "rule_words")
     org = ctx.organization.id
 
@@ -300,6 +306,17 @@ defmodule Palee.Application.PackageRuleTest do
       })
 
     :ok =
+      Palee.Notifications.process_event("package_request_activated", %{
+        organization_id: org,
+        user_id: user.id,
+        package_request_id: Ecto.UUID.generate(),
+        package_name: "Δωρεάν εβδομάδα",
+        free: true,
+        box_name: "Rule Gym",
+        box_slug: "rule"
+      })
+
+    :ok =
       Palee.Notifications.process_event("package_rule_grace", %{
         organization_id: org,
         user_id: user.id,
@@ -319,6 +336,11 @@ defmodule Palee.Application.PackageRuleTest do
     assert declined.payload["reason"] == "Λάθος πακέτο"
     assert declined.payload["title"]
     assert Enum.any?(mine, &(to_string(&1.type) == "package_rule_grace"))
+
+    # ADR-681: the person hears their package started.
+    activated = Enum.find(mine, &(to_string(&1.type) == "package_request_activated"))
+    assert activated.payload["title"]
+    assert activated.payload["package_name"] == "Δωρεάν εβδομάδα"
   end
 
   test "staff placing someone are not stopped by the rule", ctx do

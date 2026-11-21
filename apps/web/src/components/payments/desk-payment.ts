@@ -24,7 +24,17 @@ export function deskMode(data: { online_payments: boolean } | null | undefined):
   return data != null && data.online_payments === false;
 }
 
-/** The packages a person can ask for at the desk (the API lists them; a free one needs no payment). */
+/** The paid packages a person can ask for at the desk (renewing, booking without a package). */
 export function deskPackages(data: { online_payments: boolean; packages: PublicPackage[] } | null | undefined): PublicPackage[] {
   return deskMode(data) ? data!.packages.filter((pkg) => pkg.base_price_cents > 0) : [];
+}
+
+/**
+ * Whether a listed package is asked for with «Το θέλω» instead of bought
+ * online: the API says so (`how`), and a box without online payments asks
+ * for every one. ADR-681: a free package is always asked for, and the box
+ * activates it without payment.
+ */
+export function asksFor(pkg: PublicPackage, data: { online_payments: boolean } | null | undefined): boolean {
+  return pkg.how === "ask" || deskMode(data) || pkg.base_price_cents === 0;
 }

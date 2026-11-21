@@ -13562,7 +13562,9 @@
     "joinToBuyMessage": "Bericht aan de box",
     "ownOnly": "{count, plural, one {Je abonnementspakket is {packages}.} other {Je abonnementspakketten zijn {packages}.}} Neem contact op met de box voor meer.",
     "askBoxForPackages": "Vraag de box naar zijn abonnementspakketten.",
-    "contactBox": "Contact met de box"
+    "contactBox": "Contact met de box",
+    "free": "Gratis",
+    "trialFree": "Gratis proefles"
   },
   "CsvImport": {
     "crumbLabel": "Kruimelpad",
@@ -14348,7 +14350,7 @@
     "deskOnly": "Alleen bij de balie",
     "hint_visible": "Op de verkooppagina en in de app van het boxlid. De bon wordt vanzelf aangemaakt.",
     "hint_off": "Wordt alleen bij de balie verkocht.",
-    "hint_free": "Gratis abonnementspakketten worden niet online verkocht.",
+    "hint_free": "Verborgen: alleen jij geeft het, vanuit het account van het lid.",
     "hint_inactive": "Inactief abonnementspakket: niet te koop.",
     "hint_purpose_off": "Nog niet zichtbaar: dit soort pakket staat uit bij „Wat online betaald wordt”.",
     "fix_purpose_off": "Zet het aan",
@@ -14365,7 +14367,11 @@
     "payNone": "Geen enkel abonnementspakket wordt online verkocht",
     "payNoneHint": "Boxleden kunnen niets kopen. Zet „Online verkocht” aan bij de pakketten die je wilt.",
     "packagesLink": "Abonnementspakketten",
-    "badgeDesk": "Bij de balie"
+    "badgeDesk": "Bij de balie",
+    "titleFree": "Zichtbaar op de verkooppagina",
+    "subtitleFree": "Op de verkooppagina en de website, als ‘Gratis’ met ‘Ik wil dit’",
+    "hint_free_listed": "Zichtbaar als ‘Gratis’ met ‘Ik wil dit’. Je activeert het zonder inning.",
+    "badgeFree": "Gratis · op de pagina"
   },
   "PlanView": {
     "label": "Gestructureerde training",
@@ -15587,7 +15593,15 @@
     "rolloutTitle": "Trainen nog een paar dagen zonder pakket",
     "rolloutBody": "Sinds {date} vraagt boeken in deze box een pakket. Deze leden trainden zonder en boeken tot hun datum.",
     "rolloutUntil": "Tot {date}",
-    "rolloutHasPackage": "Heeft een pakket"
+    "rolloutHasPackage": "Heeft een pakket",
+    "freeTitle": "Gratis pakket",
+    "freeIntro": "De box activeert het zonder betaling.",
+    "freeSignIn": "Log in om het bij de box aan te vragen.",
+    "freeHeldTitle": "Je hebt het aangevraagd",
+    "freeHeldBody": "De box activeert het binnenkort en we laten het je weten. Tot dan kun je één les boeken.",
+    "freePending": "Wacht op activering",
+    "freePendingBody": "De box activeert het. We houden het tot {date}.",
+    "freeActivateHint": "Gratis pakket: het begint vandaag, zonder inning en zonder schuld."
   },
   "Sms": {
     "connectionsTitle": "Koppelingen",

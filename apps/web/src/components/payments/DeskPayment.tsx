@@ -25,6 +25,7 @@ import { PackageChoice, perLabel } from "./BuyPackageSheet";
 import { renewalPackages } from "./checkout-flow";
 import { holdDateLabel } from "./desk-payment";
 import { money } from "./PackageCheckout";
+import { FreeTag, isFreePackage } from "./PackagePrice";
 import { usePayError } from "./PayParts";
 import { JoinToBuy } from "./JoinToBuy";
 
@@ -33,7 +34,8 @@ import { JoinToBuy } from "./JoinToBuy";
  * online payments shows its packages with «Το θέλω». Asking puts the package
  * in the person's Συνδρομή as «Περιμένει πληρωμή» for 14 days and in the
  * desk's «Εκκρεμότητες»; they pay at the desk and it starts at once. Nothing
- * here offers a payment the box cannot take.
+ * here offers a payment the box cannot take. ADR-681: a free package is asked
+ * for the same way and waits for the box to activate it, with no desk steps.
  */
 
 /** Where the box's front desk is: shown under the steps when the page knows it. */
@@ -83,11 +85,11 @@ export function DeskSteps({ amount, places, known }: { amount: string | null; pl
   );
 }
 
-function PackageLine({ name, amount }: { name: string; amount: string }) {
+function PackageLine({ name, amount, free }: { name: string; amount: string; free?: boolean }) {
   return (
     <div className="flex min-w-0 items-baseline justify-between gap-3 border-b pb-3" style={{ borderColor: "var(--border)" }}>
       <p className="min-w-0 break-words text-sm font-bold" style={{ color: "var(--text)" }}>{name}</p>
-      <p className="shrink-0 text-sm font-bold tabular-nums" style={{ color: "var(--text)" }}>{amount}</p>
+      {free ? <FreeTag className="shrink-0" /> : <p className="shrink-0 text-sm font-bold tabular-nums" style={{ color: "var(--text)" }}>{amount}</p>}
     </div>
   );
 }
@@ -124,19 +126,25 @@ export function DeskRequestDialog({
   const [joined, setJoined] = useState(false);
   const member = joined || (memberships.data ?? []).some((membership) => membership.organization.slug === slug);
   const amount = `${money(locale, pkg.base_price_cents, pkg.currency)}${perLabel(tPay, pkg.billing_period)}`;
+  // ADR-681: a free package has no payment and no desk steps; the box activates it.
+  const free = isFreePackage(pkg);
 
   if (status === "authenticated" && member) {
     return <HeldDialog slug={slug} pkg={pkg} places={places} onClose={onClose} />;
   }
 
   return (
-    <Dialog onClose={onClose} title={t("title")} size="sm" variant="center" testId="desk-pay">
+    <Dialog onClose={onClose} title={free ? t("freeTitle") : t("title")} size="sm" variant="center" testId="desk-pay">
       <div className="flex min-w-0 flex-col gap-3">
-        <PackageLine name={pkg.name} amount={amount} />
-        <DeskSteps amount={money(locale, pkg.base_price_cents, pkg.currency)} places={places} />
+        <PackageLine name={pkg.name} amount={amount} free={free} />
+        {free ? (
+          <p className="text-sm" style={{ color: "var(--text)" }} data-testid="desk-free-intro">{t("freeIntro")}</p>
+        ) : (
+          <DeskSteps amount={money(locale, pkg.base_price_cents, pkg.currency)} places={places} />
+        )}
         {status === "guest" ? (
           <>
-            <p className="text-sm" style={{ color: "var(--text-soft)" }}>{t("signInToHold")}</p>
+            <p className="text-sm" style={{ color: "var(--text-soft)" }}>{free ? t("freeSignIn") : t("signInToHold")}</p>
             <Actions>
               <AuthLink href={`/register?next=${encodeURIComponent(next)}`} primary testId="desk-register">{t("signUp")}</AuthLink>
               <AuthLink href={`/login?next=${encodeURIComponent(next)}`} testId="desk-login">{t("signIn")}</AuthLink>
@@ -165,7 +173,7 @@ function HeldDialog({ slug, pkg, places, onClose }: { slug: string; pkg: PublicP
   }, [mutate, pkg.id]);
 
   return (
-    <Dialog onClose={onClose} title={t("heldTitle")} size="sm" variant="center" testId="desk-held">
+    <Dialog onClose={onClose} title={isFreePackage(pkg) ? t("freeHeldTitle") : t("heldTitle")} size="sm" variant="center" testId="desk-held">
       <HeldBody slug={slug} request={request} retry={() => mutate(pkg.id)} places={places} onClose={onClose} />
     </Dialog>
   );
@@ -203,14 +211,15 @@ function HeldBody({
   if (!held) return <p className="text-sm" style={{ color: "var(--dim)" }}>{t("holding")}</p>;
 
   const amount = money(locale, held.price_cents, held.currency);
+  const free = held.price_cents === 0;
   return (
     <div className="flex min-w-0 flex-col gap-3">
-      <PackageLine name={held.package_name} amount={amount} />
-      <p className="text-sm" style={{ color: "var(--text)" }}>{t("heldBody")}</p>
+      <PackageLine name={held.package_name} amount={amount} free={free} />
+      <p className="text-sm" style={{ color: "var(--text)" }}>{free ? t("freeHeldBody") : t("heldBody")}</p>
       <p className="text-sm" style={{ color: "var(--text-soft)" }} data-testid="desk-held-until">
         {t("heldUntil", { days: held.hold_days, date: holdDateLabel(locale, held.hold_until) })}
       </p>
-      <DeskSteps amount={amount} places={places} known />
+      {free ? null : <DeskSteps amount={amount} places={places} known />}
       {cancel.isError ? <ErrorNotice>{payError(cancel.error)}</ErrorNotice> : null}
       <Actions>
         <button
@@ -297,6 +306,8 @@ function PendingPackage({ slug, request }: { slug: string; request: PackageReque
   const cancel = useCancelRequest(slug);
   const [how, setHow] = useState(false);
   const amount = money(locale, request.price_cents, request.currency);
+  // ADR-681: a free package waits for the box to activate it, not for a payment.
+  const free = request.price_cents === 0;
 
   return (
     <article className="flex min-w-0 flex-col gap-2 rounded-2xl p-4" style={{ background: "var(--panel-raised)", border: "1px solid var(--border)" }} data-testid={`pending-package-${request.id}`}>
@@ -305,19 +316,21 @@ function PendingPackage({ slug, request }: { slug: string; request: PackageReque
           className="rounded-full px-2.5 py-0.5 text-xs font-bold"
           style={{ background: "color-mix(in srgb, var(--warning) 16%, var(--panel))", color: "var(--text)" }}
         >
-          {t("pending")}
+          {free ? t("freePending") : t("pending")}
         </span>
-        <span className="text-sm font-bold tabular-nums" style={{ color: "var(--text)" }}>{amount}</span>
+        {free ? <FreeTag /> : <span className="text-sm font-bold tabular-nums" style={{ color: "var(--text)" }}>{amount}</span>}
       </div>
       <p className="break-words text-base font-bold" style={{ color: "var(--text)" }}>{request.package_name}</p>
       <p className="text-sm" style={{ color: "var(--text-soft)" }}>
-        {t("pendingBody", { date: holdDateLabel(locale, request.hold_until) })}
+        {t(free ? "freePendingBody" : "pendingBody", { date: holdDateLabel(locale, request.hold_until) })}
       </p>
       {cancel.isError ? <ErrorNotice>{payError(cancel.error)}</ErrorNotice> : null}
       <Actions>
-        <button type="button" onClick={() => setHow(true)} className={`${BUTTON} flex-1`} style={SECONDARY} data-testid="pending-how">
-          {t("howToPay")}
-        </button>
+        {free ? null : (
+          <button type="button" onClick={() => setHow(true)} className={`${BUTTON} flex-1`} style={SECONDARY} data-testid="pending-how">
+            {t("howToPay")}
+          </button>
+        )}
         <button
           type="button"
           onClick={() => cancel.mutate(request.id)}

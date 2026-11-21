@@ -933,6 +933,9 @@ msgstr "Πακέτο για ενεργοποίηση"
 msgid "%{nickname} wants %{package} and will pay at the front desk."
 msgstr "Ο/Η %{nickname} θέλει το %{package} και θα πληρώσει στην υποδοχή."
 
+msgid "%{nickname} wants the free package %{package}."
+msgstr "Ο/Η %{nickname} θέλει το δωρεάν πακέτο %{package}."
+
 msgid "Booking now needs a package"
 msgstr "Οι κρατήσεις θέλουν πλέον πακέτο"
 
@@ -944,6 +947,12 @@ msgstr "Το αίτημά σου για πακέτο απορρίφθηκε"
 
 msgid "%{box} declined %{package}: %{reason}"
 msgstr "Το %{box} απέρριψε το %{package}: %{reason}"
+
+msgid "Your package has started"
+msgstr "Το πακέτο σου ξεκίνησε"
+
+msgid "%{box} activated %{package}. You can book classes."
+msgstr "Το %{box} ενεργοποίησε το %{package}. Μπορείς να κλείνεις μαθήματα."
 
 msgid "Choose a package"
 msgstr "Διάλεξε πακέτο"

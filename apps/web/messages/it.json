@@ -13562,7 +13562,9 @@
     "joinToBuyMessage": "Scrivi al box",
     "ownOnly": "{count, plural, one {Il tuo pacchetto di abbonamento è {packages}.} other {I tuoi pacchetti di abbonamento sono {packages}.}} Contatta il box per vederne altri.",
     "askBoxForPackages": "Chiedi al box i suoi pacchetti di abbonamento.",
-    "contactBox": "Contatta il box"
+    "contactBox": "Contatta il box",
+    "free": "Gratis",
+    "trialFree": "Lezione di prova gratuita"
   },
   "CsvImport": {
     "crumbLabel": "Percorso",
@@ -14348,7 +14350,7 @@
     "deskOnly": "Solo alla reception",
     "hint_visible": "Nella pagina di vendita e nell'app del socio del box. La ricevuta viene emessa da sola.",
     "hint_off": "Si vende solo alla reception.",
-    "hint_free": "I pacchetti di abbonamento gratuiti non si vendono online.",
+    "hint_free": "Nascosto: lo dai solo tu, dall'account del membro.",
     "hint_inactive": "Pacchetto di abbonamento inattivo: non in vendita.",
     "hint_purpose_off": "Non ancora visibile: questo tipo di pacchetto è spento in «Cosa si paga online».",
     "fix_purpose_off": "Attivalo",
@@ -14365,7 +14367,11 @@
     "payNone": "Nessun pacchetto di abbonamento è venduto online",
     "payNoneHint": "I soci del box non hanno nulla da comprare. Attiva «Venduto online» nei pacchetti che vuoi.",
     "packagesLink": "Pacchetti di abbonamento",
-    "badgeDesk": "Alla reception"
+    "badgeDesk": "Alla reception",
+    "titleFree": "Visibile nella pagina di vendita",
+    "subtitleFree": "Nella pagina di vendita e nel sito, come «Gratis» con «Lo voglio»",
+    "hint_free_listed": "Visibile come «Gratis» con «Lo voglio». Lo attivi senza incassare.",
+    "badgeFree": "Gratis · sulla pagina"
   },
   "PlanView": {
     "label": "Allenamento strutturato",
@@ -15587,7 +15593,15 @@
     "rolloutTitle": "Si allenano senza pacchetto ancora per qualche giorno",
     "rolloutBody": "Dal {date} prenotare in questo box richiede un pacchetto. Questi membri si allenavano senza e prenotano fino alla loro data.",
     "rolloutUntil": "Fino al {date}",
-    "rolloutHasPackage": "Ha un pacchetto"
+    "rolloutHasPackage": "Ha un pacchetto",
+    "freeTitle": "Pacchetto gratuito",
+    "freeIntro": "Il box lo attiva senza pagamento.",
+    "freeSignIn": "Accedi per chiederlo al box.",
+    "freeHeldTitle": "L'hai richiesto",
+    "freeHeldBody": "Il box lo attiverà presto e ti avviseremo. Nel frattempo puoi prenotare una lezione.",
+    "freePending": "In attesa di attivazione",
+    "freePendingBody": "Il box lo attiverà. Lo teniamo fino al {date}.",
+    "freeActivateHint": "Pacchetto gratuito: inizia oggi, senza incasso e senza debito."
   },
   "Sms": {
     "connectionsTitle": "Connessioni",

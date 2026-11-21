@@ -11,7 +11,12 @@ defmodule Palee.Payments.Domain.PackageSale do
   `visibility/2` answers, in order:
 
     * `inactive` – the package is retired;
-    * `free` – a price of 0 is never sold online;
+    * `free` – a price of 0 the owner keeps off the package page;
+    * `free_listed` – ADR-681: a price of 0 listed on the package page
+      (also on the box website) with «Δωρεάν», to ask for («Το θέλω») and
+      have the box activate without any payment, with or without online
+      payments; listed until the owner turns it off, like a paid package
+      at a box without online payments (ANR 2026-11-21);
     * `off` – the box sells it only at the front desk;
     * `purpose_off` – the provider is connected but «Τι πληρώνεται online»
       leaves its purpose off;
@@ -24,7 +29,7 @@ defmodule Palee.Payments.Domain.PackageSale do
   alias Palee.Finance.Domain.PackageRequestPolicy
   alias Palee.Payments.Domain.AccountOptions
 
-  @visibilities ~w(visible free off purpose_off no_provider inactive)
+  @visibilities ~w(visible free free_listed off purpose_off no_provider inactive)
 
   def visibilities, do: @visibilities
 
@@ -36,7 +41,7 @@ defmodule Palee.Payments.Domain.PackageSale do
   def visibility(package, offer) do
     cond do
       package[:active] != true -> "inactive"
-      not paid?(package) -> "free"
+      not paid?(package) -> if(desk_listed?(package), do: "free_listed", else: "free")
       not offer.available and desk_listed?(package) -> "no_provider"
       package[:sold_online] != true -> "off"
       not offer.available -> "no_provider"
@@ -48,6 +53,7 @@ defmodule Palee.Payments.Domain.PackageSale do
   # ADR-291: without online payments the package page lists every paid
   # package its owner never kept off, to ask for and pay at the front desk;
   # connecting later turns those same packages on (ADR-271 `opens?/2`).
+  # ADR-681: a free package is listed the same way, whatever the payments.
   defp desk_listed?(package) do
     package[:sold_online] == true or
       (package[:sold_online_chosen_at] == nil and
@@ -55,7 +61,24 @@ defmodule Palee.Payments.Domain.PackageSale do
   end
 
   @doc "Whether the public package page lists it (bought or not yet)."
-  def listed?(package, offer), do: visibility(package, offer) in ["visible", "no_provider"]
+  def listed?(package, offer),
+    do: visibility(package, offer) in ["visible", "no_provider", "free_listed"]
+
+  @doc """
+  How a listed package is taken: `buy` online, or `ask` («Το θέλω»): paid at
+  the front desk (ADR-291) or, when free, activated by the box (ADR-681).
+  Nil when it is not listed.
+  """
+  def how(package, offer) do
+    case visibility(package, offer) do
+      "visible" -> "buy"
+      visibility when visibility in ["no_provider", "free_listed"] -> "ask"
+      _hidden -> nil
+    end
+  end
+
+  @doc "ADR-681: a package with a price of 0 (never paid for, online or at the desk)."
+  def free?(package), do: is_integer(package[:base_price_cents]) and package.base_price_cents == 0
 
   @doc """
   ADR-271: whether connecting online payments switches the package on: active,

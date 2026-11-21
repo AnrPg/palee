@@ -13562,7 +13562,9 @@
     "joinToBuyMessage": "Escrever à box",
     "ownOnly": "{count, plural, one {O teu pacote de subscrição é {packages}.} other {Os teus pacotes de subscrição são {packages}.}} Contacta a box para veres mais.",
     "askBoxForPackages": "Pergunta à box pelos pacotes de subscrição.",
-    "contactBox": "Contactar a box"
+    "contactBox": "Contactar a box",
+    "free": "Grátis",
+    "trialFree": "Aula experimental grátis"
   },
   "CsvImport": {
     "crumbLabel": "Caminho",
@@ -14348,7 +14350,7 @@
     "deskOnly": "Só na receção",
     "hint_visible": "Na página de venda e na app do membro da box. O recibo é emitido sozinho.",
     "hint_off": "Vende-se só na receção.",
-    "hint_free": "Os pacotes de subscrição gratuitos não se vendem online.",
+    "hint_free": "Oculto: só tu o dás, a partir da conta do membro.",
     "hint_inactive": "Pacote de subscrição inativo: não está à venda.",
     "hint_purpose_off": "Ainda não visível: este tipo de pacote está desligado em «O que se paga online».",
     "fix_purpose_off": "Liga-o",
@@ -14365,7 +14367,11 @@
     "payNone": "Nenhum pacote de subscrição é vendido online",
     "payNoneHint": "Os membros da box não têm nada para comprar. Liga «Vendido online» nos pacotes que quiseres.",
     "packagesLink": "Pacotes de subscrição",
-    "badgeDesk": "Na receção"
+    "badgeDesk": "Na receção",
+    "titleFree": "Visível na página de venda",
+    "subtitleFree": "Na página de venda e no site, como «Grátis» com «Quero este»",
+    "hint_free_listed": "Visível como «Grátis» com «Quero este». Ativas sem cobrar.",
+    "badgeFree": "Grátis · na página"
   },
   "PlanView": {
     "label": "Treino estruturado",
@@ -15587,7 +15593,15 @@
     "rolloutTitle": "Treinam sem pacote mais alguns dias",
     "rolloutBody": "Desde {date}, reservar nesta box exige um pacote. Estes membros treinavam sem pacote e reservam até à sua data.",
     "rolloutUntil": "Até {date}",
-    "rolloutHasPackage": "Tem pacote"
+    "rolloutHasPackage": "Tem pacote",
+    "freeTitle": "Pacote grátis",
+    "freeIntro": "O box ativa-o sem pagamento.",
+    "freeSignIn": "Inicia sessão para o pedires ao box.",
+    "freeHeldTitle": "Pediste-o",
+    "freeHeldBody": "O box vai ativá-lo em breve e avisamos-te. Até lá podes reservar uma aula.",
+    "freePending": "À espera de ativação",
+    "freePendingBody": "O box vai ativá-lo. Guardamo-lo até {date}.",
+    "freeActivateHint": "Pacote grátis: começa hoje, sem cobrança e sem dívida."
   },
   "Sms": {
     "connectionsTitle": "Ligações",

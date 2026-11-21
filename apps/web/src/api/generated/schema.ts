@@ -64085,6 +64085,11 @@ export interface operations {
                             featured?: boolean;
                             /** @description ADR-553: the signed-in viewer holds it (only on the package lists) */
                             held?: boolean;
+                            /**
+                             * @description ADR-681: bought online (`buy`) or asked for with «Το θέλω» (`ask`: paid at the front desk, or free and activated by the box); only on the package lists
+                             * @enum {string}
+                             */
+                            how?: "buy" | "ask";
                             /** Format: uuid */
                             id: string;
                             name: string;
@@ -103466,7 +103471,7 @@ export interface operations {
                              * @description ADR-271: `visible` (listed and bought online); otherwise why not: `inactive`, `free` (price 0), `off` (front desk only), `purpose_off` (its purpose is off in «Τι πληρώνεται online»), `no_provider` (listed, bought once online payments connect)
                              * @enum {string}
                              */
-                            online_visibility: "visible" | "free" | "off" | "purpose_off" | "no_provider" | "inactive";
+                            online_visibility: "visible" | "free" | "free_listed" | "off" | "purpose_off" | "no_provider" | "inactive";
                             sold_online: boolean;
                         } & {
                             [key: string]: unknown;
@@ -103633,7 +103638,7 @@ export interface operations {
                              * @description ADR-271: `visible` (listed and bought online); otherwise why not: `inactive`, `free` (price 0), `off` (front desk only), `purpose_off` (its purpose is off in «Τι πληρώνεται online»), `no_provider` (listed, bought once online payments connect)
                              * @enum {string}
                              */
-                            online_visibility: "visible" | "free" | "off" | "purpose_off" | "no_provider" | "inactive";
+                            online_visibility: "visible" | "free" | "free_listed" | "off" | "purpose_off" | "no_provider" | "inactive";
                             sold_online: boolean;
                         } & {
                             [key: string]: unknown;
@@ -103668,7 +103673,7 @@ export interface operations {
                              * @description ADR-271: `visible` (listed and bought online); otherwise why not: `inactive`, `free` (price 0), `off` (front desk only), `purpose_off` (its purpose is off in «Τι πληρώνεται online»), `no_provider` (listed, bought once online payments connect)
                              * @enum {string}
                              */
-                            online_visibility: "visible" | "free" | "off" | "purpose_off" | "no_provider" | "inactive";
+                            online_visibility: "visible" | "free" | "free_listed" | "off" | "purpose_off" | "no_provider" | "inactive";
                             sold_online: boolean;
                         } & {
                             [key: string]: unknown;
@@ -103835,7 +103840,7 @@ export interface operations {
                              * @description ADR-271: `visible` (listed and bought online); otherwise why not: `inactive`, `free` (price 0), `off` (front desk only), `purpose_off` (its purpose is off in «Τι πληρώνεται online»), `no_provider` (listed, bought once online payments connect)
                              * @enum {string}
                              */
-                            online_visibility: "visible" | "free" | "off" | "purpose_off" | "no_provider" | "inactive";
+                            online_visibility: "visible" | "free" | "free_listed" | "off" | "purpose_off" | "no_provider" | "inactive";
                             sold_online: boolean;
                         } & {
                             [key: string]: unknown;
@@ -142090,6 +142095,11 @@ export interface operations {
                             featured?: boolean;
                             /** @description ADR-553: the signed-in viewer holds it (only on the package lists) */
                             held?: boolean;
+                            /**
+                             * @description ADR-681: bought online (`buy`) or asked for with «Το θέλω» (`ask`: paid at the front desk, or free and activated by the box); only on the package lists
+                             * @enum {string}
+                             */
+                            how?: "buy" | "ask";
                             /** Format: uuid */
                             id: string;
                             name: string;
@@ -168600,6 +168610,11 @@ export interface operations {
                             featured?: boolean;
                             /** @description ADR-553: the signed-in viewer holds it (only on the package lists) */
                             held?: boolean;
+                            /**
+                             * @description ADR-681: bought online (`buy`) or asked for with «Το θέλω» (`ask`: paid at the front desk, or free and activated by the box); only on the package lists
+                             * @enum {string}
+                             */
+                            how?: "buy" | "ask";
                             /** Format: uuid */
                             id: string;
                             name: string;

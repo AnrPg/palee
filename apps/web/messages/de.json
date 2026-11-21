@@ -13562,7 +13562,9 @@
     "joinToBuyMessage": "Der Box schreiben",
     "ownOnly": "{count, plural, one {Dein Abo-Paket ist {packages}.} other {Deine Abo-Pakete sind {packages}.}} Kontaktiere die Box, um weitere zu sehen.",
     "askBoxForPackages": "Frag die Box nach ihren Abo-Paketen.",
-    "contactBox": "Box kontaktieren"
+    "contactBox": "Box kontaktieren",
+    "free": "Kostenlos",
+    "trialFree": "Kostenloses Probetraining"
   },
   "CsvImport": {
     "crumbLabel": "Pfad",
@@ -14348,7 +14350,7 @@
     "deskOnly": "Nur am Empfang",
     "hint_visible": "Auf der Verkaufsseite und in der App des Box-Mitglieds. Der Beleg entsteht von selbst.",
     "hint_off": "Wird nur am Empfang verkauft.",
-    "hint_free": "Kostenlose Abo-Pakete werden nicht online verkauft.",
+    "hint_free": "Verborgen: Nur du vergibst es, im Konto des Mitglieds.",
     "hint_inactive": "Inaktives Abo-Paket: wird nicht verkauft.",
     "hint_purpose_off": "Noch nicht sichtbar: Diese Art von Paket ist unter „Was online bezahlt wird“ ausgeschaltet.",
     "fix_purpose_off": "Einschalten",
@@ -14365,7 +14367,11 @@
     "payNone": "Kein Abo-Paket wird online verkauft",
     "payNoneHint": "Box-Mitglieder können nichts kaufen. Schalte „Online verkauft“ bei den gewünschten Paketen ein.",
     "packagesLink": "Abo-Pakete",
-    "badgeDesk": "An der Rezeption"
+    "badgeDesk": "An der Rezeption",
+    "titleFree": "Auf der Verkaufsseite sichtbar",
+    "subtitleFree": "Auf der Verkaufsseite und der Website, als „Kostenlos“ mit „Will ich“",
+    "hint_free_listed": "Sichtbar als „Kostenlos“ mit „Will ich“. Du aktivierst es ohne Kassieren.",
+    "badgeFree": "Kostenlos · auf der Seite"
   },
   "PlanView": {
     "label": "Strukturiertes Training",
@@ -15587,7 +15593,15 @@
     "rolloutTitle": "Trainieren noch ein paar Tage ohne Paket",
     "rolloutBody": "Seit {date} braucht Buchen in dieser Box ein Paket. Diese Mitglieder trainierten ohne und können bis zu ihrem Datum buchen.",
     "rolloutUntil": "Bis {date}",
-    "rolloutHasPackage": "Hat ein Paket"
+    "rolloutHasPackage": "Hat ein Paket",
+    "freeTitle": "Kostenloses Paket",
+    "freeIntro": "Die Box aktiviert es ohne Zahlung.",
+    "freeSignIn": "Melde dich an, um es bei der Box anzufragen.",
+    "freeHeldTitle": "Du hast es angefragt",
+    "freeHeldBody": "Die Box aktiviert es bald und wir sagen dir Bescheid. Bis dahin kannst du einen Kurs buchen.",
+    "freePending": "Wartet auf Aktivierung",
+    "freePendingBody": "Die Box aktiviert es. Wir halten es bis {date}.",
+    "freeActivateHint": "Kostenloses Paket: Es beginnt heute, ohne Kassieren und ohne offenen Betrag."
   },
   "Sms": {
     "connectionsTitle": "Verbindungen",

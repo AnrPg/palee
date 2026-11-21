@@ -131,6 +131,8 @@ defmodule Palee.Notifications.Notification do
     :package_requested,
     :package_rule_started,
     :package_request_declined,
+    # ADR-681: the person's requested package started.
+    :package_request_activated,
     :package_rule_grace,
     # ADR-580: a box invites a follower to become a box member.
     :follower_invited,

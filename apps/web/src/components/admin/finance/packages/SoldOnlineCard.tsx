@@ -12,13 +12,15 @@ import { localizeError } from "@/i18n/presentation";
 import { useUiTranslations } from "@/i18n/ui";
 import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
 
-import { canSellOnline, fixLink, isHidden, isSoldOnline, onlineVisibility } from "./sold-online";
+import { canSellOnline, fixLink, isFreeVisibility, isHidden, isSoldOnline, onlineVisibility } from "./sold-online";
 
 /**
  * «Πώληση» in the package panel's «Προχωρημένες ρυθμίσεις» (ADR-271, mockup
  * p1 option A): one switch, saved at once, and a line that says whether box
  * members see the package online and, if not, why, with a link to fix it.
  * Switching is the owner's choice: Palee never turns it back on by itself.
+ * ADR-681: on a free package the same switch shows it on the package page
+ * («Φαίνεται στη Σελίδα πακέτων»), to ask for and activate without payment.
  */
 export function SoldOnlineCard({ token, pkg }: { token: string; pkg: FinanceRecord }) {
   const t = useTranslations("SoldOnline");
@@ -42,6 +44,7 @@ export function SoldOnlineCard({ token, pkg }: { token: string; pkg: FinanceReco
   const on = isSoldOnline(pkg);
   const fix = on ? fixLink(visibility) : null;
   const warn = on && isHidden(visibility);
+  const free = isFreeVisibility(visibility);
 
   return (
     <section
@@ -52,11 +55,11 @@ export function SoldOnlineCard({ token, pkg }: { token: string; pkg: FinanceReco
       <h4 className="text-sm font-semibold" style={{ color: "var(--text)" }}>{t("sale")}</h4>
       <div className="flex items-center gap-3">
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>{t("title")}</p>
-          <p className="text-xs leading-5" style={{ color: "var(--dim)" }}>{t("subtitle")}</p>
+          <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>{free ? t("titleFree") : t("title")}</p>
+          <p className="text-xs leading-5" style={{ color: "var(--dim)" }}>{free ? t("subtitleFree") : t("subtitle")}</p>
         </div>
         <Toggle
-          label={t("title")}
+          label={free ? t("titleFree") : t("title")}
           checked={on && canSellOnline(visibility)}
           disabled={!canSellOnline(visibility) || mutation.isPending}
           onChange={(value) => mutation.mutate(value)}

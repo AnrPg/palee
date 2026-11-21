@@ -933,6 +933,9 @@ msgstr "Un pacchetto da attivare"
 msgid "%{nickname} wants %{package} and will pay at the front desk."
 msgstr "%{nickname} vuole %{package} e pagherà alla reception."
 
+msgid "%{nickname} wants the free package %{package}."
+msgstr "%{nickname} vuole il pacchetto gratuito %{package}."
+
 msgid "Booking now needs a package"
 msgstr "Ora per prenotare serve un pacchetto"
 
@@ -944,6 +947,12 @@ msgstr "La tua richiesta di pacchetto è stata rifiutata"
 
 msgid "%{box} declined %{package}: %{reason}"
 msgstr "%{box} ha rifiutato %{package}: %{reason}"
+
+msgid "Your package has started"
+msgstr "Il tuo pacchetto è iniziato"
+
+msgid "%{box} activated %{package}. You can book classes."
+msgstr "%{box} ha attivato %{package}. Puoi prenotare le lezioni."
 
 msgid "Choose a package"
 msgstr "Scegli un pacchetto"

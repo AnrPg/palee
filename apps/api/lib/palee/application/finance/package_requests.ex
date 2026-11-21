@@ -15,6 +15,11 @@ defmodule Palee.Application.Finance.PackageRequests do
   charge is owed, so the box's reminders, grace days and lock follow it).
   «Απόρριψη» (`decline/4`) always says why, and the person hears it. While
   a request waits, the person may book one class (`PackageRule`).
+
+  ADR-681: a free package (price 0) is asked for the same way, also at a
+  box with online payments. «Ενεργοποίηση» starts it with nothing to
+  collect and nothing owed (`activate_unpaid/3`); there is no money for
+  `collect/4` to record (a receipt of 0 is refused).
   """
 
   alias Palee.Application.{AssignFinanceMemberPackage, PackageRule, ReceiveFinancePayment}
@@ -69,7 +74,8 @@ defmodule Palee.Application.Finance.PackageRequests do
       member_user_id: request.user_id,
       package_name: request.package_name_snapshot,
       price_cents: request.price_cents_snapshot,
-      currency: request.currency
+      currency: request.currency,
+      free: PackageRequestPolicy.free?(request)
     })
   end
 
@@ -220,6 +226,7 @@ defmodule Palee.Application.Finance.PackageRequests do
   charge issued now (ADR-274 `billing: :now`), so the box's payment
   reminders, grace days and lock take over by themselves. Assigning closes
   the request as activated (ADR-291 addendum). A retry finds it closed.
+  ADR-681: a free package starts with no charge at all (nothing is owed).
   """
   def activate_unpaid(context, request_id, admin_id) do
     today = today(context)
@@ -237,7 +244,8 @@ defmodule Palee.Application.Finance.PackageRequests do
                  "membership_package_id" => request.membership_package_id,
                  "signup_source" => "direct"
                },
-               price_cents: request.price_cents_snapshot
+               price_cents: request.price_cents_snapshot,
+               billing: if(PackageRequestPolicy.free?(request), do: :none, else: :now)
              )
            end),
          {:ok, closed} <- close_unpaid(context, request, subscription, admin_id) do
@@ -260,9 +268,36 @@ defmodule Palee.Application.Finance.PackageRequests do
       end
     end)
     |> tap(fn
-      {:ok, _closed} -> package_started(context, request.user_id)
-      _other -> :ok
+      {:ok, _closed} ->
+        package_started(context, request.user_id)
+        notify_activated(context, request)
+
+      _other ->
+        :ok
     end)
+  end
+
+  # ADR-681: activated without the person at the desk (a free package, or
+  # one owed): they hear it started.
+  defp notify_activated(context, request) do
+    box = box(context)
+
+    Notifications.dispatch_event(:package_request_activated, %{
+      organization_id: context.organization_id,
+      user_id: request.user_id,
+      package_request_id: request.id,
+      package_name: request.package_name_snapshot,
+      free: PackageRequestPolicy.free?(request),
+      box_name: box && box.name,
+      box_slug: box && box.slug
+    })
+  end
+
+  defp box(context) do
+    context.organization_id
+    |> List.wrap()
+    |> Palee.Application.PublicBox.boxes()
+    |> List.first()
   end
 
   @doc """
@@ -306,11 +341,7 @@ defmodule Palee.Application.Finance.PackageRequests do
   end
 
   defp notify_declined(context, request, cancelled) do
-    box =
-      context.organization_id
-      |> List.wrap()
-      |> Palee.Application.PublicBox.boxes()
-      |> List.first()
+    box = box(context)
 
     Notifications.dispatch_event(:package_request_declined, %{
       organization_id: context.organization_id,

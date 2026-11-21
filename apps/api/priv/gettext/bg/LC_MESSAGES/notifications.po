@@ -933,6 +933,9 @@ msgstr "Пакет за активиране"
 msgid "%{nickname} wants %{package} and will pay at the front desk."
 msgstr "%{nickname} иска %{package} и ще плати на рецепцията."
 
+msgid "%{nickname} wants the free package %{package}."
+msgstr "%{nickname} иска безплатния пакет %{package}."
+
 msgid "Booking now needs a package"
 msgstr "Записването вече изисква пакет"
 
@@ -944,6 +947,12 @@ msgstr "Заявката ти за пакет е отказана"
 
 msgid "%{box} declined %{package}: %{reason}"
 msgstr "%{box} отказа %{package}: %{reason}"
+
+msgid "Your package has started"
+msgstr "Пакетът ти започна"
+
+msgid "%{box} activated %{package}. You can book classes."
+msgstr "%{box} активира %{package}. Можеш да запазваш часове."
 
 msgid "Choose a package"
 msgstr "Избери пакет"

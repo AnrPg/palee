@@ -171,10 +171,15 @@ test("each subscription package says whether it is sold online, and the switch l
   await expect(page.getByTestId("sold-online-hint")).toContainText("Πωλείται μόνο στην υποδοχή.");
   expect(writes.find((w) => w.path === "/api/admin/finance/packages/p-unl")?.body).toEqual({ sold_online: false });
 
-  // A free package cannot be sold online.
+  // ADR-681: a free package is not sold; the same switch shows it on the package page.
   await page.goto("/admin/finance?tab=packages&package=p-trial");
   await page.getByTestId("package-advanced").locator("summary").click();
-  await expect(page.getByTestId("sold-online-card").getByRole("switch", { name: "Πωλείται online" })).toBeDisabled();
+  const show = page.getByTestId("sold-online-card").getByRole("switch", { name: "Φαίνεται στη Σελίδα πακέτων" });
+  await expect(show).toBeVisible();
+  await expect(show).toBeEnabled();
+  await expect(show).toHaveAttribute("aria-checked", "false");
+  await show.click();
+  await expect.poll(() => writes.find((w) => w.path === "/api/admin/finance/packages/p-trial")?.body).toEqual({ sold_online: true });
 });
 
 test("ADR-553: «Ποιος βλέπει τα πακέτα συνδρομής» is one choice above the packages, for Palee and the website", async ({ page }) => {

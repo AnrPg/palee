@@ -928,6 +928,9 @@ msgstr ""
 msgid "%{nickname} wants %{package} and will pay at the front desk."
 msgstr ""
 
+msgid "%{nickname} wants the free package %{package}."
+msgstr ""
+
 msgid "Booking now needs a package"
 msgstr ""
 
@@ -938,6 +941,12 @@ msgid "Your package request was declined"
 msgstr ""
 
 msgid "%{box} declined %{package}: %{reason}"
+msgstr ""
+
+msgid "Your package has started"
+msgstr ""
+
+msgid "%{box} activated %{package}. You can book classes."
 msgstr ""
 
 msgid "Choose a package"
