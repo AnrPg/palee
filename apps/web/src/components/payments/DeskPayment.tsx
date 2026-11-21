@@ -10,7 +10,9 @@ import type { PublicPackage } from "@/api/my-payments";
 import {
   cancelPackageRequest,
   fetchMyPackageRequests,
+  fetchMyPackageRule,
   myPackageRequestsKey,
+  myPackageRuleKey,
   requestPackage,
   type PackageRequest,
 } from "@/api/package-requests";
@@ -295,7 +297,35 @@ export function PendingPackages({ slug }: { slug: string }) {
       {rows.map((request) => (
         <PendingPackage key={request.id} slug={slug} request={request} />
       ))}
+      <WaitBookingsLeft slug={slug} token={token} />
     </div>
+  );
+}
+
+/**
+ * ADR-717: while a request waits, how many of the box's «Κρατήσεις πριν την
+ * πληρωμή» the person still has. Counted per person, so it is said once
+ * under all their waiting packages. Nothing shows where the rule does not hold.
+ */
+function WaitBookingsLeft({ slug, token }: { slug: string; token: string | null }) {
+  const t = useTranslations("DeskPay");
+  const standing = useQuery({
+    queryKey: myPackageRuleKey(slug),
+    enabled: Boolean(token),
+    queryFn: () => fetchMyPackageRule(token!, slug),
+    staleTime: FRESHNESS.live,
+    retry: false,
+  });
+  const data = standing.data;
+  if (!data?.rule || !data.pending_request) return null;
+  return (
+    <p className="px-1 text-sm" style={{ color: "var(--text-soft)" }} data-testid="wait-bookings-left">
+      {data.wait_bookings_left > 0
+        ? t("waitBookingsLeft", { left: data.wait_bookings_left, allowed: data.wait_bookings_allowed })
+        : data.wait_bookings_allowed === 0
+          ? t("waitBookingsNone")
+          : t("waitBookingsAllUsed")}
+    </p>
   );
 }
 
@@ -364,6 +394,7 @@ function useRequestPackage(slug: string) {
     onSuccess: () =>
       Promise.all([
         queryClient.invalidateQueries({ queryKey: myPackageRequestsKey(slug) }),
+        queryClient.invalidateQueries({ queryKey: myPackageRuleKey(slug) }),
         queryClient.invalidateQueries({ queryKey: ORGANIZATION_MEMBERSHIPS_KEY }),
         queryClient.invalidateQueries({ queryKey: CLUBS_KEY }),
       ]),
@@ -379,6 +410,7 @@ function useCancelRequest(slug: string) {
     onSuccess: () =>
       Promise.all([
         queryClient.invalidateQueries({ queryKey: myPackageRequestsKey(slug) }),
+        queryClient.invalidateQueries({ queryKey: myPackageRuleKey(slug) }),
         queryClient.invalidateQueries({ queryKey: ORGANIZATION_MEMBERSHIPS_KEY }),
         queryClient.invalidateQueries({ queryKey: CLUBS_KEY }),
       ]),

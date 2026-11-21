@@ -91,6 +91,9 @@ async function stubMember(page: Page, writes: Write[], requests: Array<typeof RE
       return json(route, { request: REQUEST, created: true }, 201);
     }
     if (path === "/api/me/package-requests") return json(route, { requests });
+    // ADR-717: the box's bookings before payment the person still has.
+    if (path === "/api/me/package-rule")
+      return json(route, { rule: true, pending_request: requests.length > 0, wait_bookings_allowed: 3, wait_bookings_used: 1, wait_bookings_left: 2, package_required: false });
     if (path === "/api/me/package-requests/req-1/cancel") {
       requests.splice(0, requests.length);
       return json(route, { request: { ...REQUEST, status: "cancelled" } });
@@ -182,6 +185,7 @@ test("Box shows the package waiting for payment, how to pay, and «Δεν το �
   await expect(card).toContainText("Unlimited");
   await expect(card).toContainText("Περιμένει πληρωμή");
   await expect(card).toContainText("Το κρατάμε έως 14 Νοεμβρίου.");
+  await expect(card.getByTestId("wait-bookings-left")).toHaveText("Μέχρι να ξεκινήσει μπορείς να κλείσεις ακόμη 2 από 3 τμήματα.");
   await card.getByTestId("pending-how").click();
   const how = page.getByTestId("pending-how-dialog");
   await expect(how.getByText("Το πακέτο ξεκινά μόλις πληρώσεις.")).toBeVisible();

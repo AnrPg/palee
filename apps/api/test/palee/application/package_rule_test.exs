@@ -290,6 +290,35 @@ defmodule Palee.Application.PackageRuleTest do
     assert %{wait_bookings_used: 1} = PackageRule.standing(context, user.id)
   end
 
+  test "a free package's «Το θέλω» gets the same bookings before activation (ADR-681/717)",
+       ctx do
+    start_rule(ctx)
+    set_wait_bookings(ctx, 2)
+
+    {:ok, free} =
+      Finance.create_package(ctx.owner_context, %{
+        name: "Δωρεάν εβδομάδα",
+        family: "unlimited",
+        billing_period: "monthly",
+        base_price_cents: 0
+      })
+
+    {user, context} = newcomer(ctx, "rule_free")
+    {:ok, %{request: request}} = PackageRequests.request(context, free.id)
+    assert {:ok, _first} = book(context, user, slot(ctx))
+    assert {:ok, _second} = book(context, user, slot(ctx))
+    assert {:error, :finance_package_required} = book(context, user, slot(ctx))
+
+    assert [%{wait_bookings_used: 2, wait_bookings_allowed: 2, price_cents: 0}] =
+             PackageRequests.for_desk(ctx.owner_context)
+
+    assert {:ok, _activated} =
+             PackageRequests.activate_unpaid(ctx.owner_context, request.id, ctx.owner.id)
+
+    # Once the box activates it, the package decides, not the count.
+    assert {:ok, _booking} = book(context, user, slot(ctx))
+  end
+
   test "«Απόρριψη» needs a reason, the person hears it and their waiting class goes", ctx do
     package = start_rule(ctx)
     {user, context} = newcomer(ctx, "rule_declined")

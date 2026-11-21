@@ -114,7 +114,7 @@ export function DeskPackageRequestRows({
               </span>
               {row.wait_bookings_used ? (
                 <span className="text-xs font-semibold" style={{ color: "var(--amber)" }} data-testid={`desk-wait-bookings-${row.id}`}>
-                  {t("waitBookingsUsed", { used: row.wait_bookings_used, allowed: row.wait_bookings_allowed ?? row.wait_bookings_used })}
+                  {t(row.price_cents === 0 ? "waitBookingsUsedFree" : "waitBookingsUsed", { used: row.wait_bookings_used, allowed: row.wait_bookings_allowed ?? row.wait_bookings_used })}
                 </span>
               ) : null}
             </span>
