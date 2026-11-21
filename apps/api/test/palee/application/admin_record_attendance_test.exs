@@ -77,4 +77,29 @@ defmodule Palee.Application.AdminRecordAttendanceTest do
     assert attendance.booking_id == booking.id
     assert attendance.status == "attended"
   end
+
+  test "tells an open class page that attendance changed, naming the class only" do
+    admin = TestFixtures.admin_fixture()
+    member = TestFixtures.user_fixture()
+    context = legacy_tenant_context(admin, :owner)
+    legacy_tenant_context(member)
+    workout = TestFixtures.workout_fixture(admin)
+    slot = TestFixtures.slot_fixture(workout, %{auto_approve: true})
+
+    assert {:ok, _booking} = Scheduling.submit_auto_approved_booking(context, member.id, slot.id)
+    Phoenix.PubSub.subscribe(Palee.PubSub, "schedule:#{context.organization_id}")
+
+    assert {:ok, _attendance} =
+             AdminRecordAttendance.call(context, slot.id, member.id, admin.id, %{
+               status: "attended"
+             })
+
+    assert_receive %Phoenix.Socket.Broadcast{
+      event: "schedule:refresh",
+      payload: %{event: "attendance_recorded", payload: payload}
+    }
+
+    assert payload.slot_id == slot.id
+    refute Map.has_key?(payload, :user_id)
+  end
 end

@@ -38,6 +38,8 @@ config :palee, Oban,
        {"17 * * * *", Palee.Workers.GooglePlacesJob},
        # ADR-397: removed review texts after 6 months; the open reports summary.
        {"10 7 * * *", Palee.Workers.ReviewReportsDailyJob},
+       # ADR-690: the workout type names boxes added, once a day if any.
+       {"20 7 * * *", Palee.Workers.WorkoutKindDigestJob},
        {"*/15 * * * *", Palee.Workers.RefreshFinanceAggregatesJob},
        {"*/15 * * * *", Palee.Workers.RefreshCoachingAggregatesJob},
        {"0 2 * * *", Palee.Workers.MarkOverdueInvoicesJob},
@@ -503,6 +505,8 @@ config :palee, :domain_event_handlers, %{
     Palee.Application.Automations.AutomationReactions,
     Palee.Application.Integrations.WebhookEvents
   ],
+  # Staff took back a «Ήρθε»: box screens and Wallet cards follow.
+  attendance_removed: [Palee.Application.WalletReactions, Palee.Application.BoxScreenReactions],
   # ADR-344/346/347: leads moved by staff, members whose risk became high.
   lead_moved: [Palee.Application.Automations.AutomationReactions],
   member_at_risk: [Palee.Application.Automations.AutomationReactions],
@@ -735,6 +739,7 @@ config :palee,
 config :palee, :workout_store, Palee.Infrastructure.Workouts.EctoWorkoutStore
 # ADR-461: approved additions to the exercise catalog, candidates, audit trail.
 config :palee, :exercise_catalog_store, Palee.Infrastructure.Workouts.EctoExerciseCatalogStore
+config :palee, :workout_kind_store, Palee.Infrastructure.Workouts.EctoWorkoutKindStore
 
 # ADR-560: the reference catalog tables, and how often each pod checks them for a change.
 config :palee, :reference_catalog_store, Palee.Infrastructure.Catalog.EctoReferenceStore
@@ -807,6 +812,11 @@ config :palee, :web_push_default_subject, "mailto:alerts@palee.app"
 # ADR-397: the Palee team's review moderation. `contact_email` is named in
 # every statement of reasons and in the box website's footer; the daily
 # summary of open review reports goes to `team_email` in `team_locale`.
+# ADR-690: where the daily email of new workout type names goes.
+config :palee, :workout_kinds_team,
+  team_email: "moderation@palee.app",
+  team_locale: "el"
+
 config :palee, :review_moderation,
   contact_email: "moderation@palee.app",
   team_email: "moderation@palee.app",

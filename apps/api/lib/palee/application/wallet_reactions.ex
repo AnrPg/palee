@@ -13,7 +13,7 @@ defmodule Palee.Application.WalletReactions do
 
   @impl true
   def handle_event(event, %{organization_id: organization_id, user_id: user_id})
-      when event in [:booking_made, :booking_cancelled, :attendance_recorded] and
+      when event in [:booking_made, :booking_cancelled, :attendance_recorded, :attendance_removed] and
              is_binary(organization_id) and is_binary(user_id) do
     WalletPasses.touch(%{organization_id: organization_id}, user_id)
   end

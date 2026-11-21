@@ -11,15 +11,15 @@ import { useEffect, useId, useState } from "react";
 
 import { assignWorkout, listAthletes, type AthleteOption } from "@/api/assigned-workouts";
 import { listAdminWorkouts, type WorkoutRecord } from "@/api/workouts";
-import { workoutTypeColor } from "@/lib/workout-colors";
+import { workoutColor } from "@/lib/workout-colors";
 import { useWorkoutCreationStore } from "@/stores/workout-creation";
 import { WorkoutCreationCanvas } from "@/components/workouts/creation/WorkoutCreationCanvas";
 import { NewWorkoutForAssignment } from "@/components/workouts/creation/NewWorkoutPurpose";
-import { SemanticLabel } from "@/components/semantic-label";
 import { AthleteInjuryWarningsPanel } from "@/components/wellbeing/InjuryWarnings";
 import { Dialog } from "@/components/ui/Dialog";
 import { DateInput } from "@/components/ui/DateInput";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { WorkoutTypesText } from "@/components/workouts/WorkoutTypeSelect";
 
 type Props = {
   accessToken: string;
@@ -219,9 +219,9 @@ export function QuickAssignModal({ accessToken, defaultDate, onClose, onAssigned
                             </p>
                             <p
                               className="mt-0.5 text-[10px] uppercase tracking-[0.14em]"
-                              style={{ color: workoutTypeColor(workout.type) }}
+                              style={{ color: workoutColor(workout) }}
                             >
-                              <SemanticLabel value={workout.type} />
+                              <WorkoutTypesText workout={workout} />
                             </p>
                           </div>
                           {selected ? (
@@ -242,8 +242,8 @@ export function QuickAssignModal({ accessToken, defaultDate, onClose, onAssigned
                   >
                     <div>
                       <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>{selectedWorkout.title}</p>
-                      <p className="text-[10px] uppercase tracking-[0.14em]" style={{ color: workoutTypeColor(selectedWorkout.type) }}>
-                        <SemanticLabel value={selectedWorkout.type} />
+                      <p className="text-[10px] uppercase tracking-[0.14em]" style={{ color: workoutColor(selectedWorkout) }}>
+                        <WorkoutTypesText workout={selectedWorkout} />
                       </p>
                     </div>
                     <button

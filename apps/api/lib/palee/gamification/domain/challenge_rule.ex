@@ -1,7 +1,9 @@
 defmodule Palee.Gamification.Domain.ChallengeRule do
   @doc "Returns `points` if the rule's condition is met, 0 otherwise."
+  # ADR-690: a WOD has one or more types; the rule holds when one of them is
+  # the rule's type.
   def evaluate(%{"condition" => "workout_type", "type" => type, "points" => points}, facts) do
-    if to_string(Map.get(facts, :workout_type)) == to_string(type), do: points, else: 0
+    if to_string(type) in fact_types(facts), do: points, else: 0
   end
 
   def evaluate(%{"condition" => "scale_level", "slug" => slug, "points" => points}, facts) do
@@ -37,6 +39,14 @@ defmodule Palee.Gamification.Domain.ChallengeRule do
   end
 
   def evaluate(_rule, _facts), do: 0
+
+  @doc "The completed WOD's types (`workout_types`, or an old `workout_type`)."
+  def fact_types(facts) do
+    case Map.get(facts, :workout_types) do
+      [_ | _] = types -> Enum.map(types, &to_string/1)
+      _ -> facts |> Map.get(:workout_type) |> List.wrap() |> Enum.map(&to_string/1)
+    end
+  end
 
   @doc "Returns the display label for this rule's earned points."
   def label(%{"label" => lbl}) when is_binary(lbl) and lbl != "", do: lbl

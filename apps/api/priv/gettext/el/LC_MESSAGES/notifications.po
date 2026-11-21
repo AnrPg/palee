@@ -960,3 +960,9 @@ msgstr "Λόγος: %{reason}"
 
 msgid "Your package was removed"
 msgstr "Το πακέτο σου αφαιρέθηκε"
+
+msgid "Palee reviewed your workout type"
+msgstr "Η Palee εξέτασε τον τύπο προπόνησής σου"
+
+msgid "«%{label}» now follows the Palee list, and your box's WODs moved with it."
+msgstr "Το «%{label}» ακολουθεί πλέον τη λίστα της Palee, και τα WOD του box σου άλλαξαν μαζί του."

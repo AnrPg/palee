@@ -961,3 +961,9 @@ msgstr "Причина: %{reason}"
 
 msgid "Your package was removed"
 msgstr "Твой пакет удалён"
+
+msgid "Palee reviewed your workout type"
+msgstr "Palee рассмотрела ваш тип тренировки"
+
+msgid "«%{label}» now follows the Palee list, and your box's WODs moved with it."
+msgstr "«%{label}» теперь следует списку Palee, и WOD вашего зала перешли вместе с ним."

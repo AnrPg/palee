@@ -37,6 +37,9 @@ defmodule Palee.Workouts.WorkoutSection do
     # contract `PlanSection`), the source of truth of a `structured_plan`
     # workout; its exercises are materialised from it.
     field :plan, :map
+    # ADR-690: the section's types (references); in a sectioned WOD the
+    # WOD's types are their union.
+    field :types, {:array, :string}, default: []
 
     belongs_to :master_workout, MasterWorkout
     belongs_to :parent_section, __MODULE__
@@ -74,7 +77,8 @@ defmodule Palee.Workouts.WorkoutSection do
       :free_text_body,
       :free_text_document,
       :timer_preset,
-      :plan
+      :plan,
+      :types
     ])
     |> update_change(:name, &normalize_name/1)
     |> validate_required([:name, :order])

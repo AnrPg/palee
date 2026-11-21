@@ -355,6 +355,7 @@ const API_ERROR_KEYS: Record<string, string> = {
   check_in_not_open: "apiErrorCheckInNotOpen",
   check_in_closed: "apiErrorCheckInClosed",
   attendance_already_recorded: "apiErrorAttendanceAlreadyRecorded",
+  attendance_not_removable: "apiErrorAttendanceNotRemovable",
   attendance_requires_approved_booking: "apiErrorAttendanceRequiresApprovedBooking",
   invalid_admin_registration_code: "apiErrorInvalidAdminRegistrationCode",
   invalid_invitation: "apiErrorInvalidInvitation",

@@ -73,7 +73,7 @@ describe("free text review state", () => {
   it("rejecting a required field nullifies it and blocks creation", () => {
     const state = rejectIssue(createReviewState(analysis(), "text"), analysis().issues[0]);
     expect(state.workout.sections[0].exercises[0].name).toBeNull();
-    expect(blockingProblems("Murph prep", "crossfit", state)).toEqual([
+    expect(blockingProblems("Murph prep", ["crossfit"], state)).toEqual([
       { path: "sections.0.exercises.0.name", reason: "required" },
     ]);
   });
@@ -83,7 +83,7 @@ describe("free text review state", () => {
     const squat = state.workout.sections[0].exercises[1];
     expect(squat.load_value).toBeNull();
     expect(squat.load_mode).toBeNull();
-    expect(blockingProblems("Murph prep", "crossfit", state)).toEqual([]);
+    expect(blockingProblems("Murph prep", ["crossfit"], state)).toEqual([]);
   });
 
   it("undo restores the analyzed value", () => {
@@ -139,7 +139,7 @@ describe("free text review state", () => {
 
     const rejected = rejectIssue(state, nameFix);
     expect(rejected.workout.sections[0].exercises[0].name).toBe("pul ups");
-    expect(blockingProblems("Murph prep", "crossfit", rejected)).toEqual([]);
+    expect(blockingProblems("Murph prep", ["crossfit"], rejected)).toEqual([]);
 
     const accepted = acceptIssue(state, textFix);
     expect(accepted.workout).toEqual(state.workout);
@@ -148,11 +148,11 @@ describe("free text review state", () => {
   });
 
   it("validates title and type without an analysis", () => {
-    expect(blockingProblems(" ", "spinning", null)).toEqual([
+    expect(blockingProblems(" ", [], null)).toEqual([
       { path: "title", reason: "required" },
       { path: "type", reason: "required" },
     ]);
-    expect(blockingProblems("Ab", "strength", null)).toEqual([{ path: "title", reason: "too_short" }]);
+    expect(blockingProblems("Ab", ["strength"], null)).toEqual([{ path: "title", reason: "too_short" }]);
   });
 });
 

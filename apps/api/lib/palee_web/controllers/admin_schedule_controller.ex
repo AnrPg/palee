@@ -4,6 +4,7 @@ defmodule PaleeWeb.AdminScheduleController do
 
   alias Palee.Application.{
     AdminRecordAttendance,
+    AdminRemoveAttendance,
     ChangeClassState,
     CreateRecurringClassSeries,
     CreateScheduledSlot,
@@ -29,7 +30,8 @@ defmodule PaleeWeb.AdminScheduleController do
               :change_state,
               :link_workout,
               :approve_booking,
-              :reject_booking
+              :reject_booking,
+              :remove_attendance
             ]
 
   @slot_body_schema %Schema{
@@ -554,6 +556,42 @@ defmodule PaleeWeb.AdminScheduleController do
              body
            ) do
       json(conn, %{attendance: attendance})
+    end
+  end
+
+  operation(:remove_attendance,
+    summary: "Take back a «Here» (attended) for a user in a class slot",
+    description:
+      "The attendance record goes and the booking stays. A visit staff's «Here» used is held again.",
+    parameters: [
+      %Parameter{
+        name: :slot_id,
+        in: :path,
+        required: true,
+        schema: %Schema{type: :string, format: :uuid}
+      },
+      %Parameter{
+        name: :user_id,
+        in: :path,
+        required: true,
+        schema: %Schema{type: :string, format: :uuid}
+      }
+    ],
+    responses: [
+      no_content: "Attendance taken back",
+      not_found: "No attendance recorded",
+      conflict: "Only «Here» can be taken back"
+    ]
+  )
+
+  def remove_attendance(conn, params) do
+    slot_id = params["slot_id"] || params[:slot_id]
+    user_id = params["user_id"] || params[:user_id]
+    admin_id = Guardian.Plug.current_resource(conn).id
+
+    with {:ok, _attendance} <-
+           AdminRemoveAttendance.call(conn.assigns.tenant_context, slot_id, user_id, admin_id) do
+      send_resp(conn, :no_content, "")
     end
   end
 

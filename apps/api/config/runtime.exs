@@ -143,6 +143,15 @@ config :palee, :review_moderation,
     ),
   team_locale: System.get_env("REVIEW_MODERATION_TEAM_LOCALE", "el")
 
+# ADR-690: the Palee team's daily email of new workout type names.
+config :palee, :workout_kinds_team,
+  team_email:
+    System.get_env(
+      "WORKOUT_KINDS_TEAM_EMAIL",
+      System.get_env("REVIEW_MODERATION_TEAM_EMAIL", "moderation@palee.app")
+    ),
+  team_locale: System.get_env("WORKOUT_KINDS_TEAM_LOCALE", "el")
+
 minio_endpoint =
   System.get_env("MINIO_ENDPOINT") ||
     if(config_env() == :prod,

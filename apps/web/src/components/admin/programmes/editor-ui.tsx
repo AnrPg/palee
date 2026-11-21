@@ -4,7 +4,8 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 import { useWorkoutTypeLabels } from "@/components/workouts/WorkoutTypeSelect";
-import { workoutTypeColor } from "@/lib/theme";
+import { workoutFamiliesLook } from "@/lib/theme";
+import type { WorkoutTypeFamily } from "@/lib/workout-types";
 
 import type { LibraryWod } from "./programme-editor-model";
 
@@ -49,14 +50,16 @@ export function useWodFacts() {
   const t = useTranslations("Programmes.editor2");
   const labels = useWorkoutTypeLabels();
   return useCallback(
-    (wod: LibraryWod) => [labels.family(wod.type), wod.minutes ? t("minutes", { minutes: wod.minutes }) : null].filter(Boolean).join(" · "),
+    (wod: LibraryWod) => [...wod.families.map(labels.family), wod.minutes ? t("minutes", { minutes: wod.minutes }) : null].filter(Boolean).join(" · "),
     [labels, t],
   );
 }
 
 /** The family's colour mark next to a WOD. */
-export function FamilyDot({ type, className = "h-2.5 w-2.5" }: { type: string | null | undefined; className?: string }) {
-  return <i aria-hidden="true" className={`inline-block shrink-0 rounded-full ${className}`} style={{ background: type ? workoutTypeColor(type) : "var(--dim)" }} />;
+export function FamilyDot({ families, className = "h-2.5 w-2.5" }: { families: readonly WorkoutTypeFamily[] | null | undefined; className?: string }) {
+  // ADR-690: a WOD with several families splits the dot into their colours.
+  const background = families && families.length > 0 ? workoutFamiliesLook(families).stripe.replace("180deg", "90deg") : "var(--dim)";
+  return <i aria-hidden="true" className={`inline-block shrink-0 rounded-full ${className}`} style={{ background }} />;
 }
 
 /** A WOD in a list: colour, title and facts. */
@@ -64,7 +67,7 @@ export function WodLine({ wod, fallbackTitle }: { wod: LibraryWod | undefined; f
   const facts = useWodFacts();
   return (
     <span className="flex min-w-0 flex-1 items-center gap-2.5">
-      <FamilyDot type={wod?.type} />
+      <FamilyDot families={wod?.families} />
       <span className="min-w-0 flex-1">
         <span className="block truncate text-sm font-semibold" style={{ color: "var(--text)" }}>
           {wod?.title ?? fallbackTitle}

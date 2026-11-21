@@ -9,6 +9,7 @@
 
 
 import {useUiLocale} from "@/i18n/use-ui-locale";
+import { semanticLabel } from "@/i18n/presentation";
 import {useUiTranslations} from "@/i18n/ui";
 import { loggedWodChangedText } from "@/lib/training-floor";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -98,6 +99,7 @@ export function useNotificationText() {
   const tReferrals = useTranslations("Referrals");
   const tAround = useTranslations("Around");
   const tRanks = useTranslations("BodyDevices");
+  const tWorkoutTypes = useTranslations("WorkoutTypes");
   const tCheckIn = useTranslations("CheckIn");
   const tDevices = useTranslations("Devices");
   // ADR-161: Garmin stopped answering; the notice opens Συνδεδεμένες συσκευές.
@@ -184,6 +186,16 @@ export function useNotificationText() {
     const count = Number(notification.payload.count ?? 0);
     const rank = typeof notification.payload.rank_name === "string" ? notification.payload.rank_name : "";
     return tRanks("ranks.notice.body", { count: Number.isFinite(count) && count > 0 ? count : 1, rank });
+  }
+  // ADR-690: the Palee team decided a box type's name; the box's WODs moved with it.
+  function workoutKindText(notification: NotificationRecord, part: "title" | "body") {
+    if (notification.type !== "workout_kind_adopted") return null;
+    if (part === "title") return tWorkoutTypes("adopted.title");
+    const label = typeof notification.payload.label === "string" ? notification.payload.label : "";
+    const target = typeof notification.payload.target === "string" ? notification.payload.target : "";
+    const count = Number(notification.payload.workouts ?? 0);
+    const values = { name: label, target: semanticLabel(target, i18n), count: Number.isFinite(count) ? count : 0 };
+    return tWorkoutTypes(notification.payload.decision === "alias" ? "adopted.bodyAlias" : "adopted.bodyAdopt", values);
   }
   // ADR-143: group, report and open-club notifications carry their names (events: ADR-153).
   function communityText(notification: NotificationRecord, part: "title" | "body") {
@@ -300,6 +312,8 @@ export function useNotificationText() {
     if (around !== null) return around;
     const rankSkills = rankSkillsText(notification, "body");
     if (rankSkills !== null) return rankSkills;
+    const workoutKind = workoutKindText(notification, "body");
+    if (workoutKind !== null) return workoutKind;
     const trial = trialText(notification, "body");
     if (trial !== null) return trial;
     const referral = referralText(notification, "body");
@@ -613,6 +627,8 @@ export function useNotificationText() {
     if (around !== null) return around;
     const rankSkills = rankSkillsText(notification, "title");
     if (rankSkills !== null) return rankSkills;
+    const workoutKind = workoutKindText(notification, "title");
+    if (workoutKind !== null) return workoutKind;
     const trial = trialText(notification, "title");
     if (trial !== null) return trial;
     const referral = referralText(notification, "title");

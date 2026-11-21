@@ -18,9 +18,8 @@ import {
 } from "@/api/assigned-workouts";
 import { ChatSection } from "@/components/chat/ChatSection";
 import { WorkoutPreviewDetail, type PreviewSection } from "@/components/workouts/WorkoutPreviewDetail";
-import { workoutTypeColor } from "@/lib/workout-colors";
+import { workoutColor } from "@/lib/workout-colors";
 import { downloadIcsEvent } from "@/lib/ics";
-import { SemanticLabel } from "@/components/semantic-label";
 import { LocalizedScore } from "@/components/localized-score";
 import { MyInjuryWarningsPanel } from "@/components/wellbeing/InjuryWarnings";
 import { MyWorkoutScaling } from "@/components/scaling/MyWorkoutScaling";
@@ -29,6 +28,7 @@ import { SeasonTag } from "@/components/seasons/SeasonTag";
 import { Dialog } from "@/components/ui/Dialog";
 import { DateInput } from "@/components/ui/DateInput";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { WorkoutTypesText } from "@/components/workouts/WorkoutTypeSelect";
 
 type Props = {
   assignment: AssignedWorkoutRecord;
@@ -170,9 +170,9 @@ export function AssignedWorkoutPanel({
             <div className="flex items-center gap-2">
               <p
                 className="truncate text-xs font-semibold uppercase tracking-[0.2em]"
-                style={{ color: workoutTypeColor(assignment.workout.type) }}
+                style={{ color: workoutColor(assignment.workout) }}
               >
-                <SemanticLabel value={assignment.workout.type} />
+                <WorkoutTypesText workout={assignment.workout} />
               </p>
               {assignment.workout.is_team_workout ? (
                 <span

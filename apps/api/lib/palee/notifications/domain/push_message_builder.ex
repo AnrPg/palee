@@ -1120,6 +1120,19 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
     }
   end
 
+  # ADR-690.
+  def build("workout_kind_adopted", payload, localize) do
+    %{
+      title: localize.("Palee reviewed your workout type", %{}),
+      body:
+        localize.(
+          "«%{label}» now follows the Palee list, and your box's WODs moved with it.",
+          %{label: payload["label"]}
+        ),
+      url: payload["url"] || "/admin/settings"
+    }
+  end
+
   # ADR-660.
   def build("package_removed", payload, localize) do
     cancelled = payload["cancelled_bookings"] || 0

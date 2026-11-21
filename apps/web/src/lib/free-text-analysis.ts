@@ -203,13 +203,14 @@ export function openSuggestions(state: ReviewState) {
  * Everything that would make creation fail: required canonical fields with no
  * value (including ones the coach rejected) and an invalid title or type.
  */
-export function blockingProblems(title: string, type: string, state: ReviewState | null): BlockingProblem[] {
+/** ADR-690: `types` are the WOD's types; at least one is needed. */
+export function blockingProblems(title: string, types: readonly string[], state: ReviewState | null): BlockingProblem[] {
   const problems: BlockingProblem[] = [];
   const trimmed = title.trim();
 
   if (!trimmed) problems.push({ path: "title", reason: "required" });
   else if (trimmed.length < 3) problems.push({ path: "title", reason: "too_short" });
-  if (!isWorkoutType(type)) problems.push({ path: "type", reason: "required" });
+  if (types.length === 0) problems.push({ path: "type", reason: "required" });
   if (!state) return problems;
 
   state.workout.sections.forEach((section, sectionIndex) => {

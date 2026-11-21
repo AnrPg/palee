@@ -46,10 +46,13 @@ defmodule Palee.Gamification.Domain.ChallengeProgress do
        when type in ["workout_count", :workout_count],
        do: {1, []}
 
-  defp evaluate(%{criteria_type: type, criteria_value: cv}, %{workout_type: wt})
+  defp evaluate(%{criteria_type: type, criteria_value: cv}, facts)
        when type in ["workout_type_count", :workout_type_count] do
     filter = Map.get(cv || %{}, "type_filter") || Map.get(cv || %{}, :type_filter)
-    if to_string(filter) == to_string(wt), do: {1, []}, else: {0, []}
+
+    if to_string(filter) in Palee.Gamification.Domain.ChallengeRule.fact_types(facts),
+      do: {1, []},
+      else: {0, []}
   end
 
   defp evaluate(%{criteria_type: type}, %{pr_count: pr_count})

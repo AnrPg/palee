@@ -54,4 +54,18 @@ defmodule Palee.Application.BookingEntitlement do
         allowance,
         params
       )
+
+  @doc "Holds a finalized scheduling visit again: undoes the finalize under `params.idempotency_key`."
+  def reopen(_context, _user_id, _scheduled_class_id, :none, _params), do: {:ok, :no_allowance}
+
+  def reopen(context, user_id, scheduled_class_id, allowance, params),
+    do:
+      Finance.reopen_entitlement_source(
+        context,
+        user_id,
+        "scheduling",
+        scheduled_class_id,
+        allowance,
+        params
+      )
 end

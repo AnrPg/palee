@@ -158,6 +158,7 @@ defmodule PaleeWeb.Schemas.Workout do
         note: @nullable_string,
         content: %Schema{type: :array, items: content_entry_schema()},
         section_metadata: %Schema{type: :object, additionalProperties: true},
+        types: workout_types_schema(),
         free_text_body: %Schema{
           type: :string,
           nullable: true,
@@ -208,8 +209,10 @@ defmodule PaleeWeb.Schemas.Workout do
         type: %Schema{
           type: :string,
           enum: Enum.map(Palee.Workouts.supported_workout_types(), &to_string/1),
-          nullable: true
+          nullable: true,
+          description: "Deprecated (ADR-690): read as `types: [type]`"
         },
+        types: workout_types_schema(),
         is_team_workout: %Schema{type: :boolean},
         subtitle: @nullable_string,
         description: @nullable_string,
@@ -246,13 +249,36 @@ defmodule PaleeWeb.Schemas.Workout do
     }
   end
 
+  @doc """
+  ADR-690: a WOD's (or a section's) types: Palee kind keys and the box's own
+  types (`box:<id>`), unordered, no main one.
+  """
+  def workout_types_schema do
+    %Schema{
+      type: :array,
+      items: %Schema{type: :string, pattern: "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$"},
+      description: "Workout type references (ADR-690): Palee kind keys or `box:<id>`"
+    }
+  end
+
   def workout_schema do
     %Schema{
       type: :object,
       properties: %{
         id: @uuid,
         title: %Schema{type: :string},
-        type: %Schema{type: :string},
+        type: %Schema{
+          type: :string,
+          nullable: true,
+          description:
+            "Deprecated (ADR-690): the first Palee kind of `types`, else null. Read `types`."
+        },
+        types: workout_types_schema(),
+        families: %Schema{
+          type: :array,
+          items: %Schema{type: :string, enum: Palee.Workouts.Domain.WorkoutType.family_keys()},
+          description: "ADR-690: the families of `types`, each once, in catalogue order"
+        },
         status: %Schema{type: :string, enum: ["draft", "published"]},
         is_team_workout: %Schema{type: :boolean},
         subtitle: @nullable_string,

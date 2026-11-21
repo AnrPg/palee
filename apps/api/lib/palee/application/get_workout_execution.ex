@@ -74,6 +74,8 @@ defmodule Palee.Application.GetWorkoutExecution do
         Map.merge(execution, %{
           workout_title: "Deleted workout",
           workout_type: nil,
+          workout_types: [],
+          workout_families: [],
           section_scores: attach_section_names(execution.section_scores || [], %{})
         })
 
@@ -89,6 +91,9 @@ defmodule Palee.Application.GetWorkoutExecution do
         Map.merge(execution, %{
           workout_title: workout.title,
           workout_type: workout.type,
+          # ADR-690: every type of the WOD and their families.
+          workout_types: Map.get(workout, :types) || [],
+          workout_families: Map.get(workout, :families) || [],
           workout: presented_workout,
           section_scores:
             attach_section_names(execution.section_scores || [], section_name_lookup(workout))

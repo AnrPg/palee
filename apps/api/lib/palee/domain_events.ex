@@ -13,6 +13,8 @@ defmodule Palee.DomainEvents do
 
     * `:membership_activated` - `%{organization_id, user_id, at}`
     * `:attendance_recorded` - `%{organization_id, scheduled_class_id, user_id, booking_id, status, at}`
+    * `:attendance_removed` - `%{organization_id, scheduled_class_id, user_id, booking_id, at}`: staff
+      took back a «Ήρθε» (the record is gone)
     * `:booking_made` - `%{organization_id, scheduled_class_id, booking_id, user_id, at}` (ADR-155)
     * `:booking_confirmed` - `%{organization_id, scheduled_class_id, booking_id, user_id, at}`: a
       pending request approved by staff or a waiting-list place promoted (ADR-392)

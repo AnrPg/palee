@@ -2983,7 +2983,42 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
     end)
   end
 
+  # Staff took back «Ήρθε»: the finalize written under `idempotency_key`
+  # goes, so the reservation is open again (a finalize moves no quantity, so
+  # the counts stay as they are) and a later cancellation can return the visit.
   @impl true
+  def transition_entitlement_source(
+        user_id,
+        source_context,
+        source_id,
+        _allowance,
+        :reopen,
+        params
+      ) do
+    idempotency_key = params |> atom_key_map() |> Map.fetch!(:idempotency_key)
+
+    from(entry in tenant_scope(FinanceEntitlementUsageEntry),
+      join: reservation in FinanceEntitlementUsageEntry,
+      on: reservation.id == entry.parent_entry_id,
+      join: membership in Membership,
+      on: membership.id == reservation.membership_id,
+      where: entry.event_type == "finalize" and entry.idempotency_key == ^idempotency_key,
+      where: membership.user_id == ^user_id,
+      where:
+        reservation.source_context == ^to_string(source_context) and
+          reservation.source_id == ^source_id
+    )
+    |> Repo.one()
+    |> case do
+      nil ->
+        {:ok, %{transition: :not_required}}
+
+      finalize ->
+        with {:ok, _deleted} <- Repo.delete(finalize),
+             do: {:ok, %{transition: :reopened, reservation_id: finalize.parent_entry_id}}
+    end
+  end
+
   def transition_entitlement_source(
         user_id,
         source_context,

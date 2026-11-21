@@ -502,6 +502,11 @@ defmodule Palee.Organizations do
 
   defdelegate list_staff_user_ids(organization_id), to: ListStaffUserIds, as: :call
 
+  @doc "ADR-690: the box's owners, for owner notices."
+  defdelegate list_owner_user_ids(organization_id),
+    to: Palee.Organizations.Queries.ListOwnerUserIds,
+    as: :call
+
   @doc """
   Active owners, admins and coaches of a gym, with their primary role and
   role set there (coach pickers, ADR-098/099).

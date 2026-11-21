@@ -55,7 +55,10 @@ defmodule Palee.Gamification.Domain.ChallengeCriteria do
   defp normalize_value("workout_type_count", count, value) do
     type_filter = Map.get(value, "type_filter") || Map.get(value, :type_filter)
 
-    if type_filter in @training_types do
+    # ADR-690: a Palee kind, a kind the Palee team added or the box's own
+    # type (`box:<id>`).
+    if type_filter in @training_types or
+         Palee.Workouts.Domain.WorkoutKinds.ref_shape?(type_filter) do
       {:ok, %{"count" => count, "type_filter" => type_filter}}
     else
       {:error, [criteria_value: "type_filter must be a valid training type"]}

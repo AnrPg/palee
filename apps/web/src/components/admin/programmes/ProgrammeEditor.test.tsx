@@ -43,7 +43,10 @@ vi.mock("@/api/programme-covers", () => ({
   completeProgrammeCover: vi.fn(),
   setProgrammeCover: vi.fn(),
 }));
-vi.mock("@/components/session-provider", () => ({ useSession: () => ({ tokens: { access_token: "tok" } }) }));
+vi.mock("@/components/session-provider", () => {
+  const session = { tokens: { access_token: "tok" } };
+  return { useSession: () => session, useOptionalSession: () => session };
+});
 vi.mock("@/lib/organization-slug", () => ({
   useOrganizationSlug: () => "kypseli",
   adminHref: (path: string) => path,

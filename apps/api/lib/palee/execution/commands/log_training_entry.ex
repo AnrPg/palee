@@ -59,6 +59,7 @@ defmodule Palee.Execution.Commands.LogTrainingEntry do
           master_workout_id: source[:master_workout_id],
           booking_id: source[:booking_id],
           workout_type: source[:workout_type],
+          workout_types: Enum.map(source[:workout_types] || [], &to_string/1),
           idempotency_key: key,
           status: "logged",
           journal_visibility: Keyword.get(opts, :journal_visibility, "coach_can_view")

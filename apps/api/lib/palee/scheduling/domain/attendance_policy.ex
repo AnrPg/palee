@@ -1,7 +1,7 @@
 defmodule Palee.Scheduling.Domain.AttendancePolicy do
   @moduledoc """
   Who may record class attendance, and when. Staff record it for approved
-  bookings; a member checks themselves in to their own approved booking from
+  bookings and may take back a «Ήρθε»; a member checks themselves in to their own approved booking from
   #{30} minutes before the class until it ends (ADR-137 Box card, TD-105).
   """
 
@@ -10,6 +10,14 @@ defmodule Palee.Scheduling.Domain.AttendancePolicy do
   def can_record_admin_attendance?(%{status: :approved}), do: :ok
   def can_record_admin_attendance?(%{status: "approved"}), do: :ok
   def can_record_admin_attendance?(_booking), do: {:error, :attendance_requires_approved_booking}
+
+  @doc """
+  Whether staff may take back a recorded attendance: only «Ήρθε»
+  (`attended`), however it was recorded (staff, the member's own check-in,
+  a scan). Other statuses are changed by recording another one.
+  """
+  def can_remove_admin_attendance?(%{status: "attended"}), do: :ok
+  def can_remove_admin_attendance?(_attendance), do: {:error, :attendance_not_removable}
 
   @doc "When self check-in opens and closes for a class: `{opens_at, closes_at}`."
   def self_check_in_window(%{scheduled_at: %DateTime{} = starts_at} = slot) do

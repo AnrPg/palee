@@ -64,12 +64,12 @@ describe("saving a plan", () => {
     const plan = backSquat();
     const payload = planPayload(
       { title: "Δευτέρα", note: "Ζέσταμα", sections: [{ id: "s1", name: "  ", plan }, { id: "s2", name: "Finisher", plan: restSection() }] },
-      "strength",
+      ["strength"],
       { other: true },
     );
     expect(payload).toMatchObject({
       title: "Δευτέρα",
-      type: "strength",
+      types: ["strength"],
       authoring_mode: "structured_plan",
       workout_metadata: { other: true, plan_note: "Ζέσταμα" },
     });
@@ -80,12 +80,12 @@ describe("saving a plan", () => {
     expect(payload.sections.some((s) => "exercises" in s)).toBe(false);
     expect(payload.draft_data).toEqual({
       title: payload.title,
-      type: payload.type,
+      types: payload.types,
       authoring_mode: payload.authoring_mode,
       workout_metadata: payload.workout_metadata,
       sections: payload.sections,
     });
-    expect(planPayload({ title: "", note: "", sections: [] }, "", { plan_note: "old" }).workout_metadata).toEqual({});
+    expect(planPayload({ title: "", note: "", sections: [] }, [], { plan_note: "old" }).workout_metadata).toEqual({});
   });
 
   it("knows when a plan holds something and what blocks publishing", () => {
@@ -107,8 +107,8 @@ describe("switching a plan back to free text", () => {
     expect(text).toBe(
       ["Ζέσταμα", "", "Δευτέρα A · Σετ", "4 σετ · 2′ ξεκούραση", "Back Squat 12-10-8-8 @ 60-65-70-75% · Tempo ↓3 ·1 ↑X ·1", "  Έλεγχος στο κατέβασμα, με ζώνη"].join("\n"),
     );
-    const payload = freeTextPayload("T", "", text, { plan_note: "Ζέσταμα", keep: 1 });
-    expect(payload).toMatchObject({ authoring_mode: "free_text", free_text_body: text, type: null, workout_metadata: { keep: 1 } });
+    const payload = freeTextPayload("T", [], text, { plan_note: "Ζέσταμα", keep: 1 });
+    expect(payload).toMatchObject({ authoring_mode: "free_text", free_text_body: text, types: [], workout_metadata: { keep: 1 } });
     expect(payload.free_text_document).toMatchObject({ type: "doc" });
     expect(payload.draft_data).toMatchObject({ authoring_mode: "free_text", free_text_body: text, free_text_review: null });
   });

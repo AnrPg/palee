@@ -1,0 +1,20 @@
+msgid ""
+msgstr ""
+"Language: el\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "New workout types to review: %{count}"
+msgstr "Νέοι τύποι προπόνησης για έλεγχο: %{count}"
+
+msgid "Boxes added these workout types. Each one is in its box's list already; decide whether it joins the Palee list for everyone."
+msgstr "Box πρόσθεσαν αυτούς τους τύπους προπόνησης. Ο καθένας είναι ήδη στη λίστα του box του· αποφάσισε αν θα μπει στη λίστα της Palee για όλους."
+
+msgid "«%{label}»: %{boxes} boxes, %{suggestions} public page suggestions"
+msgstr "«%{label}»: %{boxes} box, %{suggestions} προτάσεις από δημόσιες σελίδες"
+
+msgid "Open the queue"
+msgstr "Άνοιξε την ουρά"
+
+msgid "You get this email because you review workout types for Palee."
+msgstr "Λαμβάνεις αυτό το email επειδή ελέγχεις τύπους προπόνησης για την Palee."

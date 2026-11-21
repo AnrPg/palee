@@ -28,6 +28,8 @@ export type TextSectionSource = {
   timer_preset?: unknown;
   score_config?: unknown;
   section_metadata?: Record<string, unknown> | null;
+  /** ADR-690: the section's types. */
+  types?: string[] | null;
 };
 
 /**
@@ -230,6 +232,8 @@ export type EditorTextSection = {
    */
   timerFrom?: TimerFrom;
   metrics: SectionMetric[];
+  /** ADR-690 (2C): the section's types; the WOD's types are the sections' union. */
+  types?: string[];
   /**
    * ADR-671: bumped when `document` is replaced from outside the section's
    * editor (the coach's answers to the exercise check), so the editor shows it.
@@ -303,6 +307,7 @@ export function editorSectionsFrom(
         preset,
         timerFrom: loadTimerFrom(body, preset, "untimed"),
         metrics: readMetrics(raw.score_config),
+        types: Array.isArray(raw.types) ? raw.types.filter((type): type is string => typeof type === "string") : [],
       };
     });
   }
@@ -355,6 +360,7 @@ export function sectionsPayload(sections: EditorTextSection[]) {
     free_text_body: section.body.trim(),
     free_text_document: section.document,
     timer_preset: section.preset,
+    types: section.types ?? [],
     score_config: section.metrics.length
       ? { metrics: section.metrics.map((metric) => ({ label: metric.label.trim(), kind: metric.kind })) }
       : null,
@@ -400,4 +406,9 @@ export function parseMetricValue(text: string, kind: ScoreKind): number | null {
   if (kind === "time") return parseDuration(trimmed);
   const number = Number(trimmed.replace(",", "."));
   return Number.isFinite(number) && number >= 0 ? number : null;
+}
+
+/** ADR-690 (2C): the types of a sectioned WOD, the union of its sections' types ([] when none has any). */
+export function sectionTypesUnion(sections: readonly Pick<EditorTextSection, "types">[]): string[] {
+  return [...new Set(sections.flatMap((section) => section.types ?? []))];
 }
