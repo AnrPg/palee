@@ -52,9 +52,10 @@ export function useClassWodLink({
     }
   }
 
-  // The same class's other classes that day first, else the class type's recent ones.
+  // Only the WOD another class runs the same day (ANR, 2026-11-21: WODs are
+  // almost never reused on another day, so recent ones are not offered here).
   const sameDay = suggestions.data?.same_day ?? [];
-  const quick = (sameDay.length ? sameDay : suggestions.data?.recent ?? []).slice(0, 3);
+  const quick = sameDay.slice(0, 3);
 
   const overlays: ReactNode = (
     <>
@@ -64,7 +65,6 @@ export function useClassWodLink({
           token={accessToken}
           value={slot.master_workout_id}
           date={date}
-          classTypeName={slot.class_type?.name ?? null}
           suggestions={suggestions.data}
           suggestionsLoading={suggestions.isLoading}
           onChoose={(choice) => {
@@ -96,7 +96,7 @@ export function useClassWodLink({
     error,
     quick,
     sameDay: sameDay.length > 0,
-    quickLabel: sameDay.length ? t("wodPickerQuickSameDay") : t("wodPickerQuickRecent"),
+    quickLabel: t("wodPickerQuickSameDay"),
     openPicker: () => setPicking(true),
     openCreator: () => setCreating(true),
     overlays,

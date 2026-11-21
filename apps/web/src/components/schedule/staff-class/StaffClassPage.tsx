@@ -76,7 +76,8 @@ function usePhaseClock(slot: ScheduleSlot, windowBefore: number | null | undefin
 
 /**
  * The class page for staff and coaches (ANR pick A, 2026-11-21), one column
- * on a phone and two on a wide screen, the most important things first:
+ * on every screen (on a wide one, a side drawer about as wide as a phone),
+ * the most important things first:
  *
  * 1. the class itself: name, when (with «Σε 20′» / «Τώρα»), room, coach, and
  *    its settings in one tappable line; editing sits on ✎ and ⋯ at the top;
@@ -236,7 +237,7 @@ export function StaffClassPage({
 
   return (
     <>
-      <Dialog onClose={onClose} bare variant="drawer" size="5xl" ariaLabel={slot.class_type.name}>
+      <Dialog onClose={onClose} bare variant="drawer" size="lg" ariaLabel={slot.class_type.name}>
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
           {/* Top bar: what this is, ✎ and ⋯ away from the thumb, and close. */}
           <div
@@ -330,7 +331,7 @@ export function StaffClassPage({
                   approval: approvalValue,
                   answer: approvalWaitValue,
                 })}
-                className="grid w-full grid-cols-[1fr_1fr_1fr_auto] items-stretch overflow-hidden rounded-2xl text-start md:max-w-xl"
+                className="grid w-full grid-cols-[1fr_1fr_1fr_auto] items-stretch overflow-hidden rounded-2xl text-start"
                 style={{ border: "1px solid var(--border)", background: "var(--panel)" }}
                 onClick={() => setSettingsOpen(true)}
               >
@@ -405,8 +406,9 @@ export function StaffClassPage({
               </div>
             ) : null}
 
-            {/* 3 · The WOD and 4 · the people: one column on a phone, side by side when wide. */}
-            <div className="grid gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-start">
+            {/* 3 · The WOD and 4 · the people. One column on every screen: on a
+                wide one this is a side drawer about as wide as a phone (ANR, 2026-11-21). */}
+            <div className="space-y-6">
               <StaffClassWod
                 slot={slot}
                 accessToken={accessToken}

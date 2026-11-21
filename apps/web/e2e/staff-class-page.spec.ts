@@ -3,7 +3,7 @@ import { expect, test, type Page } from "./support/test";
 // ANR's pick A for the staff class page (2026-11-21): the class first, what
 // waits for a decision, the WOD as the Deep hero card, «Participants» with
 // «Here?» once the box's check-in window opens, and a bottom bar that follows
-// the time. Two columns on a wide screen. The API is stubbed; every route not
+// the time. One column on every screen. The API is stubbed; every route not
 // listed answers an empty object.
 
 const json = (body: unknown, status = 200) => ({ status, contentType: "application/json", body: JSON.stringify(body) });
@@ -178,11 +178,16 @@ test.describe("Staff class page", () => {
     await expect(page.getByRole("dialog", { name: "Edit scheduled class" })).toBeVisible();
   });
 
-  test("ten minutes before: «Start class» in Spark, and «Here?» records attendance", async ({ page }) => {
+  test("ten minutes before: «Start class» in Spark, «Here?» records attendance and «✓ Here» takes it back", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     let recorded: { url: string; body: unknown } | null = null;
+    let removed = 0;
     await asOwner(page, classAt(inMinutes(10)));
     await page.route("**/api/org/box1/admin/schedule/slots/slot-1/attendance/u-maria", (route) => {
+      if (route.request().method() === "DELETE") {
+        removed += 1;
+        return route.fulfill({ status: 204, body: "" });
+      }
       recorded = { url: route.request().url(), body: JSON.parse(route.request().postData() ?? "{}") };
       return route.fulfill(json({ attendance: { status: "attended" } }));
     });
@@ -199,8 +204,18 @@ test.describe("Staff class page", () => {
     await expect(mark).toBeEnabled();
     await mark.click();
     await expect.poll(() => recorded?.body).toEqual({ status: "attended" });
-    await expect(dialog.getByTestId("class-roster").getByTestId("class-arrived")).toHaveText("✓ Here");
+    const here = dialog.getByTestId("class-roster").getByTestId("class-arrived");
+    await expect(here).toHaveText("✓ Here");
     await expect(dialog.getByTestId("class-roster-count")).toHaveText("1 of 2 here");
+
+    // A wrong tap: «✓ Here» takes it back and «Here?» returns.
+    const undo = dialog.getByRole("button", { name: "Take back «Here» for Maria D." });
+    await expect(undo).toBeVisible();
+    await expect(undo).toBeEnabled();
+    await undo.click();
+    await expect.poll(() => removed).toBe(1);
+    await expect(dialog.getByRole("button", { name: "Mark Maria D. as here" })).toBeVisible();
+    await expect(dialog.getByTestId("class-roster-count")).toHaveText("0 of 2 here");
   });
 
   test("a member who checked in themselves shows as here without a tap", async ({ page }) => {
@@ -218,11 +233,16 @@ test.describe("Staff class page", () => {
     await expect(page.getByTestId("class-phase")).toHaveText("Now");
   });
 
-  test("without a WOD: recent WODs one tap away and «Choose a WOD» in the bar", async ({ page }) => {
+  test("without a WOD: another class's WOD that day one tap away, never recent ones, and «Choose a WOD» in the bar", async ({ page }) => {
     let linked: unknown = null;
     await asOwner(page, classAt(inMinutes(180), { master_workout_id: null, workout: null, workout_status: "awaiting" }));
     await page.route("**/api/org/box1/admin/workouts/choices/suggested?**", (route) =>
-      route.fulfill(json({ same_day: [], recent: [{ id: "w-legs", title: "Strength · Lower", type: "strength", icon: null }] })),
+      route.fulfill(
+        json({
+          same_day: [{ id: "w-legs", title: "Strength · Lower", type: "strength", icon: null }],
+          recent: [{ id: "w-engine", title: "Hybrid · Engine", type: "hybrid", icon: null }],
+        }),
+      ),
     );
     await page.route("**/api/org/box1/admin/schedule/slots/slot-1/workout", (route) => {
       linked = JSON.parse(route.request().postData() ?? "{}");
@@ -233,19 +253,23 @@ test.describe("Staff class page", () => {
     const card = page.getByTestId("class-wod-add");
     await expect(card).toContainText("No WOD yet");
     await expect(page.getByTestId("class-bar").getByRole("button", { name: "Choose a WOD" })).toBeVisible();
+    await expect(card.getByRole("button", { name: /Strength · Lower/ })).toBeVisible();
+    await expect(card).not.toContainText("Hybrid · Engine");
     await card.getByRole("button", { name: /Strength · Lower/ }).click();
     await expect.poll(() => linked).toEqual({ master_workout_id: "w-legs" });
   });
 
-  test("on a wide screen the WOD and the people sit side by side", async ({ page }) => {
+  test("on a wide screen it stays one column in a drawer about as wide as a phone", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await asOwner(page, classAt(inMinutes(180)));
     await openClass(page);
 
+    const drawer = await page.getByRole("dialog", { name: "Bodybuilding" }).boundingBox();
     const wod = await page.getByTestId("class-wod").boundingBox();
     const roster = await page.getByTestId("class-roster").boundingBox();
-    expect(wod && roster).toBeTruthy();
-    expect(roster!.x).toBeGreaterThan(wod!.x + wod!.width - 1);
-    expect(Math.abs(roster!.y - wod!.y)).toBeLessThan(40);
+    expect(drawer && wod && roster).toBeTruthy();
+    expect(drawer!.width).toBeLessThanOrEqual(520);
+    expect(roster!.y).toBeGreaterThan(wod!.y + wod!.height - 1);
+    expect(Math.abs(roster!.x - wod!.x)).toBeLessThan(2);
   });
 });

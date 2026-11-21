@@ -3,7 +3,7 @@
 import { useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 
-import { adminRecordAttendance } from "@/api/admin";
+import { adminRecordAttendance, adminRemoveAttendance } from "@/api/admin";
 import type { ScheduleBooking, ScheduleSlot } from "@/api/schedule";
 import type { ClassVisitPerson } from "@/api/training-floor";
 import { splitRoster } from "@/components/schedule/admin-roster";
@@ -42,7 +42,9 @@ export function useBookingLabel() {
  * From the moment the box's check-in window opens (`checkInOpen`), each
  * booked member gets «Ήρθε;». Whatever records attendance (this button, the
  * member's own check-in, a QR scan at the door) refreshes the page over the
- * schedule topic, so the row turns to «Ήρθε» by itself.
+ * schedule topic, so the row turns to «Ήρθε» by itself. Tapping «✓ Ήρθε»
+ * takes it back (a wrong tap, or someone who checked in and left): the
+ * booking stays and the visit is held again.
  */
 export function StaffClassRoster({
   slot,
@@ -66,20 +68,27 @@ export function StaffClassRoster({
   const { booked, waitlist } = splitRoster(slot.bookings);
   const coming = booked.filter((booking) => booking.status !== "pending");
   const approved = coming.filter((booking) => booking.status === "approved");
-  // Marked here before the refresh lands, so the tap answers at once.
-  const [marked, setMarked] = useState<Record<string, boolean>>({});
+  // Set here before the refresh lands, so a tap answers at once. Each entry
+  // remembers the status it replaced: once the server's answer differs (the
+  // refresh, or a check-in after it), the server's status wins again.
+  const [marked, setMarked] = useState<Record<string, { status: string | null; over: string | null }>>({});
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const attendanceOf = (booking: ScheduleBooking) =>
-    booking.attendance_status ?? (marked[booking.id] ? "attended" : null);
+  const attendanceOf = (booking: ScheduleBooking) => {
+    const server = booking.attendance_status ?? null;
+    const local = marked[booking.id];
+    return local && local.over === server ? local.status : server;
+  };
   const arrived = approved.filter((booking) => attendanceOf(booking) === "attended").length;
 
-  async function markArrived(booking: ScheduleBooking) {
+  async function setArrived(booking: ScheduleBooking, here: boolean) {
     setBusy(booking.id);
     setError(null);
     try {
-      await adminRecordAttendance(accessToken, slot.id, booking.user_id, { status: "attended" });
-      setMarked((current) => ({ ...current, [booking.id]: true }));
+      if (here) await adminRecordAttendance(accessToken, slot.id, booking.user_id, { status: "attended" });
+      else await adminRemoveAttendance(accessToken, slot.id, booking.user_id);
+      const over = booking.attendance_status ?? null;
+      setMarked((current) => ({ ...current, [booking.id]: { status: here ? "attended" : null, over } }));
       onChanged?.();
     } catch (reason) {
       setError(localizeError(reason, i18n));
@@ -154,13 +163,27 @@ export function StaffClassRoster({
                     ) : null}
                   </div>
                   {attendance === "attended" ? (
-                    <span
-                      className="shrink-0 rounded-full px-3 py-1.5 text-xs font-bold"
-                      style={SPARK_ACTIVE_STYLE}
-                      data-testid="class-arrived"
-                    >
-                      ✓ {t("arrived")}
-                    </span>
+                    booking.status === "approved" && !booking.guest_name ? (
+                      <button
+                        type="button"
+                        disabled={busy === booking.id}
+                        aria-label={t("unmarkArrived", { name: label })}
+                        className="min-h-10 shrink-0 rounded-full px-3.5 text-xs font-bold disabled:opacity-60"
+                        style={SPARK_ACTIVE_STYLE}
+                        data-testid="class-arrived"
+                        onClick={() => void setArrived(booking, false)}
+                      >
+                        ✓ {t("arrived")}
+                      </button>
+                    ) : (
+                      <span
+                        className="shrink-0 rounded-full px-3 py-1.5 text-xs font-bold"
+                        style={SPARK_ACTIVE_STYLE}
+                        data-testid="class-arrived"
+                      >
+                        ✓ {t("arrived")}
+                      </span>
+                    )
                   ) : attendance ? (
                     <span className="shrink-0 text-xs font-semibold" style={{ color: "var(--muted)" }}>
                       <SemanticLabel value={attendance} />
@@ -172,7 +195,7 @@ export function StaffClassRoster({
                       aria-label={t("markArrived", { name: label })}
                       className="min-h-10 shrink-0 rounded-full px-3.5 text-xs font-bold disabled:opacity-60"
                       style={{ border: "1px solid var(--border-strong)", color: "var(--text)", background: "var(--panel)" }}
-                      onClick={() => void markArrived(booking)}
+                      onClick={() => void setArrived(booking, true)}
                     >
                       {t("arrivedQuestion")}
                     </button>

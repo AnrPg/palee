@@ -503,6 +503,8 @@ config :palee, :domain_event_handlers, %{
     Palee.Application.Automations.AutomationReactions,
     Palee.Application.Integrations.WebhookEvents
   ],
+  # Staff took back a «Ήρθε»: box screens and Wallet cards follow.
+  attendance_removed: [Palee.Application.WalletReactions, Palee.Application.BoxScreenReactions],
   # ADR-344/346/347: leads moved by staff, members whose risk became high.
   lead_moved: [Palee.Application.Automations.AutomationReactions],
   member_at_risk: [Palee.Application.Automations.AutomationReactions],

@@ -48,3 +48,8 @@ export async function adminRecordAttendance(
     { method: "POST", token, body: params },
   );
 }
+
+/** Takes back a «Ήρθε» (attended): the record goes and the booking stays. */
+export async function adminRemoveAttendance(token: string, slotId: string, userId: string) {
+  return apiRequest<void>(`/admin/schedule/slots/${slotId}/attendance/${userId}`, { method: "DELETE", token });
+}

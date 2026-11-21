@@ -78,7 +78,6 @@ export function ClassWorkoutNotice({
         onCreateNew={() => setCreating(true)}
         date={dateTimeLocalInZone(slot.scheduled_at, timeZone).slice(0, 10) || null}
         classTypeId={slot.class_type_id}
-        classTypeName={slot.class_type?.name ?? null}
       />
       {busy ? <p className="text-sm" role="status" style={{ color: "var(--muted)" }}>{i18n("classLinkWodSaving")}</p> : null}
       {error ? <ErrorNotice>{error}</ErrorNotice> : null}

@@ -25,10 +25,9 @@ import { SPARK_CREATE_STYLE } from "@/lib/spark";
  * thousands. The form never loads the library:
  *
  * - Under an empty field, one tap takes the WOD the gym most likely wants:
- *   the one other classes already use that day, else one recently used for
- *   this class type.
- * - The picker opens on a short list of suggestions (that day, recent for the
- *   class type, newest). Anything else is found by searching title words, with
+ *   the one other classes already use that day. Recently used WODs are not
+ *   offered (ANR, 2026-11-21: they are almost never reused on another day).
+ * - The picker opens on a short list of suggestions (that day, newest). Anything else is found by searching title words, with
  *   type and folder filters behind the filter button, a page at a time on the
  *   server.
  * - "+ New WOD" sits on the field's label row (and on an empty search) to
@@ -70,7 +69,6 @@ export function WodPicker({
   onCreateNew,
   date,
   classTypeId,
-  classTypeName,
   noneHint,
   variant = "field",
 }: {
@@ -83,7 +81,6 @@ export function WodPicker({
   /** The class's gym-local day (YYYY-MM-DD), for "that day" suggestions. */
   date: string | null;
   classTypeId?: string | null;
-  classTypeName?: string | null;
   /** What "No WOD yet" means here (a class, or each class of a series). */
   noneHint?: string;
   /**
@@ -120,7 +117,9 @@ export function WodPicker({
   }
 
   const sameDay = suggestions.data?.same_day ?? [];
-  const quick = (sameDay.length ? sameDay : suggestions.data?.recent ?? []).slice(0, 2);
+  // ANR (2026-11-21): WODs are almost never reused on another day, so only
+  // the WOD another class runs the same day is offered, never recent ones.
+  const quick = sameDay.slice(0, 2);
 
   const actions = variant === "actions";
 
@@ -202,7 +201,7 @@ export function WodPicker({
 
       {!value && quick.length ? (
         <div className="flex flex-wrap items-center gap-2 text-xs font-normal">
-          <span>{sameDay.length ? t("wodPickerQuickSameDay") : t("wodPickerQuickRecent")}</span>
+          <span>{t("wodPickerQuickSameDay")}</span>
           {quick.map((choice) => (
             <button
               key={choice.id}
@@ -225,7 +224,6 @@ export function WodPicker({
           token={token}
           value={value}
           date={date}
-          classTypeName={classTypeName}
           suggestions={suggestions.data}
           suggestionsLoading={suggestions.isLoading}
           noneHint={noneHint}
@@ -247,7 +245,6 @@ export function WodPickerDialog({
   token,
   value,
   date,
-  classTypeName,
   suggestions,
   suggestionsLoading,
   noneHint,
@@ -259,7 +256,6 @@ export function WodPickerDialog({
   token: string;
   value: string | null;
   date: string | null;
-  classTypeName?: string | null;
   suggestions: ReturnType<typeof useWodSuggestions>["data"];
   suggestionsLoading: boolean;
   noneHint?: string;
@@ -311,11 +307,6 @@ export function WodPickerDialog({
     : [
         { key: "none", title: null, options: [{ key: "none", choice: null }] },
         { key: "same-day", title: t("wodPickerSameDay", { date: dayLabel }), options: toOptions(suggestions?.same_day) },
-        {
-          key: "recent",
-          title: classTypeName ? t("wodPickerRecent", { classType: classTypeName }) : t("wodPickerRecentAny"),
-          options: toOptions(suggestions?.recent),
-        },
         { key: "newest", title: t("wodPickerNewest"), options: toOptions(suggestions?.newest) },
       ].filter((group) => group.options.length > 0);
   const options = groups.flatMap((group) => group.options);

@@ -12603,7 +12603,11 @@ export interface paths {
         put?: never;
         /** Record attendance for a user in a class slot */
         post: operations["PaleeWeb.AdminScheduleController.record_attendance"];
-        delete?: never;
+        /**
+         * Take back a «Here» (attended) for a user in a class slot
+         * @description The attendance record goes and the booking stays. A visit staff's «Here» used is held again.
+         */
+        delete: operations["PaleeWeb.AdminScheduleController.remove_attendance"];
         options?: never;
         head?: never;
         patch?: never;
@@ -122041,6 +122045,41 @@ export interface operations {
                         };
                     };
                 };
+            };
+        };
+    };
+    "PaleeWeb.AdminScheduleController.remove_attendance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slot_id: string;
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Attendance taken back */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No attendance recorded */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Only «Here» can be taken back */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
