@@ -159,11 +159,16 @@ defmodule Palee.Application.GetTrainingHistory do
       id: workout.id,
       title: workout.title,
       type: workout.type && to_string(workout.type),
+      # A free-text or sectioned (ADR-180) WOD keeps its exercises in its text.
+      authoring_mode: Map.get(workout, :authoring_mode),
+      free_text_body: Map.get(workout, :free_text_body),
       sections:
         Enum.map(workout.sections || [], fn section ->
           %{
             id: section.id,
             name: section.name,
+            untitled: Map.get(Map.get(section, :section_metadata) || %{}, "untitled") == true,
+            free_text_body: Map.get(section, :free_text_body),
             nested: not is_nil(section.parent_section_id),
             format: section_format(section),
             flow: plan_flow(section),

@@ -1,5 +1,5 @@
 import { apiRequest } from "@/api/client";
-import type { ScheduleSlot } from "@/api/schedule";
+import type { ScheduleSlot, WorkoutPreview } from "@/api/schedule";
 
 /**
  * ADR-230: the WOD of a whole day. A rule covers every class of the date
@@ -14,7 +14,8 @@ export type DayWorkout = {
   class_type_id: string | null;
   location_id: string | null;
   master_workout_id: string;
-  workout: { id: string; title: string; type?: string | null } | null;
+  /** The whole WOD (sections with their exercises or text), as a class carries it. */
+  workout: (Pick<WorkoutPreview, "id" | "title"> & Partial<Omit<WorkoutPreview, "id" | "title">> & { type?: string | null }) | null;
 };
 
 export type DayWorkoutRequest = {

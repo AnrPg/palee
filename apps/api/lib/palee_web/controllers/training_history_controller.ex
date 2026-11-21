@@ -29,6 +29,12 @@ defmodule PaleeWeb.TrainingHistoryController do
       id: %Schema{type: :string},
       title: @nullable_string,
       type: @nullable_string,
+      authoring_mode: @nullable_string,
+      free_text_body: %Schema{
+        type: :string,
+        nullable: true,
+        description: "A free-text WOD's whole text (its exercises live there)."
+      },
       sections: %Schema{
         type: :array,
         items: %Schema{
@@ -36,6 +42,15 @@ defmodule PaleeWeb.TrainingHistoryController do
           properties: %{
             id: %Schema{type: :string},
             name: @nullable_string,
+            untitled: %Schema{
+              type: :boolean,
+              description: "ADR-180: a text section the coach left without a title."
+            },
+            free_text_body: %Schema{
+              type: :string,
+              nullable: true,
+              description: "ADR-180: a text section's whole text (its exercises live there)."
+            },
             nested: %Schema{type: :boolean},
             format: %Schema{type: :string},
             flow: %Schema{
