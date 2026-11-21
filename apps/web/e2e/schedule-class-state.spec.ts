@@ -180,7 +180,7 @@ test.describe("Schedule › pause, cancel and delete classes", () => {
     });
 
     await openClass(page);
-    await page.getByRole("button", { name: "Edit class" }).click();
+    await page.getByTestId("class-actions").getByRole("button", { name: "Edit class" }).click();
     const editor = page.getByRole("dialog", { name: "Edit scheduled class" });
     await editor.getByRole("radiogroup", { name: "Apply changes to" }).getByRole("radio", { name: "Classes between dates" }).click();
     await editor.getByTestId("slot-editor-delete").click();
@@ -203,7 +203,7 @@ test.describe("Schedule › pause, cancel and delete classes", () => {
     await withClass(page, { ...seriesClass, class_series_id: null });
 
     await openClass(page);
-    await page.getByRole("button", { name: "Edit class" }).click();
+    await page.getByTestId("class-actions").getByRole("button", { name: "Edit class" }).click();
     const editor = page.getByRole("dialog", { name: "Edit scheduled class" });
     await editor.getByTestId("slot-editor-delete").click();
     const dialog = page.getByRole("dialog", { name: "Delete this class?" });
@@ -282,20 +282,23 @@ test.describe("Schedule › pause, cancel and delete classes", () => {
     await expect(notice).toHaveAttribute("role", "status");
     await expect(notice).toContainText("Not published: no WOD");
     await expect(notice).toContainText("Clients can't see or book this class until you add a WOD.");
-    await expect(notice.getByRole("button", { name: "Choose a WOD" })).toBeVisible();
-    await expect(notice.getByRole("button", { name: "+ New WOD" })).toBeVisible();
+    // The two ways to add one are the bottom bar's (ANR pick A, 2026-11-21).
+    const bar = page.getByTestId("class-bar");
+    await expect(bar.getByRole("button", { name: "Choose a WOD" })).toBeVisible();
+    await expect(bar.getByRole("button", { name: "+ New WOD" })).toBeVisible();
   });
 
-  test("a series class without its WOD raises no warning and offers the same two buttons on the WOD card", async ({ page }) => {
+  test("a series class without its WOD raises no warning and offers the same two buttons in the bottom bar", async ({ page }) => {
     await asOwner(page);
     await withClass(page, { ...seriesClass, published: true, workout_status: "awaiting" });
 
     await openClass(page);
     await expect(page.getByTestId("class-wod-notice")).toHaveCount(0);
     await expect(page.getByRole("dialog").getByRole("alert")).toHaveCount(0);
-    const add = page.getByTestId("class-wod-add");
-    await expect(add.getByRole("button", { name: "Choose a WOD" })).toBeVisible();
-    await expect(add.getByRole("button", { name: "+ New WOD" })).toBeVisible();
+    await expect(page.getByTestId("class-wod-add")).toContainText("No WOD yet");
+    const bar = page.getByTestId("class-bar");
+    await expect(bar.getByRole("button", { name: "Choose a WOD" })).toBeVisible();
+    await expect(bar.getByRole("button", { name: "+ New WOD" })).toBeVisible();
   });
 
   test("on a phone, the class and workout action rows stay inside the card", async ({ page }) => {
@@ -306,13 +309,14 @@ test.describe("Schedule › pause, cancel and delete classes", () => {
     const actions = page.getByTestId("class-actions");
     await expect(actions.getByRole("button", { name: "Edit class" })).toBeVisible();
     await expect(actions.getByTestId("class-more-actions")).toBeVisible();
+    await expect(page.getByTestId("class-bar")).toBeInViewport();
 
     // No action button sticks out of its card or breaks its label onto two lines.
     const problems = await page.getByRole("dialog").evaluate((dialog) =>
-      Array.from(dialog.querySelectorAll<HTMLElement>("[data-testid=class-actions] button, [data-testid=workout-actions] button")).flatMap(
+      Array.from(dialog.querySelectorAll<HTMLElement>("[data-testid=class-actions] button, [data-testid=workout-actions] button, [data-testid=class-bar] button, [data-testid=class-bar] a")).flatMap(
         (button) => {
           const box = button.getBoundingClientRect();
-          const card = button.closest("section, [data-testid=class-actions]")!.getBoundingClientRect();
+          const card = button.closest("section, [data-testid=class-actions], [data-testid=class-bar]")!.getBoundingClientRect();
           const tops = new Set<number>();
           const texts = document.createTreeWalker(button, NodeFilter.SHOW_TEXT);
           for (let node = texts.nextNode(); node; node = texts.nextNode()) {

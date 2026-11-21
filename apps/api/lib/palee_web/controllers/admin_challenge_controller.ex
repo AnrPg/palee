@@ -64,7 +64,8 @@ defmodule PaleeWeb.AdminChallengeController do
               count: %Schema{type: :integer, minimum: 1},
               type_filter: %Schema{
                 type: :string,
-                enum: Enum.map(Palee.Workouts.supported_workout_types(), &to_string/1)
+                description: "A workout type reference (ADR-690): a Palee kind key or `box:<id>`",
+                pattern: "^([a-z][a-z0-9_]{1,47}|box:[0-9a-f-]{36})$"
               }
             },
             required: [:count, :type_filter],

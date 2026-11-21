@@ -973,3 +973,9 @@ msgstr "السبب: %{reason}"
 
 msgid "Your package was removed"
 msgstr "أُزيلت باقتك"
+
+msgid "Palee reviewed your workout type"
+msgstr "راجعت Palee نوع التمرين الخاص بك"
+
+msgid "«%{label}» now follows the Palee list, and your box's WODs moved with it."
+msgstr "«%{label}» يتبع الآن قائمة Palee، وانتقلت تمارين WOD في ناديك معه."

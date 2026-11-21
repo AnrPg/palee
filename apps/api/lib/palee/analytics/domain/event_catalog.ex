@@ -130,6 +130,9 @@ defmodule Palee.Analytics.Domain.EventCatalog do
     "class_booking_timed_out" => {"class_booking", [:scheduled_class_id], :subject},
     "class_attendance_recorded" =>
       {"class_attendance", [:scheduled_class_id, :booking_id, :status], nil},
+    # Staff took back a «Ήρθε» (the attendance record itself is gone).
+    "class_attendance_removed" =>
+      {"class_attendance", [:scheduled_class_id, :booking_id, :status], nil},
     "class_slot_created" =>
       {"scheduled_class",
        [:class_type_id, :master_workout_id, :capacity, :auto_approve, :series_id], nil},

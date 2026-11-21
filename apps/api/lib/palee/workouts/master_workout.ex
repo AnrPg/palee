@@ -14,7 +14,11 @@ defmodule Palee.Workouts.MasterWorkout do
   schema "master_workouts" do
     field :organization_id, :binary_id
     field :title, :string
+    # ADR-690: derived compatibility column (the first built-in kind of
+    # `types`, else nil); `types` and `families` are the WOD's types.
     field :type, Ecto.Enum, values: @types
+    field :types, {:array, :string}, default: []
+    field :families, {:array, :string}, default: []
     field :status, Ecto.Enum, values: @statuses, default: :draft
     field :draft_data, :map
     field :created_by_id, :binary_id
@@ -72,7 +76,8 @@ defmodule Palee.Workouts.MasterWorkout do
   def publish_changeset(workout, params) do
     workout
     |> cast(params, authoring_fields() ++ [:status])
-    |> validate_required([:title, :type])
+    |> validate_required([:title])
+    |> validate_types_present()
     |> validate_authoring_fields()
     |> put_change(:status, :published)
     |> put_change(:draft_data, nil)
@@ -81,7 +86,8 @@ defmodule Palee.Workouts.MasterWorkout do
   def create_changeset(workout \\ %__MODULE__{}, params) do
     workout
     |> cast(params, authoring_fields() ++ [:created_by_id, :folder_id, :source_workout_id])
-    |> validate_required([:title, :type, :created_by_id])
+    |> validate_required([:title, :created_by_id])
+    |> validate_types_present()
     |> validate_authoring_fields()
     |> put_change(:status, :published)
     |> foreign_key_constraint(:created_by_id)
@@ -105,6 +111,8 @@ defmodule Palee.Workouts.MasterWorkout do
     [
       :title,
       :type,
+      :types,
+      :families,
       :is_team_workout,
       :subtitle,
       :description,
@@ -122,6 +130,15 @@ defmodule Palee.Workouts.MasterWorkout do
       :free_text_body,
       :free_text_document
     ]
+  end
+
+  # ADR-690: a published WOD has at least one type; the stores have already
+  # checked the references against the box's catalogue (`WorkoutKinds`).
+  defp validate_types_present(changeset) do
+    case get_field(changeset, :types) do
+      [_ | _] -> changeset
+      _ -> add_error(changeset, :type, "can't be blank", validation: :required)
+    end
   end
 
   defp validate_authoring_fields(changeset) do

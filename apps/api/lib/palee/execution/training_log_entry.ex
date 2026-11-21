@@ -28,6 +28,8 @@ defmodule Palee.Execution.TrainingLogEntry do
     field(:booking_id, :binary_id)
     field(:title, :string)
     field(:workout_type, :string)
+    # ADR-690: every type of the logged WOD (references).
+    field(:workout_types, {:array, :string}, default: [])
     field(:scale_level_slug, :string)
     field(:performed_at_utc, :utc_datetime_usec)
     field(:performed_at_tz, :string, default: "UTC")
@@ -71,6 +73,7 @@ defmodule Palee.Execution.TrainingLogEntry do
         :master_workout_id,
         :booking_id,
         :workout_type,
+        :workout_types,
         :idempotency_key,
         :journal_visibility
       ] ++ @editable_fields

@@ -59,7 +59,7 @@ import {
   parseFreeTextTimerPreset,
   timerChipLabel,
 } from "@/lib/free-text-timer";
-import { getFormatLabels, type WorkoutType } from "@/types/workout";
+import { getFormatLabels } from "@/types/workout";
 import { findTextTimers } from "@/lib/wod-formats/parse";
 import { effectiveTimer, FOLLOW_TEXT, loadTimerFrom, type TimerFrom } from "@/lib/wod-formats/text-timer";
 
@@ -90,7 +90,8 @@ import { useFrequentTimers } from "./useFrequentTimers";
 import { FreeTextAnalysisPanel, IssueCard, type AnalysisStatus } from "./FreeTextAnalysisPanel";
 import { readToken } from "@/lib/theme";
 import { Select } from "@/components/ui/Select";
-import { WorkoutTypeSelect } from "@/components/workouts/WorkoutTypeSelect";
+import { WorkoutTypesField } from "@/components/workouts/WorkoutTypesField";
+import { workoutKindRefs } from "@/lib/workout-kinds";
 import { isWorkoutType } from "@/lib/workout-types";
 
 type Props = {
@@ -119,7 +120,7 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
   const { tokens } = useSession();
   const accessToken = tokens?.access_token;
   const [title, setTitle] = useState("");
-  const [type, setType] = useState<WorkoutType | "">("");
+  const [types, setTypes] = useState<string[]>([]);
   const [body, setBody] = useState("");
   const [html, setHtml] = useState("");
   /** The draft could not be created or loaded. */
@@ -232,7 +233,8 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
     (workout: WorkoutRecord) => {
       if (!editor) return;
       setTitle(workout.title ?? "");
-      setType(isWorkoutType(workout.type) ? workout.type : "");
+      const draftTypes = (workout.draft_data as { types?: unknown } | null)?.types;
+      setTypes(Array.isArray(draftTypes) ? draftTypes.filter((value): value is string => typeof value === "string") : workoutKindRefs(workout));
       const storedReview = (workout.draft_data as { free_text_review?: ReviewState } | null)?.free_text_review;
       const hasReview = Boolean(storedReview?.analysis && storedReview.workout);
       setReview(hasReview ? storedReview! : null);
@@ -274,18 +276,18 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
 
   /** What the server should hold for the text and settings on screen now. */
   const draftPayload = useCallback(
-    (overrides?: { title?: string; type?: WorkoutType | ""; review?: ReviewState | null }) =>
+    (overrides?: { title?: string; types?: string[]; review?: ReviewState | null }) =>
       editor
         ? buildPayload({
             title: overrides?.title ?? title,
-            type: overrides?.type ?? type,
+            types: overrides?.types ?? types,
             body,
             document: editor.getJSON(),
             review: overrides && "review" in overrides ? overrides.review ?? null : review,
             metadata: withTimerPreset(metadataRef.current, timerPreset),
           })
         : null,
-    [body, editor, review, timerPreset, title, type],
+    [body, editor, review, timerPreset, title, types],
   );
 
   // Autosave: one request at a time, a second after the last change. `html`
@@ -344,7 +346,7 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
   );
 
   const stale = Boolean(review && review.analyzedText.trim() !== body.trim());
-  const blocking = blockingProblems(title, type, review);
+  const blocking = blockingProblems(title, types, review);
   const canPublish = Boolean(accessToken && draftId && editor && body.trim() && !publishing && analysisStatus !== "loading");
 
   async function analyze(): Promise<ReviewState | null> {
@@ -362,7 +364,7 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
       const proposed = next.workout;
       // The coach's own title and type win; the assistant only fills blanks.
       if (!title.trim() && proposed.title) setTitle(proposed.title);
-      if (!type && proposed.type && isWorkoutType(proposed.type)) setType(proposed.type);
+      if (types.length === 0 && proposed.type && isWorkoutType(proposed.type)) setTypes([proposed.type]);
       setReview(next);
       setAnalysisStatus("ready");
       return next;
@@ -397,7 +399,7 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
 
   function syncWorkoutField(path: string, value: unknown) {
     if (path === "title") setTitle(typeof value === "string" ? value : "");
-    if (path === "type") setType(isWorkoutType(value) ? value : "");
+    if (path === "type" && isWorkoutType(value)) setTypes((current) => (current.includes(value) ? current : [...current, value]));
   }
 
   function applyTextEdit(state: ReviewState, find: string, replace: string): ReviewState {
@@ -476,8 +478,8 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
 
     const effectiveTitle = title.trim() || current?.workout.title || "";
     const proposedType = current?.workout.type ?? "";
-    const effectiveType = type || (isWorkoutType(proposedType) ? proposedType : "");
-    const problems = blockingProblems(effectiveTitle, effectiveType, current);
+    const effectiveTypes = types.length > 0 ? types : isWorkoutType(proposedType) ? [proposedType] : [];
+    const problems = blockingProblems(effectiveTitle, effectiveTypes, current);
 
     if (problems.length > 0) {
       setShowBlocking(true);
@@ -496,7 +498,7 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
       return;
     }
 
-    const payload = draftPayload({ title: effectiveTitle, type: effectiveType, review: current });
+    const payload = draftPayload({ title: effectiveTitle, types: effectiveTypes, review: current });
     if (!payload) return;
     setPublishing(true);
 
@@ -592,19 +594,19 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
                   aria-invalid={showBlocking && title.trim().length < 3}
                 />
               </label>
-              <label className="block">
+              <div className="block">
                 <span className="text-xs font-bold uppercase tracking-[0.18em]" style={{ color: "var(--dim)" }}>
                   {i18n("workoutType34a530c")}
                 </span>
-                <WorkoutTypeSelect
-                  className="mt-1 w-full rounded-xl border px-3 py-2 text-sm outline-none"
-                  style={{ background: "var(--card)", borderColor: "var(--dim)", color: "var(--text)" }}
-                  value={type}
-                  onChange={setType}
-                  placeholder={assistantT("chooseType")}
-                  invalid={showBlocking && !type}
-                />
-              </label>
+                <div className="mt-1">
+                  <WorkoutTypesField
+                    value={types}
+                    onChange={setTypes}
+                    placeholder={assistantT("chooseType")}
+                    invalid={showBlocking && types.length === 0}
+                  />
+                </div>
+              </div>
             </div>
           ) : null}
           {openTab === "timer" ? (
@@ -1059,14 +1061,14 @@ type FreeTextDraftPayload = ReturnType<typeof buildPayload>;
 
 function buildPayload({
   title,
-  type,
+  types,
   body,
   document,
   review,
   metadata,
 }: {
   title: string;
-  type: WorkoutType | "";
+  types: string[];
   body: string;
   document: JSONContent;
   review: ReviewState | null;
@@ -1075,7 +1077,7 @@ function buildPayload({
   // Canonical fields come from the assistant review the coach accepted; the
   // free text stays the display source of truth (ADR-078, ADR-105).
   const canonical = publishFields(review);
-  const workoutType = type || null;
+
   // The coach's explicit timer preset sits next to the assistant's fresh
   // timer inference (which replaces any inference stored with the draft).
   const workoutMetadata = { ...metadata, ...("workout_metadata" in canonical ? canonical.workout_metadata : {}) };
@@ -1083,7 +1085,7 @@ function buildPayload({
   return {
     ...canonical,
     title,
-    type: workoutType,
+    types,
     authoring_mode: "free_text",
     free_text_body: body,
     free_text_document: document,
@@ -1091,7 +1093,7 @@ function buildPayload({
     draft_data: {
       ...canonical,
       title,
-      type: workoutType,
+      types,
       authoring_mode: "free_text",
       free_text_body: body,
       free_text_document: document,

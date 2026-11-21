@@ -969,3 +969,9 @@ msgstr "Reason: %{reason}"
 
 msgid "Your package was removed"
 msgstr "Your package was removed"
+
+msgid "Palee reviewed your workout type"
+msgstr "Palee reviewed your workout type"
+
+msgid "«%{label}» now follows the Palee list, and your box's WODs moved with it."
+msgstr "«%{label}» now follows the Palee list, and your box's WODs moved with it."

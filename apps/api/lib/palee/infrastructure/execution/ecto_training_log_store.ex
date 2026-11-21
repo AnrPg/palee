@@ -268,6 +268,7 @@ defmodule Palee.Infrastructure.Execution.EctoTrainingLogStore do
       booking_id: entry.booking_id,
       title: entry.title,
       workout_type: entry.workout_type,
+      workout_types: entry.workout_types || [],
       scale_level_slug: entry.scale_level_slug,
       performed_at_utc: entry.performed_at_utc,
       performed_at_tz: entry.performed_at_tz,

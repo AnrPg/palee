@@ -17,7 +17,6 @@ import type {
   PrescriptionUnit,
   ScoreType,
   SectionFormat,
-  WorkoutType,
 } from "@/types/workout";
 import { AUTO_SCORE_MAP, EMOM_SCORING_MODE_SCORE_TYPE, FORMAT_EXERCISE_CONTEXT, adaptExerciseToDestination, concreteSetPrescriptions, makeDefaultAdvancedSettings, makeDefaultExercise, makeDefaultFormatParams, makeDefaultHeader, makeDefaultSection, intervalPatternFromParams, normalizeFormatParams, paramsFromIntervalPattern, timerConfigParams } from "@/types/workout";
 
@@ -35,7 +34,8 @@ type WorkoutCreationStore = DraftWorkoutState & {
   loadFromDraftData: (data: unknown) => void;
   setDraftRevision: (revision: number | null) => void;
   setTitle: (title: string) => void;
-  setType: (type: WorkoutType) => void;
+  /** ADR-690: every type of the WOD (kind keys and `box:<id>`). */
+  setTypes: (types: string[]) => void;
   setIsTeamWorkout: (value: boolean) => void;
   setSaveStatus: (status: SaveStatus) => void;
   addSection: () => void;
@@ -324,17 +324,17 @@ function dropLoneGroups(exercises: DraftExercise[]): DraftExercise[] {
   );
 }
 
-function parseWorkoutType(value: unknown): WorkoutType | null {
-  if (isWorkoutType(value)) return value;
-
-  return null;
+/** ADR-690: a draft's types; an old draft has a single `type`. */
+function parseWorkoutTypes(types: unknown, type: unknown): string[] {
+  if (Array.isArray(types)) return types.filter((value): value is string => typeof value === "string" && value.length > 0);
+  return isWorkoutType(type) ? [type] : [];
 }
 
 export const useWorkoutCreationStore = create<WorkoutCreationStore>((set, get) => ({
   draftId: null,
   draftRevision: null,
   title: "",
-  type: null,
+  types: [],
   isTeamWorkout: false,
   sections: [],
   saveStatus: "idle",
@@ -347,7 +347,7 @@ export const useWorkoutCreationStore = create<WorkoutCreationStore>((set, get) =
   initDraft: (id, revision = null) => set({ draftId: id, draftRevision: revision }),
 
   resetDraft: () =>
-    set({ draftId: null, draftRevision: null, title: "", type: null, isTeamWorkout: false, sections: [], selectedSectionId: null, sectionConfigOpen: false }),
+    set({ draftId: null, draftRevision: null, title: "", types: [], isTeamWorkout: false, sections: [], selectedSectionId: null, sectionConfigOpen: false }),
 
   loadFromDraftData: (data) => {
     if (!data || typeof data !== "object") return;
@@ -361,7 +361,7 @@ export const useWorkoutCreationStore = create<WorkoutCreationStore>((set, get) =
     set({
       draftRevision: typeof record.dsl_source_revision === "number" ? record.dsl_source_revision : get().draftRevision,
       title: typeof source.title === "string" ? source.title : (typeof record.title === "string" ? record.title : ""),
-      type: parseWorkoutType(source.type ?? record.type),
+      types: parseWorkoutTypes(source.types ?? record.types, source.type ?? record.type),
       isTeamWorkout: Boolean(record.is_team_workout),
       sections: parseDraftSections(source.sections),
     });
@@ -371,7 +371,7 @@ export const useWorkoutCreationStore = create<WorkoutCreationStore>((set, get) =
 
   setDraftRevision: (draftRevision) => set({ draftRevision }),
   setTitle: (title) => set({ title }),
-  setType: (type) => set({ type }),
+  setTypes: (types) => set({ types }),
   setIsTeamWorkout: (isTeamWorkout) => set({ isTeamWorkout }),
   setSaveStatus: (saveStatus) => set({ saveStatus }),
 
@@ -938,7 +938,7 @@ export const useWorkoutCreationStore = create<WorkoutCreationStore>((set, get) =
   redo: () => stepHistory(1),
 
   toApiPayload: () => {
-    const { title, type, isTeamWorkout, sections, draftRevision } = get();
+    const { title, types, isTeamWorkout, sections, draftRevision } = get();
 
     function deriveLadderTimerParams(section: DraftSection): Record<string, number> {
       const first = section.exercises[0];
@@ -966,7 +966,7 @@ export const useWorkoutCreationStore = create<WorkoutCreationStore>((set, get) =
       // ADR-231: saving from the structured editor makes the workout structured.
       authoring_mode: "structured",
       title,
-      type,
+      types,
       is_team_workout: isTeamWorkout,
       expected_source_revision: draftRevision,
       sections: sections.map((section, sectionIndex) => ({
@@ -1097,8 +1097,8 @@ export function isSectionComplete(section: DraftSection): boolean {
   });
 }
 
-export function isPublishReady(state: Pick<DraftWorkoutState, "title" | "type" | "sections">): boolean {
-  if (!state.title || !state.type) return false;
+export function isPublishReady(state: Pick<DraftWorkoutState, "title" | "types" | "sections">): boolean {
+  if (!state.title || state.types.length === 0) return false;
   if (state.sections.length === 0) return false;
   return state.sections.every(isSectionComplete);
 }
@@ -1115,14 +1115,14 @@ export function completionSummary(sections: DraftSection[], translate: (key: str
 // Changes that keep the same rows and come within HISTORY_COALESCE_MS of the
 // previous one (typing a name) are one step. Loading a draft starts afresh.
 
-type WorkoutSnapshot = Pick<DraftWorkoutState, "title" | "type" | "isTeamWorkout" | "sections">;
+type WorkoutSnapshot = Pick<DraftWorkoutState, "title" | "types" | "isTeamWorkout" | "sections">;
 
 const HISTORY_LIMIT = 200;
 const HISTORY_COALESCE_MS = 800;
 const history = { past: [] as WorkoutSnapshot[], future: [] as WorkoutSnapshot[], lastAt: 0, lastShape: "", muted: false };
 
 function snapshotOf(state: WorkoutSnapshot): WorkoutSnapshot {
-  return { title: state.title, type: state.type, isTeamWorkout: state.isTeamWorkout, sections: state.sections };
+  return { title: state.title, types: state.types, isTeamWorkout: state.isTeamWorkout, sections: state.sections };
 }
 
 function shapeOf(state: WorkoutSnapshot) {
@@ -1163,7 +1163,7 @@ useWorkoutCreationStore.subscribe((state, previous) => {
   }
   const changed =
     state.title !== previous.title ||
-    state.type !== previous.type ||
+    state.types !== previous.types ||
     state.isTeamWorkout !== previous.isTeamWorkout ||
     state.sections !== previous.sections;
   if (!changed) return;

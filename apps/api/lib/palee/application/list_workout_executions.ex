@@ -95,6 +95,8 @@ defmodule Palee.Application.ListWorkoutExecutions do
         Map.merge(execution, %{
           workout_title: "Deleted workout",
           workout_type: nil,
+          workout_types: [],
+          workout_families: [],
           workout_tags: [],
           workout_source_id: nil,
           exercise_names: [],
@@ -105,6 +107,9 @@ defmodule Palee.Application.ListWorkoutExecutions do
         Map.merge(execution, %{
           workout_title: workout.title,
           workout_type: workout.type,
+          # ADR-690: every type of the WOD and their families.
+          workout_types: Map.get(workout, :types) || [],
+          workout_families: Map.get(workout, :families) || [],
           # ADR-162: what the cross-provider Vault and Πρόοδος group by.
           workout_tags: Map.get(workout, :tags) || [],
           workout_source_id: Map.get(workout, :source_workout_id),

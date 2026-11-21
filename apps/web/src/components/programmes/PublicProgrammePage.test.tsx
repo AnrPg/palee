@@ -9,7 +9,10 @@ const api = vi.hoisted(() => ({ fetchPublicProgramme: vi.fn() }));
 const platform = vi.hoisted(() => ({ native: null as null | "ios" }));
 vi.mock("@/api/programmes", async (original) => ({ ...(await original<object>()), ...api }));
 vi.mock("@/lib/platform", async (original) => ({ ...(await original<object>()), nativePlatform: () => platform.native }));
-vi.mock("@/components/session-provider", () => ({ useSession: () => ({ status: "guest", tokens: null }) }));
+vi.mock("@/components/session-provider", () => {
+  const session = { status: "guest", tokens: null };
+  return { useSession: () => session, useOptionalSession: () => session };
+});
 
 import { PublicProgrammePage } from "./PublicProgrammePage";
 

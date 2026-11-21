@@ -1008,6 +1008,21 @@ defmodule Palee.Notifications do
         url: "/me/payments?box=#{field(payload, :box_slug)}"
       })
 
+  # ADR-690: the Palee team adopted or merged a workout type the box made.
+  def process_event("workout_kind_adopted", payload),
+    do:
+      enqueue_simple(:workout_kind_adopted, payload, %{
+        organization_id: field(payload, :organization_id),
+        box_name: field(payload, :box_name),
+        label: field(payload, :label),
+        target: field(payload, :target),
+        decision: field(payload, :decision),
+        workouts: field(payload, :workouts),
+        dedupe_key:
+          "workout_kind_adopted:#{field(payload, :kind_id)}:#{field(payload, :user_id)}",
+        url: "/admin/settings#workout-types"
+      })
+
   def process_event("workout_rejected", payload), do: enqueue_workout_rejected(payload)
   def process_event("athlete_message_sent", payload), do: enqueue_athlete_message(payload)
   def process_event("chat_message", payload), do: enqueue_chat_message(payload)

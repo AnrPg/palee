@@ -28,6 +28,7 @@ defmodule Palee.Finance do
     RecordPayment,
     ReleaseEntitlement,
     ReleaseEntitlementSource,
+    ReopenEntitlementSource,
     ReleaseStaleEntitlementReservations,
     ReserveEntitlement,
     FinalizeEntitlement,
@@ -362,6 +363,16 @@ defmodule Palee.Finance do
     do:
       scoped(context, fn ->
         release_entitlement_source(user_id, source_context, source_id, allowance, params)
+      end)
+
+  defdelegate reopen_entitlement_source(user_id, source_context, source_id, allowance, params),
+    to: ReopenEntitlementSource,
+    as: :call
+
+  def reopen_entitlement_source(context, user_id, source_context, source_id, allowance, params),
+    do:
+      scoped(context, fn ->
+        reopen_entitlement_source(user_id, source_context, source_id, allowance, params)
       end)
 
   defdelegate list_expiring_memberships(days), to: ListExpiringMemberships, as: :call

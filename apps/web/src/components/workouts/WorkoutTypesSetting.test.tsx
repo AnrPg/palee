@@ -16,9 +16,16 @@ const api = vi.hoisted(() => ({
 vi.mock("@/api/settings", () => ({ fetchAdminSettings: api.fetchAdminSettings, updateAdminSettings: api.updateAdminSettings }));
 vi.mock("@/api/workouts", () => ({
   WOD_ASSISTANT_AVAILABILITY_KEY: ["authoring-settings"],
+  WORKOUT_KINDS_KEY: ["workout-kinds"],
   fetchWorkoutAuthoringSettings: api.fetchWorkoutAuthoringSettings,
+  listWorkoutKinds: async () => ({ additions: [], box: [] }),
+  updateWorkoutKind: vi.fn(),
+  mergeWorkoutKind: vi.fn(),
 }));
-vi.mock("@/components/session-provider", () => ({ useSession: () => ({ tokens: { access_token: "token" } }) }));
+vi.mock("@/components/session-provider", () => {
+  const session = { tokens: { access_token: "token" } };
+  return { useSession: () => session, useOptionalSession: () => session };
+});
 
 import { WorkoutTypeSelect } from "./WorkoutTypeSelect";
 import { WorkoutTypesSetting } from "./WorkoutTypesSetting";

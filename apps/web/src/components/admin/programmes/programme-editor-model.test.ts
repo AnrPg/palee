@@ -215,19 +215,23 @@ describe("WOD library", () => {
     workout("w-1", "Back squat 5×5", "strength", "published", { estimated_duration_seconds: 3000 }),
     workout("w-2", "Fran", "crossfit"),
     workout("w-3", "Draft", "running", "draft"),
+    // ADR-690: several types, no main one; the API's families win.
+    workout("w-4", "Hybrid", "strength", "published", { types: ["strength", "box:4f1c2b7e-1d2c-4a1b-9c3d-2e1f0a9b8c7d"], families: ["strength", "endurance"] }),
   ]);
 
   it("keeps the published WODs with their family and stated length", () => {
-    expect(library.map((item) => [item.id, item.family, item.minutes])).toEqual([
-      ["w-1", "strength", 50],
-      ["w-2", "functional", null],
+    expect(library.map((item) => [item.id, item.families, item.minutes])).toEqual([
+      ["w-1", ["strength"], 50],
+      ["w-2", ["functional"], null],
+      ["w-4", ["strength", "endurance"], null],
     ]);
   });
 
   it("filters by text and family, and lists the families present in catalogue order", () => {
     expect(filterLibrary(library, "fran", null).map((item) => item.id)).toEqual(["w-2"]);
-    expect(filterLibrary(library, "", "strength").map((item) => item.id)).toEqual(["w-1"]);
-    expect(libraryFamilies(library)).toEqual(["functional", "strength"]);
+    expect(filterLibrary(library, "", "strength").map((item) => item.id)).toEqual(["w-1", "w-4"]);
+    expect(filterLibrary(library, "", "endurance").map((item) => item.id)).toEqual(["w-4"]);
+    expect(libraryFamilies(library)).toEqual(["functional", "strength", "endurance"]);
   });
 
   it("lists the programme's WODs as recent, the latest day first", () => {

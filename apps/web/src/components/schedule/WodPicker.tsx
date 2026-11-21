@@ -14,10 +14,8 @@ import { CollapsibleFilterBar } from "@/components/filters/CollapsibleFilterBar"
 import { resolveWorkoutIcon } from "@/components/workouts/library/library-folders";
 import { Dialog } from "@/components/ui/Dialog";
 import { Select } from "@/components/ui/Select";
-import { semanticLabel } from "@/i18n/presentation";
-import { useWorkoutTypeLabels, workoutTypeOptionGroups } from "@/components/workouts/WorkoutTypeSelect";
+import { useWorkoutTypeLabels, workoutTypeOptionGroups, WorkoutTypesText } from "@/components/workouts/WorkoutTypeSelect";
 import { offeredWorkoutTypeGroups } from "@/lib/workout-types";
-import { useUiTranslations } from "@/i18n/ui";
 import { SPARK_CREATE_STYLE } from "@/lib/spark";
 
 /**
@@ -25,10 +23,9 @@ import { SPARK_CREATE_STYLE } from "@/lib/spark";
  * thousands. The form never loads the library:
  *
  * - Under an empty field, one tap takes the WOD the gym most likely wants:
- *   the one other classes already use that day, else one recently used for
- *   this class type.
- * - The picker opens on a short list of suggestions (that day, recent for the
- *   class type, newest). Anything else is found by searching title words, with
+ *   the one other classes already use that day. Recently used WODs are not
+ *   offered (ANR, 2026-11-21: they are almost never reused on another day).
+ * - The picker opens on a short list of suggestions (that day, newest). Anything else is found by searching title words, with
  *   type and folder filters behind the filter button, a page at a time on the
  *   server.
  * - "+ New WOD" sits on the field's label row (and on an empty search) to
@@ -50,8 +47,8 @@ function useDebounced<T>(value: T, delay: number) {
   return debounced;
 }
 
-/** The suggestions a class gets, shared by the field's one-tap chips and the picker. */
-function useSuggestions(token: string, date: string | null, classTypeId: string | null | undefined) {
+/** The suggestions a class gets, shared by the field's one-tap chips, the picker and the class page's empty WOD card. */
+export function useWodSuggestions(token: string, date: string | null, classTypeId: string | null | undefined) {
   return useQuery({
     queryKey: ["workout-choices", "suggested", date, classTypeId ?? null],
     enabled: Boolean(token && date),
@@ -70,7 +67,6 @@ export function WodPicker({
   onCreateNew,
   date,
   classTypeId,
-  classTypeName,
   noneHint,
   variant = "field",
 }: {
@@ -83,7 +79,6 @@ export function WodPicker({
   /** The class's gym-local day (YYYY-MM-DD), for "that day" suggestions. */
   date: string | null;
   classTypeId?: string | null;
-  classTypeName?: string | null;
   /** What "No WOD yet" means here (a class, or each class of a series). */
   noneHint?: string;
   /**
@@ -93,14 +88,13 @@ export function WodPicker({
   variant?: "field" | "actions";
 }) {
   const t = useTranslations("Schedule");
-  const i18n = useUiTranslations();
   const queryClient = useQueryClient();
   const id = useId();
   const labelId = `${id}-label`;
   const triggerRef = useRef<HTMLButtonElement>(null);
   const [open, setOpen] = useState(false);
 
-  const suggestions = useSuggestions(token, date, classTypeId);
+  const suggestions = useWodSuggestions(token, date, classTypeId);
   // The chosen WOD's name: from the pick itself, else fetched once by id
   // (editing a class, or coming back from "+ New WOD").
   const chosen = useQuery({
@@ -108,7 +102,7 @@ export function WodPicker({
     enabled: Boolean(token && value),
     queryFn: async (): Promise<WorkoutChoice> => {
       const workout = await fetchAdminWorkout(token, value!);
-      return { id: workout.id, title: workout.title, type: workout.type, icon: workout.icon ?? null };
+      return { id: workout.id, title: workout.title, type: workout.type, types: workout.types ?? [], families: workout.families ?? [], icon: workout.icon ?? null } as WorkoutChoice;
     },
     staleTime: Infinity,
   });
@@ -120,7 +114,9 @@ export function WodPicker({
   }
 
   const sameDay = suggestions.data?.same_day ?? [];
-  const quick = (sameDay.length ? sameDay : suggestions.data?.recent ?? []).slice(0, 2);
+  // ANR (2026-11-21): WODs are almost never reused on another day, so only
+  // the WOD another class runs the same day is offered, never recent ones.
+  const quick = sameDay.slice(0, 2);
 
   const actions = variant === "actions";
 
@@ -176,7 +172,7 @@ export function WodPicker({
                   {selected ? selected.title : value ? t("wodPickerChosen") : t("wodPickerNone")}
                 </span>
                 <span className="block truncate text-xs font-normal" style={{ color: "var(--muted)" }}>
-                  {selected ? semanticLabel(selected.type, i18n) : value ? "" : t("wodPickerTapToChoose")}
+                  {selected ? <WorkoutTypesText workout={selected} /> : value ? "" : t("wodPickerTapToChoose")}
                 </span>
               </span>
               {value ? null : (
@@ -202,7 +198,7 @@ export function WodPicker({
 
       {!value && quick.length ? (
         <div className="flex flex-wrap items-center gap-2 text-xs font-normal">
-          <span>{sameDay.length ? t("wodPickerQuickSameDay") : t("wodPickerQuickRecent")}</span>
+          <span>{t("wodPickerQuickSameDay")}</span>
           {quick.map((choice) => (
             <button
               key={choice.id}
@@ -225,7 +221,6 @@ export function WodPicker({
           token={token}
           value={value}
           date={date}
-          classTypeName={classTypeName}
           suggestions={suggestions.data}
           suggestionsLoading={suggestions.isLoading}
           noneHint={noneHint}
@@ -241,12 +236,12 @@ export function WodPicker({
   );
 }
 
-function WodPickerDialog({
+/** The picker itself: suggestions first, then the whole library by search. */
+export function WodPickerDialog({
   label,
   token,
   value,
   date,
-  classTypeName,
   suggestions,
   suggestionsLoading,
   noneHint,
@@ -258,8 +253,7 @@ function WodPickerDialog({
   token: string;
   value: string | null;
   date: string | null;
-  classTypeName?: string | null;
-  suggestions: ReturnType<typeof useSuggestions>["data"];
+  suggestions: ReturnType<typeof useWodSuggestions>["data"];
   suggestionsLoading: boolean;
   noneHint?: string;
   onChoose: (choice: WorkoutChoice | null) => void;
@@ -267,7 +261,6 @@ function WodPickerDialog({
   onClose: () => void;
 }) {
   const t = useTranslations("Schedule");
-  const i18n = useUiTranslations();
   const typeLabels = useWorkoutTypeLabels();
   const locale = useLocale();
   const listId = useId();
@@ -310,11 +303,6 @@ function WodPickerDialog({
     : [
         { key: "none", title: null, options: [{ key: "none", choice: null }] },
         { key: "same-day", title: t("wodPickerSameDay", { date: dayLabel }), options: toOptions(suggestions?.same_day) },
-        {
-          key: "recent",
-          title: classTypeName ? t("wodPickerRecent", { classType: classTypeName }) : t("wodPickerRecentAny"),
-          options: toOptions(suggestions?.recent),
-        },
         { key: "newest", title: t("wodPickerNewest"), options: toOptions(suggestions?.newest) },
       ].filter((group) => group.options.length > 0);
   const options = groups.flatMap((group) => group.options);
@@ -414,7 +402,7 @@ function WodPickerDialog({
                     selected={(option.choice?.id ?? null) === value}
                     icon={option.choice ? resolveWorkoutIcon(option.choice) : "○"}
                     title={option.choice ? option.choice.title : t("wodPickerNone")}
-                    detail={option.choice ? semanticLabel(option.choice.type, i18n) : noneHint ?? t("wodPickerNoneHint")}
+                    detail={option.choice ? <WorkoutTypesText workout={option.choice} /> : noneHint ?? t("wodPickerNoneHint")}
                     onHover={() => setActive(position)}
                     onChoose={() => onChoose(option.choice)}
                   />
@@ -482,7 +470,7 @@ function ChoiceRow({
   selected: boolean;
   icon: string;
   title: string;
-  detail: string;
+  detail: ReactNode;
   onHover: () => void;
   onChoose: () => void;
 }) {

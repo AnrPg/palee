@@ -11,7 +11,10 @@ export type AthleteOption = {
 export type AssignedWorkoutPreview = {
   id: string;
   title: string;
-  type: string;
+  type: string | null;
+  /** ADR-690: every type and its families (colour stripe). */
+  types?: string[];
+  families?: string[];
   is_team_workout?: boolean;
   authoring_mode?: "structured" | "quick_text" | "free_text" | "sectioned_text";
   free_text_body?: string | null;

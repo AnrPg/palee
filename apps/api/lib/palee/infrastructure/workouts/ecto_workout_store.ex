@@ -4,6 +4,8 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
   import Ecto.Query
 
   alias Ecto.Multi
+  alias Palee.Infrastructure.Workouts.EctoWorkoutKindStore
+  alias Palee.Workouts.Domain.WorkoutKinds
 
   alias Palee.{
     Execution.WorkoutExecution,
@@ -36,6 +38,7 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
   def create_workout(admin_id, params) do
     with {:ok, params} <- prepare_plan(params),
          {:ok, normalized_params} <- prepare_workout_structure(params),
+         {:ok, normalized_params} <- put_kinds(normalized_params, []),
          {:ok, params_with_levels} <- attach_scale_level_ids(normalized_params) do
       params_with_levels
       |> Map.put(:created_by_id, admin_id)
@@ -97,6 +100,7 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
             |> extract_top_level_draft_fields()
             |> Map.merge(extract_dsl_authoring_fields(params))
             |> Map.put(:draft_data, draft_data)
+            |> put_draft_kinds(draft_data, workout.types || [])
 
           changeset =
             workout
@@ -208,6 +212,8 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
           subtitle: workout.subtitle,
           description: workout.description,
           type: workout.type && to_string(workout.type),
+          types: workout.types || [],
+          families: workout.families || [],
           status: to_string(workout.status),
           is_team_workout: workout.is_team_workout,
           difficulty: workout.difficulty,
@@ -360,6 +366,8 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
       id: workout.id,
       title: workout.title,
       type: workout.type,
+      types: workout.types,
+      families: workout.families,
       icon: workout.icon,
       icon_source: workout.icon_source,
       folder_id: workout.folder_id,
@@ -379,10 +387,14 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
 
   defp filter_choice_words(query, _text), do: query
 
+  # ADR-690: a WOD with any of its types equal to `type`; a family key
+  # matches every WOD of that family.
   defp filter_choice_type(query, type) when is_binary(type) and type != "" do
-    if type in Enum.map(Palee.Workouts.Domain.WorkoutType.values(), &to_string/1),
-      do: where(query, [workout], workout.type == ^String.to_existing_atom(type)),
-      else: where(query, [workout], false)
+    cond do
+      WorkoutKinds.family?(type) -> where(query, [workout], ^type in workout.families)
+      WorkoutKinds.ref_shape?(type) -> where(query, [workout], ^type in workout.types)
+      true -> where(query, [workout], false)
+    end
   end
 
   defp filter_choice_type(query, _type), do: query
@@ -1261,7 +1273,9 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
       title: workout.title,
       subtitle: workout.subtitle,
       description: workout.description,
-      type: workout.type |> to_string(),
+      type: workout.type && to_string(workout.type),
+      types: workout.types || [],
+      families: workout.families || [],
       status: workout.status |> to_string(),
       is_team_workout: workout.is_team_workout,
       difficulty: workout.difficulty,
@@ -1528,6 +1542,7 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
     %{}
     |> maybe_put(:title, get_map_value(draft_data, :title))
     |> maybe_put(:type, get_map_value(draft_data, :type))
+    |> maybe_put(:types, get_map_value(draft_data, :types))
     |> maybe_put(:is_team_workout, get_map_value(draft_data, :is_team_workout))
     |> maybe_put(:subtitle, get_map_value(draft_data, :subtitle))
     |> maybe_put(:description, get_map_value(draft_data, :description))
@@ -1600,6 +1615,7 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
          {:ok, merged_params} <- prepare_authoring_mode(merged_params),
          {:ok, prepared_params} <- prepare_workout_structure(merged_params),
          prepared_params <- stringify_keys_deep(prepared_params),
+         {:ok, prepared_params} <- put_kinds(prepared_params, workout.types || []),
          :ok <- validate_publish_body(prepared_params),
          {:ok, params_with_levels} <- attach_scale_level_ids(prepared_params),
          {:ok, published} <-
@@ -1685,7 +1701,9 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
       title: workout.title,
       subtitle: workout.subtitle,
       description: workout.description,
-      type: workout.type |> to_string(),
+      type: workout.type && to_string(workout.type),
+      types: workout.types || [],
+      families: workout.families || [],
       is_team_workout: workout.is_team_workout,
       difficulty: workout.difficulty,
       estimated_duration_seconds: workout.estimated_duration_seconds,
@@ -1745,6 +1763,7 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
         free_text_document: section.free_text_document,
         timer_preset: section.timer_preset,
         plan: section.plan,
+        types: section.types || [],
         # ADR-270: the plan's canonical read model, for every consumer.
         prescription: section.plan |> Prescription.build() |> Prescription.to_json(),
         exercises:
@@ -2080,6 +2099,7 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
       "subtitle" => workout.subtitle,
       "description" => workout.description,
       "type" => workout.type && to_string(workout.type),
+      "types" => workout.types || [],
       "is_team_workout" => workout.is_team_workout,
       "difficulty" => workout.difficulty,
       "estimated_duration_seconds" => workout.estimated_duration_seconds,
@@ -2117,6 +2137,7 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
         "free_text_document" => section.free_text_document,
         "timer_preset" => section.timer_preset,
         "plan" => section.plan,
+        "types" => section.types || [],
         "exercises" =>
           section.exercises
           |> Enum.sort_by(& &1.order)
@@ -2363,6 +2384,8 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
             status: :draft,
             title: title,
             type: source.type,
+            types: source.types,
+            families: source.families,
             folder_id: Map.get(attrs, :folder_id) || Map.get(attrs, "folder_id"),
             source_workout_id: source.id,
             draft_data: draft_data
@@ -2468,6 +2491,7 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
       |> Map.merge(base)
       |> Map.put("title", title)
       |> Map.put("type", source.type && to_string(source.type))
+      |> Map.put("types", source.types || [])
     else
       source
       |> Repo.preload(@workout_preloads)
@@ -2493,6 +2517,89 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
   end
 
   defp authoring_columns(draft_data), do: extract_dsl_authoring_fields(draft_data)
+
+  # ADR-690: the WOD's types from what was sent (the union of its sections'
+  # types when any section has some, else its own `types`, else an old
+  # client's `type`), checked against the box's catalogue; the families and
+  # the compatibility `type` follow. `current` are the WOD's stored types: a
+  # type the box has since hidden stays valid on it.
+  defp put_kinds(params, current) do
+    catalogue = EctoWorkoutKindStore.catalogue()
+    strings? = Enum.any?(Map.keys(params), &is_binary/1)
+    sections = get_map_value(params, :sections) || []
+
+    with {:ok, sections} <- put_section_kinds(sections, catalogue, current),
+         requested =
+           WorkoutKinds.requested(
+             get_map_value(params, :types),
+             get_map_value(params, :type),
+             Enum.map(sections, &(get_map_value(&1, :types) || []))
+           ),
+         {:ok, types} <- WorkoutKinds.normalize(requested, catalogue, current) do
+      values = %{
+        types: types,
+        families: WorkoutKinds.families(types, catalogue),
+        type: WorkoutKinds.legacy_type(types)
+      }
+
+      params =
+        Enum.reduce(values, params, fn {key, value}, acc ->
+          acc
+          |> Map.delete(if(strings?, do: key, else: Atom.to_string(key)))
+          |> Map.put(if(strings?, do: Atom.to_string(key), else: key), value)
+        end)
+
+      {:ok,
+       if(sections == [],
+         do: params,
+         else: Map.put(params, if(strings?, do: "sections", else: :sections), sections)
+       )}
+    else
+      {:error, {:unknown_workout_types, _refs}} -> {:error, :unknown_workout_type}
+    end
+  end
+
+  defp put_section_kinds(sections, catalogue, current) when is_list(sections) do
+    Enum.reduce_while(sections, {:ok, []}, fn section, {:ok, acc} ->
+      types = if is_map(section), do: get_map_value(section, :types)
+
+      case types && WorkoutKinds.normalize(types, catalogue, current) do
+        nil ->
+          {:cont, {:ok, acc ++ [section]}}
+
+        {:ok, types} ->
+          key = if Enum.any?(Map.keys(section), &is_binary/1), do: "types", else: :types
+          section = section |> Map.delete("types") |> Map.delete(:types) |> Map.put(key, types)
+          {:cont, {:ok, acc ++ [section]}}
+
+        {:error, _reason} = error ->
+          {:halt, error}
+      end
+    end)
+  end
+
+  defp put_section_kinds(sections, _catalogue, _current), do: {:ok, sections}
+
+  # A draft keeps whatever the author has so far: unknown references are an
+  # error like at publish, an empty set is fine.
+  defp put_draft_kinds(top_level, draft_data, current) do
+    sections = get_map_value(draft_data, :sections)
+
+    if Map.has_key?(top_level, :types) or Map.has_key?(top_level, :type) or
+         (is_list(sections) and Enum.any?(sections, &(is_map(&1) and get_map_value(&1, :types)))) do
+      params = Map.put(top_level, :sections, if(is_list(sections), do: sections, else: []))
+
+      case put_kinds(params, current) do
+        {:ok, kinds} ->
+          Map.merge(top_level, Map.take(kinds, [:types, :families, :type]))
+
+        {:error, _reason} ->
+          top_level
+      end
+    else
+      top_level
+    end
+  end
 
   defp prepare_workout_structure(params) do
     case WorkoutAuthoring.prepare_structure(params) do

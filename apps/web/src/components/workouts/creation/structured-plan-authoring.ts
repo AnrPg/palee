@@ -3,7 +3,6 @@ import { isPlanSection, planExerciseCount, STRUCTURED_PLAN_MODE } from "@/compon
 import { newId, newSection, validateSection, type PlanIssue, type PlanSection } from "@/lib/structured-plan";
 import { editorSectionsFrom, SECTIONED_TEXT_MODE, sectionsToFreeText, textToDocument } from "@/lib/text-sections";
 import type { PlanEditorDocument, PlanEditorSection } from "@/stores/structured-plan";
-import type { WorkoutType } from "@/types/workout";
 
 /**
  * ADR-270: saving and loading workouts written in the structured plan
@@ -92,13 +91,12 @@ export function planSectionsPayload(sections: PlanEditorSection[]) {
 }
 
 /** Draft save / publish payload of a structured plan workout. */
-export function planPayload(doc: PlanEditorDocument, type: WorkoutType | "", storedMetadata: Record<string, unknown>) {
+export function planPayload(doc: PlanEditorDocument, types: readonly string[], storedMetadata: Record<string, unknown>) {
   const metadata: Record<string, unknown> = { ...storedMetadata };
   if (doc.note.trim()) metadata[PLAN_NOTE_METADATA_KEY] = doc.note;
   else delete metadata[PLAN_NOTE_METADATA_KEY];
   const sections = planSectionsPayload(doc.sections);
-  const workoutType = type || null;
-  const fields = { title: doc.title, type: workoutType, authoring_mode: STRUCTURED_PLAN_MODE, workout_metadata: metadata, sections };
+  const fields = { title: doc.title, types: [...types], authoring_mode: STRUCTURED_PLAN_MODE, workout_metadata: metadata, sections };
   return { ...fields, draft_data: { ...fields } };
 }
 
@@ -112,13 +110,13 @@ export function planToText(doc: Pick<PlanEditorDocument, "note" | "sections">, t
 }
 
 /** Draft payload that turns the workout into free text holding `body` (the assistant's editor reads it). */
-export function freeTextPayload(title: string, type: WorkoutType | "", body: string, storedMetadata: Record<string, unknown>) {
+export function freeTextPayload(title: string, types: readonly string[], body: string, storedMetadata: Record<string, unknown>) {
   const metadata: Record<string, unknown> = { ...storedMetadata };
   delete metadata[PLAN_NOTE_METADATA_KEY];
   const document = textToDocument(body);
   const fields = {
     title,
-    type: type || null,
+    types: [...types],
     authoring_mode: "free_text",
     free_text_body: body,
     free_text_document: document,

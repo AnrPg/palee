@@ -16,7 +16,7 @@ import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
 import { workoutPublishedHref } from "@/lib/workout-return";
 import { completionSummary, isPublishReady, useWorkoutCreationStore } from "@/stores/workout-creation";
 import { FORMAT_EXERCISE_CONTEXT } from "@/types/workout";
-import { WorkoutTypeSelect } from "@/components/workouts/WorkoutTypeSelect";
+import { WorkoutTypesField } from "@/components/workouts/WorkoutTypesField";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 
 function SaveStatusIndicator() {
@@ -50,13 +50,13 @@ export function CanvasHeader({ embedded = false, onCancel, onPublished }: Props)
   const i18n = useUiTranslations();
   function publishValidationMessages({
     title,
-    type,
+    types,
     sections,
-  }: Pick<ReturnType<typeof useWorkoutCreationStore.getState>, "title" | "type" | "sections">) {
+  }: Pick<ReturnType<typeof useWorkoutCreationStore.getState>, "title" | "types" | "sections">) {
     const messages: string[] = [];
   
     if (!title.trim()) messages.push(i18n("missingWorkoutTitlebb8efa0"));
-    if (!type) messages.push(i18n("missingWorkoutTypedd14f84"));
+    if (types.length === 0) messages.push(i18n("missingWorkoutTypedd14f84"));
     if (sections.length === 0) messages.push(i18n("addAtLeastOneSectioncf462d3"));
   
     sections.forEach((section, sectionIndex) => {
@@ -99,7 +99,7 @@ export function CanvasHeader({ embedded = false, onCancel, onPublished }: Props)
   const organizationSlug = useOrganizationSlug();
   const searchParams = useSearchParams();
   const { tokens } = useSession();
-  const { draftId, title, type, isTeamWorkout, sections, setTitle, setType, setIsTeamWorkout } = useWorkoutCreationStore();
+  const { draftId, title, types, isTeamWorkout, sections, setTitle, setTypes, setIsTeamWorkout } = useWorkoutCreationStore();
   const toApiPayload = useWorkoutCreationStore((state) => state.toApiPayload);
   const [publishing, setPublishing] = useState(false);
   const [publishError, setPublishError] = useState<string | null>(null);
@@ -109,10 +109,10 @@ export function CanvasHeader({ embedded = false, onCancel, onPublished }: Props)
   const substituteForSlot = searchParams.get("substitute_for_slot");
   const isSubstitute = Boolean(substituteForAssignment ?? substituteForSlot);
 
-  const ready = isPublishReady({ title, type, sections });
+  const ready = isPublishReady({ title, types, sections });
   const canPublish = Boolean(draftId && tokens?.access_token && ready && !publishing);
   const summary = completionSummary(sections, i18n);
-  const publishMessages = publishValidationMessages({ title, type, sections });
+  const publishMessages = publishValidationMessages({ title, types, sections });
 
   const publishLabel = isReopen || isSubstitute ? i18n("applyChangesb8fb717") : i18n("publish5656400");
 
@@ -174,17 +174,7 @@ export function CanvasHeader({ embedded = false, onCancel, onPublished }: Props)
         style={{ color: "var(--text)", maxWidth: 320 }}
       />
 
-      <WorkoutTypeSelect
-        value={type ?? ""}
-        onChange={setType}
-        placeholder={i18n("type3deb745")}
-        className="cursor-pointer rounded-2xl px-4 py-2 text-sm font-semibold outline-none"
-        style={{
-          background: "var(--card)",
-          color: type ? "var(--text)" : "var(--muted)",
-          border: "1px solid var(--dim)",
-        }}
-      />
+      <WorkoutTypesField value={types} onChange={setTypes} placeholder={i18n("type3deb745")} />
 
       <button
         type="button"

@@ -1459,6 +1459,11 @@ defmodule PaleeWeb.Router do
     post("/workouts/free-text/analyze", AdminWorkoutFreeTextController, :analyze)
     # ADR-180: whether the editor offers the assistant or text sections.
     get("/workouts/authoring-settings", AdminWorkoutFreeTextController, :authoring_settings)
+    # ADR-690: the box's own workout types.
+    get("/workout-kinds", AdminWorkoutKindController, :index)
+    post("/workout-kinds", AdminWorkoutKindController, :create)
+    patch("/workout-kinds/:id", AdminWorkoutKindController, :update)
+    post("/workout-kinds/:id/merge", AdminWorkoutKindController, :merge)
     # ADR-571: the coach's most used timers, as chips in the text-section editor.
     get("/workouts/frequent-timers", AdminWorkoutFreeTextController, :frequent_timers)
     get("/workouts/dsl/manual", AdminWorkoutDslController, :manual)
@@ -1716,6 +1721,12 @@ defmodule PaleeWeb.Router do
       "/schedule/slots/:slot_id/attendance/:user_id",
       AdminScheduleController,
       :record_attendance
+    )
+
+    delete(
+      "/schedule/slots/:slot_id/attendance/:user_id",
+      AdminScheduleController,
+      :remove_attendance
     )
 
     get("/athletes/:id/drill-down", AdminCoachingController, :drill_down)
@@ -2484,6 +2495,9 @@ defmodule PaleeWeb.Router do
     ])
 
     get("/exercise-candidates", PlatformExerciseCatalogController, :index)
+    # ADR-690: workout type names from boxes (and discipline suggestions).
+    get("/workout-kinds", PlatformWorkoutKindController, :index)
+    post("/workout-kinds/:id/decision", PlatformWorkoutKindController, :decide)
     post("/exercise-candidates/:id/decision", PlatformExerciseCatalogController, :decide)
     get("/exercise-catalog-audit", PlatformExerciseCatalogController, :audit)
     # ADR-560: the catalog's exercises and the muscles/qualities they train.
@@ -2501,6 +2515,8 @@ defmodule PaleeWeb.Router do
     ])
 
     patch("/profile", MeController, :update_profile)
+    # ADR-690: labels of workout types from any box.
+    get("/workout-kinds", WorkoutKindLookupController, :index)
     # ADR-207: the login's pending email change.
     get("/email-change", EmailChangeController, :show)
     post("/email-change", EmailChangeController, :create)

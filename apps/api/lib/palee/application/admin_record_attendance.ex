@@ -1,5 +1,11 @@
 defmodule Palee.Application.AdminRecordAttendance do
-  alias Palee.Application.{BookingEntitlement, BookingTerms, TrackAnalyticsEvent}
+  alias Palee.Application.{
+    BookingEntitlement,
+    BookingTerms,
+    ScheduleRealtime,
+    TrackAnalyticsEvent
+  }
+
   alias Palee.Scheduling.Domain.AttendancePolicy
   alias Palee.Scheduling
 
@@ -108,8 +114,18 @@ defmodule Palee.Application.AdminRecordAttendance do
     end
   end
 
-  @doc false
+  @doc """
+  Every way attendance is recorded (staff, the member's own check-in, a QR
+  scan) ends here: the domain event, and a refresh hint on the schedule
+  topic so an open class page shows «Ήρθε» at once. The hint names only the
+  class, never the person, since members listen on the same topic.
+  """
   def announce_attendance(attendance) do
+    ScheduleRealtime.broadcast("attendance_recorded", %{
+      organization_id: attendance.organization_id,
+      slot_id: attendance.scheduled_class_id
+    })
+
     Palee.DomainEvents.publish(:attendance_recorded, %{
       organization_id: attendance.organization_id,
       scheduled_class_id: attendance.scheduled_class_id,

@@ -92,6 +92,13 @@ describe("theme palettes", () => {
     expect(css).toContain('html[data-theme="graphite"]{color-scheme:dark;--bg:#17181C;');
   });
 
+  it("gives a Deep hero surface the dark theme's tokens in every theme", () => {
+    const css = themeStylesheet();
+    expect(css).toContain('[data-surface="deep"]{color-scheme:dark;--bg:#17181C;');
+    // Last, so a nested surface wins over the page's own theme.
+    expect(css.trim().split("\n").at(-1)).toMatch(/^\[data-surface="deep"\]/);
+  });
+
   it("colours workout types with theme variables", () => {
     expect(workoutTypeColor("CrossFit")).toBe("var(--workout-crossfit)");
     expect(workoutTypeColor("unknown")).toBe("var(--primary)");

@@ -94,6 +94,7 @@ export function PlatformOrganizationsPage() {
   const tPush = useTranslations("PlatformPush");
   const tStatus = useTranslations("PlatformStatus");
   const tBusiness = useTranslations("Business");
+  const tWorkoutKinds = useTranslations("PlatformWorkoutKinds");
   const tPartners = useTranslations("PlatformPartners");
   const tReviewReports = useTranslations("PlatformReviewReports");
   const tFoodMisses = useTranslations("PlatformFoodMisses");
@@ -297,6 +298,12 @@ export function PlatformOrganizationsPage() {
             className="border border-[var(--border)] px-4 py-3 text-sm font-semibold text-[var(--text-soft)]"
           >
             {copy.tagSuggestions}
+          </Link>
+          <Link
+            href="/platform/workout-kinds"
+            className="border border-[var(--border)] px-4 py-3 text-sm font-semibold text-[var(--text-soft)]"
+          >
+            {tWorkoutKinds("title")}
           </Link>
           <Link
             href="/platform/business-accounts"

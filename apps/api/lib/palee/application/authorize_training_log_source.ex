@@ -53,7 +53,8 @@ defmodule Palee.Application.AuthorizeTrainingLogSource do
          master_workout_id: workout && workout.id,
          workout: workout,
          title: class_title(slot, workout),
-         workout_type: workout && workout.type
+         workout_type: workout && workout.type,
+         workout_types: (workout && workout[:types]) || []
        }}
     end
   end
@@ -101,7 +102,8 @@ defmodule Palee.Application.AuthorizeTrainingLogSource do
            master_workout_id: id,
            workout: workout,
            title: title || "Workout",
-           workout_type: workout[:type]
+           workout_type: workout[:type],
+           workout_types: workout[:types] || []
          }}
 
       _missing ->

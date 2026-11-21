@@ -1,3 +1,4 @@
+import { workoutKindFamilies, workoutKindRefs } from "@/lib/workout-kinds";
 import type { components } from "@/api/generated/schema";
 import type { ProgrammeDay, ProgrammeInput, StaffProgramme } from "@/api/programmes";
 import type { WorkoutRecord } from "@/api/workouts";
@@ -10,7 +11,7 @@ import {
   sortDays,
   trimToWeeks,
 } from "@/components/programmes/programme-grid";
-import { WORKOUT_TYPE_FAMILIES, workoutTypeFamily, type WorkoutTypeFamily } from "@/lib/workout-types";
+import { WORKOUT_TYPE_FAMILIES, type WorkoutTypeFamily } from "@/lib/workout-types";
 
 /**
  * The programme editor's pure side (board screens 1κ A and 1μ A, ADR-544):
@@ -302,8 +303,10 @@ export function addableEquipment(derived: readonly EquipmentKey[], added: readon
 export type LibraryWod = {
   id: string;
   title: string;
-  type: string;
-  family: WorkoutTypeFamily | null;
+  /** ADR-690: every type of the WOD. */
+  types: string[];
+  /** ADR-690: the WOD's families, in catalogue order (colour, filter). */
+  families: WorkoutTypeFamily[];
   icon: string | null;
   /** Whole minutes, only when the WOD states its length. */
   minutes: number | null;
@@ -319,8 +322,8 @@ export function libraryOf(workouts: readonly WorkoutRecord[] | null | undefined)
       return {
         id: workout.id,
         title: workout.title,
-        type: workout.type,
-        family: workoutTypeFamily(workout.type),
+        types: workoutKindRefs(workout),
+        families: workoutKindFamilies(workout),
         icon: workout.icon ?? null,
         minutes: typeof seconds === "number" && seconds > 0 ? Math.round(seconds / 60) : null,
       };
@@ -329,13 +332,13 @@ export function libraryOf(workouts: readonly WorkoutRecord[] | null | undefined)
 
 /** The families present in the library, in catalogue order (the filter chips). */
 export function libraryFamilies(items: readonly LibraryWod[]): WorkoutTypeFamily[] {
-  const present = new Set(items.map((item) => item.family));
+  const present = new Set(items.flatMap((item) => item.families));
   return WORKOUT_TYPE_FAMILIES.map((group) => group.family).filter((family) => present.has(family));
 }
 
 export function filterLibrary(items: readonly LibraryWod[], query: string, family: WorkoutTypeFamily | null) {
   const needle = query.trim().toLocaleLowerCase();
-  return items.filter((item) => (!family || item.family === family) && (!needle || item.title.toLocaleLowerCase().includes(needle)));
+  return items.filter((item) => (!family || item.families.includes(family)) && (!needle || item.title.toLocaleLowerCase().includes(needle)));
 }
 
 /** «Πρόσφατα»: the WODs already in this programme, the latest day first. */

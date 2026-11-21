@@ -19,6 +19,8 @@ vi.mock("@/api/workout-choices", () => ({
   fetchSuggestedWorkoutChoices: (...args: unknown[]) => fetchSuggestedWorkoutChoices(...args),
 }));
 vi.mock("@/api/workouts", () => ({
+  WOD_ASSISTANT_AVAILABILITY_KEY: ["authoring-settings"],
+  fetchWorkoutAuthoringSettings: vi.fn(async () => ({ wod_assistant_enabled: false })),
   fetchAdminWorkout: vi.fn(async (_token: string, id: string) => ({ id, title: `Workout ${id}`, type: "strength" })),
   listWorkoutFolders: vi.fn(async () => [{ id: "f1", name: "Benchmarks", parent_id: null }]),
 }));
@@ -39,7 +41,6 @@ function renderPicker(props: Partial<Parameters<typeof WodPicker>[0]> = {}) {
       onCreateNew={onCreateNew}
       date="2026-10-23"
       classTypeId="ct"
-      classTypeName="CrossFit"
       {...props}
     />,
     { wrapper },
@@ -70,6 +71,13 @@ describe("WodPicker", () => {
     expect(await screen.findAllByRole("button", { name: "wodPickerUse:Murph" })).not.toHaveLength(0);
   });
 
+  it("never offers a recently used WOD as one tap", async () => {
+    fetchSuggestedWorkoutChoices.mockResolvedValue({ date: "2026-10-23", same_day: [], recent: [choice("w2", "Fran")], newest: [] });
+    renderPicker();
+    await waitFor(() => expect(fetchSuggestedWorkoutChoices).toHaveBeenCalled());
+    expect(screen.queryByRole("button", { name: "wodPickerUse:Fran" })).not.toBeInTheDocument();
+  });
+
   it("offers the day's WOD as one tap under an empty field", async () => {
     const { onChange } = renderPicker();
     fireEvent.click(await screen.findByRole("button", { name: "wodPickerUse:Murph" }));
@@ -85,11 +93,10 @@ describe("WodPicker", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /WOD wodPickerNone/ }));
     expect(await screen.findByText("wodPickerSameDay:Fri, Oct 23")).toBeInTheDocument();
-    expect(screen.getByText("wodPickerRecent:CrossFit")).toBeInTheDocument();
+    // ANR (2026-11-21): recently used WODs are not offered, they are almost never reused.
     expect(screen.getAllByRole("option").map((option) => option.textContent)).toEqual([
       "○wodPickerNonewodPickerNoneHint✓",
       expect.stringContaining("Murph"),
-      expect.stringContaining("Fran"),
       expect.stringContaining("Cindy"),
     ]);
     expect(searchWorkoutChoices).not.toHaveBeenCalled();

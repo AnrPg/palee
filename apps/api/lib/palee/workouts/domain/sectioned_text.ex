@@ -111,6 +111,8 @@ defmodule Palee.Workouts.Domain.SectionedText do
          # ADR-180: what the section counts, if the coach said (optional).
          "score_config" => elem(scoring, 1),
          "section_metadata" => %{"untitled" => title == ""},
+         # ADR-690: the section's types; the WOD's types are their union.
+         "types" => section_types(value(section, :types)),
          "exercises" => []
        }}
     else
@@ -120,6 +122,9 @@ defmodule Palee.Workouts.Domain.SectionedText do
 
   defp normalize_section(_section, index),
     do: {:error, [%{section: index, problem: "text_required"}]}
+
+  defp section_types(types) when is_list(types), do: Enum.filter(types, &is_binary/1)
+  defp section_types(_types), do: []
 
   # ADR-571: no timer is «Χωρίς χρόνο»; an unknown one stays an error.
   defp timer_preset(nil), do: TimerPresets.parse(%{"format" => "untimed"})

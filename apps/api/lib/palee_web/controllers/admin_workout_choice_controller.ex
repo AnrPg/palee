@@ -18,7 +18,9 @@ defmodule PaleeWeb.AdminWorkoutChoiceController do
     properties: %{
       id: %Schema{type: :string, format: :uuid},
       title: %Schema{type: :string},
-      type: %Schema{type: :string},
+      type: %Schema{type: :string, nullable: true, description: "Deprecated (ADR-690)"},
+      types: PaleeWeb.Schemas.Workout.workout_types_schema(),
+      families: %Schema{type: :array, items: %Schema{type: :string}},
       icon: %Schema{type: :string, nullable: true},
       icon_source: %Schema{type: :string, nullable: true},
       folder_id: %Schema{type: :string, format: :uuid, nullable: true},

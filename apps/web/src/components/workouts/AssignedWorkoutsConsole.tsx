@@ -48,12 +48,11 @@ import { WorkoutEditModal } from "@/components/workouts/WorkoutEditModal";
 import { addLocalDays, formatLocalDate, startOfLocalWeek } from "@/lib/local-date";
 import { downloadIcsEvent } from "@/lib/ics";
 import { USER_SYNC_EVENT, type UserSyncDetail } from "@/lib/user-sync";
-import { workoutTypeColor } from "@/lib/workout-colors";
+import { workoutColor } from "@/lib/workout-colors";
 import { useExecutionStore } from "@/stores/execution";
 import { storeFreeTextExecutionWorkout } from "@/lib/free-text-execution";
 import { usesPlanRunner } from "@/components/workouts/execution/plan/plan-workout";
 import { usesManualTimer } from "@/lib/workout-execution-mode";
-import { SemanticLabel } from "@/components/semantic-label";
 import { LocalizedScore } from "@/components/localized-score";
 import { PageHeader } from "@/components/PageHeader";
 import { SeasonTag } from "@/components/seasons/SeasonTag";
@@ -67,6 +66,7 @@ const workoutStatus = (assignment: AssignedWorkoutRecord) => (assignment.executi
 import { Popover } from "@/components/ui/Popover";
 import { DateInput } from "@/components/ui/DateInput";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { WorkoutTypesText } from "@/components/workouts/WorkoutTypeSelect";
 
 type ViewMode = "3day" | "week" | "month";
 
@@ -259,8 +259,8 @@ function DraggableMonthChip({
         style={{
           background: isDone
             ? "color-mix(in srgb, var(--success) 15%, transparent)"
-            : `color-mix(in srgb, ${workoutTypeColor(assignment.workout.type)} 15%, transparent)`,
-          color: isDone ? "var(--success)" : workoutTypeColor(assignment.workout.type),
+            : `color-mix(in srgb, ${workoutColor(assignment.workout)} 15%, transparent)`,
+          color: isDone ? "var(--success)" : workoutColor(assignment.workout),
           opacity: isDragging ? 0.3 : 1,
           cursor: disabled ? "default" : "grab",
           touchAction: "none",
@@ -356,8 +356,8 @@ function DragGhostCard({ assignment }: { assignment: AssignedWorkoutRecord }) {
         pointerEvents: "none",
       }}
     >
-      <p className="text-[10px] font-semibold uppercase tracking-[0.18em]" style={{ color: workoutTypeColor(assignment.workout.type) }}>
-        <SemanticLabel value={assignment.workout.type} />
+      <p className="text-[10px] font-semibold uppercase tracking-[0.18em]" style={{ color: workoutColor(assignment.workout) }}>
+        <WorkoutTypesText workout={assignment.workout} />
       </p>
       <p className="mt-1 truncate text-sm font-semibold" style={{ color: "var(--text)" }}>
         {assignment.workout.title}
@@ -1015,9 +1015,9 @@ export function AssignedWorkoutsConsole({
                           </div>
                           <p
                             className="text-[9px] uppercase tracking-[0.12em]"
-                            style={{ color: workoutTypeColor(a.workout.type) }}
+                            style={{ color: workoutColor(a.workout) }}
                           >
-                            <SemanticLabel value={a.workout.type} />
+                            <WorkoutTypesText workout={a.workout} />
                           </p>
                         </button>
                         <button
@@ -1159,8 +1159,8 @@ export function AssignedWorkoutsConsole({
                       type="button"
                     >
                       <div className="flex items-center gap-2">
-                        <p className="text-xs font-semibold uppercase tracking-[0.18em]" style={{ color: isRejected ? "var(--dim)" : workoutTypeColor(assignment.workout.type) }}>
-                          <SemanticLabel value={assignment.workout.type} />
+                        <p className="text-xs font-semibold uppercase tracking-[0.18em]" style={{ color: isRejected ? "var(--dim)" : workoutColor(assignment.workout) }}>
+                          <WorkoutTypesText workout={assignment.workout} />
                         </p>
                         {assignment.workout.is_team_workout ? (
                           <span className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold" style={{ background: "color-mix(in srgb, var(--warning) 15%, transparent)", color: "var(--warning)", border: "1px solid color-mix(in srgb, var(--warning) 30%, transparent)" }}>

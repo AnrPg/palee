@@ -1077,7 +1077,6 @@ export function ScheduleConsole({
                       token={tokens?.access_token ?? ""}
                       date={dateTimeLocalInZone(editor.values.scheduled_at, gymZone).slice(0, 10) || null}
                       classTypeId={editor.values.class_type_id || null}
-                      classTypeName={classTypeName(editor.values.class_type_id)}
                       value={editor.values.master_workout_id ?? null}
                       onChange={(workoutId) =>
                         setEditor((current) =>
@@ -1291,7 +1290,6 @@ export function ScheduleConsole({
                   token={tokens?.access_token ?? ""}
                   date={seriesEditor.startDate || null}
                   classTypeId={seriesEditor.values.class_type_id || null}
-                  classTypeName={classTypeName(seriesEditor.values.class_type_id)}
                   value={seriesEditor.values.master_workout_id ?? null}
                   onChange={(workoutId) => setSeriesEditor({ ...seriesEditor, values: { ...seriesEditor.values, master_workout_id: workoutId } })}
                   onCreateNew={() => setNewWodFor("series")}

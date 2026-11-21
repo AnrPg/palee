@@ -127,6 +127,8 @@ defmodule Palee.Notifications.Notification do
     :box_membership_ended,
     # ADR-660: staff removed the member's package.
     :package_removed,
+    # ADR-690: the Palee team adopted or merged a type the box made.
+    :workout_kind_adopted,
     # ADR-633: «Χωρίς πακέτο, χωρίς κράτηση».
     :package_requested,
     :package_rule_started,

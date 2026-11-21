@@ -4,6 +4,7 @@ defmodule Palee.Application.PhaseBBookingTest do
 
   alias Palee.Application.{
     AdminRecordAttendance,
+    AdminRemoveAttendance,
     JoinClassWaitlist,
     SubmitBooking,
     SubmitGuestBooking,
@@ -259,6 +260,36 @@ defmodule Palee.Application.PhaseBBookingTest do
              })
 
     second = slot(workout, %{scheduled_at: hours_from_now(2)})
+    assert {:ok, _booking} = SubmitBooking.call(context, member, second.id)
+  end
+
+  test "taking back «Ήρθε» holds the visit again, so withdrawing on time returns it", %{
+    admin: admin,
+    admin_context: admin_context,
+    workout: workout
+  } do
+    enforce!()
+
+    {member, context} =
+      member_with("class_pack", %{
+        "group_classes.visits" => %{"limit" => 1, "period" => "subscription_period"}
+      })
+
+    first = slot(workout, %{scheduled_at: hours_from_now(48)})
+    assert {:ok, booking} = SubmitBooking.call(context, member, first.id)
+
+    assert {:ok, %{status: "attended"}} =
+             AdminRecordAttendance.call(admin_context, first.id, member.id, admin.id, %{
+               "status" => "attended"
+             })
+
+    assert {:ok, _attendance} =
+             AdminRemoveAttendance.call(admin_context, first.id, member.id, admin.id)
+
+    assert {:ok, %{late_cancellation: false}} =
+             WithdrawBooking.call(context, member.id, booking.id)
+
+    second = slot(workout, %{scheduled_at: hours_from_now(50)})
     assert {:ok, _booking} = SubmitBooking.call(context, member, second.id)
   end
 

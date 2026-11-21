@@ -42,9 +42,8 @@ import {
   folderSubtreeIds,
   resolveWorkoutIcon,
   ruleIcon,
-  workoutIcon,
+  workoutFamiliesIcon,
 } from "@/components/workouts/library/library-folders";
-import { SemanticLabel } from "@/components/semantic-label";
 import { ShareExportDialog } from "@/components/share-export/ShareExportDialog";
 import { useShareExport } from "@/components/share-export/useShareExport";
 import { buildWorkoutDocument } from "@/lib/document-export";
@@ -55,6 +54,8 @@ import { Dialog } from "@/components/ui/Dialog";
 import { Popover } from "@/components/ui/Popover";
 import { Select } from "@/components/ui/Select";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { workoutKindFamilies } from "@/lib/workout-kinds";
+import { WorkoutTypesText } from "@/components/workouts/WorkoutTypeSelect";
 
 type LibraryViewMode = "folders" | "tiles" | "list";
 
@@ -460,7 +461,7 @@ export function WorkoutAdminConsole() {
           <WorkoutFileIcon emoji={resolveWorkoutIcon(workout)} draft={workout.status === "draft"} />
           <span className="line-clamp-2 w-full break-words text-xs font-medium leading-4" style={{ color: "var(--text)" }}>{title}</span>
           <span className="w-full truncate text-[10px] leading-3" style={{ color: workout.status === "draft" ? "var(--warning)" : "var(--dim)" }}>
-            {workout.status === "draft" ? i18n("draft23d33e2") : <SemanticLabel value={workout.type} />}
+            {workout.status === "draft" ? i18n("draft23d33e2") : <WorkoutTypesText workout={workout} />}
           </span>
         </button>
         <LibraryItemMenu
@@ -537,7 +538,7 @@ export function WorkoutAdminConsole() {
         >
           <WorkoutFileIcon emoji={resolveWorkoutIcon(workout)} size="inline" />
           <span className="truncate">{title}</span>
-          <span className="shrink-0 text-xs" style={{ color: "var(--dim)" }}><SemanticLabel value={workout.type} /></span>
+          <span className="shrink-0 text-xs" style={{ color: "var(--dim)" }}><WorkoutTypesText workout={workout} /></span>
           {workout.status === "draft" ? <span className="shrink-0 text-xs" style={{ color: "var(--warning)" }}>· {i18n("draft23d33e2")}</span> : null}
         </button>
         <LibraryItemMenu
@@ -580,7 +581,7 @@ export function WorkoutAdminConsole() {
                 </span>
               ) : null}
             </div>
-            <p className="mt-1 text-sm uppercase tracking-[0.18em] text-[var(--primary)]"><SemanticLabel value={workout.type} /></p>
+            <p className="mt-1 text-sm uppercase tracking-[0.18em] text-[var(--primary)]"><WorkoutTypesText workout={workout} /></p>
           </div>
           <LibraryItemMenu
             label={i18n("featureItemActions", { name: workout.title || i18n("untitledWorkouta1885a5") })}
@@ -923,7 +924,7 @@ export function WorkoutAdminConsole() {
           key={iconTarget.id}
           workoutTitle={iconTarget.title || i18n("untitledWorkouta1885a5")}
           currentIcon={resolveWorkoutIcon(iconTarget)}
-          automaticIcon={ruleIcon(iconTarget.title) ?? workoutIcon(iconTarget.type)}
+          automaticIcon={ruleIcon(iconTarget.title) ?? workoutFamiliesIcon(workoutKindFamilies(iconTarget))}
           isCustom={iconTarget.icon_source === "coach"}
           busy={busyAction === `icon-${iconTarget.id}`}
           onCancel={() => setIconTarget(null)}
@@ -962,7 +963,7 @@ export function WorkoutAdminConsole() {
             onClose={() => setPreviewWorkoutId(null)}
             variant="drawer"
             size="lg"
-            eyebrow={<SemanticLabel value={pw.type} />}
+            eyebrow={<WorkoutTypesText workout={pw} />}
             title={pw.title || i18n("untitledWorkouta1885a5")}
             description={pw.available_scale_levels.length > 0 ? i18n("scaleLevelCount", {count: pw.available_scale_levels.length}) : i18n("baseOnly061c4ff")}
             closeLabel={i18n("closebbfa773")}

@@ -95,7 +95,7 @@ async function asOwner(page: Page) {
   await page.route("**/api/org/box1/staff/members", (route) => route.fulfill(json({ staff })));
   await page.route("**/api/org/box1/admin/locations", (route) => route.fulfill(json({ locations: [] })));
   await page.route("**/api/org/box1/admin/workouts/choices/suggested?**", (route) =>
-    route.fulfill(json({ same_day: [], recent: [fran, grace], newest: [fran, grace] })),
+    route.fulfill(json({ same_day: [fran], recent: [fran, grace], newest: [fran, grace] })),
   );
 }
 

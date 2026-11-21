@@ -41,9 +41,10 @@ import {
   type SectionProblem,
   editorSectionsFrom,
   sectionsPayload,
+  sectionTypesUnion,
 } from "@/lib/text-sections";
 import { FREE_TEXT_EDITOR_CLASS, sanitizeWorkoutDslPaste } from "@/lib/workout-dsl-editor-data";
-import { getFormatLabels, type SectionFormat, type WorkoutType } from "@/types/workout";
+import { getFormatLabels, type SectionFormat } from "@/types/workout";
 
 import { AssistantSwitch } from "./AssistantSwitch";
 import { DraftConflictNotice } from "./DraftConflictNotice";
@@ -58,8 +59,8 @@ import { SectionScoringField } from "./SectionScoringField";
 import { TextTimerNote } from "./TextTimerNote";
 import { TimerChips } from "./TimerChips";
 import { useFrequentTimers } from "./useFrequentTimers";
-import { WorkoutTypeSelect } from "@/components/workouts/WorkoutTypeSelect";
-import { isWorkoutType } from "@/lib/workout-types";
+import { WorkoutTypesField } from "@/components/workouts/WorkoutTypesField";
+import { workoutKindRefs } from "@/lib/workout-kinds";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 
 type Props = {
@@ -94,12 +95,13 @@ export function SectionedWorkoutEditor({ draftId, folderId = null, onDraftReady,
   const { tokens } = useSession();
   const accessToken = tokens?.access_token;
   const formatLabels = useMemo(() => getFormatLabels(i18n), [i18n]);
+  const typesT = useTranslations("WorkoutTypes");
   const queryClient = useQueryClient();
   // ADR-571: the coach's three most used timers, as chips on every section.
   const frequentTimers = useFrequentTimers();
 
   const [title, setTitle] = useState("");
-  const [type, setType] = useState<WorkoutType | "">("");
+  const [ownTypes, setOwnTypes] = useState<string[]>([]);
   const [sections, setSections] = useState<EditorTextSection[]>(() => [emptySection()]);
   const [loaded, setLoaded] = useState(false);
   /** The draft could not be created or loaded. */
@@ -141,7 +143,8 @@ export function SectionedWorkoutEditor({ draftId, folderId = null, onDraftReady,
   const applyWorkout = useCallback(
     (workout: WorkoutRecord) => {
       setTitle(workout.title ?? "");
-      setType(isWorkoutType(workout.type) ? workout.type : "");
+      // ADR-690: a WOD whose sections carry types gets their union; else its own.
+      setOwnTypes(workoutKindRefs(workout));
       metadataRef.current = workout.workout_metadata ?? {};
       // A free-text draft switched to sections keeps its text as section 1
       // and its whole-workout timer as that section's timer.
@@ -167,7 +170,11 @@ export function SectionedWorkoutEditor({ draftId, folderId = null, onDraftReady,
       });
   }, [accessToken, applyWorkout, draftId, loadDraft]);
 
-  const buildPayload = useCallback(() => sectionedPayload(title, type, sections, metadataRef.current), [sections, title, type]);
+  // ADR-690 (2C): once a section has types, the WOD's types are the sections' union.
+  const sectionTypes = useMemo(() => sectionTypesUnion(sections), [sections]);
+  const types = useMemo(() => (sectionTypes.length > 0 ? sectionTypes : ownTypes), [ownTypes, sectionTypes]);
+  const typeMissing = types.length === 0;
+  const buildPayload = useCallback(() => sectionedPayload(title, types, sections, metadataRef.current), [sections, title, types]);
 
   // Autosave: one request at a time, a second after the last change.
   useEffect(() => {
@@ -263,13 +270,13 @@ export function SectionedWorkoutEditor({ draftId, folderId = null, onDraftReady,
     setNotice(null);
     setServerProblems(null);
     setCheckFailed(false);
-    if (problems.length > 0 || titleMissing || !type) {
+    if (problems.length > 0 || titleMissing || typeMissing) {
       setShowProblems(true);
       return;
     }
 
     setPublishing(true);
-    const payload = options.sections ? sectionedPayload(title, type, options.sections, metadataRef.current) : buildPayload();
+    const payload = options.sections ? sectionedPayload(title, types, options.sections, metadataRef.current) : buildPayload();
 
     if (!options.matchesChecked) {
       let matches: ExerciseMatch[];
@@ -326,7 +333,7 @@ export function SectionedWorkoutEditor({ draftId, folderId = null, onDraftReady,
     );
     setSections(linked);
     try {
-      await saver.saveNow(sectionedPayload(title, type, linked, metadataRef.current));
+      await saver.saveNow(sectionedPayload(title, types, linked, metadataRef.current));
       if (groups.length > 0) await decideExerciseMatches(accessToken, draftId, matchDecisions(groups, answers));
     } catch (error) {
       setMatchCheck({ ...matchCheck, busy: false, error: error instanceof DraftConflictError ? null : matchesT("failed") });
@@ -352,7 +359,7 @@ export function SectionedWorkoutEditor({ draftId, folderId = null, onDraftReady,
               icon: "📝",
               label: i18n("workoutDetails9366821"),
               badge:
-                showProblems && (titleMissing || !type) ? (
+                showProblems && (titleMissing || typeMissing) ? (
                   <span aria-hidden="true" style={{ color: "var(--danger)" }}>●</span>
                 ) : undefined,
             },
@@ -385,19 +392,25 @@ export function SectionedWorkoutEditor({ draftId, folderId = null, onDraftReady,
                   aria-invalid={showProblems && titleMissing}
                 />
               </label>
-              <label className="block">
+              <div className="block md:col-span-2">
                 <span className="text-xs font-bold uppercase tracking-[0.18em]" style={{ color: "var(--dim)" }}>
                   {i18n("workoutType34a530c")}
                 </span>
-                <WorkoutTypeSelect
-                  className="mt-1 w-full rounded-xl border px-3 py-2 text-sm outline-none"
-                  style={{ background: "var(--card)", borderColor: showProblems && !type ? "var(--danger)" : "var(--dim)", color: "var(--text)" }}
-                  value={type}
-                  onChange={setType}
-                  placeholder={assistantT("chooseType")}
-                  invalid={showProblems && !type}
-                />
-              </label>
+                <div className="mt-1">
+                  <WorkoutTypesField
+                    value={types}
+                    onChange={setOwnTypes}
+                    readOnly={sectionTypes.length > 0}
+                    placeholder={assistantT("chooseType")}
+                    invalid={showProblems && typeMissing}
+                  />
+                </div>
+                {sectionTypes.length > 0 ? (
+                  <p className="mt-1 text-xs" style={{ color: "var(--dim)" }}>
+                    {typesT("field.fromSections")}
+                  </p>
+                ) : null}
+              </div>
             </div>
           ) : null}
           {openTab === "goals" ? (
@@ -448,7 +461,7 @@ export function SectionedWorkoutEditor({ draftId, folderId = null, onDraftReady,
           <ErrorNotice variant="text">{notice}</ErrorNotice>
         ) : (
           <span className="text-xs" style={{ color: "var(--muted)" }}>
-            {showProblems && (titleMissing || !type)
+            {showProblems && (titleMissing || typeMissing)
               ? i18n("sectionedEditorNeedsTitleAndType")
               : visibleProblems.length > 0
                 ? i18n("sectionedEditorFixSections")
@@ -505,6 +518,7 @@ function SectionCard({
 }) {
   const i18n = useUiTranslations();
   const textTimerT = useTranslations("TextTimer");
+  const typesT = useTranslations("WorkoutTypes");
   const [timerOpen, setTimerOpen] = useState(false);
   const [scoringOpen, setScoringOpen] = useState(section.metrics.length > 0);
   const [confirmRemove, setConfirmRemove] = useState(false);
@@ -565,6 +579,16 @@ function SectionCard({
             ×
           </IconButton>
         )}
+      </div>
+
+      <div className="mt-2">
+        <WorkoutTypesField
+          compact
+          value={section.types ?? []}
+          onChange={(types) => onChange({ types })}
+          placeholder={typesT("field.sectionPlaceholder")}
+          testId="section-types-field"
+        />
       </div>
 
       <div
@@ -796,23 +820,22 @@ export function linkSections(
 
 function sectionedPayload(
   title: string,
-  type: WorkoutType | "",
+  types: string[],
   sections: EditorTextSection[],
   storedMetadata: Record<string, unknown>,
 ) {
   const metadata = { ...storedMetadata };
   delete metadata[FREE_TEXT_TIMER_METADATA_KEY];
   const payloadSections = sectionsPayload(sections);
-  const workoutType = type || null;
   return {
     title,
-    type: workoutType,
+    types,
     authoring_mode: SECTIONED_TEXT_MODE,
     workout_metadata: metadata,
     sections: payloadSections,
     draft_data: {
       title,
-      type: workoutType,
+      types,
       authoring_mode: SECTIONED_TEXT_MODE,
       workout_metadata: metadata,
       sections: payloadSections,

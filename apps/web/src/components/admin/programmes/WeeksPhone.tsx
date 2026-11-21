@@ -90,7 +90,7 @@ export function WeeksPhone({
                 data-testid={`programme-day-${index}`}
               >
                 <span className="flex w-14 shrink-0 items-center gap-1.5 text-xs font-semibold" style={{ color: "var(--muted)" }}>
-                  {ids.length ? <FamilyDot type={first?.type} className="h-2 w-2" /> : null}
+                  {ids.length ? <FamilyDot families={first?.families} className="h-2 w-2" /> : null}
                   {tp("dayShort", { day: slot + 1 })}
                 </span>
                 {ids.length ? (

@@ -27,13 +27,13 @@ import { useLocale, useTranslations } from "next-intl";
 import { fetchAdminWorkout, type WorkoutRecord } from "@/api/workouts";
 import { useSession } from "@/components/session-provider";
 import { formatLocalDate } from "@/lib/local-date";
-import { SemanticLabel } from "@/components/semantic-label";
 import { WorkoutPreviewDetail } from "@/components/workouts/WorkoutPreviewDetail";
 import { Dialog } from "@/components/ui/Dialog";
 import { Select } from "@/components/ui/Select";
 import { DateInput } from "@/components/ui/DateInput";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { clockFormat } from "@/lib/clock";
+import { WorkoutTypesText } from "@/components/workouts/WorkoutTypeSelect";
 
 type Props = {
   workoutId: string;
@@ -281,7 +281,7 @@ export function AssignWorkoutPanel({ workoutId, onClose, onAssigned }: Props) {
               style={{ background: "var(--panel)", border: "1px solid var(--border)" }}
             >
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--primary)]">
-                <SemanticLabel value={workout.type} />
+                <WorkoutTypesText workout={workout} />
               </p>
               <div className="mt-3">
                 <WorkoutPreviewDetail

@@ -361,6 +361,9 @@ defmodule Palee.Application.GetScheduleCalendar do
       id: workout.id,
       title: workout.title,
       type: workout.type,
+      # ADR-690: every type and family (the colour stripe).
+      types: Map.get(workout, :types) || [],
+      families: Map.get(workout, :families) || [],
       # ADR-270: a structured plan workout previews as its plan (`plan-view`).
       authoring_mode: Map.get(workout, :authoring_mode),
       # The whole WOD, never only its section titles: a free-text or sectioned

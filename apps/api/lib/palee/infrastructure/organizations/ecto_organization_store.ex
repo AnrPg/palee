@@ -456,6 +456,10 @@ defmodule Palee.Infrastructure.Organizations.EctoOrganizationStore do
   def list_staff_user_ids(organization_id),
     do: organization_user_ids(organization_id, ["owner", "admin", "coach"])
 
+  @impl true
+  def list_owner_user_ids(nil), do: []
+  def list_owner_user_ids(organization_id), do: organization_user_ids(organization_id, ["owner"])
+
   # Co-member and staff lookups must resolve for any session that belongs to
   # the organization - including a member whose own RLS view of
   # organization_memberships is limited to their row - so they read through the
