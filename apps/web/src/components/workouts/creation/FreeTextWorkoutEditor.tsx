@@ -71,6 +71,7 @@ import { AssistantSwitch } from "./AssistantSwitch";
 import { DraftConflictNotice } from "./DraftConflictNotice";
 import { useEditorExerciseSuggestions, useExerciseSuggestKeys } from "./EditorExerciseSuggestions";
 import { applyExerciseLinks, ExerciseLink, ExerciseSuggestKeys } from "./exercise-link";
+import { ExerciseCheckFailedNotice } from "./ExerciseCheckFailedNotice";
 import { ExerciseMatchesDialog } from "./ExerciseMatchesDialog";
 import { EditorTabs } from "./EditorTabs";
 import { InlineSuggestionBubble } from "./InlineSuggestionBubble";
@@ -141,6 +142,8 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
   const [analysisError, setAnalysisError] = useState<string | null>(null);
   const [showBlocking, setShowBlocking] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  /** ADR-671: the exercise check could not run; the coach retries or publishes without it. */
+  const [checkFailed, setCheckFailed] = useState(false);
   /** The settings tab that is open over the text (none: all the room for writing). */
   const [openTab, setOpenTab] = useState<EditorTabKey | null>("details");
   /** ADR-181: the marked words clicked in the text, whose suggestions show above them. */
@@ -462,6 +465,7 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
   async function publish(options: { matchesChecked?: boolean } = {}) {
     if (!accessToken || !draftId || !editor || !body.trim()) return;
     setNotice(null);
+    setCheckFailed(false);
 
     let current = review;
     let freshlyAnalyzed = false;
@@ -497,19 +501,19 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
     setPublishing(true);
 
     // ADR-570: the exercises the matcher finds in the saved text are confirmed
-    // first. Nothing found, or the check unavailable, publishes as before.
+    // first; nothing found publishes at once. ADR-671: a check that could not
+    // run says so, and the coach retries or publishes without it.
     // ADR-650: a timer the text set, and the coach never touched, is confirmed too.
     if (!options.matchesChecked) {
       const textTimer = timerFrom.from === "text" ? timerPreset : null;
-      let matches: ExerciseMatch[] = [];
+      let matches: ExerciseMatch[];
       try {
         await saver.saveNow(payload);
         matches = await fetchExerciseMatches(accessToken, draftId);
       } catch (error) {
-        if (error instanceof DraftConflictError) {
-          setPublishing(false);
-          return;
-        }
+        setPublishing(false);
+        if (!(error instanceof DraftConflictError)) setCheckFailed(true);
+        return;
       }
       if (matches.length > 0 || textTimer) {
         setMatchCheck({ matches, timer: textTimer, busy: false, error: null });
@@ -702,9 +706,17 @@ export function FreeTextWorkoutEditor({ draftId, folderId = null, onDraftReady, 
         ) : null}
 
         <footer className="flex flex-wrap items-center justify-between gap-3 border-t px-4 py-3 sm:px-5" style={{ borderColor: "var(--dim)" }}>
-          <span className="text-xs" style={{ color: "var(--muted)" }}>
-            {i18n("quickTextCharacterCount", { count: editor?.storage.characterCount.characters() ?? 0 })}
-          </span>
+          {checkFailed ? (
+            <ExerciseCheckFailedNotice
+              busy={publishing}
+              onRetry={() => void publish()}
+              onPublishAnyway={() => void publish({ matchesChecked: true })}
+            />
+          ) : (
+            <span className="text-xs" style={{ color: "var(--muted)" }}>
+              {i18n("quickTextCharacterCount", { count: editor?.storage.characterCount.characters() ?? 0 })}
+            </span>
+          )}
           <button
             type="button"
             disabled={!canPublish}

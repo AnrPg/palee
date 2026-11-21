@@ -20238,7 +20238,10 @@
     "timerTitle": "Timer prüfen",
     "timerDescription": "Der Timer wurde aus dem Text gesetzt. Stimmt er?",
     "timerFromText": "Timer aus dem Text:",
-    "timerChange": "Ändern"
+    "timerChange": "Ändern",
+    "checkFailed": "Die Übungen konnten nicht geprüft werden. Wenn du jetzt veröffentlichst, zählen falsch geschriebene Übungen nicht zu den Muskeln.",
+    "retryCheck": "Erneut versuchen",
+    "publishUnchecked": "Ohne Prüfung veröffentlichen"
   },
   "BoxOnMap": {
     "title": "Deine Box erscheint nicht in „In der Nähe“",

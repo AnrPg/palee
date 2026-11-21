@@ -20238,7 +20238,10 @@
     "timerTitle": "בדוק את הטיימר",
     "timerDescription": "הטיימר נקבע מהטקסט. האם הוא נכון?",
     "timerFromText": "טיימר מהטקסט:",
-    "timerChange": "שינוי"
+    "timerChange": "שינוי",
+    "checkFailed": "לא ניתן היה לבדוק את התרגילים. אם תפרסם עכשיו, תרגילים עם שם שגוי לא ייספרו בשרירים.",
+    "retryCheck": "נסה שוב",
+    "publishUnchecked": "פרסם בלי בדיקה"
   },
   "BoxOnMap": {
     "title": "הבוקס שלך לא מופיע ב«סביבי»",

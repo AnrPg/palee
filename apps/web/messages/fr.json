@@ -20238,7 +20238,10 @@
     "timerTitle": "Vérifie le minuteur",
     "timerDescription": "Le minuteur vient du texte. Est-il correct ?",
     "timerFromText": "Minuteur du texte :",
-    "timerChange": "Modifier"
+    "timerChange": "Modifier",
+    "checkFailed": "Les exercices n'ont pas pu être vérifiés. Si tu publies maintenant, ceux dont le nom est mal écrit ne compteront pas pour les muscles.",
+    "retryCheck": "Réessayer",
+    "publishUnchecked": "Publier sans vérifier"
   },
   "BoxOnMap": {
     "title": "Ta box n’apparaît pas dans Autour de moi",
