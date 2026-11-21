@@ -485,13 +485,9 @@ defmodule PaleeWeb.AdminWorkoutController do
     end
   end
 
-  defp awaiting_filing?(conn) do
-    case conn.body_params do
-      %{awaiting_filing: true} -> true
-      %{"awaiting_filing" => true} -> true
-      _none -> false
-    end
-  end
+  # CastAndValidate leaves the body atom-keyed; read either spelling.
+  defp awaiting_filing?(%{body_params: body}),
+    do: Map.get(body, :awaiting_filing, Map.get(body, "awaiting_filing")) == true
 
   defp folder_id(conn) do
     case conn.body_params do
