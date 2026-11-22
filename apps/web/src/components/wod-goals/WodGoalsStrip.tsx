@@ -13,7 +13,7 @@ import { Sheet, SheetButton } from "@/components/community/Sheet";
 import { BackButton } from "@/components/ui/BackLink";
 import { WodAtlasView, type WodAtlasContext } from "@/components/anatomy/atlas/WodAtlasView";
 import type { MuscleNodeId } from "@/lib/anatomy/taxonomy";
-import { goalHighlights, musclesByRole, summaryMuscleIds } from "@/lib/wod-goals/goals";
+import { goalHighlights, musclesByRole, summaryByRole } from "@/lib/wod-goals/goals";
 
 import { MuscleChip, RoleLegend, ToggleChip } from "./GoalChips";
 import { useAdminWorkoutGoals, useWorkoutGoals } from "./use-wod-goals";
@@ -77,9 +77,14 @@ export function WodGoalsStripView({
   const [open, setOpen] = useState(false);
   if (!goals || (goals.muscles.length === 0 && goals.qualities.length === 0 && !goals.stimulus)) return null;
 
-  const names = summaryMuscleIds(goals.muscles).map((id) => anatomy(`muscle.${id}`));
+  // ADR-731: every muscle, one row per role, so nothing the coach expects is hidden.
+  const muscleRows = summaryByRole(goals.muscles).map(([role, ids]) => ({
+    key: `muscles-${role}`,
+    label: t(`legend.${role}`),
+    value: format.list(ids.map((id) => anatomy(`muscle.${id}`))),
+  }));
   const rows = [
-    { key: "muscles", label: t("muscles"), value: names.length > 0 ? format.list(names) : null },
+    ...muscleRows,
     { key: "qualities", label: t("qualities"), value: goals.qualities.length > 0 ? goals.qualities.map((quality) => anatomy(`quality.${quality}`)).join(" · ") : null },
     { key: "stimulus", label: t("stimulus"), value: goals.stimulus || null },
   ].filter((row) => row.value);

@@ -17,7 +17,7 @@ import {
   searchKey,
   searchMuscleTree,
   STIMULUS_MAX_LENGTH,
-  summaryMuscleIds,
+  summaryByRole,
   timeDomainLabel,
 } from "./goals";
 
@@ -68,17 +68,26 @@ describe("roles", () => {
     expect(feltHighlights(muscles, ["glutes"])).toEqual({ quadriceps: "primary", glutes: "felt" });
   });
 
-  it("names up to three primary groups, heads by their group", () => {
+  it("names every muscle, one row per role, heads by their group in its strongest role (ADR-731)", () => {
     expect(
-      summaryMuscleIds([
+      summaryByRole([
         { id: "deltoid-anterior", role: "primary" },
-        { id: "deltoid-lateral", role: "primary" },
+        { id: "deltoid-lateral", role: "secondary" },
         { id: "glutes", role: "secondary" },
         { id: "quadriceps", role: "primary" },
         { id: "latissimus-dorsi", role: "primary" },
         { id: "rhomboids", role: "primary" },
+        { id: "erector-spinae", role: "stabilizer" },
+        { id: "gluteus-maximus", role: "stabilizer" },
+        { id: "pelvic-floor", role: "stabilizer" },
+        { id: "nope", role: "primary" },
       ]),
-    ).toEqual(["deltoid", "quadriceps", "latissimus-dorsi"]);
+    ).toEqual([
+      ["primary", ["deltoid", "quadriceps", "latissimus-dorsi", "rhomboids"]],
+      ["secondary", ["glutes"]],
+      ["stabilizer", ["erector-spinae", "pelvic-floor"]],
+    ]);
+    expect(summaryByRole([])).toEqual([]);
   });
 });
 

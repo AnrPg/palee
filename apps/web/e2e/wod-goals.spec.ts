@@ -299,7 +299,10 @@ test.describe("member", () => {
 
     const strip = page.getByTestId("wod-goals-strip");
     // ADR-551 (mockup 4 A): one quiet row per kind, the figure opens the sheet.
+    // ADR-731: every muscle is named, one row per role.
     await expect(strip).toContainText("Quadriceps and Latissimus dorsi");
+    await expect(strip).toContainText("Glutes");
+    await expect(strip).toContainText("Erector spinae");
     await expect(strip).toContainText("Stamina");
     await expect(strip).toContainText("fast, 3–7′, unbroken thrusters");
     await shot(page, "box-strip");

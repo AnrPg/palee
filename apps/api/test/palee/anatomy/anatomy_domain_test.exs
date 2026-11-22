@@ -35,6 +35,27 @@ defmodule Palee.Anatomy.DomainTest do
       end
     end
 
+    test "taxonomy v2 adds finer muscles without changing a v1 node (ADR-731)" do
+      assert MuscleTaxonomy.version() == 2
+
+      for {id, group} <- [
+            {"flexor-digitorum-superficialis", "forearm-flexors"},
+            {"piriformis", "hip-rotators"},
+            {"rhomboid-major", "rhomboids"},
+            {"tibialis-posterior", "deep-calf"},
+            {"plantaris", "calves"},
+            {"levator-ani", "pelvic-floor"},
+            {"big-toe-muscles", "foot-muscles"}
+          ] do
+        assert %{kind: :head, group_id: ^group} = MuscleTaxonomy.fetch(id)
+      end
+
+      assert %{kind: :region} = MuscleTaxonomy.fetch("feet")
+      assert length(MuscleTaxonomy.nodes()) <= GoalSet.max_muscles()
+      # A group that gained heads draws them (its own meshes moved to them).
+      assert Enum.sort(MuscleTaxonomy.fetch("rhomboids").ta2_ids) == ["2232", "2233"]
+    end
+
     test "group_of and heads_of roll heads up to groups" do
       assert MuscleTaxonomy.group_of("deltoid-lateral") == "deltoid"
       assert MuscleTaxonomy.group_of("latissimus-dorsi") == "latissimus-dorsi"
@@ -60,6 +81,20 @@ defmodule Palee.Anatomy.DomainTest do
         assert Enum.all?(qualities, &FitnessQualities.known?/1), id
         assert qualities != [], id
       end
+    end
+
+    test "the coach's obvious muscles are there in the right role (ADR-731)" do
+      roles = fn id ->
+        %{muscles: muscles} = ExerciseTargets.fetch(id)
+        Map.new(muscles, &{&1.id, &1.role})
+      end
+
+      assert roles.("hip-thrust")["hamstrings"] == :primary
+      assert roles.("thruster")["triceps-brachii"] == :primary
+      assert roles.("back-squat")["erector-spinae"] == :secondary
+      assert roles.("deadlift")["erector-spinae"] == :primary
+      assert roles.("pull-up")["forearm-flexors"] == :secondary
+      assert roles.("run")["foot-muscles"] == :secondary
     end
 
     test "a muscle listed twice keeps the strongest role" do
@@ -91,10 +126,25 @@ defmodule Palee.Anatomy.DomainTest do
                GoalSuggestion.suggest([%{exercise_ref: nil}])
     end
 
-    test "rare stabilizers are left out" do
+    test "every stabilizer is kept, however small its share (ADR-731)" do
       exercises = [%{exercise_ref: "run", weight: 10}, %{exercise_ref: "farmer-carry", weight: 1}]
       %{muscles: muscles} = GoalSuggestion.suggest(exercises)
-      refute Enum.any?(muscles, &(&1.id == "quadratus-lumborum"))
+      roles = Map.new(muscles, &{&1.id, &1.role})
+      assert roles["quadratus-lumborum"] == :secondary
+      assert roles["pelvic-floor"] == :stabilizer
+    end
+
+    test "a group already in the goals hides its heads of an equal or weaker role" do
+      %{muscles: muscles} =
+        GoalSuggestion.suggest([
+          %{exercise_ref: "back-squat"},
+          %{exercise_ref: "calf-raise"}
+        ])
+
+      ids = Enum.map(muscles, & &1.id)
+      assert "calves" in ids
+      refute "soleus" in ids
+      refute "gastrocnemius-medial" in ids
     end
   end
 

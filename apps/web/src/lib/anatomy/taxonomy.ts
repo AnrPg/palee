@@ -29,14 +29,32 @@ type GroupTuple = readonly [id: string, name: string, ta2Ids: readonly string[],
 type RegionTuple = readonly [id: string, name: string, groups: readonly GroupTuple[]];
 export type TaxonomyTree = readonly RegionTuple[];
 
-export const TAXONOMY_VERSION = 1;
+export const TAXONOMY_VERSION = 2;
 
 // {region, name, [{group, name, ta2_ids, [{head, name, ta2_ids}]}]}, as in the API module.
 export const TAXONOMY_TREE: TaxonomyTree = [
   ["neck", "Neck", [
     ["sternocleidomastoid", "Sternocleidomastoid", ["2156"], []],
-    ["scalenes", "Scalenes", ["2152", "2153", "2154"], []],
-    ["splenius", "Splenius", ["2273", "2274"], []],
+    ["scalenes", "Scalenes", [], [
+      ["scalenus-anterior", "Anterior scalene", ["2152"]],
+      ["scalenus-medius", "Middle scalene", ["2153"]],
+      ["scalenus-posterior", "Posterior scalene", ["2154"]],
+    ]],
+    ["deep-neck-flexors", "Deep neck flexors", [], [
+      ["longus-colli", "Longus colli", ["2148"]],
+      ["longus-capitis", "Longus capitis", ["2149"]],
+      ["rectus-capitis", "Rectus capitis, anterior and lateral", ["2150", "2151"]],
+    ]],
+    ["splenius", "Splenius", [], [
+      ["splenius-capitis", "Splenius capitis", ["2273"]],
+      ["splenius-cervicis", "Splenius cervicis", ["2274"]],
+    ]],
+    ["semispinalis", "Semispinalis", [], [
+      ["semispinalis-capitis", "Semispinalis capitis", ["2283"]],
+      ["semispinalis-cervicis", "Semispinalis cervicis", ["2282"]],
+      ["semispinalis-thoracis", "Semispinalis thoracis", ["2281"]],
+    ]],
+    ["suboccipitals", "Suboccipital muscles", ["2249", "2250", "2251", "2252"], []],
   ]],
   ["shoulders", "Shoulders", [
     ["deltoid", "Deltoid", [], [
@@ -59,6 +77,7 @@ export const TAXONOMY_TREE: TaxonomyTree = [
     ]],
     ["pectoralis-minor", "Pectoralis minor", ["2305"], []],
     ["serratus-anterior", "Serratus anterior", ["2307"], []],
+    ["subclavius", "Subclavius", ["2306"], []],
   ]],
   ["upper-back", "Upper back", [
     ["trapezius", "Trapezius", [], [
@@ -66,10 +85,17 @@ export const TAXONOMY_TREE: TaxonomyTree = [
       ["trapezius-middle", "Middle trapezius", ["2228"]],
       ["trapezius-lower", "Lower trapezius", ["2229"]],
     ]],
-    ["rhomboids", "Rhomboids", ["2232", "2233"], []],
+    ["rhomboids", "Rhomboids", [], [
+      ["rhomboid-major", "Rhomboid major", ["2232"]],
+      ["rhomboid-minor", "Rhomboid minor", ["2233"]],
+    ]],
     ["levator-scapulae", "Levator scapulae", ["2234"], []],
     ["latissimus-dorsi", "Latissimus dorsi", ["2231"], []],
     ["teres-major", "Teres major", ["2462"], []],
+    ["serratus-posterior", "Serratus posterior", [], [
+      ["serratus-posterior-superior", "Serratus posterior superior", ["2236"]],
+      ["serratus-posterior-inferior", "Serratus posterior inferior", ["2235"]],
+    ]],
   ]],
   ["lower-back", "Lower back", [
     ["erector-spinae", "Erector spinae", [], [
@@ -78,6 +104,11 @@ export const TAXONOMY_TREE: TaxonomyTree = [
       ["spinalis", "Spinalis", ["2268", "2269", "2270"]],
     ]],
     ["multifidus", "Multifidus", ["2277", "2278", "2279"], []],
+    ["short-back-muscles", "Short segmental back muscles", [], [
+      ["rotatores", "Rotatores", ["2284", "2285", "2289"]],
+      ["interspinales", "Interspinales", ["2291", "2292", "2293"]],
+      ["intertransversarii", "Intertransversarii", ["2237", "2238", "2239", "2240", "2241", "2295"]],
+    ]],
     ["quadratus-lumborum", "Quadratus lumborum", ["2382"], []],
   ]],
   ["arms", "Arms", [
@@ -86,16 +117,40 @@ export const TAXONOMY_TREE: TaxonomyTree = [
       ["biceps-brachii-short", "Short head", ["2466"]],
     ]],
     ["brachialis", "Brachialis", ["2469"], []],
+    ["coracobrachialis", "Coracobrachialis", ["2468"], []],
     ["triceps-brachii", "Triceps", [], [
       ["triceps-brachii-long", "Long head", ["2472"]],
       ["triceps-brachii-lateral", "Lateral head", ["2473"]],
       ["triceps-brachii-medial", "Medial head", ["2474"]],
     ]],
+    ["anconeus", "Anconeus", ["2510"], []],
   ]],
   ["forearms", "Forearms", [
     ["brachioradialis", "Brachioradialis", ["2496"], []],
-    ["forearm-flexors", "Wrist and finger flexors", ["2481", "2482", "2484", "2485", "2487", "2488", "2491", "2492"], []],
-    ["forearm-extensors", "Wrist and finger extensors", ["2497", "2499", "2500", "2506", "2508", "2509", "2515"], []],
+    ["forearm-flexors", "Wrist and finger flexors", [], [
+      ["flexor-carpi-radialis", "Flexor carpi radialis", ["2481"]],
+      ["palmaris-longus", "Palmaris longus", ["2482"]],
+      ["flexor-carpi-ulnaris", "Flexor carpi ulnaris", ["2484", "2485"]],
+      ["flexor-digitorum-superficialis", "Flexor digitorum superficialis", ["2487", "2488"]],
+      ["flexor-digitorum-profundus", "Flexor digitorum profundus", ["2491"]],
+      ["flexor-pollicis-longus", "Flexor pollicis longus", ["2492"]],
+    ]],
+    ["forearm-extensors", "Wrist and finger extensors", [], [
+      ["extensor-carpi-radialis", "Extensor carpi radialis", ["2497", "2499"]],
+      ["extensor-digitorum", "Finger extensors", ["2500", "2506", "2515"]],
+      ["extensor-carpi-ulnaris", "Extensor carpi ulnaris", ["2508", "2509"]],
+      ["thumb-extensors", "Thumb abductor and extensors", ["2516", "2517", "2518"]],
+    ]],
+    ["forearm-rotators", "Pronators and supinator", [], [
+      ["pronator-teres", "Pronator teres", ["2479", "2480"]],
+      ["pronator-quadratus", "Pronator quadratus", ["2493"]],
+      ["supinator", "Supinator", ["2512"]],
+    ]],
+    ["hand-muscles", "Hand muscles", [], [
+      ["thenar", "Thumb muscles of the hand", ["2521", "2523", "2524", "2525", "2527", "2528"]],
+      ["hypothenar", "Little finger muscles of the hand", ["2520", "2529", "2530", "2531"]],
+      ["interossei-hand", "Interossei of the hand", ["2534"]],
+    ]],
   ]],
   ["core", "Core", [
     ["rectus-abdominis", "Rectus abdominis", ["2357"], []],
@@ -105,6 +160,15 @@ export const TAXONOMY_TREE: TaxonomyTree = [
     ]],
     ["transversus-abdominis", "Transversus abdominis", ["2375"], []],
     ["diaphragm", "Diaphragm", ["2327"], []],
+    ["intercostals", "Intercostals", [], [
+      ["intercostals-external", "External intercostals", ["2311"]],
+      ["intercostals-internal", "Internal intercostals", ["2312"]],
+      ["intercostals-innermost", "Innermost intercostals", ["2313"]],
+    ]],
+    ["pelvic-floor", "Pelvic floor", [], [
+      ["levator-ani", "Levator ani", ["2404", "2405", "2406"]],
+      ["coccygeus", "Coccygeus", ["2412"]],
+    ]],
   ]],
   ["hips", "Hips and glutes", [
     ["glutes", "Glutes", [], [
@@ -117,7 +181,13 @@ export const TAXONOMY_TREE: TaxonomyTree = [
       ["tensor-fasciae-latae", "Tensor fasciae latae", ["2602"]],
       ["sartorius", "Sartorius", ["2610"]],
     ]],
-    ["hip-rotators", "Deep hip rotators", ["2604", "2605", "2606", "2607", "2608", "2636"], []],
+    ["hip-rotators", "Deep hip rotators", [], [
+      ["piriformis", "Piriformis", ["2604"]],
+      ["obturator-internus", "Obturator internus", ["2605"]],
+      ["gemelli", "Gemelli", ["2606", "2607"]],
+      ["quadratus-femoris", "Quadratus femoris", ["2608"]],
+      ["obturator-externus", "Obturator externus", ["2636"]],
+    ]],
   ]],
   ["thighs", "Thighs", [
     ["quadriceps", "Quadriceps", [], [
@@ -133,7 +203,7 @@ export const TAXONOMY_TREE: TaxonomyTree = [
       ["semimembranosus", "Semimembranosus", ["2642"]],
     ]],
     ["adductors", "Adductors", [], [
-      ["adductor-magnus", "Adductor magnus", ["2630"]],
+      ["adductor-magnus", "Adductor magnus", ["2630", "2632"]],
       ["adductor-longus", "Adductor longus", ["2628"]],
       ["adductor-brevis", "Adductor brevis", ["2629"]],
       ["gracilis", "Gracilis", ["2635"]],
@@ -145,9 +215,32 @@ export const TAXONOMY_TREE: TaxonomyTree = [
       ["gastrocnemius-medial", "Gastrocnemius, medial head", ["2659"]],
       ["gastrocnemius-lateral", "Gastrocnemius, lateral head", ["2658"]],
       ["soleus", "Soleus", ["2660"]],
+      ["plantaris", "Plantaris", ["2663"]],
+    ]],
+    ["deep-calf", "Deep calf muscles", [], [
+      ["tibialis-posterior", "Tibialis posterior", ["2666"]],
+      ["flexor-digitorum-longus", "Flexor digitorum longus", ["2667"]],
+      ["flexor-hallucis-longus", "Flexor hallucis longus", ["2668"]],
+      ["popliteus", "Popliteus", ["2665"]],
     ]],
     ["tibialis-anterior", "Tibialis anterior", ["2644"], []],
-    ["fibularis", "Fibularis", ["2652", "2653"], []],
+    ["toe-extensors", "Long toe extensors", [], [
+      ["extensor-digitorum-longus", "Extensor digitorum longus", ["2645"]],
+      ["extensor-hallucis-longus", "Extensor hallucis longus", ["2650"]],
+    ]],
+    ["fibularis", "Fibularis", [], [
+      ["fibularis-longus", "Fibularis longus", ["2652"]],
+      ["fibularis-brevis", "Fibularis brevis", ["2653"]],
+      ["fibularis-tertius", "Fibularis tertius", ["2649"]],
+    ]],
+  ]],
+  ["feet", "Feet", [
+    ["foot-muscles", "Foot muscles", [], [
+      ["foot-dorsal", "Muscles on top of the foot", ["2670", "2671"]],
+      ["big-toe-muscles", "Big toe muscles of the sole", ["2672", "2674", "2675", "2677", "2678"]],
+      ["little-toe-muscles", "Little toe muscles of the sole", ["2679", "2681", "2682"]],
+      ["central-sole", "Central sole muscles", ["2683", "2684", "2685"]],
+    ]],
   ]],
 ];
 

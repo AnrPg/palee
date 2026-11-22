@@ -11,7 +11,12 @@ defmodule Palee.Anatomy.Domain.GoalSet do
 
   alias Palee.Anatomy.Domain.{ExerciseTargets, FitnessQualities, MuscleTaxonomy}
 
-  @max_muscles 40
+  # ADR-731: above the taxonomy's node count (165 in v2), so goals can name every
+  # muscle a WOD reaches; `AnatomyDomainTest` fails when the taxonomy outgrows it.
+  @max_muscles 200
+
+  @doc "The most muscles one goal list (or felt list) may hold."
+  def max_muscles, do: @max_muscles
   @max_stimulus 280
   @roles ~w(primary secondary stabilizer)
   # A literal map, not String.to_existing_atom/1: the role atoms may not be

@@ -96,7 +96,7 @@ defmodule PaleeWeb.Schemas.WorkoutGoals do
     title: "SaveWorkoutGoalsRequest",
     type: :object,
     properties: %{
-      muscles: %Schema{type: :array, items: @muscle, maxItems: 40},
+      muscles: %Schema{type: :array, items: @muscle, maxItems: 200},
       qualities: @ids,
       stimulus: %Schema{type: :string, nullable: true, maxLength: 280},
       visible_to_members: %Schema{
@@ -166,7 +166,7 @@ defmodule PaleeWeb.Schemas.WorkoutGoals do
     title: "SaveGoalFeedbackRequest",
     type: :object,
     properties: %{
-      felt_muscles: %Schema{type: :array, items: %Schema{type: :string}, maxItems: 40},
+      felt_muscles: %Schema{type: :array, items: %Schema{type: :string}, maxItems: 200},
       felt_qualities: @ids
     },
     required: [:felt_muscles, :felt_qualities]

@@ -173,8 +173,9 @@ defmodule Palee.Application.AnatomyAtlasTest do
     assert nodes["quadriceps"].sets == 12.5
     assert nodes["quadriceps"].level == "medium"
     assert nodes["quadriceps"].felt == 1
-    # Deadlift primary 5 + back squat secondary 2; nothing from the voided entry.
-    assert nodes["hamstrings"].sets == 7.0
+    # Deadlift primary 5 + back squat secondary 2 + air squats secondary 1.5 twice
+    # (ADR-731); nothing from the voided entry.
+    assert nodes["hamstrings"].sets == 10.0
     assert nodes["hamstrings"].felt == 0
     assert nodes["hamstrings"].level == "low"
 

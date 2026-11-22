@@ -152,7 +152,7 @@ defmodule Palee.Anatomy.CoverageTest do
 
       assert by_ref["romanian-deadlift"] == :primary
       assert by_ref["back-squat"] == :secondary
-      refute Map.has_key?(by_ref, "air-squat")
+      refute Map.has_key?(by_ref, "bench-press")
 
       roles = Enum.map(exercises, & &1.role)
       assert roles == Enum.sort_by(roles, &if(&1 == :primary, do: 0, else: 1))
