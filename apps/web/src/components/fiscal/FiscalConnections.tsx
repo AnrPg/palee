@@ -49,6 +49,7 @@ import {
   type TextField,
 } from "./connections-model";
 import { Card, ghostButtonClass, ghostButtonStyle, dangerButtonStyle, hintStyle, Icon, Pill, primaryButtonStyle } from "./fiscal-ui";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 
 export const FISCAL_CONNECTIONS_KEY = ["admin", "fiscal", "connections"] as const;
 
@@ -666,10 +667,11 @@ function SecretInput({
   return (
     <Field id={id} label={label} required error={error} hint={field === "api_key" ? t("fieldHint.api_key") : t("secret.newHint")}>
       <div className="flex items-center gap-2">
-        <input
+        <PasswordInput
+          kind={field === "password" ? "password" : "key"}
+          containerClassName="min-w-0 flex-1"
           id={id}
           data-testid={id}
-          type="password"
           value={value}
           placeholder={saved ? t("secret.newValue") : t("secret.paste")}
           disabled={disabled}

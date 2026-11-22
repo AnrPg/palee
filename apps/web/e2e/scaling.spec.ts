@@ -131,6 +131,10 @@ test("the owner switches suggestions on with the gym's key", async ({ page }) =>
   await expect(toggle).toBeDisabled();
 
   await panel.getByLabel("Claude key (Anthropic)").fill("sk-test-key-0123456789-abcd");
+  // The owner can check the pasted key before saving it.
+  await expect(panel.getByLabel("Claude key (Anthropic)")).toHaveAttribute("type", "password");
+  await panel.getByRole("button", { name: "Show key" }).click();
+  await expect(panel.getByLabel("Claude key (Anthropic)")).toHaveAttribute("type", "text");
   await panel.getByRole("button", { name: "Save key" }).click();
   await expect(panel.getByText("A key ending in abcd is set.")).toBeVisible();
   await expect(panel.getByLabel("Claude key (Anthropic)")).toHaveValue("");

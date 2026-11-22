@@ -38,7 +38,11 @@
     "saving": "Salvataggio…",
     "cancel": "Annulla",
     "close": "Chiudi",
-    "dismiss": "Ignora"
+    "dismiss": "Ignora",
+    "showPassword": "Mostra password",
+    "hidePassword": "Nascondi password",
+    "showKey": "Mostra chiave",
+    "hideKey": "Nascondi chiave"
   },
   "Navigation": {
     "dashboard": "Dashboard",

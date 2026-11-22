@@ -69,7 +69,7 @@ test.describe("Owner invitation page", () => {
 
     await page.getByLabel("Nickname").fill("test_admin");
     await page.getByLabel("Email address").fill("vendor@example.com");
-    await page.getByLabel("Password").fill("1234");
+    await page.getByLabel("Password", { exact: true }).fill("1234");
     await page.getByLabel("I am 16 or older").check();
     await page.getByRole("button", { name: "Create admin account" }).click();
 

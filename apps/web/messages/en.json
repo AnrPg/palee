@@ -38,7 +38,11 @@
     "saving": "Saving…",
     "cancel": "Cancel",
     "close": "Close",
-    "dismiss": "Dismiss"
+    "dismiss": "Dismiss",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "showKey": "Show key",
+    "hideKey": "Hide key"
   },
   "Navigation": {
     "dashboard": "Dashboard",

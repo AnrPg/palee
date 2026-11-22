@@ -38,7 +38,11 @@
     "saving": "שומר…",
     "cancel": "ביטול",
     "close": "סגירה",
-    "dismiss": "התעלמות"
+    "dismiss": "התעלמות",
+    "showPassword": "הצגת הסיסמה",
+    "hidePassword": "הסתרת הסיסמה",
+    "showKey": "הצגת המפתח",
+    "hideKey": "הסתרת המפתח"
   },
   "Navigation": {
     "dashboard": "לוח בקרה",

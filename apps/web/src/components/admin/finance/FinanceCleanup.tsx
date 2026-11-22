@@ -10,6 +10,7 @@ import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { localizeError } from "@/i18n/presentation";
 import { useUiTranslations } from "@/i18n/ui";
 import { useUiLocale } from "@/i18n/use-ui-locale";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 
 // Finance cleanup: soft-delete a wrong invoice, receipt or payment after the
 // signed-in user re-enters their password. One component, shown both in
@@ -163,10 +164,9 @@ export function FinanceCleanupSection({ token }: { token: string }) {
                   <span className="text-xs font-semibold uppercase tracking-[0.18em]" style={{ color: "var(--dim)" }}>
                     {i18n("featureFinanceCleanupPassword")}
                   </span>
-                  <input
+                  <PasswordInput
                     className="w-full rounded-2xl border px-4 py-3 text-sm outline-none"
                     style={{ background: "var(--bg)", borderColor: "var(--border)", color: "var(--text)" }}
-                    type="password"
                     autoComplete="current-password"
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}

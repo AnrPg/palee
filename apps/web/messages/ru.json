@@ -38,7 +38,11 @@
     "saving": "Сохранение…",
     "cancel": "Отмена",
     "close": "Закрыть",
-    "dismiss": "Скрыть"
+    "dismiss": "Скрыть",
+    "showPassword": "Показать пароль",
+    "hidePassword": "Скрыть пароль",
+    "showKey": "Показать ключ",
+    "hideKey": "Скрыть ключ"
   },
   "Navigation": {
     "dashboard": "Панель управления",

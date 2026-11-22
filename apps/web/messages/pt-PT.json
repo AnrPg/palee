@@ -38,7 +38,11 @@
     "saving": "A guardar…",
     "cancel": "Cancelar",
     "close": "Fechar",
-    "dismiss": "Dispensar"
+    "dismiss": "Dispensar",
+    "showPassword": "Mostrar palavra-passe",
+    "hidePassword": "Ocultar palavra-passe",
+    "showKey": "Mostrar chave",
+    "hideKey": "Ocultar chave"
   },
   "Navigation": {
     "dashboard": "Painel",

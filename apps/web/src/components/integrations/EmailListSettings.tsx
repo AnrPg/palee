@@ -35,6 +35,7 @@ import {
   useIntegrationError,
   useWhen,
 } from "./connections-ui";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 
 const PROVIDERS: AudienceProvider[] = ["mailchimp", "brevo"];
 
@@ -169,7 +170,7 @@ function ConnectForm({ token, connection, onSaved, onCancel }: { token: string; 
         hint={connection?.key_saved ? t("listKeySaved") : t(`listKeyWhere.${provider}`)}
         error={keyError ? (code === "audience_unauthorized" ? t("errors.audience_unauthorized") : t("errors.audience_key_required")) : null}
       >
-        <input id="email-list-key" type="password" autoComplete="off" value={apiKey} maxLength={200} aria-invalid={keyError} onChange={(event) => setApiKey(event.target.value)} className={INPUT_CLASS} style={inputStyle(keyError)} />
+        <PasswordInput kind="key" id="email-list-key" autoComplete="off" value={apiKey} maxLength={200} aria-invalid={keyError} onChange={(event) => setApiKey(event.target.value)} className={INPUT_CLASS} style={inputStyle(keyError)} />
       </Field>
       <Field id="email-list-id" label={t("listId")} hint={t("listIdHint")} error={listError ? (code === "audience_list_not_found" ? t("errors.audience_list_not_found") : t("errors.invalid_audience_list")) : null}>
         <input id="email-list-id" value={listId} maxLength={100} aria-invalid={listError} onChange={(event) => setListId(event.target.value)} className={INPUT_CLASS} style={inputStyle(listError)} />

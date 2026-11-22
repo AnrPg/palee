@@ -38,7 +38,11 @@
     "saving": "جارٍ الحفظ…",
     "cancel": "إلغاء",
     "close": "إغلاق",
-    "dismiss": "تجاهل"
+    "dismiss": "تجاهل",
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور",
+    "showKey": "إظهار المفتاح",
+    "hideKey": "إخفاء المفتاح"
   },
   "Navigation": {
     "dashboard": "لوحة التحكم",

@@ -38,7 +38,11 @@
     "saving": "Enregistrement…",
     "cancel": "Annuler",
     "close": "Fermer",
-    "dismiss": "Ignorer"
+    "dismiss": "Ignorer",
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe",
+    "showKey": "Afficher la clé",
+    "hideKey": "Masquer la clé"
   },
   "Navigation": {
     "dashboard": "Tableau de bord",

@@ -38,7 +38,11 @@
     "saving": "Wird gespeichert …",
     "cancel": "Abbrechen",
     "close": "Schließen",
-    "dismiss": "Ausblenden"
+    "dismiss": "Ausblenden",
+    "showPassword": "Passwort anzeigen",
+    "hidePassword": "Passwort verbergen",
+    "showKey": "Schlüssel anzeigen",
+    "hideKey": "Schlüssel verbergen"
   },
   "Navigation": {
     "dashboard": "Dashboard",

@@ -18,6 +18,7 @@ import { rememberSelectedOrganization } from "@/lib/organization-slug";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { AgeConfirmationField } from "@/components/auth/AgeConfirmationField";
 import { useTranslations } from "next-intl";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 
 type FieldErrors = Record<string, string[]>;
 
@@ -364,16 +365,16 @@ export function AdminRegistrationConsole() {
 
           <label className="block text-sm font-medium" style={{ color: "var(--text-soft)" }}>
             {i18n("password8be3c94")}
-            <input
+            <PasswordInput
+              containerClassName="mt-2 w-full"
               aria-describedby="admin-registration-password-help"
               autoComplete="new-password"
-              className="mt-2 w-full rounded-2xl px-4 py-3 outline-none"
+              className="w-full rounded-2xl px-4 py-3 outline-none"
               style={{
                 background: "var(--bg)",
                 border: `1px solid ${passwordErrors.length > 0 ? "var(--danger)" : "var(--border)"}`,
                 color: "var(--text)",
               }}
-              type="password"
               value={form.password}
               onChange={(event) => {
                 setError(null);

@@ -21,6 +21,7 @@ import { useUiTranslations } from "@/i18n/ui";
 import { fieldBorder, invalidFieldProps } from "@/lib/form-errors";
 
 import { paymentErrorText } from "./payment-errors";
+import { MaskableInput } from "@/components/ui/PasswordInput";
 
 const SECRET: Record<CredentialKey, boolean> = {
   client_id: false,
@@ -146,9 +147,10 @@ export function PaymentKeysForm({
           return (
             <label key={key} className="block space-y-1" htmlFor={id}>
               <span className="text-xs font-semibold" style={{ color: "var(--muted)" }}>{t(`cred_${key}`)}</span>
-              <input
+              <MaskableInput
+                masked={SECRET[key]}
+                kind="key"
                 id={id}
-                type={SECRET[key] ? "password" : "text"}
                 autoComplete="off"
                 spellCheck={false}
                 value={values[key] ?? ""}

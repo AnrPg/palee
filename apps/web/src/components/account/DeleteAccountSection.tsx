@@ -17,6 +17,7 @@ import { Dialog } from "@/components/ui/Dialog";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { localizeError } from "@/i18n/presentation";
 import { useUiTranslations } from "@/i18n/ui";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 
 const DELETION_QUERY_KEY = ["account", "deletion"] as const;
 
@@ -233,9 +234,8 @@ function DeleteAccountDialog({
         </p>
         <p className="text-sm leading-6" style={{ color: "var(--muted)" }}>{t("dialogGrace")}</p>
         <DialogField id="account-deletion-password" label={t("passwordLabel")}>
-          <input
+          <PasswordInput
             id="account-deletion-password"
-            type="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             autoComplete="current-password"

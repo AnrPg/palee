@@ -38,7 +38,11 @@
     "saving": "Αποθήκευση…",
     "cancel": "Ακύρωση",
     "close": "Κλείσιμο",
-    "dismiss": "Απόρριψη"
+    "dismiss": "Απόρριψη",
+    "showPassword": "Εμφάνιση κωδικού",
+    "hidePassword": "Απόκρυψη κωδικού",
+    "showKey": "Εμφάνιση κλειδιού",
+    "hideKey": "Απόκρυψη κλειδιού"
   },
   "Navigation": {
     "dashboard": "Πίνακας ελέγχου",

@@ -38,7 +38,11 @@
     "saving": "Opslaan…",
     "cancel": "Annuleren",
     "close": "Sluiten",
-    "dismiss": "Negeren"
+    "dismiss": "Negeren",
+    "showPassword": "Wachtwoord tonen",
+    "hidePassword": "Wachtwoord verbergen",
+    "showKey": "Sleutel tonen",
+    "hideKey": "Sleutel verbergen"
   },
   "Navigation": {
     "dashboard": "Dashboard",

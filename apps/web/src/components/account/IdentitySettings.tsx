@@ -12,6 +12,7 @@ import { useSession } from "@/components/session-provider";
 import { localizeError } from "@/i18n/presentation";
 import { useUiTranslations } from "@/i18n/ui";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 
 export const IDENTITY_FORM_ID = "profile-personal-form";
 
@@ -129,9 +130,8 @@ export function IdentitySettings() {
         <p className="text-xs leading-5" style={{ color: "var(--muted)" }}>{t("loginSharedNote")}</p>
         <EmailChangeField />
         <Field id="identity-new-password" label={t("newPasswordLabel")} hint={t("newPasswordHint")}>
-          <input
+          <PasswordInput
             id="identity-new-password"
-            type="password"
             value={newPassword}
             onChange={(event) => setNewPassword(event.target.value)}
             minLength={4}
@@ -142,9 +142,8 @@ export function IdentitySettings() {
         </Field>
         {needsPassword ? (
           <Field id="identity-current-password" label={t("currentPasswordLabel")} hint={t("currentPasswordHint")}>
-            <input
+            <PasswordInput
               id="identity-current-password"
-              type="password"
               value={currentPassword}
               onChange={(event) => setCurrentPassword(event.target.value)}
               autoComplete="current-password"

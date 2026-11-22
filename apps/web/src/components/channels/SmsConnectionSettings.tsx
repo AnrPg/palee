@@ -49,6 +49,7 @@ import {
   type SmsVendor,
   type VendorFieldKey,
 } from "./sms";
+import { MaskableInput } from "@/components/ui/PasswordInput";
 
 export const CHANNEL_SETTINGS_KEY = ["admin", "channels", "settings"] as const;
 const TEMPLATES_KEY = ["admin", "channels", "templates"] as const;
@@ -608,9 +609,11 @@ function OwnAccount({ token, settings }: { token: string; settings: ChannelSetti
                 <label className="block text-sm font-semibold" style={{ color: "var(--text)" }} htmlFor={id}>
                   {vendor === "brevo" && entry.key === "secret" ? t("brevoKey") : t(`vendorField_${vendor}_${entry.key}`)}
                 </label>
-                <input
+                <MaskableInput
+                  masked={Boolean(entry.secret)}
+                  kind="key"
+                  containerClassName="mt-1 w-full"
                   id={id}
-                  type={entry.secret ? "password" : "text"}
                   autoComplete="off"
                   spellCheck={false}
                   value={values[entry.key] ?? ""}
@@ -618,7 +621,7 @@ function OwnAccount({ token, settings }: { token: string; settings: ChannelSetti
                   onChange={(event) => setValues((previous) => ({ ...previous, [entry.key]: event.target.value }))}
                   aria-invalid={Boolean(message)}
                   aria-describedby={message ? `${id}-error` : undefined}
-                  className={`${inputClass} mt-1`}
+                  className={entry.secret ? inputClass : `${inputClass} mt-1`}
                   style={inputStyle(Boolean(message))}
                 />
                 {message ? (

@@ -38,7 +38,11 @@
     "saving": "Запазване…",
     "cancel": "Отказ",
     "close": "Затвори",
-    "dismiss": "Скрий"
+    "dismiss": "Скрий",
+    "showPassword": "Показване на паролата",
+    "hidePassword": "Скриване на паролата",
+    "showKey": "Показване на ключа",
+    "hideKey": "Скриване на ключа"
   },
   "Navigation": {
     "dashboard": "Табло",
