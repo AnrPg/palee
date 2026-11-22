@@ -87,7 +87,7 @@ defmodule PaleeWeb.SoldOnlineControllerTest do
     assert packages(conn, ctx) == %{
              "Unlimited" => {false, "no_provider"},
              "3 φορές την εβδομάδα" => {false, "no_provider"},
-             "Δοκιμαστικό" => {false, "free"},
+             "Δοκιμαστικό" => {false, "free_listed"},
              "Παλιό" => {false, "inactive"}
            }
 
@@ -108,7 +108,7 @@ defmodule PaleeWeb.SoldOnlineControllerTest do
     assert packages(conn, ctx) == %{
              "Unlimited" => {true, "visible"},
              "3 φορές την εβδομάδα" => {true, "visible"},
-             "Δοκιμαστικό" => {false, "free"},
+             "Δοκιμαστικό" => {false, "free_listed"},
              "Παλιό" => {false, "inactive"}
            }
 
@@ -152,7 +152,7 @@ defmodule PaleeWeb.SoldOnlineControllerTest do
     assert {paid["sold_online"], paid["online_visibility"]} == {true, "visible"}
 
     free = create.(%{name: "Δωρεάν", package_type: "membership", base_price_cents: 0})
-    assert {free["sold_online"], free["online_visibility"]} == {false, "free"}
+    assert {free["sold_online"], free["online_visibility"]} == {false, "free_listed"}
 
     chosen =
       create.(%{

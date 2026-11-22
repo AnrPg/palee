@@ -291,6 +291,10 @@ export function StaffClassPage({
                     })}
                   </span>
                   <YourTime at={slot.scheduled_at} zone={timeZone} format="day-time" />
+                  {slot.space ? (
+                    // A decorative separator, kept out of the label.
+                    <span aria-hidden="true">·</span>
+                  ) : null}
                   {slot.space?.viewable ? (
                     // ADR-290: the room on the floor plan.
                     <button
@@ -300,10 +304,10 @@ export function StaffClassPage({
                       style={{ color: "var(--primary)" }}
                       onClick={() => setRoomOpen(true)}
                     >
-                      · {tSpaces("classSpaceAt", { space: slot.space.name })}
+                      {tSpaces("classSpaceAt", { space: slot.space.name })}
                     </button>
                   ) : slot.space ? (
-                    <span data-testid="slot-space">· {tSpaces("classSpaceAt", { space: slot.space.name })}</span>
+                    <span data-testid="slot-space">{tSpaces("classSpaceAt", { space: slot.space.name })}</span>
                   ) : null}
                 </p>
               </div>

@@ -37,6 +37,9 @@ defmodule Palee.Finance.Domain.TenantDataPolicy do
               %{table: "referral_programs"},
               %{table: "promotion_codes"},
               %{table: "promotion_campaigns"},
+              # ADR-717: classes booked while a request waited; they reference
+              # the requests, so they go first.
+              %{table: "finance_package_wait_bookings"},
               # ADR-291: desk-pay requests reference packages, subscriptions
               # and payments, so they go before all three.
               %{table: "finance_package_requests"},
