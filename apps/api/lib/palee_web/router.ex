@@ -1378,17 +1378,10 @@ defmodule PaleeWeb.Router do
     get("/users/:id/incidents", AdminUserController, :incidents)
     get("/users/:id/messages", AdminUserController, :messages)
     get("/users/:id/coaching-context", AdminUserController, :coaching_context)
-    post("/users/:id/allowance-extensions", AdminUserController, :grant_allowance)
     get("/users/:id/freezes", AdminUserController, :freezes)
     post("/users/:id/freezes", AdminUserController, :create_freeze)
     post("/users/:id/freezes/:freeze_id/cancel", AdminUserController, :cancel_freeze)
     delete("/users/:id", AdminUserController, :delete)
-
-    post(
-      "/users/:id/allowance-extensions/:entry_id/revoke",
-      AdminUserController,
-      :revoke_allowance
-    )
 
     patch("/users/:id/role", AdminUserController, :update_role)
     put("/users/:id/roles", AdminUserController, :update_roles)
