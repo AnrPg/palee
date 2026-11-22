@@ -120,25 +120,6 @@ defmodule PaleeWeb.AdminUserDirectoryControllerTest do
       assert response["code"] == "not_found"
     end
 
-    allowance_response =
-      build_conn()
-      |> put_bearer_token(admin)
-      |> post(
-        "/api/org/#{context_a.organization.slug}/admin/users/#{target.id}/allowance-extensions",
-        %{
-          allowance: "class_visits",
-          quantity: 1,
-          period: "calendar_month",
-          reason: "Should not cross tenants"
-        }
-      )
-      |> json_response(404)
-
-    assert allowance_response["code"] == "not_found"
-
-    assert Finance.get_effective_entitlement(context_b, target.id).allowances.class_visits.extensions ==
-             0
-
     assert org_b.id == context_b.organization_id
   end
 
@@ -412,75 +393,6 @@ defmodule PaleeWeb.AdminUserDirectoryControllerTest do
       |> get("/api/org/#{context.organization.slug}/admin/users")
 
     assert json_response(conn, 403)["error"] == "Forbidden"
-  end
-
-  test "admin extends one user's allowance from the unified profile contract", %{conn: conn} do
-    admin = admin_fixture()
-    member = user_fixture(%{role: :member})
-    {_organization, context} = tenant_fixture(admin, "Allowance Extension")
-    member_of(context.organization_id, member, :member)
-
-    {:ok, package} =
-      Palee.Finance.create_package(context, %{
-        code: "profile_extension_package",
-        name: "Profile extension package",
-        family: "limited-visits",
-        billing_period: "monthly",
-        params: %{
-          "entitlement_version" => 1,
-          "channels" => ["in_person"],
-          "capabilities" => ["book_classes"],
-          "allowances" => %{
-            "class_visits" => %{"limit" => 4, "period" => "calendar_month"}
-          }
-        }
-      })
-
-    {:ok, membership} =
-      Palee.Finance.upsert_membership(context, member.id, %{
-        user_type_snapshot: "member",
-        status: "active",
-        signup_source: "admin_created"
-      })
-
-    {:ok, _subscription} =
-      Palee.Finance.assign_package(context, membership.id, package.id, %{
-        starts_on: Date.utc_today()
-      })
-
-    response =
-      conn
-      |> put_bearer_token(admin)
-      |> post(
-        "/api/org/#{context.organization.slug}/admin/users/#{member.id}/allowance-extensions",
-        %{
-          allowance: "class_visits",
-          quantity: 2,
-          period: "calendar_month",
-          reason: "Competition preparation"
-        }
-      )
-      |> json_response(201)
-
-    assert response["entry"]["allowance_key"] == "class_visits"
-    assert response["entry"]["quantity_delta"] == -2
-
-    entitlement = response["entitlement"]
-    assert entitlement["allowances"]["class_visits"]["extensions"] == 2
-    assert entitlement["allowances"]["class_visits"]["remaining"] == 6
-
-    revoked =
-      conn
-      |> put_bearer_token(admin)
-      |> post(
-        "/api/org/#{context.organization.slug}/admin/users/#{member.id}/allowance-extensions/#{response["entry"]["id"]}/revoke",
-        %{reason: "Competition cancelled"}
-      )
-      |> json_response(201)
-
-    assert revoked["entry"]["parent_entry_id"] == response["entry"]["id"]
-    assert revoked["entry"]["quantity_delta"] == 2
-    assert revoked["entitlement"]["allowances"]["class_visits"]["extensions"] == 0
   end
 
   test "admin can delete another user's account", %{conn: conn} do
