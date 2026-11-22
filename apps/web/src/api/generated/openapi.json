@@ -94131,7 +94131,7 @@
             "items": {
               "type": "string"
             },
-            "maxItems": 40,
+            "maxItems": 200,
             "type": "array"
           },
           "felt_qualities": {
@@ -94174,7 +94174,7 @@
               "title": "GoalMuscle",
               "type": "object"
             },
-            "maxItems": 40,
+            "maxItems": 200,
             "type": "array"
           },
           "qualities": {
@@ -328124,7 +328124,7 @@
                       "title": "GoalMuscle",
                       "type": "object"
                     },
-                    "maxItems": 40,
+                    "maxItems": 200,
                     "type": "array"
                   },
                   "qualities": {
@@ -353823,7 +353823,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "maxItems": 40,
+                    "maxItems": 200,
                     "type": "array"
                   },
                   "felt_qualities": {

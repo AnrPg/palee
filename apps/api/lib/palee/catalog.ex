@@ -21,7 +21,7 @@ defmodule Palee.Catalog do
   alias Palee.Catalog.ReferenceStore
 
   @key {__MODULE__, :reference}
-  @seed "priv/repo/reference/exercise_catalog_seed_2027_11_09.json"
+  @seed "priv/repo/reference/exercise_catalog_seed_2027_11_22.json"
 
   @doc "The current reference copy; loaded on first use when the cache has not run."
   @spec reference() :: Reference.t()

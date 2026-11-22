@@ -19,7 +19,7 @@ defmodule Palee.Anatomy.TrainingDepthDomainTest do
       summary = CoverageBalance.summarize(coverage.nodes, performances)
 
       # Ties keep the major groups' order.
-      assert Enum.map(summary.most, & &1.id) == ["glutes", "quadriceps", "pectoralis-major"]
+      assert Enum.map(summary.most, & &1.id) == ["glutes", "quadriceps", "deltoid"]
       assert %{sets: 5.0, per_week: 5.0, level: "medium"} = Enum.at(summary.most, 1)
       assert length(summary.least) == 3
       assert Enum.all?(summary.least, &(&1.level in ["none", "low"]))

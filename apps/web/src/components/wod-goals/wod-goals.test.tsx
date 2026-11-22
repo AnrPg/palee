@@ -129,7 +129,9 @@ describe("WodGoalsStripView", () => {
     wrap(<WodGoalsStripView goals={goals} />);
     const block = screen.getByTestId("wod-goals-strip");
     expect(block).toHaveAccessibleName("Goals");
-    expect(screen.getByText("Muscles").nextElementSibling).toHaveTextContent("Quadriceps");
+    // ADR-731: every muscle, one row per role.
+    expect(screen.getByText("Primary").nextElementSibling).toHaveTextContent("Quadriceps");
+    expect(screen.getByText("Stabilizing").nextElementSibling).toHaveTextContent("Erector spinae");
     expect(screen.getByText("Qualities").nextElementSibling).toHaveTextContent("Stamina · Power");
     expect(screen.getByText("Stimulus").nextElementSibling).toHaveTextContent("fast, unbroken");
     fireEvent.click(screen.getByRole("button", { name: "See the goals" }));
