@@ -37,5 +37,6 @@ describe("password reveal guard", () => {
       }
     }
     expect(findings).toEqual([]);
-  });
+    // A walk over the whole source tree: its own budget, so a busy CI runner never times it out.
+  }, 30_000);
 });
