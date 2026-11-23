@@ -71,4 +71,62 @@ defmodule Palee.BoxScreens.Domain.FocusTest do
     assert %{source: "auto", view: "timer", slot_id: "a"} =
              Focus.resolve(@day, gone, ~U[2027-02-09 07:10:00Z])
   end
+
+  describe "ADR-746: classes at the same time" do
+    @hall %{
+      id: "hall",
+      space_id: "space-hall",
+      scheduled_at: ~U[2027-02-09 18:00:00Z],
+      duration_minutes: 60,
+      cancelled: false
+    }
+    @yard %{
+      id: "yard",
+      space_id: "space-yard",
+      scheduled_at: ~U[2027-02-09 18:00:00Z],
+      duration_minutes: 60,
+      cancelled: false
+    }
+    @at ~U[2027-02-09 18:10:00Z]
+
+    test "a screen in a space shows that space's class" do
+      assert %{view: "timer", slot_id: "yard", split_slot_id: nil} =
+               Focus.resolve([@hall, @yard], nil, @at, %{space_id: "space-yard"})
+
+      assert %{view: "timer", slot_id: "hall"} =
+               Focus.resolve([@hall, @yard], nil, @at, %{space_id: "space-hall"})
+    end
+
+    test "a space with no class falls back to the whole branch" do
+      assert %{view: "timer", slot_id: slot_id} =
+               Focus.resolve([@hall, @yard], nil, @at, %{space_id: "space-office"})
+
+      assert slot_id in ["hall", "yard"]
+    end
+
+    test "a shared screen shows two running classes side by side" do
+      assert %{view: "timer", slot_id: first, split_slot_id: second} =
+               Focus.resolve([@hall, @yard], nil, @at, %{concurrent_mode: "split"})
+
+      assert Enum.sort([first, second]) == ["hall", "yard"]
+    end
+
+    test "a shared screen with one class running shows just that class" do
+      assert %{view: "timer", slot_id: "a", split_slot_id: nil} =
+               Focus.resolve(@day, nil, ~U[2027-02-09 07:10:00Z], %{concurrent_mode: "split"})
+    end
+
+    test "a staff pin keeps its WOD and the class it shares with" do
+      override = %{
+        view: "timer",
+        slot_id: "hall",
+        until: nil,
+        workout_id: "w2",
+        split_slot_id: "yard"
+      }
+
+      assert %{source: "staff", slot_id: "hall", workout_id: "w2", split_slot_id: "yard"} =
+               Focus.resolve([@hall, @yard], override, @at)
+    end
+  end
 end

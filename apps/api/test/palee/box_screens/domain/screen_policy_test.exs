@@ -45,6 +45,36 @@ defmodule Palee.BoxScreens.Domain.ScreenPolicyTest do
     end
   end
 
+  test "ADR-746: a pin can name one WOD of its class and a class to share the screen with" do
+    slots = ["s1", "s2"]
+
+    assert {:ok, %{override_workout_id: "w2", override_split_slot_id: nil}} =
+             ScreenPolicy.override(%{view: "timer", slot_id: "s1", workout_id: "w2"}, slots, @now)
+
+    assert {:ok, %{override_slot_id: "s1", override_split_slot_id: "s2"}} =
+             ScreenPolicy.override(
+               %{view: "timer", slot_id: "s1", split_slot_id: "s2"},
+               slots,
+               @now
+             )
+
+    for bad <- [
+          %{view: "wod", workout_id: "w2"},
+          %{view: "timer", slot_id: "s1", split_slot_id: "s1"},
+          %{view: "timer", slot_id: "s1", split_slot_id: "elsewhere"},
+          %{view: "wod", split_slot_id: "s2"}
+        ] do
+      assert {:error, :invalid_screen_override} = ScreenPolicy.override(bad, slots, @now)
+    end
+  end
+
+  test "ADR-746: a screen shows its space's class or shares the screen" do
+    assert {:ok, "room"} = ScreenPolicy.concurrent_mode("room")
+    assert {:ok, "split"} = ScreenPolicy.concurrent_mode("split")
+    assert {:error, :invalid_screen_settings} = ScreenPolicy.concurrent_mode("both")
+    assert {:error, :invalid_screen_settings} = ScreenPolicy.concurrent_mode(nil)
+  end
+
   test "an override with an end lapses at that end" do
     screen = %{
       override_view: "wod",

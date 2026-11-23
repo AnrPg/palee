@@ -436,6 +436,35 @@ defmodule PaleeWeb.CommunityControllerTest do
              as.(member) |> get("#{base}/wod-today?timezone=Mars/Base") |> json_response(422)
   end
 
+  test "ADR-746: each other WOD of today's classes is its own card under the first", ctx do
+    %{as: as, base: base, member: member, coach: coach} = ctx
+    slug = Organizations.legacy_organization_slug()
+    {:ok, context} = Organizations.resolve_tenant_context(coach, slug)
+
+    first = workout_fixture(coach, %{title: "Fran"})
+    second = workout_fixture(coach, %{title: "Cindy"})
+    now = DateTime.utc_now() |> DateTime.truncate(:second)
+    slot = slot_fixture(first)
+
+    Repo.query!("UPDATE scheduled_classes SET scheduled_at = $1 WHERE id = $2", [
+      DateTime.add(now, -120),
+      Ecto.UUID.dump!(slot.id)
+    ])
+
+    {:ok, _slot} =
+      Palee.Scheduling.set_class_workouts(context, slot.id, [first.id, second.id])
+
+    card = as.(member) |> get("#{base}/wod-today?timezone=Etc/UTC") |> json_response(200)
+    assert %{"workout" => %{"title" => "Fran"}} = card
+
+    assert [%{"workout" => %{"title" => "Cindy"}, "classes" => [%{"id" => slot_id}]} = more] =
+             card["more"]
+
+    assert slot_id == slot.id
+    assert more["leaderboard"] == []
+    assert more["logged_by_me"] == false
+  end
+
   defp rung(entry_id) do
     %{rows: [[rung]]} =
       Repo.query!("SELECT journal_visibility FROM training_log_entries WHERE id = $1", [

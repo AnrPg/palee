@@ -6,6 +6,7 @@ defmodule PaleeWeb.PersonalizedMemberProgrammingControllerTest do
   """
   use PaleeWeb.ConnCase, async: false
 
+  import Ecto.Query
   import Palee.TestFixtures
 
   alias Palee.{Finance, Organizations, Repo, Scheduling, Workouts}
@@ -579,6 +580,59 @@ defmodule PaleeWeb.PersonalizedMemberProgrammingControllerTest do
         |> Map.fetch!("assignment")
 
       assert created["assignment_kind"] == "class_variant"
+    end
+
+    test "ADR-746: a variant offered to a member who has not booked comes with a link to book", %{
+      conn: conn
+    } do
+      gym = tenant("pm_variant_offer")
+
+      booked =
+        gym
+        |> customer(:member, "pm_offer_booked")
+        |> then(&give_package(gym, &1, @programming_plan))
+
+      offered =
+        gym
+        |> customer(:member, "pm_offer_member")
+        |> then(&give_package(gym, &1, @programming_plan))
+
+      class_wod = workout(gym, "Offer WOD")
+      slot = booked_class(gym, class_wod, [booked])
+      day = slot.scheduled_at |> DateTime.to_date() |> Date.to_iso8601()
+
+      body = %{scheduled_for: day, slot_id: slot.id, copy_source: true, mode: "class_variant"}
+      path = "/api/org/#{slug(gym)}/admin/users/#{offered.id}/programming"
+
+      assert conn
+             |> api(gym.admin)
+             |> post(path, Jason.encode!(body))
+             |> json_response(422)
+             |> Map.fetch!("code") == "slot_not_booked_by_member"
+
+      programmed =
+        conn
+        |> api(gym.admin)
+        |> post(path, Jason.encode!(Map.put(body, :offer_booking, true)))
+        |> json_response(201)
+
+      assert programmed["association"]["assignment_kind"] == "class_variant"
+
+      # Not booked by it: the class keeps its seats.
+      assert Enum.map(Scheduling.get_slot(gym.context, slot.id).bookings, & &1.user_id) == [
+               booked.id
+             ]
+
+      offered_id = offered.id
+
+      assert [%{payload: payload}] =
+               Repo.all(
+                 from n in Palee.Notifications.Notification,
+                   where: n.user_id == ^offered_id and n.type == :workout_assigned
+               )
+
+      assert payload["class_slot_id"] == slot.id
+      assert payload["url"] =~ "/box/schedule?open_slot=#{slot.id}"
     end
   end
 

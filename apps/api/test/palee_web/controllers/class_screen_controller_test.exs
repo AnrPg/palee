@@ -9,6 +9,7 @@ defmodule PaleeWeb.ClassScreenControllerTest do
 
   use PaleeWeb.ConnCase, async: false
 
+  import Ecto.Query
   import Palee.TestFixtures
 
   alias Palee.{Facility, Organizations, Repo}
@@ -199,5 +200,114 @@ defmodule PaleeWeb.ClassScreenControllerTest do
 
     assert %{"screen" => %{"override" => nil}} =
              ctx.owner |> recycle() |> delete(path) |> json_response(200)
+  end
+
+  describe "ADR-746" do
+    defp other_coach_user(ctx) do
+      user = user_fixture()
+      {:ok, _} = Organizations.ensure_legacy_membership_for_migration(user, :coach)
+      {user, put_bearer_token(ctx.coach |> recycle(), user)}
+    end
+
+    defp own_workouts(ctx, slot_id, count) do
+      ids =
+        for n <- 1..count do
+          workout_fixture(ctx.owner_user, %{tenant_context: ctx.context, title: "WOD #{n}"}).id
+        end
+
+      {:ok, slot} = Palee.Scheduling.set_class_workouts(ctx.context, slot_id, ids)
+      [slot.master_workout_id | slot.additional_workout_ids]
+    end
+
+    test "the remote lists the class's WODs and the classes at the same time", ctx do
+      at = DateTime.add(ctx.now, 600)
+      slot_id = class(ctx, ctx.coach_user.id, ctx.branch.id, at)
+      {next_user, _next} = other_coach_user(ctx)
+      beside = class(ctx, next_user.id, ctx.branch.id, at)
+      [first, second] = own_workouts(ctx, slot_id, 2)
+      _room = screen(ctx, "Αίθουσα", ctx.branch.id)
+
+      assert %{"workouts" => workouts, "together" => together, "screens" => [listed]} =
+               ctx.coach |> get_json("#{ctx.timers}/#{slot_id}/screens") |> json_response(200)
+
+      assert Enum.map(workouts, & &1["id"]) == [first, second]
+      assert [%{"live" => true}, %{"live" => false}] = workouts
+      assert Enum.map(together, & &1["id"]) == [beside]
+      assert Map.has_key?(listed, "showing")
+    end
+
+    test "a pin can show one WOD of the class, never a WOD from elsewhere", ctx do
+      slot_id = class(ctx, ctx.coach_user.id, ctx.branch.id, DateTime.add(ctx.now, 600))
+      [_first, second] = own_workouts(ctx, slot_id, 2)
+      room = screen(ctx, "Αίθουσα", ctx.branch.id)
+      path = "#{ctx.timers}/#{slot_id}/screens/#{room}/override"
+
+      assert %{"screen" => %{"override" => %{"workout_id" => ^second}}} =
+               ctx.coach
+               |> send_json(:put, path, %{view: "timer", workout_id: second})
+               |> json_response(200)
+
+      stranger = workout_fixture(ctx.owner_user, %{tenant_context: ctx.context}).id
+
+      assert %{"code" => "not_a_class_workout"} =
+               ctx.coach
+               |> send_json(:put, path, %{view: "timer", workout_id: stranger})
+               |> json_response(422)
+    end
+
+    test "a coach with a class today takes the screen and the other coach is told", ctx do
+      at = DateTime.add(ctx.now, 600)
+      slot_id = class(ctx, ctx.coach_user.id, ctx.branch.id, at)
+      {next_user, next} = other_coach_user(ctx)
+      next_slot = class(ctx, next_user.id, ctx.branch.id, DateTime.add(at, 3600))
+      room = screen(ctx, "Αίθουσα", ctx.branch.id)
+
+      ctx.coach
+      |> send_json(:put, "#{ctx.timers}/#{slot_id}/screens/#{room}/override", %{view: "timer"})
+      |> json_response(200)
+
+      assert %{"screen" => %{"override" => %{"slot_id" => ^next_slot}}} =
+               next
+               |> send_json(:put, "#{ctx.timers}/#{next_slot}/screens/#{room}/override", %{
+                 view: "timer"
+               })
+               |> json_response(200)
+
+      coach_id = ctx.coach_user.id
+
+      assert [%{payload: payload}] =
+               Repo.all(
+                 from n in Palee.Notifications.Notification,
+                   where: n.user_id == ^coach_id and n.type == :box_screen_taken
+               )
+
+      assert payload["slot_id"] == slot_id
+      assert payload["screen_id"] == room
+    end
+
+    test "staff set a screen's space and whether classes at the same time share it", ctx do
+      {:ok, space} = Palee.Spaces.create_space(ctx.context, %{name: "Αυλή"})
+      room = screen(ctx, "Αίθουσα", nil)
+
+      assert %{"screen" => %{"space_id" => space_id, "concurrent_mode" => "split"}} =
+               ctx.owner
+               |> send_json(:patch, "#{ctx.admin}/#{room}", %{
+                 space_id: space.id,
+                 concurrent_mode: "split"
+               })
+               |> json_response(200)
+
+      assert space_id == space.id
+
+      # The API schema already refuses an unknown mode.
+      assert ctx.owner
+             |> send_json(:patch, "#{ctx.admin}/#{room}", %{concurrent_mode: "both"})
+             |> json_response(422)
+
+      assert %{"code" => "invalid_screen_space"} =
+               ctx.owner
+               |> send_json(:patch, "#{ctx.admin}/#{room}", %{space_id: Ecto.UUID.generate()})
+               |> json_response(422)
+    end
   end
 end
