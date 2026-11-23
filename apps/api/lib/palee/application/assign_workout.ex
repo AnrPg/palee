@@ -8,6 +8,11 @@ defmodule Palee.Application.AssignWorkout do
   makes the assignment a class variant: one member's version of a class they
   booked. Assignees programmed through online programming then go through the
   ADR-040 coaching-touchpoint saga; personal training includes its programme.
+
+  ADR-746 (ANR, 2026-11-23): «Ξεχωριστό WOD για άτομα» may also go to a
+  member who has not booked the class (`offer_booking: true`). It does not
+  book them: the WOD is in their programme that day and their notice opens
+  the class, where they can book it.
   """
 
   alias Palee.Application.{
@@ -68,7 +73,7 @@ defmodule Palee.Application.AssignWorkout do
         )
 
         broadcast_assignment_refresh(context, assignment)
-        dispatch_assignment_notification(context, assignment)
+        dispatch_assignment_notification(context, assignment, Map.get(params, :class_offer))
 
         TrackAnalyticsEvent.call("workout_assignment_created", context, assignment, %{
           metadata: %{
@@ -102,16 +107,40 @@ defmodule Palee.Application.AssignWorkout do
     with {:ok, slot_id} <- cast_uuid(slot_id),
          %{scheduled_at: %DateTime{} = scheduled_at} <-
            Scheduling.get_slot(context, slot_id) || {:error, :slot_not_found},
-         :ok <- booked_by_member(context, member_id, slot_id, scheduled_at) do
+         {:ok, booked?} <- booked_or_offered(context, member_id, slot_id, scheduled_at, params) do
       scheduled_for =
         Map.get(params, :scheduled_for) || Map.get(params, "scheduled_for") ||
           DateTime.to_date(scheduled_at)
 
       {:ok,
        params
-       |> drop_keys([:source_slot_id, "source_slot_id", "scheduled_for"])
+       |> drop_keys([
+         :source_slot_id,
+         "source_slot_id",
+         "scheduled_for",
+         :offer_booking,
+         "offer_booking"
+       ])
        |> Map.put(:scheduled_for, scheduled_for)
-       |> Map.put(:source_scheduled_class_id, slot_id)}
+       |> Map.put(:source_scheduled_class_id, slot_id)
+       |> Map.put(
+         :class_offer,
+         if(booked?, do: nil, else: %{slot_id: slot_id, day: scheduled_for})
+       )}
+    end
+  end
+
+  # ADR-746: a member who has not booked gets the version only when the
+  # coach offered it from the class (`offer_booking`).
+  defp booked_or_offered(context, member_id, slot_id, scheduled_at, params) do
+    case booked_by_member(context, member_id, slot_id, scheduled_at) do
+      :ok ->
+        {:ok, true}
+
+      error ->
+        if Map.get(params, :offer_booking, Map.get(params, "offer_booking")) == true,
+          do: {:ok, false},
+          else: error
     end
   end
 
@@ -222,7 +251,7 @@ defmodule Palee.Application.AssignWorkout do
     )
   end
 
-  defp dispatch_assignment_notification(context, assignment) do
+  defp dispatch_assignment_notification(context, assignment, class_offer) do
     workout = Map.get(assignment, :workout) || %{}
 
     Notifications.dispatch_event(:workout_assigned, %{
@@ -231,7 +260,9 @@ defmodule Palee.Application.AssignWorkout do
       athlete_ids: Map.get(assignment, :athlete_ids, []) || [],
       workout_title: Map.get(workout, :title) || Map.get(workout, "title"),
       scheduled_for: assignment.scheduled_for,
-      notification_batch_at: DateTime.utc_now() |> DateTime.truncate(:second)
+      notification_batch_at: DateTime.utc_now() |> DateTime.truncate(:second),
+      # ADR-746: the class it is for, when the member has not booked it.
+      class_offer: class_offer && %{slot_id: class_offer.slot_id, day: to_string(class_offer.day)}
     })
 
     :ok

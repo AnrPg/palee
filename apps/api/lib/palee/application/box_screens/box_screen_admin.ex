@@ -14,7 +14,8 @@ defmodule Palee.Application.BoxScreens.BoxScreenAdmin do
   a whole-box screen needs staff of every branch.
   """
 
-  alias Palee.{BoxScreens, Facility, Organizations}
+  alias Palee.{BoxScreens, Facility, Organizations, Scheduling, Spaces}
+  alias Palee.Scheduling.Domain.ClassWorkouts
   alias Palee.Application.BoxScreens.{BoxScreenSignals, BoxScreenToday, ScreenPresenter}
 
   def list(context) do
@@ -55,8 +56,9 @@ defmodule Palee.Application.BoxScreens.BoxScreenAdmin do
   def update(context, id, params) do
     now = BoxScreens.now()
 
-    with {:ok, _screen} <- fetch(context, id),
+    with {:ok, current} <- fetch(context, id),
          {:ok, changes} <- changes(context, params),
+         {:ok, changes} <- room_and_mode(context, current, changes, params),
          {:ok, screen} <- BoxScreens.update(context, id, changes) do
       BoxScreenSignals.hint(context.organization_id, "screen")
       {:ok, %{screen: ScreenPresenter.view(screen, now)}}
@@ -94,7 +96,10 @@ defmodule Palee.Application.BoxScreens.BoxScreenAdmin do
              %{
                view: param(params, :view),
                slot_id: param(params, :slot_id),
-               until: param(params, :until)
+               until: param(params, :until),
+               workout_id:
+                 class_workout(context, param(params, :slot_id), param(params, :workout_id)),
+               split_slot_id: param(params, :split_slot_id)
              },
              slot_ids,
              context.user_id,
@@ -160,6 +165,66 @@ defmodule Palee.Application.BoxScreens.BoxScreenAdmin do
 
       true ->
         {:error, :invalid_screen_branch}
+    end
+  end
+
+  # ADR-746: the room the screen follows (one of its branch's, or none) and
+  # how classes that run together show.
+  defp room_and_mode(context, current, changes, params) do
+    location_id = Map.get(changes, :location_id, current.location_id)
+
+    with {:ok, changes} <- room(context, changes, params, location_id, current) do
+      if has_param?(params, :concurrent_mode) do
+        with {:ok, mode} <- BoxScreens.concurrent_mode(param(params, :concurrent_mode)),
+             do: {:ok, Map.put(changes, :concurrent_mode, mode)}
+      else
+        {:ok, changes}
+      end
+    end
+  end
+
+  defp room(context, changes, params, location_id, current) do
+    space_id =
+      if has_param?(params, :space_id),
+        do: blank(param(params, :space_id)),
+        else: current.space_id
+
+    cond do
+      is_nil(space_id) ->
+        {:ok, Map.put(changes, :space_id, nil)}
+
+      room_of?(context, space_id, location_id) ->
+        {:ok, Map.put(changes, :space_id, space_id)}
+
+      # A branch change drops a room of the old branch.
+      not has_param?(params, :space_id) ->
+        {:ok, Map.put(changes, :space_id, nil)}
+
+      true ->
+        {:error, :invalid_screen_space}
+    end
+  end
+
+  defp room_of?(context, space_id, location_id) do
+    with {:ok, id} <- Ecto.UUID.cast(space_id),
+         %{archived_at: nil, location_id: space_location} <- Spaces.get_space(context, id) do
+      is_nil(location_id) or space_location in [nil, location_id]
+    else
+      _missing -> false
+    end
+  end
+
+  # A pin's WOD must be one of the class's WODs; anything else follows «Τώρα».
+  defp class_workout(_context, _slot_id, nil), do: nil
+  defp class_workout(_context, _slot_id, ""), do: nil
+
+  defp class_workout(context, slot_id, workout_id) do
+    with {:ok, slot_id} <- Ecto.UUID.cast(slot_id || ""),
+         %{} = slot <- Scheduling.get_slot(context, slot_id),
+         true <- ClassWorkouts.member?(slot, workout_id) do
+      workout_id
+    else
+      _other -> nil
     end
   end
 

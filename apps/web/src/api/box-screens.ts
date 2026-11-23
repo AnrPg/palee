@@ -32,7 +32,11 @@ export function createBoxScreen(token: string, input: { name: string; location_i
   return apiRequest<BoxScreenWithCode>("/admin/box-screens", { method: "POST", token, body: input });
 }
 
-export function updateBoxScreen(token: string, id: string, input: { name?: string; location_id?: string | null }) {
+export function updateBoxScreen(
+  token: string,
+  id: string,
+  input: { name?: string; location_id?: string | null; space_id?: string | null; concurrent_mode?: "room" | "split" },
+) {
   return apiRequest<{ screen: BoxScreen }>(`/admin/box-screens/${id}`, { method: "PATCH", token, body: input });
 }
 
@@ -57,7 +61,14 @@ export function unpinBoxScreen(token: string, id: string) {
 // box) pins its timer, leaderboard or WOD; the API decides who may.
 
 export type ClassScreenList = Schemas["ClassScreenList"];
-export type ClassScreenInput = { view: BoxScreenOverrideView; until?: string | null };
+export type ClassScreenInput = {
+  view: BoxScreenOverrideView;
+  until?: string | null;
+  /** ADR-746: one of the class's WODs; null follows its «Τώρα». */
+  workout_id?: string | null;
+  /** ADR-746: share the screen with a class that runs at the same time. */
+  split_slot_id?: string | null;
+};
 
 export const classScreensKey = (slotId: string) => ["class-timers", slotId, "screens"] as const;
 
@@ -116,8 +127,10 @@ export function fetchBoxScreenToday(token: string) {
   return screenRequest<BoxScreenToday>("/today", { token });
 }
 
-export function fetchBoxScreenTimer(token: string, slotId: string) {
-  return screenRequest<ClassTimerPayload>(`/classes/${slotId}/timer`, { token });
+/** ADR-746: `workoutId` picks one of the class's WODs; without it, the class's «Τώρα». */
+export function fetchBoxScreenTimer(token: string, slotId: string, workoutId?: string | null) {
+  const query = workoutId ? `?workout_id=${encodeURIComponent(workoutId)}` : "";
+  return screenRequest<ClassTimerPayload>(`/classes/${slotId}/timer${query}`, { token });
 }
 
 /** The display token no longer opens anything: the screen was removed or moved to another TV. */

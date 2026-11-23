@@ -148,20 +148,24 @@ defmodule Palee.Application.AuthorizeWorkoutExecutionSource do
 
   defp authorize_booking(%{organization_id: _} = context, %{id: user_id}, workout_id, booking_id)
        when is_binary(booking_id) do
+    # ADR-746: a class may hold several WODs; any of them is the class's.
     case Scheduling.get_booking_execution_access(context, booking_id, user_id) do
-      %{master_workout_id: ^workout_id, status: "approved"} = access ->
-        {:ok,
-         %{
-           source: "class_booking",
-           source_reference_id: booking_id,
-           organization_id: access.organization_id
-         }}
+      %{status: status} = access ->
+        cond do
+          workout_id not in class_workout_ids(access) ->
+            {:error, :execution_source_mismatch}
 
-      %{master_workout_id: ^workout_id} ->
-        {:error, :execution_source_forbidden}
+          status == "approved" ->
+            {:ok,
+             %{
+               source: "class_booking",
+               source_reference_id: booking_id,
+               organization_id: access.organization_id
+             }}
 
-      %{} ->
-        {:error, :execution_source_mismatch}
+          true ->
+            {:error, :execution_source_forbidden}
+        end
 
       nil ->
         {:error, :execution_source_forbidden}
@@ -192,6 +196,10 @@ defmodule Palee.Application.AuthorizeWorkoutExecutionSource do
 
   defp authorize_booking(_context, _actor, _workout_id, _booking_id),
     do: {:error, :execution_source_forbidden}
+
+  defp class_workout_ids(%{workout_ids: [_ | _] = ids}), do: ids
+  defp class_workout_ids(%{master_workout_id: id}) when is_binary(id), do: [id]
+  defp class_workout_ids(_access), do: []
 
   defp assignment_execution_access(
          %{organization_id: organization_id} = context,

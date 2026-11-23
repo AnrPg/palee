@@ -12,26 +12,75 @@ defmodule Palee.Application.ClassTimerView do
 
   alias Palee.{Execution, Scheduling, Workouts}
   alias Palee.Execution.Domain.{ClassTimerMachine, DurationAdjustments, TimerPresets}
+  alias Palee.Scheduling.Domain.ClassWorkouts
 
   @free_text_timer_key "free_text_timer"
 
-  @doc "Returns `{:ok, %{slot, workout, timer, base_segments}}` or `{:error, :not_found}`."
-  def load(context, slot_id) do
+  @doc """
+  Returns `{:ok, %{slot, workout, timer, base_segments, others}}` or
+  `{:error, :not_found}`.
+
+  ADR-746: a class may hold several WODs, each with its own timer.
+  `workout_id` picks one of them (the coach remote, a member who chose a
+  WOD); `nil` or any id the class does not have means the coach's «Τώρα»,
+  which the wall display and box screens follow. `others` are the class's
+  other timers, so a screen can show one that keeps running in the back.
+  """
+  def load(context, slot_id, workout_id \\ nil) do
     with {:ok, slot_id} <- Ecto.UUID.cast(slot_id),
          %{} = slot <- Scheduling.get_slot(context, slot_id) do
-      workout = slot.master_workout_id && Workouts.get_workout(context, slot.master_workout_id)
-      timer = Execution.get_class_timer(context, slot_id)
+      selected =
+        if ClassWorkouts.member?(slot, workout_id),
+          do: workout_id,
+          else: ClassWorkouts.live_id(slot)
+
+      workout = selected && Workouts.get_workout(context, selected)
+      timers = Execution.list_class_timers(context, slot_id)
+      timer = Enum.find(timers, &(Map.get(&1, :master_workout_id) == selected))
 
       {:ok,
        %{
          slot: slot,
          workout: workout,
          timer: timer,
-         base_segments: base_segments(workout, timer)
+         base_segments: base_segments(workout, timer),
+         others: Enum.reject(timers, &(Map.get(&1, :master_workout_id) == selected)),
+         titles: workout_titles(context, slot, selected, workout)
        }}
     else
       _ -> {:error, :not_found}
     end
+  end
+
+  @doc "ADR-746: the WOD the view's timer runs (nil = a class without WOD)."
+  def workout_id(%{workout: %{id: id}}), do: id
+  def workout_id(_view), do: nil
+
+  @doc """
+  ADR-746: pushes the class's «Τώρα» timer to every screen following the
+  class (after «Τώρα» changed or the list did).
+  """
+  def broadcast_current(context, slot_id) do
+    with {:ok, view} <- load(context, slot_id) do
+      broadcast(view.slot, payload(view, DateTime.utc_now()))
+    end
+  end
+
+  @doc "Sends `payload` on the class's timer topic."
+  def broadcast(slot, payload) do
+    Phoenix.PubSub.broadcast(
+      Palee.PubSub,
+      "class_timer:updated",
+      {:class_timer_updated,
+       %{organization_id: slot.organization_id, scheduled_class_id: slot.id, payload: payload}}
+    )
+  end
+
+  defp workout_titles(context, slot, selected, selected_workout) do
+    Enum.map(ClassWorkouts.ids(slot), fn id ->
+      workout = if id == selected, do: selected_workout, else: Workouts.get_workout(context, id)
+      %{id: id, title: workout && workout.title}
+    end)
   end
 
   @doc "Replaces the timer (after a save); its preset may change the segments."
@@ -51,8 +100,10 @@ defmodule Palee.Application.ClassTimerView do
     }
   end
 
-  def payload(%{slot: slot, workout: workout, timer: timer, base_segments: base}, now) do
+  def payload(%{slot: slot, workout: workout, timer: timer, base_segments: base} = view, now) do
     state = state(timer)
+    live_id = ClassWorkouts.live_id(slot)
+    selected_id = workout && workout.id
     segments = DurationAdjustments.apply_to(base, state.duration_adjustments)
     effective = ClassTimerMachine.catch_up(state, segments, now)
 
@@ -72,6 +123,13 @@ defmodule Palee.Application.ClassTimerView do
             free_text_body: Map.get(workout, :free_text_body),
             body: Map.get(workout, :body)
           },
+      # ADR-746: every WOD of the class, the coach's «Τώρα», whether this
+      # payload is the «Τώρα» timer (screens follow only that one), and the
+      # class's other timers that run or wait paused.
+      workouts: Map.get(view, :titles, []),
+      live_workout_id: live_id,
+      live: selected_id == live_id,
+      other_timers: view |> Map.get(:others, []) |> Enum.map(&other_timer(&1, now)),
       segments: segments,
       timer:
         effective
@@ -81,6 +139,16 @@ defmodule Palee.Application.ClassTimerView do
           updated_at: timer && timer.updated_at
         }),
       server_now: now
+    }
+  end
+
+  defp other_timer(timer, _now) do
+    %{
+      workout_id: Map.get(timer, :master_workout_id),
+      status: timer.status,
+      current_segment_index: timer.current_segment_index,
+      segment_started_at_utc: timer.segment_started_at_utc,
+      paused_elapsed_ms: timer.paused_elapsed_ms
     }
   end
 

@@ -12478,6 +12478,26 @@ export interface paths {
         patch: operations["PaleeWeb.AdminScheduleController.update_slot"];
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/schedule/slots/{id}/bookings/{booking_id}/workout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set the WOD someone booked in the class does
+         * @description ADR-746: a coach for anyone booked, also over their own choice. null = «Θα αποφασίσω στο box».
+         */
+        put: operations["PaleeWeb.AdminClassWorkoutsController.put_booking_workout"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/schedule/slots/{id}/day-workout": {
         parameters: {
             query?: never;
@@ -12525,6 +12545,26 @@ export interface paths {
         /** Injury safety warnings for the members booked into a class slot */
         get: operations["PaleeWeb.AdminInjuryWarningController.slot"];
         put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/schedule/slots/{id}/live-workout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Point the class's «Τώρα» at one of its WODs
+         * @description ADR-746: people who decide at the box, the class timer and box screens follow it. null = the first WOD.
+         */
+        put: operations["PaleeWeb.AdminClassWorkoutsController.put_live"];
         post?: never;
         delete?: never;
         options?: never;
@@ -12602,6 +12642,26 @@ export interface paths {
          * @description ADR-176: publishes a draft class (created without a WOD) or completes a series occurrence. The WOD is filed in the day's Classes folder.
          */
         put: operations["PaleeWeb.AdminScheduleController.link_workout"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/schedule/slots/{id}/workouts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set every WOD of a class, in order
+         * @description ADR-746: the first WOD is the class's WOD; the rest follow it. New WODs are filed in the day's Classes folder. «Τώρα» and the people who chose a removed WOD go back to the first WOD and to «Θα αποφασίσω στο box».
+         */
+        put: operations["PaleeWeb.AdminClassWorkoutsController.put_workouts"];
         post?: never;
         delete?: never;
         options?: never;
@@ -17291,6 +17351,26 @@ export interface paths {
         /** Get the schedule window */
         get: operations["PaleeWeb.ScheduleController.index"];
         put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/schedule/slots/{id}/my-workout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Choose which of the class's WODs I do
+         * @description ADR-746: on the caller's own booking of the class. null = «Θα αποφασίσω στο box»: follow the coach's «Τώρα».
+         */
+        put: operations["PaleeWeb.ClassWorkoutChoiceController.update"];
         post?: never;
         delete?: never;
         options?: never;
@@ -27883,6 +27963,11 @@ export interface components {
         };
         /** BoxScreen */
         BoxScreen: {
+            /**
+             * @description ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side
+             * @enum {string}
+             */
+            concurrent_mode?: "room" | "split";
             /** @description Who last changed what the screen shows, and when */
             focus_changed: {
                 /** Format: date-time */
@@ -27912,10 +27997,20 @@ export interface components {
             override: {
                 /** Format: uuid */
                 slot_id: string | null;
+                /**
+                 * Format: uuid
+                 * @description ADR-746: one more class sharing the screen this once
+                 */
+                split_slot_id?: string | null;
                 /** Format: date-time */
                 until: string | null;
                 /** @enum {string} */
                 view: "wod" | "timer" | "leaderboard" | "bookings" | "class";
+                /**
+                 * Format: uuid
+                 * @description ADR-746: the class's WOD the pin shows; null follows the class's «Τώρα»
+                 */
+                workout_id?: string | null;
             } | null;
             paired: boolean;
             /** Format: date-time */
@@ -27925,6 +28020,20 @@ export interface components {
              * @description When the pending pairing code stops working; null without one
              */
             pairing_expires_at: string | null;
+            /** @description ADR-746: what the screen shows now (class remote only): its class and whether a timer runs */
+            showing?: {
+                class_name?: string | null;
+                coach_name?: string | null;
+                /** Format: uuid */
+                slot_id: string | null;
+                timer_running: boolean;
+                view: string;
+            } | null;
+            /**
+             * Format: uuid
+             * @description ADR-746: the room the screen follows in automatic; null for the whole branch
+             */
+            space_id?: string | null;
         };
         /** BoxScreenClass */
         BoxScreenClass: {
@@ -27944,13 +28053,22 @@ export interface components {
             ends_at: string;
             /** Format: uuid */
             id: string;
+            /**
+             * Format: uuid
+             * @description ADR-746: the coach's «Τώρα»
+             */
+            live_workout_id?: string | null;
             /** Format: uuid */
             location_id: string | null;
             name: string | null;
             /** Format: date-time */
             scheduled_at: string;
             /** Format: uuid */
+            space_id?: string | null;
+            /** Format: uuid */
             workout_id: string | null;
+            /** @description ADR-746: the class's WODs in order */
+            workout_ids?: string[];
         };
         /**
          * BoxScreenFocus
@@ -27961,10 +28079,20 @@ export interface components {
             slot_id: string | null;
             /** @enum {string} */
             source: "auto" | "staff";
+            /**
+             * Format: uuid
+             * @description ADR-746: a second class shown side by side
+             */
+            split_slot_id?: string | null;
             /** Format: date-time */
             until: string | null;
             /** @enum {string} */
             view: "preview" | "timer" | "results" | "idle" | "wod" | "timer" | "leaderboard" | "bookings" | "class";
+            /**
+             * Format: uuid
+             * @description ADR-746: the WOD shown; null follows the class's «Τώρα»
+             */
+            workout_id?: string | null;
         };
         /**
          * BoxScreenLeaderboard
@@ -27994,10 +28122,20 @@ export interface components {
         BoxScreenOverride: {
             /** Format: uuid */
             slot_id: string | null;
+            /**
+             * Format: uuid
+             * @description ADR-746: one more class sharing the screen this once
+             */
+            split_slot_id?: string | null;
             /** Format: date-time */
             until: string | null;
             /** @enum {string} */
             view: "wod" | "timer" | "leaderboard" | "bookings" | "class";
+            /**
+             * Format: uuid
+             * @description ADR-746: the class's WOD the pin shows; null follows the class's «Τώρα»
+             */
+            workout_id?: string | null;
         } | null;
         /**
          * BoxScreenPairingCode
@@ -28034,13 +28172,22 @@ export interface components {
                 ends_at: string;
                 /** Format: uuid */
                 id: string;
+                /**
+                 * Format: uuid
+                 * @description ADR-746: the coach's «Τώρα»
+                 */
+                live_workout_id?: string | null;
                 /** Format: uuid */
                 location_id: string | null;
                 name: string | null;
                 /** Format: date-time */
                 scheduled_at: string;
                 /** Format: uuid */
+                space_id?: string | null;
+                /** Format: uuid */
                 workout_id: string | null;
+                /** @description ADR-746: the class's WODs in order */
+                workout_ids?: string[];
             }[];
             /**
              * Format: date
@@ -28056,10 +28203,20 @@ export interface components {
                 slot_id: string | null;
                 /** @enum {string} */
                 source: "auto" | "staff";
+                /**
+                 * Format: uuid
+                 * @description ADR-746: a second class shown side by side
+                 */
+                split_slot_id?: string | null;
                 /** Format: date-time */
                 until: string | null;
                 /** @enum {string} */
                 view: "preview" | "timer" | "results" | "idle" | "wod" | "timer" | "leaderboard" | "bookings" | "class";
+                /**
+                 * Format: uuid
+                 * @description ADR-746: the WOD shown; null follows the class's «Τώρα»
+                 */
+                workout_id?: string | null;
             };
             leaderboards: {
                 entries: {
@@ -28084,9 +28241,19 @@ export interface components {
                     id: string;
                     name: string;
                 } | null;
+                /**
+                 * @description ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side
+                 * @enum {string}
+                 */
+                concurrent_mode?: "room" | "split";
                 /** Format: uuid */
                 id: string;
                 name: string;
+                /**
+                 * Format: uuid
+                 * @description ADR-746: the room the screen follows in automatic; null for the whole branch
+                 */
+                space_id?: string | null;
             };
             /** Format: date-time */
             server_now: string;
@@ -30399,6 +30566,11 @@ export interface components {
          */
         ClassScreenList: {
             screens: {
+                /**
+                 * @description ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side
+                 * @enum {string}
+                 */
+                concurrent_mode?: "room" | "split";
                 /** @description Who last changed what the screen shows, and when */
                 focus_changed: {
                     /** Format: date-time */
@@ -30428,10 +30600,20 @@ export interface components {
                 override: {
                     /** Format: uuid */
                     slot_id: string | null;
+                    /**
+                     * Format: uuid
+                     * @description ADR-746: one more class sharing the screen this once
+                     */
+                    split_slot_id?: string | null;
                     /** Format: date-time */
                     until: string | null;
                     /** @enum {string} */
                     view: "wod" | "timer" | "leaderboard" | "bookings" | "class";
+                    /**
+                     * Format: uuid
+                     * @description ADR-746: the class's WOD the pin shows; null follows the class's «Τώρα»
+                     */
+                    workout_id?: string | null;
                 } | null;
                 paired: boolean;
                 /** Format: date-time */
@@ -30441,9 +30623,37 @@ export interface components {
                  * @description When the pending pairing code stops working; null without one
                  */
                 pairing_expires_at: string | null;
+                /** @description ADR-746: what the screen shows now (class remote only): its class and whether a timer runs */
+                showing?: {
+                    class_name?: string | null;
+                    coach_name?: string | null;
+                    /** Format: uuid */
+                    slot_id: string | null;
+                    timer_running: boolean;
+                    view: string;
+                } | null;
+                /**
+                 * Format: uuid
+                 * @description ADR-746: the room the screen follows in automatic; null for the whole branch
+                 */
+                space_id?: string | null;
+            }[];
+            /** @description ADR-746: today's other classes that overlap this one (to share a screen) */
+            together?: {
+                coach_name: string | null;
+                /** Format: uuid */
+                id: string;
+                name: string | null;
             }[];
             /** @description What the person may pin: a coach `timer`, `leaderboard` and `wod` */
             views: ("wod" | "timer" | "leaderboard" | "bookings" | "class")[];
+            /** @description ADR-746: the class's WODs in order, and its «Τώρα» */
+            workouts?: {
+                /** Format: uuid */
+                id: string;
+                live: boolean;
+                title: string | null;
+            }[];
         };
         /** ClassSlotInjuryWarnings */
         ClassSlotInjuryWarnings: {
@@ -58460,6 +58670,46 @@ export interface components {
                 value?: string | null;
             }[];
             logged_by_me: boolean;
+            /** @description ADR-746: the day's other class WODs, each its own card. */
+            more?: {
+                classes: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: date-time */
+                    scheduled_at: string;
+                }[];
+                leaderboard: {
+                    avatar_url?: string | null;
+                    me: boolean;
+                    nickname?: string | null;
+                    /** @description False only on your own row before you opt in to leaderboards */
+                    opted_in: boolean;
+                    /** @description ADR-549: the result ran only part of its clock (stopped early or a shorter clock): ran and planned ms */
+                    part_of_time?: {
+                        planned_ms: number;
+                        ran_ms: number;
+                    } | null;
+                    rank: number;
+                    scale_level_slug?: string | null;
+                    unit?: string | null;
+                    /** Format: uuid */
+                    user_id: string;
+                    value?: string | null;
+                }[];
+                logged_by_me: boolean;
+                score?: {
+                    id: string;
+                    name?: string | null;
+                    score_type: string;
+                    unit?: string | null;
+                } | null;
+                workout?: {
+                    /** Format: uuid */
+                    id: string;
+                    title: string;
+                    type?: string | null;
+                } | null;
+            }[];
             score?: {
                 id: string;
                 name?: string | null;
@@ -62841,7 +63091,10 @@ export interface operations {
     };
     "PaleeWeb.BoxScreenController.class_timer": {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description ADR-746: one of the class's WODs; without it, the class's «Τώρα» */
+                workout_id?: string;
+            };
             header?: never;
             path: {
                 slot_id: string;
@@ -62865,6 +63118,24 @@ export interface operations {
                             /** Format: date-time */
                             scheduled_at?: string;
                         };
+                        /** @description ADR-746: this payload is the «Τώρα» WOD's timer. */
+                        live?: boolean;
+                        /**
+                         * Format: uuid
+                         * @description ADR-746: the coach's «Τώρα» (screens follow it).
+                         */
+                        live_workout_id?: string | null;
+                        /** @description ADR-746: the class's other WODs' timers (one may keep running while another is shown). */
+                        other_timers?: {
+                            current_segment_index?: number;
+                            paused_elapsed_ms?: number;
+                            /** Format: date-time */
+                            segment_started_at_utc?: string | null;
+                            /** @enum {string} */
+                            status: "ready" | "running" | "paused" | "finished";
+                            /** Format: uuid */
+                            workout_id: string | null;
+                        }[];
                         segments: {
                             [key: string]: unknown;
                         }[];
@@ -62890,6 +63161,12 @@ export interface operations {
                         workout?: {
                             [key: string]: unknown;
                         } | null;
+                        /** @description ADR-746: every WOD of the class, in order. */
+                        workouts?: {
+                            /** Format: uuid */
+                            id: string;
+                            title: string | null;
+                        }[];
                     };
                 };
             };
@@ -62999,13 +63276,22 @@ export interface operations {
                             ends_at: string;
                             /** Format: uuid */
                             id: string;
+                            /**
+                             * Format: uuid
+                             * @description ADR-746: the coach's «Τώρα»
+                             */
+                            live_workout_id?: string | null;
                             /** Format: uuid */
                             location_id: string | null;
                             name: string | null;
                             /** Format: date-time */
                             scheduled_at: string;
                             /** Format: uuid */
+                            space_id?: string | null;
+                            /** Format: uuid */
                             workout_id: string | null;
+                            /** @description ADR-746: the class's WODs in order */
+                            workout_ids?: string[];
                         }[];
                         /**
                          * Format: date
@@ -63021,10 +63307,20 @@ export interface operations {
                             slot_id: string | null;
                             /** @enum {string} */
                             source: "auto" | "staff";
+                            /**
+                             * Format: uuid
+                             * @description ADR-746: a second class shown side by side
+                             */
+                            split_slot_id?: string | null;
                             /** Format: date-time */
                             until: string | null;
                             /** @enum {string} */
                             view: "preview" | "timer" | "results" | "idle" | "wod" | "timer" | "leaderboard" | "bookings" | "class";
+                            /**
+                             * Format: uuid
+                             * @description ADR-746: the WOD shown; null follows the class's «Τώρα»
+                             */
+                            workout_id?: string | null;
                         };
                         leaderboards: {
                             entries: {
@@ -63049,9 +63345,19 @@ export interface operations {
                                 id: string;
                                 name: string;
                             } | null;
+                            /**
+                             * @description ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side
+                             * @enum {string}
+                             */
+                            concurrent_mode?: "room" | "split";
                             /** Format: uuid */
                             id: string;
                             name: string;
+                            /**
+                             * Format: uuid
+                             * @description ADR-746: the room the screen follows in automatic; null for the whole branch
+                             */
+                            space_id?: string | null;
                         };
                         /** Format: date-time */
                         server_now: string;
@@ -88014,6 +88320,11 @@ export interface operations {
                         max_screens: number;
                         override_views: ("wod" | "timer" | "leaderboard" | "bookings" | "class")[];
                         screens: {
+                            /**
+                             * @description ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side
+                             * @enum {string}
+                             */
+                            concurrent_mode?: "room" | "split";
                             /** @description Who last changed what the screen shows, and when */
                             focus_changed: {
                                 /** Format: date-time */
@@ -88043,10 +88354,20 @@ export interface operations {
                             override: {
                                 /** Format: uuid */
                                 slot_id: string | null;
+                                /**
+                                 * Format: uuid
+                                 * @description ADR-746: one more class sharing the screen this once
+                                 */
+                                split_slot_id?: string | null;
                                 /** Format: date-time */
                                 until: string | null;
                                 /** @enum {string} */
                                 view: "wod" | "timer" | "leaderboard" | "bookings" | "class";
+                                /**
+                                 * Format: uuid
+                                 * @description ADR-746: the class's WOD the pin shows; null follows the class's «Τώρα»
+                                 */
+                                workout_id?: string | null;
                             } | null;
                             paired: boolean;
                             /** Format: date-time */
@@ -88056,6 +88377,20 @@ export interface operations {
                              * @description When the pending pairing code stops working; null without one
                              */
                             pairing_expires_at: string | null;
+                            /** @description ADR-746: what the screen shows now (class remote only): its class and whether a timer runs */
+                            showing?: {
+                                class_name?: string | null;
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                slot_id: string | null;
+                                timer_running: boolean;
+                                view: string;
+                            } | null;
+                            /**
+                             * Format: uuid
+                             * @description ADR-746: the room the screen follows in automatic; null for the whole branch
+                             */
+                            space_id?: string | null;
                         }[];
                     };
                 };
@@ -88098,6 +88433,11 @@ export interface operations {
                         };
                         /** BoxScreen */
                         screen: {
+                            /**
+                             * @description ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side
+                             * @enum {string}
+                             */
+                            concurrent_mode?: "room" | "split";
                             /** @description Who last changed what the screen shows, and when */
                             focus_changed: {
                                 /** Format: date-time */
@@ -88127,10 +88467,20 @@ export interface operations {
                             override: {
                                 /** Format: uuid */
                                 slot_id: string | null;
+                                /**
+                                 * Format: uuid
+                                 * @description ADR-746: one more class sharing the screen this once
+                                 */
+                                split_slot_id?: string | null;
                                 /** Format: date-time */
                                 until: string | null;
                                 /** @enum {string} */
                                 view: "wod" | "timer" | "leaderboard" | "bookings" | "class";
+                                /**
+                                 * Format: uuid
+                                 * @description ADR-746: the class's WOD the pin shows; null follows the class's «Τώρα»
+                                 */
+                                workout_id?: string | null;
                             } | null;
                             paired: boolean;
                             /** Format: date-time */
@@ -88140,6 +88490,20 @@ export interface operations {
                              * @description When the pending pairing code stops working; null without one
                              */
                             pairing_expires_at: string | null;
+                            /** @description ADR-746: what the screen shows now (class remote only): its class and whether a timer runs */
+                            showing?: {
+                                class_name?: string | null;
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                slot_id: string | null;
+                                timer_running: boolean;
+                                view: string;
+                            } | null;
+                            /**
+                             * Format: uuid
+                             * @description ADR-746: the room the screen follows in automatic; null for the whole branch
+                             */
+                            space_id?: string | null;
                         };
                     };
                 };
@@ -88214,9 +88578,19 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /**
+                     * @description ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side
+                     * @enum {string}
+                     */
+                    concurrent_mode?: "room" | "split";
                     /** Format: uuid */
                     location_id?: string | null;
                     name?: string;
+                    /**
+                     * Format: uuid
+                     * @description ADR-746: the room the screen follows in automatic; null for the whole branch
+                     */
+                    space_id?: string | null;
                 };
             };
         };
@@ -88230,6 +88604,11 @@ export interface operations {
                     "application/json": {
                         /** BoxScreen */
                         screen: {
+                            /**
+                             * @description ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side
+                             * @enum {string}
+                             */
+                            concurrent_mode?: "room" | "split";
                             /** @description Who last changed what the screen shows, and when */
                             focus_changed: {
                                 /** Format: date-time */
@@ -88259,10 +88638,20 @@ export interface operations {
                             override: {
                                 /** Format: uuid */
                                 slot_id: string | null;
+                                /**
+                                 * Format: uuid
+                                 * @description ADR-746: one more class sharing the screen this once
+                                 */
+                                split_slot_id?: string | null;
                                 /** Format: date-time */
                                 until: string | null;
                                 /** @enum {string} */
                                 view: "wod" | "timer" | "leaderboard" | "bookings" | "class";
+                                /**
+                                 * Format: uuid
+                                 * @description ADR-746: the class's WOD the pin shows; null follows the class's «Τώρα»
+                                 */
+                                workout_id?: string | null;
                             } | null;
                             paired: boolean;
                             /** Format: date-time */
@@ -88272,6 +88661,20 @@ export interface operations {
                              * @description When the pending pairing code stops working; null without one
                              */
                             pairing_expires_at: string | null;
+                            /** @description ADR-746: what the screen shows now (class remote only): its class and whether a timer runs */
+                            showing?: {
+                                class_name?: string | null;
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                slot_id: string | null;
+                                timer_running: boolean;
+                                view: string;
+                            } | null;
+                            /**
+                             * Format: uuid
+                             * @description ADR-746: the room the screen follows in automatic; null for the whole branch
+                             */
+                            space_id?: string | null;
                         };
                     };
                 };
@@ -88320,12 +88723,22 @@ export interface operations {
                      */
                     slot_id?: string | null;
                     /**
+                     * Format: uuid
+                     * @description ADR-746: one more of today's classes sharing the screen
+                     */
+                    split_slot_id?: string | null;
+                    /**
                      * Format: date-time
                      * @description When the screen goes back to automatic (within 24 hours); null to keep it
                      */
                     until?: string | null;
                     /** @enum {string} */
                     view: "wod" | "timer" | "leaderboard" | "bookings" | "class";
+                    /**
+                     * Format: uuid
+                     * @description ADR-746: one of the class's WODs; null follows its «Τώρα»
+                     */
+                    workout_id?: string | null;
                 };
             };
         };
@@ -88339,6 +88752,11 @@ export interface operations {
                     "application/json": {
                         /** BoxScreen */
                         screen: {
+                            /**
+                             * @description ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side
+                             * @enum {string}
+                             */
+                            concurrent_mode?: "room" | "split";
                             /** @description Who last changed what the screen shows, and when */
                             focus_changed: {
                                 /** Format: date-time */
@@ -88368,10 +88786,20 @@ export interface operations {
                             override: {
                                 /** Format: uuid */
                                 slot_id: string | null;
+                                /**
+                                 * Format: uuid
+                                 * @description ADR-746: one more class sharing the screen this once
+                                 */
+                                split_slot_id?: string | null;
                                 /** Format: date-time */
                                 until: string | null;
                                 /** @enum {string} */
                                 view: "wod" | "timer" | "leaderboard" | "bookings" | "class";
+                                /**
+                                 * Format: uuid
+                                 * @description ADR-746: the class's WOD the pin shows; null follows the class's «Τώρα»
+                                 */
+                                workout_id?: string | null;
                             } | null;
                             paired: boolean;
                             /** Format: date-time */
@@ -88381,6 +88809,20 @@ export interface operations {
                              * @description When the pending pairing code stops working; null without one
                              */
                             pairing_expires_at: string | null;
+                            /** @description ADR-746: what the screen shows now (class remote only): its class and whether a timer runs */
+                            showing?: {
+                                class_name?: string | null;
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                slot_id: string | null;
+                                timer_running: boolean;
+                                view: string;
+                            } | null;
+                            /**
+                             * Format: uuid
+                             * @description ADR-746: the room the screen follows in automatic; null for the whole branch
+                             */
+                            space_id?: string | null;
                         };
                     };
                 };
@@ -88431,6 +88873,11 @@ export interface operations {
                     "application/json": {
                         /** BoxScreen */
                         screen: {
+                            /**
+                             * @description ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side
+                             * @enum {string}
+                             */
+                            concurrent_mode?: "room" | "split";
                             /** @description Who last changed what the screen shows, and when */
                             focus_changed: {
                                 /** Format: date-time */
@@ -88460,10 +88907,20 @@ export interface operations {
                             override: {
                                 /** Format: uuid */
                                 slot_id: string | null;
+                                /**
+                                 * Format: uuid
+                                 * @description ADR-746: one more class sharing the screen this once
+                                 */
+                                split_slot_id?: string | null;
                                 /** Format: date-time */
                                 until: string | null;
                                 /** @enum {string} */
                                 view: "wod" | "timer" | "leaderboard" | "bookings" | "class";
+                                /**
+                                 * Format: uuid
+                                 * @description ADR-746: the class's WOD the pin shows; null follows the class's «Τώρα»
+                                 */
+                                workout_id?: string | null;
                             } | null;
                             paired: boolean;
                             /** Format: date-time */
@@ -88473,6 +88930,20 @@ export interface operations {
                              * @description When the pending pairing code stops working; null without one
                              */
                             pairing_expires_at: string | null;
+                            /** @description ADR-746: what the screen shows now (class remote only): its class and whether a timer runs */
+                            showing?: {
+                                class_name?: string | null;
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                slot_id: string | null;
+                                timer_running: boolean;
+                                view: string;
+                            } | null;
+                            /**
+                             * Format: uuid
+                             * @description ADR-746: the room the screen follows in automatic; null for the whole branch
+                             */
+                            space_id?: string | null;
                         };
                     };
                 };
@@ -88521,6 +88992,11 @@ export interface operations {
                         };
                         /** BoxScreen */
                         screen: {
+                            /**
+                             * @description ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side
+                             * @enum {string}
+                             */
+                            concurrent_mode?: "room" | "split";
                             /** @description Who last changed what the screen shows, and when */
                             focus_changed: {
                                 /** Format: date-time */
@@ -88550,10 +89026,20 @@ export interface operations {
                             override: {
                                 /** Format: uuid */
                                 slot_id: string | null;
+                                /**
+                                 * Format: uuid
+                                 * @description ADR-746: one more class sharing the screen this once
+                                 */
+                                split_slot_id?: string | null;
                                 /** Format: date-time */
                                 until: string | null;
                                 /** @enum {string} */
                                 view: "wod" | "timer" | "leaderboard" | "bookings" | "class";
+                                /**
+                                 * Format: uuid
+                                 * @description ADR-746: the class's WOD the pin shows; null follows the class's «Τώρα»
+                                 */
+                                workout_id?: string | null;
                             } | null;
                             paired: boolean;
                             /** Format: date-time */
@@ -88563,6 +89049,20 @@ export interface operations {
                              * @description When the pending pairing code stops working; null without one
                              */
                             pairing_expires_at: string | null;
+                            /** @description ADR-746: what the screen shows now (class remote only): its class and whether a timer runs */
+                            showing?: {
+                                class_name?: string | null;
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                slot_id: string | null;
+                                timer_running: boolean;
+                                view: string;
+                            } | null;
+                            /**
+                             * Format: uuid
+                             * @description ADR-746: the room the screen follows in automatic; null for the whole branch
+                             */
+                            space_id?: string | null;
                         };
                     };
                 };
@@ -121891,6 +122391,66 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminClassWorkoutsController.put_booking_workout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Scheduled class ID */
+                id: string;
+                /** @description Booking ID */
+                booking_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    workout_id: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Booking */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        booking: {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Not one of the class's WODs */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminDayWorkoutController.follow_day": {
         parameters: {
             query?: never;
@@ -122029,6 +122589,64 @@ export interface operations {
                         slot_id: string;
                         /** Format: uuid */
                         workout_id?: string | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminClassWorkoutsController.put_live": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Scheduled class ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    workout_id: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Slot */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        slot: {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Not one of the class's WODs */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
                     };
                 };
             };
@@ -122259,6 +122877,63 @@ export interface operations {
                     "application/json": {
                         code?: string;
                         error?: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminClassWorkoutsController.put_workouts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Scheduled class ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    workout_ids: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description Slot */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        slot: {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid list */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
                     };
                 };
             };
@@ -126755,6 +127430,8 @@ export interface operations {
                      * @enum {string}
                      */
                     mode?: "class_workout" | "class_variant" | "personal";
+                    /** @description ADR-746: `class_variant` for a member who has not booked the class. It does not book them: the WOD is in their programme that day and their notice opens the class. */
+                    offer_booking?: boolean;
                     /** Format: date */
                     scheduled_for: string;
                     slot_id?: string | null;
@@ -127787,6 +128464,8 @@ export interface operations {
                      * @enum {string}
                      */
                     mode?: "class_workout" | "class_variant" | "personal";
+                    /** @description ADR-746: `class_variant` for a member who has not booked the class. It does not book them: the WOD is in their programme that day and their notice opens the class. */
+                    offer_booking?: boolean;
                     /** Format: date */
                     scheduled_for: string;
                     slot_id?: string | null;
@@ -135907,7 +136586,10 @@ export interface operations {
     };
     "PaleeWeb.ClassTimerController.show": {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description ADR-746: the timer of this WOD of the class; left out (or not one of the class's WODs) = the coach's «Τώρα». */
+                workout_id?: string;
+            };
             header?: never;
             path: {
                 /** @description Scheduled class ID */
@@ -135932,6 +136614,24 @@ export interface operations {
                             /** Format: date-time */
                             scheduled_at?: string;
                         };
+                        /** @description ADR-746: this payload is the «Τώρα» WOD's timer. */
+                        live?: boolean;
+                        /**
+                         * Format: uuid
+                         * @description ADR-746: the coach's «Τώρα» (screens follow it).
+                         */
+                        live_workout_id?: string | null;
+                        /** @description ADR-746: the class's other WODs' timers (one may keep running while another is shown). */
+                        other_timers?: {
+                            current_segment_index?: number;
+                            paused_elapsed_ms?: number;
+                            /** Format: date-time */
+                            segment_started_at_utc?: string | null;
+                            /** @enum {string} */
+                            status: "ready" | "running" | "paused" | "finished";
+                            /** Format: uuid */
+                            workout_id: string | null;
+                        }[];
                         segments: {
                             [key: string]: unknown;
                         }[];
@@ -135957,6 +136657,12 @@ export interface operations {
                         workout?: {
                             [key: string]: unknown;
                         } | null;
+                        /** @description ADR-746: every WOD of the class, in order. */
+                        workouts?: {
+                            /** Format: uuid */
+                            id: string;
+                            title: string | null;
+                        }[];
                     };
                 };
             };
@@ -135996,6 +136702,11 @@ export interface operations {
                     timer_preset?: {
                         [key: string]: unknown;
                     };
+                    /**
+                     * Format: uuid
+                     * @description ADR-746: the WOD whose timer this is (default: «Τώρα»).
+                     */
+                    workout_id?: string | null;
                 };
             };
         };
@@ -136015,6 +136726,24 @@ export interface operations {
                             /** Format: date-time */
                             scheduled_at?: string;
                         };
+                        /** @description ADR-746: this payload is the «Τώρα» WOD's timer. */
+                        live?: boolean;
+                        /**
+                         * Format: uuid
+                         * @description ADR-746: the coach's «Τώρα» (screens follow it).
+                         */
+                        live_workout_id?: string | null;
+                        /** @description ADR-746: the class's other WODs' timers (one may keep running while another is shown). */
+                        other_timers?: {
+                            current_segment_index?: number;
+                            paused_elapsed_ms?: number;
+                            /** Format: date-time */
+                            segment_started_at_utc?: string | null;
+                            /** @enum {string} */
+                            status: "ready" | "running" | "paused" | "finished";
+                            /** Format: uuid */
+                            workout_id: string | null;
+                        }[];
                         segments: {
                             [key: string]: unknown;
                         }[];
@@ -136040,6 +136769,12 @@ export interface operations {
                         workout?: {
                             [key: string]: unknown;
                         } | null;
+                        /** @description ADR-746: every WOD of the class, in order. */
+                        workouts?: {
+                            /** Format: uuid */
+                            id: string;
+                            title: string | null;
+                        }[];
                     };
                 };
             };
@@ -136113,6 +136848,11 @@ export interface operations {
                 content: {
                     "application/json": {
                         screens: {
+                            /**
+                             * @description ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side
+                             * @enum {string}
+                             */
+                            concurrent_mode?: "room" | "split";
                             /** @description Who last changed what the screen shows, and when */
                             focus_changed: {
                                 /** Format: date-time */
@@ -136142,10 +136882,20 @@ export interface operations {
                             override: {
                                 /** Format: uuid */
                                 slot_id: string | null;
+                                /**
+                                 * Format: uuid
+                                 * @description ADR-746: one more class sharing the screen this once
+                                 */
+                                split_slot_id?: string | null;
                                 /** Format: date-time */
                                 until: string | null;
                                 /** @enum {string} */
                                 view: "wod" | "timer" | "leaderboard" | "bookings" | "class";
+                                /**
+                                 * Format: uuid
+                                 * @description ADR-746: the class's WOD the pin shows; null follows the class's «Τώρα»
+                                 */
+                                workout_id?: string | null;
                             } | null;
                             paired: boolean;
                             /** Format: date-time */
@@ -136155,9 +136905,37 @@ export interface operations {
                              * @description When the pending pairing code stops working; null without one
                              */
                             pairing_expires_at: string | null;
+                            /** @description ADR-746: what the screen shows now (class remote only): its class and whether a timer runs */
+                            showing?: {
+                                class_name?: string | null;
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                slot_id: string | null;
+                                timer_running: boolean;
+                                view: string;
+                            } | null;
+                            /**
+                             * Format: uuid
+                             * @description ADR-746: the room the screen follows in automatic; null for the whole branch
+                             */
+                            space_id?: string | null;
+                        }[];
+                        /** @description ADR-746: today's other classes that overlap this one (to share a screen) */
+                        together?: {
+                            coach_name: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            name: string | null;
                         }[];
                         /** @description What the person may pin: a coach `timer`, `leaderboard` and `wod` */
                         views: ("wod" | "timer" | "leaderboard" | "bookings" | "class")[];
+                        /** @description ADR-746: the class's WODs in order, and its «Τώρα» */
+                        workouts?: {
+                            /** Format: uuid */
+                            id: string;
+                            live: boolean;
+                            title: string | null;
+                        }[];
                     };
                 };
             };
@@ -136202,12 +136980,22 @@ export interface operations {
             content: {
                 "application/json": {
                     /**
+                     * Format: uuid
+                     * @description ADR-746: share the screen with this class this once
+                     */
+                    split_slot_id?: string | null;
+                    /**
                      * Format: date-time
                      * @description When the screen goes back to automatic (within 24 hours); null to keep it
                      */
                     until?: string | null;
                     /** @enum {string} */
                     view: "wod" | "timer" | "leaderboard" | "bookings" | "class";
+                    /**
+                     * Format: uuid
+                     * @description ADR-746: one of the class's WODs; null follows its «Τώρα»
+                     */
+                    workout_id?: string | null;
                 };
             };
         };
@@ -136221,6 +137009,11 @@ export interface operations {
                     "application/json": {
                         /** BoxScreen */
                         screen: {
+                            /**
+                             * @description ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side
+                             * @enum {string}
+                             */
+                            concurrent_mode?: "room" | "split";
                             /** @description Who last changed what the screen shows, and when */
                             focus_changed: {
                                 /** Format: date-time */
@@ -136250,10 +137043,20 @@ export interface operations {
                             override: {
                                 /** Format: uuid */
                                 slot_id: string | null;
+                                /**
+                                 * Format: uuid
+                                 * @description ADR-746: one more class sharing the screen this once
+                                 */
+                                split_slot_id?: string | null;
                                 /** Format: date-time */
                                 until: string | null;
                                 /** @enum {string} */
                                 view: "wod" | "timer" | "leaderboard" | "bookings" | "class";
+                                /**
+                                 * Format: uuid
+                                 * @description ADR-746: the class's WOD the pin shows; null follows the class's «Τώρα»
+                                 */
+                                workout_id?: string | null;
                             } | null;
                             paired: boolean;
                             /** Format: date-time */
@@ -136263,6 +137066,20 @@ export interface operations {
                              * @description When the pending pairing code stops working; null without one
                              */
                             pairing_expires_at: string | null;
+                            /** @description ADR-746: what the screen shows now (class remote only): its class and whether a timer runs */
+                            showing?: {
+                                class_name?: string | null;
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                slot_id: string | null;
+                                timer_running: boolean;
+                                view: string;
+                            } | null;
+                            /**
+                             * Format: uuid
+                             * @description ADR-746: the room the screen follows in automatic; null for the whole branch
+                             */
+                            space_id?: string | null;
                         };
                     };
                 };
@@ -136327,6 +137144,11 @@ export interface operations {
                     "application/json": {
                         /** BoxScreen */
                         screen: {
+                            /**
+                             * @description ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side
+                             * @enum {string}
+                             */
+                            concurrent_mode?: "room" | "split";
                             /** @description Who last changed what the screen shows, and when */
                             focus_changed: {
                                 /** Format: date-time */
@@ -136356,10 +137178,20 @@ export interface operations {
                             override: {
                                 /** Format: uuid */
                                 slot_id: string | null;
+                                /**
+                                 * Format: uuid
+                                 * @description ADR-746: one more class sharing the screen this once
+                                 */
+                                split_slot_id?: string | null;
                                 /** Format: date-time */
                                 until: string | null;
                                 /** @enum {string} */
                                 view: "wod" | "timer" | "leaderboard" | "bookings" | "class";
+                                /**
+                                 * Format: uuid
+                                 * @description ADR-746: the class's WOD the pin shows; null follows the class's «Τώρα»
+                                 */
+                                workout_id?: string | null;
                             } | null;
                             paired: boolean;
                             /** Format: date-time */
@@ -136369,6 +137201,20 @@ export interface operations {
                              * @description When the pending pairing code stops working; null without one
                              */
                             pairing_expires_at: string | null;
+                            /** @description ADR-746: what the screen shows now (class remote only): its class and whether a timer runs */
+                            showing?: {
+                                class_name?: string | null;
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                slot_id: string | null;
+                                timer_running: boolean;
+                                view: string;
+                            } | null;
+                            /**
+                             * Format: uuid
+                             * @description ADR-746: the room the screen follows in automatic; null for the whole branch
+                             */
+                            space_id?: string | null;
                         };
                     };
                 };
@@ -139477,6 +140323,46 @@ export interface operations {
                             value?: string | null;
                         }[];
                         logged_by_me: boolean;
+                        /** @description ADR-746: the day's other class WODs, each its own card. */
+                        more?: {
+                            classes: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: date-time */
+                                scheduled_at: string;
+                            }[];
+                            leaderboard: {
+                                avatar_url?: string | null;
+                                me: boolean;
+                                nickname?: string | null;
+                                /** @description False only on your own row before you opt in to leaderboards */
+                                opted_in: boolean;
+                                /** @description ADR-549: the result ran only part of its clock (stopped early or a shorter clock): ran and planned ms */
+                                part_of_time?: {
+                                    planned_ms: number;
+                                    ran_ms: number;
+                                } | null;
+                                rank: number;
+                                scale_level_slug?: string | null;
+                                unit?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                                value?: string | null;
+                            }[];
+                            logged_by_me: boolean;
+                            score?: {
+                                id: string;
+                                name?: string | null;
+                                score_type: string;
+                                unit?: string | null;
+                            } | null;
+                            workout?: {
+                                /** Format: uuid */
+                                id: string;
+                                title: string;
+                                type?: string | null;
+                            } | null;
+                        }[];
                         score?: {
                             id: string;
                             name?: string | null;
@@ -148450,6 +149336,11 @@ export interface operations {
                                 id: string;
                                 nickname?: string | null;
                             }[];
+                            /**
+                             * Format: uuid
+                             * @description ADR-746: the coach's «Τώρα»; people who decide at the box follow it.
+                             */
+                            live_workout_id?: string | null;
                             /** @description ADR-202: the room or area of the branch the class is held in. */
                             space?: {
                                 /** Format: uuid */
@@ -148477,16 +149368,89 @@ export interface operations {
                             } & {
                                 [key: string]: unknown;
                             }) | null;
+                            /** @description ADR-746: how many of the class's active bookings do each WOD, and how many decide at the box. Seats stay the class's. */
+                            workout_choice_counts?: {
+                                undecided: number;
+                                workouts: {
+                                    count: number;
+                                    /** Format: uuid */
+                                    workout_id: string;
+                                }[];
+                            };
+                            /** @description ADR-746: how many WODs a class holds while its WODs are locked (ADR-551). */
+                            workout_count?: number;
                             /**
                              * @description ADR-230: day = inherited from the day's WOD, class = set on the class.
                              * @enum {string|null}
                              */
                             workout_source?: "day" | "class" | null;
+                            /** @description ADR-746: every WOD of the class in order, each whole like `workout` (the first). */
+                            workouts?: {
+                                [key: string]: unknown;
+                            }[];
                         } & {
                             [key: string]: unknown;
                         })[];
                         /** Format: date */
                         start_date: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.ClassWorkoutChoiceController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Scheduled class ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    workout_id: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Booking */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        booking: {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+            };
+            /** @description No booking of mine in this class */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Not one of the class's WODs */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
                     };
                 };
             };

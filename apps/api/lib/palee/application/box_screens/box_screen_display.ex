@@ -66,11 +66,13 @@ defmodule Palee.Application.BoxScreens.BoxScreenDisplay do
   end
 
   @doc "A class's timer (the wall-display payload), for a class the screen shows."
-  def class_timer(%{context: context, screen: screen}, slot_id) do
+  # ADR-746: `workout_id` picks one of the class's WODs (a pin that names
+  # it); nil follows the class's «Τώρα».
+  def class_timer(%{context: context, screen: screen}, slot_id, workout_id \\ nil) do
     with {:ok, slot_id} <- Ecto.UUID.cast(slot_id),
          %{} = slot <- Scheduling.get_slot(context, slot_id),
          true <- BoxScreenToday.shows?(screen, slot),
-         {:ok, view} <- ClassTimerView.load(context, slot_id) do
+         {:ok, view} <- ClassTimerView.load(context, slot_id, workout_id) do
       {:ok, ClassTimerView.payload(view, BoxScreens.now())}
     else
       _missing -> {:error, :not_found}

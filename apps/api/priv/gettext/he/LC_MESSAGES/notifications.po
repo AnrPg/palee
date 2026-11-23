@@ -975,3 +975,12 @@ msgstr "Palee בדקה את סוג האימון שלך"
 
 msgid "«%{label}» now follows the Palee list, and your box's WODs moved with it."
 msgstr "«%{label}» עוקב כעת אחרי הרשימה של Palee, וה-WOD של הבוקס שלך עברו איתו."
+
+msgid "%{screen} shows another class"
+msgstr "המסך %{screen} מציג שיעור אחר"
+
+msgid "%{coach} took the screen. You can take it back from your class's timer."
+msgstr "%{coach} לקח/ה את המסך. אפשר להחזיר אותו מהטיימר של השיעור שלך."
+
+msgid "Your coach gave you your own WOD for a class. Open it to book your place."
+msgstr "המאמן/ת נתן/ה לך WOD משלך לשיעור. פתח/י אותו כדי להזמין מקום."

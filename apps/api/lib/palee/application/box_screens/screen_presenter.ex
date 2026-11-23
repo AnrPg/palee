@@ -14,6 +14,8 @@ defmodule Palee.Application.BoxScreens.ScreenPresenter do
       id: screen.id,
       name: screen.name,
       location_id: screen.location_id,
+      space_id: Map.get(screen, :space_id),
+      concurrent_mode: Map.get(screen, :concurrent_mode) || "room",
       paired: not is_nil(screen.paired_at),
       paired_at: screen.paired_at,
       last_seen_at: screen.last_seen_at,

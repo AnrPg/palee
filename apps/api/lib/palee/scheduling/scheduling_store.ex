@@ -86,6 +86,18 @@ defmodule Palee.Scheduling.SchedulingStore do
     do: tenant_call(context, :set_slot_state, [id, params])
 
   @impl true
+  def set_class_workouts(context, id, workout_ids),
+    do: tenant_call(context, :set_class_workouts, [id, workout_ids])
+
+  @impl true
+  def set_live_workout(context, id, workout_id),
+    do: tenant_call(context, :set_live_workout, [id, workout_id])
+
+  @impl true
+  def choose_booking_workout(context, booking_id, workout_id, chosen_by_id, at),
+    do: tenant_call(context, :choose_booking_workout, [booking_id, workout_id, chosen_by_id, at])
+
+  @impl true
   def update_slot(context, id, params), do: tenant_call(context, :update_slot, [id, params])
   def update_slot(_id, _params), do: missing_tenant()
 

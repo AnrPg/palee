@@ -20,6 +20,7 @@ import { type CueMode, primeCueAudio, readCueMode, storeCueMode } from "@/lib/ti
 import { ClassScreenPin } from "./ClassScreenPin";
 import { ClassTimerChooser } from "./ClassTimerChooser";
 import { ClassTimerFace } from "./ClassTimerFace";
+import { ClassTimerWodSwitch } from "./ClassTimerWodSwitch";
 import { HelpCaption, RemoteHelpContext, useRemoteHelp } from "./remote-help";
 import { TimerNowPanel, useTimerNow } from "./TimerNowPanel";
 
@@ -148,6 +149,14 @@ export function ClassTimerControl({ slotId }: { slotId: string }) {
               </li>
             </ul>
           ) : null}
+
+          <ClassTimerWodSwitch
+            payload={payload}
+            token={tokens?.access_token}
+            slotId={slotId}
+            running={status === "running"}
+            onPause={() => timer.send({ command: "pause" })}
+          />
 
           <section className="rounded-3xl border p-5" style={{ borderColor: "var(--border)", background: "var(--panel)" }}>
             <ClassTimerFace payload={payload} position={position} size="panel" />

@@ -20721,6 +20721,14 @@
       },
       "BoxScreen": {
         "properties": {
+          "concurrent_mode": {
+            "description": "ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side",
+            "enum": [
+              "room",
+              "split"
+            ],
+            "type": "string"
+          },
           "focus_changed": {
             "description": "Who last changed what the screen shows, and when",
             "nullable": true,
@@ -20785,6 +20793,12 @@
                 "nullable": true,
                 "type": "string"
               },
+              "split_slot_id": {
+                "description": "ADR-746: one more class sharing the screen this once",
+                "format": "uuid",
+                "nullable": true,
+                "type": "string"
+              },
               "until": {
                 "format": "date-time",
                 "nullable": true,
@@ -20798,6 +20812,12 @@
                   "bookings",
                   "class"
                 ],
+                "type": "string"
+              },
+              "workout_id": {
+                "description": "ADR-746: the class's WOD the pin shows; null follows the class's «Τώρα»",
+                "format": "uuid",
+                "nullable": true,
                 "type": "string"
               }
             },
@@ -20820,6 +20840,43 @@
           "pairing_expires_at": {
             "description": "When the pending pairing code stops working; null without one",
             "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "showing": {
+            "description": "ADR-746: what the screen shows now (class remote only): its class and whether a timer runs",
+            "nullable": true,
+            "properties": {
+              "class_name": {
+                "nullable": true,
+                "type": "string"
+              },
+              "coach_name": {
+                "nullable": true,
+                "type": "string"
+              },
+              "slot_id": {
+                "format": "uuid",
+                "nullable": true,
+                "type": "string"
+              },
+              "timer_running": {
+                "type": "boolean"
+              },
+              "view": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "slot_id",
+              "view",
+              "timer_running"
+            ],
+            "type": "object"
+          },
+          "space_id": {
+            "description": "ADR-746: the room the screen follows in automatic; null for the whole branch",
+            "format": "uuid",
             "nullable": true,
             "type": "string"
           }
@@ -20894,6 +20951,12 @@
             "format": "uuid",
             "type": "string"
           },
+          "live_workout_id": {
+            "description": "ADR-746: the coach's «Τώρα»",
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
           "location_id": {
             "format": "uuid",
             "nullable": true,
@@ -20907,10 +20970,23 @@
             "format": "date-time",
             "type": "string"
           },
+          "space_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
           "workout_id": {
             "format": "uuid",
             "nullable": true,
             "type": "string"
+          },
+          "workout_ids": {
+            "description": "ADR-746: the class's WODs in order",
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "type": "array"
           }
         },
         "required": [
@@ -20944,6 +21020,12 @@
             ],
             "type": "string"
           },
+          "split_slot_id": {
+            "description": "ADR-746: a second class shown side by side",
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
           "until": {
             "format": "date-time",
             "nullable": true,
@@ -20961,6 +21043,12 @@
               "bookings",
               "class"
             ],
+            "type": "string"
+          },
+          "workout_id": {
+            "description": "ADR-746: the WOD shown; null follows the class's «Τώρα»",
+            "format": "uuid",
+            "nullable": true,
             "type": "string"
           }
         },
@@ -21050,6 +21138,12 @@
             "nullable": true,
             "type": "string"
           },
+          "split_slot_id": {
+            "description": "ADR-746: one more class sharing the screen this once",
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
           "until": {
             "format": "date-time",
             "nullable": true,
@@ -21063,6 +21157,12 @@
               "bookings",
               "class"
             ],
+            "type": "string"
+          },
+          "workout_id": {
+            "description": "ADR-746: the class's WOD the pin shows; null follows the class's «Τώρα»",
+            "format": "uuid",
+            "nullable": true,
             "type": "string"
           }
         },
@@ -21170,6 +21270,12 @@
                   "format": "uuid",
                   "type": "string"
                 },
+                "live_workout_id": {
+                  "description": "ADR-746: the coach's «Τώρα»",
+                  "format": "uuid",
+                  "nullable": true,
+                  "type": "string"
+                },
                 "location_id": {
                   "format": "uuid",
                   "nullable": true,
@@ -21183,10 +21289,23 @@
                   "format": "date-time",
                   "type": "string"
                 },
+                "space_id": {
+                  "format": "uuid",
+                  "nullable": true,
+                  "type": "string"
+                },
                 "workout_id": {
                   "format": "uuid",
                   "nullable": true,
                   "type": "string"
+                },
+                "workout_ids": {
+                  "description": "ADR-746: the class's WODs in order",
+                  "items": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "type": "array"
                 }
               },
               "required": [
@@ -21227,6 +21346,12 @@
                 ],
                 "type": "string"
               },
+              "split_slot_id": {
+                "description": "ADR-746: a second class shown side by side",
+                "format": "uuid",
+                "nullable": true,
+                "type": "string"
+              },
               "until": {
                 "format": "date-time",
                 "nullable": true,
@@ -21244,6 +21369,12 @@
                   "bookings",
                   "class"
                 ],
+                "type": "string"
+              },
+              "workout_id": {
+                "description": "ADR-746: the WOD shown; null follows the class's «Τώρα»",
+                "format": "uuid",
+                "nullable": true,
                 "type": "string"
               }
             },
@@ -21346,11 +21477,25 @@
                 ],
                 "type": "object"
               },
+              "concurrent_mode": {
+                "description": "ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side",
+                "enum": [
+                  "room",
+                  "split"
+                ],
+                "type": "string"
+              },
               "id": {
                 "format": "uuid",
                 "type": "string"
               },
               "name": {
+                "type": "string"
+              },
+              "space_id": {
+                "description": "ADR-746: the room the screen follows in automatic; null for the whole branch",
+                "format": "uuid",
+                "nullable": true,
                 "type": "string"
               }
             },
@@ -29442,6 +29587,14 @@
           "screens": {
             "items": {
               "properties": {
+                "concurrent_mode": {
+                  "description": "ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side",
+                  "enum": [
+                    "room",
+                    "split"
+                  ],
+                  "type": "string"
+                },
                 "focus_changed": {
                   "description": "Who last changed what the screen shows, and when",
                   "nullable": true,
@@ -29506,6 +29659,12 @@
                       "nullable": true,
                       "type": "string"
                     },
+                    "split_slot_id": {
+                      "description": "ADR-746: one more class sharing the screen this once",
+                      "format": "uuid",
+                      "nullable": true,
+                      "type": "string"
+                    },
                     "until": {
                       "format": "date-time",
                       "nullable": true,
@@ -29519,6 +29678,12 @@
                         "bookings",
                         "class"
                       ],
+                      "type": "string"
+                    },
+                    "workout_id": {
+                      "description": "ADR-746: the class's WOD the pin shows; null follows the class's «Τώρα»",
+                      "format": "uuid",
+                      "nullable": true,
                       "type": "string"
                     }
                   },
@@ -29543,6 +29708,43 @@
                   "format": "date-time",
                   "nullable": true,
                   "type": "string"
+                },
+                "showing": {
+                  "description": "ADR-746: what the screen shows now (class remote only): its class and whether a timer runs",
+                  "nullable": true,
+                  "properties": {
+                    "class_name": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "coach_name": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "slot_id": {
+                      "format": "uuid",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "timer_running": {
+                      "type": "boolean"
+                    },
+                    "view": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "slot_id",
+                    "view",
+                    "timer_running"
+                  ],
+                  "type": "object"
+                },
+                "space_id": {
+                  "description": "ADR-746: the room the screen follows in automatic; null for the whole branch",
+                  "format": "uuid",
+                  "nullable": true,
+                  "type": "string"
                 }
               },
               "required": [
@@ -29562,6 +29764,32 @@
             },
             "type": "array"
           },
+          "together": {
+            "description": "ADR-746: today's other classes that overlap this one (to share a screen)",
+            "items": {
+              "properties": {
+                "coach_name": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "name": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "coach_name"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
           "views": {
             "description": "What the person may pin: a coach `timer`, `leaderboard` and `wod`",
             "items": {
@@ -29573,6 +29801,31 @@
                 "class"
               ],
               "type": "string"
+            },
+            "type": "array"
+          },
+          "workouts": {
+            "description": "ADR-746: the class's WODs in order, and its «Τώρα»",
+            "items": {
+              "properties": {
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "live": {
+                  "type": "boolean"
+                },
+                "title": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "title",
+                "live"
+              ],
+              "type": "object"
             },
             "type": "array"
           }
@@ -122173,6 +122426,154 @@
           "logged_by_me": {
             "type": "boolean"
           },
+          "more": {
+            "description": "ADR-746: the day's other class WODs, each its own card.",
+            "items": {
+              "properties": {
+                "classes": {
+                  "items": {
+                    "properties": {
+                      "id": {
+                        "format": "uuid",
+                        "type": "string"
+                      },
+                      "scheduled_at": {
+                        "format": "date-time",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "scheduled_at"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "leaderboard": {
+                  "items": {
+                    "properties": {
+                      "avatar_url": {
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "me": {
+                        "type": "boolean"
+                      },
+                      "nickname": {
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "opted_in": {
+                        "description": "False only on your own row before you opt in to leaderboards",
+                        "type": "boolean"
+                      },
+                      "part_of_time": {
+                        "description": "ADR-549: the result ran only part of its clock (stopped early or a shorter clock): ran and planned ms",
+                        "nullable": true,
+                        "properties": {
+                          "planned_ms": {
+                            "type": "integer"
+                          },
+                          "ran_ms": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "ran_ms",
+                          "planned_ms"
+                        ],
+                        "type": "object"
+                      },
+                      "rank": {
+                        "type": "integer"
+                      },
+                      "scale_level_slug": {
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "unit": {
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "user_id": {
+                        "format": "uuid",
+                        "type": "string"
+                      },
+                      "value": {
+                        "nullable": true,
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "rank",
+                      "user_id",
+                      "me",
+                      "opted_in"
+                    ],
+                    "title": "WodLeaderboardEntry",
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "logged_by_me": {
+                  "type": "boolean"
+                },
+                "score": {
+                  "nullable": true,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "score_type": {
+                      "type": "string"
+                    },
+                    "unit": {
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "score_type"
+                  ],
+                  "type": "object"
+                },
+                "workout": {
+                  "nullable": true,
+                  "properties": {
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "title"
+                  ],
+                  "type": "object"
+                }
+              },
+              "required": [
+                "classes",
+                "leaderboard",
+                "logged_by_me"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
           "score": {
             "nullable": true,
             "properties": {
@@ -133916,6 +134317,16 @@
               "format": "uuid",
               "type": "string"
             }
+          },
+          {
+            "description": "ADR-746: one of the class's WODs; without it, the class's «Τώρα»",
+            "in": "query",
+            "name": "workout_id",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -133942,6 +134353,56 @@
                         }
                       },
                       "type": "object"
+                    },
+                    "live": {
+                      "description": "ADR-746: this payload is the «Τώρα» WOD's timer.",
+                      "type": "boolean"
+                    },
+                    "live_workout_id": {
+                      "description": "ADR-746: the coach's «Τώρα» (screens follow it).",
+                      "format": "uuid",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "other_timers": {
+                      "description": "ADR-746: the class's other WODs' timers (one may keep running while another is shown).",
+                      "items": {
+                        "properties": {
+                          "current_segment_index": {
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          "paused_elapsed_ms": {
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          "segment_started_at_utc": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "ready",
+                              "running",
+                              "paused",
+                              "finished"
+                            ],
+                            "type": "string"
+                          },
+                          "workout_id": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "workout_id",
+                          "status"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
                     },
                     "segments": {
                       "items": {
@@ -134008,6 +134469,27 @@
                       "additionalProperties": true,
                       "nullable": true,
                       "type": "object"
+                    },
+                    "workouts": {
+                      "description": "ADR-746: every WOD of the class, in order.",
+                      "items": {
+                        "properties": {
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "title": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "title"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
                     }
                   },
                   "required": [
@@ -134260,6 +134742,12 @@
                             "format": "uuid",
                             "type": "string"
                           },
+                          "live_workout_id": {
+                            "description": "ADR-746: the coach's «Τώρα»",
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
                           "location_id": {
                             "format": "uuid",
                             "nullable": true,
@@ -134273,10 +134761,23 @@
                             "format": "date-time",
                             "type": "string"
                           },
+                          "space_id": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
                           "workout_id": {
                             "format": "uuid",
                             "nullable": true,
                             "type": "string"
+                          },
+                          "workout_ids": {
+                            "description": "ADR-746: the class's WODs in order",
+                            "items": {
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "type": "array"
                           }
                         },
                         "required": [
@@ -134317,6 +134818,12 @@
                           ],
                           "type": "string"
                         },
+                        "split_slot_id": {
+                          "description": "ADR-746: a second class shown side by side",
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        },
                         "until": {
                           "format": "date-time",
                           "nullable": true,
@@ -134334,6 +134841,12 @@
                             "bookings",
                             "class"
                           ],
+                          "type": "string"
+                        },
+                        "workout_id": {
+                          "description": "ADR-746: the WOD shown; null follows the class's «Τώρα»",
+                          "format": "uuid",
+                          "nullable": true,
                           "type": "string"
                         }
                       },
@@ -134436,11 +134949,25 @@
                           ],
                           "type": "object"
                         },
+                        "concurrent_mode": {
+                          "description": "ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side",
+                          "enum": [
+                            "room",
+                            "split"
+                          ],
+                          "type": "string"
+                        },
                         "id": {
                           "format": "uuid",
                           "type": "string"
                         },
                         "name": {
+                          "type": "string"
+                        },
+                        "space_id": {
+                          "description": "ADR-746: the room the screen follows in automatic; null for the whole branch",
+                          "format": "uuid",
+                          "nullable": true,
                           "type": "string"
                         }
                       },
@@ -199946,6 +200473,14 @@
                     "screens": {
                       "items": {
                         "properties": {
+                          "concurrent_mode": {
+                            "description": "ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side",
+                            "enum": [
+                              "room",
+                              "split"
+                            ],
+                            "type": "string"
+                          },
                           "focus_changed": {
                             "description": "Who last changed what the screen shows, and when",
                             "nullable": true,
@@ -200010,6 +200545,12 @@
                                 "nullable": true,
                                 "type": "string"
                               },
+                              "split_slot_id": {
+                                "description": "ADR-746: one more class sharing the screen this once",
+                                "format": "uuid",
+                                "nullable": true,
+                                "type": "string"
+                              },
                               "until": {
                                 "format": "date-time",
                                 "nullable": true,
@@ -200023,6 +200564,12 @@
                                   "bookings",
                                   "class"
                                 ],
+                                "type": "string"
+                              },
+                              "workout_id": {
+                                "description": "ADR-746: the class's WOD the pin shows; null follows the class's «Τώρα»",
+                                "format": "uuid",
+                                "nullable": true,
                                 "type": "string"
                               }
                             },
@@ -200045,6 +200592,43 @@
                           "pairing_expires_at": {
                             "description": "When the pending pairing code stops working; null without one",
                             "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "showing": {
+                            "description": "ADR-746: what the screen shows now (class remote only): its class and whether a timer runs",
+                            "nullable": true,
+                            "properties": {
+                              "class_name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "coach_name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "slot_id": {
+                                "format": "uuid",
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "timer_running": {
+                                "type": "boolean"
+                              },
+                              "view": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "slot_id",
+                              "view",
+                              "timer_running"
+                            ],
+                            "type": "object"
+                          },
+                          "space_id": {
+                            "description": "ADR-746: the room the screen follows in automatic; null for the whole branch",
+                            "format": "uuid",
                             "nullable": true,
                             "type": "string"
                           }
@@ -200147,6 +200731,14 @@
                     },
                     "screen": {
                       "properties": {
+                        "concurrent_mode": {
+                          "description": "ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side",
+                          "enum": [
+                            "room",
+                            "split"
+                          ],
+                          "type": "string"
+                        },
                         "focus_changed": {
                           "description": "Who last changed what the screen shows, and when",
                           "nullable": true,
@@ -200211,6 +200803,12 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "split_slot_id": {
+                              "description": "ADR-746: one more class sharing the screen this once",
+                              "format": "uuid",
+                              "nullable": true,
+                              "type": "string"
+                            },
                             "until": {
                               "format": "date-time",
                               "nullable": true,
@@ -200224,6 +200822,12 @@
                                 "bookings",
                                 "class"
                               ],
+                              "type": "string"
+                            },
+                            "workout_id": {
+                              "description": "ADR-746: the class's WOD the pin shows; null follows the class's «Τώρα»",
+                              "format": "uuid",
+                              "nullable": true,
                               "type": "string"
                             }
                           },
@@ -200246,6 +200850,43 @@
                         "pairing_expires_at": {
                           "description": "When the pending pairing code stops working; null without one",
                           "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "showing": {
+                          "description": "ADR-746: what the screen shows now (class remote only): its class and whether a timer runs",
+                          "nullable": true,
+                          "properties": {
+                            "class_name": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "coach_name": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "slot_id": {
+                              "format": "uuid",
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "timer_running": {
+                              "type": "boolean"
+                            },
+                            "view": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "slot_id",
+                            "view",
+                            "timer_running"
+                          ],
+                          "type": "object"
+                        },
+                        "space_id": {
+                          "description": "ADR-746: the room the screen follows in automatic; null for the whole branch",
+                          "format": "uuid",
                           "nullable": true,
                           "type": "string"
                         }
@@ -200403,6 +201044,14 @@
             "application/json": {
               "schema": {
                 "properties": {
+                  "concurrent_mode": {
+                    "description": "ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side",
+                    "enum": [
+                      "room",
+                      "split"
+                    ],
+                    "type": "string"
+                  },
                   "location_id": {
                     "format": "uuid",
                     "nullable": true,
@@ -200411,6 +201060,12 @@
                   "name": {
                     "maxLength": 60,
                     "minLength": 1,
+                    "type": "string"
+                  },
+                  "space_id": {
+                    "description": "ADR-746: the room the screen follows in automatic; null for the whole branch",
+                    "format": "uuid",
+                    "nullable": true,
                     "type": "string"
                   }
                 },
@@ -200428,6 +201083,14 @@
                   "properties": {
                     "screen": {
                       "properties": {
+                        "concurrent_mode": {
+                          "description": "ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side",
+                          "enum": [
+                            "room",
+                            "split"
+                          ],
+                          "type": "string"
+                        },
                         "focus_changed": {
                           "description": "Who last changed what the screen shows, and when",
                           "nullable": true,
@@ -200492,6 +201155,12 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "split_slot_id": {
+                              "description": "ADR-746: one more class sharing the screen this once",
+                              "format": "uuid",
+                              "nullable": true,
+                              "type": "string"
+                            },
                             "until": {
                               "format": "date-time",
                               "nullable": true,
@@ -200505,6 +201174,12 @@
                                 "bookings",
                                 "class"
                               ],
+                              "type": "string"
+                            },
+                            "workout_id": {
+                              "description": "ADR-746: the class's WOD the pin shows; null follows the class's «Τώρα»",
+                              "format": "uuid",
+                              "nullable": true,
                               "type": "string"
                             }
                           },
@@ -200527,6 +201202,43 @@
                         "pairing_expires_at": {
                           "description": "When the pending pairing code stops working; null without one",
                           "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "showing": {
+                          "description": "ADR-746: what the screen shows now (class remote only): its class and whether a timer runs",
+                          "nullable": true,
+                          "properties": {
+                            "class_name": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "coach_name": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "slot_id": {
+                              "format": "uuid",
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "timer_running": {
+                              "type": "boolean"
+                            },
+                            "view": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "slot_id",
+                            "view",
+                            "timer_running"
+                          ],
+                          "type": "object"
+                        },
+                        "space_id": {
+                          "description": "ADR-746: the room the screen follows in automatic; null for the whole branch",
+                          "format": "uuid",
                           "nullable": true,
                           "type": "string"
                         }
@@ -200635,6 +201347,14 @@
                   "properties": {
                     "screen": {
                       "properties": {
+                        "concurrent_mode": {
+                          "description": "ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side",
+                          "enum": [
+                            "room",
+                            "split"
+                          ],
+                          "type": "string"
+                        },
                         "focus_changed": {
                           "description": "Who last changed what the screen shows, and when",
                           "nullable": true,
@@ -200699,6 +201419,12 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "split_slot_id": {
+                              "description": "ADR-746: one more class sharing the screen this once",
+                              "format": "uuid",
+                              "nullable": true,
+                              "type": "string"
+                            },
                             "until": {
                               "format": "date-time",
                               "nullable": true,
@@ -200712,6 +201438,12 @@
                                 "bookings",
                                 "class"
                               ],
+                              "type": "string"
+                            },
+                            "workout_id": {
+                              "description": "ADR-746: the class's WOD the pin shows; null follows the class's «Τώρα»",
+                              "format": "uuid",
+                              "nullable": true,
                               "type": "string"
                             }
                           },
@@ -200734,6 +201466,43 @@
                         "pairing_expires_at": {
                           "description": "When the pending pairing code stops working; null without one",
                           "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "showing": {
+                          "description": "ADR-746: what the screen shows now (class remote only): its class and whether a timer runs",
+                          "nullable": true,
+                          "properties": {
+                            "class_name": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "coach_name": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "slot_id": {
+                              "format": "uuid",
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "timer_running": {
+                              "type": "boolean"
+                            },
+                            "view": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "slot_id",
+                            "view",
+                            "timer_running"
+                          ],
+                          "type": "object"
+                        },
+                        "space_id": {
+                          "description": "ADR-746: the room the screen follows in automatic; null for the whole branch",
+                          "format": "uuid",
                           "nullable": true,
                           "type": "string"
                         }
@@ -200822,6 +201591,12 @@
                     "nullable": true,
                     "type": "string"
                   },
+                  "split_slot_id": {
+                    "description": "ADR-746: one more of today's classes sharing the screen",
+                    "format": "uuid",
+                    "nullable": true,
+                    "type": "string"
+                  },
                   "until": {
                     "description": "When the screen goes back to automatic (within 24 hours); null to keep it",
                     "format": "date-time",
@@ -200836,6 +201611,12 @@
                       "bookings",
                       "class"
                     ],
+                    "type": "string"
+                  },
+                  "workout_id": {
+                    "description": "ADR-746: one of the class's WODs; null follows its «Τώρα»",
+                    "format": "uuid",
+                    "nullable": true,
                     "type": "string"
                   }
                 },
@@ -200856,6 +201637,14 @@
                   "properties": {
                     "screen": {
                       "properties": {
+                        "concurrent_mode": {
+                          "description": "ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side",
+                          "enum": [
+                            "room",
+                            "split"
+                          ],
+                          "type": "string"
+                        },
                         "focus_changed": {
                           "description": "Who last changed what the screen shows, and when",
                           "nullable": true,
@@ -200920,6 +201709,12 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "split_slot_id": {
+                              "description": "ADR-746: one more class sharing the screen this once",
+                              "format": "uuid",
+                              "nullable": true,
+                              "type": "string"
+                            },
                             "until": {
                               "format": "date-time",
                               "nullable": true,
@@ -200933,6 +201728,12 @@
                                 "bookings",
                                 "class"
                               ],
+                              "type": "string"
+                            },
+                            "workout_id": {
+                              "description": "ADR-746: the class's WOD the pin shows; null follows the class's «Τώρα»",
+                              "format": "uuid",
+                              "nullable": true,
                               "type": "string"
                             }
                           },
@@ -200955,6 +201756,43 @@
                         "pairing_expires_at": {
                           "description": "When the pending pairing code stops working; null without one",
                           "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "showing": {
+                          "description": "ADR-746: what the screen shows now (class remote only): its class and whether a timer runs",
+                          "nullable": true,
+                          "properties": {
+                            "class_name": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "coach_name": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "slot_id": {
+                              "format": "uuid",
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "timer_running": {
+                              "type": "boolean"
+                            },
+                            "view": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "slot_id",
+                            "view",
+                            "timer_running"
+                          ],
+                          "type": "object"
+                        },
+                        "space_id": {
+                          "description": "ADR-746: the room the screen follows in automatic; null for the whole branch",
+                          "format": "uuid",
                           "nullable": true,
                           "type": "string"
                         }
@@ -201084,6 +201922,14 @@
                     },
                     "screen": {
                       "properties": {
+                        "concurrent_mode": {
+                          "description": "ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side",
+                          "enum": [
+                            "room",
+                            "split"
+                          ],
+                          "type": "string"
+                        },
                         "focus_changed": {
                           "description": "Who last changed what the screen shows, and when",
                           "nullable": true,
@@ -201148,6 +201994,12 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "split_slot_id": {
+                              "description": "ADR-746: one more class sharing the screen this once",
+                              "format": "uuid",
+                              "nullable": true,
+                              "type": "string"
+                            },
                             "until": {
                               "format": "date-time",
                               "nullable": true,
@@ -201161,6 +202013,12 @@
                                 "bookings",
                                 "class"
                               ],
+                              "type": "string"
+                            },
+                            "workout_id": {
+                              "description": "ADR-746: the class's WOD the pin shows; null follows the class's «Τώρα»",
+                              "format": "uuid",
+                              "nullable": true,
                               "type": "string"
                             }
                           },
@@ -201183,6 +202041,43 @@
                         "pairing_expires_at": {
                           "description": "When the pending pairing code stops working; null without one",
                           "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "showing": {
+                          "description": "ADR-746: what the screen shows now (class remote only): its class and whether a timer runs",
+                          "nullable": true,
+                          "properties": {
+                            "class_name": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "coach_name": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "slot_id": {
+                              "format": "uuid",
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "timer_running": {
+                              "type": "boolean"
+                            },
+                            "view": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "slot_id",
+                            "view",
+                            "timer_running"
+                          ],
+                          "type": "object"
+                        },
+                        "space_id": {
+                          "description": "ADR-746: the room the screen follows in automatic; null for the whole branch",
+                          "format": "uuid",
                           "nullable": true,
                           "type": "string"
                         }
@@ -295777,6 +296672,130 @@
         ]
       }
     },
+    "/api/org/{organization_slug}/admin/schedule/slots/{id}/bookings/{booking_id}/workout": {
+      "put": {
+        "callbacks": {},
+        "description": "ADR-746: a coach for anyone booked, also over their own choice. null = «Θα αποφασίσω στο box».",
+        "operationId": "PaleeWeb.AdminClassWorkoutsController.put_booking_workout",
+        "parameters": [
+          {
+            "description": "Scheduled class ID",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Booking ID",
+            "in": "path",
+            "name": "booking_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "workout_id": {
+                    "format": "uuid",
+                    "nullable": true,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "workout_id"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "booking": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "booking"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Booking"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not one of the class's WODs"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Set the WOD someone booked in the class does",
+        "tags": [
+          "Admin Schedule"
+        ]
+      }
+    },
     "/api/org/{organization_slug}/admin/schedule/slots/{id}/day-workout": {
       "post": {
         "callbacks": {},
@@ -296177,6 +297196,120 @@
         "summary": "Injury safety warnings for the members booked into a class slot",
         "tags": [
           "Admin Wellbeing"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/schedule/slots/{id}/live-workout": {
+      "put": {
+        "callbacks": {},
+        "description": "ADR-746: people who decide at the box, the class timer and box screens follow it. null = the first WOD.",
+        "operationId": "PaleeWeb.AdminClassWorkoutsController.put_live",
+        "parameters": [
+          {
+            "description": "Scheduled class ID",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "workout_id": {
+                    "format": "uuid",
+                    "nullable": true,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "workout_id"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "slot": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "slot"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Slot"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not one of the class's WODs"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Point the class's «Τώρα» at one of its WODs",
+        "tags": [
+          "Admin Schedule"
         ]
       }
     },
@@ -296698,6 +297831,123 @@
           }
         ],
         "summary": "Link a WOD to a class",
+        "tags": [
+          "Admin Schedule"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/schedule/slots/{id}/workouts": {
+      "put": {
+        "callbacks": {},
+        "description": "ADR-746: the first WOD is the class's WOD; the rest follow it. New WODs are filed in the day's Classes folder. «Τώρα» and the people who chose a removed WOD go back to the first WOD and to «Θα αποφασίσω στο box».",
+        "operationId": "PaleeWeb.AdminClassWorkoutsController.put_workouts",
+        "parameters": [
+          {
+            "description": "Scheduled class ID",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "workout_ids": {
+                    "items": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "type": "array",
+                    "uniqueItems": true
+                  }
+                },
+                "required": [
+                  "workout_ids"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "slot": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "slot"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Slot"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invalid list"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Set every WOD of a class, in order",
         "tags": [
           "Admin Schedule"
         ]
@@ -309455,6 +310705,10 @@
                     ],
                     "type": "string"
                   },
+                  "offer_booking": {
+                    "description": "ADR-746: `class_variant` for a member who has not booked the class. It does not book them: the WOD is in their programme that day and their notice opens the class.",
+                    "type": "boolean"
+                  },
                   "scheduled_for": {
                     "format": "date",
                     "type": "string"
@@ -311778,6 +313032,10 @@
                       "personal"
                     ],
                     "type": "string"
+                  },
+                  "offer_booking": {
+                    "description": "ADR-746: `class_variant` for a member who has not booked the class. It does not book them: the WOD is in their programme that day and their notice opens the class.",
+                    "type": "boolean"
                   },
                   "scheduled_for": {
                     "format": "date",
@@ -338598,6 +339856,16 @@
               "format": "uuid",
               "type": "string"
             }
+          },
+          {
+            "description": "ADR-746: the timer of this WOD of the class; left out (or not one of the class's WODs) = the coach's «Τώρα».",
+            "in": "query",
+            "name": "workout_id",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -338624,6 +339892,56 @@
                         }
                       },
                       "type": "object"
+                    },
+                    "live": {
+                      "description": "ADR-746: this payload is the «Τώρα» WOD's timer.",
+                      "type": "boolean"
+                    },
+                    "live_workout_id": {
+                      "description": "ADR-746: the coach's «Τώρα» (screens follow it).",
+                      "format": "uuid",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "other_timers": {
+                      "description": "ADR-746: the class's other WODs' timers (one may keep running while another is shown).",
+                      "items": {
+                        "properties": {
+                          "current_segment_index": {
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          "paused_elapsed_ms": {
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          "segment_started_at_utc": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "ready",
+                              "running",
+                              "paused",
+                              "finished"
+                            ],
+                            "type": "string"
+                          },
+                          "workout_id": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "workout_id",
+                          "status"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
                     },
                     "segments": {
                       "items": {
@@ -338690,6 +340008,27 @@
                       "additionalProperties": true,
                       "nullable": true,
                       "type": "object"
+                    },
+                    "workouts": {
+                      "description": "ADR-746: every WOD of the class, in order.",
+                      "items": {
+                        "properties": {
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "title": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "title"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
                     }
                   },
                   "required": [
@@ -338796,6 +340135,12 @@
                   "timer_preset": {
                     "additionalProperties": true,
                     "type": "object"
+                  },
+                  "workout_id": {
+                    "description": "ADR-746: the WOD whose timer this is (default: «Τώρα»).",
+                    "format": "uuid",
+                    "nullable": true,
+                    "type": "string"
                   }
                 },
                 "required": [
@@ -338831,6 +340176,56 @@
                         }
                       },
                       "type": "object"
+                    },
+                    "live": {
+                      "description": "ADR-746: this payload is the «Τώρα» WOD's timer.",
+                      "type": "boolean"
+                    },
+                    "live_workout_id": {
+                      "description": "ADR-746: the coach's «Τώρα» (screens follow it).",
+                      "format": "uuid",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "other_timers": {
+                      "description": "ADR-746: the class's other WODs' timers (one may keep running while another is shown).",
+                      "items": {
+                        "properties": {
+                          "current_segment_index": {
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          "paused_elapsed_ms": {
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          "segment_started_at_utc": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "ready",
+                              "running",
+                              "paused",
+                              "finished"
+                            ],
+                            "type": "string"
+                          },
+                          "workout_id": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "workout_id",
+                          "status"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
                     },
                     "segments": {
                       "items": {
@@ -338897,6 +340292,27 @@
                       "additionalProperties": true,
                       "nullable": true,
                       "type": "object"
+                    },
+                    "workouts": {
+                      "description": "ADR-746: every WOD of the class, in order.",
+                      "items": {
+                        "properties": {
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "title": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "title"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
                     }
                   },
                   "required": [
@@ -339037,6 +340453,14 @@
                     "screens": {
                       "items": {
                         "properties": {
+                          "concurrent_mode": {
+                            "description": "ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side",
+                            "enum": [
+                              "room",
+                              "split"
+                            ],
+                            "type": "string"
+                          },
                           "focus_changed": {
                             "description": "Who last changed what the screen shows, and when",
                             "nullable": true,
@@ -339101,6 +340525,12 @@
                                 "nullable": true,
                                 "type": "string"
                               },
+                              "split_slot_id": {
+                                "description": "ADR-746: one more class sharing the screen this once",
+                                "format": "uuid",
+                                "nullable": true,
+                                "type": "string"
+                              },
                               "until": {
                                 "format": "date-time",
                                 "nullable": true,
@@ -339114,6 +340544,12 @@
                                   "bookings",
                                   "class"
                                 ],
+                                "type": "string"
+                              },
+                              "workout_id": {
+                                "description": "ADR-746: the class's WOD the pin shows; null follows the class's «Τώρα»",
+                                "format": "uuid",
+                                "nullable": true,
                                 "type": "string"
                               }
                             },
@@ -339138,6 +340574,43 @@
                             "format": "date-time",
                             "nullable": true,
                             "type": "string"
+                          },
+                          "showing": {
+                            "description": "ADR-746: what the screen shows now (class remote only): its class and whether a timer runs",
+                            "nullable": true,
+                            "properties": {
+                              "class_name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "coach_name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "slot_id": {
+                                "format": "uuid",
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "timer_running": {
+                                "type": "boolean"
+                              },
+                              "view": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "slot_id",
+                              "view",
+                              "timer_running"
+                            ],
+                            "type": "object"
+                          },
+                          "space_id": {
+                            "description": "ADR-746: the room the screen follows in automatic; null for the whole branch",
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
                           }
                         },
                         "required": [
@@ -339157,6 +340630,32 @@
                       },
                       "type": "array"
                     },
+                    "together": {
+                      "description": "ADR-746: today's other classes that overlap this one (to share a screen)",
+                      "items": {
+                        "properties": {
+                          "coach_name": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "name": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "coach_name"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
                     "views": {
                       "description": "What the person may pin: a coach `timer`, `leaderboard` and `wod`",
                       "items": {
@@ -339168,6 +340667,31 @@
                           "class"
                         ],
                         "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "workouts": {
+                      "description": "ADR-746: the class's WODs in order, and its «Τώρα»",
+                      "items": {
+                        "properties": {
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "live": {
+                            "type": "boolean"
+                          },
+                          "title": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "title",
+                          "live"
+                        ],
+                        "type": "object"
                       },
                       "type": "array"
                     }
@@ -339273,6 +340797,14 @@
                   "properties": {
                     "screen": {
                       "properties": {
+                        "concurrent_mode": {
+                          "description": "ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side",
+                          "enum": [
+                            "room",
+                            "split"
+                          ],
+                          "type": "string"
+                        },
                         "focus_changed": {
                           "description": "Who last changed what the screen shows, and when",
                           "nullable": true,
@@ -339337,6 +340869,12 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "split_slot_id": {
+                              "description": "ADR-746: one more class sharing the screen this once",
+                              "format": "uuid",
+                              "nullable": true,
+                              "type": "string"
+                            },
                             "until": {
                               "format": "date-time",
                               "nullable": true,
@@ -339350,6 +340888,12 @@
                                 "bookings",
                                 "class"
                               ],
+                              "type": "string"
+                            },
+                            "workout_id": {
+                              "description": "ADR-746: the class's WOD the pin shows; null follows the class's «Τώρα»",
+                              "format": "uuid",
+                              "nullable": true,
                               "type": "string"
                             }
                           },
@@ -339372,6 +340916,43 @@
                         "pairing_expires_at": {
                           "description": "When the pending pairing code stops working; null without one",
                           "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "showing": {
+                          "description": "ADR-746: what the screen shows now (class remote only): its class and whether a timer runs",
+                          "nullable": true,
+                          "properties": {
+                            "class_name": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "coach_name": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "slot_id": {
+                              "format": "uuid",
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "timer_running": {
+                              "type": "boolean"
+                            },
+                            "view": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "slot_id",
+                            "view",
+                            "timer_running"
+                          ],
+                          "type": "object"
+                        },
+                        "space_id": {
+                          "description": "ADR-746: the room the screen follows in automatic; null for the whole branch",
+                          "format": "uuid",
                           "nullable": true,
                           "type": "string"
                         }
@@ -339486,6 +341067,12 @@
             "application/json": {
               "schema": {
                 "properties": {
+                  "split_slot_id": {
+                    "description": "ADR-746: share the screen with this class this once",
+                    "format": "uuid",
+                    "nullable": true,
+                    "type": "string"
+                  },
                   "until": {
                     "description": "When the screen goes back to automatic (within 24 hours); null to keep it",
                     "format": "date-time",
@@ -339500,6 +341087,12 @@
                       "bookings",
                       "class"
                     ],
+                    "type": "string"
+                  },
+                  "workout_id": {
+                    "description": "ADR-746: one of the class's WODs; null follows its «Τώρα»",
+                    "format": "uuid",
+                    "nullable": true,
                     "type": "string"
                   }
                 },
@@ -339520,6 +341113,14 @@
                   "properties": {
                     "screen": {
                       "properties": {
+                        "concurrent_mode": {
+                          "description": "ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side",
+                          "enum": [
+                            "room",
+                            "split"
+                          ],
+                          "type": "string"
+                        },
                         "focus_changed": {
                           "description": "Who last changed what the screen shows, and when",
                           "nullable": true,
@@ -339584,6 +341185,12 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "split_slot_id": {
+                              "description": "ADR-746: one more class sharing the screen this once",
+                              "format": "uuid",
+                              "nullable": true,
+                              "type": "string"
+                            },
                             "until": {
                               "format": "date-time",
                               "nullable": true,
@@ -339597,6 +341204,12 @@
                                 "bookings",
                                 "class"
                               ],
+                              "type": "string"
+                            },
+                            "workout_id": {
+                              "description": "ADR-746: the class's WOD the pin shows; null follows the class's «Τώρα»",
+                              "format": "uuid",
+                              "nullable": true,
                               "type": "string"
                             }
                           },
@@ -339619,6 +341232,43 @@
                         "pairing_expires_at": {
                           "description": "When the pending pairing code stops working; null without one",
                           "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "showing": {
+                          "description": "ADR-746: what the screen shows now (class remote only): its class and whether a timer runs",
+                          "nullable": true,
+                          "properties": {
+                            "class_name": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "coach_name": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "slot_id": {
+                              "format": "uuid",
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "timer_running": {
+                              "type": "boolean"
+                            },
+                            "view": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "slot_id",
+                            "view",
+                            "timer_running"
+                          ],
+                          "type": "object"
+                        },
+                        "space_id": {
+                          "description": "ADR-746: the room the screen follows in automatic; null for the whole branch",
+                          "format": "uuid",
                           "nullable": true,
                           "type": "string"
                         }
@@ -348363,6 +350013,154 @@
                     },
                     "logged_by_me": {
                       "type": "boolean"
+                    },
+                    "more": {
+                      "description": "ADR-746: the day's other class WODs, each its own card.",
+                      "items": {
+                        "properties": {
+                          "classes": {
+                            "items": {
+                              "properties": {
+                                "id": {
+                                  "format": "uuid",
+                                  "type": "string"
+                                },
+                                "scheduled_at": {
+                                  "format": "date-time",
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "scheduled_at"
+                              ],
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "leaderboard": {
+                            "items": {
+                              "properties": {
+                                "avatar_url": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "me": {
+                                  "type": "boolean"
+                                },
+                                "nickname": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "opted_in": {
+                                  "description": "False only on your own row before you opt in to leaderboards",
+                                  "type": "boolean"
+                                },
+                                "part_of_time": {
+                                  "description": "ADR-549: the result ran only part of its clock (stopped early or a shorter clock): ran and planned ms",
+                                  "nullable": true,
+                                  "properties": {
+                                    "planned_ms": {
+                                      "type": "integer"
+                                    },
+                                    "ran_ms": {
+                                      "type": "integer"
+                                    }
+                                  },
+                                  "required": [
+                                    "ran_ms",
+                                    "planned_ms"
+                                  ],
+                                  "type": "object"
+                                },
+                                "rank": {
+                                  "type": "integer"
+                                },
+                                "scale_level_slug": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "unit": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "user_id": {
+                                  "format": "uuid",
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "nullable": true,
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "rank",
+                                "user_id",
+                                "me",
+                                "opted_in"
+                              ],
+                              "title": "WodLeaderboardEntry",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "logged_by_me": {
+                            "type": "boolean"
+                          },
+                          "score": {
+                            "nullable": true,
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "score_type": {
+                                "type": "string"
+                              },
+                              "unit": {
+                                "nullable": true,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "score_type"
+                            ],
+                            "type": "object"
+                          },
+                          "workout": {
+                            "nullable": true,
+                            "properties": {
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "title": {
+                                "type": "string"
+                              },
+                              "type": {
+                                "nullable": true,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "title"
+                            ],
+                            "type": "object"
+                          }
+                        },
+                        "required": [
+                          "classes",
+                          "leaderboard",
+                          "logged_by_me"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
                     },
                     "score": {
                       "nullable": true,
@@ -371252,6 +373050,12 @@
                             },
                             "type": "array"
                           },
+                          "live_workout_id": {
+                            "description": "ADR-746: the coach's «Τώρα»; people who decide at the box follow it.",
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
                           "space": {
                             "description": "ADR-202: the room or area of the branch the class is held in.",
                             "nullable": true,
@@ -371326,6 +373130,45 @@
                             },
                             "type": "object"
                           },
+                          "workout_choice_counts": {
+                            "description": "ADR-746: how many of the class's active bookings do each WOD, and how many decide at the box. Seats stay the class's.",
+                            "properties": {
+                              "undecided": {
+                                "minimum": 0,
+                                "type": "integer"
+                              },
+                              "workouts": {
+                                "items": {
+                                  "properties": {
+                                    "count": {
+                                      "minimum": 0,
+                                      "type": "integer"
+                                    },
+                                    "workout_id": {
+                                      "format": "uuid",
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "workout_id",
+                                    "count"
+                                  ],
+                                  "type": "object"
+                                },
+                                "type": "array"
+                              }
+                            },
+                            "required": [
+                              "workouts",
+                              "undecided"
+                            ],
+                            "type": "object"
+                          },
+                          "workout_count": {
+                            "description": "ADR-746: how many WODs a class holds while its WODs are locked (ADR-551).",
+                            "minimum": 0,
+                            "type": "integer"
+                          },
                           "workout_source": {
                             "description": "ADR-230: day = inherited from the day's WOD, class = set on the class.",
                             "enum": [
@@ -371334,6 +373177,14 @@
                             ],
                             "nullable": true,
                             "type": "string"
+                          },
+                          "workouts": {
+                            "description": "ADR-746: every WOD of the class in order, each whole like `workout` (the first).",
+                            "items": {
+                              "additionalProperties": true,
+                              "type": "object"
+                            },
+                            "type": "array"
                           }
                         },
                         "type": "object"
@@ -371366,6 +373217,120 @@
           }
         ],
         "summary": "Get the schedule window",
+        "tags": [
+          "Schedule"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/schedule/slots/{id}/my-workout": {
+      "put": {
+        "callbacks": {},
+        "description": "ADR-746: on the caller's own booking of the class. null = «Θα αποφασίσω στο box»: follow the coach's «Τώρα».",
+        "operationId": "PaleeWeb.ClassWorkoutChoiceController.update",
+        "parameters": [
+          {
+            "description": "Scheduled class ID",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "workout_id": {
+                    "format": "uuid",
+                    "nullable": true,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "workout_id"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "booking": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "booking"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Booking"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No booking of mine in this class"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not one of the class's WODs"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Choose which of the class's WODs I do",
         "tags": [
           "Schedule"
         ]

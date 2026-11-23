@@ -765,6 +765,9 @@ defmodule PaleeWeb.FallbackController do
       {:unprocessable_entity, "This code is wrong or has expired; ask staff for a new one"},
     invalid_screen_name: {:unprocessable_entity, "Give the screen a name (up to 60 characters)"},
     invalid_screen_branch: {:unprocessable_entity, "Choose one of your branches"},
+    # ADR-746: a room of the screen's branch, and how classes that run together show.
+    invalid_screen_space: {:unprocessable_entity, "Choose a room of the screen's branch"},
+    invalid_screen_settings: {:unprocessable_entity, "Choose how classes that run together show"},
     invalid_screen_override:
       {:unprocessable_entity, "Choose what to show, a class of today and an end within 24 hours"},
     too_many_screens: {:conflict, "A box can have up to 20 screens"},
@@ -2744,6 +2747,21 @@ defmodule PaleeWeb.FallbackController do
       error:
         "Assigned workout edits keep the workout template fixed; assign a different workout from the workout library"
     })
+  end
+
+  # ADR-746: a class's list of WODs.
+  def call(conn, {:error, reason})
+      when reason in [:not_a_class_workout, :duplicate_class_workout, :invalid_class_workouts] do
+    message =
+      case reason do
+        :not_a_class_workout -> "The WOD is not one of the class's WODs"
+        :duplicate_class_workout -> "A WOD can be in a class only once"
+        :invalid_class_workouts -> "workout_ids must be a list of WOD ids"
+      end
+
+    conn
+    |> put_status(:unprocessable_entity)
+    |> json(%{code: to_string(reason), error: message})
   end
 
   def call(conn, {:error, :workout_not_found}) do

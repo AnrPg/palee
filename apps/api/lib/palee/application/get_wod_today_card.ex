@@ -6,10 +6,15 @@ defmodule Palee.Application.GetWodTodayCard do
   ranked by the WOD's scored section (`WorkoutDayLeaderboard`, shared with
   the box screen). A result kept `private` in its owner's journal never
   shows. Read in the gym's scope.
+
+  ADR-746 (ANR pick 4A): a class may hold several WODs. The first one stays
+  the card; every other WOD of the day's classes comes in `more`, each with
+  its own classes and leaderboard, shown as its own card under it.
   """
 
   alias Palee.{Execution, Identity, Scheduling, Workouts}
   alias Palee.Application.{AuthorizeWodAccess, ClubScope, WorkoutDayLeaderboard}
+  alias Palee.Scheduling.Domain.ClassWorkouts
 
   def call(%{organization_id: _organization_id, user_id: user_id} = context, params) do
     with {:ok, timezone} <- timezone(param(params, :timezone)),
@@ -27,25 +32,44 @@ defmodule Palee.Application.GetWodTodayCard do
           {:ok, empty(date, wod_channel)}
 
         workout_id ->
-          workout = Workouts.get_workout(context, workout_id)
-          section = WorkoutDayLeaderboard.ranked_section(workout)
+          window = {from, to}
+
+          more =
+            slots
+            |> Enum.flat_map(&ClassWorkouts.ids/1)
+            |> Enum.uniq()
+            |> Enum.reject(&(&1 == workout_id))
+            |> Enum.map(&wod(context, &1, slots, window, user_id))
 
           {:ok,
-           %{
-             date: date,
-             channel_id: wod_channel && wod_channel.id,
-             workout:
-               workout && %{id: workout.id, title: workout.title, type: workout_type(workout)},
-             classes:
-               slots
-               |> Enum.filter(&(&1.master_workout_id == workout_id))
-               |> Enum.map(&%{id: &1.id, scheduled_at: &1.scheduled_at}),
-             score: section && Map.take(section, [:id, :name, :score_type, :unit]),
-             leaderboard: leaderboard(context, workout, from, to, user_id),
-             logged_by_me: logged?(context, workout_id, from, to, user_id)
-           }}
+           context
+           |> wod(workout_id, slots, window, user_id, :first)
+           |> Map.merge(%{date: date, channel_id: wod_channel && wod_channel.id, more: more})}
       end
     end
+  end
+
+  # One WOD of the day: its classes (the first WOD of the day also lists the
+  # classes that only follow it as their own WOD, as before), its scored
+  # section and leaderboard.
+  defp wod(context, workout_id, slots, {from, to}, user_id, which \\ :more) do
+    workout = Workouts.get_workout(context, workout_id)
+    section = WorkoutDayLeaderboard.ranked_section(workout)
+
+    classes =
+      Enum.filter(slots, fn slot ->
+        if which == :first,
+          do: slot.master_workout_id == workout_id,
+          else: ClassWorkouts.member?(slot, workout_id)
+      end)
+
+    %{
+      workout: workout && %{id: workout.id, title: workout.title, type: workout_type(workout)},
+      classes: Enum.map(classes, &%{id: &1.id, scheduled_at: &1.scheduled_at}),
+      score: section && Map.take(section, [:id, :name, :score_type, :unit]),
+      leaderboard: leaderboard(context, workout, from, to, user_id),
+      logged_by_me: logged?(context, workout_id, from, to, user_id)
+    }
   end
 
   defp empty(date, wod_channel),
@@ -56,7 +80,8 @@ defmodule Palee.Application.GetWodTodayCard do
       classes: [],
       score: nil,
       leaderboard: [],
-      logged_by_me: false
+      logged_by_me: false,
+      more: []
     }
 
   defp leaderboard(context, workout, from, to, viewer_id) do

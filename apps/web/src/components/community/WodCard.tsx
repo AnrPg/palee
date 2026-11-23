@@ -5,7 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
-import { WOD_KEY, type CommunityClub, type WodLeaderboardEntry } from "@/api/community";
+import { WOD_KEY, type CommunityClub, type WodLeaderboardEntry, type WodTodayCard } from "@/api/community";
 import { builtInChannel, channelName, clubInitials } from "@/components/community/community";
 import { useWodToday } from "@/components/community/use-community";
 import { WodLeaderboard } from "@/components/community/WodLeaderboard";
@@ -82,8 +82,20 @@ function useWodNow(classes: WodClass[] | undefined) {
  * only when there is a workout today (ANR 2026-10-24, vision §4.2).
  * For people who opted in, the list takes the ADR-356 filters and the
  * percentile (`WodLeaderboard`, ANR mockup d2 A).
+ *
+ * ADR-746 (ANR pick 4A): when the day's classes hold several WODs, each WOD
+ * gets its own card with its own leaderboard, stacked under the first.
  */
-export function WodCard({ club, showOrigin = true }: { club: CommunityClub; showOrigin?: boolean }) {
+export function WodCard({
+  club,
+  showOrigin = true,
+  only,
+}: {
+  club: CommunityClub;
+  showOrigin?: boolean;
+  /** ADR-746: one of the day's other WODs (`more`), shown as its own card. */
+  only?: WodTodayCard;
+}) {
   const t = useTranslations("Community");
   const locale = useUiLocale();
   const { tokens } = useSession();
@@ -93,7 +105,7 @@ export function WodCard({ club, showOrigin = true }: { club: CommunityClub; show
   const [logDialog, setLogDialog] = useState<TrainingLogDialogState>({ mode: "closed" });
   const wod = builtInChannel(club, "wod");
   const time = (iso: string) => formatClock(new Date(iso), locale, { hour: "2-digit", minute: "2-digit" });
-  const data = card.data;
+  const data = only ?? card.data;
   const mine = data?.leaderboard.find((row) => row.me) ?? null;
   const now = useWodNow(data?.classes);
   const view = useView();
@@ -109,8 +121,10 @@ export function WodCard({ club, showOrigin = true }: { club: CommunityClub; show
   }
 
   if (!data?.workout) return null;
+  const more = only ? [] : (data.more ?? []).filter((entry) => entry.workout);
 
   return (
+    <>
     <HubCard eyebrow={showOrigin && wod ? `${club.name} › #${channelName(wod, t)}` : `#${channelName({ kind: "wod" }, t)}`}>
       <div className="flex flex-col gap-3">
         {/* The screen's hero (BRAND.md): the WOD on the deep surface, tagged in
@@ -171,6 +185,15 @@ export function WodCard({ club, showOrigin = true }: { club: CommunityClub; show
         <TrainingLogDialog state={logDialog} token={token} onNavigate={setLogDialog} onClose={closeLog} />
       ) : null}
     </HubCard>
+      {more.map((entry) => (
+        <WodCard
+          key={entry.workout!.id}
+          club={club}
+          showOrigin={showOrigin}
+          only={{ ...data, ...entry, date: data.date, more: [] } as WodTodayCard}
+        />
+      ))}
+    </>
   );
 }
 

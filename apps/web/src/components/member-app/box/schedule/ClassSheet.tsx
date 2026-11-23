@@ -10,7 +10,9 @@ import { DocumentsGate } from "@/components/documents/DocumentsGate";
 import { gateReady, gateSteps } from "@/components/documents/documents-model";
 import {
   cancelBooking,
+  chooseMyClassWorkout,
   classLevelsOf,
+  classWorkouts,
   joinWaitlist,
   sendSlotMessage,
   type ScheduleLocation,
@@ -72,6 +74,7 @@ export function wodOutline(workout: WorkoutPreview): { id: string; name: string;
  */
 export function ClassSheet({
   slot,
+  initialWorkoutId = null,
   timeZone = null,
   coachName,
   locations,
@@ -86,6 +89,8 @@ export function ClassSheet({
   documentsGate = null,
 }: {
   slot: ScheduleSlot;
+  /** ADR-746: the WOD to show first (its name was tapped in the schedule). */
+  initialWorkoutId?: string | null;
   /** ADR-179: the gym's zone; the class shows on its clock. */
   timeZone?: string | null;
   coachName: string | null;
@@ -129,8 +134,45 @@ export function ClassSheet({
   const location = slotLocationName(slot, locations);
   const credits = slotCreditCost(slot);
   const levels = classLevelsOf(slot.class_type.levels);
-  const focus = slot.workout?.focus ?? [];
   const ownBooking = state.kind === "booked";
+  // ADR-746 (ANR booking picks 1A–3A, 2026-11-23): a class may hold several
+  // WODs. Their names show as pills, each opening that WOD; once booked, an
+  // optional «Ποιο WOD;» starts at «Θα αποφασίσω στο box».
+  const tWods = useTranslations("ClassWods");
+  const workouts = classWorkouts(slot);
+  const several = workouts.length > 1;
+  const myBooking = slot.current_user_booking ?? null;
+  const chosenId =
+    myBooking?.chosen_workout_id && workouts.some((item) => item.id === myBooking.chosen_workout_id)
+      ? myBooking.chosen_workout_id
+      : null;
+  const [viewedId, setViewedId] = useState<string | null>(initialWorkoutId);
+  const [seatsOpen, setSeatsOpen] = useState(false);
+  const [choiceBusy, setChoiceBusy] = useState(false);
+  const [choiceError, setChoiceError] = useState<string | null>(null);
+  const viewed =
+    workouts.find((item) => item.id === viewedId) ??
+    workouts.find((item) => item.id === chosenId) ??
+    workouts.find((item) => item.id === slot.live_workout_id) ??
+    workouts[0] ??
+    null;
+  const focus = viewed?.focus ?? [];
+  const counts = slot.workout_choice_counts;
+
+  async function chooseWorkout(workoutId: string | null) {
+    if (choiceBusy || workoutId === chosenId) return;
+    setChoiceBusy(true);
+    setChoiceError(null);
+    try {
+      await chooseMyClassWorkout(accessToken, slot.id, workoutId);
+      if (workoutId) setViewedId(workoutId);
+      onChanged();
+    } catch (reason) {
+      setChoiceError(localizeError(reason, i18n));
+    } finally {
+      setChoiceBusy(false);
+    }
+  }
   const cancelUntil = slot.cancel_free_until ? new Date(slot.cancel_free_until) : null;
   const cancelUntilText = cancelUntil
     ? zonedText(cancelUntil, timeZone, locale, {
@@ -348,7 +390,23 @@ export function ClassSheet({
               <Fact label={t("friendsLabel")}>{slot.friends_going.map((friend) => friend.nickname ?? "?").join(", ")}</Fact>
             ) : null}
             <Fact label={t("chipSpots")}>
-              {slot.spots_remaining > 0 ? t("spotsLeft", { count: slot.spots_remaining }) : t("statusFull")}
+              {several && counts ? (
+                // ADR-746 (2A): the seats are shared by every WOD; ▾ shows who does which.
+                <button
+                  type="button"
+                  aria-expanded={seatsOpen}
+                  data-testid="class-seats-toggle"
+                  className="inline-flex items-center gap-1 font-semibold underline-offset-4 hover:underline"
+                  onClick={() => setSeatsOpen((open) => !open)}
+                >
+                  {tWods("seatsFree", { free: Math.max(slot.spots_remaining, 0), capacity: slot.capacity })}
+                  <span aria-hidden="true">{seatsOpen ? "▴" : "▾"}</span>
+                </button>
+              ) : slot.spots_remaining > 0 ? (
+                t("spotsLeft", { count: slot.spots_remaining })
+              ) : (
+                t("statusFull")
+              )}
             </Fact>
             <Fact label={t("chipLevel")}>
               {levels.length === 0 ? t("level_all_levels") : levels.map((value) => t(`level_${value}`)).join(", ")}
@@ -373,6 +431,15 @@ export function ClassSheet({
             {location ? <Fact label={t("location")}>{location}</Fact> : null}
           </dl>
 
+          {several && counts && seatsOpen ? (
+            <SeatsByWod
+              workouts={workouts}
+              counts={counts}
+              capacity={slot.capacity}
+              undecidedLabel={tWods("undecidedGroup")}
+            />
+          ) : null}
+
           {isEventSlot(slot) || !slot.auto_approve ? (
             <div className="mt-3 flex flex-wrap gap-1.5">
               {isEventSlot(slot) ? <Tag>{i18n("mbEventMarker")}</Tag> : null}
@@ -392,7 +459,10 @@ export function ClassSheet({
               ) : null}
               {state.status === "approved" ? (
                 <Link
-                  href={adminHref(`/class-timer/${slot.id}/display`, organizationSlug)}
+                  href={adminHref(
+                    `/class-timer/${slot.id}/display${several && chosenId ? `?workout=${chosenId}` : ""}`,
+                    organizationSlug,
+                  )}
                   className="mt-2 inline-block text-sm font-bold underline underline-offset-4"
                 >
                   {i18n("classTimerFollowLink")}
@@ -418,20 +488,87 @@ export function ClassSheet({
                 {i18n("memberProgrammingYourVersion")}: {slot.my_version.workout.title}
               </p>
             ) : null}
-            {slot.workout ? <WodOutline workout={slot.workout} /> : (
+            {several ? (
+              <div role="group" aria-label={tWods("classWodsLabel")} className="mt-2 flex flex-wrap gap-1.5" data-testid="class-sheet-wods">
+                {workouts.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    aria-pressed={item.id === viewed?.id}
+                    className="min-h-9 max-w-[14rem] truncate rounded-full px-3 text-sm font-semibold"
+                    style={
+                      item.id === viewed?.id
+                        ? { background: "var(--text)", color: "var(--bg)" }
+                        : { border: "1px solid var(--border)", color: "var(--text-soft)" }
+                    }
+                    onClick={() => setViewedId(item.id)}
+                  >
+                    {item.title}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+            {viewed ? <WodOutline workout={viewed} /> : (
               <p className="mt-2 text-sm" style={{ color: "var(--dim)" }}>
                 {/* ADR-551: the server keeps the WOD while the member's access is closed. */}
-                {slot.wod_locked ? t("wodLocked") : t("wodNotPosted")}
+                {slot.wod_locked
+                  ? (slot.workout_count ?? 0) > 1
+                    ? `${tWods("wodCount", { count: slot.workout_count ?? 0 })} · ${t("wodLocked")}`
+                    : t("wodLocked")
+                  : t("wodNotPosted")}
               </p>
             )}
-            {slot.workout ? <WodGoalsStrip workoutId={slot.workout.id} className="mt-3" /> : null}
+            {viewed ? <WodGoalsStrip workoutId={viewed.id} className="mt-3" /> : null}
           </section>
 
-          {slot.workout && ownBooking ? (
+          {several && ownBooking ? (
+            <section className="mt-4" data-testid="class-my-wod">
+              <h3 className="text-sm font-semibold" style={{ color: "var(--text)" }}>
+                {tWods("whichWod")}{" "}
+                <span className="font-normal" style={{ color: "var(--muted)" }}>
+                  · {tWods("optional")}
+                </span>
+              </h3>
+              {myBooking?.workout_chosen_by_coach && chosenId ? (
+                <p className="mt-1 text-xs" style={{ color: "var(--muted)" }} data-testid="class-my-wod-by-coach">
+                  {tWods("coachSetYou", { title: workouts.find((item) => item.id === chosenId)?.title ?? "" })}
+                </p>
+              ) : null}
+              <div role="radiogroup" aria-label={tWods("whichWod")} aria-busy={choiceBusy} className="mt-2 flex flex-wrap gap-1.5">
+                {[{ id: null, title: tWods("decideAtBox") }, ...workouts.map((item) => ({ id: item.id as string | null, title: item.title }))].map(
+                  (option) => {
+                    const checked = option.id === chosenId;
+                    return (
+                      <button
+                        key={option.id ?? "undecided"}
+                        type="button"
+                        role="radio"
+                        aria-checked={checked}
+                        disabled={choiceBusy}
+                        data-testid="class-my-wod-option"
+                        className="min-h-10 max-w-[14rem] truncate rounded-full px-3.5 text-sm font-semibold disabled:opacity-60"
+                        style={
+                          checked
+                            ? { background: "var(--primary)", color: "var(--primary-contrast)" }
+                            : { border: "1px solid var(--border)", color: "var(--text-soft)" }
+                        }
+                        onClick={() => void chooseWorkout(option.id)}
+                      >
+                        {option.title}
+                      </button>
+                    );
+                  },
+                )}
+              </div>
+              {choiceError ? <ErrorNotice variant="field" className="mt-2">{choiceError}</ErrorNotice> : null}
+            </section>
+          ) : null}
+
+          {viewed && ownBooking ? (
             <div className="mt-4">
               <MyInjuryWarningsPanel
                 accessToken={accessToken}
-                workoutId={slot.workout.id}
+                workoutId={viewed.id}
                 surface="class_detail"
                 sourceContextId={slot.id}
               />
@@ -524,6 +661,50 @@ function Banner({ tone, children }: { tone: string; children: ReactNode }) {
     >
       {children}
     </div>
+  );
+}
+
+/** ADR-746 (2A): who does which WOD, out of the class's shared seats. */
+function SeatsByWod({
+  workouts,
+  counts,
+  capacity,
+  undecidedLabel,
+}: {
+  workouts: WorkoutPreview[];
+  counts: NonNullable<ScheduleSlot["workout_choice_counts"]>;
+  capacity: number;
+  undecidedLabel: string;
+}) {
+  const rows = [
+    ...workouts.map((workout) => ({
+      key: workout.id,
+      label: workout.title,
+      count: counts.workouts.find((entry) => entry.workout_id === workout.id)?.count ?? 0,
+    })),
+    { key: "undecided", label: undecidedLabel, count: counts.undecided },
+  ];
+  return (
+    <ul className="mt-3 flex flex-col gap-2 rounded-2xl p-3" style={{ background: "var(--panel-muted)" }} data-testid="class-seats-by-wod">
+      {rows.map((row) => (
+        <li key={row.key} className="text-sm">
+          <div className="flex items-baseline justify-between gap-2">
+            <span className="min-w-0 truncate" style={{ color: "var(--text)" }}>
+              {row.label}
+            </span>
+            <span className="tabular-nums font-semibold" style={{ color: "var(--text-soft)" }}>
+              {row.count}
+            </span>
+          </div>
+          <div aria-hidden="true" className="mt-1 h-1.5 overflow-hidden rounded-full" style={{ background: "var(--border)" }}>
+            <div
+              className="h-full rounded-full"
+              style={{ width: `${capacity > 0 ? Math.min(100, (row.count / capacity) * 100) : 0}%`, background: "var(--primary)" }}
+            />
+          </div>
+        </li>
+      ))}
+    </ul>
   );
 }
 

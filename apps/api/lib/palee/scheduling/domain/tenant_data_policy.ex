@@ -17,6 +17,8 @@ defmodule Palee.Scheduling.Domain.TenantDataPolicy do
             tables: [
               %{table: "class_attendance_records"},
               %{table: "bookings"},
+              # ADR-746: the extra WODs of a class (before the classes).
+              %{table: "scheduled_class_workouts"},
               %{table: "scheduled_classes"},
               %{table: "class_series"},
               # ADR-230: day WODs (after the classes that point at them).

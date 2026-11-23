@@ -975,3 +975,12 @@ msgstr "Palee прегледа твоя вид тренировка"
 
 msgid "«%{label}» now follows the Palee list, and your box's WODs moved with it."
 msgstr "«%{label}» вече следва списъка на Palee, а WOD-овете на твоя бокс се преместиха с него."
+
+msgid "%{screen} shows another class"
+msgstr "Екранът %{screen} показва друг клас"
+
+msgid "%{coach} took the screen. You can take it back from your class's timer."
+msgstr "%{coach} пое екрана. Можеш да си го върнеш от таймера на класа си."
+
+msgid "Your coach gave you your own WOD for a class. Open it to book your place."
+msgstr "Треньорът ти даде собствен WOD за клас. Отвори го, за да запазиш място."

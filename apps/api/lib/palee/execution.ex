@@ -66,11 +66,21 @@ defmodule Palee.Execution do
     |> Map.put(:since, since)
   end
 
-  def get_class_timer(context, scheduled_class_id),
-    do: ClassTimerStore.get_class_timer(context, scheduled_class_id)
+  def get_class_timer(context, scheduled_class_id, workout_id),
+    do: ClassTimerStore.get_class_timer(context, scheduled_class_id, workout_id)
 
-  def save_class_timer(context, scheduled_class_id, attrs, expected_version),
-    do: ClassTimerStore.save_class_timer(context, scheduled_class_id, attrs, expected_version)
+  def list_class_timers(context, scheduled_class_id),
+    do: ClassTimerStore.list_class_timers(context, scheduled_class_id)
+
+  def save_class_timer(context, scheduled_class_id, workout_id, attrs, expected_version),
+    do:
+      ClassTimerStore.save_class_timer(
+        context,
+        scheduled_class_id,
+        workout_id,
+        attrs,
+        expected_version
+      )
 
   @doc """
   The segments an execution of this workout runs. ADR-180: a workout written

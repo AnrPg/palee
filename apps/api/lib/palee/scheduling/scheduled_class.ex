@@ -2,7 +2,7 @@ defmodule Palee.Scheduling.ScheduledClass do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Palee.Scheduling.{Booking, ClassSeries, ClassType}
+  alias Palee.Scheduling.{Booking, ClassSeries, ClassType, ScheduledClassWorkout}
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -12,6 +12,9 @@ defmodule Palee.Scheduling.ScheduledClass do
     # ADR-230: the day WOD rule the WOD came from; nil with a WOD = its own.
     # Never cast from requests: only day-WOD inheritance writes it.
     field :day_workout_id, :binary_id
+    # ADR-746: the coach's «Τώρα» among the class's WODs (nil = the first).
+    # Never cast from requests: only SetClassLiveWorkout writes it.
+    field :live_workout_id, :binary_id
     field :name, :string, default: "Class"
     field :duration_minutes, :integer, default: 60
     field :scheduled_at, :utc_datetime
@@ -33,6 +36,11 @@ defmodule Palee.Scheduling.ScheduledClass do
     belongs_to :class_series, ClassSeries
 
     has_many :bookings, Booking, preload_order: [asc: :inserted_at]
+
+    # ADR-746: the class's WODs after its first one, in order.
+    has_many :additional_workouts, ScheduledClassWorkout,
+      foreign_key: :scheduled_class_id,
+      preload_order: [asc: :position]
 
     timestamps()
   end

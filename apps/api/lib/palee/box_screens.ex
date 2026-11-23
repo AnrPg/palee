@@ -143,6 +143,8 @@ defmodule Palee.BoxScreens do
       override_view: nil,
       override_slot_id: nil,
       override_until: nil,
+      override_workout_id: nil,
+      override_split_slot_id: nil,
       focus_changed_by_id: actor_id,
       focus_changed_at: now
     })
@@ -150,8 +152,10 @@ defmodule Palee.BoxScreens do
 
   defdelegate active_override(screen, now), to: ScreenPolicy
   defdelegate focus(classes, override, now), to: Focus, as: :resolve
+  defdelegate focus(classes, override, now, screen), to: Focus, as: :resolve
   defdelegate ends_at(class), to: Focus
   defdelegate max_screens(), to: ScreenPolicy
+  defdelegate concurrent_mode(mode), to: ScreenPolicy
   defdelegate in_scope?(scope, location_id), to: ScreenPolicy
   defdelegate override_views(), to: ScreenPolicy
 

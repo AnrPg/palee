@@ -9,7 +9,7 @@ import {
   fetchClassTimer,
   sendClassTimerCommand,
 } from "@/api/class-timers";
-import { classTimerPosition, clockOffsetMs } from "@/lib/class-timer";
+import { classTimerPosition, clockOffsetMs, followsPayload } from "@/lib/class-timer";
 import { subscribeToTopic } from "@/lib/realtime";
 
 const TICK_MS = 250;
@@ -22,8 +22,18 @@ export type ClassTimerProblem = "conflict" | "rejected" | "offline" | "forbidden
  * and corrects for this device's clock being off from the server's.
  * `send` runs coach commands one at a time against the latest version; a
  * conflict refetches instead of re-sending, so "Next" is never applied twice.
+ *
+ * ADR-746: a class may hold several WODs, each with its own timer, all pushed
+ * on the same topic. Without `workoutId` the hook follows the coach's «Τώρα»
+ * (wall display, box screens, members who follow the coach) and switches with
+ * it; with one, it follows that WOD's timer only.
  */
-export function useClassTimer(accessToken: string | null | undefined, slotId: string | null) {
+export function useClassTimer(
+  accessToken: string | null | undefined,
+  slotId: string | null,
+  options: { workoutId?: string | null } = {},
+) {
+  const workoutId = options.workoutId ?? null;
   const [payload, setPayload] = useState<ClassTimerPayload | null>(null);
   const [loadError, setLoadError] = useState<unknown>(null);
   const [connected, setConnected] = useState(false);
@@ -34,18 +44,29 @@ export function useClassTimer(accessToken: string | null | undefined, slotId: st
   const latest = useRef<ClassTimerPayload | null>(null);
   const queue = useRef<Promise<unknown>>(Promise.resolve());
 
-  const adopt = useCallback((next: ClassTimerPayload) => {
-    // Ignore pushes older than what we already have.
-    if (latest.current && next.timer.lock_version < latest.current.timer.lock_version) return;
-    latest.current = next;
-    setPayload(next);
-  }, []);
+  const adopt = useCallback(
+    (next: ClassTimerPayload, pushed = false) => {
+      if (pushed && !followsPayload(next, workoutId)) return;
+      // Ignore pushes older than what we already have for the same WOD
+      // (another WOD's timer keeps its own version).
+      const current = latest.current;
+      if (
+        current &&
+        (current.workout?.id ?? null) === (next.workout?.id ?? null) &&
+        next.timer.lock_version < current.timer.lock_version
+      )
+        return;
+      latest.current = next;
+      setPayload(next);
+    },
+    [workoutId],
+  );
 
   const refresh = useCallback(async () => {
     if (!accessToken || !slotId) return;
     const sentAt = Date.now();
     try {
-      const next = await fetchClassTimer(accessToken, slotId);
+      const next = await fetchClassTimer(accessToken, slotId, workoutId);
       setOffsetMs(clockOffsetMs(next.server_now, sentAt, Date.now()));
       latest.current = null;
       adopt(next);
@@ -53,14 +74,14 @@ export function useClassTimer(accessToken: string | null | undefined, slotId: st
     } catch (error) {
       setLoadError(error);
     }
-  }, [accessToken, adopt, slotId]);
+  }, [accessToken, adopt, slotId, workoutId]);
 
   // Initial load (refresh() handles later reloads).
   useEffect(() => {
     if (!accessToken || !slotId) return;
     let cancelled = false;
     const sentAt = Date.now();
-    fetchClassTimer(accessToken, slotId)
+    fetchClassTimer(accessToken, slotId, workoutId)
       .then((next) => {
         if (cancelled) return;
         setOffsetMs(clockOffsetMs(next.server_now, sentAt, Date.now()));
@@ -73,14 +94,14 @@ export function useClassTimer(accessToken: string | null | undefined, slotId: st
     return () => {
       cancelled = true;
     };
-  }, [accessToken, adopt, slotId]);
+  }, [accessToken, adopt, slotId, workoutId]);
 
   useEffect(() => {
     if (!accessToken || !slotId) return;
     return subscribeToTopic(
       accessToken,
       `class_timer:${slotId}`,
-      { "class_timer:updated": (next) => adopt(next as ClassTimerPayload) },
+      { "class_timer:updated": (next) => adopt(next as ClassTimerPayload, true) },
       {
         onJoin: () => {
           setConnected(true);
@@ -121,7 +142,13 @@ export function useClassTimer(accessToken: string | null | undefined, slotId: st
         setProblem(null);
         const sentAt = Date.now();
         try {
-          const next = await sendClassTimerCommand(accessToken, slotId, command, current.timer.lock_version);
+          const next = await sendClassTimerCommand(
+            accessToken,
+            slotId,
+            command,
+            current.timer.lock_version,
+            current.workout?.id ?? workoutId,
+          );
           setOffsetMs(clockOffsetMs(next.server_now, sentAt, Date.now()));
           adopt(next);
           return true;
@@ -145,7 +172,7 @@ export function useClassTimer(accessToken: string | null | undefined, slotId: st
       queue.current = result;
       return result;
     },
-    [accessToken, adopt, refresh, slotId],
+    [accessToken, adopt, refresh, slotId, workoutId],
   );
 
   const serverNow = now + offsetMs;
@@ -153,3 +180,4 @@ export function useClassTimer(accessToken: string | null | undefined, slotId: st
 
   return { payload, position, serverNow, connected, loadError, problem, sending, send, refresh };
 }
+

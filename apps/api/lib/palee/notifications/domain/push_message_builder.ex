@@ -26,6 +26,20 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
     }
   end
 
+  # ADR-746: a WOD for a class the member has not booked yet.
+  def build("workout_assigned", %{"class_slot_id" => slot_id} = payload, localize)
+      when is_binary(slot_id) and slot_id != "" do
+    %{
+      title: localize.("New workouts assigned", %{}),
+      body:
+        localize.(
+          "Your coach gave you your own WOD for a class. Open it to book your place.",
+          %{}
+        ),
+      url: payload["url"] || "/box/schedule"
+    }
+  end
+
   def build("workout_assigned", payload, localize) do
     %{
       title: localize.("New workouts assigned", %{}),
@@ -1133,6 +1147,18 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
           package: payload["package_name"]
         }),
       url: payload["url"] || "/me/payments"
+    }
+  end
+
+  # ADR-746.
+  def build("box_screen_taken", payload, localize) do
+    %{
+      title: localize.("%{screen} shows another class", %{screen: payload["screen_name"]}),
+      body:
+        localize.("%{coach} took the screen. You can take it back from your class's timer.", %{
+          coach: payload["taken_by"] || ""
+        }),
+      url: payload["url"] || "/admin/schedule"
     }
   end
 

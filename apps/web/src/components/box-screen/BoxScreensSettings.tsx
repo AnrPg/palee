@@ -21,6 +21,7 @@ import {
 } from "@/api/box-screens";
 import { listAdminLocations, type FacilityLocation } from "@/api/facility";
 import { fetchSchedule, type ScheduleSlot } from "@/api/schedule";
+import { fetchSpaces } from "@/api/spaces";
 import { useSession } from "@/components/session-provider";
 import {
   Pill,
@@ -173,6 +174,9 @@ function ScreenCard({
   const queryClient = useQueryClient();
   const [choosing, setChoosing] = useState(false);
   const [renaming, setRenaming] = useState(false);
+  // ADR-746 (8A): the room the screen follows and how classes that run together show.
+  const [roomOpen, setRoomOpen] = useState(false);
+  const tWods = useTranslations("ClassWods");
   const refresh = () => queryClient.invalidateQueries({ queryKey: BOX_SCREENS_KEY });
 
   const newCode = useMutation({ mutationFn: () => newBoxScreenPairingCode(token, screen.id), onSuccess: (result) => { void refresh(); onCode(result.pairing_code); } });
@@ -195,6 +199,11 @@ function ScreenCard({
           <p className="text-sm" style={{ color: "var(--muted)" }}>
             {screen.location_id && hasSeveralBranches(branches) ? t("followsBranch", { branch: branchLabel(t, branches, screen.location_id) }) : t("followsBox")}
           </p>
+          {screen.concurrent_mode === "split" ? (
+            <p className="text-xs" style={{ color: "var(--muted)" }} data-testid="box-screen-mode">
+              {tWods("screenModeSplit")}
+            </p>
+          ) : null}
           <div className="mt-2">
             {screen.paired ? <Pill tone="success">{t("paired")}</Pill> : pending ? <Pill tone="warning">{t("waiting")}</Pill> : <Pill tone="neutral">{t("notPaired")}</Pill>}
           </div>
@@ -205,6 +214,7 @@ function ScreenCard({
           items={[
             { label: t("rename"), onSelect: () => setRenaming(true), testId: "box-screen-rename" },
             { label: t("newCode"), onSelect: () => newCode.mutate(), disabled: newCode.isPending, testId: "box-screen-new-code" },
+            { label: tWods("screenRoomAction"), onSelect: () => setRoomOpen(true), testId: "box-screen-room" },
           ]}
         />
       </div>
@@ -254,6 +264,7 @@ function ScreenCard({
       </button>
 
       {choosing ? <ChooseViewDialog token={token} screen={screen} zone={zone} onClose={() => setChoosing(false)} onSaved={async () => { setChoosing(false); await refresh(); }} /> : null}
+      {roomOpen ? <RoomDialog token={token} screen={screen} onClose={() => setRoomOpen(false)} onSaved={async () => { setRoomOpen(false); await refresh(); }} /> : null}
       {renaming ? <RenameDialog token={token} screen={screen} onClose={() => setRenaming(false)} onSaved={async () => { setRenaming(false); await refresh(); }} /> : null}
     </section>
   );
@@ -382,6 +393,93 @@ function PairingCodeDialog({ pairing, paired, onClose }: { pairing: BoxScreenPai
             {t("codePaired")}
           </p>
         ) : null}
+      </div>
+    </Dialog>
+  );
+}
+
+/** ADR-746 (ANR pick 8A): the screen's room, and how classes that run together show. */
+function RoomDialog({ token, screen, onClose, onSaved }: { token: string; screen: BoxScreen; onClose: () => void; onSaved: () => Promise<unknown> }) {
+  const t = useTranslations("BoxScreens");
+  const tWods = useTranslations("ClassWods");
+  const ui = useUiTranslations();
+  const [spaceId, setSpaceId] = useState(screen.space_id ?? "");
+  const [mode, setMode] = useState<"room" | "split">(screen.concurrent_mode === "split" ? "split" : "room");
+  const spaces = useQuery({
+    queryKey: ["box-screens", "spaces", screen.location_id ?? "all"],
+    retry: false,
+    queryFn: () => fetchSpaces(token, screen.location_id ? { locationId: screen.location_id } : {}),
+  });
+  const rooms = (spaces.data?.spaces ?? []).filter((space) => !space.archived_at);
+  const save = useMutation({
+    mutationFn: () => updateBoxScreen(token, screen.id, { space_id: spaceId || null, concurrent_mode: mode }),
+    onSuccess: onSaved,
+  });
+
+  return (
+    <Dialog
+      title={tWods("screenRoomTitle", { name: screen.name })}
+      size="md"
+      testId="box-screen-room-dialog"
+      error={save.isError ? localizeError(save.error, ui) : null}
+      onClose={onClose}
+      onSubmit={(event) => {
+        event.preventDefault();
+        save.mutate();
+      }}
+      footer={
+        <>
+          <DialogButton onClick={onClose}>{t("cancel")}</DialogButton>
+          <DialogButton type="submit" tone="primary" testId="box-screen-room-save" disabled={save.isPending}>
+            {t("save")}
+          </DialogButton>
+        </>
+      }
+    >
+      {rooms.length > 0 ? (
+        <label className="block">
+          <span className={captionClass} style={captionStyle}>{tWods("screenRoomLabel")}</span>
+          <Select
+            className={inputClass}
+            style={inputStyle}
+            value={spaceId}
+            placeholder={tWods("screenRoomAny")}
+            onValueChange={setSpaceId}
+            data-testid="box-screen-space"
+          >
+            <option value="">{tWods("screenRoomAny")}</option>
+            {rooms.map((room) => (
+              <option key={room.id} value={room.id}>
+                {room.name}
+              </option>
+            ))}
+          </Select>
+          <span className="mt-1 block text-xs" style={{ color: "var(--muted)" }}>{tWods("screenRoomHint")}</span>
+        </label>
+      ) : null}
+      <div className="mt-4 grid gap-2" role="radiogroup" aria-labelledby="box-screen-mode-label">
+        <span id="box-screen-mode-label" className={captionClass} style={captionStyle}>{tWods("screenModeLabel")}</span>
+        {(["room", "split"] as const).map((value) => (
+          <button
+            key={value}
+            type="button"
+            role="radio"
+            aria-checked={mode === value}
+            onClick={() => setMode(value)}
+            data-testid={`box-screen-mode-${value}`}
+            className="flex items-start gap-3 rounded-2xl px-4 py-3 text-start"
+            style={{ border: `${mode === value ? 2 : 1}px solid ${mode === value ? "var(--primary)" : "var(--border)"}` }}
+          >
+            <span>
+              <span className="block text-sm font-semibold" style={{ color: "var(--text)" }}>
+                {value === "room" ? tWods("screenModeRoom") : tWods("screenModeSplit")}
+              </span>
+              <span className="block text-xs" style={{ color: "var(--muted)" }}>
+                {value === "room" ? tWods("screenModeRoomHint") : tWods("screenModeSplitHint")}
+              </span>
+            </span>
+          </button>
+        ))}
       </div>
     </Dialog>
   );

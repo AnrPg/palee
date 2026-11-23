@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
-import type { ScheduleSlot } from "@/api/schedule";
+import type { ScheduleSlot, WorkoutPreview } from "@/api/schedule";
 import type { DayWorkout } from "@/api/day-workouts";
 import { useUiTranslations } from "@/i18n/ui";
 import { ClassDayWorkoutNote } from "@/components/schedule/ClassDayWorkoutNote";
@@ -20,6 +20,11 @@ import type { ClassWodLink } from "./use-class-wod-link";
  * (the day's WOD or the class's own) and its own ⋯ menu. Without a WOD, a
  * calm card with the most likely WODs one tap away; choosing from the whole
  * library and «+ Νέο WOD» sit in the page's bottom bar.
+ *
+ * ADR-746 (ANR picks 2A, 5A): a class may hold several WODs. A row of chips
+ * above the hero picks which one it shows, «ΤΩΡΑ» marks the one the class
+ * timer and the box screens follow, and «+ WOD» adds one (with a single WOD
+ * only «+» shows, so the screen stays as calm as before).
  */
 export function StaffClassWod({
   slot,
@@ -29,6 +34,10 @@ export function StaffClassWod({
   wod,
   menuItems,
   onChanged,
+  workout,
+  workouts,
+  liveId,
+  onView,
 }: {
   slot: ScheduleSlot;
   accessToken: string;
@@ -37,10 +46,15 @@ export function StaffClassWod({
   wod: ClassWodLink;
   menuItems: MoreMenuItem[];
   onChanged?: () => void;
+  /** ADR-746: the WOD the hero shows (one of `workouts`). */
+  workout: WorkoutPreview | null;
+  workouts: WorkoutPreview[];
+  liveId: string | null;
+  onView: (workoutId: string) => void;
 }) {
   const t = useTranslations("StaffClass");
 
-  if (!slot.workout) return <EmptyWod slot={slot} wod={wod} menuItems={menuItems} />;
+  if (!workout) return <EmptyWod slot={slot} wod={wod} menuItems={menuItems} />;
 
   return (
     <section
@@ -50,6 +64,14 @@ export function StaffClassWod({
       className="rounded-[1.6rem] p-4 sm:p-5"
       style={{ background: "var(--bg)", color: "var(--text)", border: "1px solid var(--border)" }}
     >
+      <ClassWodChips
+        workouts={workouts}
+        viewedId={workout.id}
+        liveId={liveId}
+        onView={onView}
+        onAdd={wod.openAdd}
+        busy={wod.busy}
+      />
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <ClassDayWorkoutNote
@@ -60,7 +82,7 @@ export function StaffClassWod({
             onChanged={onChanged}
           />
           <h3 id={`class-wod-${slot.id}`} className="mt-2 text-xl font-semibold leading-tight">
-            {slot.workout.title}
+            {workout.title}
           </h3>
         </div>
         <div data-testid="workout-actions">
@@ -69,17 +91,93 @@ export function StaffClassWod({
       </div>
       <div className="mt-4">
         <WorkoutPreviewDetail
-          sections={slot.workout.sections}
-          content={slot.workout.content}
-          authoringMode={slot.workout.authoring_mode}
-          freeTextBody={slot.workout.free_text_body}
-          freeTextDocument={slot.workout.free_text_document}
+          sections={workout.sections}
+          content={workout.content}
+          authoringMode={workout.authoring_mode}
+          freeTextBody={workout.free_text_body}
+          freeTextDocument={workout.free_text_document}
         />
       </div>
       {/* ADR-670: the class's goals; its atlas adds «Φορτίο προγράμματος». */}
-      <StaffWodGoalsStrip workoutId={slot.workout.id} atlas={{ kind: "class", classId: slot.id }} className="mt-4" />
+      <StaffWodGoalsStrip workoutId={workout.id} atlas={{ kind: "class", classId: slot.id }} className="mt-4" />
       {wod.error ? <ErrorNotice className="mt-3">{wod.error}</ErrorNotice> : null}
     </section>
+  );
+}
+
+/**
+ * ADR-746: one chip per WOD of the class, «ΤΩΡΑ» on the one the timer and
+ * screens follow, then «+ WOD». With a single WOD only a small «+» shows.
+ */
+function ClassWodChips({
+  workouts,
+  viewedId,
+  liveId,
+  onView,
+  onAdd,
+  busy,
+}: {
+  workouts: WorkoutPreview[];
+  viewedId: string;
+  liveId: string | null;
+  onView: (workoutId: string) => void;
+  onAdd: () => void;
+  busy: boolean;
+}) {
+  const t = useTranslations("ClassWods");
+  const several = workouts.length > 1;
+  const chip = "flex min-h-9 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-sm font-semibold disabled:opacity-60";
+
+  return (
+    <div
+      role="group"
+      aria-label={t("classWodsLabel")}
+      data-testid="class-wod-chips"
+      className={several ? "-mx-1 mb-3 flex gap-2 overflow-x-auto px-1 pb-1" : "mb-2 flex justify-end"}
+    >
+      {several
+        ? workouts.map((item) => {
+            const viewed = item.id === viewedId;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                aria-pressed={viewed}
+                data-testid="class-wod-chip"
+                className={chip}
+                style={
+                  viewed
+                    ? { background: "var(--text)", color: "var(--bg)" }
+                    : { border: "1px solid var(--border)", color: "var(--text-soft)" }
+                }
+                onClick={() => onView(item.id)}
+              >
+                <span className="max-w-[11rem] truncate">{item.title}</span>
+                {item.id === liveId ? (
+                  <span
+                    data-testid="class-wod-live"
+                    className="rounded-full px-1.5 text-[0.65rem] font-black uppercase"
+                    style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}
+                  >
+                    {t("now")}
+                  </span>
+                ) : null}
+              </button>
+            );
+          })
+        : null}
+      <button
+        type="button"
+        disabled={busy}
+        data-testid="class-wod-add-more"
+        aria-label={t("addWod")}
+        className={chip}
+        style={{ border: "1px dashed var(--border-strong)", color: "var(--text-soft)" }}
+        onClick={onAdd}
+      >
+        {several ? t("addWodChip") : "+"}
+      </button>
+    </div>
   );
 }
 

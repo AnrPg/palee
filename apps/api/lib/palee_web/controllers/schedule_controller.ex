@@ -161,6 +161,45 @@ defmodule PaleeWeb.ScheduleController do
                      description:
                        "ADR-230: day = inherited from the day's WOD, class = set on the class."
                    },
+                   workouts: %Schema{
+                     type: :array,
+                     description:
+                       "ADR-746: every WOD of the class in order, each whole like `workout` (the first).",
+                     items: %Schema{type: :object, additionalProperties: true}
+                   },
+                   live_workout_id: %Schema{
+                     type: :string,
+                     format: :uuid,
+                     nullable: true,
+                     description:
+                       "ADR-746: the coach's «Τώρα»; people who decide at the box follow it."
+                   },
+                   workout_choice_counts: %Schema{
+                     type: :object,
+                     description:
+                       "ADR-746: how many of the class's active bookings do each WOD, and how many decide at the box. Seats stay the class's.",
+                     properties: %{
+                       workouts: %Schema{
+                         type: :array,
+                         items: %Schema{
+                           type: :object,
+                           properties: %{
+                             workout_id: %Schema{type: :string, format: :uuid},
+                             count: %Schema{type: :integer, minimum: 0}
+                           },
+                           required: [:workout_id, :count]
+                         }
+                       },
+                       undecided: %Schema{type: :integer, minimum: 0}
+                     },
+                     required: [:workouts, :undecided]
+                   },
+                   workout_count: %Schema{
+                     type: :integer,
+                     minimum: 0,
+                     description:
+                       "ADR-746: how many WODs a class holds while its WODs are locked (ADR-551)."
+                   },
                    wod_locked: %Schema{
                      type: :boolean,
                      description:

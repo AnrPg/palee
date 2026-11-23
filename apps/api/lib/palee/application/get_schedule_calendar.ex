@@ -1,7 +1,7 @@
 defmodule Palee.Application.GetScheduleCalendar do
   alias Palee.{Community, Facility, Finance, Identity, Organizations, Scheduling, Workouts}
   alias Palee.Application.{AuthorizeWodAccess, BookingTerms, ClassSpace, DayWorkouts}
-  alias Palee.Scheduling.Domain.BookingPolicy
+  alias Palee.Scheduling.Domain.{BookingPolicy, ClassWorkouts}
   alias Palee.TimeZones.ZonedTime
 
   def call(%{organization_id: organization_id} = context, actor, params)
@@ -104,10 +104,10 @@ defmodule Palee.Application.GetScheduleCalendar do
         do: slots |> class_variants(context, actor) |> attach_assignee_nicknames(nickname_cache),
         else: class_variants(slots, context, actor)
 
+    # ADR-746: every WOD of every class, not only the first.
     workout_cache =
       slots
-      |> Enum.map(& &1.master_workout_id)
-      |> Enum.reject(&is_nil/1)
+      |> Enum.flat_map(&ClassWorkouts.ids/1)
       |> Enum.uniq()
       |> Enum.reduce(%{}, fn workout_id, acc ->
         Map.put(acc, workout_id, Workouts.get_workout(context, workout_id))
@@ -160,12 +160,22 @@ defmodule Palee.Application.GetScheduleCalendar do
         cancel_reason: Map.get(slot, :cancel_reason),
         waitlist_count: length(waitlist),
         workout: preview_workout(workout),
+        # ADR-746: every WOD of the class in order (the first is `workout`),
+        # the coach's «Τώρα», and how many do each («3 / 6 ελεύθερες ▾»).
+        workouts:
+          slot
+          |> ClassWorkouts.ids()
+          |> Enum.map(&preview_workout(Map.get(workout_cache, &1)))
+          |> Enum.reject(&is_nil/1),
+        live_workout_id: ClassWorkouts.live_id(slot),
+        workout_choice_counts: choice_counts(slot),
         current_user_booking:
           current_booking &&
             current_booking
             |> enrich_booking(nickname_cache)
             |> Map.put(:waitlist_position, waitlist_position(waitlist, current_booking))
             |> Map.put(:attendance_status, Map.get(my_attendance, slot.id))
+            |> Map.merge(workout_choice(current_booking, slot))
             |> Map.merge(check_in_window(slot)),
         current_user_guest: current_guest && enrich_booking(current_guest, nickname_cache)
       }
@@ -174,7 +184,12 @@ defmodule Palee.Application.GetScheduleCalendar do
         base
         |> Map.put(
           :bookings,
-          Enum.map(slot.bookings, &roster_booking(&1, slot.id, nickname_cache, roster_attendance))
+          Enum.map(
+            slot.bookings,
+            &(&1
+              |> roster_booking(slot.id, nickname_cache, roster_attendance)
+              |> Map.merge(workout_choice(&1, slot)))
+          )
         )
         |> Map.put(:member_versions, staff_versions(variants, slot.id))
       else
@@ -331,7 +346,15 @@ defmodule Palee.Application.GetScheduleCalendar do
 
     Enum.map(slots, fn slot ->
       if locked?,
-        do: Map.merge(slot, %{workout: nil, my_version: nil, wod_locked: true}),
+        do:
+          Map.merge(slot, %{
+            workout: nil,
+            workouts: [],
+            # ADR-746: «2 WOD» without saying which.
+            workout_count: length(Map.get(slot, :workouts) || []),
+            my_version: nil,
+            wod_locked: true
+          }),
         else: Map.put(slot, :wod_locked, false)
     end)
   end
@@ -436,6 +459,30 @@ defmodule Palee.Application.GetScheduleCalendar do
               end)
           }
         end)
+    }
+  end
+
+  # ADR-746: the WOD the person chose (nil = «Θα αποφασίσω στο box») and
+  # whether a coach set it for them («Ο coach σού έβαλε …»).
+  defp workout_choice(booking, slot) do
+    chosen = ClassWorkouts.chosen_id(booking, slot)
+
+    %{
+      chosen_workout_id: chosen,
+      workout_chosen_by_coach:
+        not is_nil(chosen) and
+          Map.get(booking, :workout_chosen_by_id) not in [nil, booking.user_id]
+    }
+  end
+
+  defp choice_counts(slot) do
+    %{workouts: by_workout, undecided: undecided} =
+      ClassWorkouts.choice_counts(slot, slot.bookings)
+
+    %{
+      workouts:
+        Enum.map(ClassWorkouts.ids(slot), &%{workout_id: &1, count: Map.get(by_workout, &1, 0)}),
+      undecided: undecided
     }
   end
 

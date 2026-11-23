@@ -11,14 +11,34 @@ import { addDaysToKey, dateKeyInZone, zonedToInstant } from "@/lib/zoned-time";
 // (before: WOD and bookings; during: the timer; after: the leaderboard) and
 // staff can pin one view until they return it to automatic. Pure, so it is
 // unit-tested; the TV page only renders what `screenScene` says.
+//
+// ADR-746: a class may hold several WODs. The TV shows the one a pin names
+// (`focus.workout_id`), else the coach's «Τώρα»; its results stack one
+// leaderboard per WOD; a split focus shows a second class beside the first.
 
 const RESULTS_MINUTES = 30;
 
 /** What the TV shows right now. */
 export type ScreenScene =
   | { kind: "preview"; slot: BoxScreenClass; workout: BoxScreenWorkout | null }
-  | { kind: "timer"; slot: BoxScreenClass; workout: BoxScreenWorkout | null; leaderboard: BoxScreenLeaderboard | null }
-  | { kind: "results"; slot: BoxScreenClass | null; workout: BoxScreenWorkout | null; leaderboard: BoxScreenLeaderboard | null }
+  | {
+      kind: "timer";
+      slot: BoxScreenClass;
+      workout: BoxScreenWorkout | null;
+      leaderboard: BoxScreenLeaderboard | null;
+      /** ADR-746: the WOD whose timer shows (null: the class's «Τώρα»). */
+      workoutId?: string | null;
+      /** ADR-746: a second class that runs at the same time, side by side. */
+      split?: BoxScreenClass | null;
+    }
+  | {
+      kind: "results";
+      slot: BoxScreenClass | null;
+      workout: BoxScreenWorkout | null;
+      leaderboard: BoxScreenLeaderboard | null;
+      /** ADR-746: the class's other WODs, each with its own leaderboard. */
+      others?: { workout: BoxScreenWorkout; leaderboard: BoxScreenLeaderboard | null }[];
+    }
   | { kind: "wod"; slot: BoxScreenClass | null; workout: BoxScreenWorkout }
   | { kind: "leaderboard"; slot: BoxScreenClass | null; workout: BoxScreenWorkout; leaderboard: BoxScreenLeaderboard | null }
   | { kind: "bookings"; slot: BoxScreenClass }
@@ -42,9 +62,28 @@ function lastEnded(today: BoxScreenToday, now: number) {
   return [...live(today)].reverse().find((slot) => at(slot.ends_at) <= now) ?? null;
 }
 
-export function workoutOf(today: BoxScreenToday, slot: BoxScreenClass | null) {
-  if (!slot?.workout_id) return null;
-  return today.workouts.find((workout) => workout.id === slot.workout_id) ?? null;
+/** The class's WOD on the TV: the pinned one when it is the class's, else its «Τώρα», else its first. */
+export function workoutOf(today: BoxScreenToday, slot: BoxScreenClass | null, pinnedId: string | null = null) {
+  if (!slot) return null;
+  const ids = slotWorkoutIds(slot);
+  const id = pinnedId && ids.includes(pinnedId) ? pinnedId : (slot.live_workout_id ?? slot.workout_id);
+  if (!id) return null;
+  return today.workouts.find((workout) => workout.id === id) ?? null;
+}
+
+/** ADR-746: the class's WODs in order (older payloads carry only `workout_id`). */
+export function slotWorkoutIds(slot: BoxScreenClass) {
+  if (slot.workout_ids && slot.workout_ids.length) return slot.workout_ids;
+  return slot.workout_id ? [slot.workout_id] : [];
+}
+
+function otherBoards(today: BoxScreenToday, slot: BoxScreenClass | null, shown: BoxScreenWorkout | null) {
+  if (!slot) return [];
+  return slotWorkoutIds(slot)
+    .filter((id) => id !== shown?.id)
+    .map((id) => today.workouts.find((workout) => workout.id === id))
+    .filter((workout): workout is BoxScreenWorkout => Boolean(workout))
+    .map((workout) => ({ workout, leaderboard: leaderboardOf(today, workout) }));
 }
 
 export function leaderboardOf(today: BoxScreenToday, workout: BoxScreenWorkout | null) {
@@ -56,16 +95,26 @@ function phaseOfClass(today: BoxScreenToday, slot: BoxScreenClass, now: number):
   const workout = workoutOf(today, slot);
   if (now < at(slot.scheduled_at)) return { kind: "preview", slot, workout };
   if (now < at(slot.ends_at)) return { kind: "timer", slot, workout, leaderboard: leaderboardOf(today, workout) };
-  return { kind: "results", slot, workout, leaderboard: leaderboardOf(today, workout) };
+  return {
+    kind: "results",
+    slot,
+    workout,
+    leaderboard: leaderboardOf(today, workout),
+    others: otherBoards(today, slot, workout),
+  };
 }
 
 /** The scene for the focus the API chose (automatic or pinned by staff). */
 export function screenScene(today: BoxScreenToday, now: number): ScreenScene {
   const { focus } = today;
   const named = focus.slot_id ? today.classes.find((slot) => slot.id === focus.slot_id) ?? null : null;
+  const pinnedWod = named ? (focus.workout_id ?? null) : null;
+  const split = focus.split_slot_id
+    ? (today.classes.find((slot) => slot.id === focus.split_slot_id && !slot.cancelled) ?? null)
+    : null;
   const current = named ?? running(today, now) ?? upcoming(today, now) ?? lastEnded(today, now);
   // A pinned WOD or leaderboard without a class of its own: today's first WOD.
-  const workoutForPin = workoutOf(today, current) ?? today.workouts[0] ?? null;
+  const workoutForPin = workoutOf(today, current, pinnedWod) ?? today.workouts[0] ?? null;
 
   switch (focus.view) {
     case "preview": {
@@ -75,13 +124,26 @@ export function screenScene(today: BoxScreenToday, now: number): ScreenScene {
     case "timer": {
       const slot = named ?? running(today, now) ?? upcoming(today, now);
       if (!slot) return { kind: "idle" };
-      const workout = workoutOf(today, slot);
-      return { kind: "timer", slot, workout, leaderboard: leaderboardOf(today, workout) };
+      const workout = workoutOf(today, slot, pinnedWod);
+      return {
+        kind: "timer",
+        slot,
+        workout,
+        leaderboard: leaderboardOf(today, workout),
+        workoutId: pinnedWod && slot.id === named?.id ? workout?.id ?? null : null,
+        split: split && split.id !== slot.id ? split : null,
+      };
     }
     case "results": {
       const slot = named ?? lastEnded(today, now);
-      const workout = workoutOf(today, slot) ?? (slot ? null : workoutForPin);
-      return { kind: "results", slot, workout, leaderboard: leaderboardOf(today, workout) };
+      const workout = workoutOf(today, slot, pinnedWod) ?? (slot ? null : workoutForPin);
+      return {
+        kind: "results",
+        slot,
+        workout,
+        leaderboard: leaderboardOf(today, workout),
+        others: otherBoards(today, slot, workout),
+      };
     }
     case "wod":
       return workoutForPin ? { kind: "wod", slot: current, workout: workoutForPin } : { kind: "idle" };

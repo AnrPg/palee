@@ -18,6 +18,15 @@ defmodule PaleeWeb.ClassTimerController do
     schema: %Schema{type: :string, format: :uuid}
   }
 
+  @workout_param %Parameter{
+    name: :workout_id,
+    in: :query,
+    description:
+      "ADR-746: the timer of this WOD of the class; left out (or not one of the class's WODs) = the coach's «Τώρα».",
+    required: false,
+    schema: %Schema{type: :string, format: :uuid}
+  }
+
   @timer_schema %Schema{
     type: :object,
     properties: %{
@@ -46,6 +55,44 @@ defmodule PaleeWeb.ClassTimerController do
         }
       },
       workout: %Schema{type: :object, nullable: true, additionalProperties: true},
+      workouts: %Schema{
+        type: :array,
+        description: "ADR-746: every WOD of the class, in order.",
+        items: %Schema{
+          type: :object,
+          properties: %{
+            id: %Schema{type: :string, format: :uuid},
+            title: %Schema{type: :string, nullable: true}
+          },
+          required: [:id, :title]
+        }
+      },
+      live_workout_id: %Schema{
+        type: :string,
+        format: :uuid,
+        nullable: true,
+        description: "ADR-746: the coach's «Τώρα» (screens follow it)."
+      },
+      live: %Schema{
+        type: :boolean,
+        description: "ADR-746: this payload is the «Τώρα» WOD's timer."
+      },
+      other_timers: %Schema{
+        type: :array,
+        description:
+          "ADR-746: the class's other WODs' timers (one may keep running while another is shown).",
+        items: %Schema{
+          type: :object,
+          properties: %{
+            workout_id: %Schema{type: :string, format: :uuid, nullable: true},
+            status: %Schema{type: :string, enum: ~w(ready running paused finished)},
+            current_segment_index: %Schema{type: :integer, minimum: 0},
+            segment_started_at_utc: %Schema{type: :string, format: :"date-time", nullable: true},
+            paused_elapsed_ms: %Schema{type: :integer, minimum: 0}
+          },
+          required: [:workout_id, :status]
+        }
+      },
       segments: %Schema{type: :array, items: %Schema{type: :object, additionalProperties: true}},
       timer: @timer_schema,
       server_now: %Schema{type: :string, format: :"date-time"}
@@ -64,15 +111,17 @@ defmodule PaleeWeb.ClassTimerController do
 
   operation(:show,
     summary: "Read the coach-run timer of a scheduled class",
-    parameters: [@slot_param],
+    parameters: [@slot_param, @workout_param],
     responses: [
       ok: {"Class timer", "application/json", @payload_schema},
       not_found: {"Not found", "application/json", @error_schema}
     ]
   )
 
-  def show(conn, %{"slot_id" => slot_id}) do
-    with {:ok, payload} <- GetClassTimer.call(conn.assigns.tenant_context, slot_id) do
+  def show(conn, %{"slot_id" => slot_id} = params) do
+    workout_id = params["workout_id"]
+
+    with {:ok, payload} <- GetClassTimer.call(conn.assigns.tenant_context, slot_id, workout_id) do
       json(conn, payload)
     end
   end
@@ -92,6 +141,12 @@ defmodule PaleeWeb.ClassTimerController do
                 enum: ~w(start pause resume next previous jump adjust reset finish configure)
               },
               expected_version: %Schema{type: :integer, minimum: 1, nullable: true},
+              workout_id: %Schema{
+                type: :string,
+                format: :uuid,
+                nullable: true,
+                description: "ADR-746: the WOD whose timer this is (default: «Τώρα»)."
+              },
               index: %Schema{type: :integer, minimum: 0},
               delta_seconds: %Schema{type: :integer, minimum: -3600, maximum: 3600},
               countdown_seconds: %Schema{type: :integer, minimum: 0, maximum: 60},

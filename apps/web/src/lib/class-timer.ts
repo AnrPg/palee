@@ -1,4 +1,4 @@
-import type { ClassTimerState } from "@/api/class-timers";
+import type { ClassTimerPayload, ClassTimerState } from "@/api/class-timers";
 import type { TimerSegment } from "@/api/executions";
 import { planCatchUp, readSegmentClock, segmentLimitMs, type SegmentClock } from "@/lib/timer-engine";
 
@@ -72,4 +72,14 @@ export function clockOffsetMs(serverNow: string, sentAt: number, receivedAt: num
   const server = Date.parse(serverNow);
   if (Number.isNaN(server)) return 0;
   return server - (sentAt + receivedAt) / 2;
+}
+
+/**
+ * ADR-746: whether a pushed payload is the one this hook follows: the «Τώρα»
+ * timer when following the coach, that WOD's timer otherwise. Payloads from
+ * before the list existed carry neither field and are always followed.
+ */
+export function followsPayload(next: ClassTimerPayload, workoutId: string | null) {
+  if (workoutId) return (next.workout?.id ?? null) === workoutId;
+  return next.live !== false;
 }

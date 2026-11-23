@@ -289,6 +289,25 @@ defmodule Palee.Scheduling do
   def count_active_future_bookings_for_user(%{organization_id: _} = context, user_id),
     do: Palee.Scheduling.SchedulingStore.count_active_future_bookings_for_user(context, user_id)
 
+  @doc "ADR-746: replaces a class's WODs (ordered; the first is the class's WOD)."
+  def set_class_workouts(context, slot_id, workout_ids),
+    do: Palee.Scheduling.SchedulingStore.set_class_workouts(context, slot_id, workout_ids)
+
+  @doc "ADR-746: the class's «Τώρα» (nil = its first WOD)."
+  def set_live_workout(context, slot_id, workout_id),
+    do: Palee.Scheduling.SchedulingStore.set_live_workout(context, slot_id, workout_id)
+
+  @doc "ADR-746: the WOD a booking's person does (nil = «Θα αποφασίσω στο box»)."
+  def choose_booking_workout(context, booking_id, workout_id, chosen_by_id, at),
+    do:
+      Palee.Scheduling.SchedulingStore.choose_booking_workout(
+        context,
+        booking_id,
+        workout_id,
+        chosen_by_id,
+        at
+      )
+
   def substitute_slot_workout(context, slot_id, new_workout_id),
     do:
       Palee.Scheduling.SchedulingStore.substitute_slot_workout(

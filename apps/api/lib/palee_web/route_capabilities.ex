@@ -244,6 +244,15 @@ defmodule PaleeWeb.RouteCapabilities do
     # ADR-176: whoever programmes WODs may link one to a class.
     {W.AdminScheduleController, :link_workout} => [:manage_schedule, :manage_workouts],
     {W.AdminScheduleController, :delete_slot} => [:manage_schedule],
+    # ADR-746: whoever programmes or runs the class sets its WODs; whoever
+    # runs it moves «Τώρα» and sets someone's WOD.
+    {W.AdminClassWorkoutsController, :put_workouts} => [
+      :manage_schedule,
+      :manage_workouts,
+      :run_classes
+    ],
+    {W.AdminClassWorkoutsController, :put_live} => [:manage_schedule, :run_classes],
+    {W.AdminClassWorkoutsController, :put_booking_workout} => [:manage_schedule, :run_classes],
     {W.AdminScheduleController, :approve_booking} => [:run_classes],
     {W.AdminScheduleController, :reject_booking} => [:run_classes],
     {W.AdminScheduleController, :record_attendance} => [:run_classes],

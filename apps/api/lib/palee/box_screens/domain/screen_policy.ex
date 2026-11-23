@@ -9,15 +9,27 @@ defmodule Palee.BoxScreens.Domain.ScreenPolicy do
       classes, and optionally a time it ends (in the future, at most 24 hours
       away). Without an end it stays until staff return the screen to
       automatic.
+    * ADR-746: a pin may name the WOD it shows (`workout_id`, one of the
+      class's WODs, checked by the caller; nil follows the class's «Τώρα»)
+      and one more of today's classes sharing the screen this once
+      (`split_slot_id`, only with a class).
+    * ADR-746: a screen shows classes that run together either by its room
+      (`room`, the default) or side by side (`split`).
   """
 
   @max_screens 20
   @name_max 60
   @override_views ~w(wod timer leaderboard bookings class)
   @override_max_hours 24
+  @concurrent_modes ~w(room split)
 
   def max_screens, do: @max_screens
   def override_views, do: @override_views
+  def concurrent_modes, do: @concurrent_modes
+
+  @doc "`{:ok, mode}` or `{:error, :invalid_screen_settings}`."
+  def concurrent_mode(mode) when mode in @concurrent_modes, do: {:ok, mode}
+  def concurrent_mode(_mode), do: {:error, :invalid_screen_settings}
 
   @doc "`{:ok, name}` or `{:error, :invalid_screen_name}`."
   def name(value) when is_binary(value) do
@@ -42,12 +54,24 @@ defmodule Palee.BoxScreens.Domain.ScreenPolicy do
   def override(params, slot_ids, %DateTime{} = now) do
     view = params[:view]
     slot_id = blank(params[:slot_id])
+    workout_id = blank(params[:workout_id])
+    split_slot_id = blank(params[:split_slot_id])
 
     with true <- view in @override_views,
          true <- view != "class" or is_binary(slot_id),
          true <- is_nil(slot_id) or slot_id in slot_ids,
+         true <- is_nil(workout_id) or (is_binary(workout_id) and is_binary(slot_id)),
+         true <- is_nil(split_slot_id) or (is_binary(slot_id) and split_slot_id != slot_id),
+         true <- is_nil(split_slot_id) or split_slot_id in slot_ids,
          {:ok, until} <- until(params[:until], now) do
-      {:ok, %{override_view: view, override_slot_id: slot_id, override_until: until}}
+      {:ok,
+       %{
+         override_view: view,
+         override_slot_id: slot_id,
+         override_until: until,
+         override_workout_id: workout_id,
+         override_split_slot_id: split_slot_id
+       }}
     else
       _invalid -> {:error, :invalid_screen_override}
     end
@@ -78,16 +102,24 @@ defmodule Palee.BoxScreens.Domain.ScreenPolicy do
   def active_override(%{override_view: view} = screen, now) when is_binary(view) do
     case screen.override_until do
       nil ->
-        %{view: view, slot_id: screen.override_slot_id, until: nil}
+        pin(screen, view, nil)
 
       until ->
-        if DateTime.compare(until, now) == :gt,
-          do: %{view: view, slot_id: screen.override_slot_id, until: until},
-          else: nil
+        if DateTime.compare(until, now) == :gt, do: pin(screen, view, until), else: nil
     end
   end
 
   def active_override(_screen, _now), do: nil
+
+  defp pin(screen, view, until) do
+    %{
+      view: view,
+      slot_id: screen.override_slot_id,
+      until: until,
+      workout_id: Map.get(screen, :override_workout_id),
+      split_slot_id: Map.get(screen, :override_split_slot_id)
+    }
+  end
 
   @doc """
   Whether staff working at `scope` (`:all` or branch ids) may manage a

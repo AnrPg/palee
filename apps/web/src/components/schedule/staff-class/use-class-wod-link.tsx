@@ -3,7 +3,7 @@
 import { useState, type ReactNode } from "react";
 import { useLocale, useTranslations } from "next-intl";
 
-import { linkScheduleSlotWorkout, type ScheduleSlot } from "@/api/schedule";
+import { classWorkouts, linkScheduleSlotWorkout, setClassWorkouts, type ScheduleSlot } from "@/api/schedule";
 import { localizeError } from "@/i18n/presentation";
 import { useUiTranslations } from "@/i18n/ui";
 import { ContextualWorkoutCreator } from "@/components/workouts/creation/ContextualWorkoutCreator";
@@ -16,6 +16,10 @@ import { dateTimeLocalInZone, formatInZone } from "@/lib/zoned-time";
  * editor, linked as soon as it is published. The page's empty WOD card, its
  * bottom bar and the WOD's ⋯ «Αλλαγή WOD» share this one state, so the
  * picker and the editor open once whoever asked.
+ *
+ * ADR-746: a class may hold several WODs. «+ WOD» adds one at the end, «Αλλαγή
+ * WOD» replaces the one being viewed, and the WOD's ⋯ moves or removes it;
+ * every change sends the whole ordered list, so two coaches never interleave.
  */
 export function useClassWodLink({
   slot,
@@ -32,24 +36,67 @@ export function useClassWodLink({
   const t = useTranslations("Schedule");
   const locale = useLocale();
   const [picking, setPicking] = useState(false);
+  // ADR-746: what the next picked WOD does: replace the WOD at an index, or
+  // join the list at the end («+ WOD»).
+  const [target, setTarget] = useState<{ kind: "replace"; index: number } | { kind: "add" }>({
+    kind: "replace",
+    index: 0,
+  });
+  const ids = classWorkouts(slot).map((workout) => workout.id);
   const [creating, setCreating] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const date = dateTimeLocalInZone(slot.scheduled_at, timeZone).slice(0, 10) || null;
   const suggestions = useWodSuggestions(accessToken, date, slot.class_type_id);
 
-  async function link(workoutId: string | null) {
-    if (!workoutId || busy) return;
+  async function run(action: () => Promise<unknown>) {
+    if (busy) return;
     setBusy(true);
     setError(null);
     try {
-      await linkScheduleSlotWorkout(accessToken, slot.id, workoutId);
+      await action();
       onLinked?.();
     } catch (reason) {
       setError(localizeError(reason, i18n));
     } finally {
       setBusy(false);
     }
+  }
+
+  // The whole ordered list goes back; the first WOD alone keeps the
+  // ADR-176 link (it also publishes a draft class).
+  function saveList(next: string[]) {
+    return run(() =>
+      next.length === 1 && ids.length <= 1
+        ? linkScheduleSlotWorkout(accessToken, slot.id, next[0]!)
+        : setClassWorkouts(accessToken, slot.id, next),
+    );
+  }
+
+  async function link(workoutId: string | null) {
+    if (!workoutId || busy) return;
+    if (target.kind === "add") {
+      if (ids.includes(workoutId)) return;
+      await saveList([...ids, workoutId]);
+      return;
+    }
+    const next = ids.length ? ids.map((id, index) => (index === target.index ? workoutId : id)) : [workoutId];
+    await saveList(next.filter((id, index) => next.indexOf(id) === index));
+  }
+
+  /** ADR-746: removes one WOD of the class (its people go back to «Θα αποφασίσω στο box»). */
+  function remove(workoutId: string) {
+    return saveList(ids.filter((id) => id !== workoutId));
+  }
+
+  /** ADR-746: moves one WOD a place earlier (-1) or later (+1). */
+  function move(workoutId: string, step: -1 | 1) {
+    const from = ids.indexOf(workoutId);
+    const to = from + step;
+    if (from < 0 || to < 0 || to >= ids.length) return Promise.resolve();
+    const next = [...ids];
+    [next[from], next[to]] = [next[to]!, next[from]!];
+    return saveList(next);
   }
 
   // Only the WOD another class runs the same day (ANR, 2026-11-21: WODs are
@@ -63,7 +110,7 @@ export function useClassWodLink({
         <WodPickerDialog
           label={i18n("classLinkWodLabel")}
           token={accessToken}
-          value={slot.master_workout_id}
+          value={target.kind === "replace" ? (ids[target.index] ?? null) : null}
           date={date}
           suggestions={suggestions.data}
           suggestionsLoading={suggestions.isLoading}
@@ -97,8 +144,21 @@ export function useClassWodLink({
     quick,
     sameDay: sameDay.length > 0,
     quickLabel: t("wodPickerQuickSameDay"),
-    openPicker: () => setPicking(true),
-    openCreator: () => setCreating(true),
+    openPicker: (index = 0) => {
+      setTarget({ kind: "replace", index });
+      setPicking(true);
+    },
+    /** ADR-746: «+ WOD». */
+    openAdd: () => {
+      setTarget({ kind: "add" });
+      setPicking(true);
+    },
+    openCreator: () => {
+      setTarget({ kind: "replace", index: 0 });
+      setCreating(true);
+    },
+    remove,
+    move,
     overlays,
   };
 }

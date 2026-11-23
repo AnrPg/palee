@@ -419,6 +419,17 @@ timeline and every "work time" compound; HR is heart rate («παλμοί», FC,
 | Pairing code | Κωδικός σύνδεσης | `pairing_code` | The 8-character code (`ABCD-EFGH`) staff get for a box screen and type on the TV; works once, for 15 minutes. A new code moves the screen to another TV. | Join links; the member's check-in code. |
 | Automatic | Αυτόματο | `focus.source: auto` | The box screen follows the day: next class, its timer while it runs, its results for 30 minutes after. «Επιστροφή στο αυτόματο» ends a staff choice. | Pinned (`focus.source: staff`, «Καρφιτσωμένο»): what staff chose to show. |
 | On screen | Στην οθόνη | `/class-timers/:slot_id/screens` | The coach's action on their class's timer remote: pin the class's timer («Χρονόμετρο»), leaderboard or WOD on a box screen of the class's branch or the whole box, today only, and «Επιστροφή στο αυτόματο». Only the class's own coach (and staff who manage screens). | Staff › Settings › «Οθόνες box» (staff only). |
+| Screen's space | Χώρος της οθόνης | `box_screens.space_id` | The Space a box screen hangs in (ADR-746). In automatic mode it shows the class of its space first, and the whole branch when its space has no class. | Branch («Παράρτημα»). |
+| Split screen | Μοιρασμένη οθόνη | `box_screens.concurrent_mode: split` | Two classes that run at the same time, side by side on one box screen (ADR-746). The default is the class of the screen's space (`room`). | Two WODs of one class (one class, «Τώρα»). |
+| Take the screen | Πάρε την οθόνη | `box_screen_taken` | Any coach with a class today can show their class on a box screen. A confirm appears only over another class's running timer, and that coach is notified (ADR-746). | Return to automatic. |
+
+### 4.10a Several WODs in one class (ADR-746)
+
+| English | Ελληνικά | Code | What it is | Not to be confused with |
+|---|---|---|---|---|
+| Class WODs | Τα WOD του τμήματος | `scheduled_class_workouts` | A class can hold several WODs. The first one stays the class's WOD, and the people share the class's seats. | Day WODs («WOD της ημέρας»); a person's own WOD («Ξεχωριστό WOD για άτομα»). |
+| Now | Τώρα | `live_workout_id` | The WOD of the class that the class timer and every box screen follow. The coach moves it, and while a clock runs they are asked to pause it or keep it running. | The member's own choice. |
+| I'll decide at the box | Θα αποφασίσω στο box | `chosen_workout_id: null` | The default answer to «Ποιο WOD;» when booking a class with several WODs. The member's choice is optional and the coach can change it. | Not booked. |
 
 ### 4.11 Documents and signatures (ADR-252)
 

@@ -35,11 +35,38 @@ defmodule PaleeWeb.Schemas.BoxScreens do
       properties: %{
         view: %Schema{type: :string, enum: @override_views},
         slot_id: @nullable_uuid,
-        until: @nullable_time
+        until: @nullable_time,
+        workout_id: %Schema{
+          type: :string,
+          format: :uuid,
+          nullable: true,
+          description: "ADR-746: the class's WOD the pin shows; null follows the class's «Τώρα»"
+        },
+        split_slot_id: %Schema{
+          type: :string,
+          format: :uuid,
+          nullable: true,
+          description: "ADR-746: one more class sharing the screen this once"
+        }
       },
       required: [:slot_id, :until, :view]
     }
   end
+
+  @space_and_mode %{
+    space_id: %Schema{
+      type: :string,
+      format: :uuid,
+      nullable: true,
+      description: "ADR-746: the room the screen follows in automatic; null for the whole branch"
+    },
+    concurrent_mode: %Schema{
+      type: :string,
+      enum: ["room", "split"],
+      description:
+        "ADR-746: classes that run together: `room` shows the screen's room's, `split` side by side"
+    }
+  }
 
   def screen do
     %Schema{
@@ -62,6 +89,22 @@ defmodule PaleeWeb.Schemas.BoxScreens do
           format: :"date-time",
           nullable: true,
           description: "When the pending pairing code stops working; null without one"
+        },
+        space_id: @space_and_mode.space_id,
+        concurrent_mode: @space_and_mode.concurrent_mode,
+        showing: %Schema{
+          type: :object,
+          nullable: true,
+          description:
+            "ADR-746: what the screen shows now (class remote only): its class and whether a timer runs",
+          properties: %{
+            slot_id: @nullable_uuid,
+            view: %Schema{type: :string},
+            class_name: @nullable_text,
+            coach_name: @nullable_text,
+            timer_running: %Schema{type: :boolean}
+          },
+          required: [:slot_id, :view, :timer_running]
         },
         override: override(),
         focus_changed: %Schema{
@@ -152,7 +195,9 @@ defmodule PaleeWeb.Schemas.BoxScreens do
       type: :object,
       properties: %{
         name: %Schema{type: :string, minLength: 1, maxLength: 60},
-        location_id: @nullable_uuid
+        location_id: @nullable_uuid,
+        space_id: @space_and_mode.space_id,
+        concurrent_mode: @space_and_mode.concurrent_mode
       }
     }
   end
@@ -167,6 +212,18 @@ defmodule PaleeWeb.Schemas.BoxScreens do
           format: :uuid,
           nullable: true,
           description: "One of today's classes on the screen; required for `class`"
+        },
+        workout_id: %Schema{
+          type: :string,
+          format: :uuid,
+          nullable: true,
+          description: "ADR-746: one of the class's WODs; null follows its «Τώρα»"
+        },
+        split_slot_id: %Schema{
+          type: :string,
+          format: :uuid,
+          nullable: true,
+          description: "ADR-746: one more of today's classes sharing the screen"
         },
         until: %Schema{
           type: :string,
@@ -194,6 +251,24 @@ defmodule PaleeWeb.Schemas.BoxScreens do
           type: :array,
           description: "What the person may pin: a coach `timer`, `leaderboard` and `wod`",
           items: %Schema{type: :string, enum: @override_views}
+        },
+        workouts: %Schema{
+          type: :array,
+          description: "ADR-746: the class's WODs in order, and its «Τώρα»",
+          items: %Schema{
+            type: :object,
+            properties: %{id: @uuid, title: @nullable_text, live: %Schema{type: :boolean}},
+            required: [:id, :title, :live]
+          }
+        },
+        together: %Schema{
+          type: :array,
+          description: "ADR-746: today's other classes that overlap this one (to share a screen)",
+          items: %Schema{
+            type: :object,
+            properties: %{id: @uuid, name: @nullable_text, coach_name: @nullable_text},
+            required: [:id, :name, :coach_name]
+          }
         }
       },
       required: [:screens, :views]
@@ -210,6 +285,18 @@ defmodule PaleeWeb.Schemas.BoxScreens do
           format: :"date-time",
           nullable: true,
           description: "When the screen goes back to automatic (within 24 hours); null to keep it"
+        },
+        workout_id: %Schema{
+          type: :string,
+          format: :uuid,
+          nullable: true,
+          description: "ADR-746: one of the class's WODs; null follows its «Τώρα»"
+        },
+        split_slot_id: %Schema{
+          type: :string,
+          format: :uuid,
+          nullable: true,
+          description: "ADR-746: share the screen with this class this once"
         }
       },
       required: [:view]
@@ -285,9 +372,21 @@ defmodule PaleeWeb.Schemas.BoxScreens do
         ends_at: @time,
         duration_minutes: %Schema{type: :integer},
         location_id: @nullable_uuid,
+        space_id: @nullable_uuid,
         cancelled: %Schema{type: :boolean},
         coach_name: @nullable_text,
         workout_id: @nullable_uuid,
+        workout_ids: %Schema{
+          type: :array,
+          description: "ADR-746: the class's WODs in order",
+          items: @uuid
+        },
+        live_workout_id: %Schema{
+          type: :string,
+          format: :uuid,
+          nullable: true,
+          description: "ADR-746: the coach's «Τώρα»"
+        },
         bookings: bookings()
       },
       required: [
@@ -368,7 +467,19 @@ defmodule PaleeWeb.Schemas.BoxScreens do
           enum: ["preview", "timer", "results", "idle" | @override_views]
         },
         slot_id: @nullable_uuid,
-        until: @nullable_time
+        until: @nullable_time,
+        workout_id: %Schema{
+          type: :string,
+          format: :uuid,
+          nullable: true,
+          description: "ADR-746: the WOD shown; null follows the class's «Τώρα»"
+        },
+        split_slot_id: %Schema{
+          type: :string,
+          format: :uuid,
+          nullable: true,
+          description: "ADR-746: a second class shown side by side"
+        }
       },
       required: [:slot_id, :source, :until, :view]
     }
@@ -395,7 +506,9 @@ defmodule PaleeWeb.Schemas.BoxScreens do
               nullable: true,
               properties: %{id: @uuid, name: %Schema{type: :string}},
               required: [:id, :name]
-            }
+            },
+            space_id: @space_and_mode.space_id,
+            concurrent_mode: @space_and_mode.concurrent_mode
           },
           required: [:branch, :id, :name]
         },

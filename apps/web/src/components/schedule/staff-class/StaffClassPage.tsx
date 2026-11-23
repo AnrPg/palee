@@ -7,7 +7,7 @@ import Link from "next/link";
 
 import { CHECK_IN_RULES_KEY, fetchCheckInRules } from "@/api/check-in";
 import type { DayWorkout } from "@/api/day-workouts";
-import type { ClassAction, ScheduleBooking, ScheduleCoach, ScheduleSlot } from "@/api/schedule";
+import { classWorkouts, type ClassAction, type ScheduleBooking, type ScheduleCoach, type ScheduleSlot } from "@/api/schedule";
 import { fetchClassVisitBadges, visitBadgesKey } from "@/api/training-floor";
 import { ClassNoticeDialog } from "@/components/channels/ClassNoticeDialog";
 import { ClassStateNotice, classActionsFor } from "@/components/schedule/ClassState";
@@ -33,6 +33,7 @@ import { classPhase, minutesUntilStart, nextPhaseChange, staffCheckInOpen, type 
 import { StaffClassRoster, initials, useBookingLabel } from "./StaffClassRoster";
 import { StaffClassWod } from "./StaffClassWod";
 import { useClassWodLink } from "./use-class-wod-link";
+import { useLiveWodSwitch } from "./use-live-wod-switch";
 
 export type StaffClassPageProps = {
   slot: ScheduleSlot;
@@ -150,6 +151,17 @@ export function StaffClassPage({
   const bookingNames = new Map(slot.bookings.map((booking) => [booking.user_id, personLabel(booking)]));
 
   const wod = useClassWodLink({ slot, accessToken, timeZone, onLinked: onSlotChanged });
+  // ADR-746: the class's WODs; the hero shows one, «Τώρα» first.
+  const tWods = useTranslations("ClassWods");
+  const liveSwitch = useLiveWodSwitch({ slot, accessToken, onChanged: onSlotChanged });
+  const workouts = classWorkouts(slot);
+  const liveId =
+    slot.live_workout_id && workouts.some((item) => item.id === slot.live_workout_id)
+      ? slot.live_workout_id
+      : (workouts[0]?.id ?? null);
+  const [viewedId, setViewedId] = useState<string | null>(null);
+  const viewed = workouts.find((item) => item.id === viewedId) ?? workouts.find((item) => item.id === liveId) ?? null;
+  const viewedIndex = viewed ? workouts.indexOf(viewed) : 0;
   const coachName = slotCoachName(slot, coaches);
   const typeColor = workoutTypeColor(slot.class_type.slug);
   // ADR-200: pause/resume, cancel/restore and delete apply to upcoming classes only.
@@ -189,11 +201,34 @@ export function StaffClassPage({
   ];
 
   // One menu for the WOD, opened from its card's ⋯ or from the bottom bar.
+  const several = workouts.length > 1;
   const wodMenu: MoreMenuItem[] = [
-    ...(slot.workout ? [{ label: t("editWod"), onSelect: () => setEditWorkoutOpen(true) }] : []),
-    { label: slot.workout ? t("changeWod") : tSchedule("wodPickerChoose"), onSelect: wod.openPicker },
+    ...(viewed && several && viewed.id !== liveId
+      ? [{ label: tWods("makeLive"), onSelect: () => void liveSwitch.request(viewed.id), testId: "class-wod-make-live" }]
+      : []),
+    ...(viewed ? [{ label: t("editWod"), onSelect: () => setEditWorkoutOpen(true) }] : []),
+    { label: viewed ? t("changeWod") : tSchedule("wodPickerChoose"), onSelect: () => wod.openPicker(viewedIndex) },
+    ...(viewed && several && viewedIndex > 0
+      ? [{ label: tWods("moveEarlier"), onSelect: () => void wod.move(viewed.id, -1) }]
+      : []),
+    ...(viewed && several && viewedIndex < workouts.length - 1
+      ? [{ label: tWods("moveLater"), onSelect: () => void wod.move(viewed.id, 1) }]
+      : []),
     // ADR-201: without a class WOD, the dialog asks which WOD to start from.
     ...(canProgramVariations ? [{ label: i18n("groupVariationAction"), onSelect: () => setVariationOpen(true) }] : []),
+    ...(viewed && several
+      ? [
+          {
+            label: tWods("removeWod"),
+            tone: "danger" as const,
+            testId: "class-wod-remove",
+            onSelect: () => {
+              setViewedId(null);
+              void wod.remove(viewed.id);
+            },
+          },
+        ]
+      : []),
   ];
 
   const approvalValue = slot.auto_approve ? i18n("autoc614ba7") : i18n("manual4e836fd");
@@ -421,7 +456,12 @@ export function StaffClassPage({
                 wod={wod}
                 menuItems={wodMenu}
                 onChanged={onSlotChanged}
+                workout={viewed}
+                workouts={workouts}
+                liveId={liveId}
+                onView={setViewedId}
               />
+              {liveSwitch.error ? <ErrorNotice>{liveSwitch.error}</ErrorNotice> : null}
               <div className="space-y-5">
                 <StaffClassRoster
                   slot={slot}
@@ -430,6 +470,7 @@ export function StaffClassPage({
                   badgeFor={(booking) => <InjuryWarningBadge level={warningLevelFor(injuryLevels, booking.user_id)} />}
                   visits={visitBadges.data?.people}
                   onChanged={onSlotChanged}
+                  workouts={workouts}
                 />
                 {/* What members felt in this class (WOD goals, ADR-163). */}
                 {slot.workout && phase === "ended" ? <FeltSummaryCard source={{ kind: "slot", id: slot.id }} /> : null}
@@ -444,7 +485,7 @@ export function StaffClassPage({
           organizationSlug={organizationSlug}
           classMenu={classMenu}
           wodMenu={wodMenu}
-          onChooseWod={wod.openPicker}
+          onChooseWod={() => wod.openPicker(0)}
           onNewWod={wod.openCreator}
         />
       </Dialog>
@@ -485,13 +526,14 @@ export function StaffClassPage({
       ) : null}
 
       {wod.overlays}
+      {liveSwitch.overlay}
       {noticeOpen ? (
         <ClassNoticeDialog slotId={slot.id} cancelled={Boolean(slot.cancelled_at)} onClose={() => setNoticeOpen(false)} />
       ) : null}
-      {editWorkoutOpen && slot.workout ? (
+      {editWorkoutOpen && viewed ? (
         <WorkoutEditModal
-          workoutId={slot.workout.id}
-          workoutTitle={slot.workout.title}
+          workoutId={viewed.id}
+          workoutTitle={viewed.title}
           accessToken={accessToken}
           context={{ kind: "slot", sourceId: slot.id, sourceLabel: i18n("classOnDate", { date: slot.scheduled_at }) }}
           onClose={() => setEditWorkoutOpen(false)}

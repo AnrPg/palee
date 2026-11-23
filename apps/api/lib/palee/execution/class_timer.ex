@@ -9,6 +9,8 @@ defmodule Palee.Execution.ClassTimer do
   schema "class_timers" do
     field(:organization_id, :binary_id)
     field(:scheduled_class_id, :binary_id)
+    # ADR-746: the WOD this timer runs (nil = a class without WOD).
+    field(:master_workout_id, :binary_id)
     field(:status, :string, default: "ready")
     field(:current_segment_index, :integer, default: 0)
     field(:segment_started_at_utc, :utc_datetime_usec)
@@ -26,6 +28,7 @@ defmodule Palee.Execution.ClassTimer do
     |> cast(params, [
       :organization_id,
       :scheduled_class_id,
+      :master_workout_id,
       :status,
       :current_segment_index,
       :segment_started_at_utc,
@@ -38,7 +41,9 @@ defmodule Palee.Execution.ClassTimer do
     |> validate_inclusion(:status, @statuses)
     |> validate_number(:current_segment_index, greater_than_or_equal_to: 0)
     |> validate_number(:paused_elapsed_ms, greater_than_or_equal_to: 0)
-    |> unique_constraint(:scheduled_class_id)
+    |> unique_constraint([:scheduled_class_id, :master_workout_id],
+      name: :class_timers_class_workout_index
+    )
     |> optimistic_lock(:lock_version)
   end
 end

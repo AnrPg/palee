@@ -83,6 +83,8 @@ export function MemberSchedule({
   const [view, setView] = useState<ScheduleView>("day");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [openSlotId, setOpenSlotId] = useState<string | null>(initialOpenSlotId);
+  // ADR-746 (3A): the WOD whose name was tapped in the class's row.
+  const [openWorkoutId, setOpenWorkoutId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -368,7 +370,10 @@ export function MemberSchedule({
               locationName={
                 !locationId && severalLocations && slot.location_id ? locationNames.get(slot.location_id) ?? null : null
               }
-              onOpen={() => setOpenSlotId(slot.id)}
+              onOpen={(workoutId) => {
+                setOpenWorkoutId(workoutId ?? null);
+                setOpenSlotId(slot.id);
+              }}
             />
           ))
         ) : (
@@ -402,6 +407,7 @@ export function MemberSchedule({
         <ClassSheet
           key={openSlot.id}
           slot={openSlot}
+          initialWorkoutId={openWorkoutId}
           timeZone={gymZone}
           coachName={openSlot.coach_user_id ? coaches.get(openSlot.coach_user_id) ?? null : null}
           locations={data?.locations ?? []}

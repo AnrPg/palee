@@ -7,37 +7,59 @@ defmodule Palee.Infrastructure.Execution.EctoClassTimerStore do
   alias Palee.Repo
 
   @impl true
-  def get_class_timer(%{organization_id: organization_id}, scheduled_class_id) do
+  def get_class_timer(%{organization_id: organization_id}, scheduled_class_id, workout_id) do
+    organization_id
+    |> timer_query(scheduled_class_id, workout_id)
+    |> Repo.one()
+    |> normalize()
+  end
+
+  @impl true
+  def list_class_timers(%{organization_id: organization_id}, scheduled_class_id) do
     ClassTimer
     |> where(
       [timer],
       timer.scheduled_class_id == ^scheduled_class_id and
         timer.organization_id == ^organization_id
     )
-    |> Repo.one()
-    |> normalize()
+    |> Repo.all()
+    |> Enum.map(&normalize/1)
+  end
+
+  # ADR-746: one timer per class and WOD; nil is a class without a WOD.
+  defp timer_query(organization_id, scheduled_class_id, nil) do
+    ClassTimer
+    |> where(
+      [timer],
+      timer.scheduled_class_id == ^scheduled_class_id and
+        timer.organization_id == ^organization_id and is_nil(timer.master_workout_id)
+    )
+  end
+
+  defp timer_query(organization_id, scheduled_class_id, workout_id) do
+    ClassTimer
+    |> where(
+      [timer],
+      timer.scheduled_class_id == ^scheduled_class_id and
+        timer.organization_id == ^organization_id and timer.master_workout_id == ^workout_id
+    )
   end
 
   @impl true
   def save_class_timer(
         %{organization_id: organization_id} = context,
         scheduled_class_id,
+        workout_id,
         attrs,
         expected_version
       ) do
-    existing =
-      ClassTimer
-      |> where(
-        [timer],
-        timer.scheduled_class_id == ^scheduled_class_id and
-          timer.organization_id == ^organization_id
-      )
-      |> Repo.one()
+    existing = organization_id |> timer_query(scheduled_class_id, workout_id) |> Repo.one()
 
     attrs =
       attrs
       |> Map.put(:organization_id, organization_id)
       |> Map.put(:scheduled_class_id, scheduled_class_id)
+      |> Map.put(:master_workout_id, workout_id)
 
     cond do
       existing && expected_version && existing.lock_version != expected_version ->
@@ -75,6 +97,7 @@ defmodule Palee.Infrastructure.Execution.EctoClassTimerStore do
       id: timer.id,
       organization_id: timer.organization_id,
       scheduled_class_id: timer.scheduled_class_id,
+      master_workout_id: timer.master_workout_id,
       status: timer.status,
       current_segment_index: timer.current_segment_index,
       segment_started_at_utc: timer.segment_started_at_utc,

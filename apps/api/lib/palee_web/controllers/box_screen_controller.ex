@@ -67,7 +67,14 @@ defmodule PaleeWeb.BoxScreenController do
   operation(:class_timer,
     summary: "A class's timer, for a class the screen shows",
     parameters: [
-      %Parameter{name: :slot_id, in: :path, required: true, schema: S.uuid()}
+      %Parameter{name: :slot_id, in: :path, required: true, schema: S.uuid()},
+      %Parameter{
+        name: :workout_id,
+        in: :query,
+        required: false,
+        description: "ADR-746: one of the class's WODs; without it, the class's «Τώρα»",
+        schema: S.uuid()
+      }
     ],
     responses: [
       ok: {"Class timer", "application/json", ClassTimerController.payload_schema()},
@@ -75,8 +82,13 @@ defmodule PaleeWeb.BoxScreenController do
     ]
   )
 
-  def class_timer(conn, %{slot_id: slot_id}) do
-    with {:ok, payload} <- BoxScreenDisplay.class_timer(conn.assigns.box_screen, slot_id),
+  def class_timer(conn, %{slot_id: slot_id} = params) do
+    with {:ok, payload} <-
+           BoxScreenDisplay.class_timer(
+             conn.assigns.box_screen,
+             slot_id,
+             Map.get(params, :workout_id)
+           ),
          do: json(conn, payload)
   end
 end

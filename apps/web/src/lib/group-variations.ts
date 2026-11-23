@@ -112,3 +112,41 @@ export function outcomeCounts(rows: readonly GroupOutcomeRow[]) {
   const succeeded = rows.filter((row) => row.ok).length;
   return { succeeded, failed: rows.length - succeeded };
 }
+
+/** A box member found by «Ξεχωριστό WOD για άτομα»'s search (ADR-746). */
+export type VariationPerson = { userId: string; nickname: string; hasVersion: boolean; booked: boolean };
+
+/**
+ * ADR-746 (ANR, 2026-11-23): «Ξεχωριστό WOD για άτομα» searches every member
+ * of the box. Results come in two sections, those who booked the class first
+ * («Έκλεισαν θέση»), then everyone else («Άλλα μέλη»); without a search only
+ * the booked people show, as before. Pure: the dialog feeds it the class's
+ * candidates and the directory's answer for the typed text.
+ */
+export function variationSections(
+  booked: readonly VariationCandidate[],
+  found: readonly { id: string; nickname: string; client?: boolean }[],
+  query: string,
+): { booked: VariationPerson[]; others: VariationPerson[] } {
+  const needle = normalizeName(query);
+  const bookedIds = new Set(booked.map((candidate) => candidate.userId));
+  const bookedPeople = booked
+    .filter((candidate) => !needle || normalizeName(candidate.nickname).includes(needle))
+    .map((candidate) => ({ ...candidate, booked: true }));
+  if (!needle) return { booked: bookedPeople, others: [] };
+  const seen = new Set<string>();
+  const others = found
+    .filter((person) => person.client !== false && !bookedIds.has(person.id))
+    .filter((person) => (seen.has(person.id) ? false : (seen.add(person.id), true)))
+    .map((person) => ({ userId: person.id, nickname: person.nickname || person.id, hasVersion: false, booked: false }))
+    .sort((a, b) => a.nickname.localeCompare(b.nickname));
+  return { booked: bookedPeople, others };
+}
+
+function normalizeName(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "")
+    .toLocaleLowerCase()
+    .trim();
+}

@@ -100,6 +100,7 @@ export function useNotificationText() {
   const tAround = useTranslations("Around");
   const tRanks = useTranslations("BodyDevices");
   const tWorkoutTypes = useTranslations("WorkoutTypes");
+  const tClassWods = useTranslations("ClassWods");
   const tCheckIn = useTranslations("CheckIn");
   const tDevices = useTranslations("Devices");
   // ADR-161: Garmin stopped answering; the notice opens Συνδεδεμένες συσκευές.
@@ -196,6 +197,19 @@ export function useNotificationText() {
     const count = Number(notification.payload.workouts ?? 0);
     const values = { name: label, target: semanticLabel(target, i18n), count: Number.isFinite(count) ? count : 0 };
     return tWorkoutTypes(notification.payload.decision === "alias" ? "adopted.bodyAlias" : "adopted.bodyAdopt", values);
+  }
+  // ADR-746: a box screen taken by another coach; a WOD for a class not booked yet.
+  function classWodText(notification: NotificationRecord, part: "title" | "body") {
+    const text = (key: string) => (typeof notification.payload[key] === "string" ? (notification.payload[key] as string) : "");
+    if (notification.type === "box_screen_taken") {
+      return part === "title"
+        ? tClassWods("notifScreenTakenTitle", { screen: text("screen_name") || "—" })
+        : tClassWods("notifScreenTakenBody", { coach: text("taken_by") || "—" });
+    }
+    if (notification.type === "workout_assigned" && text("class_slot_id")) {
+      return part === "title" ? i18n("newWorkoutsAssigned") : tClassWods("notifClassOfferBody");
+    }
+    return null;
   }
   // ADR-143: group, report and open-club notifications carry their names (events: ADR-153).
   function communityText(notification: NotificationRecord, part: "title" | "body") {
@@ -314,6 +328,8 @@ export function useNotificationText() {
     if (rankSkills !== null) return rankSkills;
     const workoutKind = workoutKindText(notification, "body");
     if (workoutKind !== null) return workoutKind;
+    const classWod = classWodText(notification, "body");
+    if (classWod !== null) return classWod;
     const trial = trialText(notification, "body");
     if (trial !== null) return trial;
     const referral = referralText(notification, "body");
@@ -629,6 +645,8 @@ export function useNotificationText() {
     if (rankSkills !== null) return rankSkills;
     const workoutKind = workoutKindText(notification, "title");
     if (workoutKind !== null) return workoutKind;
+    const classWod = classWodText(notification, "title");
+    if (classWod !== null) return classWod;
     const trial = trialText(notification, "title");
     if (trial !== null) return trial;
     const referral = referralText(notification, "title");

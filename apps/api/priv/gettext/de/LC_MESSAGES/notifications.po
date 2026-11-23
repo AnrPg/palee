@@ -975,3 +975,12 @@ msgstr "Palee hat deine Trainingsart geprüft"
 
 msgid "«%{label}» now follows the Palee list, and your box's WODs moved with it."
 msgstr "«%{label}» folgt jetzt der Palee-Liste, und die WODs deiner Box wurden mit umgestellt."
+
+msgid "%{screen} shows another class"
+msgstr "%{screen} zeigt einen anderen Kurs"
+
+msgid "%{coach} took the screen. You can take it back from your class's timer."
+msgstr "%{coach} hat den Bildschirm übernommen. Du kannst ihn über den Timer deines Kurses zurückholen."
+
+msgid "Your coach gave you your own WOD for a class. Open it to book your place."
+msgstr "Dein Coach hat dir ein eigenes WOD für einen Kurs gegeben. Öffne es, um deinen Platz zu buchen."

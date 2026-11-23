@@ -15,6 +15,7 @@ defmodule Palee.Infrastructure.Scheduling.EctoSchedulingStore do
     ClassSeries,
     ClassType,
     ScheduledClass,
+    ScheduledClassWorkout,
     SchedulingSetting
   }
 
@@ -23,6 +24,7 @@ defmodule Palee.Infrastructure.Scheduling.EctoSchedulingStore do
     BookingPolicy,
     ClassTypeArchivePolicy,
     ClassWorkoutReadiness,
+    ClassWorkouts,
     RecurrenceRule
   }
 
@@ -30,7 +32,7 @@ defmodule Palee.Infrastructure.Scheduling.EctoSchedulingStore do
   alias Palee.Workers.ClassSeriesExtensionJob
   alias Palee.Workers.ReconcileBookingReleaseJob
 
-  @slot_preloads [:bookings, :class_type, :class_series]
+  @slot_preloads [:bookings, :class_type, :class_series, :additional_workouts]
 
   @impl true
   def create_class_type(%{organization_id: organization_id}, params) do
@@ -318,12 +320,222 @@ defmodule Palee.Infrastructure.Scheduling.EctoSchedulingStore do
       %ScheduledClass{} = slot ->
         slot = Repo.preload(slot, :bookings)
 
-        slot
-        |> ScheduledClass.changeset(params)
-        |> validate_capacity_not_below_approved(slot)
-        |> validate_booked_class_keeps_workout(slot)
-        |> Repo.update()
+        Repo.transaction(fn ->
+          slot
+          |> ScheduledClass.changeset(params)
+          |> validate_capacity_not_below_approved(slot)
+          |> validate_booked_class_keeps_workout(slot)
+          |> Repo.update()
+          |> case do
+            {:ok, updated} -> keep_workout_list_whole(updated)
+            {:error, changeset} -> Repo.rollback(changeset)
+          end
+        end)
         |> wrap_slot_result()
+    end
+  end
+
+  # ADR-746: an edit of the first WOD alone (the class form, «Διάλεξε WOD»)
+  # keeps the list whole: the new first WOD leaves the rest of the list, and
+  # a class whose first WOD went takes the next one as its first.
+  defp keep_workout_list_whole(%ScheduledClass{} = slot) do
+    rows = additional_rows(slot.id)
+
+    cond do
+      rows == [] ->
+        slot
+
+      is_nil(slot.master_workout_id) ->
+        [next | rest] = rows
+        Repo.delete!(next)
+        renumber!(rest)
+
+        slot
+        |> Ecto.Changeset.change(master_workout_id: next.master_workout_id)
+        |> Repo.update!()
+
+      true ->
+        case Enum.split_with(rows, &(&1.master_workout_id == slot.master_workout_id)) do
+          {[], _rest} ->
+            slot
+
+          {duplicates, rest} ->
+            Enum.each(duplicates, &Repo.delete!/1)
+            renumber!(rest)
+            slot
+        end
+    end
+  end
+
+  defp additional_rows(slot_id) do
+    ScheduledClassWorkout
+    |> where([row], row.scheduled_class_id == ^slot_id)
+    |> order_by([row], asc: row.position)
+    |> Repo.all()
+  end
+
+  # Positions are unique per class, so they move out of the way first.
+  defp renumber!(rows) do
+    Enum.each(rows, fn row ->
+      row |> Ecto.Changeset.change(position: row.position + 10_000) |> Repo.update!()
+    end)
+
+    rows
+    |> Enum.with_index(1)
+    |> Enum.each(fn {row, position} ->
+      row
+      |> Ecto.Changeset.change(position: position)
+      |> Repo.update!()
+    end)
+  end
+
+  @doc """
+  ADR-746: replaces the class's WODs with `workout_ids` in order (the first
+  becomes `master_workout_id`). A WOD the class inherited from the day
+  becomes its own list. «Τώρα» and the bookings that named a removed WOD go
+  back to the first WOD and to «Θα αποφασίσω στο box».
+  """
+  @impl true
+  def set_class_workouts(%{organization_id: organization_id}, id, workout_ids) do
+    Repo.transaction(fn ->
+      ScheduledClass
+      |> where([slot], slot.id == ^id and slot.organization_id == ^organization_id)
+      |> lock("FOR UPDATE")
+      |> Repo.one()
+      |> case do
+        nil -> Repo.rollback(:not_found)
+        slot -> replace_class_workouts(Repo.preload(slot, :bookings), workout_ids)
+      end
+    end)
+    |> case do
+      {:ok, slot} -> {:ok, slot |> preload_slot() |> normalize_slot()}
+      {:error, %Ecto.Changeset{} = changeset} -> {:error, changeset}
+      {:error, reason} -> {:error, reason}
+    end
+  end
+
+  defp replace_class_workouts(slot, workout_ids) do
+    [first | rest] = workout_ids ++ [nil]
+    rest = Enum.reject(rest, &is_nil/1)
+    current = ClassWorkouts.ids(slot_ids_map(slot))
+    changed? = current != workout_ids
+
+    effects =
+      ClassWorkouts.after_change(
+        %{live_workout_id: slot.live_workout_id},
+        workout_ids,
+        Enum.filter(slot.bookings, &is_nil(&1.guest_name))
+      )
+
+    attrs =
+      [master_workout_id: first]
+      |> then(&if(changed?, do: [{:day_workout_id, nil} | &1], else: &1))
+      |> then(&if(effects.live_reset?, do: [{:live_workout_id, nil} | &1], else: &1))
+
+    updated =
+      slot
+      |> ScheduledClass.changeset(%{master_workout_id: first})
+      |> validate_booked_class_keeps_workout(slot)
+      |> Ecto.Changeset.change(Map.new(attrs))
+      |> Repo.update()
+      |> case do
+        {:ok, updated} -> updated
+        {:error, changeset} -> Repo.rollback(changeset)
+      end
+
+    ScheduledClassWorkout
+    |> where([row], row.scheduled_class_id == ^slot.id)
+    |> Repo.delete_all()
+
+    rest
+    |> Enum.with_index(1)
+    |> Enum.each(fn {workout_id, position} ->
+      %{
+        organization_id: slot.organization_id,
+        scheduled_class_id: slot.id,
+        master_workout_id: workout_id,
+        position: position
+      }
+      |> ScheduledClassWorkout.changeset()
+      |> Repo.insert()
+      |> case do
+        {:ok, _row} -> :ok
+        {:error, changeset} -> Repo.rollback(changeset)
+      end
+    end)
+
+    if effects.cleared_booking_ids != [] do
+      Booking
+      |> where([booking], booking.id in ^effects.cleared_booking_ids)
+      |> Repo.update_all(
+        set: [chosen_workout_id: nil, workout_chosen_by_id: nil, workout_chosen_at: nil]
+      )
+    end
+
+    updated
+  end
+
+  defp slot_ids_map(%ScheduledClass{} = slot) do
+    %{
+      master_workout_id: slot.master_workout_id,
+      additional_workout_ids: Enum.map(additional_rows(slot.id), & &1.master_workout_id)
+    }
+  end
+
+  @doc "ADR-746: points the class's «Τώρα» at one of its WODs (nil = the first)."
+  @impl true
+  def set_live_workout(%{organization_id: organization_id}, id, workout_id) do
+    ScheduledClass
+    |> where([slot], slot.id == ^id and slot.organization_id == ^organization_id)
+    |> Repo.one()
+    |> preload_slot()
+    |> case do
+      nil ->
+        {:error, :not_found}
+
+      slot ->
+        if is_nil(workout_id) or ClassWorkouts.member?(slot_ids_map(slot), workout_id) do
+          slot
+          |> Ecto.Changeset.change(live_workout_id: workout_id)
+          |> Repo.update()
+          |> wrap_slot_result()
+        else
+          {:error, :not_a_class_workout}
+        end
+    end
+  end
+
+  @doc """
+  ADR-746: the WOD a booking's person does (nil = «Θα αποφασίσω στο box»),
+  chosen by `chosen_by_id` (the person, or a coach for them).
+  """
+  @impl true
+  def choose_booking_workout(
+        %{organization_id: organization_id},
+        booking_id,
+        workout_id,
+        chosen_by_id,
+        %DateTime{} = at
+      ) do
+    Booking
+    |> where([booking], booking.id == ^booking_id and booking.organization_id == ^organization_id)
+    |> Repo.one()
+    |> case do
+      nil ->
+        {:error, :not_found}
+
+      booking ->
+        booking = Repo.preload(booking, :scheduled_class)
+
+        if is_nil(workout_id) or
+             ClassWorkouts.member?(slot_ids_map(booking.scheduled_class), workout_id) do
+          booking
+          |> Booking.workout_choice_changeset(workout_id, chosen_by_id, at)
+          |> Repo.update()
+          |> wrap_booking_result()
+        else
+          {:error, :not_a_class_workout}
+        end
     end
   end
 
@@ -647,8 +859,21 @@ defmodule Palee.Infrastructure.Scheduling.EctoSchedulingStore do
     })
     |> Repo.one()
     |> case do
-      nil -> nil
-      access -> %{access | status: to_string(access.status)}
+      nil ->
+        nil
+
+      access ->
+        # ADR-746: any of the class's WODs may be done from the booking.
+        workout_ids =
+          ClassWorkouts.ids(%{
+            master_workout_id: access.master_workout_id,
+            additional_workout_ids:
+              Enum.map(additional_rows(access.scheduled_class_id), & &1.master_workout_id)
+          })
+
+        access
+        |> Map.put(:status, to_string(access.status))
+        |> Map.put(:workout_ids, workout_ids)
     end
   end
 
@@ -1697,6 +1922,9 @@ defmodule Palee.Infrastructure.Scheduling.EctoSchedulingStore do
       id: slot.id,
       organization_id: slot.organization_id,
       master_workout_id: slot.master_workout_id,
+      # ADR-746: the WODs after the first one, and the coach's «Τώρα».
+      additional_workout_ids: normalize_additional_workout_ids(slot.additional_workouts),
+      live_workout_id: slot.live_workout_id,
       # ADR-230: set when the WOD is inherited from the day's WOD.
       day_workout_id: slot.day_workout_id,
       class_series_id: slot.class_series_id,
@@ -1724,6 +1952,11 @@ defmodule Palee.Infrastructure.Scheduling.EctoSchedulingStore do
     }
   end
 
+  defp normalize_additional_workout_ids(rows) when is_list(rows),
+    do: rows |> Enum.sort_by(& &1.position) |> Enum.map(& &1.master_workout_id)
+
+  defp normalize_additional_workout_ids(_not_loaded), do: []
+
   defp normalize_booking(nil), do: nil
 
   defp normalize_booking(%Booking{} = booking) do
@@ -1743,6 +1976,9 @@ defmodule Palee.Infrastructure.Scheduling.EctoSchedulingStore do
       guest_name: booking.guest_name,
       entitlement_allowance: booking.entitlement_allowance,
       kind: booking.kind,
+      chosen_workout_id: booking.chosen_workout_id,
+      workout_chosen_by_id: booking.workout_chosen_by_id,
+      workout_chosen_at: booking.workout_chosen_at,
       inserted_at: booking.inserted_at,
       updated_at: booking.updated_at
     }
@@ -1761,6 +1997,9 @@ defmodule Palee.Infrastructure.Scheduling.EctoSchedulingStore do
       guest_name: booking.guest_name,
       entitlement_allowance: booking.entitlement_allowance,
       kind: booking.kind,
+      chosen_workout_id: booking.chosen_workout_id,
+      workout_chosen_by_id: booking.workout_chosen_by_id,
+      workout_chosen_at: booking.workout_chosen_at,
       inserted_at: booking.inserted_at,
       updated_at: booking.updated_at
     }

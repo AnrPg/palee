@@ -40,6 +40,20 @@ defmodule Palee.Scheduling.Ports.SchedulingStore do
               {:ok, map()} | {:error, Ecto.Changeset.t()} | {:error, :not_found}
   @callback set_slot_state(TenantContext.t(), Ecto.UUID.t(), map()) ::
               {:ok, map()} | {:error, Ecto.Changeset.t()} | {:error, :not_found}
+  @doc "ADR-746: replaces a class's WODs (ordered; the first is `master_workout_id`)."
+  @callback set_class_workouts(TenantContext.t(), Ecto.UUID.t(), [Ecto.UUID.t()]) ::
+              {:ok, map()} | {:error, :not_found} | {:error, Ecto.Changeset.t()}
+  @doc "ADR-746: the class's «Τώρα» (nil = its first WOD)."
+  @callback set_live_workout(TenantContext.t(), Ecto.UUID.t(), Ecto.UUID.t() | nil) ::
+              {:ok, map()} | {:error, :not_found | :not_a_class_workout}
+  @doc "ADR-746: the WOD a booking's person does (nil = «Θα αποφασίσω στο box»)."
+  @callback choose_booking_workout(
+              TenantContext.t(),
+              Ecto.UUID.t(),
+              Ecto.UUID.t() | nil,
+              Ecto.UUID.t(),
+              DateTime.t()
+            ) :: {:ok, map()} | {:error, :not_found | :not_a_class_workout}
   @callback update_slot(TenantContext.t(), Ecto.UUID.t(), map()) ::
               {:ok, map()} | {:error, Ecto.Changeset.t()} | {:error, :not_found}
   @callback delete_slot(TenantContext.t(), Ecto.UUID.t()) ::

@@ -136,6 +136,8 @@ defmodule Palee.Notifications.Notification do
     # ADR-681: the person's requested package started.
     :package_request_activated,
     :package_rule_grace,
+    # ADR-746: another coach took a box screen that showed your class.
+    :box_screen_taken,
     # ADR-580: a box invites a follower to become a box member.
     :follower_invited,
     # ADR-252: documents to sign and health certificates.

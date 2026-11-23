@@ -141,6 +141,16 @@ export type ScheduleBooking = {
   /** When the member may check themselves in (own booking only). */
   check_in_opens_at?: string | null;
   check_in_closes_at?: string | null;
+  /** ADR-746: the WOD the person does; null = «Θα αποφασίσω στο box» (follows «Τώρα»). */
+  chosen_workout_id?: string | null;
+  /** ADR-746: a coach set the WOD for them («Ο coach σού έβαλε …»). */
+  workout_chosen_by_coach?: boolean;
+};
+
+/** ADR-746: how many of the class's bookings do each WOD; seats stay the class's. */
+export type WorkoutChoiceCounts = {
+  workouts: Array<{ workout_id: string; count: number }>;
+  undecided: number;
 };
 
 export type FriendGoing = { id: string; nickname?: string | null; avatar_url?: string | null };
@@ -178,6 +188,13 @@ export type ScheduleSlot = {
   approved_booking_count: number;
   spots_remaining: number;
   workout: WorkoutPreview | null;
+  /** ADR-746: every WOD of the class in order; the first is `workout`. */
+  workouts?: WorkoutPreview[];
+  /** ADR-746: the coach's «Τώρα»; people who decide at the box follow it. */
+  live_workout_id?: string | null;
+  workout_choice_counts?: WorkoutChoiceCounts;
+  /** ADR-746: how many WODs the class holds while they are locked (ADR-551). */
+  workout_count?: number;
   current_user_booking?: ScheduleBooking | null;
   /** The member's own guest booking for this class, if any. */
   current_user_guest?: ScheduleBooking | null;
@@ -518,6 +535,52 @@ export async function linkScheduleSlotWorkout(token: string, slotId: string, wor
   });
 
   return response.slot;
+}
+
+/** ADR-746: every WOD of a class, in order (the first is the class's WOD). */
+export async function setClassWorkouts(token: string, slotId: string, workoutIds: string[]) {
+  const response = await apiRequest<{ slot: ScheduleSlot }>(`/admin/schedule/slots/${slotId}/workouts`, {
+    method: "PUT",
+    token,
+    body: { workout_ids: workoutIds },
+  });
+
+  return response.slot;
+}
+
+/** ADR-746: the coach's «Τώρα» (null = the first WOD). */
+export async function setClassLiveWorkout(token: string, slotId: string, workoutId: string | null) {
+  const response = await apiRequest<{ slot: ScheduleSlot }>(`/admin/schedule/slots/${slotId}/live-workout`, {
+    method: "PUT",
+    token,
+    body: { workout_id: workoutId },
+  });
+
+  return response.slot;
+}
+
+/** ADR-746: a coach sets the WOD someone booked does (null = «Θα αποφασίσω στο box»). */
+export async function setBookingWorkout(token: string, slotId: string, bookingId: string, workoutId: string | null) {
+  await apiRequest<unknown>(`/admin/schedule/slots/${slotId}/bookings/${bookingId}/workout`, {
+    method: "PUT",
+    token,
+    body: { workout_id: workoutId },
+  });
+}
+
+/** ADR-746: the WOD I do in the class (null = «Θα αποφασίσω στο box»). */
+export async function chooseMyClassWorkout(token: string, slotId: string, workoutId: string | null) {
+  await apiRequest<unknown>(`/schedule/slots/${slotId}/my-workout`, {
+    method: "PUT",
+    token,
+    body: { workout_id: workoutId },
+  });
+}
+
+/** ADR-746: the class's WODs in order, tolerating payloads from before the list existed. */
+export function classWorkouts(slot: Pick<ScheduleSlot, "workout" | "workouts">): WorkoutPreview[] {
+  if (slot.workouts && slot.workouts.length) return slot.workouts;
+  return slot.workout ? [slot.workout] : [];
 }
 
 export async function deleteScheduleSlot(token: string, slotId: string) {

@@ -4,12 +4,13 @@ import { useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 
 import { adminRecordAttendance, adminRemoveAttendance } from "@/api/admin";
-import type { ScheduleBooking, ScheduleSlot } from "@/api/schedule";
+import { setBookingWorkout, type ScheduleBooking, type ScheduleSlot, type WorkoutPreview } from "@/api/schedule";
 import type { ClassVisitPerson } from "@/api/training-floor";
 import { splitRoster } from "@/components/schedule/admin-roster";
 import { NewTodayCard, VisitBadgeChips } from "@/components/schedule/VisitBadges";
 import { SemanticLabel } from "@/components/semantic-label";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { MoreMenu } from "@/components/ui/MoreMenu";
 import { localizeError } from "@/i18n/presentation";
 import { useUiTranslations } from "@/i18n/ui";
 import { SPARK_ACTIVE_STYLE } from "@/lib/spark";
@@ -45,6 +46,11 @@ export function useBookingLabel() {
  * schedule topic, so the row turns to «Ήρθε» by itself. Tapping «✓ Ήρθε»
  * takes it back (a wrong tap, or someone who checked in and left): the
  * booking stays and the visit is held again.
+ *
+ * ADR-746 (ANR pick 4A, 2026-11-23): with several WODs the people are grouped
+ * by the WOD they do, then «Αποφασίζουν στο box». Each row's WOD chip lets the
+ * coach set it, also over a member's own choice (a wrong tap, a change of
+ * mind); the member then sees «Ο coach σού έβαλε …» and can still change it.
  */
 export function StaffClassRoster({
   slot,
@@ -53,6 +59,7 @@ export function StaffClassRoster({
   badgeFor,
   visits,
   onChanged,
+  workouts = [],
 }: {
   slot: ScheduleSlot;
   accessToken: string;
@@ -60,7 +67,10 @@ export function StaffClassRoster({
   badgeFor?: (booking: ScheduleBooking) => ReactNode;
   visits?: ClassVisitPerson[];
   onChanged?: () => void;
+  /** ADR-746: the class's WODs in order; more than one groups the people. */
+  workouts?: WorkoutPreview[];
 }) {
+  const tWods = useTranslations("ClassWods");
   const i18n = useUiTranslations();
   const t = useTranslations("StaffClass");
   const tTrials = useTranslations("Trials");
@@ -80,6 +90,34 @@ export function StaffClassRoster({
     return local && local.over === server ? local.status : server;
   };
   const arrived = approved.filter((booking) => attendanceOf(booking) === "attended").length;
+  const several = workouts.length > 1;
+  const workoutOf = (booking: ScheduleBooking) =>
+    booking.chosen_workout_id && workouts.some((workout) => workout.id === booking.chosen_workout_id)
+      ? booking.chosen_workout_id
+      : null;
+  const groups: { key: string; title: string; people: ScheduleBooking[] }[] = several
+    ? [
+        ...workouts.map((workout) => ({
+          key: workout.id,
+          title: workout.title,
+          people: coming.filter((booking) => workoutOf(booking) === workout.id),
+        })),
+        { key: "undecided", title: tWods("undecidedGroup"), people: coming.filter((booking) => !workoutOf(booking)) },
+      ].filter((group) => group.people.length > 0)
+    : [{ key: "all", title: "", people: coming }];
+
+  async function chooseWorkout(booking: ScheduleBooking, workoutId: string | null) {
+    setBusy(booking.id);
+    setError(null);
+    try {
+      await setBookingWorkout(accessToken, slot.id, booking.id, workoutId);
+      onChanged?.();
+    } catch (reason) {
+      setError(localizeError(reason, i18n));
+    } finally {
+      setBusy(null);
+    }
+  }
 
   async function setArrived(booking: ScheduleBooking, here: boolean) {
     setBusy(booking.id);
@@ -124,8 +162,21 @@ export function StaffClassRoster({
             {i18n("noBookingsYetdb81e7a")}
           </p>
         ) : (
+          groups.map((group) => (
+            <div key={group.key} data-testid={several ? "class-roster-wod-group" : undefined}>
+              {several ? (
+                <h4
+                  className="mt-2 flex items-baseline justify-between gap-2 text-sm font-semibold"
+                  style={{ color: "var(--text)" }}
+                >
+                  <span className="min-w-0 truncate">{group.title}</span>
+                  <span className="text-xs tabular-nums" style={{ color: "var(--muted)" }}>
+                    {group.people.length}
+                  </span>
+                </h4>
+              ) : null}
           <ul className="divide-y" style={{ borderColor: "var(--border)" }}>
-            {coming.map((booking) => {
+            {group.people.map((booking) => {
               const label = personLabel(booking);
               const visit = visitFor(visits, booking.id);
               const attendance = attendanceOf(booking);
@@ -162,6 +213,31 @@ export function StaffClassRoster({
                       </p>
                     ) : null}
                   </div>
+                  {several && !booking.guest_name ? (
+                    <MoreMenu
+                      label={tWods("setPersonWod", { name: label })}
+                      testId="class-roster-wod"
+                      trigger={{
+                        text:
+                          workouts.find((workout) => workout.id === workoutOf(booking))?.title ??
+                          tWods("undecidedShort"),
+                        className: "max-w-[8rem] truncate min-h-9 rounded-full px-3 text-xs font-semibold",
+                        style: { border: "1px solid var(--border)", color: "var(--text-soft)", background: "var(--panel)" },
+                      }}
+                      items={[
+                        ...workouts.map((workout) => ({
+                          label: workout.title,
+                          disabled: busy === booking.id || workoutOf(booking) === workout.id,
+                          onSelect: () => void chooseWorkout(booking, workout.id),
+                        })),
+                        {
+                          label: tWods("decideAtBox"),
+                          disabled: busy === booking.id || !workoutOf(booking),
+                          onSelect: () => void chooseWorkout(booking, null),
+                        },
+                      ]}
+                    />
+                  ) : null}
                   {attendance === "attended" ? (
                     booking.status === "approved" && !booking.guest_name ? (
                       <button
@@ -204,6 +280,8 @@ export function StaffClassRoster({
               );
             })}
           </ul>
+            </div>
+          ))
         )}
       </div>
 

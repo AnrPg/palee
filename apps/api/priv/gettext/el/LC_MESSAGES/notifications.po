@@ -975,3 +975,12 @@ msgstr "Η Palee εξέτασε τον τύπο προπόνησής σου"
 
 msgid "«%{label}» now follows the Palee list, and your box's WODs moved with it."
 msgstr "Το «%{label}» ακολουθεί πλέον τη λίστα της Palee, και τα WOD του box σου άλλαξαν μαζί του."
+
+msgid "%{screen} shows another class"
+msgstr "Η οθόνη %{screen} δείχνει άλλο τμήμα"
+
+msgid "%{coach} took the screen. You can take it back from your class's timer."
+msgstr "Ο/Η %{coach} πήρε την οθόνη. Μπορείς να την ξαναπάρεις από το χρονόμετρο του τμήματός σου."
+
+msgid "Your coach gave you your own WOD for a class. Open it to book your place."
+msgstr "Ο coach σού έδωσε δικό σου WOD για ένα τμήμα. Άνοιξέ το για να κλείσεις θέση."

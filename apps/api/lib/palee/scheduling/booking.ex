@@ -25,6 +25,12 @@ defmodule Palee.Scheduling.Booking do
     field :guest_name, :string
     field :entitlement_allowance, :string, default: "class_visits"
     field :kind, :string, default: "member"
+    # ADR-746: the WOD the person does in a class with several (nil = «Θα
+    # αποφασίσω στο box»: they follow the coach's «Τώρα»), who chose it (the
+    # person, or a coach for them) and when.
+    field :chosen_workout_id, :binary_id
+    field :workout_chosen_by_id, :binary_id
+    field :workout_chosen_at, :utc_datetime_usec
 
     timestamps()
   end
@@ -53,6 +59,15 @@ defmodule Palee.Scheduling.Booking do
     |> foreign_key_constraint(:user_id)
     |> unique_constraint(:user_id, name: :bookings_slot_user_index)
     |> unique_constraint(:client_operation_id, name: :bookings_client_operation_index)
+  end
+
+  @doc "ADR-746: sets (or clears, with nil) the WOD the person does."
+  def workout_choice_changeset(booking, workout_id, chosen_by_id, %DateTime{} = at) do
+    change(booking,
+      chosen_workout_id: workout_id,
+      workout_chosen_by_id: workout_id && chosen_by_id,
+      workout_chosen_at: workout_id && at
+    )
   end
 
   def resolution_changeset(booking, params) do

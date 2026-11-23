@@ -13,7 +13,7 @@ import {
 } from "@/api/box-screens";
 import { nextChangeAt, storePairing, tokenNeedsRenewal } from "@/lib/box-screen";
 import { subscribeScreenTopic } from "@/lib/box-screen-realtime";
-import { classTimerPosition, clockOffsetMs } from "@/lib/class-timer";
+import { classTimerPosition, clockOffsetMs, followsPayload } from "@/lib/class-timer";
 import { FRESHNESS, REALTIME_FALLBACK_REFETCH_MS } from "@/lib/query-policy";
 
 const TODAY_KEY = ["box-screen", "today"] as const;
@@ -139,10 +139,13 @@ export function useBoxScreenToday(pairing: BoxScreenPairing, onUnpaired: () => v
 
 type TimerResult = { payload: ClassTimerPayload; offsetMs: number };
 
-/** A class's timer on the TV: loaded, then followed on `class_timer:<slot>`. */
-export function useBoxScreenTimer(token: string, slotId: string | null) {
+/**
+ * A class's timer on the TV: loaded, then followed on `class_timer:<slot>`.
+ * ADR-746: with `workoutId` it follows that WOD's timer, else the class's «Τώρα».
+ */
+export function useBoxScreenTimer(token: string, slotId: string | null, workoutId: string | null = null) {
   const queryClient = useQueryClient();
-  const key = ["box-screen", "timer", slotId] as const;
+  const key = ["box-screen", "timer", slotId, workoutId] as const;
   const timer = useQuery<TimerResult>({
     queryKey: key,
     enabled: Boolean(slotId),
@@ -150,7 +153,7 @@ export function useBoxScreenTimer(token: string, slotId: string | null) {
     retry: false,
     queryFn: async () => {
       const sentAt = Date.now();
-      const payload = await fetchBoxScreenTimer(token, slotId!);
+      const payload = await fetchBoxScreenTimer(token, slotId!, workoutId);
       return { payload, offsetMs: clockOffsetMs(payload.server_now, sentAt, Date.now()) };
     },
   });
@@ -158,7 +161,7 @@ export function useBoxScreenTimer(token: string, slotId: string | null) {
 
   useEffect(() => {
     if (!slotId) return;
-    const timerKey = ["box-screen", "timer", slotId] as const;
+    const timerKey = ["box-screen", "timer", slotId, workoutId] as const;
     return subscribeScreenTopic(
       token,
       `class_timer:${slotId}`,
@@ -166,14 +169,21 @@ export function useBoxScreenTimer(token: string, slotId: string | null) {
         "class_timer:updated": (pushed) =>
           queryClient.setQueryData<TimerResult>(timerKey, (current) => {
             const next = pushed as ClassTimerPayload;
-            // Ignore pushes older than what is already shown.
-            if (current && next.timer.lock_version < current.payload.timer.lock_version) return current;
+            // ADR-746: only the timer this screen follows.
+            if (!followsPayload(next, workoutId)) return current;
+            // Ignore pushes older than what is already shown (for the same WOD).
+            if (
+              current &&
+              (current.payload.workout?.id ?? null) === (next.workout?.id ?? null) &&
+              next.timer.lock_version < current.payload.timer.lock_version
+            )
+              return current;
             return { payload: next, offsetMs: current?.offsetMs ?? 0 };
           }),
       },
       { onJoin: () => void refetch() },
     );
-  }, [queryClient, refetch, slotId, token]);
+  }, [queryClient, refetch, slotId, token, workoutId]);
 
   const now = useNow(slotId ? 250 : null);
   const data = slotId ? timer.data ?? null : null;

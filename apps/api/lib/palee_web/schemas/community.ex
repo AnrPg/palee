@@ -389,44 +389,58 @@ defmodule PaleeWeb.Schemas.Community do
       required: [:rank, :user_id, :me, :opted_in]
     }
 
+    # ADR-746: one WOD of the day; the card is the first, `more` the rest.
+    wod = %{
+      workout: %Schema{
+        type: :object,
+        nullable: true,
+        properties: %{
+          id: @uuid,
+          title: %Schema{type: :string},
+          type: %Schema{type: :string, nullable: true}
+        },
+        required: [:id, :title]
+      },
+      classes: %Schema{
+        type: :array,
+        items: %Schema{
+          type: :object,
+          properties: %{id: @uuid, scheduled_at: @datetime},
+          required: [:id, :scheduled_at]
+        }
+      },
+      score: %Schema{
+        type: :object,
+        nullable: true,
+        properties: %{
+          id: %Schema{type: :string},
+          name: %Schema{type: :string, nullable: true},
+          score_type: %Schema{type: :string},
+          unit: %Schema{type: :string, nullable: true}
+        },
+        required: [:id, :score_type]
+      },
+      leaderboard: %Schema{type: :array, items: entry},
+      logged_by_me: %Schema{type: :boolean}
+    }
+
     %Schema{
       title: "WodTodayCard",
       type: :object,
-      properties: %{
-        date: %Schema{type: :string, format: :date},
-        channel_id: %Schema{type: :string, format: :uuid, nullable: true},
-        workout: %Schema{
-          type: :object,
-          nullable: true,
-          properties: %{
-            id: @uuid,
-            title: %Schema{type: :string},
-            type: %Schema{type: :string, nullable: true}
-          },
-          required: [:id, :title]
-        },
-        classes: %Schema{
-          type: :array,
-          items: %Schema{
-            type: :object,
-            properties: %{id: @uuid, scheduled_at: @datetime},
-            required: [:id, :scheduled_at]
+      properties:
+        Map.merge(wod, %{
+          date: %Schema{type: :string, format: :date},
+          channel_id: %Schema{type: :string, format: :uuid, nullable: true},
+          more: %Schema{
+            type: :array,
+            description: "ADR-746: the day's other class WODs, each its own card.",
+            items: %Schema{
+              type: :object,
+              properties: wod,
+              required: [:classes, :leaderboard, :logged_by_me]
+            }
           }
-        },
-        score: %Schema{
-          type: :object,
-          nullable: true,
-          properties: %{
-            id: %Schema{type: :string},
-            name: %Schema{type: :string, nullable: true},
-            score_type: %Schema{type: :string},
-            unit: %Schema{type: :string, nullable: true}
-          },
-          required: [:id, :score_type]
-        },
-        leaderboard: %Schema{type: :array, items: entry},
-        logged_by_me: %Schema{type: :boolean}
-      },
+        }),
       required: [:date, :classes, :leaderboard, :logged_by_me]
     }
   end

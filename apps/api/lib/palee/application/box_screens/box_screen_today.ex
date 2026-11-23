@@ -12,11 +12,17 @@ defmodule Palee.Application.BoxScreens.BoxScreenToday do
       seats only counted (`ScreenPrivacy`);
     * the `focus`: automatic (preview, timer, results, idle) or the staff
       override, with `source: auto | staff`.
+
+  ADR-746: a class may hold several WODs. Every one of them comes with its
+  leaderboard; each class names its WODs in order and the coach's «Τώρα»
+  (`live_workout_id`), and the focus may name the WOD a pin shows. The
+  screen's room and `concurrent_mode` shape the automatic focus.
   """
 
   alias Palee.{BoxScreens, Community, Facility, Identity, Organizations, Scheduling, Workouts}
   alias Palee.Application.WorkoutDayLeaderboard
   alias Palee.BoxScreens.Domain.ScreenPrivacy
+  alias Palee.Scheduling.Domain.ClassWorkouts
   alias Palee.TimeZones.ZonedTime
 
   @leaderboard_size 10
@@ -38,7 +44,13 @@ defmodule Palee.Application.BoxScreens.BoxScreenToday do
 
     %{
       box: %{id: context.organization_id, name: box_name(context)},
-      screen: %{id: screen.id, name: screen.name, branch: branch(context, screen.location_id)},
+      screen: %{
+        id: screen.id,
+        name: screen.name,
+        branch: branch(context, screen.location_id),
+        space_id: Map.get(screen, :space_id),
+        concurrent_mode: Map.get(screen, :concurrent_mode) || "room"
+      },
       date: day.date,
       time_zone: day.zone,
       server_now: now,
@@ -53,7 +65,11 @@ defmodule Palee.Application.BoxScreens.BoxScreenToday do
         BoxScreens.focus(
           Enum.map(classes, &focus_class/1),
           BoxScreens.active_override(screen, now),
-          now
+          now,
+          %{
+            space_id: Map.get(screen, :space_id),
+            concurrent_mode: Map.get(screen, :concurrent_mode)
+          }
         )
     }
   end
@@ -62,6 +78,27 @@ defmodule Palee.Application.BoxScreens.BoxScreenToday do
   def slot_ids(context, screen, %DateTime{} = now) do
     day = day(context, now)
     context |> classes(screen, day) |> Enum.map(& &1.id)
+  end
+
+  @doc """
+  ADR-746: what the screen puts first now and today's classes it shows,
+  without the leaderboards (a class remote's «Στην οθόνη» list).
+  """
+  def focus(context, screen, %DateTime{} = now) do
+    classes = classes(context, screen, day(context, now))
+
+    focus =
+      BoxScreens.focus(
+        Enum.map(classes, &focus_class/1),
+        BoxScreens.active_override(screen, now),
+        now,
+        %{
+          space_id: Map.get(screen, :space_id),
+          concurrent_mode: Map.get(screen, :concurrent_mode)
+        }
+      )
+
+    {focus, classes}
   end
 
   @doc "Whether the screen shows `slot` (its branch or the whole box)."
@@ -96,8 +133,7 @@ defmodule Palee.Application.BoxScreens.BoxScreenToday do
 
   defp workouts(context, classes) do
     classes
-    |> Enum.map(& &1.master_workout_id)
-    |> Enum.reject(&is_nil/1)
+    |> Enum.flat_map(&ClassWorkouts.ids/1)
     |> Enum.uniq()
     |> Enum.map(&Workouts.get_workout(context, &1))
     |> Enum.filter(&is_map/1)
@@ -132,9 +168,12 @@ defmodule Palee.Application.BoxScreens.BoxScreenToday do
       ends_at: BoxScreens.ends_at(slot),
       duration_minutes: slot.duration_minutes,
       location_id: slot.location_id,
+      space_id: Map.get(slot, :space_id),
       cancelled: not is_nil(slot.cancelled_at),
       coach_name: coach_name(slot.coach_user_id, hidden, names),
       workout_id: slot.master_workout_id,
+      workout_ids: ClassWorkouts.ids(slot),
+      live_workout_id: ClassWorkouts.live_id(slot),
       bookings: ScreenPrivacy.bookings(slot.bookings, slot.capacity, hidden, names)
     }
   end
@@ -185,6 +224,7 @@ defmodule Palee.Application.BoxScreens.BoxScreenToday do
       id: slot.id,
       scheduled_at: slot.scheduled_at,
       duration_minutes: slot.duration_minutes,
+      space_id: Map.get(slot, :space_id),
       cancelled: not is_nil(slot.cancelled_at)
     }
   end

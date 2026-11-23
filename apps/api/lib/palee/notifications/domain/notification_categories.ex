@@ -109,7 +109,7 @@ defmodule Palee.Notifications.Domain.NotificationCategories do
         shop_stock_low shop_order_placed payment_needs_attention fiscal_connection_failed
         fiscal_documents_not_reported
         site_request webhook_disabled site_template_changed
-        workout_kind_adopted
+        workout_kind_adopted box_screen_taken
       )
     },
     %{

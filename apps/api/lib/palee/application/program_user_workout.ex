@@ -12,6 +12,10 @@ defmodule Palee.Application.ProgramUserWorkout do
     source defaults to the class's workout.
   - `personal`: the copy is assigned to the member without any class.
 
+  ADR-746: with `offer_booking: true` a `class_variant` may go to a member
+  who has not booked the class (the coach's «Ξεχωριστό WOD για άτομα» over
+  all the box's members). It does not book them.
+
   Without an explicit folder, copies are filed automatically (ADR-136): athlete
   copies in `Athletes/<nickname>`, class workouts in the class's
   `Classes/<year>/<month>/<date>` folder, and a member's personal copies and
@@ -66,7 +70,7 @@ defmodule Palee.Application.ProgramUserWorkout do
     do: AuthorizeProgramming.call(context, [member_id])
 
   defp validate_target(context, :class_variant, %{id: member_id} = user, params) do
-    with :ok <- validate_booked_slot(context, user, params) do
+    with :ok <- validate_class_slot(context, user, params) do
       AuthorizeProgramming.call(context, [member_id])
     end
   end
@@ -84,6 +88,28 @@ defmodule Palee.Application.ProgramUserWorkout do
              Scheduling.list_member_slots(context, member_id, start_at, end_at),
              &(&1.id == slot_id)
            ) do
+      :ok
+    else
+      _ -> {:error, :slot_not_booked_by_member}
+    end
+  end
+
+  # ADR-746: a class the member booked, or (offered) any class of that day
+  # still on the schedule.
+  defp validate_class_slot(context, user, params) do
+    case validate_booked_slot(context, user, params) do
+      :ok ->
+        :ok
+
+      error ->
+        if value(params, :offer_booking) == true, do: offered_slot(context, params), else: error
+    end
+  end
+
+  defp offered_slot(context, params) do
+    with slot_id when is_binary(slot_id) <- value(params, :slot_id),
+         {:ok, slot_id} <- Ecto.UUID.cast(slot_id),
+         %{cancelled_at: nil} <- Scheduling.get_slot(context, slot_id) do
       :ok
     else
       _ -> {:error, :slot_not_booked_by_member}
@@ -232,7 +258,8 @@ defmodule Palee.Application.ProgramUserWorkout do
       athlete_ids: [member_id],
       scheduled_for: value(params, :scheduled_for),
       instructions: value(params, :instructions),
-      source_slot_id: value(params, :slot_id)
+      source_slot_id: value(params, :slot_id),
+      offer_booking: value(params, :offer_booking) == true
     })
   end
 

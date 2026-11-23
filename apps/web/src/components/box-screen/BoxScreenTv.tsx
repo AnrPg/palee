@@ -182,13 +182,15 @@ function ScreenView({ pairing, onUnpaired }: { pairing: BoxScreenPairing; onUnpa
 export function ScreenDay({ today, token, now }: { today: BoxScreenToday; token: string; now: number }) {
   const scene = screenScene(today, now);
   const timerSlot = scene.kind === "timer" ? scene.slot.id : null;
-  const timer = useBoxScreenTimer(token, timerSlot);
+  // ADR-746: a pin may name the WOD whose timer shows; a split focus shows a second class.
+  const timer = useBoxScreenTimer(token, timerSlot, scene.kind === "timer" ? (scene.workoutId ?? null) : null);
+  const splitTimer = useBoxScreenTimer(token, scene.kind === "timer" ? (scene.split?.id ?? null) : null);
   const fresh = useNewScores(today);
 
   return (
     <main className="flex h-dvh flex-col overflow-hidden" style={{ background: "var(--bg)", color: "var(--text)" }} data-testid="tv-screen" data-scene={scene.kind}>
       <Bar today={today} scene={scene} now={now} />
-      <SceneBody today={today} scene={scene} now={now} fresh={fresh} timer={timer} />
+      <SceneBody today={today} scene={scene} now={now} fresh={fresh} timer={timer} splitTimer={splitTimer} />
     </main>
   );
 }
@@ -266,13 +268,16 @@ function SceneBody({
   now,
   fresh,
   timer,
+  splitTimer,
 }: {
   today: BoxScreenToday;
   scene: ScreenScene;
   now: number;
   fresh: Set<string>;
   timer: ReturnType<typeof useBoxScreenTimer>;
+  splitTimer: ReturnType<typeof useBoxScreenTimer>;
 }) {
+  const label = useClassLabel(today);
   const t = useTranslations("BoxScreens");
   const grid = "grid min-h-0 flex-1 gap-[1.6vw] px-[2vw] py-[1.8vw]";
 
@@ -288,7 +293,24 @@ function SceneBody({
       const finished = scene.leaderboard?.entries ?? [];
       return (
         <div className={`${grid} grid-rows-[1fr_auto]`}>
-          <TimerScene timer={timer} slot={scene.slot} now={now} />
+          {scene.split ? (
+            // ADR-746 (8A, «Μοιρασμένη»): two classes that run together, side by side.
+            <div className="grid min-h-0 grid-cols-1 gap-[1.6vw] landscape:grid-cols-2" data-testid="tv-split">
+              {[
+                { slot: scene.slot, clock: timer },
+                { slot: scene.split, clock: splitTimer },
+              ].map(({ slot, clock }) => (
+                <section key={slot.id} className="grid min-h-0 grid-rows-[auto_minmax(0,1fr)] gap-[0.8vw] p-[1.2vw]" style={tv.panel}>
+                  <h2 className="truncate font-bold uppercase" style={tv.eyebrow}>
+                    {[t("tvClass", label(slot)), clock.payload?.workout?.title].filter(Boolean).join(" · ")}
+                  </h2>
+                  <TimerScene timer={clock} slot={slot} now={now} />
+                </section>
+              ))}
+            </div>
+          ) : (
+            <TimerScene timer={timer} slot={scene.slot} now={now} />
+          )}
           {finished.length > 0 ? (
             <section className="flex flex-wrap items-center gap-[1vw] p-[1.4vw]" style={tv.panel} data-testid="tv-finished">
               <h2 className="font-bold uppercase" style={tv.eyebrow}>{t("tvFinished")}</h2>
@@ -307,7 +329,17 @@ function SceneBody({
     case "results":
       return (
         <div className={`${grid} grid-cols-1 landscape:grid-cols-[2fr_1fr]`}>
-          <LeaderboardPanel workout={scene.workout} board={scene.leaderboard} fresh={fresh} />
+          {scene.others && scene.others.length > 0 ? (
+            // ADR-746 (4A): one leaderboard per WOD of the class, stacked.
+            <div className="grid min-h-0 auto-rows-fr gap-[1.2vw]" data-testid="tv-leaderboards">
+              <LeaderboardPanel workout={scene.workout} board={scene.leaderboard} fresh={fresh} />
+              {scene.others.map((other) => (
+                <LeaderboardPanel key={other.workout.id} workout={other.workout} board={other.leaderboard} fresh={fresh} />
+              ))}
+            </div>
+          ) : (
+            <LeaderboardPanel workout={scene.workout} board={scene.leaderboard} fresh={fresh} />
+          )}
           <section className="grid content-start gap-[0.8vw] p-[1.6vw]" style={tv.panel}>
             <p className="font-semibold" style={tv.small}>{t("tvScoreHint")}</p>
           </section>

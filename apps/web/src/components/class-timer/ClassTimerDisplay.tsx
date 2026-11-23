@@ -2,9 +2,12 @@
 
 import { useUiTranslations } from "@/i18n/ui";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import React, { useRef, useState } from "react";
 
 import { useSession } from "@/components/session-provider";
+import { MoreMenu } from "@/components/ui/MoreMenu";
 import { PHASE_COLORS } from "@/components/workouts/execution/TimerDisplay";
 import { useClassTimer } from "@/hooks/useClassTimer";
 import { useClassTimerCues } from "@/hooks/useClassTimerCues";
@@ -20,6 +23,10 @@ import { TimerNowPanel, useTimerNow } from "./TimerNowPanel";
  * The gym's wall display (and members' "follow the class" view): a giant
  * clock driven by the coach's remote. Keeps the screen awake, beeps for the
  * room once sound is enabled, and goes fullscreen on request.
+ *
+ * ADR-746 (ANR pick 1A): with several WODs it follows the coach's «Τώρα» by
+ * default. A member may switch to the WOD they do (`?workout=` opens there)
+ * and «Ακολούθησε» takes them back to the coach's.
  */
 export function ClassTimerDisplay({ slotId }: { slotId: string }) {
   const i18n = useUiTranslations();
@@ -27,7 +34,10 @@ export function ClassTimerDisplay({ slotId }: { slotId: string }) {
   const organizationSlug = useOrganizationSlug();
   const { membershipRole } = useSelectedMembershipRole();
   const isStaff = membershipRole === "owner" || membershipRole === "admin" || membershipRole === "coach";
-  const timer = useClassTimer(tokens?.access_token, slotId);
+  const tWods = useTranslations("ClassWods");
+  const searchParams = useSearchParams();
+  const [ownWorkoutId, setOwnWorkoutId] = useState<string | null>(() => searchParams?.get("workout") ?? null);
+  const timer = useClassTimer(tokens?.access_token, slotId, { workoutId: ownWorkoutId });
   const [cueMode, setCueMode] = useState<CueMode>(() => readCueMode());
   const [soundReady, setSoundReady] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -87,6 +97,35 @@ export function ClassTimerDisplay({ slotId }: { slotId: string }) {
           </div>
         </div>
         <div className="flex flex-wrap items-center justify-end gap-2">
+          {(payload.workouts?.length ?? 0) > 1 ? (
+            ownWorkoutId ? (
+              <button
+                type="button"
+                data-testid="timer-follow-coach"
+                onClick={() => setOwnWorkoutId(null)}
+                className="min-h-11 rounded-xl px-3 text-sm font-semibold"
+                style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}
+              >
+                {tWods("followCoach")}
+              </button>
+            ) : (
+              <MoreMenu
+                label={tWods("doAnotherWod")}
+                testId="timer-switch-wod"
+                trigger={{
+                  text: tWods("doAnotherWod"),
+                  className: "min-h-11 rounded-xl px-3 text-sm font-semibold",
+                  style: { border: "1px solid var(--border)", color: "var(--text-soft)" },
+                }}
+                items={(payload.workouts ?? [])
+                  .filter((workout) => workout.id !== payload.workout?.id)
+                  .map((workout) => ({
+                    label: workout.title ?? tWods("untitled"),
+                    onSelect: () => setOwnWorkoutId(workout.id),
+                  }))}
+              />
+            )
+          ) : null}
           <span
             role="status"
             aria-label={timer.connected ? i18n("classTimerLive") : i18n("classTimerReconnecting")}

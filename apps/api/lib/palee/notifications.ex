@@ -926,6 +926,20 @@ defmodule Palee.Notifications do
         url: "/me/payments?box=#{field(payload, :box_slug)}"
       })
 
+  # ADR-746 (ANR pick 7A): another coach took a box screen that showed your
+  # class; the link opens your class's remote, where «Στην οθόνη» retakes it.
+  def process_event("box_screen_taken", payload),
+    do:
+      enqueue_simple(:box_screen_taken, payload, %{
+        organization_id: field(payload, :organization_id),
+        screen_id: field(payload, :screen_id),
+        screen_name: field(payload, :screen_name),
+        taken_by: field(payload, :taken_by),
+        slot_id: field(payload, :slot_id),
+        dedupe_key: "box_screen_taken:#{field(payload, :screen_id)}:#{field(payload, :taken_at)}",
+        url: field(payload, :url)
+      })
+
   def process_event("package_rule_grace", payload),
     do:
       enqueue_simple(:package_rule_grace, payload, %{
@@ -1605,13 +1619,23 @@ defmodule Palee.Notifications do
     |> List.wrap()
     |> Enum.uniq()
     |> Enum.reduce_while(:ok, fn athlete_id, :ok ->
+      offer = field(payload, :class_offer)
+
       result =
         deliver_notification(athlete_id, :workout_assigned, %{
           assignment_id: assignment_id,
           workout_title: field(payload, :workout_title),
           scheduled_for: field(payload, :scheduled_for),
           dedupe_key: NotificationDedupe.batch_key(athlete_id, :workout_assigned, batch_at),
-          url: "/box/workouts"
+          # ADR-746: a WOD for a class the member has not booked opens that
+          # class, where «Κράτηση» books it.
+          class_slot_id: offer && field(offer, :slot_id),
+          url:
+            if(offer,
+              do:
+                "/box/schedule?open_slot=#{field(offer, :slot_id)}&open_day=#{field(offer, :day)}",
+              else: "/box/workouts"
+            )
         })
 
       if delivered?(result), do: {:cont, :ok}, else: {:halt, result}

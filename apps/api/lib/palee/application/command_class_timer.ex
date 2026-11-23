@@ -16,17 +16,21 @@ defmodule Palee.Application.CommandClassTimer do
     expected_version = params["expected_version"] || params[:expected_version]
     now = DateTime.utc_now()
 
-    with {:ok, view} <- ClassTimerView.load(context, slot_id),
+    # ADR-746: the timer of one WOD of the class (default: the «Τώρα» one).
+    workout_id = params["workout_id"] || params[:workout_id]
+
+    with {:ok, view} <- ClassTimerView.load(context, slot_id, workout_id),
          {:ok, attrs} <- next_attrs(command, params, view, now),
          {:ok, timer} <-
            Execution.save_class_timer(
              context,
              view.slot.id,
+             ClassTimerView.workout_id(view),
              Map.put(attrs, :controlled_by_id, actor.id),
              expected_version
            ) do
       payload = view |> ClassTimerView.with_timer(timer) |> ClassTimerView.payload(now)
-      broadcast(view.slot, payload)
+      ClassTimerView.broadcast(view.slot, payload)
       {:ok, payload}
     end
   end
@@ -58,14 +62,5 @@ defmodule Palee.Application.CommandClassTimer do
     view.timer
     |> ClassTimerView.state()
     |> ClassTimerMachine.apply_command(command, params, view.base_segments, now)
-  end
-
-  defp broadcast(slot, payload) do
-    Phoenix.PubSub.broadcast(
-      Palee.PubSub,
-      "class_timer:updated",
-      {:class_timer_updated,
-       %{organization_id: slot.organization_id, scheduled_class_id: slot.id, payload: payload}}
-    )
   end
 end

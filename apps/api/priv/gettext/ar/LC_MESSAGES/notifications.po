@@ -979,3 +979,12 @@ msgstr "راجعت Palee نوع التمرين الخاص بك"
 
 msgid "«%{label}» now follows the Palee list, and your box's WODs moved with it."
 msgstr "«%{label}» يتبع الآن قائمة Palee، وانتقلت تمارين WOD في ناديك معه."
+
+msgid "%{screen} shows another class"
+msgstr "الشاشة %{screen} تعرض حصة أخرى"
+
+msgid "%{coach} took the screen. You can take it back from your class's timer."
+msgstr "أخذ %{coach} الشاشة. يمكنك استعادتها من مؤقّت حصتك."
+
+msgid "Your coach gave you your own WOD for a class. Open it to book your place."
+msgstr "أعطاك مدربك تمرين WOD خاصًا بك لحصة. افتحه لتحجز مكانك."

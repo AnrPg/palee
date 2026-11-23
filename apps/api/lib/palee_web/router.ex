@@ -1008,6 +1008,8 @@ defmodule PaleeWeb.Router do
 
     get("/schedule", ScheduleController, :index)
     get("/schedule/slots/:id/space", ScheduleController, :slot_space)
+    # ADR-746: which of the class's WODs I do.
+    put("/schedule/slots/:id/my-workout", ClassWorkoutChoiceController, :update)
     get("/landing", LandingController, :show)
     post("/landing/leaderboard-opt-in", LandingController, :update_leaderboard_preference)
     post("/bookings", ScheduleController, :create_booking)
@@ -1690,6 +1692,16 @@ defmodule PaleeWeb.Router do
     post("/schedule/slots/series", AdminScheduleController, :create_series)
     patch("/schedule/slots/:id", AdminScheduleController, :update_slot)
     put("/schedule/slots/:id/workout", AdminScheduleController, :link_workout)
+    # ADR-746: every WOD of a class, its «Τώρα», and someone's WOD.
+    put("/schedule/slots/:id/workouts", AdminClassWorkoutsController, :put_workouts)
+    put("/schedule/slots/:id/live-workout", AdminClassWorkoutsController, :put_live)
+
+    put(
+      "/schedule/slots/:id/bookings/:booking_id/workout",
+      AdminClassWorkoutsController,
+      :put_booking_workout
+    )
+
     # ADR-230: the WOD of a whole day.
     post("/schedule/slots/:id/day-workout", AdminDayWorkoutController, :follow_day)
     get("/schedule/day-workouts", AdminDayWorkoutController, :index)

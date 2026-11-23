@@ -184,6 +184,12 @@ defmodule PaleeWeb.AdminUserController do
             scheduled_for: %Schema{type: :string, format: :date},
             slot_id: %Schema{allOf: [@user_id], nullable: true},
             copy_source: %Schema{type: :boolean, default: true},
+            offer_booking: %Schema{
+              type: :boolean,
+              description:
+                "ADR-746: `class_variant` for a member who has not booked the class. It does not " <>
+                  "book them: the WOD is in their programme that day and their notice opens the class."
+            },
             instructions: %Schema{type: :string, nullable: true},
             mode: %Schema{
               type: :string,

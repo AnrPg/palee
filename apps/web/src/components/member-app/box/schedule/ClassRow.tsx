@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 
-import type { ScheduleSlot } from "@/api/schedule";
+import { classWorkouts, type ScheduleSlot } from "@/api/schedule";
 import { memberSlotState, waitlistPositionLabel } from "@/components/schedule/member-booking";
 import { useUiTranslations } from "@/i18n/ui";
 import { zonedText } from "@/lib/zoned-time";
@@ -12,6 +12,10 @@ import { zonedText } from "@/lib/zoned-time";
  * duration, name, coach, and the member's state or the spots left. The
  * location shows only when several locations are listed together. Classes
  * outside the package are dimmed with «Εκτός πακέτου συνδρομής» (decision 4).
+ *
+ * ADR-746 (ANR pick 3A): a class with several WODs shows their names as
+ * pills; tapping one opens the class at that WOD. With WODs locked (ADR-551)
+ * only how many: «2 WOD».
  */
 export function ClassRow({
   slot,
@@ -25,8 +29,11 @@ export function ClassRow({
   timeZone?: string | null;
   coachName: string | null;
   locationName: string | null;
-  onOpen: () => void;
+  /** `workoutId`: the WOD pill that was tapped, if any. */
+  onOpen: (workoutId?: string) => void;
 }) {
+  const tWods = useTranslations("ClassWods");
+  const workouts = classWorkouts(slot);
   const t = useTranslations("BoxSchedule");
   const sched = useTranslations("Schedule");
   const i18n = useUiTranslations();
@@ -71,7 +78,10 @@ export function ClassRow({
   return (
     <button
       type="button"
-      onClick={onOpen}
+      onClick={(event) => {
+        const pill = (event.target as HTMLElement).closest<HTMLElement>("[data-wod-id]");
+        onOpen(pill?.dataset.wodId);
+      }}
       className="grid min-h-16 w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-2xl px-4 py-3 text-left"
       style={{
         background: "var(--panel)",
@@ -97,6 +107,24 @@ export function ClassRow({
         {detail ? (
           <span className="truncate text-xs" style={{ color: "var(--dim)" }}>
             {detail}
+          </span>
+        ) : null}
+        {workouts.length > 1 ? (
+          <span className="mt-1 flex flex-wrap gap-1" data-testid="class-row-wods">
+            {workouts.map((workout) => (
+              <span
+                key={workout.id}
+                data-wod-id={workout.id}
+                className="max-w-[9rem] truncate rounded-full px-2 py-0.5 text-[11px] font-semibold"
+                style={{ border: "1px solid var(--border)", color: "var(--text-soft)" }}
+              >
+                {workout.title}
+              </span>
+            ))}
+          </span>
+        ) : slot.wod_locked && (slot.workout_count ?? 0) > 1 ? (
+          <span className="truncate text-xs" style={{ color: "var(--dim)" }}>
+            {tWods("wodCount", { count: slot.workout_count ?? 0 })}
           </span>
         ) : null}
         {friends.length > 0 ? (
