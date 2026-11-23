@@ -128,8 +128,6 @@ defmodule PaleeWeb.RouteCapabilities do
     {W.AdminUserController, :incidents} => [:view_health],
     {W.AdminUserController, :messages} => [:message_clients],
     {W.AdminUserController, :coaching_context} => [:view_client_training],
-    {W.AdminUserController, :grant_allowance} => [:manage_billing],
-    {W.AdminUserController, :revoke_allowance} => [:manage_billing],
     {W.AdminUserController, :freezes} => [:manage_billing, :take_payments],
     {W.AdminUserController, :create_freeze} => [:manage_billing],
     {W.AdminUserController, :cancel_freeze} => [:manage_billing],

@@ -12,15 +12,13 @@ defmodule PaleeWeb.AdminUserController do
     GetAdminUserSchedule,
     GetAdminUserTrainingHistory,
     GetClassPlacementOptions,
-    GrantUserAllowance,
     DeleteAdminUser,
     ListAdminUsers,
     ListAthletes,
     ListPRDossierMembers,
     PlaceMemberInClass,
     ProgramUserWorkout,
-    ProgramWorkoutForUsers,
-    RevokeUserAllowance
+    ProgramWorkoutForUsers
   }
 
   alias Palee.Finance
@@ -277,8 +275,6 @@ defmodule PaleeWeb.AdminUserController do
        [json_render_error_v2: true]
        when action in [
               :update_role,
-              :grant_allowance,
-              :revoke_allowance,
               :program_workout,
               :program_workout_for_users,
               :place_in_class,
@@ -286,49 +282,6 @@ defmodule PaleeWeb.AdminUserController do
               :create_freeze,
               :cancel_freeze
             ]
-
-  @allowance_grant_body %RequestBody{
-    required: true,
-    content: %{
-      "application/json" => %MediaType{
-        schema: %Schema{
-          type: :object,
-          additionalProperties: false,
-          required: [:allowance, :quantity, :period, :reason],
-          properties: %{
-            allowance: %Schema{
-              type: :string,
-              description:
-                "class_visits, coaching_touchpoints, event_visits, guest_passes, open_gym_visits, or class_visits:<class type id> for a per-class-type limit (ADR-096, ADR-097)",
-              pattern:
-                "^(class_visits|coaching_touchpoints|event_visits|guest_passes|open_gym_visits|class_visits:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$"
-            },
-            quantity: %Schema{type: :integer, minimum: 1, maximum: 10_000},
-            period: %Schema{
-              type: :string,
-              enum: ["calendar_week", "calendar_month", "subscription_period"]
-            },
-            occurred_on: %Schema{type: :string, format: :date, nullable: true},
-            reason: %Schema{type: :string, minLength: 3, maxLength: 500},
-            idempotency_key: %Schema{type: :string, minLength: 8, maxLength: 200, nullable: true}
-          }
-        }
-      }
-    }
-  }
-  @allowance_revoke_body %RequestBody{
-    required: true,
-    content: %{
-      "application/json" => %MediaType{
-        schema: %Schema{
-          type: :object,
-          additionalProperties: false,
-          required: [:reason],
-          properties: %{reason: %Schema{type: :string, minLength: 3, maxLength: 500}}
-        }
-      }
-    }
-  }
 
   @membership_roles_response %Schema{
     type: :object,
@@ -754,17 +707,6 @@ defmodule PaleeWeb.AdminUserController do
     ]
   )
 
-  operation(:grant_allowance,
-    summary: "Extend one user's named package allowance for a specific period",
-    parameters: [@id_parameter],
-    request_body: @allowance_grant_body,
-    responses: [
-      created: {"Allowance extension", "application/json", @summary_object},
-      not_found: {"User or Finance profile not found", "application/json", @summary_object},
-      unprocessable_entity: {"Invalid allowance extension", "application/json", @summary_object}
-    ]
-  )
-
   def update_role(conn, params) do
     id = params["id"] || params[:id]
     role = Map.get(conn.body_params, "role") || Map.get(conn.body_params, :role)
@@ -941,23 +883,6 @@ defmodule PaleeWeb.AdminUserController do
     end
   end
 
-  def grant_allowance(conn, params) do
-    admin = Guardian.Plug.current_resource(conn)
-    user_id = params["id"] || params[:id]
-
-    with {:ok, result} <-
-           GrantUserAllowance.call(
-             conn.assigns.tenant_context,
-             user_id,
-             admin.id,
-             conn.body_params
-           ) do
-      conn
-      |> put_status(:created)
-      |> json(result)
-    end
-  end
-
   @freeze_schema %Schema{
     title: "SubscriptionFreeze",
     type: :object,
@@ -1079,38 +1004,6 @@ defmodule PaleeWeb.AdminUserController do
              conn.body_params || %{}
            ) do
       json(conn, %{freeze: freeze})
-    end
-  end
-
-  operation(:revoke_allowance,
-    summary: "Revoke a personal allowance extension with a compensating ledger entry",
-    parameters: [
-      @id_parameter,
-      %Parameter{name: :entry_id, in: :path, required: true, schema: @user_id}
-    ],
-    request_body: @allowance_revoke_body,
-    responses: [
-      created: {"Allowance compensation", "application/json", @summary_object},
-      not_found: {"User or allowance extension not found", "application/json", @summary_object},
-      unprocessable_entity:
-        {"Invalid or already revoked extension", "application/json", @summary_object}
-    ]
-  )
-
-  def revoke_allowance(conn, params) do
-    admin = Guardian.Plug.current_resource(conn)
-    user_id = params["id"] || params[:id]
-    entry_id = params["entry_id"] || params[:entry_id]
-
-    with {:ok, result} <-
-           RevokeUserAllowance.call(
-             conn.assigns.tenant_context,
-             user_id,
-             admin.id,
-             entry_id,
-             conn.body_params
-           ) do
-      conn |> put_status(:created) |> json(result)
     end
   end
 

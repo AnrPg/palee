@@ -233,7 +233,8 @@ test("the goals sheet opens the atlas on a muscle; the panel, breadcrumb, figure
   await expect(figure).toHaveAttribute("data-anatomy-status", "ready");
   await expect(figure).toHaveAttribute("data-anatomy-framed", "quadriceps");
   // «This WOD» keeps every muscle of the WOD painted in its role.
-  await expect(figure).toHaveAttribute("aria-label", /Primary: Quadriceps and Latissimus dorsi/);
+  // The label lists muscles in the atlas's own (taxonomy) order, not the URL's.
+  await expect(figure).toHaveAttribute("aria-label", /Primary: Latissimus dorsi and Quadriceps\./);
   await expect(figure).toHaveAttribute("aria-label", /Secondary: Glutes/);
   await shot(page, "atlas-group");
 

@@ -16,6 +16,7 @@ import { Select } from "@/components/ui/Select";
 import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
 
 import { DOOR_WHO, RULE_RANGES, hoursToSpans, rangeError, rulesOf, spansToHours } from "./doors-model";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 
 /**
  * Ρυθμίσεις › Παραρτήματα › <branch> › «Πόρτες» (W10 screen 4, option A;
@@ -194,7 +195,7 @@ function NewDoorDialog({ token, locationId, onClose }: { token: string; location
           ) : null}
           {provider !== "sandbox" ? (
             <Field id="door-key" label={t("controllerKey")} hint={t("controllerKeyHint")} error={settingsError ? t(`errors.${code}`) : null}>
-              <input id="door-key" type="password" autoComplete="off" value={secret} onChange={(event) => setSecret(event.target.value)} className={INPUT_CLASS} style={inputStyle(settingsError)} />
+              <PasswordInput kind="key" id="door-key" autoComplete="off" value={secret} onChange={(event) => setSecret(event.target.value)} className={INPUT_CLASS} style={inputStyle(settingsError)} />
             </Field>
           ) : null}
           {create.isError && !settingsError ? <ErrorNotice variant="field">{errorText(create.error)}</ErrorNotice> : null}

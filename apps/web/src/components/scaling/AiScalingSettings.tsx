@@ -14,6 +14,7 @@ import {
 import { localizeError } from "@/i18n/presentation";
 import { useUiTranslations } from "@/i18n/ui";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 
 const fieldClass = "min-h-11 w-full rounded-xl px-3 text-sm";
 const fieldStyle = { background: "var(--panel-raised)", border: "1px solid var(--border)", color: "var(--text)" };
@@ -132,9 +133,10 @@ export function AiScalingSettings({ token }: { token: string }) {
             : t("settings.keyMissing")}
         </p>
         <div className="flex gap-2">
-          <input
+          <PasswordInput
+            kind="key"
+            containerClassName="min-w-0 flex-1"
             id="ai-api-key"
-            type="password"
             autoComplete="off"
             className={fieldClass}
             style={fieldStyle}

@@ -113,6 +113,10 @@ test.describe("member benefits (staff)", () => {
     await page.goto("/admin/users/u-2?tab=finance");
     const card = page.getByTestId("member-benefits");
     await expect(card.getByText("Nothing has been given yet.")).toBeVisible();
+    // The old «Προηγμένες ρυθμίσεις» block (credits, entitlement, allowance extension form)
+    // is gone: extra uses are given only from «Δώρο ή χάρη».
+    await expect(page.getByText("Advanced Settings")).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Extend allowance" })).toHaveCount(0);
 
     await card.getByTestId("member-benefit-open").click();
     const sheet = page.getByRole("dialog");

@@ -3,6 +3,7 @@
 import { useId, type ReactNode } from "react";
 
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { PasswordRevealButton, usePasswordReveal } from "@/components/ui/PasswordInput";
 
 type AuthFieldProps = {
   label: ReactNode;
@@ -46,6 +47,8 @@ export function AuthField({
   const id = useId();
   const noteId = `${id}-note`;
   const hasNote = invalid || Boolean(hint);
+  const reveal = usePasswordReveal();
+  const masked = type === "password";
 
   return (
     <div className="block text-sm font-medium" style={{ color: "var(--text-soft)" }}>
@@ -67,7 +70,7 @@ export function AuthField({
           aria-describedby={hasNote ? noteId : undefined}
           className="min-w-0 flex-1 bg-transparent py-3 outline-none"
           style={{ color: "var(--text)" }}
-          type={type}
+          type={masked ? reveal.type : type}
           value={value}
           autoComplete={autoComplete}
           {...(prefix ? LATIN_IDENTIFIER_INPUT : {})}
@@ -78,6 +81,7 @@ export function AuthField({
           aria-invalid={invalid}
           onChange={(event) => onChange(event.target.value)}
         />
+        {masked ? <PasswordRevealButton shown={reveal.shown} onToggle={reveal.toggle} controls={id} className="-me-3 h-11 w-11" /> : null}
       </span>
       {invalid ? (
         <ErrorNotice id={noteId} variant="field" className="mt-1.5">

@@ -18,6 +18,7 @@ import { localizeError } from "@/i18n/presentation";
 import { useUiTranslations } from "@/i18n/ui";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { withClock } from "@/lib/clock";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 
 const RECOVERY_CODES_QUERY_KEY = ["account", "recovery-codes"] as const;
 
@@ -241,9 +242,8 @@ function RecoveryCodesDialog({ regenerate, onClose }: { regenerate: boolean; onC
           >
             {t("currentPasswordLabel")}
           </label>
-          <input
+          <PasswordInput
             id="recovery-codes-password"
-            type="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             autoComplete="current-password"

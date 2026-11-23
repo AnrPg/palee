@@ -16,6 +16,7 @@ import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { localizeError } from "@/i18n/presentation";
 import { useUiTranslations } from "@/i18n/ui";
 import { withClock } from "@/lib/clock";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 
 const inputStyle = { background: "var(--panel-muted)", border: "1px solid var(--border)", color: "var(--text)" };
 const quietButtonClass = "rounded-xl px-4 py-2 text-sm font-semibold disabled:opacity-50";
@@ -197,9 +198,8 @@ export function EmailChangeField() {
             <label htmlFor="email-change-password" className="block text-xs font-semibold uppercase tracking-[0.18em]" style={{ color: "var(--muted)" }}>
               {t("passwordLabel")}
             </label>
-            <input
+            <PasswordInput
               id="email-change-password"
-              type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               onKeyDown={submitOnEnter}

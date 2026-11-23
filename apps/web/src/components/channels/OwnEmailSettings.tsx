@@ -18,6 +18,7 @@ import { Select } from "@/components/ui/Select";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 
 import { inputStyle } from "./sms";
+import { MaskableInput } from "@/components/ui/PasswordInput";
 
 const EMAIL_KEY = ["admin", "channels", "email"] as const;
 const PORTS = [587, 465, 2525, 25] as const;
@@ -65,14 +66,16 @@ export function OwnEmailSettings({ token }: { token: string }) {
   const field = (name: keyof Draft, label: string, type = "text") => (
     <div>
       <label className="block text-xs font-semibold" style={{ color: "var(--text)" }} htmlFor={`smtp-${name}`}>{label}</label>
-      <input
+      <MaskableInput
+        masked={type === "password"}
+        type={type === "email" ? "email" : "text"}
+        containerClassName="mt-1 w-full"
         id={`smtp-${name}`}
-        type={type}
         autoComplete="off"
         value={String(draft[name])}
         aria-invalid={Boolean(errors[name])}
         onChange={(event) => setDraft((previous) => ({ ...previous, [name]: event.target.value }))}
-        className="mt-1 w-full rounded-xl px-3 py-2 text-sm"
+        className={type === "password" ? "w-full rounded-xl px-3 py-2 text-sm" : "mt-1 w-full rounded-xl px-3 py-2 text-sm"}
         style={inputStyle(Boolean(errors[name]))}
       />
       {errors[name] ? <p className="mt-1 text-xs" style={{ color: "var(--danger-strong)" }}>{t("smtpFieldInvalid")}</p> : null}

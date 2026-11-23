@@ -6,10 +6,10 @@ defmodule Palee.Anatomy.Domain.GoalSuggestion do
   workout the exercise is, e.g. its set count; defaults to 1). Each exercise
   contributes its curated targets (`ExerciseTargets`):
 
-    * a muscle's goal role is the strongest role any exercise gives it, but a
-      muscle that only stabilizes keeps the role only when it stabilizes a
-      meaningful share of the workout, so a long WOD does not list the whole
-      body as stabilizers;
+    * a muscle's goal role is the strongest role any exercise gives it; every
+      muscle any exercise names is kept, stabilizers included (ADR-731: coaches
+      expect the whole picture, and coverage already gives stabilizers no
+      volume);
     * a head is dropped when its group is already a goal with an equal or
       stronger role (the group already says it);
     * qualities are ranked by the weight of the exercises that develop them
@@ -20,9 +20,7 @@ defmodule Palee.Anatomy.Domain.GoalSuggestion do
 
   alias Palee.Anatomy.Domain.{ExerciseTargets, FitnessQualities, MuscleTaxonomy}
 
-  @max_stabilizers 6
   @max_qualities 5
-  @stabilizer_share 0.25
   @quality_share 0.2
 
   @doc """
@@ -110,36 +108,13 @@ defmodule Palee.Anatomy.Domain.GoalSuggestion do
 
   defp muscles(_resolved, total) when total <= 0, do: []
 
-  defp muscles(resolved, total) do
-    scores =
-      Enum.reduce(resolved, %{}, fn {%{muscles: muscles}, weight}, acc ->
+  defp muscles(resolved, _total) do
+    goals =
+      Enum.reduce(resolved, %{}, fn {%{muscles: muscles}, _weight}, acc ->
         Enum.reduce(muscles, acc, fn %{id: id, role: role}, acc ->
-          Map.update(
-            acc,
-            id,
-            %{role: role, weight: weight, by_role: %{role => weight}},
-            fn entry ->
-              %{
-                role: stronger(entry.role, role),
-                weight: entry.weight + weight,
-                by_role: Map.update(entry.by_role, role, weight, &(&1 + weight))
-              }
-            end
-          )
+          Map.update(acc, id, role, &stronger(&1, role))
         end)
       end)
-
-    {stabilizers, movers} =
-      scores
-      |> Enum.split_with(fn {_id, entry} -> entry.role == :stabilizer end)
-
-    kept_stabilizers =
-      stabilizers
-      |> Enum.filter(fn {_id, entry} -> entry.weight / total >= @stabilizer_share end)
-      |> Enum.sort_by(fn {id, entry} -> {-entry.weight, order(id)} end)
-      |> Enum.take(@max_stabilizers)
-
-    goals = Map.new(movers ++ kept_stabilizers, fn {id, entry} -> {id, entry.role} end)
 
     goals
     |> Enum.reject(fn {id, role} -> covered_by_group?(id, role, goals) end)

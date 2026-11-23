@@ -6,10 +6,6 @@ import type { paths } from "@/api/generated/schema";
 import type { JournalComment } from "@/api/journal-comments";
 import type { EffectiveEntitlement } from "@/api/my-finance";
 
-export type AllowanceExtensionRequest = NonNullable<
-  paths["/api/org/{organization_slug}/admin/users/{id}/allowance-extensions"]["post"]["requestBody"]
->["content"]["application/json"];
-
 export type AdminUserDirectoryEntry = {
   id: string;
   nickname: string;
@@ -319,24 +315,6 @@ export function updateAdminUserRole(token: string, userId: string, role: AdminUs
 
 export function deleteAdminUser(token: string, userId: string) {
   return apiRequest<void>(`/admin/users/${userId}`, { token, method: "DELETE" });
-}
-
-export function grantAdminUserAllowance(
-  token: string,
-  userId: string,
-  body: AllowanceExtensionRequest,
-) {
-  return apiRequest<{ entry: Record<string, unknown>; entitlement: EffectiveEntitlement }>(
-    `/admin/users/${userId}/allowance-extensions`,
-    { token, method: "POST", body },
-  );
-}
-
-export function revokeAdminUserAllowance(token: string, userId: string, entryId: string, reason: string) {
-  return apiRequest<{ entry: Record<string, unknown>; entitlement: EffectiveEntitlement }>(
-    `/admin/users/${userId}/allowance-extensions/${entryId}/revoke`,
-    { token, method: "POST", body: { reason } },
-  );
 }
 
 /** A package freeze; the package end date moves out by `extension_days` (ADR-097). */

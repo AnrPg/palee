@@ -14,8 +14,6 @@ import {
   fetchAdminUserPRs,
   fetchAdminUserProfile,
   fetchAdminUserTraining,
-  grantAdminUserAllowance,
-  revokeAdminUserAllowance,
   updateAdminUserRole,
   type AdminUserDirectoryEntry,
   type AdminUserFinance,
@@ -26,7 +24,6 @@ import {
 import type { PRSupportingMetrics } from "@/api/gamification";
 import type { EffectiveEntitlement } from "@/api/my-finance";
 import { setFinanceMemberAutoRenew, updateFinanceMember } from "@/api/finance";
-import { shouldShowAllowanceQuota } from "@/components/finance/billing-entitlement-visibility";
 import { dossierMode, grantableAllowances, membershipDateCards, packageSubscriptionLabel, prSectionContentCount, visibleAdminProfileSections } from "@/components/admin/users/admin-user-profile";
 import { MemberBenefits } from "@/components/admin/users/MemberBenefits";
 import { MembershipFreezes } from "@/components/admin/users/MembershipFreezes";
@@ -84,13 +81,11 @@ import { can, membershipRoles } from "@/lib/role-navigation";
 import { useUiTranslations } from "@/i18n/ui";
 import { USER_SYNC_EVENT, type UserSyncDetail } from "@/lib/user-sync";
 import { UserProgrammingSchedule } from "@/components/admin/users/UserProgrammingSchedule";
-import { IntegerInput } from "@/components/integer-input";
 import { TrainingHistory } from "@/components/history/TrainingHistory";
 import { defaultHistoryKind } from "@/lib/training-history";
 import { sortComments } from "@/lib/journal-comments";
 import { fetchUserTrainingHistory } from "@/api/training-history";
 import { SegmentPicker } from "@/components/filters/SegmentPicker";
-import { Select } from "@/components/ui/Select";
 import { DateInput } from "@/components/ui/DateInput";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { BackLink } from "@/components/ui/BackLink";
@@ -275,49 +270,11 @@ function GenericRecordCard({ title, meta, detail, value, href }: { title: React.
   );
 }
 
-function AdminEntitlements({ token, userId, entitlement, onRefresh }: { token: string; userId: string; entitlement: EffectiveEntitlement | null | undefined; onRefresh: () => Promise<unknown> }) {
-  const i18n = useUiTranslations();
-  const [form, setForm] = useState({ allowance: "class_visits" as string, quantity: 1, period: "calendar_month" as "calendar_week" | "calendar_month" | "subscription_period", reason: "" });
-  const [revokeTarget, setRevokeTarget] = useState<string | null>(null);
-  const [revokeReason, setRevokeReason] = useState("");
-  const grant = useMutation({ mutationFn: () => grantAdminUserAllowance(token, userId, form), onSuccess: async () => { setForm((value) => ({ ...value, quantity: 1, reason: "" })); await onRefresh(); } });
-  const revoke = useMutation({ mutationFn: () => revokeAdminUserAllowance(token, userId, revokeTarget!, revokeReason), onSuccess: async () => { setRevokeTarget(null); setRevokeReason(""); await onRefresh(); } });
-  const entries = entitlement?.usage_entries ?? [];
-  const revoked = new Set(entries.filter((entry) => entry.parent_entry_id).map((entry) => entry.parent_entry_id));
-
-  return (
-    <>
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        {Object.entries(entitlement?.allowances ?? {}).filter(([key]) => key !== "coaching_touchpoints").map(([key, allowance]) => allowance ? <div key={key} className="rounded-xl p-3" style={{ background: "var(--panel-muted)" }}><p className="font-semibold">{allowanceLabel(key, i18n, entitlement?.class_type_names)}</p>{shouldShowAllowanceQuota(allowance) ? <p>{i18n("allowanceLeftOfLimit", { remaining: allowance.remaining, limit: allowance.limit })}{allowance.extensions > 0 ? i18n("personalExtensionCount", { count: allowance.extensions }) : ""}</p> : null}<p className="text-xs" style={{ color: "var(--muted)" }}>{i18n("resetsAftere96e46e")} {date(allowance.period_end)}</p></div> : null)}
-      </div>
-      <div className="mt-5 space-y-5 rounded-2xl p-4" style={{ border: "1px solid var(--border)" }}>
-        <form className="space-y-3" onSubmit={(event) => { event.preventDefault(); grant.mutate(); }}>
-          <p className="font-semibold" style={{ color: "var(--text)" }}>{i18n("extendThisUserSAllowance6e08374")}</p>
-          <div className="grid gap-3 sm:grid-cols-3">
-            <Select aria-label={i18n("classVisits142b3b0")} value={form.allowance} onValueChange={(value) => setForm({ ...form, allowance: value })} className="rounded-xl px-3 py-2" style={{ background: "var(--panel-muted)", color: "var(--text)", border: "1px solid var(--border)", colorScheme: "dark" }}>{grantableAllowances(entitlement?.allowances).map((key) => <option key={key} value={key}>{allowanceLabel(key, i18n, entitlement?.class_type_names)}</option>)}</Select>
-            <IntegerInput aria-label={i18n("additionalUnits1d9dac0")} min={1} value={form.quantity} emptyValue={1} onValueChange={(quantity) => setForm({ ...form, quantity: quantity ?? 1 })} className="rounded-xl px-3 py-2" style={{ background: "var(--panel-muted)", color: "var(--text)", border: "1px solid var(--border)" }} />
-            <Select value={form.period} onValueChange={(value) => setForm({ ...form, period: value as typeof form.period })} className="rounded-xl px-3 py-2" style={{ background: "var(--panel-muted)", color: "var(--text)", border: "1px solid var(--border)", colorScheme: "dark" }}><option value="calendar_week">{i18n("thisCalendarWeekb05ceca")}</option><option value="calendar_month">{i18n("thisCalendarMonthbb33495")}</option><option value="subscription_period">{i18n("subscriptionPeriod22e7508")}</option></Select>
-          </div>
-          <textarea required minLength={3} placeholder={i18n("reasonForThisPersonalExtensionbe8ddf7")} value={form.reason} onChange={(event) => setForm({ ...form, reason: event.target.value })} className="min-h-20 w-full rounded-xl px-3 py-2" style={{ background: "var(--panel-muted)", color: "var(--text)", border: "1px solid var(--border)" }} />
-          <button disabled={grant.isPending || form.reason.trim().length < 3} className="rounded-full px-4 py-2 font-semibold disabled:opacity-50" style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}>{grant.isPending ? i18n("extending80e2fcd") : i18n("extendAllowance2d3fd3a")}</button>
-          {grant.isError ? <ErrorNotice>{i18n("theExtensionCouldNotBeRecorded8e3fe5d")}</ErrorNotice> : null}
-        </form>
-        <div className="mt-5 space-y-2">
-          <p className="font-semibold" style={{ color: "var(--text)" }}>{i18n("personalExtensionHistory752eda5")}</p>
-          {entries.filter((entry) => entry.allowance_key !== "coaching_touchpoints" && entry.event_type === "adjustment" && entry.quantity_delta < 0).map((entry) => <div key={entry.id} className="rounded-xl p-3" style={{ background: "var(--panel-muted)" }}><div className="flex flex-wrap items-center justify-between gap-2"><div><strong>+{Math.abs(entry.quantity_delta)} {allowanceLabel(entry.allowance_key, i18n, entitlement?.class_type_names)}</strong><p className="text-xs" style={{ color: "var(--muted)" }}>{entry.reason} · {date(entry.inserted_at)} {i18n("validThrough263dc88")} {date(entry.period_end)}</p></div>{revoked.has(entry.id) ? <span className="text-xs font-semibold" style={{ color: "var(--muted)" }}>{i18n("revoked85f17ac")}</span> : <button type="button" onClick={() => setRevokeTarget(entry.id)} className="text-xs font-semibold" style={{ color: "var(--danger)" }}>{i18n("revoke0be7207")}</button>}</div>{revokeTarget === entry.id ? <form className="mt-3 flex flex-col gap-2 sm:flex-row" onSubmit={(event) => { event.preventDefault(); revoke.mutate(); }}><input required minLength={3} value={revokeReason} onChange={(event) => setRevokeReason(event.target.value)} placeholder={i18n("reasonForRevocationac5b98c")} className="min-w-0 flex-1 rounded-xl px-3 py-2" style={{ background: "var(--panel)", color: "var(--text)", border: "1px solid var(--border)" }} /><button disabled={revoke.isPending || revokeReason.trim().length < 3} className="rounded-full px-3 py-2 text-xs font-semibold disabled:opacity-50" style={{ background: "var(--danger)", color: "var(--danger-contrast)" }}>{i18n("confirmRevocationc1a9d03")}</button></form> : null}</div>)}
-          {entries.every((entry) => entry.allowance_key === "coaching_touchpoints" || entry.event_type !== "adjustment" || entry.quantity_delta >= 0) ? <Empty>{i18n("noPersonalExtensionsRecorded558dcb3")}</Empty> : null}
-        </div>
-      </div>
-    </>
-  );
-}
-
 function FinanceDetails({
   finance,
   token,
   userId,
   effectiveEntitlement,
-  creditBalance,
   onRefresh,
   nickname,
   canGiveBenefits,
@@ -328,7 +285,6 @@ function FinanceDetails({
   nickname: string;
   canGiveBenefits: boolean;
   effectiveEntitlement: EffectiveEntitlement | null | undefined;
-  creditBalance: unknown;
   onRefresh: () => Promise<unknown>;
 }) {
   const i18n = useUiTranslations();
@@ -453,16 +409,13 @@ function FinanceDetails({
         ) : <Empty>{i18n("noMembershipRecord741b5d9")}</Empty>}
       </div>
 
-      <details className="rounded-xl p-4" style={{ border: "1px solid var(--border)" }}>
-        <summary className="cursor-pointer font-semibold" style={{ color: "var(--text)" }}>{i18n("advancedSettingsc8fef35")}</summary>
-        <div className="mt-4 space-y-5">
-          <div className="grid gap-3 sm:grid-cols-2"><DetailCard title={i18n("credits66c22fa")} value={valueText(creditBalance) === "—" ? 0 : valueText(creditBalance)} plainChildren /><DetailCard title={i18n("entitlement8994749")} value={effectiveEntitlement?.status ? <SemanticLabel value={effectiveEntitlement.status} /> : ""} plainChildren /></div>
-          <AdminEntitlements token={token} userId={userId} entitlement={effectiveEntitlement} onRefresh={onRefresh} />
+      {claims.length || referredMembers.length || rewards.length ? (
+        <div className="space-y-5">
           {claims.length ? <FinanceRecordList title={i18n("referralEvents8bcf3f4")} records={claims} personKey="referrer_nickname" /> : null}
           {referredMembers.length ? <FinanceRecordList title={i18n("madeReferralsbe27ef7")} records={referredMembers} personKey="referred_nickname" /> : null}
           {rewards.length ? <div><p className="font-semibold" style={{ color: "var(--text)" }}>{i18n("referralRewards22d6a91")}</p><div className="mt-2 grid gap-2 sm:grid-cols-2">{rewards.map((reward) => <GenericRecordCard key={valueText(reward.id)} title={<SemanticLabel value={valueText(reward.reward_type)} />} meta={<><SemanticLabel value={valueText(reward.status)} /> · {date(reward.applied_at ?? reward.inserted_at)}</>} value={valueText(reward.reward_value)} />)}</div></div> : null}
         </div>
-      </details>
+      ) : null}
 
       {form.bar}
     </div>
@@ -887,7 +840,7 @@ export function AdminUserProfile({ userId }: { userId: string }) {
 
           {token && trains && inTab("schedule") ? <Panel id="schedule" title={i18n("featureScheduleProgramming")}><UserProgrammingSchedule key={scheduleVersion} token={token} userId={userId} role={clientRole ?? "member"} nickname={profile.identity.nickname} programming={profile.programming} assignRequestDate={assignRequestDate} onAssignRequestHandled={clearAssignRequest} /></Panel> : null}
 
-          {inTab("finance") ? <Panel id="finance" title={i18n("finance1b48d3f")}>{finance.data && token ? <FinanceDetails finance={finance.data} token={token} userId={userId} nickname={profile?.identity.nickname ?? ""} canGiveBenefits={can(actor, "take_payments")} effectiveEntitlement={effectiveEntitlement} creditBalance={finance.data?.summary?.credit_balance ?? 0} onRefresh={() => queryClient.invalidateQueries({ queryKey: ["admin", "users", userId, "finance"] })} /> : null}</Panel> : null}
+          {inTab("finance") ? <Panel id="finance" title={i18n("finance1b48d3f")}>{finance.data && token ? <FinanceDetails finance={finance.data} token={token} userId={userId} nickname={profile?.identity.nickname ?? ""} canGiveBenefits={can(actor, "take_payments")} effectiveEntitlement={effectiveEntitlement} onRefresh={() => queryClient.invalidateQueries({ queryKey: ["admin", "users", userId, "finance"] })} /> : null}</Panel> : null}
 
 
           {token && inTab("training_history") ? (

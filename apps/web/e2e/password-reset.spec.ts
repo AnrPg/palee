@@ -77,6 +77,30 @@ test("a reset link is checked on open and spent only when the password is saved"
   expect(seen.completed).toEqual([{ token: "good", password: "new pass" }]);
 });
 
+test("the eye shows and hides what was typed, keeping the focus in the field", async ({ page }) => {
+  await stubApi(page, { good: usable });
+  await page.goto("/reset-password#token=good");
+
+  const field = page.getByLabel("New password", { exact: true });
+  await expect(field).toBeVisible();
+  await field.fill("new pass");
+  await expect(field).toHaveAttribute("type", "password");
+
+  // Each masked field has its own eye; the first belongs to "New password".
+  const show = page.getByRole("button", { name: "Show password" }).first();
+  await expect(show).toBeVisible();
+  await expect(show).toBeEnabled();
+  await field.focus();
+  await show.click();
+  await expect(field).toHaveAttribute("type", "text");
+  await expect(field).toHaveValue("new pass");
+  await expect(field).toBeFocused();
+  await expect(page.getByLabel("Repeat new password")).toHaveAttribute("type", "password");
+
+  await page.getByRole("button", { name: "Hide password" }).click();
+  await expect(field).toHaveAttribute("type", "password");
+});
+
 test("old ?token= links from handlers still open the form", async ({ page }) => {
   const seen = await stubApi(page, { legacy: usable });
   await page.goto("/reset-password?token=legacy");

@@ -57,19 +57,23 @@ export function feltHighlights(goals: readonly GoalMuscle[], felt: readonly Musc
 }
 
 /**
- * Up to `limit` node ids naming the primary muscles for a one-line summary:
- * a head is named by its group, duplicates dropped, in the coach's order.
+ * ADR-731: every muscle of the goals for the summary rows, one row per role
+ * (primary, secondary, stabilizer): a head is named by its group, and a group
+ * appears once, in the strongest role any of its muscles has; coach's order.
  */
-export function summaryMuscleIds(muscles: readonly GoalMuscle[], limit = 3): MuscleNodeId[] {
-  const ids: MuscleNodeId[] = [];
+export function summaryByRole(muscles: readonly GoalMuscle[]): [GoalRole, MuscleNodeId[]][] {
+  const roleOf = new Map<MuscleNodeId, GoalRole>();
+  const order: MuscleNodeId[] = [];
   for (const muscle of muscles) {
-    if (muscle.role !== "primary") continue;
     const id = groupOf(muscle.id) ?? muscle.id;
-    if (!muscleNode(id) || ids.includes(id)) continue;
-    ids.push(id);
-    if (ids.length === limit) break;
+    if (!muscleNode(id)) continue;
+    const held = roleOf.get(id);
+    if (held === undefined) order.push(id);
+    if (held === undefined || ROLE_ORDER.indexOf(muscle.role) < ROLE_ORDER.indexOf(held)) roleOf.set(id, muscle.role);
   }
-  return ids;
+  return ROLE_ORDER.map((role) => [role, order.filter((id) => roleOf.get(id) === role)] as [GoalRole, MuscleNodeId[]]).filter(
+    ([, ids]) => ids.length > 0,
+  );
 }
 
 const sameMuscles = (a: readonly GoalMuscle[], b: readonly GoalMuscle[]) =>

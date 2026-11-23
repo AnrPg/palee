@@ -283,7 +283,7 @@ defmodule PaleeWeb.ExerciseSuggestionsControllerTest do
       deadlift = Enum.find(exercises, &(&1["id"] == "deadlift"))
       assert %{"origin" => "builtin", "category" => "strength"} = deadlift
       assert %{"id" => "hamstrings", "role" => "primary"} in deadlift["muscles"]
-      assert %{"id" => "forearm-flexors", "role" => "stabilizer"} in deadlift["muscles"]
+      assert %{"id" => "forearm-flexors", "role" => "secondary"} in deadlift["muscles"]
       assert "DL" in deadlift["search_aliases"]
 
       assert %{"exercise" => %{"muscles" => muscles, "qualities" => ["strength", "power"]}} =
@@ -313,7 +313,7 @@ defmodule PaleeWeb.ExerciseSuggestionsControllerTest do
              } =
                as.(vendor) |> get("/api/platform/exercise-catalog-audit") |> json_response(200)
 
-      assert %{"id" => "forearm-flexors", "role" => "stabilizer"} in event["metadata"]["before"][
+      assert %{"id" => "forearm-flexors", "role" => "secondary"} in event["metadata"]["before"][
                "muscles"
              ]
 

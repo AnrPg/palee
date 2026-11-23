@@ -38,7 +38,7 @@ The product owner picked (2026-11-10, mockups `gift-grace-mockups-2026-11-10.htm
 - Void plus a new zero invoice for forgiveness: renewals would re-charge, and the books would lose the original charge.
 
 ## Consequences
-- The old allowance extension form in the profile's advanced settings stays. Its rows are not linked to a benefit unless they were made from «Δώρο ή χάρη». Revoking a benefit's extra uses from there leaves the benefit shown as in effect (follow-up: hide or link those entries).
+- ~~The old allowance extension form in the profile's advanced settings stays.~~ Removed 2026-11-22: the «Προηγμένες ρυθμίσεις» block on the staff member profile (credits, entitlement status, the allowance extension form and its history) is gone, and so are the API routes `POST /admin/users/:id/allowance-extensions` and `.../:entry_id/revoke` (only that form used them). Extra uses are given and revoked only through «Δώρο ή χάρη»; the status shows in «Κατάσταση», the credit balance in Finance. Existing ledger rows are untouched. Referral records, when any, still show under the membership.
 - C («Ειδικές συμφωνίες») is follow-up work.
 
 ## Implementation Notes

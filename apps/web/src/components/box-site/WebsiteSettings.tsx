@@ -38,6 +38,7 @@ import { cardClass, cardStyle, LookCard, NoticeBanner, SectionsCard, SeoCard } f
 import { PREVIEW_KEY, PreviewSheet, PublishBar, SITE_KEY, SitePreview, useSiteDraft, useWideLayout } from "./WebsitePublish";
 import { CONVERSIONS_API_LABEL, DOMAIN_PLACEHOLDER, sectionOn, TAG_FIELDS } from "./website-settings-model";
 import { BackLink } from "@/components/ui/BackLink";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 
 const SUMMARY_KEY = ["admin", "site", "summary"] as const;
 const MAX_DOMAINS = 2;
@@ -265,7 +266,7 @@ function SiteForm({ token, site, faqOn }: { token: string; site: AdminSite; faqO
           {draft.conversions_api_enabled ? (
             <label className="flex flex-col gap-1">
               <span className="text-xs font-semibold" style={{ color: "var(--dim)" }}>{settings.has_conversions_api_token ? t("settings.capiTokenSaved") : t("settings.capiToken")}</span>
-              <input type="password" autoComplete="off" value={draft.conversions_api_token} onChange={(event) => form.edit({ conversions_api_token: event.target.value })} className={inputClass} style={inputStyle} />
+              <PasswordInput kind="key" autoComplete="off" value={draft.conversions_api_token} onChange={(event) => form.edit({ conversions_api_token: event.target.value })} className={inputClass} style={inputStyle} />
             </label>
           ) : null}
         </div>
