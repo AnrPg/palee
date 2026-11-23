@@ -289,7 +289,10 @@ defmodule PaleeWeb.Schemas.Trials do
     do: %Schema{
       title: "TrialDecline",
       type: :object,
-      properties: %{reason: %Schema{type: :string, maxLength: 300, nullable: true}}
+      properties: %{
+        reason: %Schema{type: :string, maxLength: 300, nullable: true},
+        reason_shared: %Schema{type: :boolean}
+      }
     }
 
   def attendance_request,

@@ -93,8 +93,10 @@ defmodule PaleeWeb.AdminSeasonController do
   def decline(conn, %{id: id}) do
     reason = Map.get(conn.body_params, :reason)
 
-    with {:ok, season} <- Seasons.decline(conn.assigns.tenant_context, id, reason),
-         do: json(conn, %{season: season})
+    with {:ok, season} <- Seasons.decline(conn.assigns.tenant_context, id, reason) do
+      Palee.ActivityLog.note(%{person_user_id: Map.get(season, :user_id)})
+      json(conn, %{season: season})
+    end
   end
 
   operation(:remove,

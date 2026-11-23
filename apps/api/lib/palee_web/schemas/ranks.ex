@@ -470,7 +470,10 @@ defmodule PaleeWeb.Schemas.Ranks do
     %Schema{
       title: "RankAwardRevokeRequest",
       type: :object,
-      properties: %{reason: %Schema{type: :string, minLength: 2, maxLength: 280}},
+      properties: %{
+        reason: %Schema{type: :string, minLength: 2, maxLength: 280},
+        reason_shared: %Schema{type: :boolean}
+      },
       required: [:reason]
     }
   end

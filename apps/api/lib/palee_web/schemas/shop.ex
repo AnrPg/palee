@@ -549,7 +549,11 @@ defmodule PaleeWeb.Schemas.Shop do
       title: "ShopOrderCancelBody",
       type: :object,
       additionalProperties: false,
-      properties: %{reason: %Schema{type: :string, maxLength: 500, nullable: true}}
+      properties: %{
+        reason: %Schema{type: :string, maxLength: 500, nullable: true},
+        # ADR-760: staff's «Να το δει και το μέλος»; the buyer's own cancel ignores it.
+        reason_shared: %Schema{type: :boolean}
+      }
     }
   end
 

@@ -224,6 +224,10 @@ defmodule Palee.Infrastructure.Identity.EctoAccountDeletionStore do
     delete_owner_rows(user.id)
     delete_fitness_overrides(user.id)
 
+    # ADR-760 (9A): the boxes' «Αρχείο ενεργειών» keeps what was done about
+    # the person, without the reasons and details (definer function).
+    Repo.query!("SELECT palee_forget_activity_person($1)", [Ecto.UUID.dump!(user.id)])
+
     user
     |> Ecto.Changeset.change(
       handle: "deleted." <> Base.encode16(:crypto.strong_rand_bytes(5), case: :lower),

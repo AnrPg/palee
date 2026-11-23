@@ -582,6 +582,7 @@ defmodule PaleeWeb.ShopController do
 
   def cancel(conn, %{id: id}) do
     with {:ok, order} <- Fulfilment.cancel(conn.assigns.tenant_context, id, conn.body_params) do
+      Palee.ActivityLog.note(%{person_user_id: Map.get(order, :user_id)})
       json(conn, %{order: ShopJSON.staff_order(order)})
     end
   end

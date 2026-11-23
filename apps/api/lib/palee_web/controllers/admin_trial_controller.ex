@@ -80,8 +80,10 @@ defmodule PaleeWeb.AdminTrialController do
   def decline(conn, %{id: id}) do
     reason = Map.get(conn.body_params, :reason)
 
-    with {:ok, trial} <- Trials.decline(conn.assigns.tenant_context, id, actor(conn), reason),
-         do: json(conn, %{trial: trial})
+    with {:ok, trial} <- Trials.decline(conn.assigns.tenant_context, id, actor(conn), reason) do
+      Palee.ActivityLog.note(%{person_user_id: Map.get(trial, :user_id)})
+      json(conn, %{trial: trial})
+    end
   end
 
   operation(:attendance,

@@ -239,6 +239,9 @@ defmodule PaleeWeb.Schemas.Seasons do
     do: %Schema{
       title: "SeasonDecline",
       type: :object,
-      properties: %{reason: %Schema{type: :string, maxLength: 300, nullable: true}}
+      properties: %{
+        reason: %Schema{type: :string, maxLength: 300, nullable: true},
+        reason_shared: %Schema{type: :boolean}
+      }
     }
 end

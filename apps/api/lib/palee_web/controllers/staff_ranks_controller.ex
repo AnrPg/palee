@@ -154,8 +154,10 @@ defmodule PaleeWeb.StaffRanksController do
     staff = GuardianPlug.current_resource(conn)
 
     with {:ok, award} <-
-           RankPromotions.revoke(conn.assigns.tenant_context, staff.id, id, conn.body_params),
-         do: json(conn, %{award: award})
+           RankPromotions.revoke(conn.assigns.tenant_context, staff.id, id, conn.body_params) do
+      Palee.ActivityLog.note(%{person_user_id: Map.get(award, :user_id)})
+      json(conn, %{award: award})
+    end
   end
 
   operation(:certificate,

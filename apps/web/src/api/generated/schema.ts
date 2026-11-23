@@ -48793,6 +48793,7 @@ export interface components {
         /** RankAwardRevokeRequest */
         RankAwardRevokeRequest: {
             reason: string;
+            reason_shared?: boolean;
         };
         /** RankClassSkillsResponse */
         RankClassSkillsResponse: {
@@ -50615,6 +50616,7 @@ export interface components {
         /** SeasonDecline */
         SeasonDecline: {
             reason?: string | null;
+            reason_shared?: boolean;
         };
         /** SeasonEnrollment */
         SeasonEnrollment: {
@@ -51267,6 +51269,7 @@ export interface components {
         /** ShopOrderCancelBody */
         ShopOrderCancelBody: {
             reason?: string | null;
+            reason_shared?: boolean;
         };
         /** ShopOrderLine */
         ShopOrderLine: {
@@ -57525,6 +57528,7 @@ export interface components {
         /** TrialDecline */
         TrialDecline: {
             reason?: string | null;
+            reason_shared?: boolean;
         };
         /** TrialFollowUp */
         TrialFollowUp: {
@@ -123499,6 +123503,7 @@ export interface operations {
             content: {
                 "application/json": {
                     reason?: string | null;
+                    reason_shared?: boolean;
                 };
             };
         };
@@ -127626,6 +127631,7 @@ export interface operations {
             content: {
                 "application/json": {
                     reason?: string | null;
+                    reason_shared?: boolean;
                 };
             };
         };
@@ -147210,6 +147216,7 @@ export interface operations {
             content: {
                 "application/json": {
                     reason?: string | null;
+                    reason_shared?: boolean;
                 };
             };
         };
@@ -154458,6 +154465,7 @@ export interface operations {
             content: {
                 "application/json": {
                     reason: string;
+                    reason_shared?: boolean;
                 };
             };
         };
@@ -155560,6 +155568,7 @@ export interface operations {
             content: {
                 "application/json": {
                     reason?: string | null;
+                    reason_shared?: boolean;
                 };
             };
         };

@@ -91111,6 +91111,9 @@
             "maxLength": 280,
             "minLength": 2,
             "type": "string"
+          },
+          "reason_shared": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -97438,6 +97441,9 @@
             "maxLength": 300,
             "nullable": true,
             "type": "string"
+          },
+          "reason_shared": {
+            "type": "boolean"
           }
         },
         "title": "SeasonDecline",
@@ -99550,6 +99556,9 @@
             "maxLength": 500,
             "nullable": true,
             "type": "string"
+          },
+          "reason_shared": {
+            "type": "boolean"
           }
         },
         "title": "ShopOrderCancelBody",
@@ -120313,6 +120322,9 @@
             "maxLength": 300,
             "nullable": true,
             "type": "string"
+          },
+          "reason_shared": {
+            "type": "boolean"
           }
         },
         "title": "TrialDecline",
@@ -301533,6 +301545,9 @@
                     "maxLength": 300,
                     "nullable": true,
                     "type": "string"
+                  },
+                  "reason_shared": {
+                    "type": "boolean"
                   }
                 },
                 "title": "SeasonDecline",
@@ -313410,6 +313425,9 @@
                     "maxLength": 300,
                     "nullable": true,
                     "type": "string"
+                  },
+                  "reason_shared": {
+                    "type": "boolean"
                   }
                 },
                 "title": "TrialDecline",
@@ -370546,6 +370564,9 @@
                     "maxLength": 500,
                     "nullable": true,
                     "type": "string"
+                  },
+                  "reason_shared": {
+                    "type": "boolean"
                   }
                 },
                 "title": "ShopOrderCancelBody",
@@ -389810,6 +389831,9 @@
                     "maxLength": 280,
                     "minLength": 2,
                     "type": "string"
+                  },
+                  "reason_shared": {
+                    "type": "boolean"
                   }
                 },
                 "required": [
@@ -393025,6 +393049,9 @@
                     "maxLength": 500,
                     "nullable": true,
                     "type": "string"
+                  },
+                  "reason_shared": {
+                    "type": "boolean"
                   }
                 },
                 "title": "ShopOrderCancelBody",

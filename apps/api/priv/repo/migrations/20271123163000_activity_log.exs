@@ -126,7 +126,8 @@ defmodule Palee.Repo.Migrations.ActivityLog do
 
     # 9A: a deleted account's rows keep what was done and by whom, without
     # the reason or the details (they may describe the person). Account
-    # deletion runs outside any box's session, so through this function.
+    # deletion runs outside any box's session, so through this function, and
+  # only for a profile whose deletion is scheduled (as ADR-395's).
     execute("""
     CREATE FUNCTION palee_forget_activity_person(person uuid)
     RETURNS integer
@@ -140,7 +141,16 @@ defmodule Palee.Repo.Migrations.ActivityLog do
     BEGIN
       UPDATE public.activity_log_entries
          SET reason = NULL, details = '{}'::jsonb, redacted_at = now()
-       WHERE person_user_id = person AND redacted_at IS NULL;
+       WHERE person_user_id = person
+         AND redacted_at IS NULL
+         AND EXISTS (
+           SELECT 1
+           FROM public.account_deletions d
+           JOIN public.users u ON u.login_id = d.login_id
+           WHERE u.id = person
+             AND d.status = 'scheduled'
+             AND (d.scope = 'login' OR d.user_id = person)
+         );
       GET DIAGNOSTICS changed = ROW_COUNT;
       RETURN changed;
     END
