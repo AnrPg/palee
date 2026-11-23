@@ -359,6 +359,9 @@ test.describe("member schedule", () => {
         }),
       ),
     );
+    await page.route("**/api/org/*/me/workouts/*/injury-warnings**", (route) =>
+      route.fulfill(json({ level: "none", warnings: [], warning_count: 0 })),
+    );
     await page.route("**/api/org/*/schedule/slots/s-9/my-workout", (route) => {
       chosen = JSON.parse(route.request().postData() ?? "{}");
       return route.fulfill(json({ booking: { id: "b-9", chosen_workout_id: "wod-2" } }));
