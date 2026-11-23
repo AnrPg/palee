@@ -161,6 +161,9 @@ defmodule PaleeWeb.ExerciseCheckSectionsTest do
     assert grown["source"] == "edited"
     assert Enum.any?(grown["muscles"], &(&1["id"] == "latissimus-dorsi"))
     refute Enum.any?(grown["muscles"], &(&1["id"] == removed["id"]))
-    assert Enum.all?(kept, &(&1 in grown["muscles"]))
+    # Every muscle the coach kept stays; pull-ups may raise a kept muscle's
+    # role (ADR-731: rhomboids are a stabilizer of thrusters, secondary in pull-ups).
+    grown_ids = Enum.map(grown["muscles"], & &1["id"])
+    assert Enum.all?(kept, &(&1["id"] in grown_ids))
   end
 end
