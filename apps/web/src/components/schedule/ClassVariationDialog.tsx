@@ -66,15 +66,12 @@ export function ClassVariationDialog({
     () => variationSections(candidates, typed ? (directory.data?.users ?? []) : [], search),
     [candidates, directory.data, typed, search],
   );
-  // Names of everyone ever shown, so a pick keeps its name after the search changes.
-  const [known, setKnown] = useState<Map<string, VariationPerson>>(new Map());
-  useEffect(() => {
-    setKnown((current) => {
-      const next = new Map(current);
-      [...sections.booked, ...sections.others].forEach((person) => next.set(person.userId, person));
-      return next.size === current.size ? current : next;
-    });
-  }, [sections]);
+  // Names of everyone picked, so a pick keeps its name after the search changes.
+  const [known, setKnown] = useState<ReadonlyMap<string, string>>(new Map());
+  function toggle(person: VariationPerson) {
+    setKnown((current) => (current.has(person.userId) ? current : new Map(current).set(person.userId, person.nickname)));
+    setSelected((current) => toggleSelection(current, person.userId));
+  }
   const [workouts, setWorkouts] = useState<WorkoutRecord[]>([]);
   // Empty = start from the class's own WOD.
   const [workoutId, setWorkoutId] = useState("");
@@ -123,7 +120,7 @@ export function ClassVariationDialog({
         });
         results.push(...response.results);
       }
-      const names = new Map([...known.values()].map((person) => [person.userId, person.nickname]));
+      const names = new Map([...candidates.map((candidate) => [candidate.userId, candidate.nickname] as const), ...known]);
       const outcome = groupOutcomeRows(results, names);
       setRows(outcome);
       setSelected([]);
@@ -223,7 +220,7 @@ export function ClassVariationDialog({
               title={search.trim() ? tWods("variationBooked") : null}
               people={sections.booked}
               selected={selected}
-              onToggle={(id) => setSelected((current) => toggleSelection(current, id))}
+              onToggle={toggle}
               versionLabel={i18n("groupVariationHasVersion")}
               testId="class-variation-booked"
             />
@@ -232,7 +229,7 @@ export function ClassVariationDialog({
                 title={tWods("variationOthers")}
                 people={sections.others}
                 selected={selected}
-                onToggle={(id) => setSelected((current) => toggleSelection(current, id))}
+                onToggle={toggle}
                 versionLabel={i18n("groupVariationHasVersion")}
                 hint={tWods("variationOthersHint")}
                 testId="class-variation-others"
@@ -270,7 +267,7 @@ function PeopleSection({
   title: string | null;
   people: VariationPerson[];
   selected: string[];
-  onToggle: (id: string) => void;
+  onToggle: (person: VariationPerson) => void;
   versionLabel: string;
   hint?: string;
   testId: string;
@@ -301,7 +298,7 @@ function PeopleSection({
                 color: "var(--text)",
               }}
             >
-              <input type="checkbox" checked={selected.includes(person.userId)} onChange={() => onToggle(person.userId)} />
+              <input type="checkbox" checked={selected.includes(person.userId)} onChange={() => onToggle(person)} />
               <span className="flex-1 font-semibold">{person.nickname}</span>
               {person.hasVersion ? (
                 <span className="text-xs" style={{ color: "var(--primary)" }}>

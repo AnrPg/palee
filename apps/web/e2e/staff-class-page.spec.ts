@@ -272,4 +272,60 @@ test.describe("Staff class page", () => {
     expect(roster!.y).toBeGreaterThan(wod!.y + wod!.height - 1);
     expect(Math.abs(roster!.x - wod!.x)).toBeLessThan(2);
   });
+
+  test("ADR-746: two WODs in one class: chips with «Now», another WOD in full, «Make it «Now»» and the people by WOD", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    let live: unknown = null;
+    const legs = { ...workout, id: "w-legs", title: "Leg day", free_text_body: "Back squat 5x5" };
+    await asOwner(
+      page,
+      classAt(inMinutes(180), {
+        workouts: [workout, legs],
+        live_workout_id: "w-push",
+        bookings: [
+          booking("b-1", "u-maria", "Maria D.", "approved", { chosen_workout_id: "w-legs" }),
+          booking("b-2", "u-nikos", "Nikos K.", "approved", { chosen_workout_id: null }),
+        ],
+      }),
+    );
+    await page.route("**/api/org/box1/class-timers/slot-1", (route) =>
+      route.fulfill(json({ timer: { status: "ready", lock_version: 1 }, workout: { id: "w-push" }, live: true })),
+    );
+    await page.route("**/api/org/box1/admin/schedule/slots/slot-1/live-workout", (route) => {
+      live = JSON.parse(route.request().postData() ?? "{}");
+      return route.fulfill(json({ slot: {} }));
+    });
+    await openClass(page);
+
+    const dialog = page.getByRole("dialog", { name: "Bodybuilding" });
+    const chips = dialog.getByTestId("class-wod-chip");
+    await expect(chips).toHaveCount(2);
+    await expect(chips.first()).toContainText("Push day");
+    await expect(chips.first().getByTestId("class-wod-live")).toHaveText("Now");
+    await expect(dialog.getByTestId("class-wod-add-more")).toHaveText("+ WOD");
+
+    // Another WOD opens in full; «Now» stays where it is.
+    await expect(chips.nth(1)).toBeVisible();
+    await chips.nth(1).click();
+    await expect(chips.nth(1)).toHaveAttribute("aria-pressed", "true");
+    await expect(dialog.getByTestId("class-wod")).toContainText("Back squat 5x5");
+
+    // The people come by WOD, then those who decide at the box.
+    const groups = dialog.getByTestId("class-roster-wod-group");
+    // A WOD nobody does yet has no group of its own.
+    await expect(groups).toHaveCount(2);
+    await expect(groups.nth(0)).toContainText("Leg day");
+    await expect(groups.nth(0)).toContainText("Maria D.");
+    await expect(groups.nth(1)).toContainText("Deciding at the box");
+    await expect(groups.nth(1)).toContainText("Nikos K.");
+
+    // «Make it «Now»» from the WOD's menu: nothing runs, so no question.
+    const menu = dialog.getByTestId("workout-more-actions");
+    await expect(menu).toBeVisible();
+    await menu.click();
+    const makeLive = page.getByRole("menuitem", { name: "Make it «Now»" });
+    await expect(makeLive).toBeVisible();
+    await makeLive.click();
+    await expect.poll(() => live).toEqual({ workout_id: "w-legs" });
+  });
 });

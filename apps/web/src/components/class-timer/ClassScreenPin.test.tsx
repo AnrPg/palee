@@ -84,7 +84,7 @@ describe("«On screen» on the class timer remote", () => {
       views: coachViews,
     });
     fireEvent.click(within(row).getByRole("button", { name: "Class leaderboard" }));
-    await waitFor(() => expect(api.pinClassScreen).toHaveBeenCalledWith("coach", "c18", "s1", { view: "leaderboard" }));
+    await waitFor(() => expect(api.pinClassScreen).toHaveBeenCalledWith("coach", "c18", "s1", { view: "leaderboard", workout_id: null, split_slot_id: null }));
 
     await waitFor(() => expect(within(dialog).getByTestId("class-screen-shows").textContent).toContain("Pinned: Class leaderboard"));
     expect(within(dialog).getByRole("button", { name: "Class leaderboard" }).getAttribute("aria-pressed")).toBe("true");

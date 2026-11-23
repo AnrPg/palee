@@ -150,3 +150,50 @@ describe("leaderboard text", () => {
     expect(newEntryKeys(before, after)).toEqual(["Μαρία|3:58"]);
   });
 });
+
+describe("ADR-746: several WODs in a class", () => {
+  function multi(focus: Partial<BoxScreenToday["focus"]> = {}): BoxScreenToday {
+    const base = today(focus);
+    return {
+      ...base,
+      classes: [
+        slot("b", "18:00", "19:00", { workout_ids: ["w-b", "w-a"], live_workout_id: "w-a" }),
+        slot("c", "18:00", "19:00", { workout_id: "w-c" }),
+      ],
+      workouts: [
+        ...base.workouts,
+        { id: "w-c", title: "Helen", type: "for_time", body: { kind: "free_text", text: "3 RFT", document: null, timer: null, structured: false } },
+      ],
+    };
+  }
+
+  it("follows the class's «Τώρα»", () => {
+    expect(screenScene(multi({ view: "timer", slot_id: "b" }), ms("18:10"))).toMatchObject({ kind: "timer", workout: { id: "w-a" } });
+  });
+
+  it("shows the WOD a pin chose, only when it is one of the class's", () => {
+    expect(screenScene(multi({ view: "timer", source: "staff", slot_id: "b", workout_id: "w-b" }), ms("18:10"))).toMatchObject({
+      kind: "timer",
+      workout: { id: "w-b" },
+      workoutId: "w-b",
+    });
+    expect(screenScene(multi({ view: "timer", source: "staff", slot_id: "b", workout_id: "w-c" }), ms("18:10"))).toMatchObject({
+      workout: { id: "w-a" },
+    });
+  });
+
+  it("shares the screen with the class that runs at the same time", () => {
+    expect(screenScene(multi({ view: "timer", slot_id: "b", split_slot_id: "c" }), ms("18:10"))).toMatchObject({
+      kind: "timer",
+      slot: { id: "b" },
+      split: { id: "c" },
+    });
+    expect(screenScene(multi({ view: "timer", slot_id: "b", split_slot_id: "b" }), ms("18:10"))).toMatchObject({ split: null });
+  });
+
+  it("shows a leaderboard for each other WOD of the class after it", () => {
+    const scene = screenScene(multi({ view: "results", slot_id: "b" }), ms("19:10"));
+    expect(scene).toMatchObject({ kind: "results", workout: { id: "w-a" } });
+    expect(scene.kind === "results" ? (scene.others ?? []).map((other) => other.workout.id) : []).toEqual(["w-b"]);
+  });
+});

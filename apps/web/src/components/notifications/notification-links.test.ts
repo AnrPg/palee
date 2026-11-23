@@ -3,6 +3,18 @@ import { describe, expect, it } from "vitest";
 import { notificationTargetUrl } from "./notification-links";
 
 describe("notificationTargetUrl", () => {
+  it("ADR-746: opens the class of an offered WOD, and the coach's timer when a screen was taken", () => {
+    expect(
+      notificationTargetUrl(
+        { type: "workout_assigned", payload: { class_slot_id: "s-1", url: "/box/schedule?open_slot=s-1&open_day=2026-11-23" } },
+        "member",
+      ),
+    ).toBe("/box/schedule?open_slot=s-1&open_day=2026-11-23");
+    expect(
+      notificationTargetUrl({ type: "box_screen_taken", payload: { slot_id: "s-1", url: "/class-timer/s-1/control" } }, "coach"),
+    ).toBe("/class-timer/s-1/control");
+  });
+
   it("opens the Journal on the run or score whose WOD changed (ADR-393)", () => {
     for (const role of ["member", "coach", null]) {
       expect(

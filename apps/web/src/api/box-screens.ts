@@ -77,7 +77,9 @@ export function listClassScreens(token: string, slotId: string) {
 }
 
 export function pinClassScreen(token: string, slotId: string, screenId: string, input: ClassScreenInput) {
-  return apiRequest<{ screen: BoxScreen }>(`/class-timers/${slotId}/screens/${screenId}/override`, { method: "PUT", token, body: input });
+  // ADR-746: no WOD or shared class is the same as leaving them out.
+  const body = Object.fromEntries(Object.entries(input).filter(([, value]) => value !== null && value !== undefined));
+  return apiRequest<{ screen: BoxScreen }>(`/class-timers/${slotId}/screens/${screenId}/override`, { method: "PUT", token, body });
 }
 
 export function unpinClassScreen(token: string, slotId: string, screenId: string) {

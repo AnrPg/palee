@@ -180,4 +180,61 @@ test.describe("Schedule › variation for several people", () => {
     await dialog.getByRole("button", { name: "Clear" }).click();
     await expect(dialog.getByRole("button", { name: /Create for selected/ })).toHaveText("Create for selected (0)");
   });
+
+  test("ADR-746: search finds every member; booked first, then the others, who get the WOD with a notice to book", async ({ page }) => {
+    await asOwner(page);
+    const sent: Record<string, unknown>[] = [];
+    await page.route("**/api/org/box1/admin/users?**", (route) =>
+      route.fulfill(
+        json({
+          users: [
+            { id: "u-anna", nickname: "Anna", role: "member" },
+            { id: "u-annie", nickname: "Annie R.", role: "member" },
+          ],
+          total: 2,
+        }),
+      ),
+    );
+    await page.route("**/api/org/box1/admin/users/programming", (route) => {
+      const body = bodyOf(route.request());
+      sent.push(body);
+      const ids = (body.user_ids as string[]) ?? [];
+      return route.fulfill(
+        json({ results: ids.map((id) => ({ user_id: id, status: "ok", mode: "class_variant", workout: { id: `copy-${id}` }, association: { id: `as-${id}` } })) }),
+      );
+    });
+
+    await page.goto("/admin/schedule");
+    await page.getByRole("button", { name: /CrossFit/ }).first().click();
+    const actions = page.getByTestId("workout-more-actions");
+    await expect(actions).toBeVisible();
+    await actions.click();
+    await page.getByRole("menuitem", { name: "Separate WOD for people" }).click();
+    const dialog = page.getByRole("dialog", { name: "Variation for several people" });
+    await expect(dialog).toBeVisible();
+
+    const search = dialog.getByTestId("class-variation-search");
+    await expect(search).toBeVisible();
+    await search.fill("ann");
+    const booked = dialog.getByTestId("class-variation-booked");
+    const others = dialog.getByTestId("class-variation-others");
+    await expect(booked).toContainText("Anna");
+    await expect(booked).not.toContainText("Babis");
+    await expect(others).toContainText("Annie R.");
+    await expect(others).not.toContainText("Anna");
+
+    await dialog.getByRole("checkbox", { name: /^Anna/ }).check();
+    await dialog.getByRole("checkbox", { name: /Annie R\./ }).check();
+    await chooseOption(page, dialog.getByRole("combobox", { name: /Start from/ }), "w-scaled");
+    const submit = dialog.getByRole("button", { name: /Create for selected/ });
+    await expect(submit).toHaveText("Create for selected (2)");
+    await expect(submit).toBeEnabled();
+    await submit.click();
+
+    await expect.poll(() => sent.length).toBe(2);
+    expect(sent[0]).toMatchObject({ user_ids: ["u-anna"], slot_id: "slot-1", mode: "class_variant" });
+    expect(sent[0]).not.toHaveProperty("offer_booking");
+    expect(sent[1]).toMatchObject({ user_ids: ["u-annie"], slot_id: "slot-1", mode: "class_variant", offer_booking: true });
+    await expect(dialog.getByTestId("group-outcome")).toContainText("Annie R.");
+  });
 });

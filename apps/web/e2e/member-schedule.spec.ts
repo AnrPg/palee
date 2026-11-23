@@ -334,4 +334,73 @@ test.describe("member schedule", () => {
     await expect(page.getByText("Η βάση σου")).toBeVisible();
     await shot(page, "location");
   });
+
+  test("ADR-746: a class with two WODs: pills on the row, shared seats per WOD and «Ποιο WOD;» with «Θα αποφασίσω στο box» first", async ({ page }) => {
+    let chosen: unknown = null;
+    const fran = { id: "wod-1", title: "Fran", type: "for_time", authoring_mode: "free_text", free_text_body: "21-15-9 thrusters", sections: [] };
+    const cindy = { id: "wod-2", title: "Cindy", type: "amrap", authoring_mode: "free_text", free_text_body: "AMRAP 20 pull-ups", sections: [] };
+    await page.route("**/api/org/*/schedule?**", (route) =>
+      route.fulfill(
+        json({
+          start_date: localDate(),
+          end_date: localDate(13),
+          days: 14,
+          class_types: [crossfit],
+          coaches: [{ id: "coach-1", nickname: "Nikos", avatar_url: null }],
+          slots: [
+            slot("s-9", crossfit, 18, {
+              workout: fran,
+              workouts: [fran, cindy],
+              live_workout_id: "wod-1",
+              workout_choice_counts: { workouts: [{ workout_id: "wod-1", count: 1 }, { workout_id: "wod-2", count: 2 }], undecided: 1 },
+              current_user_booking: { id: "b-9", user_id: user.id, status: "approved", inserted_at: at(5), chosen_workout_id: null },
+            }),
+          ],
+        }),
+      ),
+    );
+    await page.route("**/api/org/*/schedule/slots/s-9/my-workout", (route) => {
+      chosen = JSON.parse(route.request().postData() ?? "{}");
+      return route.fulfill(json({ booking: { id: "b-9", chosen_workout_id: "wod-2" } }));
+    });
+    await page.goto("/box/schedule");
+
+    const row = page.getByRole("main").getByTestId("class-row-wods").first();
+    await expect(row).toBeVisible();
+    await expect(row).toContainText("Fran");
+    await expect(row).toContainText("Cindy");
+
+    const sheet = page.getByRole("dialog", { name: "CrossFit" });
+    const card = page.getByRole("main").getByRole("button", { name: /CrossFit/ }).first();
+    await expect(card).toBeVisible();
+    await expect(async () => {
+      await card.click();
+      await expect(sheet).toBeVisible({ timeout: 2_000 });
+    }).toPass({ timeout: 20_000 });
+
+    // The pills open each WOD in full.
+    const pills = sheet.getByTestId("class-sheet-wods");
+    await expect(pills.getByRole("button", { name: "Fran" })).toHaveAttribute("aria-pressed", "true");
+    await pills.getByRole("button", { name: "Cindy" }).click();
+    await expect(sheet.getByText("AMRAP 20 pull-ups")).toBeVisible();
+
+    // One number of seats for the class; ▾ shows who does which.
+    const seats = sheet.getByTestId("class-seats-toggle");
+    await expect(seats).toHaveText(/8 \/ 12 ελεύθερες/);
+    await seats.click();
+    const byWod = sheet.getByTestId("class-seats-by-wod");
+    await expect(byWod.getByRole("listitem")).toHaveCount(3);
+    await expect(byWod.getByRole("listitem").nth(1)).toContainText("Cindy");
+    await expect(byWod.getByRole("listitem").nth(1)).toContainText("2");
+
+    // «Θα αποφασίσω στο box» first and chosen until the member picks.
+    const options = sheet.getByRole("radiogroup", { name: "Ποιο WOD;" }).getByRole("radio");
+    await expect(options.first()).toHaveText("Θα αποφασίσω στο box");
+    await expect(options.first()).toHaveAttribute("aria-checked", "true");
+    const pick = options.filter({ hasText: "Cindy" });
+    await expect(pick).toBeVisible();
+    await expect(pick).toBeEnabled();
+    await pick.click();
+    await expect.poll(() => chosen).toEqual({ workout_id: "wod-2" });
+  });
 });

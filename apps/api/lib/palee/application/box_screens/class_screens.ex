@@ -189,7 +189,7 @@ defmodule Palee.Application.BoxScreens.ClassScreens do
         taken_by: coach_name(context.user_id),
         slot_id: previous_slot,
         taken_at: DateTime.to_unix(now),
-        url: previous_slot && "/admin/class-timer/#{previous_slot}/control"
+        url: previous_slot && "/class-timer/#{previous_slot}/control"
       })
     end
 

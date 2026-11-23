@@ -146,4 +146,53 @@ test.describe("Class timer remote › On screen", () => {
     const width = await page.evaluate(() => document.documentElement.scrollWidth);
     expect(width).toBeLessThanOrEqual(390);
   });
+
+  test("ADR-746: per-screen WOD, sharing with a class at the same time, and a question before taking a running timer", async ({ page }) => {
+    await signInAsCoach(page);
+    const pins: Record<string, unknown>[] = [];
+    const busy = screenRow({
+      override: { view: "timer", slot_id: "c18b", until: null },
+      showing: { slot_id: "c18b", view: "timer", class_name: "Yoga 18:00", coach_name: "Eleni", timer_running: true },
+    });
+    await page.route("**/api/org/box1/class-timers/c18/screens", (route) =>
+      route.fulfill(
+        json({
+          screens: [busy],
+          views: ["timer", "leaderboard", "wod"],
+          workouts: [
+            { id: "fran", title: "Fran", live: true },
+            { id: "cindy", title: "Cindy", live: false },
+          ],
+          together: [{ id: "c18b", name: "Yoga 18:00", coach_name: "Eleni" }],
+        }),
+      ),
+    );
+    await page.route("**/api/org/box1/class-timers/c18/screens/s1/override", (route) => {
+      pins.push(bodyOf(route.request()));
+      return route.fulfill(json({ screen: busy }));
+    });
+
+    await page.goto("/class-timer/c18/control");
+    await page.getByTestId("remote-wall-screen").click();
+    await page.getByTestId("class-screen-open").click();
+    const dialog = page.getByTestId("class-screen-dialog");
+    const row = dialog.getByTestId("class-screen-s1");
+    await expect(row.getByTestId("class-screen-now")).toContainText("Yoga 18:00");
+
+    // Another class's running timer: ask first; «Take the screen» pins it.
+    const cindy = row.getByTestId("class-screen-wod").filter({ hasText: "Cindy" });
+    await expect(cindy).toBeVisible();
+    await cindy.click();
+    const ask = page.getByTestId("class-screen-take-dialog");
+    await expect(ask).toBeVisible();
+    await expect(ask).toContainText("Take Room 1?");
+    expect(pins).toEqual([]);
+    const confirm = ask.getByTestId("class-screen-take-confirm");
+    await expect(confirm).toBeEnabled();
+    await confirm.click();
+    await expect.poll(() => pins).toEqual([{ view: "timer", workout_id: "cindy" }]);
+
+    // The class running beside it can share the screen.
+    await expect(row.getByTestId("class-screen-split")).toContainText("Shared with Eleni's class");
+  });
 });

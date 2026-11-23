@@ -8,6 +8,7 @@ import {
   outcomeCounts,
   toggleSelection,
   variationCandidates,
+  variationSections,
 } from "@/lib/group-variations";
 
 describe("variationCandidates", () => {
@@ -85,5 +86,41 @@ describe("groupOutcomeRows", () => {
     expect(rows[3].error?.payload.code).toBe("unexpected_server_error");
     expect(rows[3].error?.status).toBe(500);
     expect(outcomeCounts(rows)).toEqual({ succeeded: 1, failed: 3 });
+  });
+});
+
+describe("variationSections (ADR-746)", () => {
+  const booked = [
+    { userId: "u1", nickname: "Άννα Παππά", hasVersion: false },
+    { userId: "u2", nickname: "Zoe", hasVersion: true },
+  ];
+
+  it("shows only the people who booked until you type", () => {
+    expect(variationSections(booked, [{ id: "u9", nickname: "Maria" }], "")).toEqual({
+      booked: [
+        { userId: "u1", nickname: "Άννα Παππά", hasVersion: false, booked: true },
+        { userId: "u2", nickname: "Zoe", hasVersion: true, booked: true },
+      ],
+      others: [],
+    });
+  });
+
+  it("matches without accents or case, booked first, then other members once each, by name", () => {
+    const sections = variationSections(
+      booked,
+      [
+        { id: "u2", nickname: "Zoe" },
+        { id: "u8", nickname: "Πάπας" },
+        { id: "u7", nickname: "Παππάς Ά" },
+        { id: "u7", nickname: "Παππάς Ά" },
+        { id: "u6", nickname: "Παπ coach", client: false },
+      ],
+      "παπ",
+    );
+    expect(sections.booked.map((person) => person.userId)).toEqual(["u1"]);
+    expect(sections.others).toEqual([
+      { userId: "u8", nickname: "Πάπας", hasVersion: false, booked: false },
+      { userId: "u7", nickname: "Παππάς Ά", hasVersion: false, booked: false },
+    ]);
   });
 });

@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import type { ClassTimerState } from "@/api/class-timers";
+import type { ClassTimerPayload, ClassTimerState } from "@/api/class-timers";
 
-import { classTimerPosition, clockOffsetMs } from "./class-timer";
+import { classTimerPosition, clockOffsetMs, followsPayload } from "./class-timer";
 import { buildFreeTextSegments } from "./free-text-timer";
 
 const segments = buildFreeTextSegments({ format: "tabata", work_seconds: 20, rest_seconds: 10, rounds: 2 });
@@ -54,5 +54,17 @@ describe("classTimerPosition", () => {
 describe("clockOffsetMs", () => {
   it("assumes the server stamped the response halfway through the round trip", () => {
     expect(clockOffsetMs(new Date(t0 + 5_000).toISOString(), t0, t0 + 200)).toBe(4_900);
+  });
+});
+
+describe("followsPayload (ADR-746)", () => {
+  const payload = (workoutId: string, live: boolean) =>
+    ({ workout: { id: workoutId }, live }) as unknown as ClassTimerPayload;
+
+  it("follows «Τώρα» unless a WOD of its own was chosen", () => {
+    expect(followsPayload(payload("w1", true), null)).toBe(true);
+    expect(followsPayload(payload("w2", false), null)).toBe(false);
+    expect(followsPayload(payload("w2", false), "w2")).toBe(true);
+    expect(followsPayload(payload("w1", true), "w2")).toBe(false);
   });
 });

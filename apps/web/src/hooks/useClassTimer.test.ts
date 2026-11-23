@@ -55,7 +55,7 @@ describe("useClassTimer", () => {
       await result.current.send({ command: "start" });
     });
 
-    expect(sendClassTimerCommand).toHaveBeenCalledWith("token", "slot-1", { command: "start" }, 1);
+    expect(sendClassTimerCommand).toHaveBeenCalledWith("token", "slot-1", { command: "start" }, 1, null);
     expect(result.current.payload?.timer.status).toBe("running");
   });
 
