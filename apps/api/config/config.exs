@@ -45,6 +45,7 @@ config :palee, Oban,
        {"0 2 * * *", Palee.Workers.MarkOverdueInvoicesJob},
        {"9 * * * *", Palee.Workers.SubscriptionChargesJob},
        {"21 * * * *", Palee.Workers.LapsePackageRequestsJob},
+       {"53 * * * *", Palee.Workers.ActivityLogBackfillJob},
        # ADR-346: automatic messages (outbox every 5 minutes, daily recipes hourly).
        {"*/5 * * * *", Palee.Workers.DispatchAutomationsJob},
        {"7 * * * *", Palee.Workers.DailyAutomationsJob},
