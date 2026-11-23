@@ -165,5 +165,13 @@ defmodule PaleeWeb.ExerciseCheckSectionsTest do
     # role (ADR-731: rhomboids are a stabilizer of thrusters, secondary in pull-ups).
     grown_ids = Enum.map(grown["muscles"], & &1["id"])
     assert Enum.all?(kept, &(&1["id"] in grown_ids))
+
+    # ...and no kept muscle loses role (ADR-570: edited goals only grow).
+    rank = %{"stabilizer" => 1, "secondary" => 2, "primary" => 3}
+    grown_roles = Map.new(grown["muscles"], &{&1["id"], &1["role"]})
+
+    for %{"id" => muscle, "role" => role} <- kept do
+      assert rank[grown_roles[muscle]] >= rank[role], muscle
+    end
   end
 end
