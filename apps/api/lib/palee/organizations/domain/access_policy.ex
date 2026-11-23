@@ -81,7 +81,21 @@ defmodule Palee.Organizations.Domain.AccessPolicy do
     # ADR-346: switching the ready recipes on and their texts (box-wide).
     manage_automations: :all,
     # ADR-347: «Σε κίνδυνο», who may leave and why.
-    view_members_at_risk: :all
+    view_members_at_risk: :all,
+    # ADR-760 (ANR 4A): the «Αρχείο ενεργειών», one capability per area,
+    # and its CSV (10A).
+    view_activity_members: :all,
+    view_activity_money: :all,
+    view_activity_packages: :all,
+    view_activity_classes: :all,
+    view_activity_training: :all,
+    view_activity_spaces: :all,
+    view_activity_shop: :all,
+    view_activity_community: :all,
+    view_activity_communication: :all,
+    view_activity_staff_pay: :all,
+    view_activity_settings: :all,
+    export_activity_log: :all
   }
 
   @owner Map.merge(@admin, %{
@@ -118,7 +132,11 @@ defmodule Palee.Organizations.Domain.AccessPolicy do
            report_inventory: :all,
            view_spaces: :all,
            moderate_community: :all,
-           manage_events: :all
+           manage_events: :all,
+           # ADR-760: the classes' part of the «Αρχείο ενεργειών», and the
+           # rows about their own pay.
+           view_activity_classes: :all,
+           view_activity_staff_pay: :own
          })
 
   @front_desk %{
@@ -146,7 +164,14 @@ defmodule Palee.Organizations.Domain.AccessPolicy do
     view_health_certificates: :all,
     # ADR-344/347: the desk answers enquiries and calls members who stopped coming.
     manage_leads: :all,
-    view_members_at_risk: :all
+    view_members_at_risk: :all,
+    # ADR-760 (ANR 4A): members, money, packages and classes in the
+    # «Αρχείο ενεργειών»; staff pay only about themselves.
+    view_activity_members: :all,
+    view_activity_money: :all,
+    view_activity_packages: :all,
+    view_activity_classes: :all,
+    view_activity_staff_pay: :own
   }
 
   @accountant %{
@@ -159,10 +184,16 @@ defmodule Palee.Organizations.Domain.AccessPolicy do
     view_promotions: :all,
     view_finance_reports: :all,
     manage_finance_settings: :all,
-    message_from_box: :all
+    message_from_box: :all,
+    # ADR-760 (ANR 4A, 10A): money, packages and staff pay in the
+    # «Αρχείο ενεργειών», and its CSV.
+    view_activity_money: :all,
+    view_activity_packages: :all,
+    view_activity_staff_pay: :all,
+    export_activity_log: :all
   }
 
-  @janitor %{record_cleaning: :own, report_inventory: :all}
+  @janitor %{record_cleaning: :own, report_inventory: :all, view_activity_staff_pay: :own}
 
   @grants %{
     owner: @owner,

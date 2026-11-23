@@ -69,7 +69,14 @@ defmodule Palee.Organizations.Domain.AccessPolicyTest do
 
     janitor = caps([:janitor])
     assert AccessPolicy.can?(janitor, :record_cleaning)
-    assert Map.keys(janitor) |> Enum.sort() == [:record_cleaning, :report_inventory]
+    # ADR-760: the «Αρχείο ενεργειών» rows about their own pay.
+    assert Map.keys(janitor) |> Enum.sort() == [
+             :record_cleaning,
+             :report_inventory,
+             :view_activity_staff_pay
+           ]
+
+    assert AccessPolicy.scope(janitor, :view_activity_staff_pay) == :own
   end
 
   test "spaces: owners and admins manage, front desk edits details and unavailability (ADR-202)" do

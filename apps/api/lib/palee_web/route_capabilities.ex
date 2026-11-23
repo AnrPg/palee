@@ -568,6 +568,10 @@ defmodule PaleeWeb.RouteCapabilities do
       :manage_memberships
     ],
     {W.AdminMemberBenefitController, :create} => [:take_payments],
+    # ADR-760: each area has its own capability; the use case narrows the
+    # rows to the areas the reader holds.
+    {W.AdminActivityLogController, :index} => Palee.ActivityLog.Domain.Visibility.capabilities(),
+    {W.AdminActivityLogController, :export} => [:export_activity_log],
     {W.AdminMemberBenefitController, :revoke} => [:take_payments],
     {W.AdminFinanceController, :create_receipt} => [:take_payments],
     # ADR-222: front desk takes the money and leaves the document the billing

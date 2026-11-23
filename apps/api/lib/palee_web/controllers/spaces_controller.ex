@@ -139,6 +139,17 @@ defmodule PaleeWeb.SpacesController do
   def make_unavailable(conn, %{id: id}) do
     with {:ok, result} <-
            SpaceDirectory.make_unavailable(conn.assigns.tenant_context, id, conn.body_params) do
+      # ADR-760: the window goes with the «Αρχείο ενεργειών» row.
+      window = result.unavailability
+
+      Palee.ActivityLog.note(%{
+        details: %{
+          starts_at: iso(window[:starts_at]),
+          ends_at: iso(window[:ends_at]),
+          affected_classes: length(result.affected_classes || [])
+        }
+      })
+
       conn |> put_status(:created) |> json(result)
     end
   end
@@ -404,4 +415,7 @@ defmodule PaleeWeb.SpacesController do
       json(conn, %{media: media})
     end
   end
+
+  defp iso(%DateTime{} = at), do: DateTime.to_iso8601(at)
+  defp iso(value), do: value
 end

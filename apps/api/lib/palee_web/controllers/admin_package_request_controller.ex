@@ -68,6 +68,7 @@ defmodule PaleeWeb.AdminPackageRequestController do
              Guardian.Plug.current_resource(conn).id,
              conn.body_params
            ) do
+      note(result, false)
       json(conn, result)
     end
   end
@@ -99,6 +100,7 @@ defmodule PaleeWeb.AdminPackageRequestController do
              id,
              Guardian.Plug.current_resource(conn).id
            ) do
+      note(result, false)
       json(conn, result)
     end
   end
@@ -135,9 +137,21 @@ defmodule PaleeWeb.AdminPackageRequestController do
              Guardian.Plug.current_resource(conn).id,
              conn.body_params
            ) do
+      # ADR-760: the member is told the reason, so the row is shared (5A).
+      note(result, true)
       json(conn, result)
     end
   end
+
+  defp note(%{request: request}, shared) do
+    Palee.ActivityLog.note(%{
+      person_user_id: request.user_id,
+      subject_label: request.package_name,
+      reason_shared: shared
+    })
+  end
+
+  defp note(_result, _shared), do: :ok
 
   operation(:rollout,
     summary: "Who trains on the package rule's 14 days («Μετάβαση»)",

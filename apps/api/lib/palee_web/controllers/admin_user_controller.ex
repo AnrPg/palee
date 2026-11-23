@@ -937,7 +937,9 @@ defmodule PaleeWeb.AdminUserController do
             properties: %{
               starts_on: %Schema{type: :string, format: :date},
               ends_on: %Schema{type: :string, format: :date},
-              reason: %Schema{type: :string, minLength: 3, maxLength: 500}
+              reason: %Schema{type: :string, minLength: 3, maxLength: 500},
+              # ADR-760 (6A): «Να το δει και το μέλος».
+              reason_shared: %Schema{type: :boolean}
             }
           }
         }
@@ -960,10 +962,24 @@ defmodule PaleeWeb.AdminUserController do
              admin.id,
              conn.body_params
            ) do
+      note_freeze(freeze)
+
       conn
       |> put_status(:created)
       |> json(%{freeze: freeze})
     end
+  end
+
+  # ADR-760: the dates go with the «Αρχείο ενεργειών» row.
+  defp note_freeze(freeze) do
+    Palee.ActivityLog.note(%{
+      subject: %{"subscription_id" => freeze.membership_package_subscription_id},
+      details: %{
+        starts_on: Date.to_iso8601(freeze.starts_on),
+        ends_on: Date.to_iso8601(freeze.ends_on),
+        extension_days: freeze.extension_days
+      }
+    })
   end
 
   operation(:cancel_freeze,
@@ -983,7 +999,10 @@ defmodule PaleeWeb.AdminUserController do
         "application/json" => %MediaType{
           schema: %Schema{
             type: :object,
-            properties: %{reason: %Schema{type: :string, maxLength: 500, nullable: true}}
+            properties: %{
+              reason: %Schema{type: :string, maxLength: 500, nullable: true},
+              reason_shared: %Schema{type: :boolean}
+            }
           }
         }
       }
@@ -1003,6 +1022,7 @@ defmodule PaleeWeb.AdminUserController do
              freeze_id,
              conn.body_params || %{}
            ) do
+      note_freeze(freeze)
       json(conn, %{freeze: freeze})
     end
   end

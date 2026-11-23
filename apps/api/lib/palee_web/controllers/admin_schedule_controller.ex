@@ -435,6 +435,15 @@ defmodule PaleeWeb.AdminScheduleController do
     body = normalize_body_params(conn, params)
 
     with {:ok, result} <- ChangeClassState.call(conn.assigns.tenant_context, id, body) do
+      # ADR-760: which state, and how many classes it reached.
+      Palee.ActivityLog.note(%{
+        details: %{
+          state: to_string(result.action),
+          changed_count: result.changed_count,
+          released_count: result.released_count
+        }
+      })
+
       json(conn, result)
     end
   end

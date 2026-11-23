@@ -6,7 +6,7 @@ defmodule Palee.Application.FinanceValueOverrides do
   replaced and the value chosen; the screens show it on hover.
   """
 
-  alias Palee.{Finance, Identity}
+  alias Palee.{ActivityLog, Finance, Identity}
 
   @doc "Sets `field` for the member `user_id` (body: `value`, `reason`, `subscription_id`)."
   def set(%{user_id: actor_id} = context, user_id, field, params) when is_map(params) do
@@ -19,6 +19,8 @@ defmodule Palee.Application.FinanceValueOverrides do
              field,
              Map.put(params, "actor_id", actor_id)
            ) do
+      # ADR-760: the «Αρχείο ενεργειών» row of this request.
+      note(override, override.computed_value, override.value)
       {:ok, with_names(override)}
     end
   end
@@ -34,9 +36,22 @@ defmodule Palee.Application.FinanceValueOverrides do
              field,
              Map.put(params, "actor_id", actor_id)
            ) do
+      note(override, override.value, override.computed_value)
       {:ok, with_names(override)}
     end
   end
+
+  defp note(override, before, after_value) do
+    ActivityLog.note(%{
+      subject: subject(override),
+      details: %{changes: [%{field: override.field, before: before, after: after_value}]}
+    })
+  end
+
+  defp subject(%{subject_type: "subscription", subject_id: id}) when is_binary(id),
+    do: %{"subscription_id" => id}
+
+  defp subject(_override), do: %{}
 
   @doc "Every value set by hand for the member, newest first."
   def history(context, user_id) do

@@ -57,6 +57,8 @@ defmodule PaleeWeb.AdminMemberBenefitController do
   def create(conn, %{"id" => user_id}) do
     with {:ok, result} <-
            MemberBenefits.grant(conn.assigns.tenant_context, user_id, conn.body_params || %{}) do
+      note(result.benefit)
+
       conn
       |> put_status(if(result.replayed, do: :ok, else: :created))
       |> json(result)
@@ -69,6 +71,31 @@ defmodule PaleeWeb.AdminMemberBenefitController do
     request_body: {"Revocation", "application/json", S.revoke_body()},
     responses: [ok: {"Benefit", "application/json", S.one_response()}] ++ @refused
   )
+
+  # ADR-760: what was given goes with the «Αρχείο ενεργειών» row.
+  defp note(benefit) when is_map(benefit) do
+    Palee.ActivityLog.note(%{
+      details:
+        benefit
+        |> Map.take([:kind, :starts_on, :ends_on, :amount_cents])
+        |> Map.reject(fn {_key, value} -> is_nil(value) end)
+        |> Map.new(fn
+          {key, %Date{} = date} -> {key, Date.to_iso8601(date)}
+          pair -> pair
+        end)
+        |> Map.merge(package_name(benefit))
+    })
+  end
+
+  defp note(_benefit), do: :ok
+
+  defp package_name(%{details: %{"package_name" => name}}) when is_binary(name),
+    do: %{package_name: name}
+
+  defp package_name(%{details: %{package_name: name}}) when is_binary(name),
+    do: %{package_name: name}
+
+  defp package_name(_benefit), do: %{}
 
   def revoke(conn, %{"id" => user_id, "benefit_id" => benefit_id}) do
     with {:ok, result} <-

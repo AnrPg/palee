@@ -95,6 +95,8 @@ defmodule PaleeWeb.Schemas.MemberBenefits do
       properties: %{
         kind: %Schema{type: :string, enum: MemberBenefits.kinds()},
         reason: %Schema{type: :string, nullable: true, maxLength: 500},
+        # ADR-760 (6A): «Να το δει και το μέλος».
+        reason_shared: %Schema{type: :boolean},
         idempotency_key: %Schema{type: :string, minLength: 8, maxLength: 200},
         ends_on: %Schema{type: :string, format: :date},
         allowance: %Schema{type: :string},
@@ -121,6 +123,8 @@ defmodule PaleeWeb.Schemas.MemberBenefits do
       type: :object,
       properties: %{
         reason: %Schema{type: :string, nullable: true, maxLength: 500},
+        # ADR-760 (6A): «Να το δει και το μέλος».
+        reason_shared: %Schema{type: :boolean},
         idempotency_key: %Schema{type: :string, minLength: 8, maxLength: 200}
       },
       required: [:idempotency_key]

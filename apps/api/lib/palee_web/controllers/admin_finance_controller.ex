@@ -979,6 +979,8 @@ defmodule PaleeWeb.AdminFinanceController do
          properties: %{
            value: %Schema{type: :string},
            reason: %Schema{type: :string, nullable: true},
+           # ADR-760 (6A): «Να το δει και το μέλος».
+           reason_shared: %Schema{type: :boolean},
            subscription_id: %Schema{type: :string, format: :uuid, nullable: true},
            commitment_override_reason: %Schema{type: :string, nullable: true}
          },
@@ -1202,6 +1204,8 @@ defmodule PaleeWeb.AdminFinanceController do
              params["subscription_id"],
              conn.body_params || %{}
            ) do
+      Palee.ActivityLog.note(%{subject_label: removal[:package_name]})
+
       conn
       |> put_status(:created)
       |> json(%{removal: removal})
@@ -1242,7 +1246,9 @@ defmodule PaleeWeb.AdminFinanceController do
        %Schema{
          type: :object,
          properties: %{
-           reason: %Schema{type: :string, maxLength: 500, nullable: true}
+           reason: %Schema{type: :string, maxLength: 500, nullable: true},
+           # ADR-760 (6A): «Να το δει και το μέλος».
+           reason_shared: %Schema{type: :boolean}
          }
        }},
     responses: [ok: {"Leave result", "application/json", @open_object}]
@@ -1286,6 +1292,12 @@ defmodule PaleeWeb.AdminFinanceController do
              param_id(params),
              body_params(conn, params)
            ) do
+      # ADR-760: the package's name goes with the «Αρχείο ενεργειών» row.
+      Palee.ActivityLog.note(%{
+        subject: %{"subscription_id" => to_string(subscription[:id])},
+        subject_label: subscription[:package_name]
+      })
+
       conn
       |> put_status(:created)
       |> json(%{package_subscription: subscription})

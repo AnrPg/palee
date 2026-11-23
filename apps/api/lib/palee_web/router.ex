@@ -289,6 +289,8 @@ defmodule PaleeWeb.Router do
   pipeline :admin_only do
     plug(PaleeWeb.Plugs.ResolveTenantContext)
     plug(PaleeWeb.Plugs.RequireRouteCapability)
+    # ADR-760: every change staff make goes to the «Αρχείο ενεργειών».
+    plug(PaleeWeb.Plugs.RecordActivity)
   end
 
   pipeline :tenant_staff do
@@ -310,6 +312,7 @@ defmodule PaleeWeb.Router do
   pipeline :staff_only do
     plug(PaleeWeb.Plugs.ResolveTenantContext)
     plug(PaleeWeb.Plugs.RequireRouteCapability)
+    plug(PaleeWeb.Plugs.RecordActivity)
   end
 
   pipeline :tenant_member do
@@ -829,6 +832,8 @@ defmodule PaleeWeb.Router do
     )
 
     post("/membership/leave", MyMembershipController, :leave)
+    # ADR-760 (5A): what the box shared with me in its «Αρχείο ενεργειών».
+    get("/membership/activity", MemberActivityController, :index)
     # ADR-155: Box › Check-in.
     get("/check-in/code", MyCheckInController, :code)
     post("/check-in/code/reset", MyCheckInController, :reset_code)
@@ -2081,6 +2086,9 @@ defmodule PaleeWeb.Router do
 
     # ADR-612: «Δώρο ή χάρη» and its history.
     get("/finance/members/:id/benefits", AdminMemberBenefitController, :index)
+    # ADR-760: the «Αρχείο ενεργειών» and its CSV.
+    get("/activity-log", AdminActivityLogController, :index)
+    get("/activity-log/export", AdminActivityLogController, :export)
     post("/finance/members/:id/benefits", AdminMemberBenefitController, :create)
 
     post(

@@ -10,6 +10,7 @@ defmodule Palee.Application.TenantDataContexts do
 
   alias Palee.{
     Access,
+    ActivityLog,
     AiUsage,
     Analytics,
     Appointments,
@@ -67,6 +68,7 @@ defmodule Palee.Application.TenantDataContexts do
   alias Palee.TenantData.Domain.RetentionReview
 
   @purgeable [
+    ActivityLog,
     BoxData,
     Integrations,
     Access,
