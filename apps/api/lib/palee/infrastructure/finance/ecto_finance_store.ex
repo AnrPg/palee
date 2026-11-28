@@ -68,6 +68,7 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
   alias Palee.Finance.FinanceValueOverride
   alias Palee.Finance.PackageStart, as: PackageStartRecord
   alias Palee.Finance.MemberBenefitStore
+  alias Palee.Infrastructure.Finance.EctoCleanupRecordStore
   alias Palee.Infrastructure.Finance.MemberStanding
 
   alias Palee.Repo
@@ -1319,34 +1320,16 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
     :ok
   end
 
+  # ADR-797: the reads of «Εκκαθάριση συναλλαγών» live in their own store.
   @impl true
-  def list_finance_cleanup_records(params) do
-    params = string_key_map(params || %{})
-    search = params["q"] || params["search"] || ""
-    limit = parse_integer(params["limit"], 50) |> min(100) |> max(1)
+  def list_finance_cleanup_records(filter), do: EctoCleanupRecordStore.list(filter)
 
-    invoice_records =
-      FinanceInvoice
-      |> where([invoice], is_nil(invoice.deleted_at))
-      |> maybe_search_cleanup_invoice(search)
-      |> order_by([invoice], desc: invoice.inserted_at)
-      |> limit(^limit)
-      |> Repo.all()
-      |> Enum.map(&cleanup_invoice_record/1)
+  @impl true
+  def get_finance_cleanup_record(record_type, record_id),
+    do: EctoCleanupRecordStore.get(record_type, record_id)
 
-    payment_records =
-      MembershipPayment
-      |> where([payment], is_nil(payment.deleted_at))
-      |> maybe_search_cleanup_payment(search)
-      |> order_by([payment], desc: payment.inserted_at)
-      |> limit(^limit)
-      |> Repo.all()
-      |> Enum.map(&cleanup_payment_record/1)
-
-    (invoice_records ++ payment_records)
-    |> Enum.sort_by(& &1.inserted_at, {:desc, DateTime})
-    |> Enum.take(limit)
-  end
+  @impl true
+  def list_finance_customer_ids, do: EctoCleanupRecordStore.customer_user_ids()
 
   @impl true
   def soft_delete_finance_record(record_type, record_id, admin_id, params) do
@@ -5521,7 +5504,7 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
           refresh_entitlement_snapshot(invoice.membership_id)
 
           %{
-            record: cleanup_invoice_record(deleted_invoice),
+            record: EctoCleanupRecordStore.document_record(deleted_invoice),
             purged_linked_records: linked_finance_record_counts(invoice.id)
           }
       end
@@ -5553,7 +5536,7 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
           soft_delete_payment_credit_entries!(payment.id, deletion_params)
           refresh_invoice_and_entitlement(payment.finance_invoice_id, payment.membership_id)
 
-          %{record: cleanup_payment_record(deleted_payment)}
+          %{record: EctoCleanupRecordStore.payment_record(deleted_payment)}
       end
     end)
   end
@@ -7826,82 +7809,6 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
       inserted_at: invoice.inserted_at,
       updated_at: invoice.updated_at
     }
-  end
-
-  defp cleanup_invoice_record(%FinanceInvoice{} = invoice) do
-    document_kind = (invoice.params || %{})["document_kind"]
-
-    %{
-      id: invoice.id,
-      organization_id: invoice.organization_id,
-      record_type: if(document_kind == "receipt", do: "receipt", else: "invoice"),
-      code: invoice.invoice_number,
-      label: invoice.invoice_number,
-      membership_id: invoice.membership_id,
-      user_id: invoice.user_id,
-      amount_cents: invoice.total_cents,
-      currency: invoice.currency,
-      status: invoice.status,
-      issued_on: invoice.issue_date,
-      due_on: invoice.due_date,
-      inserted_at: invoice.inserted_at,
-      deleted_at: invoice.deleted_at
-    }
-  end
-
-  defp cleanup_payment_record(%MembershipPayment{} = payment) do
-    invoice =
-      if payment.finance_invoice_id do
-        FinanceInvoice |> tenant_scope() |> Repo.get(payment.finance_invoice_id)
-      end
-
-    %{
-      id: payment.id,
-      organization_id: payment.organization_id,
-      record_type: "payment",
-      code: payment_code(payment, invoice),
-      label: payment_code(payment, invoice),
-      membership_id: payment.membership_id,
-      user_id: invoice && invoice.user_id,
-      finance_invoice_id: payment.finance_invoice_id,
-      amount_cents: payment.amount_cents,
-      currency: payment.currency,
-      status: payment.payment_status,
-      paid_on: payment.paid_on,
-      inserted_at: payment.inserted_at,
-      deleted_at: payment.deleted_at
-    }
-  end
-
-  defp payment_code(%MembershipPayment{} = payment, %FinanceInvoice{} = invoice),
-    do: "#{invoice.invoice_number} / payment #{String.slice(payment.id, 0, 8)}"
-
-  defp payment_code(%MembershipPayment{} = payment, _invoice),
-    do: "payment #{String.slice(payment.id, 0, 8)}"
-
-  defp maybe_search_cleanup_invoice(query, value) when value in [nil, ""], do: query
-
-  defp maybe_search_cleanup_invoice(query, value) do
-    term = "%#{String.trim(value)}%"
-
-    where(
-      query,
-      [invoice],
-      ilike(invoice.invoice_number, ^term) or fragment("?::text ILIKE ?", invoice.id, ^term)
-    )
-  end
-
-  defp maybe_search_cleanup_payment(query, value) when value in [nil, ""], do: query
-
-  defp maybe_search_cleanup_payment(query, value) do
-    term = "%#{String.trim(value)}%"
-
-    where(
-      query,
-      [payment],
-      fragment("?::text ILIKE ?", payment.id, ^term) or
-        fragment("?::text ILIKE ?", payment.finance_invoice_id, ^term)
-    )
   end
 
   defp list_invoice_lines(invoice_id) do

@@ -8293,6 +8293,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/finance/cleanup-records/packages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Packages to filter finance cleanup records by, inactive ones included */
+        get: operations["PaleeWeb.AdminFinanceController.cleanup_record_packages"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/finance/cleanup-records/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One active finance record with its details */
+        get: operations["PaleeWeb.AdminFinanceController.cleanup_record"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/finance/cleanup-records/{id}/purge": {
         parameters: {
             query?: never;
@@ -101833,7 +101867,14 @@ export interface operations {
     "PaleeWeb.AdminFinanceController.cleanup_records": {
         parameters: {
             query?: {
+                /** @description Customer name, @handle or email, document number or record id */
                 q?: string;
+                user_id?: string;
+                package_id?: string;
+                from?: string;
+                to?: string;
+                kind?: "invoice" | "receipt" | "payment";
+                cursor?: string;
                 limit?: number;
             };
             header?: never;
@@ -101843,6 +101884,54 @@ export interface operations {
         requestBody?: never;
         responses: {
             /** @description Finance cleanup records */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminFinanceController.cleanup_record_packages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Packages */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminFinanceController.cleanup_record": {
+        parameters: {
+            query: {
+                record_type: "invoice" | "receipt" | "payment";
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Finance cleanup record */
             200: {
                 headers: {
                     [name: string]: unknown;

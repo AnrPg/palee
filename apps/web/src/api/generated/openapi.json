@@ -237645,6 +237645,7 @@
         "operationId": "PaleeWeb.AdminFinanceController.cleanup_records",
         "parameters": [
           {
+            "description": "Customer name, @handle or email, document number or record id",
             "in": "query",
             "name": "q",
             "schema": {
@@ -237653,8 +237654,60 @@
           },
           {
             "in": "query",
+            "name": "user_id",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "package_id",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "from",
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "kind",
+            "schema": {
+              "enum": [
+                "invoice",
+                "receipt",
+                "payment"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
             "name": "limit",
             "schema": {
+              "maximum": 100,
               "minimum": 1,
               "type": "integer"
             }
@@ -237679,6 +237732,87 @@
           }
         ],
         "summary": "Search active finance records eligible for audited soft deletion",
+        "tags": [
+          "Admin Finance"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/finance/cleanup-records/packages": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminFinanceController.cleanup_record_packages",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Packages"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Packages to filter finance cleanup records by, inactive ones included",
+        "tags": [
+          "Admin Finance"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/finance/cleanup-records/{id}": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminFinanceController.cleanup_record",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "record_type",
+            "required": true,
+            "schema": {
+              "enum": [
+                "invoice",
+                "receipt",
+                "payment"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Finance cleanup record"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "One active finance record with its details",
         "tags": [
           "Admin Finance"
         ]

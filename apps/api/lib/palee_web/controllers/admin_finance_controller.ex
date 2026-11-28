@@ -723,17 +723,73 @@ defmodule PaleeWeb.AdminFinanceController do
               :purge_record
             ]
 
+  # ADR-797: filters of «Εκκαθάριση συναλλαγών»; invalid values are ignored.
   operation(:cleanup_records,
     summary: "Search active finance records eligible for audited soft deletion",
     parameters: [
-      %Parameter{name: :q, in: :query, schema: %Schema{type: :string}},
-      %Parameter{name: :limit, in: :query, schema: %Schema{type: :integer, minimum: 1}}
+      %Parameter{
+        name: :q,
+        in: :query,
+        description: "Customer name, @handle or email, document number or record id",
+        schema: %Schema{type: :string}
+      },
+      %Parameter{name: :user_id, in: :query, schema: %Schema{type: :string, format: :uuid}},
+      %Parameter{name: :package_id, in: :query, schema: %Schema{type: :string, format: :uuid}},
+      %Parameter{name: :from, in: :query, schema: %Schema{type: :string, format: :date}},
+      %Parameter{name: :to, in: :query, schema: %Schema{type: :string, format: :date}},
+      %Parameter{
+        name: :kind,
+        in: :query,
+        schema: %Schema{type: :string, enum: ["invoice", "receipt", "payment"]}
+      },
+      %Parameter{name: :cursor, in: :query, schema: %Schema{type: :string}},
+      %Parameter{
+        name: :limit,
+        in: :query,
+        schema: %Schema{type: :integer, minimum: 1, maximum: 100}
+      }
     ],
     responses: [ok: {"Finance cleanup records", "application/json", @list_response}]
   )
 
   def cleanup_records(conn, params) do
-    with {:ok, payload} <- ListFinanceCleanupRecords.call(params) do
+    with {:ok, payload} <- ListFinanceCleanupRecords.call(conn.assigns.tenant_context, params) do
+      json(conn, payload)
+    end
+  end
+
+  operation(:cleanup_record_packages,
+    summary: "Packages to filter finance cleanup records by, inactive ones included",
+    responses: [ok: {"Packages", "application/json", @open_object}]
+  )
+
+  def cleanup_record_packages(conn, _params) do
+    with {:ok, payload} <- ListFinanceCleanupRecords.packages(conn.assigns.tenant_context) do
+      json(conn, payload)
+    end
+  end
+
+  operation(:cleanup_record,
+    summary: "One active finance record with its details",
+    parameters: [
+      @id_parameter,
+      %Parameter{
+        name: :record_type,
+        in: :query,
+        required: true,
+        schema: %Schema{type: :string, enum: ["invoice", "receipt", "payment"]}
+      }
+    ],
+    responses: [ok: {"Finance cleanup record", "application/json", @open_object}]
+  )
+
+  def cleanup_record(conn, params) do
+    with {:ok, payload} <-
+           ListFinanceCleanupRecords.get(
+             conn.assigns.tenant_context,
+             params["record_type"],
+             param_id(params)
+           ) do
       json(conn, payload)
     end
   end

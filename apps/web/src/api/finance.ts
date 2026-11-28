@@ -6,11 +6,14 @@ import type { LocationScopePayload } from "@/lib/location-scope";
 
 export type FinanceRecord = Record<string, unknown>;
 
+/** ADR-797: one active invoice, receipt or payment in «Εκκαθάριση συναλλαγών». */
+export type FinanceCleanupRecordType = "invoice" | "receipt" | "payment";
+
 export type FinanceCleanupRecord = {
   id: string;
-  record_type: "invoice" | "receipt" | "payment" | "transaction";
-  code: string;
-  label: string;
+  record_type: FinanceCleanupRecordType;
+  /** The document number (a payment: its invoice's or receipt's), if any. */
+  code?: string | null;
   membership_id?: string | null;
   user_id?: string | null;
   finance_invoice_id?: string | null;
@@ -20,28 +23,86 @@ export type FinanceCleanupRecord = {
   issued_on?: string | null;
   due_on?: string | null;
   paid_on?: string | null;
+  /** The issue date of a document, the paid date of a payment. */
+  occurred_on?: string | null;
+  payment_method?: string | null;
+  package_id?: string | null;
+  package_name?: string | null;
+  customer_name?: string | null;
+  customer_handle?: string | null;
+  customer_email?: string | null;
   inserted_at?: string | null;
   deleted_at?: string | null;
 };
 
-/** ADR-186 §7: `locationIds` (comma-separated) narrows the summary to some branches. */
-export async function fetchFinanceSummary(token: string, locationIds?: string) {
-  const query = locationIds ? `?${new URLSearchParams({ location_ids: locationIds }).toString()}` : "";
-  return apiRequest<FinanceRecord>(`/admin/finance/summary${query}`, { token });
-}
+export type FinanceCleanupLinkedRecord = {
+  id: string;
+  record_type: FinanceCleanupRecordType;
+  code?: string | null;
+  amount_cents?: number | null;
+  currency?: string | null;
+  status?: string | null;
+  payment_method?: string | null;
+  occurred_on?: string | null;
+};
 
-/** ADR-462: the finance summary for a «Στατιστικά» period and filters (`analyticsApiQuery`). */
-export async function fetchFinanceAnalyticsSummary(token: string, query: Record<string, string>) {
-  return apiRequest<FinanceRecord>(`/admin/finance/summary?${new URLSearchParams(query).toString()}`, { token });
-}
+export type FinanceCleanupRecordDetails = FinanceCleanupRecord & {
+  invoice_type?: string | null;
+  service_period_start?: string | null;
+  service_period_end?: string | null;
+  subtotal_cents?: number | null;
+  discount_cents?: number | null;
+  balance_due_cents?: number | null;
+  reversed_cents?: number | null;
+  notes?: string | null;
+  fiscal_receipt_ref?: string | null;
+  revenue_stream?: string | null;
+  created_by_id?: string | null;
+  created_by_name?: string | null;
+  lines: Array<{
+    id: string;
+    description?: string | null;
+    quantity?: number | null;
+    unit_amount_cents?: number | null;
+    discount_cents?: number | null;
+    total_cents?: number | null;
+  }>;
+  linked: FinanceCleanupLinkedRecord[];
+};
 
-export async function fetchFinanceCleanupRecords(
-  token: string,
-  params: { q?: string; limit?: string } = {},
-) {
-  const query = new URLSearchParams(params).toString();
-  return apiRequest<{ records: FinanceCleanupRecord[] }>(
+/** ADR-797: the filters of «Εκκαθάριση συναλλαγών» as API query params. */
+export type FinanceCleanupQuery = {
+  q?: string;
+  user_id?: string;
+  package_id?: string;
+  from?: string;
+  to?: string;
+  kind?: FinanceCleanupRecordType;
+  cursor?: string;
+  limit?: string;
+};
+
+export async function fetchFinanceCleanupRecords(token: string, params: FinanceCleanupQuery = {}) {
+  const entries = Object.entries(params).filter((entry): entry is [string, string] => Boolean(entry[1]));
+  const query = new URLSearchParams(entries).toString();
+  return apiRequest<{ records: FinanceCleanupRecord[]; next_cursor?: string | null }>(
     `/admin/finance/cleanup-records${query ? `?${query}` : ""}`,
+    { token },
+  );
+}
+
+export async function fetchFinanceCleanupRecord(token: string, recordType: FinanceCleanupRecordType, recordId: string) {
+  const query = new URLSearchParams({ record_type: recordType }).toString();
+  return apiRequest<{ record: FinanceCleanupRecordDetails }>(
+    `/admin/finance/cleanup-records/${encodeURIComponent(recordId)}?${query}`,
+    { token },
+  );
+}
+
+/** Every package, inactive ones too: older records may belong to them. */
+export async function fetchFinanceCleanupPackages(token: string) {
+  return apiRequest<{ packages: Array<{ id: string; name: string; active: boolean }> }>(
+    "/admin/finance/cleanup-records/packages",
     { token },
   );
 }
@@ -59,6 +120,17 @@ export async function purgeFinanceRecord(
       body,
     },
   );
+}
+
+/** ADR-186 §7: `locationIds` (comma-separated) narrows the summary to some branches. */
+export async function fetchFinanceSummary(token: string, locationIds?: string) {
+  const query = locationIds ? `?${new URLSearchParams({ location_ids: locationIds }).toString()}` : "";
+  return apiRequest<FinanceRecord>(`/admin/finance/summary${query}`, { token });
+}
+
+/** ADR-462: the finance summary for a «Στατιστικά» period and filters (`analyticsApiQuery`). */
+export async function fetchFinanceAnalyticsSummary(token: string, query: Record<string, string>) {
+  return apiRequest<FinanceRecord>(`/admin/finance/summary?${new URLSearchParams(query).toString()}`, { token });
 }
 
 /** ADR-186 §7: the `location_ids` query of a list on a branch-filtered page, or "". */

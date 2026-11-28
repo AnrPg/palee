@@ -515,6 +515,8 @@ defmodule PaleeWeb.RouteCapabilities do
     {W.AdminShopReportController, :put_pricing_target} => [:manage_shop, :manage_settings],
     {W.AdminFinanceController, :operational_queues} => [:view_finance_reports],
     {W.AdminFinanceController, :cleanup_records} => [:manage_billing],
+    {W.AdminFinanceController, :cleanup_record_packages} => [:manage_billing],
+    {W.AdminFinanceController, :cleanup_record} => [:manage_billing],
     {W.AdminFinanceController, :purge_record} => [:manage_billing],
     {W.AdminFinanceController, :packages} => [:view_package_catalog],
     {W.AdminPackageAudienceController, :show} => [:manage_packages, :view_package_catalog],
