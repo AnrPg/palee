@@ -28,7 +28,9 @@ import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { SoldOnlineBadge } from "@/components/admin/finance/packages/SoldOnlineBadge";
-import { BoxAudienceRow, PackageAudienceBadge } from "@/components/admin/finance/packages/PackageAudience";
+import { BoxAudienceRow, PackageAudienceBadge, PackageAudienceSheet } from "@/components/admin/finance/packages/PackageAudience";
+import { useSelectedMembershipRole } from "@/lib/membership-role";
+import { can } from "@/lib/role-navigation";
 import { salesPageHref, soldOnlineCount } from "@/components/admin/finance/packages/sold-online";
 import { useOrganizationSlug } from "@/lib/organization-slug";
 
@@ -82,13 +84,19 @@ export function PackagesTab({ locationIds }: { locationIds?: string } = {}) {
   const inactivePackages = packages.filter((pkg) => pkg.active === false);
   const { catalog, classTypes, locations, error: catalogError } = usePackageAuthoring(token);
   const [duplicateDraft, setDuplicateDraft] = useState<PackageDraft | null>(null);
+  const { membership } = useSelectedMembershipRole();
+  const canManage = can(membership, "manage_packages");
+  // Mockup 1A (ANR 2026-11-28): a package's eye opens its «Ποιος το βλέπει».
+  const [audienceId, setAudienceId] = useState<string | null>(null);
+  const audiencePackage = audienceId ? (packages.find((pkg) => field(pkg, "id") === audienceId) ?? null) : null;
+  const availability = useTranslations("PackageAvailability");
 
   return (
     <div className="space-y-4">
       {/* Header row */}
       <div className="flex items-center justify-between gap-4">
         <p className="text-sm font-semibold uppercase tracking-[0.22em]" style={{ color: "var(--dim)" }}>
-          {i18n("activePackagesCount02af29c", {count: activePackages.length})}
+          {availability("availableCount", { count: activePackages.length })}
         </p>
         <button
           className="rounded-full px-4 py-2 text-sm font-semibold"
@@ -108,9 +116,9 @@ export function PackagesTab({ locationIds }: { locationIds?: string } = {}) {
         {packagesQuery.isLoading ? (
           <p className="px-6 py-8 text-sm" style={{ color: "var(--dim)" }}>{i18n("loading33ce417")}</p>
         ) : activePackages.length === 0 ? (
-          <p className="px-6 py-8 text-sm" style={{ color: "var(--dim)" }}>{i18n("noActivePackages84ac1e8")}</p>
+          <p className="px-6 py-8 text-sm" style={{ color: "var(--dim)" }}>{availability("noneAvailable")}</p>
         ) : (
-          <PackageRows packages={activePackages} locations={locations} onOpen={(id) => setParam("package", id)} />
+          <PackageRows packages={activePackages} locations={locations} onOpen={(id) => setParam("package", id)} onAudience={canManage ? setAudienceId : undefined} />
         )}
       </div>
 
@@ -119,13 +127,15 @@ export function PackagesTab({ locationIds }: { locationIds?: string } = {}) {
       {inactivePackages.length > 0 ? (
         <details className="overflow-hidden rounded-2xl" style={{ border: "1px solid var(--border)" }}>
           <summary className="cursor-pointer px-5 py-3 text-xs font-semibold uppercase tracking-[0.18em]" style={{ color: "var(--dim)" }}>
-            {i18n("archivedPackages6f2dd9a")} {inactivePackages.length}
+            {availability("retiredSection", { count: inactivePackages.length })}
           </summary>
           <div style={{ background: "var(--panel)", borderTop: "1px solid var(--border)" }}>
             <PackageRows packages={inactivePackages} locations={locations} onOpen={(id) => setParam("package", id)} />
           </div>
         </details>
       ) : null}
+
+      {audiencePackage ? <PackageAudienceSheet token={token} pkg={audiencePackage} onClose={() => setAudienceId(null)} /> : null}
 
       {/* Side panel: package detail */}
       {openPackageId ? (
@@ -189,43 +199,48 @@ function PackageRows({
   packages,
   locations,
   onOpen,
+  onAudience,
 }: {
   packages: FinanceRecord[];
   locations: FacilityLocation[] | null | undefined;
   onOpen: (id: string) => void;
+  /** Staff with «Πακέτα»: the eye opens the package's «Ποιος το βλέπει». */
+  onAudience?: (id: string) => void;
 }) {
   const uiLocale = useUiLocale();
-  const i18n = useUiTranslations();
   const t = useT();
+  const availability = useTranslations("PackageAvailability");
+  // The whole row opens the package (its name is the keyboard button); the
+  // eye is a button of its own and does not open the package.
   return packages.map((pkg, index) => (
-    <button
+    <div
       key={field(pkg, "id")}
-      className="flex w-full items-center justify-between gap-4 px-6 py-4 text-start transition-opacity hover:opacity-80"
+      className="flex w-full cursor-pointer items-center justify-between gap-4 px-6 py-4 transition-opacity hover:opacity-80"
       style={{ borderBottom: index < packages.length - 1 ? "1px solid var(--border)" : "none" }}
       onClick={() => onOpen(field(pkg, "id"))}
-      type="button"
+      data-testid="package-row"
     >
-      <div>
+      <button className="min-w-0 text-start" onClick={(event) => { event.stopPropagation(); onOpen(field(pkg, "id")); }} type="button">
         <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>
           {field(pkg, "name", field(pkg, "code"))}
         </p>
         <p className="mt-1 text-xs" style={{ color: "var(--dim)" }}>
           {t(typeLabelKey(field(pkg, "package_type", "membership")))} · {t(`pkgBilling_${field(pkg, "billing_period", "monthly")}`)}
         </p>
-      </div>
+      </button>
       <div className="flex items-center gap-4">
         <BranchCoverageBadge target={packageCoverage(pkg)} locations={locations} />
         <SoldOnlineBadge pkg={pkg} />
-        <PackageAudienceBadge pkg={pkg} />
+        <PackageAudienceBadge pkg={pkg} onOpen={onAudience ? () => onAudience(field(pkg, "id")) : undefined} />
         <span className="text-sm font-semibold" style={{ color: "var(--text)" }}>
           {money(uiLocale, pkg.base_price_cents)}
         </span>
         <span className="rounded-full px-3 py-1 text-xs font-semibold" style={pkg.active === false ? { background: "var(--border)", color: "var(--dim)" } : SPARK_ACTIVE_STYLE}>
-          {pkg.active === false ? i18n("inactive09af574") : i18n("activea733b80")}
+          {pkg.active === false ? availability("retired") : availability("available")}
         </span>
-        <span style={{ color: "var(--dim)" }}>→</span>
+        <span aria-hidden="true" style={{ color: "var(--dim)" }}>→</span>
       </div>
-    </button>
+    </div>
   ));
 }
 

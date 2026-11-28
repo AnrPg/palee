@@ -9,17 +9,17 @@ describe("package-count translations", () => {
     for (const locale of locales) {
       const catalog = JSON.parse(
         fs.readFileSync(path.resolve("messages", `${locale}.json`), "utf8"),
-      ) as { Ui: Record<string, string> };
+      ) as { PackageAvailability: Record<string, string> };
 
-      expect(catalog.Ui.activePackagesCount02af29c).toMatch(/\{count, plural,/);
+      expect(catalog.PackageAvailability.availableCount).toMatch(/\{count, plural,/);
     }
   });
 
   it("uses the Greek plural form for multiple packages", () => {
     const catalog = JSON.parse(
       fs.readFileSync(path.resolve("messages/el.json"), "utf8"),
-    ) as { Ui: Record<string, string> };
+    ) as { PackageAvailability: Record<string, string> };
 
-    expect(catalog.Ui.activePackagesCount02af29c).toContain("# ενεργά πακέτα συνδρομής");
+    expect(catalog.PackageAvailability.availableCount).toContain("# διαθέσιμα πακέτα συνδρομής");
   });
 });
