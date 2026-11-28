@@ -22,9 +22,11 @@ defmodule Palee.Application.ProgramUserWorkout do
   class variants in `Variations for member/<nickname>` (still hidden from the
   shared library, ADR-125).
 
-  Athletes and `personal` need online programming or personal training in
-  the package (ADR-225), checked before the library copy is made so a denial
-  leaves no orphan. Changing a booked class's WOD (`class_workout`) programs
+  Athletes need online programming or personal training in the package
+  (ADR-225); a member's `personal` WOD (ADR-805) needs a class booked that
+  day or a class visit to use (`AuthorizeMemberDayWod`), else online
+  programming or personal training. Both are checked before the library copy
+  is made so a denial leaves no orphan. Changing a booked class's WOD (`class_workout`) programs
   the class, not the person, and is not checked.
 
   ADR-785 (ANR, 2026-11-28): a `class_variant` is part of the class, so it
@@ -39,6 +41,7 @@ defmodule Palee.Application.ProgramUserWorkout do
 
   alias Palee.Application.{
     AssignWorkout,
+    AuthorizeMemberDayWod,
     AuthorizeProgramming,
     DuplicateWorkout,
     FileWorkoutCopy,
@@ -78,8 +81,12 @@ defmodule Palee.Application.ProgramUserWorkout do
   defp validate_target(context, :athlete, %{id: athlete_id}, _params),
     do: AuthorizeProgramming.call(context, [athlete_id])
 
-  defp validate_target(context, :personal, %{id: member_id}, _params),
-    do: AuthorizeProgramming.call(context, [member_id])
+  # ADR-805: a member's own day WOD follows a booking's rules, not ADR-225.
+  defp validate_target(context, :personal, %{id: member_id}, params) do
+    with {:ok, _grant} <-
+           AuthorizeMemberDayWod.grant(context, member_id, value(params, :scheduled_for)),
+         do: :ok
+  end
 
   # ADR-785: a variant is the class's; no programming grant is needed.
   defp validate_target(context, :class_variant, user, params),

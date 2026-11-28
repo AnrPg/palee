@@ -19,9 +19,18 @@ defmodule Palee.Application.AssignWorkout do
   coaching touchpoint, is made only while the class is still to come or
   running, replaces the member's earlier variant of that class, and lands in
   the bell without a push.
+
+  ADR-805 (ANR, 2026-11-28): a member's own WOD for a day (no class) needs
+  no online programming either. It follows a class booking's rules
+  (`AuthorizeMemberDayWod`): a class booked that day already paid for it;
+  otherwise it uses one class visit of the package for that day, reserved
+  with the touchpoints and consumed once the assignment is written. Online
+  programming or personal training still serve a member without classes.
+  Athletes are unchanged.
   """
 
   alias Palee.Application.{
+    AuthorizeMemberDayWod,
     AuthorizeProgramming,
     BroadcastUserSync,
     CoveringBranches,
@@ -48,7 +57,7 @@ defmodule Palee.Application.AssignWorkout do
          {:ok, classified} <- AssignmentAudiencePolicy.classify(assignee_ids, roles),
          :ok <- AssignmentAudiencePolicy.validate_class_variant(source_slot_id, classified),
          {:ok, params} <- attach_source_slot(context, params, source_slot_id, classified),
-         {:ok, grants} <- programming_grants(context, assignee_ids, source_slot_id) do
+         {:ok, grants} <- programming_grants(context, classified, source_slot_id, params) do
       do_assign(context, params, Identity.list_by_ids(assignee_ids), classified, grants)
     end
   end
@@ -65,9 +74,9 @@ defmodule Palee.Application.AssignWorkout do
     if valid_athletes?(context, athlete_ids, athletes) do
       delivery_id = Ecto.UUID.generate()
 
-      metered = Enum.filter(athletes, &ProgrammingGrant.meters_touchpoints?(grants[&1.id]))
+      charged = charged(context, athletes, grants, params, delivery_id)
 
-      with {:ok, reservations} <- reserve_touchpoints(context, metered, delivery_id),
+      with {:ok, reservations} <- reserve_touchpoints(context, charged),
            {:ok, assignment} <- create_assignment(context, params, reservations),
            :ok <- finalize_touchpoints(context, reservations, assignment, delivery_id) do
         # ADR-357 (CP-D3): the WOD as it was when it was assigned.
@@ -97,11 +106,39 @@ defmodule Palee.Application.AssignWorkout do
   end
 
   # ADR-785: a class variant is the class's, not online programming.
-  defp programming_grants(_context, _assignee_ids, slot_id) when is_binary(slot_id),
+  defp programming_grants(_context, _classified, slot_id, _params) when is_binary(slot_id),
     do: {:ok, %{}}
 
-  defp programming_grants(context, assignee_ids, nil),
-    do: AuthorizeProgramming.grants(context, assignee_ids)
+  # ADR-805: members' own day WODs follow a booking's rules; athletes ADR-225.
+  defp programming_grants(context, %{athletes: athletes, members: members}, nil, params) do
+    date = AuthorizeMemberDayWod.to_date(context, Map.get(params, :scheduled_for, Map.get(params, "scheduled_for")))
+
+    with {:ok, athlete_grants} <- AuthorizeProgramming.grants(context, athletes),
+         {:ok, member_grants} <- AuthorizeMemberDayWod.grants(context, members, date) do
+      {:ok, Map.merge(athlete_grants, member_grants)}
+    end
+  end
+
+  # What each assignee's delivery takes: an online-programming touchpoint
+  # (ADR-040) or, ADR-805, one class visit for that day.
+  defp charged(context, athletes, grants, params, delivery_id) do
+    date = AuthorizeMemberDayWod.to_date(context, Map.get(params, :scheduled_for, Map.get(params, "scheduled_for")))
+
+    Enum.flat_map(athletes, fn athlete ->
+      grant = grants[athlete.id]
+
+      cond do
+        grant == :class_visit ->
+          [{athlete.id, AuthorizeMemberDayWod.reservation_request(date, delivery_id, athlete.id)}]
+
+        ProgrammingGrant.meters_touchpoints?(grant) ->
+          [{athlete.id, touchpoint_request(context, delivery_id, athlete.id)}]
+
+        true ->
+          []
+      end
+    end)
+  end
 
   defp source_slot_id(params) do
     case Map.get(params, :source_slot_id, Map.get(params, "source_slot_id")) do
@@ -192,23 +229,27 @@ defmodule Palee.Application.AssignWorkout do
     |> Enum.uniq()
   end
 
-  defp reserve_touchpoints(context, athletes, delivery_id) do
-    Enum.reduce_while(athletes, {:ok, []}, fn athlete, {:ok, reservations} ->
-      request = %{
-        channel: :personal_programming,
-        capability: :receive_coaching_touchpoints,
-        allowance: :coaching_touchpoints,
-        quantity: 1,
-        occurred_on: Palee.Organizations.local_today(context.organization_id),
-        source_context: "workouts",
-        source_id: delivery_id,
-        idempotency_key: "programming-delivery:#{delivery_id}:#{athlete.id}",
-        metadata: %{"kind" => "programming_delivery"}
-      }
+  defp touchpoint_request(context, delivery_id, athlete_id) do
+    %{
+      channel: :personal_programming,
+      capability: :receive_coaching_touchpoints,
+      allowance: :coaching_touchpoints,
+      quantity: 1,
+      occurred_on: Palee.Organizations.local_today(context.organization_id),
+      source_context: "workouts",
+      source_id: delivery_id,
+      idempotency_key: "programming-delivery:#{delivery_id}:#{athlete_id}",
+      metadata: %{"kind" => "programming_delivery"}
+    }
+  end
 
-      case reserve_entitlement(context, athlete.id, request) do
+  # Touchpoints and (ADR-805) class visits: all reserved before the write,
+  # all given back if any refuses or the write fails.
+  defp reserve_touchpoints(context, charged) do
+    Enum.reduce_while(charged, {:ok, []}, fn {athlete_id, request}, {:ok, reservations} ->
+      case reserve_entitlement(context, athlete_id, request) do
         {:ok, reservation} ->
-          {:cont, {:ok, [{athlete.id, reservation} | reservations]}}
+          {:cont, {:ok, [{athlete_id, reservation} | reservations]}}
 
         error ->
           release_touchpoints(context, reservations, "Assignment entitlement reservation failed")

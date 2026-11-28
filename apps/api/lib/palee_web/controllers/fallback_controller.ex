@@ -2707,6 +2707,20 @@ defmodule PaleeWeb.FallbackController do
     })
   end
 
+  # ADR-805: a member's own WOD for a day needs a class booked that day, a
+  # class visit left in the package (or a grace), or online programming.
+  def call(conn, {:error, :member_wod_not_covered, details}) do
+    conn
+    |> put_status(:forbidden)
+    |> json(%{
+      code: "member_wod_not_covered",
+      error:
+        "The member has no class booked that day and no class visit left to use for it, " <>
+          "nor online programming or personal training",
+      params: details
+    })
+  end
+
   # A WOD whose programming copy cannot be published: the WOD itself has to
   # be fixed in its editor, so the reply names it and what it lacks.
   def call(conn, {:error, :workout_not_assignable, details}) do

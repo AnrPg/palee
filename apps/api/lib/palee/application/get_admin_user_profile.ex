@@ -1,7 +1,7 @@
 defmodule Palee.Application.GetAdminUserProfile do
   @moduledoc false
 
-  alias Palee.Application.{AuthorizeProgramming, TenantUserAccess}
+  alias Palee.Application.{AuthorizeMemberDayWod, AuthorizeProgramming, TenantUserAccess}
   alias Palee.Identity.Domain.AdminProfilePolicy
   alias Palee.Organizations
 
@@ -46,9 +46,16 @@ defmodule Palee.Application.GetAdminUserProfile do
   # so the schedule can say so before anyone tries. Nil for non-clients.
   defp programming(tenant_context, user_id, roles) do
     if Enum.any?(roles, &(&1 in [:member, :athlete])) do
+      # ADR-805: a member's own day WOD can use a class visit instead.
+      class_visits =
+        :member in roles and AuthorizeMemberDayWod.class_visits?(tenant_context, user_id)
+
       case AuthorizeProgramming.grant_for(tenant_context, user_id) do
-        {:ok, grant} -> %{allowed: true, grant: to_string(grant), reason: nil}
-        {:error, reason} -> %{allowed: false, grant: nil, reason: to_string(reason)}
+        {:ok, grant} ->
+          %{allowed: true, grant: to_string(grant), reason: nil, class_visits: class_visits}
+
+        {:error, reason} ->
+          %{allowed: false, grant: nil, reason: to_string(reason), class_visits: class_visits}
       end
     end
   end

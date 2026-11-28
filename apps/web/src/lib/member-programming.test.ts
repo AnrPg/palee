@@ -7,6 +7,7 @@ import {
   offerableClasses,
   dayFormatter,
   modeRequiresBookedClass,
+  modeClosed,
   modeRequiresProgrammingEntitlement,
   programmingBlocker,
   programmingSources,
@@ -30,6 +31,17 @@ describe("member programming rules (ADR-125)", () => {
     expect(modeRequiresProgrammingEntitlement("class_variant")).toBe(false);
     expect(modeRequiresProgrammingEntitlement("personal")).toBe(true);
     expect(modeRequiresProgrammingEntitlement("class_workout")).toBe(false);
+  });
+
+  it("opens a member's own day WOD with class visits even without online programming (ADR-805)", () => {
+    const member = { isMember: true, programmingAllowed: false, classVisits: true };
+    expect(modeClosed("personal", member)).toBe(false);
+    expect(modeClosed("class_variant", member)).toBe(false);
+    expect(modeClosed("personal", { ...member, classVisits: false })).toBe(true);
+    expect(modeClosed("class_variant", { ...member, classVisits: false })).toBe(false);
+    expect(modeClosed("personal", { ...member, classVisits: false, programmingAllowed: true })).toBe(false);
+    expect(modeClosed(null, { isMember: false, programmingAllowed: false, classVisits: false })).toBe(true);
+    expect(modeClosed(null, { isMember: false, programmingAllowed: true, classVisits: false })).toBe(false);
   });
 
   it("chooses role- and mode-aware success copy", () => {

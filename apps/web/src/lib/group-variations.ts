@@ -83,6 +83,7 @@ const ERROR_STATUS: Record<string, number> = {
   not_your_client: 403,
   forbidden: 403,
   programming_not_in_package: 403,
+  member_wod_not_covered: 403,
 };
 
 /**
