@@ -73,8 +73,42 @@ defmodule PaleeWeb.Schemas.MyBilling do
         type: :boolean,
         description: "The member can turn renewal of this subscription on or off."
       },
-      corporate: @boolean
+      corporate: @boolean,
+      term_updates: %Schema{
+        type: :array,
+        description:
+          "ADR-770: the package changes staff gave the package in force (pending first).",
+        items: term_update()
+      }
     })
+  end
+
+  @doc false
+  def term_update do
+    object(
+      "SubscriptionTermUpdate",
+      [:id, :timing, :status, :effective_on, :changes],
+      %{
+        id: @uuid,
+        timing: %Schema{type: :string, enum: ["now", "next_period"]},
+        status: %Schema{type: :string, enum: ["pending", "applied"]},
+        effective_on: %Schema{type: :string, format: :date},
+        applied_at: @datetime,
+        inserted_at: @datetime,
+        changes:
+          list(
+            object("SubscriptionTermChange", [:key, :timing], %{
+              key: %Schema{
+                type: :string,
+                description: "`price`, or a package contract field key."
+              },
+              from: %Schema{nullable: true, description: "The value before."},
+              to: %Schema{nullable: true, description: "The new value."},
+              timing: %Schema{type: :string, enum: ["now", "next_period"]}
+            })
+          )
+      }
+    )
   end
 
   defp invoice do

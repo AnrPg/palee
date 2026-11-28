@@ -201,10 +201,7 @@ defmodule Palee.Application.MyBilling do
             unpaid_since(open_invoices)
           ),
       entitlement: entitlement(tenant, user_id),
-      subscriptions:
-        profile.package_subscriptions
-        |> Enum.take(@history_limit)
-        |> Enum.map(&present_subscription(&1, active_id, leaving?(profile.membership))),
+      subscriptions: subscriptions(tenant, profile, active_id),
       invoices: Enum.take(invoices, @history_limit),
       payments: profile.payments |> Enum.take(@history_limit) |> Enum.map(&present_payment/1),
       promotions: promotions(tenant, profile.promotion_redemptions),
@@ -258,6 +255,18 @@ defmodule Palee.Application.MyBilling do
   defp leave_preview(tenant, _profile), do: MembershipRenewal.leave_preview(tenant)
 
   defp leaving?(membership), do: not is_nil(membership && Map.get(membership, :leaving_on))
+
+  defp subscriptions(tenant, profile, active_id) do
+    listed = Enum.take(profile.package_subscriptions, @history_limit)
+    # ADR-770: the package changes staff gave the package in force.
+    term_updates = Finance.subscription_term_updates(tenant, List.wrap(active_id))
+
+    Enum.map(listed, fn subscription ->
+      subscription
+      |> present_subscription(active_id, leaving?(profile.membership))
+      |> Map.put(:term_updates, Map.get(term_updates, subscription.id, []))
+    end)
+  end
 
   defp present_subscription(subscription, active_id, leaving?) do
     %{

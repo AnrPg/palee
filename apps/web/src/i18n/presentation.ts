@@ -433,6 +433,8 @@ const API_ERROR_KEYS: Record<string, string> = {
   invalid_package_type: "apiErrorInvalidPackageType",
   package_type_not_available: "apiErrorPackageTypeNotAvailable",
   package_type_change_requires_copy: "apiErrorPackageTypeChangeRequiresCopy",
+  // ADR-770: the change reaches the package's holders; staff choose first.
+  package_terms_choice_required: "apiErrorPackageTermsChoiceRequired",
   package_already_used: "apiErrorPackageAlreadyUsed",
   package_new_members_only: "apiErrorPackageNewMembersOnly",
   // ADR-342: purchase and booking rules per package.

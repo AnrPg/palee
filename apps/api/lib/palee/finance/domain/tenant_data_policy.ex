@@ -28,6 +28,10 @@ defmodule Palee.Finance.Domain.TenantDataPolicy do
               %{table: "finance_member_benefits"},
               # ADR-660: package removals reference subscriptions and memberships.
               %{table: "finance_package_removals"},
+              # ADR-770: package changes per subscription reference the
+              # subscriptions, memberships and the package change.
+              %{table: "finance_subscription_term_updates"},
+              %{table: "finance_package_term_changes"},
               %{table: "finance_entitlement_usage_entries"},
               %{table: "finance_credit_ledger_entries"},
               %{table: "finance_payment_reversals"},

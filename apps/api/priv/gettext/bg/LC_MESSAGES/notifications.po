@@ -984,3 +984,15 @@ msgstr "%{coach} пое екрана. Можеш да си го върнеш о�
 
 msgid "Your coach gave you your own WOD for a class. Open it to book your place."
 msgstr "Треньорът ти даде собствен WOD за клас. Отвори го, за да запазиш място."
+
+msgid "Your subscription package is changing"
+msgstr "Абонаментният ти пакет се променя"
+
+msgid "%{box} · %{package}: some changes apply from today, the rest from %{date}."
+msgstr "%{box} · %{package}: някои промени важат от днес, останалите от %{date}."
+
+msgid "%{box} · %{package}: new terms from %{date}."
+msgstr "%{box} · %{package}: нови условия от %{date}."
+
+msgid "%{box} · %{package}: new terms apply from today."
+msgstr "%{box} · %{package}: нови условия от днес."

@@ -2057,6 +2057,7 @@ defmodule PaleeWeb.Router do
     post("/finance/packages", AdminFinanceController, :create_package)
     get("/finance/packages/:id", AdminFinanceController, :package)
     patch("/finance/packages/:id", AdminFinanceController, :update_package)
+    post("/finance/packages/:id/terms-preview", AdminFinanceController, :package_terms_preview)
     patch("/finance/packages/:id/retire", AdminFinanceController, :retire_package)
     post("/finance/entitlements/backfill", AdminFinanceController, :backfill_entitlements)
     get("/finance/members", AdminFinanceController, :members)

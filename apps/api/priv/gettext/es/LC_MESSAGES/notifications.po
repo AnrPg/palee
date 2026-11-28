@@ -984,3 +984,15 @@ msgstr "%{coach} tomó la pantalla. Puedes recuperarla desde el temporizador de 
 
 msgid "Your coach gave you your own WOD for a class. Open it to book your place."
 msgstr "Tu coach te dio tu propio WOD para una clase. Ábrelo para reservar tu plaza."
+
+msgid "Your subscription package is changing"
+msgstr "Tu paquete de suscripción cambia"
+
+msgid "%{box} · %{package}: some changes apply from today, the rest from %{date}."
+msgstr "%{box} · %{package}: algunos cambios se aplican desde hoy y el resto desde el %{date}."
+
+msgid "%{box} · %{package}: new terms from %{date}."
+msgstr "%{box} · %{package}: nuevas condiciones desde el %{date}."
+
+msgid "%{box} · %{package}: new terms apply from today."
+msgstr "%{box} · %{package}: nuevas condiciones desde hoy."

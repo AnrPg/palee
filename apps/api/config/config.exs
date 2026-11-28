@@ -723,6 +723,7 @@ config :palee, :finance_store, Palee.Infrastructure.Finance.EctoFinanceStore
 config :palee, :package_request_store, Palee.Infrastructure.Finance.EctoPackageRequestStore
 # ADR-553: who sees the subscription packages.
 config :palee, :package_audience_store, Palee.Infrastructure.Finance.EctoPackageAudienceStore
+config :palee, :package_terms_store, Palee.Infrastructure.Finance.EctoPackageTermsStore
 config :palee, :member_benefit_store, Palee.Infrastructure.Finance.EctoMemberBenefitStore
 # ADR-341: coach pay and commissions.
 config :palee, :coach_pay_store, Palee.Infrastructure.CoachPay.EctoCoachPayStore

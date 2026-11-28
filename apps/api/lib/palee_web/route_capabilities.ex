@@ -542,6 +542,7 @@ defmodule PaleeWeb.RouteCapabilities do
     {W.AdminFinanceController, :package} => [:view_package_catalog],
     {W.AdminFinanceController, :create_package} => [:manage_packages],
     {W.AdminFinanceController, :update_package} => [:manage_packages],
+    {W.AdminFinanceController, :package_terms_preview} => [:manage_packages],
     {W.AdminFinanceController, :retire_package} => [:manage_packages],
     {W.AdminFinanceController, :backfill_entitlements} => [:manage_billing],
     {W.AdminFinanceController, :members} => [:manage_billing, :take_payments],

@@ -1865,6 +1865,17 @@ defmodule PaleeWeb.FallbackController do
     )
   end
 
+  # ADR-770: the change reaches the package's holders; staff must choose.
+  def call(conn, {:error, :package_terms_choice_required}) do
+    package_contract_error(
+      conn,
+      :conflict,
+      "package_terms_choice_required",
+      "Choose whether the change applies to the members who already hold this package",
+      %{}
+    )
+  end
+
   def call(conn, {:error, :package_type_change_requires_copy}) do
     package_contract_error(
       conn,

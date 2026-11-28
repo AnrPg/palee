@@ -63,13 +63,21 @@ defmodule Palee.Application.GetAdminUserFinance do
 
     today = Organizations.local_today(tenant_context.organization_id)
 
+    # ADR-770: the package changes staff gave each subscription.
+    term_updates =
+      Finance.subscription_term_updates(
+        tenant_context,
+        Enum.map(profile.package_subscriptions, & &1.id)
+      )
+
     %{
       membership: serialize_membership(profile.membership),
       package_subscriptions:
-        Enum.map(
-          profile.package_subscriptions,
-          &serialize_subscription(&1, profile.membership, today)
-        ),
+        Enum.map(profile.package_subscriptions, fn subscription ->
+          subscription
+          |> serialize_subscription(profile.membership, today)
+          |> Map.put(:term_updates, Map.get(term_updates, subscription.id, []))
+        end),
       # ADR-274: every value set by hand (in force and ended), newest first.
       overrides:
         FinanceValueOverrides.with_names(Finance.list_value_overrides(tenant_context, user_id)),

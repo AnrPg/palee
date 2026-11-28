@@ -26,6 +26,7 @@ import type { EffectiveEntitlement } from "@/api/my-finance";
 import { setFinanceMemberAutoRenew, updateFinanceMember } from "@/api/finance";
 import { dossierMode, grantableAllowances, membershipDateCards, packageSubscriptionLabel, prSectionContentCount, visibleAdminProfileSections } from "@/components/admin/users/admin-user-profile";
 import { MemberBenefits } from "@/components/admin/users/MemberBenefits";
+import { PackageTermUpdates } from "@/components/finance/PackageTermUpdates";
 import { MembershipFreezes } from "@/components/admin/users/MembershipFreezes";
 import { MembershipLeaving } from "@/components/admin/users/MembershipLeaving";
 import {
@@ -375,6 +376,8 @@ function FinanceDetails({
                 );
               })}
             </div>
+            {/* ADR-770: the same «Νέοι όροι από…» the member sees. */}
+            <PackageTermUpdates updates={currentSubscription?.term_updates as Parameters<typeof PackageTermUpdates>[0]["updates"]} />
             {commitment ? (
               <CommitmentOverridePrompt
                 endsOn={commitment.endsOn}

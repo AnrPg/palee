@@ -979,3 +979,15 @@ msgstr ""
 
 msgid "Your coach gave you your own WOD for a class. Open it to book your place."
 msgstr ""
+
+msgid "Your subscription package is changing"
+msgstr ""
+
+msgid "%{box} · %{package}: some changes apply from today, the rest from %{date}."
+msgstr ""
+
+msgid "%{box} · %{package}: new terms from %{date}."
+msgstr ""
+
+msgid "%{box} · %{package}: new terms apply from today."
+msgstr ""

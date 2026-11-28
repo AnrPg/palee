@@ -237,13 +237,30 @@ defmodule PaleeWeb.AdminFinanceController do
       }
     }
   }
+  # ADR-770: whether the change reaches the members who hold the package.
+  @terms_choice_schema %Schema{
+    type: :object,
+    additionalProperties: false,
+    description:
+      "ADR-770: `active` gives the holders the change (now or from their next period), " <>
+        "`new_only` keeps their terms. Required when the change would reach holders.",
+    properties: %{
+      apply_to: %Schema{type: :string, enum: ["active", "new_only"]},
+      excluded_subscription_ids: %Schema{
+        type: :array,
+        items: %Schema{type: :string, format: :uuid},
+        maxItems: 5000
+      }
+    },
+    required: [:apply_to]
+  }
   @update_package_request_body %RequestBody{
     required: true,
     content: %{
       "application/json" => %MediaType{
         schema: %Schema{
           type: :object,
-          properties: @package_properties,
+          properties: Map.put(@package_properties, :terms_choice, @terms_choice_schema),
           additionalProperties: false
         }
       }
@@ -689,6 +706,7 @@ defmodule PaleeWeb.AdminFinanceController do
               :create_promotion_code,
               :create_package,
               :update_package,
+              :package_terms_preview,
               :backfill_entitlements,
               :create_promotion,
               :create_referral_program,
@@ -831,6 +849,24 @@ defmodule PaleeWeb.AdminFinanceController do
              body_params(conn, params)
            ) do
       json(conn, %{package: package})
+    end
+  end
+
+  operation(:package_terms_preview,
+    summary: "What saving a package change would do to the members who hold it (ADR-770)",
+    parameters: [@id_parameter],
+    request_body: @update_package_request_body,
+    responses: [ok: {"Package change preview", "application/json", @open_object}]
+  )
+
+  def package_terms_preview(conn, params) do
+    with {:ok, preview} <-
+           UpdateFinancePackage.preview(
+             conn.assigns.tenant_context,
+             param_id(params),
+             body_params(conn, params)
+           ) do
+      json(conn, %{preview: preview})
     end
   end
 

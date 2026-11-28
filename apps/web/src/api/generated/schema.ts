@@ -9133,6 +9133,23 @@ export interface paths {
         patch: operations["PaleeWeb.AdminFinanceController.retire_package"];
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/finance/packages/{id}/terms-preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** What saving a package change would do to the members who hold it (ADR-770) */
+        post: operations["PaleeWeb.AdminFinanceController.package_terms_preview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/finance/promotions": {
         parameters: {
             query?: never;
@@ -26295,6 +26312,31 @@ export interface components {
                 /** Format: date */
                 starts_on?: string | null;
                 status: string;
+                /** @description ADR-770: the package changes staff gave the package in force (pending first). */
+                term_updates?: {
+                    /** Format: date-time */
+                    applied_at?: string | null;
+                    changes: {
+                        /** @description The value before. */
+                        from?: unknown;
+                        /** @description `price`, or a package contract field key. */
+                        key: string;
+                        /** @enum {string} */
+                        timing: "now" | "next_period";
+                        /** @description The new value. */
+                        to?: unknown;
+                    }[];
+                    /** Format: date */
+                    effective_on: string;
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: date-time */
+                    inserted_at?: string | null;
+                    /** @enum {string} */
+                    status: "pending" | "applied";
+                    /** @enum {string} */
+                    timing: "now" | "next_period";
+                }[];
             }[];
             trials: {
                 class_name?: string | null;
@@ -26381,6 +26423,31 @@ export interface components {
             /** Format: date */
             starts_on?: string | null;
             status: string;
+            /** @description ADR-770: the package changes staff gave the package in force (pending first). */
+            term_updates?: {
+                /** Format: date-time */
+                applied_at?: string | null;
+                changes: {
+                    /** @description The value before. */
+                    from?: unknown;
+                    /** @description `price`, or a package contract field key. */
+                    key: string;
+                    /** @enum {string} */
+                    timing: "now" | "next_period";
+                    /** @description The new value. */
+                    to?: unknown;
+                }[];
+                /** Format: date */
+                effective_on: string;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                inserted_at?: string | null;
+                /** @enum {string} */
+                status: "pending" | "applied";
+                /** @enum {string} */
+                timing: "now" | "next_period";
+            }[];
         };
         /** BillingTransaction */
         BillingTransaction: {
@@ -40440,6 +40507,31 @@ export interface components {
                     /** Format: date */
                     starts_on?: string | null;
                     status: string;
+                    /** @description ADR-770: the package changes staff gave the package in force (pending first). */
+                    term_updates?: {
+                        /** Format: date-time */
+                        applied_at?: string | null;
+                        changes: {
+                            /** @description The value before. */
+                            from?: unknown;
+                            /** @description `price`, or a package contract field key. */
+                            key: string;
+                            /** @enum {string} */
+                            timing: "now" | "next_period";
+                            /** @description The new value. */
+                            to?: unknown;
+                        }[];
+                        /** Format: date */
+                        effective_on: string;
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: date-time */
+                        inserted_at?: string | null;
+                        /** @enum {string} */
+                        status: "pending" | "applied";
+                        /** @enum {string} */
+                        timing: "now" | "next_period";
+                    }[];
                 }[];
                 trials: {
                     class_name?: string | null;
@@ -56531,6 +56623,42 @@ export interface components {
             /** Format: date */
             starts_on: string;
         };
+        /** SubscriptionTermChange */
+        SubscriptionTermChange: {
+            /** @description The value before. */
+            from?: unknown;
+            /** @description `price`, or a package contract field key. */
+            key: string;
+            /** @enum {string} */
+            timing: "now" | "next_period";
+            /** @description The new value. */
+            to?: unknown;
+        };
+        /** SubscriptionTermUpdate */
+        SubscriptionTermUpdate: {
+            /** Format: date-time */
+            applied_at?: string | null;
+            changes: {
+                /** @description The value before. */
+                from?: unknown;
+                /** @description `price`, or a package contract field key. */
+                key: string;
+                /** @enum {string} */
+                timing: "now" | "next_period";
+                /** @description The new value. */
+                to?: unknown;
+            }[];
+            /** Format: date */
+            effective_on: string;
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            inserted_at?: string | null;
+            /** @enum {string} */
+            status: "pending" | "applied";
+            /** @enum {string} */
+            timing: "now" | "next_period";
+        };
         /** SupportReply */
         SupportReply: {
             /** @description Where the reply was posted in the pair's buddy conversation */
@@ -67817,6 +67945,31 @@ export interface operations {
                                 /** Format: date */
                                 starts_on?: string | null;
                                 status: string;
+                                /** @description ADR-770: the package changes staff gave the package in force (pending first). */
+                                term_updates?: {
+                                    /** Format: date-time */
+                                    applied_at?: string | null;
+                                    changes: {
+                                        /** @description The value before. */
+                                        from?: unknown;
+                                        /** @description `price`, or a package contract field key. */
+                                        key: string;
+                                        /** @enum {string} */
+                                        timing: "now" | "next_period";
+                                        /** @description The new value. */
+                                        to?: unknown;
+                                    }[];
+                                    /** Format: date */
+                                    effective_on: string;
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** Format: date-time */
+                                    inserted_at?: string | null;
+                                    /** @enum {string} */
+                                    status: "pending" | "applied";
+                                    /** @enum {string} */
+                                    timing: "now" | "next_period";
+                                }[];
                             }[];
                             trials: {
                                 class_name?: string | null;
@@ -104567,6 +104720,12 @@ export interface operations {
                      * @enum {string|null}
                      */
                     tax_category?: "standard" | "reduced" | "second_reduced" | "super_reduced" | "special" | "zero" | "exempt" | "sales_tax" | null;
+                    /** @description ADR-770: `active` gives the holders the change (now or from their next period), `new_only` keeps their terms. Required when the change would reach holders. */
+                    terms_choice?: {
+                        /** @enum {string} */
+                        apply_to: "active" | "new_only";
+                        excluded_subscription_ids?: string[];
+                    };
                 };
             };
         };
@@ -104618,6 +104777,168 @@ export interface operations {
         };
         responses: {
             /** @description Retired package reconciliation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminFinanceController.package_terms_preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    active?: boolean;
+                    base_price_cents?: number;
+                    /** @enum {string} */
+                    billing_period?: "monthly" | "quarterly" | "semiannual" | "annual" | "custom" | "one_off" | "with_base";
+                    code?: string | null;
+                    currency?: string;
+                    description?: string | null;
+                    /** @description Required with `exempt`: the article of the VAT law printed on the document. */
+                    exemption_reason?: string | null;
+                    /** @description Entitlement catalog v2 field values keyed by catalog field key (ADR-096) */
+                    fields?: {
+                        "booking.cancellation_cutoff_hours"?: number | null;
+                        "booking.daily_limit"?: number | null;
+                        "booking.no_show_penalty_waived"?: boolean;
+                        "booking.open_bookings_limit"?: number | null;
+                        "booking.waitlist_priority"?: string;
+                        "booking.window_days"?: number | null;
+                        "content.advanced_analytics"?: boolean;
+                        "content.on_demand_video"?: boolean;
+                        "content.workout_library"?: boolean;
+                        "facility.amenities"?: string[];
+                        "facility.amenities_note"?: string | null;
+                        "facility.location_ids"?: "all" | string[];
+                        "facility.open_gym"?: boolean;
+                        "facility.open_gym_visits"?: {
+                            limit: number | "unlimited";
+                            /** @enum {string} */
+                            period: "calendar_week" | "calendar_month" | "subscription_period";
+                        };
+                        "group_classes.class_type_limits"?: {
+                            /** Format: uuid */
+                            id: string;
+                            limit: number;
+                            /** @enum {string} */
+                            period: "calendar_week" | "calendar_month" | "subscription_period";
+                        }[];
+                        "group_classes.class_types"?: "all" | string[];
+                        "group_classes.included"?: boolean;
+                        "group_classes.rollover_max"?: number;
+                        "group_classes.time_windows"?: {
+                            days: number[];
+                            from: string;
+                            to: string;
+                        }[];
+                        "group_classes.visits"?: {
+                            limit: number | "unlimited";
+                            /** @enum {string} */
+                            period: "calendar_week" | "calendar_month" | "subscription_period";
+                        };
+                        "online_coaching.assigned_programming"?: boolean;
+                        "online_coaching.form_reviews"?: {
+                            limit: number | "unlimited";
+                            /** @enum {string} */
+                            period: "calendar_week" | "calendar_month" | "subscription_period";
+                        };
+                        "online_coaching.included"?: boolean;
+                        "online_coaching.messaging"?: boolean;
+                        "online_coaching.nutrition_plan"?: boolean;
+                        "online_coaching.response_sla_hours"?: number | null;
+                        "online_coaching.touchpoints"?: {
+                            limit: number | "unlimited";
+                            /** @enum {string} */
+                            period: "calendar_week" | "calendar_month" | "subscription_period";
+                        };
+                        "perks.event_visits"?: {
+                            limit: number | "unlimited";
+                            /** @enum {string} */
+                            period: "calendar_week" | "calendar_month" | "subscription_period";
+                        };
+                        "perks.events"?: boolean;
+                        "perks.freeze_days_per_year"?: number;
+                        "perks.guest_passes"?: {
+                            limit: number | "unlimited";
+                            /** @enum {string} */
+                            period: "calendar_week" | "calendar_month" | "subscription_period";
+                        };
+                        "perks.member_discount_percent"?: number;
+                        "perks.member_discount_scope"?: string[];
+                        "personal_training.assessments"?: number;
+                        /** Format: uuid */
+                        "personal_training.coach_id"?: string | null;
+                        "personal_training.format"?: string;
+                        "personal_training.group_size"?: number;
+                        "personal_training.included"?: boolean;
+                        "personal_training.session_minutes"?: number;
+                        "personal_training.sessions"?: {
+                            limit: number | "unlimited";
+                            /** @enum {string} */
+                            period: "calendar_week" | "calendar_month" | "subscription_period";
+                        };
+                        "terms.allow_minor_beneficiaries"?: boolean;
+                        "terms.auto_renew"?: boolean;
+                        "terms.beneficiaries"?: number;
+                        "terms.buyers"?: string;
+                        "terms.compatible_package_ids"?: "all" | string[];
+                        /** Format: uuid */
+                        "terms.conversion_package_id"?: string | null;
+                        "terms.enrollment"?: string;
+                        "terms.enrollment_domain"?: string | null;
+                        "terms.expiry_reminder_days"?: number;
+                        "terms.joining_fee_cents"?: number;
+                        "terms.max_purchases_per_person"?: number | null;
+                        "terms.minimum_commitment_months"?: number;
+                        "terms.new_members_only"?: boolean;
+                        "terms.once_per_person"?: boolean;
+                        "terms.prerequisite_package_ids"?: string[];
+                        "terms.quota_sharing"?: string;
+                        "terms.seat_billing"?: string;
+                        "terms.seats"?: number;
+                        "terms.stacking"?: boolean;
+                        "terms.validity"?: {
+                            amount: number;
+                            /** @enum {string} */
+                            unit: "day" | "week" | "month";
+                        } | null;
+                        "terms.validity_starts"?: string;
+                    };
+                    name?: string;
+                    /** @enum {string} */
+                    package_type?: "membership" | "class_pack" | "drop_in" | "trial" | "pt_pack" | "add_on" | "shared" | "corporate";
+                    sold_online?: boolean;
+                    tags?: string[];
+                    /**
+                     * @description ADR-244: the tax category printed on fiscal documents; one the business's country offers (`/admin/fiscal/countries`). Empty means `standard` (`sales_tax` in the US).
+                     * @enum {string|null}
+                     */
+                    tax_category?: "standard" | "reduced" | "second_reduced" | "super_reduced" | "special" | "zero" | "exempt" | "sales_tax" | null;
+                    /** @description ADR-770: `active` gives the holders the change (now or from their next period), `new_only` keeps their terms. Required when the change would reach holders. */
+                    terms_choice?: {
+                        /** @enum {string} */
+                        apply_to: "active" | "new_only";
+                        excluded_subscription_ids?: string[];
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description Package change preview */
             200: {
                 headers: {
                     [name: string]: unknown;

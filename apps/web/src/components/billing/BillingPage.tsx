@@ -23,6 +23,7 @@ import { useOrganizationSlug } from "@/lib/organization-slug";
 import { inboxHref } from "@/components/chat/inbox/inbox-model";
 import { boxChatHref } from "@/components/trials/box-chat-links";
 import { StandingBadge } from "@/components/finance/StandingBadge";
+import { PackageTermUpdates } from "@/components/finance/PackageTermUpdates";
 
 import { billingTab, sessionsLeft, validityProgress, type BillingTab } from "./billing-model";
 import { OffersSegment } from "./OffersSegment";
@@ -296,6 +297,7 @@ function MembershipSegment({
       {current ? (
         <HubCard>
           <SubscriptionDetails subscription={current} standing={provider.standing} currency={currencyOf(provider)} />
+          <PackageTermUpdates updates={current.term_updates} />
           {/* ADR-220: the member's own choice; otherwise the box arranges it. */}
           {current.can_change_auto_renew ? (
             <RenewalSwitch provider={provider} subscription={current} />

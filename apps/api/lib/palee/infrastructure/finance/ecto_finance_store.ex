@@ -70,6 +70,7 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
 
   alias Palee.Repo
   alias Palee.Infrastructure.Tenancy.{GymClock, RepoContext}
+  alias Palee.Finance.PackageTermsStore
 
   @impl true
   def create_package(params) do
@@ -8727,24 +8728,33 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
         |> Enum.filter(&(&1.invoice_type in ["subscription", "renewal"]))
         |> Enum.map(& &1.service_period_start)
 
-      charges =
+      {_subscription, charges, terms_applied?} =
         subscription
         |> SubscriptionCharges.due_periods(
           charged,
           today,
           &renewal_open?(subscription, membership, &1)
         )
-        |> Enum.reduce([], fn period, acc ->
+        |> Enum.reduce({subscription, [], false}, fn {start, _next} = period,
+                                                     {subscription, acc, applied?} ->
+          # ADR-770: a package change waiting for this period applies first,
+          # so the period is charged on the terms it starts with.
+          {subscription, applied?} =
+            if PackageTermsStore.apply_due(subscription.id, start),
+              do: {Repo.get!(MembershipPackageSubscription, subscription.id), true},
+              else: {subscription, applied?}
+
           case issue_period_charge(subscription, membership, period, documents, today) do
-            {:ok, nil} -> acc
-            {:ok, charge} -> [charge | acc]
-            {:error, :duplicate_renewal_invoice} -> acc
+            {:ok, nil} -> {subscription, acc, applied?}
+            {:ok, charge} -> {subscription, [charge | acc], applied?}
+            {:error, :duplicate_renewal_invoice} -> {subscription, acc, applied?}
             {:error, reason} -> Repo.rollback(reason)
           end
         end)
-        |> Enum.reverse()
 
-      if charges != [], do: refresh_entitlement_snapshot(membership.id)
+      charges = Enum.reverse(charges)
+
+      if charges != [] or terms_applied?, do: refresh_entitlement_snapshot(membership.id)
       charges
     end)
   end

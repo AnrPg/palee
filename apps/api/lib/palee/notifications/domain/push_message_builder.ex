@@ -1205,6 +1205,39 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
     }
   end
 
+  # ADR-770.
+  def build("package_terms_changed", payload, localize) do
+    bindings = %{
+      box: payload["box_name"],
+      package: payload["package_name"],
+      date: day_month_year(payload["next_on"])
+    }
+
+    now? = (payload["now_count"] || 0) not in [0, "0"]
+    next? = is_binary(payload["next_on"]) and payload["next_on"] != ""
+
+    body =
+      cond do
+        now? and next? ->
+          localize.(
+            "%{box} · %{package}: some changes apply from today, the rest from %{date}.",
+            bindings
+          )
+
+        next? ->
+          localize.("%{box} · %{package}: new terms from %{date}.", bindings)
+
+        true ->
+          localize.("%{box} · %{package}: new terms apply from today.", bindings)
+      end
+
+    %{
+      title: localize.("Your subscription package is changing", %{}),
+      body: body,
+      url: payload["url"] || "/me/payments"
+    }
+  end
+
   def build("package_rule_grace", payload, localize) do
     %{
       title: localize.("Choose a package", %{}),
@@ -1927,4 +1960,14 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
 
   defp season_values(payload),
     do: %{box: payload["box_name"] || "", season: payload["season_title"] || ""}
+
+  # ISO date → 05/01/2027 (the payload keeps the ISO day).
+  defp day_month_year(value) when is_binary(value) do
+    case Date.from_iso8601(value) do
+      {:ok, date} -> Calendar.strftime(date, "%d/%m/%Y")
+      _other -> value
+    end
+  end
+
+  defp day_month_year(_value), do: nil
 end
