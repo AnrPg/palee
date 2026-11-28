@@ -1,4 +1,5 @@
 import { expect, test, type Page, type Request } from "./support/test";
+import { openFinanceMore } from "./support/finance";
 
 // ADR-220, staff side: on a box member's profile (Finance tab) staff see the
 // member's own automatic renewal, can change it for them (ADR-276: saved
@@ -129,6 +130,7 @@ test.describe("member leaving (staff)", () => {
     });
 
     await page.goto("/admin/users/u-2?tab=finance");
+    await openFinanceMore(page);
     const card = page.getByTestId("admin-membership-leaving");
     const renewal = card.getByRole("switch", { name: /Automatic renewal · Unlimited monthly/ });
     await expect(renewal).toBeChecked();

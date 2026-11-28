@@ -123,7 +123,7 @@ export function ActivityLogList({
     getNextPageParam: (page) => page.next_cursor ?? null,
   });
   const first = log.data?.pages[0];
-  const entries = useMemo(() => (log.data?.pages ?? []).flatMap((page) => page.entries), [log.data]);
+  const entries = useMemo(() => (log.data?.pages ?? []).flatMap((page) => page.entries ?? []), [log.data]);
   const offered = readableAreas(first?.areas);
 
   const staff = useQuery({

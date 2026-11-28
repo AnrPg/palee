@@ -1,4 +1,5 @@
 import { expect, test, type Page, type Request } from "./support/test";
+import { openFinanceMore } from "./support/finance";
 
 // ADR-612, staff side: «Gift or grace» on a box member's profile (Finance
 // tab). Staff who take payments give a grace until a date; the history shows
@@ -111,6 +112,7 @@ test.describe("member benefits (staff)", () => {
     });
 
     await page.goto("/admin/users/u-2?tab=finance");
+    await openFinanceMore(page);
     const card = page.getByTestId("member-benefits");
     await expect(card.getByText("Nothing has been given yet.")).toBeVisible();
     // The old «Προηγμένες ρυθμίσεις» block (credits, entitlement, allowance extension form)

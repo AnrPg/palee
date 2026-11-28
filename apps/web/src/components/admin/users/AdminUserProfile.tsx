@@ -874,7 +874,7 @@ export function AdminUserProfile({ userId }: { userId: string }) {
                       finance.data.details.membership ? (
                         <MemberStatusCell
                           userId={userId}
-                          status={valueText(finance.data.details.membership.status_shown)}
+                          status={typeof finance.data.details.membership.status_shown === "string" ? finance.data.details.membership.status_shown : ""}
                           override={overrideFor(finance.data.details.overrides, "status")}
                           standing={finance.data.summary?.standing ?? null}
                         />

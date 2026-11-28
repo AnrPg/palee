@@ -1,4 +1,5 @@
 import { expect, test, type Page, type Request } from "./support/test";
+import { openFinanceMore } from "./support/finance";
 import { chooseDate } from "./support/select";
 
 // ADR-276: on a box member's profile (Finance tab) staff edits stay a draft
@@ -105,6 +106,8 @@ test.describe("admin profile save bar", () => {
     });
 
     await page.goto("/admin/users/u-2?tab=finance");
+    // ADR-784: dates sit under «Περισσότερα» in the finance tab.
+    await openFinanceMore(page);
     // ADR-274: the status is worked out from payments, so the draft edits the dates.
     const starts = page.getByTestId("membership-starts_on");
     const expires = page.getByTestId("membership-expires_on");
@@ -241,6 +244,8 @@ test.describe("admin profile save bar", () => {
     );
 
     await page.goto("/admin/users/u-3?tab=finance");
+    // ADR-784: dates sit under «Περισσότερα» in the finance tab.
+    await openFinanceMore(page);
     const starts = page.getByTestId("membership-starts_on");
     const ends = page.locator(`[data-subscription-ends="${isoDay(20)}"]`);
     await expect(starts).toHaveAttribute("data-value", isoDay(-10));

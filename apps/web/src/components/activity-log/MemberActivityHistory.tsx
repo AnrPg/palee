@@ -35,7 +35,7 @@ export function MemberActivityHistory({ slug }: { slug: string }) {
     queryFn: ({ pageParam }) => fetchMyActivity(token!, slug, pageParam),
     getNextPageParam: (page) => page.next_cursor ?? null,
   });
-  const entries = useMemo(() => (history.data?.pages ?? []).flatMap((page) => page.entries), [history.data]);
+  const entries = useMemo(() => (history.data?.pages ?? []).flatMap((page) => page.entries ?? []), [history.data]);
   if (entries.length === 0) return null;
 
   const shown = expanded ? entries : entries.slice(0, SHORT);
