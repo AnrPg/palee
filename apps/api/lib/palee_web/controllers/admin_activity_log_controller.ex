@@ -59,6 +59,12 @@ defmodule PaleeWeb.AdminActivityLogController do
       in: :query,
       description: "Text in the reason, the subject or a person's name",
       schema: %Schema{type: :string}
+    },
+    %Parameter{
+      name: :sensitive,
+      in: :query,
+      description: "Only the sensitive actions (the owner's daily summary links here, 12B)",
+      schema: %Schema{type: :boolean}
     }
   ]
 

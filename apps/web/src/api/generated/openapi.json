@@ -199715,6 +199715,14 @@
             }
           },
           {
+            "description": "Only the sensitive actions (the owner's daily summary links here, 12B)",
+            "in": "query",
+            "name": "sensitive",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
             "in": "query",
             "name": "cursor",
             "schema": {
@@ -200429,6 +200437,14 @@
             "name": "q",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "description": "Only the sensitive actions (the owner's daily summary links here, 12B)",
+            "in": "query",
+            "name": "sensitive",
+            "schema": {
+              "type": "boolean"
             }
           }
         ],

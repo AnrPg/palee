@@ -21319,6 +21319,8 @@
         "merge": "Merged workout types",
         "update": "Edited a workout type"
       }
-    }
+    },
+    "sensitiveOnly": "Sensitive actions only",
+    "clearSensitiveOnly": "Show all actions"
   }
 }

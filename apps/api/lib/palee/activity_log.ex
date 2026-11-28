@@ -186,6 +186,7 @@ defmodule Palee.ActivityLog do
          from: day_start(context, params["from"]),
          to: day_end(context, params["to"]),
          query: text(params["q"]),
+         sensitive_only: params["sensitive"] in [true, "true", "1"],
          before: cursor(params["cursor"]),
          limit: limit(params) + 1
        }}

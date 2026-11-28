@@ -21319,6 +21319,8 @@
         "merge": "Fundiu tipos de treino",
         "update": "Editou um tipo de treino"
       }
-    }
+    },
+    "sensitiveOnly": "Apenas ações sensíveis",
+    "clearSensitiveOnly": "Mostrar todas as ações"
   }
 }

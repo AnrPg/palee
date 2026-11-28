@@ -21319,6 +21319,8 @@
         "merge": "Trainingstypes samengevoegd",
         "update": "Trainingstype bewerkt"
       }
-    }
+    },
+    "sensitiveOnly": "Alleen gevoelige acties",
+    "clearSensitiveOnly": "Alle acties tonen"
   }
 }

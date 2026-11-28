@@ -87347,6 +87347,8 @@ export interface operations {
                 to?: string;
                 /** @description Text in the reason, the subject or a person's name */
                 q?: string;
+                /** @description Only the sensitive actions (the owner's daily summary links here, 12B) */
+                sensitive?: boolean;
                 cursor?: string;
                 limit?: number;
             };
@@ -87444,6 +87446,8 @@ export interface operations {
                 to?: string;
                 /** @description Text in the reason, the subject or a person's name */
                 q?: string;
+                /** @description Only the sensitive actions (the owner's daily summary links here, 12B) */
+                sensitive?: boolean;
             };
             header?: never;
             path?: never;

@@ -18,6 +18,8 @@ export type ActivityLogFilters = {
   from?: string;
   to?: string;
   q?: string;
+  /** Only the sensitive actions (the owner's daily summary, 12B). */
+  sensitive?: boolean;
 };
 
 /** The query string of a filter set (and a page's cursor); empty values are left out. */
@@ -30,6 +32,7 @@ export function activityLogQuery(filters: ActivityLogFilters, cursor?: string | 
   }
   const q = filters.q?.trim();
   if (q) search.set("q", q);
+  if (filters.sensitive) search.set("sensitive", "true");
   if (cursor) search.set("cursor", cursor);
   const text = search.toString();
   return text ? `?${text}` : "";

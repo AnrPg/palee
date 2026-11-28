@@ -90,6 +90,7 @@ describe("activity log model (ADR-760)", () => {
     expect(activityLogQuery({ areas: ["money", "packages"], person_id: "p1", actor_id: "s1", from: "2026-11-01", to: "2026-11-23", q: "  ankle " }, "c1")).toBe(
       "?areas=money%2Cpackages&person_id=p1&actor_id=s1&from=2026-11-01&to=2026-11-23&q=ankle&cursor=c1",
     );
+    expect(activityLogQuery({ sensitive: true, from: "2026-11-27", to: "2026-11-27" })).toBe("?from=2026-11-27&to=2026-11-27&sensitive=true");
   });
 
   it("names the CSV after the day it was downloaded", () => {

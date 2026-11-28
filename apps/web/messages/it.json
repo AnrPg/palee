@@ -21319,6 +21319,8 @@
         "merge": "Tipi di allenamento uniti",
         "update": "Tipo di allenamento modificato"
       }
-    }
+    },
+    "sensitiveOnly": "Solo azioni sensibili",
+    "clearSensitiveOnly": "Mostra tutte le azioni"
   }
 }

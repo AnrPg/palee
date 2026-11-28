@@ -66,12 +66,19 @@ export type PickedPerson = { id: string; name: string };
 export function ActivityLogList({
   personId,
   initialPerson = null,
+  initialFrom = "",
+  initialTo = "",
+  initialSensitive = false,
   fullLogHref,
 }: {
   /** Fixed to one person (the member profile's «Ιστορικό» tab). */
   personId?: string;
   /** A person filter the page opened with (`?person=`). */
   initialPerson?: PickedPerson | null;
+  /** Days and «only sensitive» the page opened with (the owner's daily summary link). */
+  initialFrom?: string;
+  initialTo?: string;
+  initialSensitive?: boolean;
   /** «Όλο το αρχείο →» under a fixed list. */
   fullLogHref?: string;
 }) {
@@ -87,8 +94,9 @@ export function ActivityLogList({
   const [actorId, setActorId] = useState(ALL);
   const [person, setPerson] = useState<PickedPerson | null>(initialPerson);
   const [personText, setPersonText] = useState("");
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
+  const [from, setFrom] = useState(initialFrom);
+  const [to, setTo] = useState(initialTo);
+  const [sensitive, setSensitive] = useState(initialSensitive);
   const [text, setText] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
   const [exportError, setExportError] = useState<unknown>(null);
@@ -103,6 +111,7 @@ export function ActivityLogList({
     from: from || undefined,
     to: to || undefined,
     q: q.trim() || undefined,
+    sensitive: sensitive || undefined,
   };
 
   const log = useInfiniteQuery({
@@ -140,7 +149,7 @@ export function ActivityLogList({
     retry: false,
   });
 
-  const activeCount = (areas.length > 0 ? 1 : 0) + (actorId !== ALL ? 1 : 0) + (person && !fixed ? 1 : 0) + (from || to ? 1 : 0);
+  const activeCount = (areas.length > 0 ? 1 : 0) + (actorId !== ALL ? 1 : 0) + (person && !fixed ? 1 : 0) + (from || to ? 1 : 0) + (sensitive ? 1 : 0);
   const clear = () => {
     setAreas([]);
     setActorId(ALL);
@@ -148,6 +157,7 @@ export function ActivityLogList({
     setPersonText("");
     setFrom("");
     setTo("");
+    setSensitive(false);
   };
 
   const download = async () => {
@@ -254,6 +264,19 @@ export function ActivityLogList({
           </div>
         </CollapsibleFilterBar>
       )}
+
+      {sensitive && !fixed ? (
+        <button
+          type="button"
+          onClick={() => setSensitive(false)}
+          aria-label={t("clearSensitiveOnly")}
+          className="min-h-11 rounded-xl px-3 text-start text-sm font-semibold"
+          style={{ background: "color-mix(in srgb, var(--primary) 14%, var(--panel))", border: "1px solid var(--primary)", color: "var(--text)" }}
+          data-testid="activity-log-sensitive-chip"
+        >
+          {t("sensitiveOnly")} ×
+        </button>
+      ) : null}
 
       {fixed && exportButton ? <div className="flex justify-end">{exportButton}</div> : null}
       {exportError ? <ErrorNotice>{localizeError(exportError, i18n)}</ErrorNotice> : null}

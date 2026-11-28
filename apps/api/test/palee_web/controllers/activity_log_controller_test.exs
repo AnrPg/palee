@@ -79,6 +79,25 @@ defmodule PaleeWeb.ActivityLogControllerTest do
              |> Map.fetch!("entries")
   end
 
+  test "?sensitive=true keeps only the sensitive actions (the owner's summary link)",
+       %{conn: conn} = ctx do
+    assert %{status: 201} = give(conn, ctx, %{})
+
+    {:ok, _} =
+      Palee.ActivityLog.record(ctx.context, %{
+        action: "package.freeze",
+        person_user_id: ctx.member.id
+      })
+
+    all = log(build_conn(), ctx.admin, ctx) |> json_response(200) |> Map.fetch!("entries")
+    assert length(all) == 2
+
+    assert [%{"action" => "benefit.give"}] =
+             log(build_conn(), ctx.admin, ctx, "?sensitive=true")
+             |> json_response(200)
+             |> Map.fetch!("entries")
+  end
+
   test "the member sees only what staff shared, as the box", %{conn: conn} = ctx do
     assert %{status: 201} = give(conn, ctx, %{"reason" => "kept private"})
 

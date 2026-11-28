@@ -21319,6 +21319,8 @@
         "merge": "Trainingsarten zusammengeführt",
         "update": "Trainingsart bearbeitet"
       }
-    }
+    },
+    "sensitiveOnly": "Nur sensible Aktionen",
+    "clearSensitiveOnly": "Alle Aktionen anzeigen"
   }
 }

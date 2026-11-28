@@ -24,6 +24,11 @@ export function ActivityLogPage() {
   const { membership, isLoading } = useSelectedMembershipRole();
   const personId = searchParams.get("person");
   const initialPerson = personId ? { id: personId, name: searchParams.get("name") || t("onePerson") } : null;
+  // The owner's daily summary (12B) links here with ?sensitive=1&from=&to=.
+  const day = (key: string) => {
+    const value = searchParams.get(key) ?? "";
+    return /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : "";
+  };
 
   return (
     <main className="min-h-screen px-4 py-8 md:px-10 md:py-10" style={{ background: "var(--bg)" }}>
@@ -32,7 +37,12 @@ export function ActivityLogPage() {
         <PageHeader title={t("title")} />
         <p className="text-sm" style={{ color: "var(--dim)" }}>{t("intro")}</p>
         {isLoading ? null : canReadActivityLog(membership) ? (
-          <ActivityLogList initialPerson={initialPerson} />
+          <ActivityLogList
+            initialPerson={initialPerson}
+            initialFrom={day("from")}
+            initialTo={day("to")}
+            initialSensitive={searchParams.get("sensitive") === "1"}
+          />
         ) : (
           <ErrorNotice>{t("forbidden")}</ErrorNotice>
         )}

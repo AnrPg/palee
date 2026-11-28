@@ -21319,6 +21319,8 @@
         "merge": "Types d'entraînement fusionnés",
         "update": "Type d'entraînement modifié"
       }
-    }
+    },
+    "sensitiveOnly": "Actions sensibles uniquement",
+    "clearSensitiveOnly": "Afficher toutes les actions"
   }
 }
