@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
 import { fireEvent, render, screen } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import { describe, expect, it } from "vitest";
@@ -6,6 +9,7 @@ import el from "../../../messages/el.json";
 import en from "../../../messages/en.json";
 
 import { AuthField } from "@/components/auth/AuthField";
+import { SUPPORTED_LOCALES } from "@/i18n/locales";
 
 import { MaskableInput, PasswordInput } from "./PasswordInput";
 
@@ -92,13 +96,24 @@ describe("ui/PasswordInput", () => {
     expect(input).toHaveAttribute("type", "text");
   });
 
-  it("every locale names the button", async () => {
-    const { SUPPORTED_LOCALES } = await import("@/i18n/locales");
+  // Plain JSON reads, not module imports: transforming 12 large message
+  // files through the bundler took over 5 s on CI (2026-11-23).
+  it("every locale names the button", () => {
+    const messagesDir = join(__dirname, "..", "..", "..", "messages");
     for (const locale of SUPPORTED_LOCALES) {
-      const messages = (await import(`../../../messages/${locale}.json`))
-        .default as { Common: Record<string, string> };
-      for (const key of ["showPassword", "hidePassword", "showKey", "hideKey"])
+      const messages = JSON.parse(
+        readFileSync(join(messagesDir, `${locale}.json`), "utf8"),
+      ) as {
+        Common: Record<string, string>;
+      };
+      for (const key of [
+        "showPassword",
+        "hidePassword",
+        "showKey",
+        "hideKey",
+      ]) {
         expect(messages.Common[key], `${locale}.${key}`).toBeTruthy();
+      }
     }
-  });
+  }, 30_000);
 });

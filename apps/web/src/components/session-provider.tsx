@@ -5,7 +5,7 @@
 
 import {useUiTranslations} from "@/i18n/ui";
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { reportMyTimeZone } from "@/api/profile";
@@ -43,13 +43,27 @@ import {
 import { endLoginSession, startLoginSession } from "@/lib/login-session";
 import { resetRealtimeSocket } from "@/lib/realtime";
 import { USER_SYNC_EVENT, type UserSyncDetail } from "@/lib/user-sync";
-import { isAppLocale, persistLocaleCookie, type AppLocale } from "@/i18n/locales";
+import {
+  claimLocaleReload,
+  forgetLocaleReload,
+  isAppLocale,
+  persistLocaleCookie,
+  type AppLocale,
+} from "@/i18n/locales";
 import { Dialog } from "@/components/ui/Dialog";
 
 type SessionStatus = "loading" | "guest" | "authenticated";
 
+/**
+ * How long opening the app may take to restore a saved sign-in before it
+ * gives up and asks the person to sign in again (never a splash forever).
+ */
+export const SESSION_RESTORE_TIMEOUT_MS = 15_000;
+
 type SessionContextValue = {
   status: SessionStatus;
+  /** True when restoring the saved sign-in failed or timed out (not when there was none). */
+  restoreFailed: boolean;
   tokens: AuthTokens | null;
   currentUser: CurrentUser | null;
   signIn: (payload: LoginRequest) => Promise<CurrentUser>;
@@ -85,17 +99,26 @@ function sessionUser(tokens: AuthTokens): Promise<CurrentUser> {
 // ADR-195: a new account keeps the language its sign-up page was shown in
 // (the signed-out language picker or the browser's), instead of opening in
 // English and switching back on its first signed-in screen.
-function withPageLocale<T extends { preferred_locale?: AppLocale }>(payload: T): T {
-  if (payload.preferred_locale || typeof document === "undefined") return payload;
-  const pageLocale = document.documentElement.lang;
+// The locale the server rendered the page in (next-intl), never
+// `<html lang>`: browser translators (Chrome's «Translate») rewrite that.
+function withPageLocale<T extends { preferred_locale?: AppLocale }>(payload: T, pageLocale: string): T {
+  if (payload.preferred_locale) return payload;
   return isAppLocale(pageLocale) ? { ...payload, preferred_locale: pageLocale } : payload;
+}
+
+/** Resolves to `undefined` once `ms` pass, so a hung request cannot hold the app. */
+function timeout(ms: number) {
+  return new Promise<undefined>((resolve) => setTimeout(() => resolve(undefined), ms));
 }
 
 export function SessionProvider({ children }: { children: React.ReactNode }) {
   
   const tSession = useTranslations("Session");
   const tCommon = useTranslations("Common");
+  const renderedLocale = useLocale();
+  const renderedLocaleRef = useRef(renderedLocale);
   const [status, setStatus] = useState<SessionStatus>("loading");
+  const [restoreFailed, setRestoreFailed] = useState(false);
   const [tokens, setTokens] = useState<AuthTokens | null>(null);
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
   const [sessionExpired, setSessionExpired] = useState<SessionExpiredState>(null);
@@ -137,9 +160,13 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     setApiSessionUser(user);
 
     if (isAppLocale(user.preferred_locale)) {
-      const localeChanged = document.documentElement.lang !== user.preferred_locale;
+      // Compare with the locale the page was rendered in, not `<html lang>`
+      // (a browser translator rewrites it, which reloaded the page forever on
+      // iPhone Chrome). And reload at most once per tab for a locale: if the
+      // reloaded page still is not in it (cookie refused), carry on as is.
       persistLocaleCookie(user.preferred_locale);
-      if (localeChanged) window.location.reload();
+      if (user.preferred_locale === renderedLocaleRef.current) forgetLocaleReload();
+      else if (claimLocaleReload(user.preferred_locale)) window.location.reload();
     }
   }
 
@@ -174,19 +201,19 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   }
 
   async function signUp(payload: RegisterRequest): Promise<SignUpResult> {
-    const response = await registerUser(withPageLocale(payload));
+    const response = await registerUser(withPageLocale(payload, renderedLocaleRef.current));
     if (!response.access_token) return { email: response.email, user: null };
     const user = await establishSession({ access_token: response.access_token });
     return { email: response.email, user };
   }
 
   async function signUpAdmin(payload: AdminRegisterRequest) {
-    const issuedTokens = await registerAdminUser(withPageLocale(payload));
+    const issuedTokens = await registerAdminUser(withPageLocale(payload, renderedLocaleRef.current));
     return establishSession(issuedTokens);
   }
 
   async function signUpInvited(payload: InvitedRegisterRequest) {
-    const issuedTokens = await registerInvitedUser(withPageLocale(payload));
+    const issuedTokens = await registerInvitedUser(withPageLocale(payload, renderedLocaleRef.current));
     return establishSession(issuedTokens);
   }
 
@@ -242,18 +269,36 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let cancelled = false;
 
+    const controller = new AbortController();
+
+    async function restore() {
+      const refreshedTokens = await refreshSession(controller.signal);
+      if (!refreshedTokens?.access_token) return null;
+      return { tokens: refreshedTokens, user: await sessionUser(refreshedTokens) };
+    }
+
+    // Restoring a saved sign-in either finishes, finds none (guest), or fails
+    // or hangs: then, after SESSION_RESTORE_TIMEOUT_MS at the latest, the
+    // person is sent to sign in with a message, never left on the splash.
     async function bootstrap() {
       try {
-        const refreshedTokens = await refreshSession();
-        if (!refreshedTokens?.access_token) {
-          if (!cancelled) setStatus("guest");
+        const restored = await Promise.race([restore(), timeout(SESSION_RESTORE_TIMEOUT_MS)]);
+        if (cancelled) return;
+        if (restored === undefined) {
+          controller.abort();
+          setRestoreFailed(true);
+          setStatus("guest");
           return;
         }
-        const user = await sessionUser(refreshedTokens);
-        if (cancelled) return;
-        commitSession(refreshedTokens, user);
+        if (!restored) {
+          setStatus("guest");
+          return;
+        }
+        commitSession(restored.tokens, restored.user);
       } catch {
-        if (!cancelled) setStatus("guest");
+        if (cancelled) return;
+        setRestoreFailed(true);
+        setStatus("guest");
       }
     }
 
@@ -261,6 +306,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
 
     return () => {
       cancelled = true;
+      controller.abort();
     };
   }, []);
 
@@ -330,6 +376,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     <SessionContext.Provider
       value={{
         status,
+        restoreFailed,
         tokens,
         currentUser,
         signIn,

@@ -558,6 +558,18 @@ input[type="number"] {
   .guide-move { transition: none; }
 }
 
+/* The sign-in splash's way out (auth-guard SplashFallback): hidden at first,
+   shown by CSS alone after 12 s, so it appears even if the page's JavaScript
+   never ran. A step change, not motion, so reduced motion keeps it. */
+@keyframes splash-fallback-reveal {
+  to { visibility: visible; opacity: 1; }
+}
+.splash-fallback {
+  visibility: hidden;
+  opacity: 0;
+  animation: splash-fallback-reveal 0s linear 12s forwards;
+}
+
 /* ADR-155: the door kiosk's green flash on each check-in. */
 @keyframes checkin-flash {
   0% { opacity: 0.85; }

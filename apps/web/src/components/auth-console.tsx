@@ -260,6 +260,7 @@ export function AuthPanel({
   }
 
   const passwordResetDone = searchParams.get("reset") === "done";
+  const restoreFailed = searchParams.get("restore") === "failed";
 
   function validate(errors: FieldErrors) {
     setFieldErrors(errors);
@@ -507,6 +508,7 @@ export function AuthPanel({
             ) : (
               <>
                 {passwordResetDone ? <AuthNotice tone="success">{t("passwordChangedSignIn")}</AuthNotice> : null}
+                {restoreFailed && !passwordResetDone ? <AuthNotice>{t("sessionRestoreFailed")}</AuthNotice> : null}
 
                 <AuthField
                   label={t("identifierLabel")}

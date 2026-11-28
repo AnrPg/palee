@@ -75,6 +75,13 @@ describe("AuthConsole", () => {
     await waitFor(() => expect(refresh).toHaveBeenCalled());
   });
 
+  it("says why the person must sign in again after a failed restore", () => {
+    search = "?next=%2F&restore=failed";
+    render(<AuthConsole />);
+
+    expect(screen.getByRole("alert").textContent).toContain("sessionRestoreFailed");
+  });
+
   it("shows a failed sign-in as a red alert", async () => {
     signIn.mockRejectedValue(new Error("Invalid credentials"));
     render(<AuthConsole />);
