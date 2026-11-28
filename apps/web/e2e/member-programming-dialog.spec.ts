@@ -199,4 +199,25 @@ test.describe("member programming dialog", () => {
     await expect(dialog).toBeHidden();
     expect(posts.at(-1)).toMatchObject({ mode: "class_workout" });
   });
+
+  // ADR-805: a member whose package books classes gets their own day WOD for one class visit.
+  test("with class visits but no online programming, a separate workout stays open and says it uses a visit", async ({ page }) => {
+    const posts = await stub(page, { allowed: false, grant: null, reason: "finance_channel_not_included", class_visits: true });
+    await page.goto("/admin/users/u-1?tab=training");
+    await page.getByTestId(`programming-day-${TODAY}`).click({ timeout: 60_000 });
+    const dialog = page.getByTestId("programming-dialog");
+    await expect(page.getByTestId("programming-not-in-package")).toHaveCount(0);
+
+    const separate = dialog.getByRole("radio", { name: /Separate workout/ });
+    await expect(separate).toBeVisible();
+    await expect(separate).toBeEnabled();
+    await expect(dialog.getByText("It uses one visit from their subscription package, unless they booked a class that day.", { exact: false })).toBeVisible();
+    await separate.click();
+    await chooseOption(page, dialog.locator('[aria-label="Existing WOD"]'), "w-fran");
+    const submit = dialog.getByTestId("programming-submit");
+    await expect(submit).toBeEnabled();
+    await submit.click();
+    await expect(dialog).toBeHidden();
+    expect(posts.at(-1)).toMatchObject({ mode: "personal", master_workout_id: "w-fran" });
+  });
 });

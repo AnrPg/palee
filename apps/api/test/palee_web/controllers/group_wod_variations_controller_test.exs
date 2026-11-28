@@ -25,6 +25,20 @@ defmodule PaleeWeb.GroupWodVariationsControllerTest do
     }
   }
 
+  @unlimited_visits_plan %{
+    "entitlement_version" => 1,
+    "channels" => ["in_person"],
+    "capabilities" => ["book_classes", "execute_class_workouts"],
+    "allowances" => %{"class_visits" => %{"limit" => "unlimited", "period" => "calendar_month"}}
+  }
+
+  @visits_plan %{
+    "entitlement_version" => 1,
+    "channels" => ["in_person"],
+    "capabilities" => ["book_classes", "execute_class_workouts"],
+    "allowances" => %{"class_visits" => %{"limit" => 8, "period" => "calendar_month"}}
+  }
+
   @class_only_plan %{
     "entitlement_version" => 1,
     "channels" => ["in_person"],
@@ -192,16 +206,37 @@ defmodule PaleeWeb.GroupWodVariationsControllerTest do
     assert owners == Enum.sort([entitled.id, plain.id])
   end
 
-  test "a personal WOD still needs online programming or personal training", %{conn: conn} do
+  # ADR-805 (ANR, 2026-11-28): a member's own WOD for a day follows a class
+  # booking's rules, not online programming's.
+  test "a member's own day WOD uses one class visit, none on a booked day, and needs a package",
+       %{conn: conn} do
     gym = tenant("grp_personal_gate")
-    plain = member(gym, "grp_personal_plain", @class_only_plan)
+    unlimited = member(gym, "grp_personal_plain", @unlimited_visits_plan)
+    # A package without class visits does not cover it either.
+    no_visits = member(gym, "grp_personal_novisits", @class_only_plan)
+    counted = member(gym, "grp_personal_counted", @visits_plan)
+    booked = member(gym, "grp_personal_booked", @visits_plan)
+
+    nobody =
+      %{nickname: "grp_personal_nobody_#{System.unique_integer([:positive])}", role: :member}
+      |> user_fixture()
+      |> then(&add_membership(gym.organization, &1, :member))
+
     wod = workout_fixture(gym.admin, %{title: "Personal gate WOD", tenant_context: gym.context})
-    day = Date.utc_today() |> Date.add(1) |> Date.to_iso8601()
+    class_wod = workout_fixture(gym.admin, %{title: "Class WOD", tenant_context: gym.context})
+    slot = booked_class(gym, class_wod, [booked])
+    day = gym.context |> Organizations.local_date(slot.scheduled_at) |> Date.to_iso8601()
+
+    visits = fn user ->
+      Finance.get_effective_entitlement(gym.context, user.id).allowances.class_visits.committed
+    end
+
+    booked_before = visits.(booked)
 
     results =
       conn
       |> program_many(gym, %{
-        user_ids: [plain.id],
+        user_ids: [unlimited.id, counted.id, booked.id, nobody.id, no_visits.id],
         master_workout_id: wod.id,
         scheduled_for: day,
         copy_source: true,
@@ -211,10 +246,25 @@ defmodule PaleeWeb.GroupWodVariationsControllerTest do
       |> Map.fetch!("results")
       |> by_user()
 
-    assert %{"status" => "error", "code" => "programming_not_in_package", "params" => params} =
-             results[plain.id]
+    for user <- [unlimited, counted, booked] do
+      assert %{"status" => "ok", "mode" => "personal"} = results[user.id]
+    end
 
-    assert params["nickname"] == plain.nickname
+    # No booking that day: the WOD takes the visit a booking would.
+    assert visits.(counted) == 1
+    # A class booked that day already used its visit.
+    assert visits.(booked) == booked_before
+
+    assert %{"status" => "error", "code" => "member_wod_not_covered", "params" => params} =
+             results[nobody.id]
+
+    assert params["nickname"] == nobody.nickname
+    assert params["date"] == day
+
+    assert %{"code" => "member_wod_not_covered", "params" => %{"reason" => reason}} =
+             results[no_visits.id]
+
+    assert reason == "finance_allowance_not_included"
   end
 
   test "duplicate ids are programmed once; an empty or oversized list is refused", %{conn: conn} do

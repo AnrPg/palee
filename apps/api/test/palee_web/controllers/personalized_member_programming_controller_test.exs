@@ -55,11 +55,11 @@ defmodule PaleeWeb.PersonalizedMemberProgrammingControllerTest do
     }
   }
 
-  @class_only_plan %{
+  @class_visits_plan %{
     "entitlement_version" => 1,
     "channels" => ["in_person"],
     "capabilities" => ["book_classes", "execute_class_workouts"],
-    "allowances" => %{}
+    "allowances" => %{"class_visits" => %{"limit" => 8, "period" => "calendar_month"}}
   }
 
   defp give_package(%{context: context}, user, plan, user_type \\ "member") do
@@ -238,25 +238,22 @@ defmodule PaleeWeb.PersonalizedMemberProgrammingControllerTest do
       gym = tenant("pm_denied")
 
       plain =
-        gym |> customer(:member, "pm_plain") |> then(&give_package(gym, &1, @class_only_plan))
+        gym |> customer(:member, "pm_plain") |> then(&give_package(gym, &1, @class_visits_plan))
 
       unmanaged = customer(gym, :member, "pm_unmanaged")
       athlete = customer(gym, :athlete, "pm_unmanaged_athlete")
       wod = workout(gym, "Gated WOD")
       today = Date.utc_today() |> Date.to_iso8601()
 
-      denied =
-        conn
-        |> assign_workout(gym, %{
-          master_workout_id: wod.id,
-          athlete_ids: [plain.id],
-          scheduled_for: today
-        })
-        |> json_response(403)
-
-      assert denied["code"] == "programming_not_in_package"
-      assert denied["params"]["reason"] == "finance_channel_not_included"
-      assert denied["params"]["nickname"] == plain.nickname
+      # ADR-805: a member whose package books classes gets their own day WOD
+      # without online programming (it uses a class visit).
+      assert conn
+             |> assign_workout(gym, %{
+               master_workout_id: wod.id,
+               athlete_ids: [plain.id],
+               scheduled_for: today
+             })
+             |> json_response(201)
 
       assert conn
              |> assign_workout(gym, %{
@@ -268,7 +265,6 @@ defmodule PaleeWeb.PersonalizedMemberProgrammingControllerTest do
              |> Map.fetch!("params")
              |> Map.fetch!("reason") == "finance_profile_missing"
 
-      assert my_workouts(conn, gym, plain) == []
       assert my_workouts(conn, gym, athlete) == []
 
       # ADR-225: the athlete role does not imply the grant either.
@@ -308,7 +304,7 @@ defmodule PaleeWeb.PersonalizedMemberProgrammingControllerTest do
       assert conn
              |> api(gym.admin)
              |> post(
-               "/api/org/#{slug(gym)}/admin/users/#{plain.id}/programming",
+               "/api/org/#{slug(gym)}/admin/users/#{unmanaged.id}/programming",
                Jason.encode!(%{
                  master_workout_id: wod.id,
                  folder_id: folder["id"],
@@ -318,7 +314,7 @@ defmodule PaleeWeb.PersonalizedMemberProgrammingControllerTest do
                })
              )
              |> json_response(403)
-             |> Map.fetch!("code") == "programming_not_in_package"
+             |> Map.fetch!("code") == "member_wod_not_covered"
 
       assert workout_count(gym.context) == before
     end
@@ -759,10 +755,16 @@ defmodule PaleeWeb.PersonalizedMemberProgrammingControllerTest do
 
     assert programming.(plain) == %{
              "allowed" => false,
+             "class_visits" => false,
              "grant" => nil,
              "reason" => "finance_profile_missing"
            }
 
+    # ADR-805: a member whose package books classes gets a day WOD for a visit.
+    classes =
+      gym |> customer(:member, "pm_flag_classes") |> then(&give_package(gym, &1, @class_visits_plan))
+
+    assert %{"allowed" => false, "class_visits" => true} = programming.(classes)
     assert %{"allowed" => true, "grant" => "online_programming"} = programming.(online)
     assert %{"allowed" => true, "grant" => "personal_training"} = programming.(pt)
     # Staff are not programmed: no flag.

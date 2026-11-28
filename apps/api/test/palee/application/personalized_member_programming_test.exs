@@ -66,14 +66,26 @@ defmodule Palee.Application.PersonalizedMemberProgrammingTest do
     |> then(&add_membership(organization, &1, role))
   end
 
-  defp entitle(%{context: context}, user) do
+  # ADR-805: no classes in the package, so a member's day WOD meters a touchpoint.
+  @online_only_plan %{
+    "entitlement_version" => 1,
+    "channels" => ["personal_programming"],
+    "capabilities" => ["execute_assigned_workouts", "receive_coaching_touchpoints"],
+    "allowances" => %{
+      "coaching_touchpoints" => %{"limit" => 1, "period" => "calendar_month"}
+    }
+  }
+
+  defp entitle(gym, user, plan \\ @programming_plan)
+
+  defp entitle(%{context: context}, user, plan) do
     {:ok, package} =
       Finance.create_package(context, %{
         code: "pmp-#{System.unique_integer([:positive])}",
         name: "Hybrid",
         family: "hybrid",
         billing_period: "monthly",
-        params: @programming_plan
+        params: plan
       })
 
     {:ok, membership} =
@@ -235,7 +247,7 @@ defmodule Palee.Application.PersonalizedMemberProgrammingTest do
 
   test "a member assignment meters a coaching touchpoint; extensions top up an exhausted allowance" do
     gym = tenant()
-    member = gym |> customer(:member) |> then(&entitle(gym, &1))
+    member = gym |> customer(:member) |> then(&entitle(gym, &1, @online_only_plan))
 
     assert {:ok, first} = assign(gym, workout(gym), [member.id])
     assert first.assignment_kind == "personal"

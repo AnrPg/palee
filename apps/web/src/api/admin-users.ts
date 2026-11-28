@@ -37,6 +37,8 @@ export type AdminUserProgramming = {
   allowed: boolean;
   grant: "online_programming" | "personal_training" | null;
   reason: string | null;
+  /** ADR-805 (members): the package books classes, so a day WOD uses one class visit. */
+  class_visits?: boolean;
 };
 
 export type AdminUserProfileShell = {

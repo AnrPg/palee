@@ -26,8 +26,8 @@ import { useUiTranslations } from "@/i18n/ui";
 import {
   MEMBER_PROGRAMMING_MODES,
   canProgramMorePeople,
+  modeClosed,
   modeRequiresBookedClass,
-  modeRequiresProgrammingEntitlement,
   dayFormatter,
   offerableClasses,
   programmingBlocker,
@@ -130,6 +130,10 @@ export function UserProgrammingSchedule({ token, userId, role, nickname, assignR
   const zone = useOrganizationTimeZone();
   const isMember = role === "member";
   const notInPackage = programming?.allowed === false;
+  // ADR-805: a member's own day WOD uses a class visit instead of online programming.
+  const classVisits = isMember && programming?.class_visits === true;
+  const closedFor = (mode: MemberProgrammingMode | null) =>
+    modeClosed(mode, { isMember, programmingAllowed: !notInPackage, classVisits });
   const [startDate, setStartDate] = useState(() => isoDate(new Date()));
   const [schedule, setSchedule] = useState<AdminUserSchedule | null>(null);
   const [workouts, setWorkouts] = useState<WorkoutRecord[]>([]);
@@ -267,7 +271,7 @@ export function UserProgrammingSchedule({ token, userId, role, nickname, assignR
   const offeredSlot = selectedSlot ? undefined : otherDaySlots.find((slot) => slot.id === slotId);
   const fullSlot = daySlots.find((slot) => slot.id === slotId);
   const classHasWorkout = typeof selectedSlot?.master_workout_id === "string" || Boolean(offeredSlot?.workout?.id);
-  const personalModeClosed = notInPackage && (!isMember || modeRequiresProgrammingEntitlement(memberMode));
+  const personalModeClosed = closedFor(isMember ? memberMode : null);
   const blocker = personalModeClosed ? "programmingNotInPackageBlocker" : programmingBlocker({
     needsClass,
     hasBookedClasses: classChoices > 0,
@@ -441,7 +445,7 @@ export function UserProgrammingSchedule({ token, userId, role, nickname, assignR
         })}
       </div>
 
-      {notInPackage ? <p data-testid="programming-not-in-package" className="rounded-2xl px-4 py-3 text-sm leading-5" style={{ background: "var(--panel-muted)", border: "1px solid var(--border)", color: "var(--text)" }}>
+      {notInPackage && !classVisits ? <p data-testid="programming-not-in-package" className="rounded-2xl px-4 py-3 text-sm leading-5" style={{ background: "var(--panel-muted)", border: "1px solid var(--border)", color: "var(--text)" }}>
         {i18n("programmingNotInPackageNotice", { name: nickname ?? "" })}
         {isMember ? <> {i18n("programmingNotInPackageMemberHint")}</> : null}
       </p> : null}
@@ -477,11 +481,11 @@ export function UserProgrammingSchedule({ token, userId, role, nickname, assignR
           {isMember ? <fieldset>
             <legend className="mb-2 text-sm font-semibold" style={{ color: "var(--text)" }}>{i18n("programmingDialogWhat")}</legend>
             <div className="space-y-2">
-              {MEMBER_PROGRAMMING_MODES.map((mode) => <label key={mode} className={`flex items-start gap-3 rounded-xl px-3 py-2.5 ${notInPackage && modeRequiresProgrammingEntitlement(mode) ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`} style={choiceStyle(memberMode === mode)}>
-                <input type="radio" className="mt-1" name="member-programming-mode" value={mode} checked={memberMode === mode} disabled={notInPackage && modeRequiresProgrammingEntitlement(mode)} onChange={() => chooseMode(mode)} />
+              {MEMBER_PROGRAMMING_MODES.map((mode) => <label key={mode} className={`flex items-start gap-3 rounded-xl px-3 py-2.5 ${closedFor(mode) ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`} style={choiceStyle(memberMode === mode)}>
+                <input type="radio" className="mt-1" name="member-programming-mode" value={mode} checked={memberMode === mode} disabled={closedFor(mode)} onChange={() => chooseMode(mode)} />
                 <span className="min-w-0">
                   <span className="block text-sm font-semibold">{i18n(MODE_LABEL_KEYS[mode])}</span>
-                  <span className="block text-xs" style={{ color: "var(--muted)" }}>{i18n(MODE_HINT_KEYS[mode])}</span>
+                  <span className="block text-xs" style={{ color: "var(--muted)" }}>{i18n(mode === "personal" && classVisits ? "memberProgrammingModePersonalVisitHint" : MODE_HINT_KEYS[mode])}</span>
                 </span>
               </label>)}
             </div>

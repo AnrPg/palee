@@ -25,6 +25,21 @@ export function modeRequiresProgrammingEntitlement(mode: MemberProgrammingMode):
   return mode === "personal";
 }
 
+/**
+ * ADR-805: whether a mode is closed for this person. A member's own WOD for a
+ * day (`personal`) is open when their package lets them book classes (it
+ * uses one class visit) or includes online programming / personal training.
+ * Everything is closed for an athlete without the grant.
+ */
+export function modeClosed(
+  mode: MemberProgrammingMode | null,
+  input: { isMember: boolean; programmingAllowed: boolean; classVisits: boolean },
+): boolean {
+  if (input.programmingAllowed) return false;
+  if (!input.isMember || mode === null) return true;
+  return modeRequiresProgrammingEntitlement(mode) && !input.classVisits;
+}
+
 type OfferableSlot = { id: string; scheduled_at: string; duration_minutes?: number | null; cancelled_at?: string | null };
 
 /** ADR-785 (α): a class takes a variant from now until it ends, never once cancelled. */

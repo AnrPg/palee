@@ -94,6 +94,7 @@ describe("localizeError", () => {
     ["finance_allowance_exhausted", "apiErrorSelfFinanceAllowanceExhausted"],
     ["invalid_athletes", "apiErrorInvalidAthletes"],
     ["programming_not_in_package", "apiErrorProgrammingNotInPackage"],
+    ["member_wod_not_covered", "apiErrorMemberWodNotCovered"],
     ["class_variant_requires_single_member", "apiErrorClassVariantRequiresSingleMember"],
     ["slot_not_booked_by_member", "apiErrorSlotNotBookedByMember"],
     ["slot_not_found", "apiErrorSlotNotFound"],
