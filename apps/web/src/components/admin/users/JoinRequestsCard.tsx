@@ -67,7 +67,7 @@ function JoinRequestRow({ request, onAccepted }: { request: StaffJoinRequest; on
   return (
     <li className="flex flex-col gap-2 rounded-xl p-3 sm:flex-row sm:items-center" style={{ background: "var(--panel-muted)" }}>
       <span className="flex min-w-0 flex-1 items-center gap-3">
-        <PersonAvatar name={name} url={request.person?.avatar_url} size={36} />
+        <PersonAvatar name={name} url={request.person?.avatar_url} personId={request.person?.id} size={36} />
         <span className="min-w-0">
           <span className="block truncate text-sm font-bold" style={{ color: "var(--text)" }}>{name}</span>
           <span className="block truncate text-xs" style={{ color: "var(--dim)" }}>

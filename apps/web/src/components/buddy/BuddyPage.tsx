@@ -149,7 +149,7 @@ function PersonHeader({ link, chat }: { link: BuddyLink; chat: boolean }) {
   return (
     <div className="flex items-center justify-between gap-3">
       <span className="flex min-w-0 items-center gap-3">
-        <PersonAvatar name={name} url={link.person?.avatar_url} size={44} />
+        <PersonAvatar name={name} url={link.person?.avatar_url} personId={link.person?.id} size={44} />
         <span className="min-w-0">
           <span className="block truncate text-base font-bold" style={{ color: "var(--text)" }}>{name}</span>
           <span className="block truncate text-xs" style={{ color: "var(--dim)" }} data-testid="buddy-status">{statusLine(link, t, dates)}</span>

@@ -79,8 +79,50 @@ defmodule PaleeWeb.Schemas.MyBilling do
         description:
           "ADR-770: the package changes staff gave the package in force (pending first).",
         items: term_update()
-      }
+      },
+      package_start: package_start()
     })
+  end
+
+  @doc false
+  def package_start do
+    %Schema{
+      title: "PackageStart",
+      type: :object,
+      nullable: true,
+      description:
+        "ADR-795: the package waits for the member's first class or WOD (`waiting`), " <>
+          "or changed meanwhile and waits for «Το κατάλαβα» (`review`).",
+      required: [:id, :status, :package_name, :waiting_since, :changes],
+      properties: %{
+        id: @uuid,
+        subscription_id: @uuid,
+        status: %Schema{type: :string, enum: ["waiting", "review"]},
+        package_name: @string,
+        waiting_since: %Schema{type: :string, format: :date},
+        session_kind: %Schema{type: :string, enum: ["class", "workout"], nullable: true},
+        session_on: @date,
+        severity: %Schema{
+          type: :string,
+          enum: ["important", "serious", "warning"],
+          nullable: true
+        },
+        started_on: @date,
+        acknowledged_at: @datetime,
+        changes:
+          list(
+            object("PackageStartChange", [:key, :severity], %{
+              key: %Schema{
+                type: :string,
+                description: "`name`, `price`, or a package contract field key."
+              },
+              from: %Schema{nullable: true, description: "What the member bought."},
+              to: %Schema{nullable: true, description: "The package now."},
+              severity: %Schema{type: :string, enum: ["important", "serious", "warning"]}
+            })
+          )
+      }
+    }
   end
 
   @doc false

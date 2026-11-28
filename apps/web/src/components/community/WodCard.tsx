@@ -4,13 +4,15 @@ import { type ReactNode, useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { SPARK_ACTIVE_STYLE } from "@/lib/spark";
 
 import { WOD_KEY, type CommunityClub, type WodLeaderboardEntry, type WodTodayCard } from "@/api/community";
-import { builtInChannel, channelName, clubInitials } from "@/components/community/community";
+import { builtInChannel, channelName } from "@/components/community/community";
 import { useWodToday } from "@/components/community/use-community";
 import { WodLeaderboard } from "@/components/community/WodLeaderboard";
 import { HubCard } from "@/components/member-app/HubParts";
 import { useSession } from "@/components/session-provider";
+import { PersonAvatar } from "@/components/social/PersonAvatar";
 import { TrainingLogDialog, type TrainingLogDialogState } from "@/components/training-log/TrainingLog";
 import { useUiLocale } from "@/i18n/use-ui-locale";
 import { formatClock } from "@/lib/clock";
@@ -214,31 +216,28 @@ function BannerShell({ href, children }: { href: string | null; children: ReactN
 
 function LeaderboardRow({ row }: { row: WodLeaderboardEntry }) {
   const t = useTranslations("Community");
+  const tWods = useTranslations("ClassWods");
   const name = row.me ? t("wodYou") : (row.nickname ?? "?");
   const value = [row.value, row.unit].filter(Boolean).join(" ");
+  // ADR-785 (6A): a member's own variation, after the ranks, without a place.
+  const variation = row.variant === true;
 
   return (
     <li
       className="flex items-center gap-3 rounded-xl px-2 py-1.5"
       style={{ background: row.me ? "var(--panel-raised)" : "transparent" }}
     >
-      <span className="w-5 text-center font-mono text-sm font-bold" style={{ color: "var(--dim)" }}>{row.rank}</span>
-      {row.avatar_url ? (
-        // eslint-disable-next-line @next/next/no-img-element -- user-uploaded media origin
-        <img src={row.avatar_url} alt="" className="h-8 w-8 shrink-0 rounded-full object-cover" />
-      ) : (
-        <span
-          aria-hidden="true"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-extrabold"
-          style={{ background: "var(--panel-raised)", color: "var(--text)" }}
-        >
-          {clubInitials(row.nickname ?? "?")}
-        </span>
-      )}
+      <span className="w-5 text-center font-mono text-sm font-bold" style={{ color: "var(--dim)" }}>{variation ? "·" : row.rank}</span>
+      <PersonAvatar name={row.nickname} url={row.avatar_url} size={32} personId={row.user_id} />
       <b className="grow truncate text-sm" style={{ color: "var(--text)" }}>
         {name}
         {row.scale_level_slug ? (
           <span className="ml-1 text-xs font-normal" style={{ color: "var(--dim)" }}>{row.scale_level_slug}</span>
+        ) : null}
+        {variation ? (
+          <span className="ms-1.5 rounded-full px-2 py-0.5 text-[11px] font-bold" style={SPARK_ACTIVE_STYLE} data-testid="wod-leaderboard-variation">
+            {tWods("variationTag")}
+          </span>
         ) : null}
       </b>
       <span className="font-mono text-sm" style={{ color: "var(--text)" }}>{value}</span>

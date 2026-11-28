@@ -35,6 +35,30 @@ defmodule Palee.Finance.FinanceStore do
     do: adapter().assign_package(membership_id, package_id, params)
 
   @impl true
+  def waiting_subscription_for_session(user_id, source_context, source_id),
+    do: adapter().waiting_subscription_for_session(user_id, source_context, source_id)
+
+  @impl true
+  def begin_package_start(subscription_id, session),
+    do: adapter().begin_package_start(subscription_id, session)
+
+  @impl true
+  def acknowledge_package_start(start_id, actor_id),
+    do: adapter().acknowledge_package_start(start_id, actor_id)
+
+  @impl true
+  def list_package_starts(filters), do: adapter().list_package_starts(filters)
+
+  @impl true
+  def list_waiting_user_ids, do: adapter().list_waiting_user_ids()
+
+  @impl true
+  def confirmation_skips(user_id, day), do: adapter().confirmation_skips(user_id, day)
+
+  @impl true
+  def skip_confirmation(user_id, kind, day), do: adapter().skip_confirmation(user_id, kind, day)
+
+  @impl true
   def record_payment(membership_id, params), do: adapter().record_payment(membership_id, params)
   @impl true
   def create_receipt(membership_id, params), do: adapter().create_receipt(membership_id, params)
@@ -75,7 +99,13 @@ defmodule Palee.Finance.FinanceStore do
   @impl true
   def mark_overdue_invoices, do: adapter().mark_overdue_invoices()
   @impl true
-  def list_finance_cleanup_records(params), do: adapter().list_finance_cleanup_records(params)
+  def list_finance_cleanup_records(filter), do: adapter().list_finance_cleanup_records(filter)
+  @impl true
+  def get_finance_cleanup_record(record_type, record_id),
+    do: adapter().get_finance_cleanup_record(record_type, record_id)
+
+  @impl true
+  def list_finance_customer_ids, do: adapter().list_finance_customer_ids()
   @impl true
   def soft_delete_finance_record(record_type, record_id, admin_id, params),
     do: adapter().soft_delete_finance_record(record_type, record_id, admin_id, params)

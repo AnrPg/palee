@@ -1040,6 +1040,20 @@ defmodule Palee.Notifications do
         url: "/me/payments?box=#{field(payload, :box_slug)}"
       })
 
+  # ADR-795: the member's first session came and the package changed while
+  # it waited: they see what changed and start it with «Το κατάλαβα».
+  def process_event("package_start_review", payload),
+    do:
+      enqueue_simple(:package_start_review, payload, %{
+        organization_id: field(payload, :organization_id),
+        box_name: field(payload, :box_name),
+        package_name: field(payload, :package_name),
+        severity: field(payload, :severity),
+        start_id: field(payload, :start_id),
+        dedupe_key: "package_start_review:#{field(payload, :start_id)}",
+        url: "/me/payments?box=#{field(payload, :box_slug)}"
+      })
+
   # ADR-690: the Palee team adopted or merged a workout type the box made.
   def process_event("workout_kind_adopted", payload),
     do:
@@ -1651,7 +1665,9 @@ defmodule Palee.Notifications do
     |> List.wrap()
     |> Enum.uniq()
     |> Enum.reduce_while(:ok, fn athlete_id, :ok ->
+      # ADR-785: a class variant also opens its class, booked or not.
       offer = field(payload, :class_offer)
+      class_link = offer || field(payload, :class_variant_slot)
 
       result =
         deliver_notification(athlete_id, :workout_assigned, %{
@@ -1662,10 +1678,13 @@ defmodule Palee.Notifications do
           # ADR-746: a WOD for a class the member has not booked opens that
           # class, where «Κράτηση» books it.
           class_slot_id: offer && field(offer, :slot_id),
+          # ADR-785: a class variant is told in the bell only.
+          class_variant: field(payload, :class_variant) == true,
+          silent: field(payload, :class_variant) == true,
           url:
-            if(offer,
+            if(class_link,
               do:
-                "/box/schedule?open_slot=#{field(offer, :slot_id)}&open_day=#{field(offer, :day)}",
+                "/box/schedule?open_slot=#{field(class_link, :slot_id)}&open_day=#{field(class_link, :day)}",
               else: "/box/workouts"
             )
         })

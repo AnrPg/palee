@@ -1001,6 +1001,18 @@ msgstr "%{box} · %{package}: شروط جديدة من %{date}."
 msgid "%{box} · %{package}: new terms apply from today."
 msgstr "%{box} · %{package}: شروط جديدة من اليوم."
 
+msgid "Your package costs more now"
+msgstr "أصبحت باقتك أغلى"
+
+msgid "Your package gives less now"
+msgstr "أصبحت باقتك تقدّم أقل"
+
+msgid "Your package changed"
+msgstr "تغيّرت باقتك"
+
+msgid "%{box} · %{package} changed while it waited. See what changed to start it."
+msgstr "%{box} · تغيّرت %{package} أثناء الانتظار. اطّلع على التغييرات لبدئها."
+
 msgid "You are on the waitlist"
 msgstr "أنت على قائمة الانتظار"
 

@@ -14932,6 +14932,108 @@
                   "nullable": true,
                   "type": "string"
                 },
+                "package_start": {
+                  "description": "ADR-795: the package waits for the member's first class or WOD (`waiting`), or changed meanwhile and waits for «Το κατάλαβα» (`review`).",
+                  "nullable": true,
+                  "properties": {
+                    "acknowledged_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "changes": {
+                      "items": {
+                        "properties": {
+                          "from": {
+                            "description": "What the member bought.",
+                            "nullable": true
+                          },
+                          "key": {
+                            "description": "`name`, `price`, or a package contract field key.",
+                            "type": "string"
+                          },
+                          "severity": {
+                            "enum": [
+                              "important",
+                              "serious",
+                              "warning"
+                            ],
+                            "type": "string"
+                          },
+                          "to": {
+                            "description": "The package now.",
+                            "nullable": true
+                          }
+                        },
+                        "required": [
+                          "key",
+                          "severity"
+                        ],
+                        "title": "PackageStartChange",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "package_name": {
+                      "type": "string"
+                    },
+                    "session_kind": {
+                      "enum": [
+                        "class",
+                        "workout"
+                      ],
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "session_on": {
+                      "format": "date",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "severity": {
+                      "enum": [
+                        "important",
+                        "serious",
+                        "warning"
+                      ],
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "started_on": {
+                      "format": "date",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum": [
+                        "waiting",
+                        "review"
+                      ],
+                      "type": "string"
+                    },
+                    "subscription_id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "waiting_since": {
+                      "format": "date",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "status",
+                    "package_name",
+                    "waiting_since",
+                    "changes"
+                  ],
+                  "title": "PackageStart",
+                  "type": "object"
+                },
                 "package_type": {
                   "nullable": true,
                   "type": "string"
@@ -15304,6 +15406,108 @@
           "package_name": {
             "nullable": true,
             "type": "string"
+          },
+          "package_start": {
+            "description": "ADR-795: the package waits for the member's first class or WOD (`waiting`), or changed meanwhile and waits for «Το κατάλαβα» (`review`).",
+            "nullable": true,
+            "properties": {
+              "acknowledged_at": {
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+              },
+              "changes": {
+                "items": {
+                  "properties": {
+                    "from": {
+                      "description": "What the member bought.",
+                      "nullable": true
+                    },
+                    "key": {
+                      "description": "`name`, `price`, or a package contract field key.",
+                      "type": "string"
+                    },
+                    "severity": {
+                      "enum": [
+                        "important",
+                        "serious",
+                        "warning"
+                      ],
+                      "type": "string"
+                    },
+                    "to": {
+                      "description": "The package now.",
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "key",
+                    "severity"
+                  ],
+                  "title": "PackageStartChange",
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "package_name": {
+                "type": "string"
+              },
+              "session_kind": {
+                "enum": [
+                  "class",
+                  "workout"
+                ],
+                "nullable": true,
+                "type": "string"
+              },
+              "session_on": {
+                "format": "date",
+                "nullable": true,
+                "type": "string"
+              },
+              "severity": {
+                "enum": [
+                  "important",
+                  "serious",
+                  "warning"
+                ],
+                "nullable": true,
+                "type": "string"
+              },
+              "started_on": {
+                "format": "date",
+                "nullable": true,
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "waiting",
+                  "review"
+                ],
+                "type": "string"
+              },
+              "subscription_id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "waiting_since": {
+                "format": "date",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "status",
+              "package_name",
+              "waiting_since",
+              "changes"
+            ],
+            "title": "PackageStart",
+            "type": "object"
           },
           "package_type": {
             "nullable": true,
@@ -21234,6 +21438,8 @@
                   "type": "string"
                 },
                 "rank": {
+                  "description": "Null on a member's own variant (ADR-785), listed after the ranks",
+                  "nullable": true,
                   "type": "integer"
                 },
                 "scale_level_slug": {
@@ -21247,6 +21453,10 @@
                 "value": {
                   "nullable": true,
                   "type": "string"
+                },
+                "variant": {
+                  "description": "ADR-785: the member did their own «Παραλλαγή» of this WOD",
+                  "type": "boolean"
                 }
               },
               "required": [
@@ -21561,6 +21771,8 @@
                         "type": "string"
                       },
                       "rank": {
+                        "description": "Null on a member's own variant (ADR-785), listed after the ranks",
+                        "nullable": true,
                         "type": "integer"
                       },
                       "scale_level_slug": {
@@ -21574,6 +21786,10 @@
                       "value": {
                         "nullable": true,
                         "type": "string"
+                      },
+                      "variant": {
+                        "description": "ADR-785: the member did their own «Παραλλαγή» of this WOD",
+                        "type": "boolean"
                       }
                     },
                     "required": [
@@ -61167,6 +61383,108 @@
                         "nullable": true,
                         "type": "string"
                       },
+                      "package_start": {
+                        "description": "ADR-795: the package waits for the member's first class or WOD (`waiting`), or changed meanwhile and waits for «Το κατάλαβα» (`review`).",
+                        "nullable": true,
+                        "properties": {
+                          "acknowledged_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "changes": {
+                            "items": {
+                              "properties": {
+                                "from": {
+                                  "description": "What the member bought.",
+                                  "nullable": true
+                                },
+                                "key": {
+                                  "description": "`name`, `price`, or a package contract field key.",
+                                  "type": "string"
+                                },
+                                "severity": {
+                                  "enum": [
+                                    "important",
+                                    "serious",
+                                    "warning"
+                                  ],
+                                  "type": "string"
+                                },
+                                "to": {
+                                  "description": "The package now.",
+                                  "nullable": true
+                                }
+                              },
+                              "required": [
+                                "key",
+                                "severity"
+                              ],
+                              "title": "PackageStartChange",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "package_name": {
+                            "type": "string"
+                          },
+                          "session_kind": {
+                            "enum": [
+                              "class",
+                              "workout"
+                            ],
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "session_on": {
+                            "format": "date",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "severity": {
+                            "enum": [
+                              "important",
+                              "serious",
+                              "warning"
+                            ],
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "started_on": {
+                            "format": "date",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "waiting",
+                              "review"
+                            ],
+                            "type": "string"
+                          },
+                          "subscription_id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "waiting_since": {
+                            "format": "date",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "status",
+                          "package_name",
+                          "waiting_since",
+                          "changes"
+                        ],
+                        "title": "PackageStart",
+                        "type": "object"
+                      },
                       "package_type": {
                         "nullable": true,
                         "type": "string"
@@ -66215,6 +66533,138 @@
           "featured_package_id"
         ],
         "title": "PackageAudienceSettings",
+        "type": "object"
+      },
+      "PackageStart": {
+        "description": "ADR-795: the package waits for the member's first class or WOD (`waiting`), or changed meanwhile and waits for «Το κατάλαβα» (`review`).",
+        "nullable": true,
+        "properties": {
+          "acknowledged_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "changes": {
+            "items": {
+              "properties": {
+                "from": {
+                  "description": "What the member bought.",
+                  "nullable": true
+                },
+                "key": {
+                  "description": "`name`, `price`, or a package contract field key.",
+                  "type": "string"
+                },
+                "severity": {
+                  "enum": [
+                    "important",
+                    "serious",
+                    "warning"
+                  ],
+                  "type": "string"
+                },
+                "to": {
+                  "description": "The package now.",
+                  "nullable": true
+                }
+              },
+              "required": [
+                "key",
+                "severity"
+              ],
+              "title": "PackageStartChange",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "package_name": {
+            "type": "string"
+          },
+          "session_kind": {
+            "enum": [
+              "class",
+              "workout"
+            ],
+            "nullable": true,
+            "type": "string"
+          },
+          "session_on": {
+            "format": "date",
+            "nullable": true,
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "important",
+              "serious",
+              "warning"
+            ],
+            "nullable": true,
+            "type": "string"
+          },
+          "started_on": {
+            "format": "date",
+            "nullable": true,
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "waiting",
+              "review"
+            ],
+            "type": "string"
+          },
+          "subscription_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "waiting_since": {
+            "format": "date",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "package_name",
+          "waiting_since",
+          "changes"
+        ],
+        "title": "PackageStart",
+        "type": "object"
+      },
+      "PackageStartChange": {
+        "properties": {
+          "from": {
+            "description": "What the member bought.",
+            "nullable": true
+          },
+          "key": {
+            "description": "`name`, `price`, or a package contract field key.",
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "important",
+              "serious",
+              "warning"
+            ],
+            "type": "string"
+          },
+          "to": {
+            "description": "The package now.",
+            "nullable": true
+          }
+        },
+        "required": [
+          "key",
+          "severity"
+        ],
+        "title": "PackageStartChange",
         "type": "object"
       },
       "PairWatchRequest": {
@@ -122647,6 +123097,8 @@
             "type": "object"
           },
           "rank": {
+            "description": "Null on a member's own variant (ADR-785), listed after the ranks",
+            "nullable": true,
             "type": "integer"
           },
           "scale_level_slug": {
@@ -122664,6 +123116,10 @@
           "value": {
             "nullable": true,
             "type": "string"
+          },
+          "variant": {
+            "description": "ADR-785: the member did their own «Παραλλαγή» of this WOD",
+            "type": "boolean"
           }
         },
         "required": [
@@ -122742,6 +123198,8 @@
                   "type": "object"
                 },
                 "rank": {
+                  "description": "Null on a member's own variant (ADR-785), listed after the ranks",
+                  "nullable": true,
                   "type": "integer"
                 },
                 "scale_level_slug": {
@@ -122759,6 +123217,10 @@
                 "value": {
                   "nullable": true,
                   "type": "string"
+                },
+                "variant": {
+                  "description": "ADR-785: the member did their own «Παραλλαγή» of this WOD",
+                  "type": "boolean"
                 }
               },
               "required": [
@@ -122835,6 +123297,8 @@
                         "type": "object"
                       },
                       "rank": {
+                        "description": "Null on a member's own variant (ADR-785), listed after the ranks",
+                        "nullable": true,
                         "type": "integer"
                       },
                       "scale_level_slug": {
@@ -122852,6 +123316,10 @@
                       "value": {
                         "nullable": true,
                         "type": "string"
+                      },
+                      "variant": {
+                        "description": "ADR-785: the member did their own «Παραλλαγή» of this WOD",
+                        "type": "boolean"
                       }
                     },
                     "required": [
@@ -135220,6 +135688,8 @@
                                   "type": "string"
                                 },
                                 "rank": {
+                                  "description": "Null on a member's own variant (ADR-785), listed after the ranks",
+                                  "nullable": true,
                                   "type": "integer"
                                 },
                                 "scale_level_slug": {
@@ -135233,6 +135703,10 @@
                                 "value": {
                                   "nullable": true,
                                   "type": "string"
+                                },
+                                "variant": {
+                                  "description": "ADR-785: the member did their own «Παραλλαγή» of this WOD",
+                                  "type": "boolean"
                                 }
                               },
                               "required": [
@@ -146982,6 +147456,108 @@
                                 "package_name": {
                                   "nullable": true,
                                   "type": "string"
+                                },
+                                "package_start": {
+                                  "description": "ADR-795: the package waits for the member's first class or WOD (`waiting`), or changed meanwhile and waits for «Το κατάλαβα» (`review`).",
+                                  "nullable": true,
+                                  "properties": {
+                                    "acknowledged_at": {
+                                      "format": "date-time",
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "changes": {
+                                      "items": {
+                                        "properties": {
+                                          "from": {
+                                            "description": "What the member bought.",
+                                            "nullable": true
+                                          },
+                                          "key": {
+                                            "description": "`name`, `price`, or a package contract field key.",
+                                            "type": "string"
+                                          },
+                                          "severity": {
+                                            "enum": [
+                                              "important",
+                                              "serious",
+                                              "warning"
+                                            ],
+                                            "type": "string"
+                                          },
+                                          "to": {
+                                            "description": "The package now.",
+                                            "nullable": true
+                                          }
+                                        },
+                                        "required": [
+                                          "key",
+                                          "severity"
+                                        ],
+                                        "title": "PackageStartChange",
+                                        "type": "object"
+                                      },
+                                      "type": "array"
+                                    },
+                                    "id": {
+                                      "format": "uuid",
+                                      "type": "string"
+                                    },
+                                    "package_name": {
+                                      "type": "string"
+                                    },
+                                    "session_kind": {
+                                      "enum": [
+                                        "class",
+                                        "workout"
+                                      ],
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "session_on": {
+                                      "format": "date",
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "severity": {
+                                      "enum": [
+                                        "important",
+                                        "serious",
+                                        "warning"
+                                      ],
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "started_on": {
+                                      "format": "date",
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "status": {
+                                      "enum": [
+                                        "waiting",
+                                        "review"
+                                      ],
+                                      "type": "string"
+                                    },
+                                    "subscription_id": {
+                                      "format": "uuid",
+                                      "type": "string"
+                                    },
+                                    "waiting_since": {
+                                      "format": "date",
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "status",
+                                    "package_name",
+                                    "waiting_since",
+                                    "changes"
+                                  ],
+                                  "title": "PackageStart",
+                                  "type": "object"
                                 },
                                 "package_type": {
                                   "nullable": true,
@@ -231879,6 +232455,140 @@
         ]
       }
     },
+    "/api/org/{organization_slug}/admin/confirmation-skips": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminConfirmationSkipsController.index",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "day": {
+                      "format": "date",
+                      "type": "string"
+                    },
+                    "skipped": {
+                      "items": {
+                        "enum": [
+                          "record_payment",
+                          "desk_collect",
+                          "shop_pickup",
+                          "cash_refund"
+                        ],
+                        "type": "string"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "day",
+                    "skipped"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Skipped today"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The money questions I chose not to see again today (box-local day)",
+        "tags": [
+          "Admin Finance"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminConfirmationSkipsController.create",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "record_payment",
+                      "desk_collect",
+                      "shop_pickup",
+                      "cash_refund"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "kind"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "description": "Question",
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "day": {
+                      "format": "date",
+                      "type": "string"
+                    },
+                    "skipped": {
+                      "items": {
+                        "enum": [
+                          "record_payment",
+                          "desk_collect",
+                          "shop_pickup",
+                          "cash_refund"
+                        ],
+                        "type": "string"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "day",
+                    "skipped"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Skipped today"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unknown question"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "«Να μην εμφανιστεί ξανά σήμερα» for one money question",
+        "tags": [
+          "Admin Finance"
+        ]
+      }
+    },
     "/api/org/{organization_slug}/admin/data-exports": {
       "get": {
         "callbacks": {},
@@ -236935,6 +237645,7 @@
         "operationId": "PaleeWeb.AdminFinanceController.cleanup_records",
         "parameters": [
           {
+            "description": "Customer name, @handle or email, document number or record id",
             "in": "query",
             "name": "q",
             "schema": {
@@ -236943,8 +237654,60 @@
           },
           {
             "in": "query",
+            "name": "user_id",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "package_id",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "from",
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "kind",
+            "schema": {
+              "enum": [
+                "invoice",
+                "receipt",
+                "payment"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
             "name": "limit",
             "schema": {
+              "maximum": 100,
               "minimum": 1,
               "type": "integer"
             }
@@ -236969,6 +237732,87 @@
           }
         ],
         "summary": "Search active finance records eligible for audited soft deletion",
+        "tags": [
+          "Admin Finance"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/finance/cleanup-records/packages": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminFinanceController.cleanup_record_packages",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Packages"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Packages to filter finance cleanup records by, inactive ones included",
+        "tags": [
+          "Admin Finance"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/finance/cleanup-records/{id}": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminFinanceController.cleanup_record",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "record_type",
+            "required": true,
+            "schema": {
+              "enum": [
+                "invoice",
+                "receipt",
+                "payment"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Finance cleanup record"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "One active finance record with its details",
         "tags": [
           "Admin Finance"
         ]
@@ -244543,9 +245387,6 @@
                           "unit"
                         ],
                         "type": "object"
-                      },
-                      "terms.validity_starts": {
-                        "type": "string"
                       }
                     },
                     "type": "object"
@@ -245311,9 +246152,6 @@
                           "unit"
                         ],
                         "type": "object"
-                      },
-                      "terms.validity_starts": {
-                        "type": "string"
                       }
                     },
                     "type": "object"
@@ -246097,9 +246935,6 @@
                           "unit"
                         ],
                         "type": "object"
-                      },
-                      "terms.validity_starts": {
-                        "type": "string"
                       }
                     },
                     "type": "object"
@@ -298782,6 +299617,86 @@
         ]
       }
     },
+    "/api/org/{organization_slug}/admin/schedule/slots/{id}/variants/{assignment_id}/keep": {
+      "post": {
+        "callbacks": {},
+        "description": "ADR-785: «Κράτησέ τη». The class WOD as it reads now becomes the variant's starting point, so the roster stops saying it changed.",
+        "operationId": "PaleeWeb.ClassVariantController.keep",
+        "parameters": [
+          {
+            "description": "Scheduled class ID",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "The variant (assigned workout) ID",
+            "in": "path",
+            "name": "assignment_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "ok"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Kept"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such variant of this class"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Keep a member's variant after the class WOD changed",
+        "tags": [
+          "Schedule"
+        ]
+      }
+    },
     "/api/org/{organization_slug}/admin/schedule/slots/{id}/visit-badges": {
       "get": {
         "callbacks": {},
@@ -301541,6 +302456,14 @@
                           },
                           "type": "array"
                         },
+                        "package_starts_with": {
+                          "description": "When a package's period and next payment start: the member's first completed class or WOD (first_session) or the payment (payment)",
+                          "enum": [
+                            "first_session",
+                            "payment"
+                          ],
+                          "type": "string"
+                        },
                         "package_wait_bookings": {
                           "description": "Classes a person may book while their «Το θέλω» request waits to be paid at the front desk, counted per person and box (0 = none until the desk activates the package)",
                           "maximum": 20,
@@ -301584,6 +302507,7 @@
                         "subscription_day_after_reminder",
                         "subscription_grace_days",
                         "package_wait_bookings",
+                        "package_starts_with",
                         "document_mode"
                       ],
                       "type": "object"
@@ -301875,6 +302799,14 @@
                         "type": "array",
                         "uniqueItems": true
                       },
+                      "package_starts_with": {
+                        "description": "When a package's period and next payment start: the member's first completed class or WOD (first_session) or the payment (payment)",
+                        "enum": [
+                          "first_session",
+                          "payment"
+                        ],
+                        "type": "string"
+                      },
                       "package_wait_bookings": {
                         "description": "Classes a person may book while their «Το θέλω» request waits to be paid at the front desk, counted per person and box (0 = none until the desk activates the package)",
                         "maximum": 20,
@@ -302102,6 +303034,14 @@
                           },
                           "type": "array"
                         },
+                        "package_starts_with": {
+                          "description": "When a package's period and next payment start: the member's first completed class or WOD (first_session) or the payment (payment)",
+                          "enum": [
+                            "first_session",
+                            "payment"
+                          ],
+                          "type": "string"
+                        },
                         "package_wait_bookings": {
                           "description": "Classes a person may book while their «Το θέλω» request waits to be paid at the front desk, counted per person and box (0 = none until the desk activates the package)",
                           "maximum": 20,
@@ -302145,6 +303085,7 @@
                         "subscription_day_after_reminder",
                         "subscription_grace_days",
                         "package_wait_bookings",
+                        "package_starts_with",
                         "document_mode"
                       ],
                       "type": "object"
@@ -311898,7 +312839,7 @@
                     "type": "string"
                   },
                   "mode": {
-                    "description": "Member programming mode (ADR-125; ignored for athletes). `class_workout` (default) replaces the booked class's workout for everyone; `class_variant` assigns this member's own version of the booked class (source defaults to the class's workout when `master_workout_id` is omitted); `personal` assigns a personal workout without a class. Both assignment modes require the member's package to include personal programming.",
+                    "description": "Member programming mode (ADR-125; ignored for athletes). `class_variant` (default, ADR-785) assigns this member's own «Παραλλαγή» of one class (source defaults to the WOD the member does in it when `master_workout_id` is omitted), with no programming grant, until the class ends; `class_workout` replaces the booked class's workout for everyone; `personal` assigns a personal workout without a class and requires the member's package to include personal programming.",
                     "enum": [
                       "class_workout",
                       "class_variant",
@@ -314148,7 +315089,7 @@
     "/api/org/{organization_slug}/admin/users/{id}/programming": {
       "post": {
         "callbacks": {},
-        "description": "Athletes receive a personal assignment. Members follow `mode` (ADR-125). Without folder_id, copies are filed automatically (ADR-136): athletes in their folder, class workouts in the class-day folder, member variations in the member's variations folder. Athletes, and members in the personal and class_variant modes, need a package with online programming or personal training (ADR-232); otherwise 403 `programming_not_in_package`.",
+        "description": "Athletes receive a personal assignment. Members follow `mode` (ADR-125). Without folder_id, copies are filed automatically (ADR-136): athletes in their folder, class workouts in the class-day folder, member variations in the member's variations folder. Athletes, and members in the personal mode, need a package with online programming or personal training (ADR-232); otherwise 403 `programming_not_in_package`. A class_variant (ADR-785) needs none and is refused with 422 `class_variant_closed` once the class ended.",
         "operationId": "PaleeWeb.AdminUserController.program_workout",
         "parameters": [
           {
@@ -314189,7 +315130,7 @@
                     "type": "string"
                   },
                   "mode": {
-                    "description": "Member programming mode (ADR-125; ignored for athletes). `class_workout` (default) replaces the booked class's workout for everyone; `class_variant` assigns this member's own version of the booked class (source defaults to the class's workout when `master_workout_id` is omitted); `personal` assigns a personal workout without a class. Both assignment modes require the member's package to include personal programming.",
+                    "description": "Member programming mode (ADR-125; ignored for athletes). `class_variant` (default, ADR-785) assigns this member's own «Παραλλαγή» of one class (source defaults to the WOD the member does in it when `master_workout_id` is omitted), with no programming grant, until the class ends; `class_workout` replaces the booked class's workout for everyone; `personal` assigns a personal workout without a class and requires the member's package to include personal programming.",
                     "enum": [
                       "class_workout",
                       "class_variant",
@@ -351145,6 +352086,8 @@
                             "type": "object"
                           },
                           "rank": {
+                            "description": "Null on a member's own variant (ADR-785), listed after the ranks",
+                            "nullable": true,
                             "type": "integer"
                           },
                           "scale_level_slug": {
@@ -351162,6 +352105,10 @@
                           "value": {
                             "nullable": true,
                             "type": "string"
+                          },
+                          "variant": {
+                            "description": "ADR-785: the member did their own «Παραλλαγή» of this WOD",
+                            "type": "boolean"
                           }
                         },
                         "required": [
@@ -351238,6 +352185,8 @@
                                   "type": "object"
                                 },
                                 "rank": {
+                                  "description": "Null on a member's own variant (ADR-785), listed after the ranks",
+                                  "nullable": true,
                                   "type": "integer"
                                 },
                                 "scale_level_slug": {
@@ -351255,6 +352204,10 @@
                                 "value": {
                                   "nullable": true,
                                   "type": "string"
+                                },
+                                "variant": {
+                                  "description": "ADR-785: the member did their own «Παραλλαγή» of this WOD",
+                                  "type": "boolean"
                                 }
                               },
                               "required": [
@@ -358337,6 +359290,68 @@
           }
         ],
         "summary": "Leave the box now (ADR-595): no longer a member; a package I have stays usable to its last day, money owed stays owed",
+        "tags": [
+          "Member Finance"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/me/membership/package-starts/{id}/acknowledge": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.MyMembershipController.acknowledge_package_start",
+        "parameters": [
+          {
+            "description": "",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Package start"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such package start"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Already started, or the package changed again"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "«Το κατάλαβα» (ADR-795): I saw what changed in my package while it waited; it starts today",
         "tags": [
           "Member Finance"
         ]
@@ -374381,6 +375396,95 @@
           }
         ],
         "summary": "Get the schedule window",
+        "tags": [
+          "Schedule"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/schedule/slots/{id}/my-variant": {
+      "put": {
+        "callbacks": {},
+        "description": "ADR-785: active=false goes back to the class's WODs (the variant stays); active=true does the variant again.",
+        "operationId": "PaleeWeb.ClassVariantController.update_mine",
+        "parameters": [
+          {
+            "description": "Scheduled class ID",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "active": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "active"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "ok"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Saved"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No variant of mine in this class"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Do my variant of the class, or a WOD of the class",
         "tags": [
           "Schedule"
         ]

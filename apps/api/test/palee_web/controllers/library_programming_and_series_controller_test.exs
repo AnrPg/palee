@@ -212,7 +212,9 @@ defmodule PaleeWeb.LibraryProgrammingAndSeriesControllerTest do
           folder_id: folder["id"],
           scheduled_for: day,
           slot_id: slot["id"],
-          copy_source: true
+          copy_source: true,
+          # ADR-785: no mode is a variant for this member; this changes the class.
+          mode: "class_workout"
         })
       )
       |> json_response(201)

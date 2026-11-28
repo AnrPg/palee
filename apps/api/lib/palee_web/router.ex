@@ -829,6 +829,13 @@ defmodule PaleeWeb.Router do
     )
 
     post("/membership/leave", MyMembershipController, :leave)
+    # ADR-795: the member saw what changed in a waiting package; it starts.
+    post(
+      "/membership/package-starts/:id/acknowledge",
+      MyMembershipController,
+      :acknowledge_package_start
+    )
+
     # ADR-155: Box › Check-in.
     get("/check-in/code", MyCheckInController, :code)
     post("/check-in/code/reset", MyCheckInController, :reset_code)
@@ -1010,6 +1017,8 @@ defmodule PaleeWeb.Router do
     get("/schedule/slots/:id/space", ScheduleController, :slot_space)
     # ADR-746: which of the class's WODs I do.
     put("/schedule/slots/:id/my-workout", ClassWorkoutChoiceController, :update)
+    # ADR-785: my variant of the class, or back to its WODs.
+    put("/schedule/slots/:id/my-variant", ClassVariantController, :update_mine)
     get("/landing", LandingController, :show)
     post("/landing/leaderboard-opt-in", LandingController, :update_leaderboard_preference)
     post("/bookings", ScheduleController, :create_booking)
@@ -1690,6 +1699,12 @@ defmodule PaleeWeb.Router do
     # ADR-746: every WOD of a class, its «Τώρα», and someone's WOD.
     put("/schedule/slots/:id/workouts", AdminClassWorkoutsController, :put_workouts)
     put("/schedule/slots/:id/live-workout", AdminClassWorkoutsController, :put_live)
+    # ADR-785: «Κράτησέ τη» after the class WOD changed.
+    post(
+      "/schedule/slots/:id/variants/:assignment_id/keep",
+      ClassVariantController,
+      :keep
+    )
 
     put(
       "/schedule/slots/:id/bookings/:booking_id/workout",
@@ -2011,6 +2026,8 @@ defmodule PaleeWeb.Router do
     put("/shop/pricing-targets", AdminShopReportController, :put_pricing_target)
     get("/finance/queues", AdminFinanceController, :operational_queues)
     get("/finance/cleanup-records", AdminFinanceController, :cleanup_records)
+    get("/finance/cleanup-records/packages", AdminFinanceController, :cleanup_record_packages)
+    get("/finance/cleanup-records/:id", AdminFinanceController, :cleanup_record)
     post("/finance/cleanup-records/:id/purge", AdminFinanceController, :purge_record)
     # ADR-167: seasons.
     get("/seasons", AdminSeasonController, :index)
@@ -2075,6 +2092,9 @@ defmodule PaleeWeb.Router do
     )
 
     post("/finance/members/:id/packages", AdminFinanceController, :assign_package)
+    # ADR-795: «Να μην εμφανιστεί ξανά σήμερα» on the money questions.
+    get("/confirmation-skips", AdminConfirmationSkipsController, :index)
+    post("/confirmation-skips", AdminConfirmationSkipsController, :create)
     # ADR-220: renewal choice and leaving the box.
     put(
       "/finance/members/:id/subscriptions/:subscription_id/auto-renew",

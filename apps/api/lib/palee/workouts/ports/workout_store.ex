@@ -28,6 +28,10 @@ defmodule Palee.Workouts.Ports.WorkoutStore do
   @callback list_assigned_workouts_for_admin(Date.t(), Date.t()) :: [map()]
   @callback list_workout_change_targets(binary()) :: [map()]
   @callback list_class_variants([Ecto.UUID.t()], Ecto.UUID.t() | nil) :: [map()]
+  @callback update_class_variant(Ecto.UUID.t(), map()) :: {:ok, map()} | {:error, term()}
+  @callback delete_class_variants(Ecto.UUID.t(), Ecto.UUID.t() | nil, [Ecto.UUID.t()] | nil) ::
+              {:ok, non_neg_integer()}
+  @callback list_variants_standing_in_for(Ecto.UUID.t(), Date.t(), Date.t()) :: [map()]
   @callback list_workouts() :: [map()]
   @callback list_folders() :: [map()]
   @callback search_workout_choices(keyword()) :: %{workouts: [map()], has_more: boolean()}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 
@@ -24,7 +25,19 @@ export function MediaGrid({ personId, lock, mine = false }: { personId: string; 
   const t = useTranslations("Social");
   const { tokens } = useSession();
   const token = tokens?.access_token ?? null;
-  const [openId, setOpenId] = useState<string | null>(null);
+  const router = useRouter();
+  const pathname = usePathname();
+  const params = useSearchParams();
+  // ?post=<id> (from the photo viewer's strip) opens that post over the grid.
+  const [openId, setOpenId] = useState<string | null>(() => params.get("post"));
+  const close = () => {
+    setOpenId(null);
+    if (params.has("post")) {
+      const next = new URLSearchParams(params);
+      next.delete("post");
+      router.replace(`${pathname}?${next.toString()}`, { scroll: false });
+    }
+  };
   const media = useInfiniteQuery({
     queryKey: personMediaKey(personId),
     enabled: Boolean(token),
@@ -67,7 +80,7 @@ export function MediaGrid({ personId, lock, mine = false }: { personId: string; 
       ) : null}
       {lock ? <LockedNote textKey={lock} /> : null}
       {open ? (
-        <Dialog onClose={() => setOpenId(null)} ariaLabel={t("mediaPostOf", { name: open.author.nickname ?? "?" })} size="lg" variant="sheet" bodyClassName="p-0 sm:p-2">
+        <Dialog onClose={close} ariaLabel={t("mediaPostOf", { name: open.author.nickname ?? "?" })} size="lg" variant="sheet" bodyClassName="p-0 sm:p-2">
           <PostCard post={open} />
         </Dialog>
       ) : null}
@@ -129,7 +142,7 @@ function Tile({ post, onOpen }: { post: CommunityPost; onOpen: () => void }) {
   );
 }
 
-function tileLabel(tile: MediaTile, t: ReturnType<typeof useTranslations<"Social">>): string {
+export function tileLabel(tile: MediaTile, t: ReturnType<typeof useTranslations<"Social">>): string {
   const what =
     tile.kind === "video" ? t("mediaVideo", { duration: tile.duration ?? "" }) : tile.kind === "album" ? t("mediaAlbum", { count: tile.count }) : t("mediaPhoto");
   return tile.alt ? `${what}: ${tile.alt}` : what;

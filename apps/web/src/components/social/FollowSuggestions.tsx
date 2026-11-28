@@ -140,7 +140,7 @@ function SuggestionCard({ person, seedName }: { person: FollowSuggestion; seedNa
             <DismissButton name={name} onClick={state.dismiss} busy={state.busy} />
           </span>
           <Link href={`/people/${person.id}`} className="flex min-w-0 flex-col items-center gap-1">
-            <PersonAvatar name={name} url={person.avatar_url} size={52} />
+            <PersonAvatar name={name} url={person.avatar_url} personId={person.id} size={52} />
             <span className="w-full truncate font-bold" style={{ color: "var(--text)" }}>{name}</span>
             {person.handle ? <span className="w-full truncate text-xs" style={{ color: "var(--dim)" }}>@{person.handle}</span> : null}
           </Link>
@@ -167,7 +167,7 @@ export function SuggestionRow({ person }: { person: FollowSuggestion }) {
       ) : (
         <>
           <Link href={`/people/${person.id}`} className={itemRowMain}>
-            <PersonAvatar name={name} url={person.avatar_url} />
+            <PersonAvatar name={name} url={person.avatar_url} personId={person.id} />
             <span className="min-w-0">
               <span className="block truncate font-bold" style={{ color: "var(--text)" }}>
                 {name}

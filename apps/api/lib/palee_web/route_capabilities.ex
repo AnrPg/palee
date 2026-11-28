@@ -265,6 +265,8 @@ defmodule PaleeWeb.RouteCapabilities do
     ],
     {W.AdminClassWorkoutsController, :put_live} => [:manage_schedule, :run_classes],
     {W.AdminClassWorkoutsController, :put_booking_workout} => [:manage_schedule, :run_classes],
+    # ADR-785: «Κράτησέ τη» on a member's variant, for whoever makes variants.
+    {W.ClassVariantController, :keep} => [:manage_coaching],
     {W.AdminScheduleController, :approve_booking} => [:run_classes],
     {W.AdminScheduleController, :reject_booking} => [:run_classes],
     {W.AdminScheduleController, :record_attendance} => [:run_classes],
@@ -439,6 +441,9 @@ defmodule PaleeWeb.RouteCapabilities do
     {W.AdminCoachPayController, :archive_item} => [:manage_settings],
     # A staff member's own statements: every staff role may be paid (ADR-382);
     # the service only ever reads the caller's own.
+    # ADR-795: the money questions are asked of whoever records money.
+    {W.AdminConfirmationSkipsController, :index} => [:take_payments, :manage_billing],
+    {W.AdminConfirmationSkipsController, :create} => [:take_payments, :manage_billing],
     {W.MyCoachPayController, :index} => @own_pay,
     {W.MyCoachPayController, :payslip} => @own_pay,
     # ADR-340: the card surcharge.
@@ -524,6 +529,8 @@ defmodule PaleeWeb.RouteCapabilities do
     {W.AdminShopReportController, :put_pricing_target} => [:manage_shop, :manage_settings],
     {W.AdminFinanceController, :operational_queues} => [:view_finance_reports],
     {W.AdminFinanceController, :cleanup_records} => [:manage_billing],
+    {W.AdminFinanceController, :cleanup_record_packages} => [:manage_billing],
+    {W.AdminFinanceController, :cleanup_record} => [:manage_billing],
     {W.AdminFinanceController, :purge_record} => [:manage_billing],
     {W.AdminFinanceController, :packages} => [:view_package_catalog],
     {W.AdminPackageAudienceController, :show} => [:manage_packages, :view_package_catalog],

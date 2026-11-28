@@ -158,7 +158,7 @@ function ClubDetail({ clubId, manage, onEdit }: { clubId: string; manage: boolea
             {requests.map((row) => (
               <li key={row.person.id} className={`${itemRow} min-h-12 py-1`}>
                 <span className={itemRowMain}>
-                  <PersonAvatar name={row.person.nickname} url={row.person.avatar_url} size={32} />
+                  <PersonAvatar name={row.person.nickname} url={row.person.avatar_url} personId={row.person.id} size={32} />
                   <span className="min-w-0 truncate text-sm font-bold" style={{ color: "var(--text)" }}>{row.person.nickname ?? "?"}</span>
                 </span>
                 <span className={itemRowActions}>
@@ -180,7 +180,7 @@ function ClubDetail({ clubId, manage, onEdit }: { clubId: string; manage: boolea
           <ul className="flex flex-col">
             {members.map((row) => (
               <li key={row.person.id} className="flex min-h-12 items-center gap-3 py-1">
-                <PersonAvatar name={row.person.nickname} url={row.person.avatar_url} size={32} />
+                <PersonAvatar name={row.person.nickname} url={row.person.avatar_url} personId={row.person.id} size={32} />
                 <span className="min-w-0 grow truncate text-sm font-bold" style={{ color: "var(--text)" }}>{row.person.nickname ?? "?"}</span>
                 <SmallButton disabled={act.isPending} onClick={() => act.mutate({ userId: row.person.id, action: "remove" })}>{t("remove")}</SmallButton>
               </li>

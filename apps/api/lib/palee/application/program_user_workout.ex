@@ -22,10 +22,19 @@ defmodule Palee.Application.ProgramUserWorkout do
   class variants in `Variations for member/<nickname>` (still hidden from the
   shared library, ADR-125).
 
-  Athletes and the two member assignment modes need online programming or
-  personal training in the package (ADR-225), checked before the library
-  copy is made so a denial leaves no orphan. Changing a booked class's WOD
-  (`class_workout`) programs the class, not the person, and is not checked.
+  Athletes and `personal` need online programming or personal training in
+  the package (ADR-225), checked before the library copy is made so a denial
+  leaves no orphan. Changing a booked class's WOD (`class_workout`) programs
+  the class, not the person, and is not checked.
+
+  ADR-785 (ANR, 2026-11-28): a `class_variant` is part of the class, so it
+  needs no programming grant (executing it needs what the class needs). It
+  starts from the WOD the member does in that class (their pick, else
+  «Τώρα»), remembers which class WOD it stands in for and that WOD's content
+  hash (the roster says when the class WOD changed after), and replaces the
+  member's earlier variant of the same class. A missing `mode` is a
+  `class_variant`: the profile never changes a class for everyone unless
+  asked to.
   """
 
   alias Palee.Application.{
@@ -37,18 +46,21 @@ defmodule Palee.Application.ProgramUserWorkout do
   }
 
   alias Palee.{Identity, Organizations, Scheduling, Workouts}
-  alias Palee.Workouts.Domain.AssignmentAudiencePolicy
+  alias Palee.Scheduling.Domain.ClassWorkouts
+  alias Palee.Workouts.Domain.{AssignmentAudiencePolicy, ClassVariant}
 
-  def call(context, _admin, user_id, params) do
+  def call(context, admin, user_id, params) do
     with %{} = user <- Identity.find_by_id(user_id) || {:error, :not_found},
          {:ok, role} <- tenant_role(context, user.id),
          {:ok, mode} <- programming_mode(role, params),
          :ok <- validate_target(context, mode, user, params),
-         {:ok, params} <- resolve_source_workout(context, mode, params),
+         {:ok, params} <- resolve_source_workout(context, mode, user, params),
+         {:ok, params} <- variant_origin(context, mode, admin, user, params),
          {:ok, folder_id} <- target_folder_id(context, mode, user, params),
          {:ok, workout} <- prepare_workout(context, mode, user, folder_id, params),
          :ok <- keep_member_copy_personal(context, mode, workout, params),
-         {:ok, association} <- associate(context, mode, user, workout.id, params) do
+         {:ok, association} <- associate(context, mode, user, workout.id, params),
+         :ok <- replace_earlier_variant(context, mode, user, association, params) do
       {:ok, %{workout: workout, association: association, mode: to_string(mode)}}
     end
   end
@@ -69,11 +81,9 @@ defmodule Palee.Application.ProgramUserWorkout do
   defp validate_target(context, :personal, %{id: member_id}, _params),
     do: AuthorizeProgramming.call(context, [member_id])
 
-  defp validate_target(context, :class_variant, %{id: member_id} = user, params) do
-    with :ok <- validate_class_slot(context, user, params) do
-      AuthorizeProgramming.call(context, [member_id])
-    end
-  end
+  # ADR-785: a variant is the class's; no programming grant is needed.
+  defp validate_target(context, :class_variant, user, params),
+    do: validate_class_slot(context, user, params)
 
   defp validate_target(context, :class_workout, user, params),
     do: validate_booked_slot(context, user, params)
@@ -116,30 +126,87 @@ defmodule Palee.Application.ProgramUserWorkout do
     end
   end
 
-  # A member's version of a class starts from the class's own workout unless
-  # the coach picked another source.
-  defp resolve_source_workout(context, :class_variant, params) do
+  # A member's version of a class starts from the WOD they do in it (their
+  # pick, else «Τώρα», ADR-785) unless the coach picked another source.
+  defp resolve_source_workout(context, :class_variant, user, params) do
     case value(params, :master_workout_id) do
       id when is_binary(id) and id != "" ->
         {:ok, params}
 
       _missing ->
-        case Scheduling.get_slot(context, value(params, :slot_id)) do
-          %{master_workout_id: workout_id} when is_binary(workout_id) ->
-            {:ok, Map.put(params, :master_workout_id, workout_id)}
-
-          _ ->
-            {:error, :workout_not_found}
+        with %{} = slot <- Scheduling.get_slot(context, value(params, :slot_id)),
+             workout_id when is_binary(workout_id) <- member_class_workout(slot, user) do
+          {:ok, Map.put(params, :master_workout_id, workout_id)}
+        else
+          _ -> {:error, :workout_not_found}
         end
     end
   end
 
-  defp resolve_source_workout(_context, _mode, params) do
+  defp resolve_source_workout(_context, _mode, _user, params) do
     case value(params, :master_workout_id) do
       id when is_binary(id) and id != "" -> {:ok, params}
       _missing -> {:error, :workout_not_found}
     end
   end
+
+  defp member_class_workout(slot, %{id: member_id}) do
+    booking =
+      slot
+      |> Map.get(:bookings, [])
+      |> Enum.find(
+        &(&1.user_id == member_id and is_nil(Map.get(&1, :guest_name)) and
+            &1.status in [:pending, :approved, "pending", "approved"])
+      )
+
+    if ClassWorkouts.ids(slot) == [], do: nil, else: ClassWorkouts.effective_id(booking, slot)
+  end
+
+  # ADR-785: which class WOD the variant stands in for, and that WOD's
+  # content now, so the roster can tell when it changes later.
+  defp variant_origin(context, :class_variant, admin, user, params) do
+    case Scheduling.get_slot(context, value(params, :slot_id)) do
+      %{} = slot ->
+        of =
+          ClassVariant.stands_in_for(
+            value(params, :master_workout_id),
+            ClassWorkouts.ids(slot),
+            member_class_workout(slot, user)
+          )
+
+        {:ok,
+         params
+         |> Map.put(:variant_of_workout_id, of)
+         |> Map.put(:variant_source_hash, content_hash(context, of))
+         |> Map.put(:assigned_by_user_id, admin && Map.get(admin, :id))}
+
+      nil ->
+        {:error, :slot_not_found}
+    end
+  end
+
+  defp variant_origin(_context, _mode, _admin, _user, params), do: {:ok, params}
+
+  defp content_hash(_context, nil), do: nil
+
+  defp content_hash(context, workout_id) do
+    case Workouts.get_workout_for_admin(context, workout_id) do
+      %{} = workout -> workout |> Workouts.build_snapshot() |> Map.get(:content_hash)
+      _missing -> nil
+    end
+  end
+
+  # ADR-785 (ε): a new variant replaces the member's earlier one of this class.
+  defp replace_earlier_variant(context, :class_variant, %{id: member_id}, association, params) do
+    {:ok, _count} =
+      Workouts.delete_class_variants(context, value(params, :slot_id), member_id, [
+        association.id
+      ])
+
+    :ok
+  end
+
+  defp replace_earlier_variant(_context, _mode, _user, _association, _params), do: :ok
 
   # Without an explicit folder the workout is filed automatically: in the
   # athlete's own folder, the class's Classes/<year>/<month>/<date> folder, or
@@ -259,7 +326,10 @@ defmodule Palee.Application.ProgramUserWorkout do
       scheduled_for: value(params, :scheduled_for),
       instructions: value(params, :instructions),
       source_slot_id: value(params, :slot_id),
-      offer_booking: value(params, :offer_booking) == true
+      offer_booking: value(params, :offer_booking) == true,
+      variant_of_workout_id: value(params, :variant_of_workout_id),
+      variant_source_hash: value(params, :variant_source_hash),
+      assigned_by_user_id: value(params, :assigned_by_user_id)
     })
   end
 

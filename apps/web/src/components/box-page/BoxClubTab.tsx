@@ -185,7 +185,7 @@ function SideColumn({
             <span className="flex">
               {(members.data.members ?? []).slice(0, FACES_SHOWN).map((member, index) => (
                 <span key={member.id} className={`rounded-full ${index > 0 ? "-ms-2" : ""}`} style={{ border: "2px solid var(--panel)" }}>
-                  <PersonAvatar name={member.nickname} url={member.avatar_url} size={28} />
+                  <PersonAvatar name={member.nickname} url={member.avatar_url} personId={member.id} size={28} />
                 </span>
               ))}
             </span>

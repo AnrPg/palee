@@ -7749,6 +7749,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/confirmation-skips": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The money questions I chose not to see again today (box-local day) */
+        get: operations["PaleeWeb.AdminConfirmationSkipsController.index"];
+        put?: never;
+        /** «Να μην εμφανιστεί ξανά σήμερα» for one money question */
+        post: operations["PaleeWeb.AdminConfirmationSkipsController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/data-exports": {
         parameters: {
             query?: never;
@@ -8267,6 +8285,40 @@ export interface paths {
         };
         /** Search active finance records eligible for audited soft deletion */
         get: operations["PaleeWeb.AdminFinanceController.cleanup_records"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/finance/cleanup-records/packages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Packages to filter finance cleanup records by, inactive ones included */
+        get: operations["PaleeWeb.AdminFinanceController.cleanup_record_packages"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/finance/cleanup-records/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One active finance record with its details */
+        get: operations["PaleeWeb.AdminFinanceController.cleanup_record"];
         put?: never;
         post?: never;
         delete?: never;
@@ -12629,6 +12681,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/schedule/slots/{id}/variants/{assignment_id}/keep": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Keep a member's variant after the class WOD changed
+         * @description ADR-785: «Κράτησέ τη». The class WOD as it reads now becomes the variant's starting point, so the roster stops saying it changed.
+         */
+        post: operations["PaleeWeb.ClassVariantController.keep"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/schedule/slots/{id}/visit-badges": {
         parameters: {
             query?: never;
@@ -13719,7 +13791,7 @@ export interface paths {
         put?: never;
         /**
          * Copy or save a workout and associate it with this user's assignment, class variant or booked class
-         * @description Athletes receive a personal assignment. Members follow `mode` (ADR-125). Without folder_id, copies are filed automatically (ADR-136): athletes in their folder, class workouts in the class-day folder, member variations in the member's variations folder. Athletes, and members in the personal and class_variant modes, need a package with online programming or personal training (ADR-232); otherwise 403 `programming_not_in_package`.
+         * @description Athletes receive a personal assignment. Members follow `mode` (ADR-125). Without folder_id, copies are filed automatically (ADR-136): athletes in their folder, class workouts in the class-day folder, member variations in the member's variations folder. Athletes, and members in the personal mode, need a package with online programming or personal training (ADR-232); otherwise 403 `programming_not_in_package`. A class_variant (ADR-785) needs none and is refused with 422 `class_variant_closed` once the class ended.
          */
         post: operations["PaleeWeb.AdminUserController.program_workout"];
         delete?: never;
@@ -15972,6 +16044,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/me/membership/package-starts/{id}/acknowledge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Το κατάλαβα» (ADR-795): I saw what changed in my package while it waited; it starts today */
+        post: operations["PaleeWeb.MyMembershipController.acknowledge_package_start"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/me/membership/subscriptions/{id}/auto-renew": {
         parameters: {
             query?: never;
@@ -17354,6 +17443,26 @@ export interface paths {
         /** Get the schedule window */
         get: operations["PaleeWeb.ScheduleController.index"];
         put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/schedule/slots/{id}/my-variant": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Do my variant of the class, or a WOD of the class
+         * @description ADR-785: active=false goes back to the class's WODs (the variant stays); active=true does the variant again.
+         */
+        put: operations["PaleeWeb.ClassVariantController.update_mine"];
         post?: never;
         delete?: never;
         options?: never;
@@ -26327,6 +26436,41 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 package_name?: string | null;
+                /**
+                 * PackageStart
+                 * @description ADR-795: the package waits for the member's first class or WOD (`waiting`), or changed meanwhile and waits for «Το κατάλαβα» (`review`).
+                 */
+                package_start?: {
+                    /** Format: date-time */
+                    acknowledged_at?: string | null;
+                    changes: {
+                        /** @description What the member bought. */
+                        from?: unknown;
+                        /** @description `name`, `price`, or a package contract field key. */
+                        key: string;
+                        /** @enum {string} */
+                        severity: "important" | "serious" | "warning";
+                        /** @description The package now. */
+                        to?: unknown;
+                    }[];
+                    /** Format: uuid */
+                    id: string;
+                    package_name: string;
+                    /** @enum {string|null} */
+                    session_kind?: "class" | "workout" | null;
+                    /** Format: date */
+                    session_on?: string | null;
+                    /** @enum {string|null} */
+                    severity?: "important" | "serious" | "warning" | null;
+                    /** Format: date */
+                    started_on?: string | null;
+                    /** @enum {string} */
+                    status: "waiting" | "review";
+                    /** Format: uuid */
+                    subscription_id?: string;
+                    /** Format: date */
+                    waiting_since: string;
+                } | null;
                 package_type?: string | null;
                 price_cents?: number | null;
                 /** Format: date */
@@ -26438,6 +26582,41 @@ export interface components {
             /** Format: uuid */
             id: string;
             package_name?: string | null;
+            /**
+             * PackageStart
+             * @description ADR-795: the package waits for the member's first class or WOD (`waiting`), or changed meanwhile and waits for «Το κατάλαβα» (`review`).
+             */
+            package_start?: {
+                /** Format: date-time */
+                acknowledged_at?: string | null;
+                changes: {
+                    /** @description What the member bought. */
+                    from?: unknown;
+                    /** @description `name`, `price`, or a package contract field key. */
+                    key: string;
+                    /** @enum {string} */
+                    severity: "important" | "serious" | "warning";
+                    /** @description The package now. */
+                    to?: unknown;
+                }[];
+                /** Format: uuid */
+                id: string;
+                package_name: string;
+                /** @enum {string|null} */
+                session_kind?: "class" | "workout" | null;
+                /** Format: date */
+                session_on?: string | null;
+                /** @enum {string|null} */
+                severity?: "important" | "serious" | "warning" | null;
+                /** Format: date */
+                started_on?: string | null;
+                /** @enum {string} */
+                status: "waiting" | "review";
+                /** Format: uuid */
+                subscription_id?: string;
+                /** Format: date */
+                waiting_since: string;
+            } | null;
             package_type?: string | null;
             price_cents?: number | null;
             /** Format: date */
@@ -28155,10 +28334,13 @@ export interface components {
             entries: {
                 /** @description First word of the display name */
                 name: string;
-                rank: number;
+                /** @description Null on a member's own variant (ADR-785), listed after the ranks */
+                rank: number | null;
                 scale_level_slug: string | null;
                 unit: string | null;
                 value: string | null;
+                /** @description ADR-785: the member did their own «Παραλλαγή» of this WOD */
+                variant?: boolean;
             }[];
             score: {
                 name?: string | null;
@@ -28275,10 +28457,13 @@ export interface components {
                 entries: {
                     /** @description First word of the display name */
                     name: string;
-                    rank: number;
+                    /** @description Null on a member's own variant (ADR-785), listed after the ranks */
+                    rank: number | null;
                     scale_level_slug: string | null;
                     unit: string | null;
                     value: string | null;
+                    /** @description ADR-785: the member did their own «Παραλλαγή» of this WOD */
+                    variant?: boolean;
                 }[];
                 score: {
                     name?: string | null;
@@ -40522,6 +40707,41 @@ export interface components {
                     /** Format: uuid */
                     id: string;
                     package_name?: string | null;
+                    /**
+                     * PackageStart
+                     * @description ADR-795: the package waits for the member's first class or WOD (`waiting`), or changed meanwhile and waits for «Το κατάλαβα» (`review`).
+                     */
+                    package_start?: {
+                        /** Format: date-time */
+                        acknowledged_at?: string | null;
+                        changes: {
+                            /** @description What the member bought. */
+                            from?: unknown;
+                            /** @description `name`, `price`, or a package contract field key. */
+                            key: string;
+                            /** @enum {string} */
+                            severity: "important" | "serious" | "warning";
+                            /** @description The package now. */
+                            to?: unknown;
+                        }[];
+                        /** Format: uuid */
+                        id: string;
+                        package_name: string;
+                        /** @enum {string|null} */
+                        session_kind?: "class" | "workout" | null;
+                        /** Format: date */
+                        session_on?: string | null;
+                        /** @enum {string|null} */
+                        severity?: "important" | "serious" | "warning" | null;
+                        /** Format: date */
+                        started_on?: string | null;
+                        /** @enum {string} */
+                        status: "waiting" | "review";
+                        /** Format: uuid */
+                        subscription_id?: string;
+                        /** Format: date */
+                        waiting_since: string;
+                    } | null;
                     package_type?: string | null;
                     price_cents?: number | null;
                     /** Format: date */
@@ -42062,6 +42282,52 @@ export interface components {
              * @description ADR-596: the package the public page and website feature
              */
             featured_package_id: string | null;
+        };
+        /**
+         * PackageStart
+         * @description ADR-795: the package waits for the member's first class or WOD (`waiting`), or changed meanwhile and waits for «Το κατάλαβα» (`review`).
+         */
+        PackageStart: {
+            /** Format: date-time */
+            acknowledged_at?: string | null;
+            changes: {
+                /** @description What the member bought. */
+                from?: unknown;
+                /** @description `name`, `price`, or a package contract field key. */
+                key: string;
+                /** @enum {string} */
+                severity: "important" | "serious" | "warning";
+                /** @description The package now. */
+                to?: unknown;
+            }[];
+            /** Format: uuid */
+            id: string;
+            package_name: string;
+            /** @enum {string|null} */
+            session_kind?: "class" | "workout" | null;
+            /** Format: date */
+            session_on?: string | null;
+            /** @enum {string|null} */
+            severity?: "important" | "serious" | "warning" | null;
+            /** Format: date */
+            started_on?: string | null;
+            /** @enum {string} */
+            status: "waiting" | "review";
+            /** Format: uuid */
+            subscription_id?: string;
+            /** Format: date */
+            waiting_since: string;
+        } | null;
+        /** PackageStartChange */
+        PackageStartChange: {
+            /** @description What the member bought. */
+            from?: unknown;
+            /** @description `name`, `price`, or a package contract field key. */
+            key: string;
+            /** @enum {string} */
+            severity: "important" | "serious" | "warning";
+            /** @description The package now. */
+            to?: unknown;
         };
         /** PairWatchRequest */
         PairWatchRequest: {
@@ -58746,12 +59012,15 @@ export interface components {
                 planned_ms: number;
                 ran_ms: number;
             } | null;
-            rank: number;
+            /** @description Null on a member's own variant (ADR-785), listed after the ranks */
+            rank: number | null;
             scale_level_slug?: string | null;
             unit?: string | null;
             /** Format: uuid */
             user_id: string;
             value?: string | null;
+            /** @description ADR-785: the member did their own «Παραλλαγή» of this WOD */
+            variant?: boolean;
         };
         /** WodTodayCard */
         WodTodayCard: {
@@ -58776,12 +59045,15 @@ export interface components {
                     planned_ms: number;
                     ran_ms: number;
                 } | null;
-                rank: number;
+                /** @description Null on a member's own variant (ADR-785), listed after the ranks */
+                rank: number | null;
                 scale_level_slug?: string | null;
                 unit?: string | null;
                 /** Format: uuid */
                 user_id: string;
                 value?: string | null;
+                /** @description ADR-785: the member did their own «Παραλλαγή» of this WOD */
+                variant?: boolean;
             }[];
             logged_by_me: boolean;
             /** @description ADR-746: the day's other class WODs, each its own card. */
@@ -58803,12 +59075,15 @@ export interface components {
                         planned_ms: number;
                         ran_ms: number;
                     } | null;
-                    rank: number;
+                    /** @description Null on a member's own variant (ADR-785), listed after the ranks */
+                    rank: number | null;
                     scale_level_slug?: string | null;
                     unit?: string | null;
                     /** Format: uuid */
                     user_id: string;
                     value?: string | null;
+                    /** @description ADR-785: the member did their own «Παραλλαγή» of this WOD */
+                    variant?: boolean;
                 }[];
                 logged_by_me: boolean;
                 score?: {
@@ -63440,10 +63715,13 @@ export interface operations {
                             entries: {
                                 /** @description First word of the display name */
                                 name: string;
-                                rank: number;
+                                /** @description Null on a member's own variant (ADR-785), listed after the ranks */
+                                rank: number | null;
                                 scale_level_slug: string | null;
                                 unit: string | null;
                                 value: string | null;
+                                /** @description ADR-785: the member did their own «Παραλλαγή» of this WOD */
+                                variant?: boolean;
                             }[];
                             score: {
                                 name?: string | null;
@@ -67960,6 +68238,41 @@ export interface operations {
                                 /** Format: uuid */
                                 id: string;
                                 package_name?: string | null;
+                                /**
+                                 * PackageStart
+                                 * @description ADR-795: the package waits for the member's first class or WOD (`waiting`), or changed meanwhile and waits for «Το κατάλαβα» (`review`).
+                                 */
+                                package_start?: {
+                                    /** Format: date-time */
+                                    acknowledged_at?: string | null;
+                                    changes: {
+                                        /** @description What the member bought. */
+                                        from?: unknown;
+                                        /** @description `name`, `price`, or a package contract field key. */
+                                        key: string;
+                                        /** @enum {string} */
+                                        severity: "important" | "serious" | "warning";
+                                        /** @description The package now. */
+                                        to?: unknown;
+                                    }[];
+                                    /** Format: uuid */
+                                    id: string;
+                                    package_name: string;
+                                    /** @enum {string|null} */
+                                    session_kind?: "class" | "workout" | null;
+                                    /** Format: date */
+                                    session_on?: string | null;
+                                    /** @enum {string|null} */
+                                    severity?: "important" | "serious" | "warning" | null;
+                                    /** Format: date */
+                                    started_on?: string | null;
+                                    /** @enum {string} */
+                                    status: "waiting" | "review";
+                                    /** Format: uuid */
+                                    subscription_id?: string;
+                                    /** Format: date */
+                                    waiting_since: string;
+                                } | null;
                                 package_type?: string | null;
                                 price_cents?: number | null;
                                 /** Format: date */
@@ -99599,6 +99912,73 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminConfirmationSkipsController.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Skipped today */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: date */
+                        day: string;
+                        skipped: ("record_payment" | "desk_collect" | "shop_pickup" | "cash_refund")[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminConfirmationSkipsController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Question */
+        requestBody?: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    kind: "record_payment" | "desk_collect" | "shop_pickup" | "cash_refund";
+                };
+            };
+        };
+        responses: {
+            /** @description Skipped today */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: date */
+                        day: string;
+                        skipped: ("record_payment" | "desk_collect" | "shop_pickup" | "cash_refund")[];
+                    };
+                };
+            };
+            /** @description Unknown question */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminDataExportController.index": {
         parameters: {
             query?: never;
@@ -101507,7 +101887,14 @@ export interface operations {
     "PaleeWeb.AdminFinanceController.cleanup_records": {
         parameters: {
             query?: {
+                /** @description Customer name, @handle or email, document number or record id */
                 q?: string;
+                user_id?: string;
+                package_id?: string;
+                from?: string;
+                to?: string;
+                kind?: "invoice" | "receipt" | "payment";
+                cursor?: string;
                 limit?: number;
             };
             header?: never;
@@ -101517,6 +101904,54 @@ export interface operations {
         requestBody?: never;
         responses: {
             /** @description Finance cleanup records */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminFinanceController.cleanup_record_packages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Packages */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminFinanceController.cleanup_record": {
+        parameters: {
+            query: {
+                record_type: "invoice" | "receipt" | "payment";
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Finance cleanup record */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -104526,7 +104961,6 @@ export interface operations {
                             /** @enum {string} */
                             unit: "day" | "week" | "month";
                         } | null;
-                        "terms.validity_starts"?: string;
                     };
                     name: string;
                     /** @enum {string} */
@@ -104728,7 +105162,6 @@ export interface operations {
                             /** @enum {string} */
                             unit: "day" | "week" | "month";
                         } | null;
-                        "terms.validity_starts"?: string;
                     };
                     name?: string;
                     /** @enum {string} */
@@ -104936,7 +105369,6 @@ export interface operations {
                             /** @enum {string} */
                             unit: "day" | "week" | "month";
                         } | null;
-                        "terms.validity_starts"?: string;
                     };
                     name?: string;
                     /** @enum {string} */
@@ -123099,6 +123531,45 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.ClassVariantController.keep": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Scheduled class ID */
+                id: string;
+                /** @description The variant (assigned workout) ID */
+                assignment_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Kept */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        ok: boolean;
+                    };
+                };
+            };
+            /** @description No such variant of this class */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminVisitBadgesController.show": {
         parameters: {
             query?: never;
@@ -124192,6 +124663,11 @@ export interface operations {
                             /** Format: date-time */
                             inserted_at?: string | null;
                             package_modules?: string[];
+                            /**
+                             * @description When a package's period and next payment start: the member's first completed class or WOD (first_session) or the payment (payment)
+                             * @enum {string}
+                             */
+                            package_starts_with: "first_session" | "payment";
                             /** @description Classes a person may book while their «Το θέλω» request waits to be paid at the front desk, counted per person and box (0 = none until the desk activates the package) */
                             package_wait_bookings: number;
                             payment_reminder_interval_days: number;
@@ -124275,6 +124751,11 @@ export interface operations {
                         /** @enum {string} */
                         document_mode?: "invoice" | "receipt";
                         package_modules?: ("group_classes" | "online_coaching" | "open_gym" | "events" | "personal_training" | "digital_content" | "corporate_clients")[];
+                        /**
+                         * @description When a package's period and next payment start: the member's first completed class or WOD (first_session) or the payment (payment)
+                         * @enum {string}
+                         */
+                        package_starts_with?: "first_session" | "payment";
                         /** @description Classes a person may book while their «Το θέλω» request waits to be paid at the front desk, counted per person and box (0 = none until the desk activates the package) */
                         package_wait_bookings?: number;
                         payment_reminder_interval_days?: number;
@@ -124337,6 +124818,11 @@ export interface operations {
                             /** Format: date-time */
                             inserted_at?: string | null;
                             package_modules?: string[];
+                            /**
+                             * @description When a package's period and next payment start: the member's first completed class or WOD (first_session) or the payment (payment)
+                             * @enum {string}
+                             */
+                            package_starts_with: "first_session" | "payment";
                             /** @description Classes a person may book while their «Το θέλω» request waits to be paid at the front desk, counted per person and box (0 = none until the desk activates the package) */
                             package_wait_bookings: number;
                             payment_reminder_interval_days: number;
@@ -127762,7 +128248,7 @@ export interface operations {
                     /** Format: uuid */
                     master_workout_id?: string;
                     /**
-                     * @description Member programming mode (ADR-125; ignored for athletes). `class_workout` (default) replaces the booked class's workout for everyone; `class_variant` assigns this member's own version of the booked class (source defaults to the class's workout when `master_workout_id` is omitted); `personal` assigns a personal workout without a class. Both assignment modes require the member's package to include personal programming.
+                     * @description Member programming mode (ADR-125; ignored for athletes). `class_variant` (default, ADR-785) assigns this member's own «Παραλλαγή» of one class (source defaults to the WOD the member does in it when `master_workout_id` is omitted), with no programming grant, until the class ends; `class_workout` replaces the booked class's workout for everyone; `personal` assigns a personal workout without a class and requires the member's package to include personal programming.
                      * @enum {string}
                      */
                     mode?: "class_workout" | "class_variant" | "personal";
@@ -128759,7 +129245,7 @@ export interface operations {
                     /** Format: uuid */
                     master_workout_id?: string;
                     /**
-                     * @description Member programming mode (ADR-125; ignored for athletes). `class_workout` (default) replaces the booked class's workout for everyone; `class_variant` assigns this member's own version of the booked class (source defaults to the class's workout when `master_workout_id` is omitted); `personal` assigns a personal workout without a class. Both assignment modes require the member's package to include personal programming.
+                     * @description Member programming mode (ADR-125; ignored for athletes). `class_variant` (default, ADR-785) assigns this member's own «Παραλλαγή» of one class (source defaults to the WOD the member does in it when `master_workout_id` is omitted), with no programming grant, until the class ends; `class_workout` replaces the booked class's workout for everyone; `personal` assigns a personal workout without a class and requires the member's package to include personal programming.
                      * @enum {string}
                      */
                     mode?: "class_workout" | "class_variant" | "personal";
@@ -140614,12 +141100,15 @@ export interface operations {
                                 planned_ms: number;
                                 ran_ms: number;
                             } | null;
-                            rank: number;
+                            /** @description Null on a member's own variant (ADR-785), listed after the ranks */
+                            rank: number | null;
                             scale_level_slug?: string | null;
                             unit?: string | null;
                             /** Format: uuid */
                             user_id: string;
                             value?: string | null;
+                            /** @description ADR-785: the member did their own «Παραλλαγή» of this WOD */
+                            variant?: boolean;
                         }[];
                         logged_by_me: boolean;
                         /** @description ADR-746: the day's other class WODs, each its own card. */
@@ -140641,12 +141130,15 @@ export interface operations {
                                     planned_ms: number;
                                     ran_ms: number;
                                 } | null;
-                                rank: number;
+                                /** @description Null on a member's own variant (ADR-785), listed after the ranks */
+                                rank: number | null;
                                 scale_level_slug?: string | null;
                                 unit?: string | null;
                                 /** Format: uuid */
                                 user_id: string;
                                 value?: string | null;
+                                /** @description ADR-785: the member did their own «Παραλλαγή» of this WOD */
+                                variant?: boolean;
                             }[];
                             logged_by_me: boolean;
                             score?: {
@@ -143477,6 +143969,52 @@ export interface operations {
                 };
             };
             /** @description Already leaving */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyMembershipController.acknowledge_package_start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Package start */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description No such package start */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Already started, or the package changed again */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -149692,6 +150230,49 @@ export interface operations {
                         })[];
                         /** Format: date */
                         start_date: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.ClassVariantController.update_mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Scheduled class ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    active: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Saved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        ok: boolean;
+                    };
+                };
+            };
+            /** @description No variant of mine in this class */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
                     };
                 };
             };

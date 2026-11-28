@@ -997,6 +997,18 @@ msgstr "%{box} · %{package}: νέοι όροι από %{date}."
 msgid "%{box} · %{package}: new terms apply from today."
 msgstr "%{box} · %{package}: νέοι όροι από σήμερα."
 
+msgid "Your package costs more now"
+msgstr "Το πακέτο σου κοστίζει πλέον περισσότερο"
+
+msgid "Your package gives less now"
+msgstr "Το πακέτο σου δίνει πλέον λιγότερα"
+
+msgid "Your package changed"
+msgstr "Το πακέτο σου άλλαξε"
+
+msgid "%{box} · %{package} changed while it waited. See what changed to start it."
+msgstr "%{box} · Το %{package} άλλαξε όσο περίμενε. Δες τι άλλαξε για να ξεκινήσει."
+
 msgid "You are on the waitlist"
 msgstr "Είσαι στη λίστα αναμονής"
 

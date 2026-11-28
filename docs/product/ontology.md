@@ -427,9 +427,10 @@ timeline and every "work time" compound; HR is heart rate («παλμοί», FC,
 
 | English | Ελληνικά | Code | What it is | Not to be confused with |
 |---|---|---|---|---|
-| Class WODs | Τα WOD του τμήματος | `scheduled_class_workouts` | A class can hold several WODs. The first one stays the class's WOD, and the people share the class's seats. | Day WODs («WOD της ημέρας»); a person's own WOD («Ξεχωριστό WOD για άτομα»). |
+| Class WODs | Τα WOD του τμήματος | `scheduled_class_workouts` | A class can hold several WODs. The first one stays the class's WOD, and the people share the class's seats. | Day WODs («WOD της ημέρας»); a person's «Παραλλαγή» (ADR-785). |
 | Now | Τώρα | `live_workout_id` | The WOD of the class that the class timer and every box screen follow. The coach moves it, and while a clock runs they are asked to pause it or keep it running. | The member's own choice. |
 | I'll decide at the box | Θα αποφασίσω στο box | `chosen_workout_id: null` | The default answer to «Ποιο WOD;» when booking a class with several WODs. The member's choice is optional and the coach can change it. | Not booked. |
+| Variation | Παραλλαγή | `assigned_workouts` with `source_scheduled_class_id` (ADR-125, ADR-785) | A WOD a coach makes for one person in one class, from now until that class ends (also while it runs). It starts from the WOD the person does there, needs no online programming and costs nothing; only the class booking counts. The person sees «Η παραλλαγή σου · από coach X» and may go back to the class's WODs. On the day leaderboard it comes after Rx and Scaled, unranked, tagged «Παραλλαγή». One name everywhere: never «εκδοχή», «version» or «ξεχωριστό WOD». | Separate workout («Ξεχωριστή προπόνηση», personal programming, needs the package's online programming); Scale level (Rx/Scaled). |
 
 ### 4.11 Documents and signatures (ADR-252)
 

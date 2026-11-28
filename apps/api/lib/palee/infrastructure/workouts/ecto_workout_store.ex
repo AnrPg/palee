@@ -937,11 +937,92 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
           assignee_status: link.athlete_status && to_string(link.athlete_status),
           scheduled_for: Date.to_iso8601(link.scheduled_for),
           master_workout_id: assignment.master_workout_id,
-          workout: normalize_assigned_workout(assignment.master_workout)
+          workout: normalize_assigned_workout(assignment.master_workout),
+          # ADR-785: where the variant came from and whether the member
+          # went back to a class WOD.
+          instructions: assignment.instructions,
+          variant_of_workout_id: assignment.variant_of_workout_id,
+          variant_source_hash: assignment.variant_source_hash,
+          set_aside_at: assignment.variant_set_aside_at,
+          assigned_by_user_id: assignment.assigned_by_user_id,
+          inserted_at: assignment.inserted_at
         }
       end)
 
     attach_variant_completion(variants, assignee_id)
+  end
+
+  @impl true
+  def update_class_variant(assignment_id, attrs) do
+    AssignedWorkout
+    |> scoped_to_tenant()
+    |> where([assignment], assignment.id == ^assignment_id)
+    |> where([assignment], not is_nil(assignment.source_scheduled_class_id))
+    |> Repo.one()
+    |> case do
+      nil ->
+        {:error, :class_variant_not_found}
+
+      %AssignedWorkout{} = assignment ->
+        assignment
+        |> AssignedWorkout.variant_changeset(attrs)
+        |> Repo.update()
+        |> case do
+          {:ok, updated} ->
+            {:ok, %{id: updated.id, source_slot_id: updated.source_scheduled_class_id}}
+
+          {:error, changeset} ->
+            {:error, changeset}
+        end
+    end
+  end
+
+  @impl true
+  def delete_class_variants(slot_id, assignee_id, keep_ids) do
+    keep_ids = keep_ids || []
+
+    ids =
+      AssignedWorkout
+      |> scoped_to_tenant()
+      |> join(:inner, [assignment], link in AssignedWorkoutAthlete,
+        on: link.assigned_workout_id == assignment.id
+      )
+      |> where([assignment, _link], assignment.source_scheduled_class_id == ^slot_id)
+      |> where([assignment, _link], assignment.id not in ^keep_ids)
+      |> maybe_scope_variant_assignee(assignee_id)
+      |> select([assignment, _link], assignment.id)
+      |> distinct(true)
+      |> Repo.all()
+
+    {count, _rows} =
+      AssignedWorkout
+      |> scoped_to_tenant()
+      |> where([assignment], assignment.id in ^ids)
+      |> Repo.delete_all()
+
+    {:ok, count}
+  end
+
+  @impl true
+  def list_variants_standing_in_for(workout_id, from_date, to_date) do
+    AssignedWorkout
+    |> scoped_to_tenant()
+    |> join(:inner, [assignment], link in AssignedWorkoutAthlete,
+      on: link.assigned_workout_id == assignment.id
+    )
+    |> where(
+      [assignment, link],
+      assignment.variant_of_workout_id == ^workout_id and
+        not is_nil(assignment.source_scheduled_class_id) and
+        assignment.scheduled_for >= ^from_date and assignment.scheduled_for <= ^to_date and
+        (is_nil(link.athlete_status) or link.athlete_status == :accepted)
+    )
+    |> select([assignment, link], %{
+      assignment_id: assignment.id,
+      master_workout_id: assignment.master_workout_id,
+      user_id: link.athlete_id
+    })
+    |> Repo.all()
   end
 
   defp maybe_scope_variant_assignee(query, nil), do: query
@@ -2350,7 +2431,8 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
       master_workout_id: assignment.master_workout_id,
       athlete_status: link.athlete_status,
       organization_id: assignment.organization_id,
-      instructions: assignment.instructions
+      instructions: assignment.instructions,
+      source_slot_id: assignment.source_scheduled_class_id
     })
     |> Repo.one()
     |> case do

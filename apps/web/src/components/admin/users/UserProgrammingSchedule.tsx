@@ -11,6 +11,7 @@ import {
   type AdminUserSchedule,
   type MemberProgrammingMode,
 } from "@/api/admin-users";
+import { fetchSchedule, type ScheduleSlot } from "@/api/schedule";
 import {
   duplicateWorkout,
   listAdminWorkouts,
@@ -28,6 +29,7 @@ import {
   modeRequiresBookedClass,
   modeRequiresProgrammingEntitlement,
   dayFormatter,
+  offerableClasses,
   programmingBlocker,
   programmingSources,
   programmingSuccessKey,
@@ -41,7 +43,7 @@ import { Select } from "@/components/ui/Select";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { AdditionalPeoplePicker, type PickedPerson } from "@/components/admin/users/AdditionalPeoplePicker";
 import { GroupOutcomeList } from "@/components/workouts/GroupOutcomeList";
-import { groupOutcomeRows, type GroupOutcomeRow } from "@/lib/group-variations";
+import { groupOutcomeRows, memberClassWorkoutId, type GroupOutcomeRow } from "@/lib/group-variations";
 import { clockFormat } from "@/lib/clock";
 
 type Props = {
@@ -136,9 +138,14 @@ export function UserProgrammingSchedule({ token, userId, role, nickname, assignR
   const [selectedWorkoutId, setSelectedWorkoutId] = useState("");
   const [selectedFolderId, setSelectedFolderId] = useState("");
   const [selectedSlotId, setSelectedSlotId] = useState("");
-  // Without the grant, only a booked class's own WOD can be changed.
-  const [memberMode, setMemberMode] = useState<MemberProgrammingMode>(notInPackage ? "class_workout" : "class_variant");
-  const [source, setSource] = useState<ProgrammingSource>(() => programmingSources(role, notInPackage ? "class_workout" : "class_variant")[0]);
+  // ADR-785 (ζ): a member's variant of a class is always the default; it
+  // needs no programming grant, and nothing ever switches to «for everyone».
+  const [memberMode, setMemberMode] = useState<MemberProgrammingMode>("class_variant");
+  const [source, setSource] = useState<ProgrammingSource>(() => programmingSources(role, "class_variant")[0]);
+  // ADR-785 (1A): the day's classes, for a variant in a class they have not booked.
+  const [daySlots, setDaySlots] = useState<ScheduleSlot[]>([]);
+  // When the day's classes were read: «still open» is judged against it.
+  const [daySlotsAt, setDaySlotsAt] = useState(0);
   const [moreOpen, setMoreOpen] = useState(false);
   const [assignmentModalOpen, setAssignmentModalOpen] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -223,16 +230,47 @@ export function UserProgrammingSchedule({ token, userId, role, nickname, assignR
     setError(null);
   }
 
+  useEffect(() => {
+    if (!assignmentModalOpen || !isMember) return;
+    let active = true;
+    // The day as the profile's calendar reads it (a bare ISO date parses as UTC), with a margin.
+    const start = new Date(selectedDate);
+    start.setUTCDate(start.getUTCDate() - 1);
+    const end = new Date(selectedDate);
+    end.setUTCDate(end.getUTCDate() + 2);
+    fetchSchedule(token, { startAt: start.toISOString(), endAt: end.toISOString(), days: 3, classTypeIds: [] })
+      .then((window) => {
+        if (!active) return;
+        setDaySlots((window.slots ?? []).filter((slot) => slot.scheduled_at.slice(0, 10) === selectedDate));
+        setDaySlotsAt(Date.now());
+      })
+      .catch(() => {
+        if (active) setDaySlots([]);
+      });
+    return () => {
+      active = false;
+    };
+  }, [assignmentModalOpen, isMember, selectedDate, token]);
+
   const dayItems = (schedule?.items ?? []).filter((item) => itemDate(item) === selectedDate);
   const selectedDaySlots = isMember ? dayItems.filter(isClassItem) : [];
-  // One booked class that day is the only possible answer: pick it for staff.
-  const slotId = selectedSlotId || (selectedDaySlots.length === 1 ? itemId(selectedDaySlots[0]) : "");
+  const bookedSlotIds = new Set(selectedDaySlots.map(itemId));
+  // ADR-785 (1A): a variant may also go to a class of that day they have not booked.
+  const otherDaySlots =
+    isMember && memberMode === "class_variant" ? offerableClasses(daySlots, bookedSlotIds, daySlotsAt) : [];
+  const classChoices = selectedDaySlots.length + otherDaySlots.length;
+  // One class that day is the only possible answer: pick it for staff.
+  const slotId =
+    selectedSlotId ||
+    (classChoices === 1 ? (selectedDaySlots[0] ? itemId(selectedDaySlots[0]) : otherDaySlots[0].id) : "");
   const selectedSlot = selectedDaySlots.find((item) => itemId(item) === slotId);
-  const classHasWorkout = typeof selectedSlot?.master_workout_id === "string";
+  const offeredSlot = selectedSlot ? undefined : otherDaySlots.find((slot) => slot.id === slotId);
+  const fullSlot = daySlots.find((slot) => slot.id === slotId);
+  const classHasWorkout = typeof selectedSlot?.master_workout_id === "string" || Boolean(offeredSlot?.workout?.id);
   const personalModeClosed = notInPackage && (!isMember || modeRequiresProgrammingEntitlement(memberMode));
   const blocker = personalModeClosed ? "programmingNotInPackageBlocker" : programmingBlocker({
     needsClass,
-    hasBookedClasses: selectedDaySlots.length > 0,
+    hasBookedClasses: classChoices > 0,
     slotId,
     source,
     workoutId: selectedWorkoutId,
@@ -294,6 +332,8 @@ export function UserProgrammingSchedule({ token, userId, role, nickname, assignR
       slot_id: needsClass ? slotId : undefined,
       copy_source: copySource,
       ...(isMember ? { mode: memberMode } : {}),
+      // ADR-746/785: a class they have not booked gets the variant and a notice, not a booking.
+      ...(isMember && memberMode === "class_variant" && offeredSlot ? { offer_booking: true } : {}),
     };
     try {
       if (groupPeople.length) {
@@ -347,7 +387,12 @@ export function UserProgrammingSchedule({ token, userId, role, nickname, assignR
   // embedded canvas; publishing assigns it as this member's version.
   async function editClassWorkoutForMember() {
     if (!validateTarget()) return;
-    const sourceWorkoutId = typeof selectedSlot?.master_workout_id === "string" ? selectedSlot.master_workout_id : null;
+    // ADR-785 (3A): from the WOD they do in that class (their pick, else «Τώρα»).
+    const sourceWorkoutId =
+      (fullSlot ? memberClassWorkoutId(fullSlot, userId) : null) ??
+      (typeof selectedSlot?.master_workout_id === "string" ? selectedSlot.master_workout_id : null) ??
+      offeredSlot?.workout?.id ??
+      null;
     if (!sourceWorkoutId) {
       setError(i18n("memberProgrammingClassHasNoWorkout"));
       return;
@@ -442,14 +487,20 @@ export function UserProgrammingSchedule({ token, userId, role, nickname, assignR
             </div>
           </fieldset> : null}
 
-          {needsClass ? selectedDaySlots.length ? <label className="block text-sm font-semibold" style={{ color: "var(--text)" }}>{i18n("programmingDialogClass")}
-            <Select className="mt-2 w-full rounded-xl px-3 py-2 text-sm" style={FIELD_STYLE} value={slotId} onValueChange={(value) => { setSelectedSlotId(value); setError(null); }}>
+          {needsClass ? classChoices ? <label className="block text-sm font-semibold" style={{ color: "var(--text)" }}>{i18n("programmingDialogClass")}
+            <Select className="mt-2 w-full rounded-xl px-3 py-2 text-sm" style={FIELD_STYLE} value={slotId} onValueChange={(value) => { setSelectedSlotId(value); setError(null); }} data-testid="programming-class">
               <option value="">{i18n("programmingDialogChooseClass")}</option>
-              {selectedDaySlots.map((item) => <option key={itemId(item)} value={itemId(item)}>{classLabel(item)}</option>)}
+              {otherDaySlots.length && selectedDaySlots.length ? <optgroup label={i18n("programmingDialogBookedClasses")}>
+                {selectedDaySlots.map((item) => <option key={itemId(item)} value={itemId(item)}>{classLabel(item)}</option>)}
+              </optgroup> : selectedDaySlots.map((item) => <option key={itemId(item)} value={itemId(item)}>{classLabel(item)}</option>)}
+              {otherDaySlots.length ? <optgroup label={i18n("programmingDialogOtherClasses")}>
+                {otherDaySlots.map((slot) => <option key={slot.id} value={slot.id}>{classLabel({ ...slot, name: slot.name || slot.class_type?.name })}</option>)}
+              </optgroup> : null}
             </Select>
-          </label> : <p className="rounded-xl px-3 py-2.5 text-sm" data-testid="programming-no-class" style={{ background: "var(--panel-muted)", color: "var(--text-soft)" }}>{i18n("programmingDialogNoClass")}</p> : null}
+            {offeredSlot ? <span className="mt-1.5 block text-xs font-normal" style={{ color: "var(--muted)" }} data-testid="programming-offered-hint">{i18n("programmingDialogOfferedHint")}</span> : null}
+          </label> : <p className="rounded-xl px-3 py-2.5 text-sm" data-testid="programming-no-class" style={{ background: "var(--panel-muted)", color: "var(--text-soft)" }}>{i18n(memberMode === "class_variant" ? "programmingDialogNoOpenClass" : "programmingDialogNoClass")}</p> : null}
 
-          {!(needsClass && !selectedDaySlots.length) ? <fieldset>
+          {!(needsClass && !classChoices) ? <fieldset>
             <legend className="mb-2 text-sm font-semibold" style={{ color: "var(--text)" }}>{i18n("programmingDialogWorkout")}</legend>
             <div className="flex flex-wrap gap-2">
               {sources.map((option) => <label key={option} className="cursor-pointer whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-semibold has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2" style={choiceStyle(source === option)}>

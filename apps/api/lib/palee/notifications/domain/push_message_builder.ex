@@ -1238,6 +1238,28 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
     }
   end
 
+  # ADR-795.
+  def build("package_start_review", payload, localize) do
+    bindings = %{box: payload["box_name"], package: payload["package_name"]}
+
+    title =
+      case payload["severity"] do
+        "important" -> localize.("Your package costs more now", %{})
+        "serious" -> localize.("Your package gives less now", %{})
+        _warning -> localize.("Your package changed", %{})
+      end
+
+    %{
+      title: title,
+      body:
+        localize.(
+          "%{box} · %{package} changed while it waited. See what changed to start it.",
+          bindings
+        ),
+      url: payload["url"] || "/me/payments"
+    }
+  end
+
   def build("package_rule_grace", payload, localize) do
     %{
       title: localize.("Choose a package", %{}),

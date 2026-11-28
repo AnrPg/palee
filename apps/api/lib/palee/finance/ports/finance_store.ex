@@ -10,6 +10,26 @@ defmodule Palee.Finance.Ports.FinanceStore do
   @callback search_member_summaries(map()) :: %{optional(Ecto.UUID.t()) => map()}
   @callback assign_package(Ecto.UUID.t(), Ecto.UUID.t(), map()) :: {:ok, map()} | {:error, term()}
   @callback record_payment(Ecto.UUID.t(), map()) :: {:ok, map()} | {:error, term()}
+
+  # ADR-795: packages that wait for the member's first class or WOD.
+  @doc "The waiting subscription a session starts (the one the ledger reserved), or nil."
+  @callback waiting_subscription_for_session(Ecto.UUID.t(), String.t(), Ecto.UUID.t() | nil) ::
+              Ecto.UUID.t() | nil
+  @doc "Starts the waiting package, or puts it in review when it changed meanwhile."
+  @callback begin_package_start(Ecto.UUID.t(), %{
+              kind: String.t(),
+              id: Ecto.UUID.t() | nil,
+              on: Date.t()
+            }) ::
+              {:ok, {:started | :review, map()} | :not_waiting} | {:error, term()}
+  @doc "«Το κατάλαβα»: starts a package in review today."
+  @callback acknowledge_package_start(Ecto.UUID.t(), Ecto.UUID.t() | nil) ::
+              {:ok, map()} | {:error, term()}
+  @callback list_package_starts(map()) :: [map()]
+  @callback list_waiting_user_ids() :: [{Ecto.UUID.t(), Ecto.UUID.t(), Date.t()}]
+  @doc "ADR-795: the money questions the person chose not to see again on `day`."
+  @callback confirmation_skips(Ecto.UUID.t(), Date.t()) :: [String.t()]
+  @callback skip_confirmation(Ecto.UUID.t(), String.t(), Date.t()) :: :ok | {:error, term()}
   @callback create_receipt(Ecto.UUID.t(), map()) :: {:ok, map()} | {:error, term()}
   @callback receive_payment(Ecto.UUID.t(), map()) :: {:ok, map()} | {:error, term()}
   @callback create_manual_credit(Ecto.UUID.t(), map()) :: {:ok, map()} | {:error, term()}
@@ -28,7 +48,10 @@ defmodule Palee.Finance.Ports.FinanceStore do
   @callback update_invoice_params(Ecto.UUID.t(), map()) :: {:ok, map()} | {:error, term()}
   @callback update_invoice(Ecto.UUID.t(), map()) :: {:ok, map()} | {:error, term()}
   @callback mark_overdue_invoices() :: :ok | {:error, term()}
-  @callback list_finance_cleanup_records(map()) :: [map()]
+  @callback list_finance_cleanup_records(Palee.Finance.Domain.CleanupRecordFilter.t()) ::
+              %{records: [map()], next_cursor: String.t() | nil}
+  @callback get_finance_cleanup_record(String.t(), String.t()) :: map() | nil
+  @callback list_finance_customer_ids() :: [Ecto.UUID.t()]
   @callback soft_delete_finance_record(String.t(), Ecto.UUID.t(), Ecto.UUID.t(), map()) ::
               {:ok, map()} | {:error, term()}
   @callback create_invoice(Ecto.UUID.t(), map()) :: {:ok, map()} | {:error, term()}

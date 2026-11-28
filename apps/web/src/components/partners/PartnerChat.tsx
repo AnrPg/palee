@@ -137,7 +137,7 @@ export function PartnerChat({ matchId }: { matchId: string }) {
         <div className="min-w-0">
           <BackLink href={inboxHref({ filter: "partners" })} className="inline-flex min-h-11 items-center text-sm font-semibold" style={{ color: "var(--primary)" }}>{t("messagesBack")}</BackLink>
           <div className="flex items-center gap-3">
-            <PersonAvatar name={name} url={match?.person.avatar_url} size={40} />
+            <PersonAvatar name={name} url={match?.person.avatar_url} personId={match?.person.id} size={40} />
             <div className="min-w-0">
               <h1 className="truncate text-2xl font-extrabold" style={{ color: "var(--text)" }}>{name}</h1>
               <p className="truncate text-xs" style={{ color: "var(--dim)" }}>{t("chatSubtitle")}</p>

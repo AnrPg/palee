@@ -992,6 +992,18 @@ msgstr ""
 msgid "%{box} · %{package}: new terms apply from today."
 msgstr ""
 
+msgid "Your package costs more now"
+msgstr ""
+
+msgid "Your package gives less now"
+msgstr ""
+
+msgid "Your package changed"
+msgstr ""
+
+msgid "%{box} · %{package} changed while it waited. See what changed to start it."
+msgstr ""
+
 msgid "You are on the waitlist"
 msgstr ""
 

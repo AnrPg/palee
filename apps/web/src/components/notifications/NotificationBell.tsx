@@ -206,6 +206,14 @@ export function useNotificationText() {
         ? tClassWods("notifScreenTakenTitle", { screen: text("screen_name") || "—" })
         : tClassWods("notifScreenTakenBody", { coach: text("taken_by") || "—" });
     }
+    // ADR-785: a coach made the member their own variant of a class.
+    if (notification.type === "workout_assigned" && notification.payload.class_variant === true) {
+      return part === "title"
+        ? tClassWods("notifVariationTitle")
+        : text("class_slot_id")
+          ? tClassWods("notifClassOfferBody")
+          : tClassWods("notifVariationBody", { title: text("workout_title") || "—" });
+    }
     if (notification.type === "workout_assigned" && text("class_slot_id")) {
       return part === "title" ? i18n("newWorkoutsAssigned") : tClassWods("notifClassOfferBody");
     }

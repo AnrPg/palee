@@ -52,7 +52,7 @@ export function BoxCoaches({ coaches }: { coaches: Coach[] }) {
 function CoachCardBody({ coach }: { coach: Coach }) {
   return (
     <>
-      <PersonAvatar name={coach.nickname ?? "?"} url={coach.avatar_url} size={48} />
+      <PersonAvatar name={coach.nickname ?? "?"} url={coach.avatar_url} personId={coach.id} size={48} />
       <span className="flex min-w-0 flex-col">
         {/* ANR 2026-11-13: the whole name, wrapped. */}
         <span className="font-bold [overflow-wrap:anywhere]" style={{ color: "var(--text)" }} data-testid="box-coach-name">
@@ -72,7 +72,7 @@ function CoachSheet({ coach, onClose }: { coach: Coach; onClose: () => void }) {
   return (
     <Dialog onClose={onClose} ariaLabel={name} size="sm" variant="sheet" testId="box-coach-sheet">
       <div className="flex min-w-0 flex-col items-center gap-3 pb-2 text-center">
-        <PersonAvatar name={name} url={coach.avatar_url} size={96} />
+        <PersonAvatar name={name} url={coach.avatar_url} personId={coach.id} size={96} />
         <h2 className="text-xl font-extrabold [overflow-wrap:anywhere]" style={{ color: "var(--text)" }}>{name}</h2>
         {coach.class_types.length > 0 ? (
           <p className="text-sm" style={{ color: "var(--text-soft)" }} data-testid="box-coach-teaches">

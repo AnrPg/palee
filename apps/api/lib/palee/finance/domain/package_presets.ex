@@ -22,7 +22,6 @@ defmodule Palee.Finance.Domain.PackagePresets do
     "terms.prerequisite_package_ids" => [],
     "terms.minimum_commitment_months" => 0,
     "terms.joining_fee_cents" => 0,
-    "terms.validity_starts" => "purchase",
     "terms.expiry_reminder_days" => 0,
     "terms.compatible_package_ids" => "all",
     "terms.beneficiaries" => 1,

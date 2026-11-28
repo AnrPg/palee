@@ -81,6 +81,14 @@ defmodule PaleeWeb.AdminSettingsController do
       "Classes a person may book while their «Το θέλω» request waits to be paid at the front desk, counted per person and box (0 = none until the desk activates the package)"
   }
 
+  # ADR-795: when a package's period and next payment start.
+  @package_starts_with_schema %Schema{
+    type: :string,
+    enum: ["first_session", "payment"],
+    description:
+      "When a package's period and next payment start: the member's first completed class or WOD (first_session) or the payment (payment)"
+  }
+
   @finance_settings_schema %Schema{
     type: :object,
     properties: %{
@@ -91,6 +99,7 @@ defmodule PaleeWeb.AdminSettingsController do
       subscription_day_after_reminder: @day_after_reminder_schema,
       subscription_grace_days: @grace_days_schema,
       package_wait_bookings: @package_wait_bookings_schema,
+      package_starts_with: @package_starts_with_schema,
       document_mode: %Schema{type: :string, enum: ["invoice", "receipt"]},
       package_modules: %Schema{type: :array, items: %Schema{type: :string}},
       inserted_at: %Schema{type: :string, format: :"date-time", nullable: true},
@@ -103,6 +112,7 @@ defmodule PaleeWeb.AdminSettingsController do
       :subscription_day_after_reminder,
       :subscription_grace_days,
       :package_wait_bookings,
+      :package_starts_with,
       :document_mode
     ]
   }
@@ -248,6 +258,7 @@ defmodule PaleeWeb.AdminSettingsController do
           subscription_day_after_reminder: @day_after_reminder_schema,
           subscription_grace_days: @grace_days_schema,
           package_wait_bookings: @package_wait_bookings_schema,
+          package_starts_with: @package_starts_with_schema,
           document_mode: %Schema{type: :string, enum: ["invoice", "receipt"]},
           package_modules: %Schema{
             type: :array,

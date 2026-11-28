@@ -105,6 +105,38 @@ describe("buildTodayTraining", () => {
     });
   });
 
+  it("goes back to the class WOD when the member set their variation aside (ADR-785)", () => {
+    const version = {
+      assignment_id: "v2",
+      master_workout_id: "w-v2",
+      scheduled_for: "2026-10-15",
+      active: false,
+      instructions: "Ώμος",
+      workout: { ...workout("w-v2", "Fran (scaled)"), sections: [] },
+    };
+    const result = buildTodayTraining({
+      now,
+      scheduleSlots: [slot("c", at(18), { my_version: version })],
+      assignments: [assignment("v2", "2026-10-15", { assignment_kind: "class_variant", source_slot_id: "c" })],
+      executions: [],
+    });
+    expect(result.items).toHaveLength(1);
+    expect(result.items[0]).toMatchObject({ kind: "class", execution: { source: "class_booking" } });
+  });
+
+  it("carries the coach's «Γιατί» on an active variation (ADR-785)", () => {
+    const version = {
+      assignment_id: "v3",
+      master_workout_id: "w-v3",
+      scheduled_for: "2026-10-15",
+      active: true,
+      instructions: " Ώμος, χωρίς kipping ",
+      workout: { ...workout("w-v3", "Fran (Maria)"), sections: [] },
+    };
+    const result = buildTodayTraining({ now, scheduleSlots: [slot("c", at(18), { my_version: version })], assignments: [], executions: [] });
+    expect(result.items[0]).toMatchObject({ instructions: "Ώμος, χωρίς kipping", execution: { source: "assigned", referenceId: "v3" } });
+  });
+
   it("drops rejected programmes and class versions of classes not booked today", () => {
     const result = buildTodayTraining({
       now,

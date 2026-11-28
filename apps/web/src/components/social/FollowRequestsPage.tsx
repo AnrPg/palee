@@ -93,7 +93,7 @@ function RequestRow({ entry }: { entry: FollowEntry }) {
     <li className="flex flex-col gap-2 rounded-3xl p-4" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
       <div className={itemRow}>
         <Link href={`/people/${person.id}`} className={itemRowMain}>
-          <PersonAvatar name={person.nickname} url={person.avatar_url} />
+          <PersonAvatar name={person.nickname} url={person.avatar_url} personId={person.id} />
           <span className="truncate font-bold" style={{ color: "var(--text)" }}>{person.nickname ?? "?"}</span>
         </Link>
         <div className={itemRowActions}>

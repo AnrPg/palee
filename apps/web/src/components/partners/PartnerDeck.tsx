@@ -344,7 +344,7 @@ function CardFace({ card, km }: { card: PartnerCard; km: number | null }) {
         className="grid shrink-0 basis-[38%] place-items-center"
         style={{ background: "linear-gradient(160deg, color-mix(in srgb, var(--primary) 18%, var(--panel)), var(--panel))" }}
       >
-        <PersonAvatar name={name} url={card.person.avatar_url} size={120} />
+        <PersonAvatar name={name} url={card.person.avatar_url} personId={card.person.id} size={120} />
       </div>
       <div className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto px-4 pb-28 pt-4">
         <h2 className="truncate text-2xl font-extrabold" style={{ color: "var(--text)" }}>{name}</h2>
@@ -510,7 +510,7 @@ function MatchSheet({ match, onClose }: { match: PartnerMatch; onClose: () => vo
       }
     >
       <div className="flex flex-col items-center gap-3 py-2 text-center" data-testid="partner-match">
-        <PersonAvatar name={name} url={match.person.avatar_url} size={72} />
+        <PersonAvatar name={name} url={match.person.avatar_url} personId={match.person.id} size={72} />
         <p className="text-sm" style={{ color: "var(--text-soft)" }}>{t("matchBody", { name })}</p>
       </div>
     </Sheet>

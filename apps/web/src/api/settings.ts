@@ -25,6 +25,8 @@ export type FinanceSettings = {
   subscription_grace_days: number;
   /** ADR-717: classes a person may book while «Το θέλω» waits for the front desk (0–20, default 3). */
   package_wait_bookings?: number;
+  /** ADR-795: a package's period and next payment count from the first completed class or WOD, or from the payment. */
+  package_starts_with?: "first_session" | "payment";
   document_mode: "invoice" | "receipt";
   package_modules?: string[];
   inserted_at?: string | null;
@@ -100,7 +102,7 @@ export type GamificationUpdate = Partial<
   Pick<GamificationSettings, "streak_shields" | "streak_shield_reset_day" | "leaderboard_enabled">
 >;
 
-export type FinanceUpdate = Partial<Pick<FinanceSettings, "payment_reminder_interval_days" | "subscription_expiry_reminder_days" | "subscription_end_day_reminder" | "subscription_day_after_reminder" | "subscription_grace_days" | "package_wait_bookings" | "document_mode" | "package_modules">>;
+export type FinanceUpdate = Partial<Pick<FinanceSettings, "payment_reminder_interval_days" | "subscription_expiry_reminder_days" | "subscription_end_day_reminder" | "subscription_day_after_reminder" | "subscription_grace_days" | "package_wait_bookings" | "package_starts_with" | "document_mode" | "package_modules">>;
 
 export type AdminSettingsUpdate = {
   provider?: { kind: ProviderKind };
