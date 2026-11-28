@@ -1351,6 +1351,21 @@ defmodule Palee.Notifications do
         url: field(payload, :url)
       })
 
+  # ADR-760 (ANR 12B): to each owner, once per box and day (the dedupe key
+  # has both); title and body come written in the owner's language.
+  def process_event("activity_log_digest", payload),
+    do:
+      enqueue_simple(:activity_log_digest, payload, %{
+        organization_id: field(payload, :organization_id),
+        date: field(payload, :date),
+        total: field(payload, :total),
+        counts: field(payload, :counts),
+        title: field(payload, :title),
+        body: field(payload, :body),
+        dedupe_key: field(payload, :dedupe_key),
+        url: field(payload, :url)
+      })
+
   def process_event("shop_order_ready", payload),
     do:
       enqueue_simple(:shop_order_ready, payload, %{
