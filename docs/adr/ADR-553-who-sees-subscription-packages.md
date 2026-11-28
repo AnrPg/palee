@@ -80,3 +80,19 @@ ANR's picks:
   only from the signed-in endpoint.
 - `own` on the website means that visitors who are not signed in see no
   packages there, and the section and its menu link disappear.
+
+## Amendment 2026-11-28: where staff change it (mockup 1A + 2A)
+ANR picked, from `/mnt/project-files/milos/package-visibility/package-row-controls-mockups-2026-11-28.html`:
+- **1A.** Each package's eye in the packages list is a button (staff with
+  `manage_packages`) that opens «Ποιος βλέπει το «X»», the same sheet as the
+  box row. The same sheet opens from a «Ποιος το βλέπει» row at the top of
+  the package. It is no longer in «Προχωρημένες ρυθμίσεις».
+- **2A.** «Διαθέσιμο / Αποσυρμένο» (`membership_packages.active`) is a switch
+  at the top of the package, outside «Επεξεργασία», which no longer sends
+  `active`. Withdrawing asks first and, when members hold the package, picks
+  their replacement package per account type in the same dialog, then calls
+  `PATCH /admin/finance/packages/:id/retire` (one transaction). Bringing it
+  back sends `PATCH /admin/finance/packages/:id {active: true}` at once.
+- A retired package is seen by no one: its eye and row are grey («Αποσυρμένο:
+  δεν το βλέπει κανείς») and the stored audience is kept for when it comes back.
+- Staff without `manage_packages` see both rows read-only.

@@ -4,6 +4,8 @@ import { expect, test, type Page, type Route } from "./support/test";
 // payments put the paid subscription packages on sale and the owner is told
 // once in Ρυθμίσεις › Πληρωμές; each package says whether box members see it
 // online, and the switch lives in the package's «Προχωρημένες ρυθμίσεις».
+// Mockup 2026-11-28 (1A + 2A): «Διαθέσιμο» and «Ποιος το βλέπει» sit at the
+// top of the package, and each package's eye in the list opens its sheet.
 // The API is stubbed; anything not stubbed answers `{}`.
 
 const json = (route: Route, body: unknown, status = 200) =>
@@ -32,7 +34,7 @@ function token() {
 const MEMBERSHIP = {
   role: "owner",
   roles: ["owner"],
-  capabilities: { manage_settings: true, manage_billing: true, take_payments: "all", view_finance_reports: true },
+  capabilities: { manage_settings: true, manage_billing: true, manage_packages: true, take_payments: "all", view_finance_reports: true },
   organization: { id: "org-1", slug: "kypseli", name: "Box Kypseli", timezone: "Europe/Athens", timezone_confirmed: true },
   settings: { brand_name: "Box Kypseli", brand_logo_url: null, brand_primary_color: null },
 };
@@ -103,6 +105,18 @@ async function stub(page: Page, writes: Write[]) {
       if (method === "PUT") audience = (body as { audience: string }).audience;
       return json(route, { audience, exceptions: [], featured_package_id: featured });
     }
+    const own = path.match(/^\/api\/admin\/package-audience\/packages\/([^/]+)$/);
+    if (own && method === "PUT") {
+      const pkg = packages.find((candidate) => candidate.id === own[1]);
+      if (pkg) pkg.audience = (body as { audience: string | null }).audience;
+      return json(route, { id: own[1], audience: pkg?.audience ?? null });
+    }
+    const retire = path.match(/^\/api\/admin\/finance\/packages\/([^/]+)\/retire$/);
+    if (retire && method === "PATCH") {
+      const pkg = packages.find((candidate) => candidate.id === retire[1]);
+      if (pkg) pkg.active = false;
+      return json(route, { package: pkg, reassigned_count: 0, affected_by_role: {} });
+    }
     if (path === "/api/admin/package-audience/featured" && method === "PUT") {
       featured = (body as { package_id: string | null }).package_id;
       return json(route, { audience, exceptions: [], featured_package_id: featured });
@@ -114,8 +128,9 @@ async function stub(page: Page, writes: Write[]) {
       const pkg = packages.find((candidate) => candidate.id === one[1]);
       if (!pkg) return json(route, { code: "not_found" }, 404);
       if (method === "PATCH") {
-        pkg.sold_online = (body as { sold_online: boolean }).sold_online;
-        pkg.online_visibility = pkg.sold_online ? "visible" : "off";
+        const patch = body as Record<string, unknown>;
+        Object.assign(pkg, patch);
+        if ("sold_online" in patch) pkg.online_visibility = pkg.sold_online ? "visible" : "off";
       }
       return json(route, { package: pkg });
     }
@@ -148,10 +163,10 @@ test("each subscription package says whether it is sold online, and the switch l
   await stub(page, writes);
   await page.goto("/admin/finance?tab=packages");
 
-  const unlimited = page.getByRole("button", { name: /Unlimited/ });
-  await expect(unlimited.getByTestId("sold-online-badge")).toHaveText("Online");
-  await expect(page.getByRole("button", { name: /10 προσωπικές προπονήσεις/ }).getByTestId("sold-online-badge")).toHaveText("Online · δεν φαίνεται");
-  await expect(page.getByRole("button", { name: /3 φορές την εβδομάδα/ }).getByTestId("sold-online-badge")).toHaveCount(0);
+  const row = (name: RegExp) => page.getByTestId("package-row").filter({ hasText: name });
+  await expect(row(/Unlimited/).getByTestId("sold-online-badge")).toHaveText("Online");
+  await expect(row(/10 προσωπικές προπονήσεις/).getByTestId("sold-online-badge")).toHaveText("Online · δεν φαίνεται");
+  await expect(row(/3 φορές την εβδομάδα/).getByTestId("sold-online-badge")).toHaveCount(0);
   await expect(page.getByTestId("sold-online-summary")).toContainText("Πωλούνται online: 2 από 3");
 
   // Why the personal-training package is not visible, with the fix.
@@ -208,3 +223,53 @@ test("ADR-596: the owner makes one package «Προτεινόμενο» on the b
   expect(writes.find((w) => w.path === "/api/admin/package-audience/featured")?.body).toEqual({ package_id: "p-unl" });
 });
 
+test("mockup 1A: a package's eye in the list opens its «Ποιος το βλέπει», like the box row", async ({ page }) => {
+  const writes: Write[] = [];
+  await stub(page, writes);
+  await page.goto("/admin/finance?tab=packages");
+
+  const eye = page.getByTestId("package-row").filter({ hasText: /Unlimited/ }).getByTestId("package-audience-badge");
+  await expect(eye).toBeVisible();
+  await expect(eye).toBeEnabled();
+  await eye.click();
+  const sheet = page.getByTestId("package-audience-package-sheet");
+  await expect(sheet).toContainText("Ποιος βλέπει το «Unlimited»");
+  // The eye opens only the sheet, not the package.
+  await expect(page).not.toHaveURL(/package=p-unl/);
+  const nobody = sheet.getByRole("radio", { name: "Κανείς" });
+  await expect(nobody).toBeVisible();
+  await nobody.click();
+  await expect.poll(() => writes.find((w) => w.path === "/api/admin/package-audience/packages/p-unl")?.body).toEqual({ audience: "none" });
+});
+
+test("mockup 1A + 2A: «Διαθέσιμο» and «Ποιος το βλέπει» sit at the top of the package; withdrawing asks first, bringing back is immediate", async ({ page }) => {
+  const writes: Write[] = [];
+  await stub(page, writes);
+  await page.goto("/admin/finance?tab=packages&package=p-w3");
+
+  const top = page.getByTestId("package-top-controls");
+  await expect(top.getByTestId("package-audience-row-summary")).toHaveText("Όπως το box · Όλοι");
+  const available = top.getByRole("switch", { name: "Διαθέσιμο" });
+  await expect(available).toBeVisible();
+  await expect(available).toHaveAttribute("aria-checked", "true");
+
+  // «Ποιος το βλέπει» is no longer in the advanced settings.
+  await page.getByTestId("package-advanced").locator("summary").click();
+  await expect(page.getByTestId("package-advanced").getByTestId("package-audience-card")).toHaveCount(0);
+
+  await available.click();
+  const dialog = page.getByTestId("package-retire-dialog");
+  await expect(dialog).toContainText("Απόσυρση του «3 φορές την εβδομάδα»;");
+  const confirm = dialog.getByTestId("package-retire-confirm");
+  await expect(confirm).toBeEnabled();
+  await confirm.click();
+  await expect.poll(() => writes.find((w) => w.path === "/api/admin/finance/packages/p-w3/retire")?.body).toEqual({ replacement_package_by_role: {} });
+
+  const retired = top.getByRole("switch", { name: "Αποσυρμένο" });
+  await expect(retired).toHaveAttribute("aria-checked", "false");
+  await expect(top.getByTestId("package-audience-row-summary")).toHaveText("Αποσυρμένο: δεν το βλέπει κανείς");
+
+  await retired.click();
+  await expect.poll(() => writes.find((w) => w.method === "PATCH" && w.path === "/api/admin/finance/packages/p-w3")?.body).toEqual({ active: true });
+  await expect(top.getByRole("switch", { name: "Διαθέσιμο" })).toHaveAttribute("aria-checked", "true");
+});

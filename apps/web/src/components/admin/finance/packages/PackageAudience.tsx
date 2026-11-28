@@ -108,8 +108,36 @@ function BoxAudienceChoice({ token, settings }: { token: string; settings: Packa
   );
 }
 
-/** «Ποιος το βλέπει» in a package's advanced settings. */
-export function PackageAudienceCard({ token, pkg }: { token: string; pkg: FinanceRecord }) {
+/** The package's own «Ποιος το βλέπει» summary: «Όπως το box · Όλοι», «Κανείς», … */
+function usePackageAudienceSummary(token: string, pkg: FinanceRecord) {
+  const t = useTranslations("PackageAudience");
+  const settings = useAudienceSettings(token);
+  const own = packageAudience(pkg);
+  const boxAudience = settings.data?.audience ?? "all";
+  const people = exceptionsFor(settings.data, typeof pkg.id === "string" ? pkg.id : null).length;
+  const audience: BoxAudience = own ?? boxAudience;
+  const summary = [own === null ? `${t("package_inherit")} · ${t(`summary_${boxAudience}`)}` : t(`package_${own}`), people > 0 ? t("peopleCount", { count: people }) : null]
+    .filter(Boolean)
+    .join(" · ");
+  return { audience, summary, loading: settings.isLoading };
+}
+
+/**
+ * Mockup 1A (ANR 2026-11-28): «Ποιος το βλέπει» of one package, in the same
+ * sheet as the box-wide row. Opened from the package's eye in the list and
+ * from the row at the top of the package.
+ */
+export function PackageAudienceSheet({ token, pkg, onClose }: { token: string; pkg: FinanceRecord; onClose: () => void }) {
+  const t = useTranslations("PackageAudience");
+  const name = String(pkg.name ?? pkg.code ?? "");
+  return (
+    <Dialog onClose={onClose} title={t("packageSheetTitle", { name })} size="sm" variant="sheet" testId="package-audience-package-sheet">
+      <PackageAudienceChoice token={token} pkg={pkg} />
+    </Dialog>
+  );
+}
+
+function PackageAudienceChoice({ token, pkg }: { token: string; pkg: FinanceRecord }) {
   const t = useTranslations("PackageAudience");
   const ui = useUiTranslations();
   const queryClient = useQueryClient();
@@ -129,8 +157,7 @@ export function PackageAudienceCard({ token, pkg }: { token: string; pkg: Financ
   const boxAudience = settings.data?.audience ?? "all";
 
   return (
-    <section className="space-y-3 rounded-2xl px-4 py-3" style={{ background: "var(--panel)", border: "1px solid var(--border)" }} data-testid="package-audience-card">
-      <h4 className="text-sm font-semibold" style={{ color: "var(--text)" }}>{t("packageTitle")}</h4>
+    <div className="flex flex-col gap-4" data-testid="package-audience-card">
       <ChoiceList
         label={t("packageTitle")}
         value={value ?? "inherit"}
@@ -146,7 +173,47 @@ export function PackageAudienceCard({ token, pkg }: { token: string; pkg: Financ
       <p className="text-xs" style={{ color: "var(--dim)" }}>{t("bothPlaces")}</p>
       {mutation.error ? <ErrorNotice>{localizeError(mutation.error, ui)}</ErrorNotice> : null}
       <PeopleExceptions token={token} settings={settings.data} packageId={packageId} />
-    </section>
+    </div>
+  );
+}
+
+/**
+ * «Ποιος το βλέπει» at the top of the package, under «Διαθέσιμο». A retired
+ * package is seen by no one: the row turns grey and keeps the choice for
+ * when it comes back. Staff without «Πακέτα» read it only.
+ */
+export function PackageAudienceRow({ token, pkg, canManage }: { token: string; pkg: FinanceRecord; canManage: boolean }) {
+  const t = useTranslations("PackageAudience");
+  const [open, setOpen] = useState(false);
+  const { audience, summary, loading } = usePackageAudienceSummary(token, pkg);
+  const retired = pkg.active === false;
+  const interactive = canManage && !retired;
+  const body = (
+    <>
+      <AudienceIcon audience={retired ? "none" : audience} muted={retired} />
+      <span className="min-w-0 flex-1">
+        <span className="block text-sm font-semibold" style={{ color: "var(--text)" }}>{t("packageTitle")}</span>
+        <span className="block truncate text-xs" style={{ color: "var(--dim)" }} data-testid="package-audience-row-summary">
+          {retired ? t("retiredNoOne") : loading ? "…" : summary}
+        </span>
+      </span>
+      {interactive ? <span aria-hidden="true" style={{ color: "var(--dim)" }}>›</span> : null}
+    </>
+  );
+  const style = { background: "var(--panel)", border: "1px solid var(--border)", opacity: retired ? 0.6 : 1 };
+  return (
+    <>
+      {interactive ? (
+        <button type="button" onClick={() => setOpen(true)} className="flex min-h-13 w-full items-center gap-3 rounded-2xl px-4 py-2 text-start" style={style} data-testid="package-audience-row-package">
+          {body}
+        </button>
+      ) : (
+        <div className="flex min-h-13 w-full items-center gap-3 rounded-2xl px-4 py-2" style={style} data-testid="package-audience-row-package" aria-disabled="true">
+          {body}
+        </div>
+      )}
+      {open ? <PackageAudienceSheet token={token} pkg={pkg} onClose={() => setOpen(false)} /> : null}
+    </>
   );
 }
 
@@ -385,7 +452,7 @@ function PersonSearch({ token, taken, onPick, onCancel }: { token: string; taken
 const AUDIENCE_COLOR: Record<BoxAudience, string> = { all: "var(--success)", own: "var(--warning)", none: "var(--danger)" };
 
 /** A line eye, coloured by who sees: everyone, only who holds it, no one. */
-function AudienceIcon({ audience, inverse = false }: { audience: BoxAudience; inverse?: boolean }) {
+function AudienceIcon({ audience, inverse = false, muted = false }: { audience: BoxAudience; inverse?: boolean; muted?: boolean }) {
   return (
     <svg
       aria-hidden="true"
@@ -393,7 +460,7 @@ function AudienceIcon({ audience, inverse = false }: { audience: BoxAudience; in
       width="18"
       height="18"
       fill="none"
-      stroke={inverse ? "var(--bg)" : AUDIENCE_COLOR[audience]}
+      stroke={inverse ? "var(--bg)" : muted ? "var(--dim)" : AUDIENCE_COLOR[audience]}
       strokeWidth="1.8"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -409,24 +476,39 @@ function AudienceIcon({ audience, inverse = false }: { audience: BoxAudience; in
 
 /**
  * «Ποιος το βλέπει» on every package row (ANR 2026-11-08: a colour-coded
- * line icon, not a chip; hovering names it). Every package has one, whether
- * it follows the box or chose for itself.
+ * line icon, not a chip; hovering names it). With `onOpen` (staff with
+ * «Πακέτα», mockup 1A 2026-11-28) the eye is a button that opens the
+ * package's sheet. A retired package shows a grey crossed eye.
  */
-export function PackageAudienceBadge({ pkg }: { pkg: FinanceRecord }) {
+export function PackageAudienceBadge({ pkg, onOpen }: { pkg: FinanceRecord; onOpen?: () => void }) {
   const t = useTranslations("PackageAudience");
   const { tokens } = useSession();
-  const settings = useAudienceSettings(tokens?.access_token ?? "");
-  const own = packageAudience(pkg);
-  const audience = own ?? settings.data?.audience ?? "all";
-  const people = exceptionsFor(settings.data, typeof pkg.id === "string" ? pkg.id : null).length;
-  const label = [t(`badge_${audience}`), own === null ? t("package_inherit") : null, people > 0 ? t("peopleCount", { count: people }) : null]
-    .filter(Boolean)
-    .join(" · ");
+  const { audience, summary } = usePackageAudienceSummary(tokens?.access_token ?? "", pkg);
+  const retired = pkg.active === false;
+  const label = retired ? t("retiredNoOne") : `${t(`badge_${audience}`)} · ${summary}`;
+  const shown = retired ? "none" : audience;
   return (
     <HoverHint hint={label}>
-      <span role="img" aria-label={label} className="inline-flex" data-testid="package-audience-badge" data-audience={audience}>
-        <AudienceIcon audience={audience} />
-      </span>
+      {onOpen && !retired ? (
+        <button
+          type="button"
+          onClick={(event) => {
+            event.stopPropagation();
+            onOpen();
+          }}
+          aria-label={t("openPackageAudience", { label })}
+          className="inline-flex size-11 items-center justify-center rounded-xl"
+          style={{ background: "var(--panel-muted)" }}
+          data-testid="package-audience-badge"
+          data-audience={shown}
+        >
+          <AudienceIcon audience={shown} />
+        </button>
+      ) : (
+        <span role="img" aria-label={label} className="inline-flex" data-testid="package-audience-badge" data-audience={shown}>
+          <AudienceIcon audience={shown} muted={retired} />
+        </span>
+      )}
     </HoverHint>
   );
 }

@@ -8,15 +8,12 @@
 import {useUiLocale} from "@/i18n/use-ui-locale";
 import {useUiTranslations} from "@/i18n/ui";
 import { localizeError } from "@/i18n/presentation";
-import { RoleLabel } from "@/components/semantic-label";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
-  fetchFinanceMembers,
   fetchFinancePackage,
   previewFinancePackageTerms,
-  retireFinancePackage,
   updateFinancePackage,
   type FinanceRecord,
   type PackageTermsPreview,
@@ -28,7 +25,10 @@ import { BasicsStep, IncludedStep } from "@/components/admin/finance/packages/Pa
 import { AdvancedSettings, LockStrip, MemberPreview, PackageContractDetails, previewContext, useT } from "@/components/admin/finance/packages/package-ui";
 import { usePackageAuthoring } from "@/components/admin/finance/packages/use-package-authoring";
 import { SoldOnlineCard } from "@/components/admin/finance/packages/SoldOnlineCard";
-import { FeaturedPackageCard, PackageAudienceBadge, PackageAudienceCard } from "@/components/admin/finance/packages/PackageAudience";
+import { FeaturedPackageCard, PackageAudienceRow } from "@/components/admin/finance/packages/PackageAudience";
+import { PackageAvailabilityRow } from "@/components/admin/finance/packages/PackageAvailability";
+import { useSelectedMembershipRole } from "@/lib/membership-role";
+import { can } from "@/lib/role-navigation";
 import { SoldOnlineBadge } from "@/components/admin/finance/packages/SoldOnlineBadge";
 import { PackageTermsApplySheet } from "@/components/admin/finance/packages/PackageTermsApplySheet";
 import {
@@ -43,8 +43,6 @@ import {
   wizardSteps,
   type PackageDraft,
 } from "@/components/admin/finance/packages/package-catalog";
-import { Dialog } from "@/components/ui/Dialog";
-import { Select } from "@/components/ui/Select";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 
 function field(record: FinanceRecord | null | undefined, key: string, fallback = "") {
@@ -75,6 +73,8 @@ export function PackagePanel({
   const { tokens } = useSession();
   const token = tokens?.access_token ?? "";
   const queryClient = useQueryClient();
+  const { membership } = useSelectedMembershipRole();
+  const canManage = can(membership, "manage_packages");
 
   const packageQuery = useQuery({
     queryKey: ["admin", "finance", "package", packageId],
@@ -85,48 +85,26 @@ export function PackagePanel({
   const pkg = packageQuery.data?.package ?? null;
   const { catalog, classTypes, locations } = usePackageAuthoring(token);
 
-  const [form, setForm] = useState<FinanceRecord | null>(null);
+  // Mockup 2A (ANR 2026-11-28): «Διαθέσιμο» lives at the top of the package,
+  // outside editing, so editing never changes it.
+  const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState<PackageDraft | null>(null);
   const [attempted, setAttempted] = useState(false);
-  const [showReconciliation, setShowReconciliation] = useState(false);
-  const [replacements, setReplacements] = useState<Record<string, string>>({});
   // ADR-770: «Ισχύει και για τα ενεργά μέλη;» after «Αποθήκευση αλλαγών».
   const [termsPreview, setTermsPreview] = useState<PackageTermsPreview | null>(null);
-  const editing = form !== null;
-  const retiring = Boolean(editing && pkg?.active !== false && form?.active === false);
-
-  const impactQuery = useQuery({
-    queryKey: ["admin", "finance", "package-retirement-impact", packageId],
-    enabled: Boolean(token && retiring),
-    queryFn: () => fetchFinanceMembers(token, { limit: "5000" }),
-  });
-
-  const affectedMembers = (impactQuery.data?.members ?? []).filter((member) => {
-    const subscription = member.active_package_subscription as FinanceRecord | null | undefined;
-    return field(subscription, "membership_package_id") === packageId;
-  });
-  const affectedByRole = affectedMembers.reduce<Record<string, number>>((counts, member) => {
-    const membership = member.membership as FinanceRecord | null | undefined;
-    const role = field(membership, "user_type_snapshot") || field(member, "identity_role");
-    if (role) counts[role] = (counts[role] ?? 0) + 1;
-    return counts;
-  }, {});
-  const affectedRoles = Object.keys(affectedByRole);
-  const replacementOptions = packages.filter((candidate) => candidate.active !== false && field(candidate, "id") !== packageId);
 
   const type = catalog && draft ? findType(catalog, draft.packageType) : undefined;
 
   function startEdit() {
     if (!pkg || !catalog) return;
-    setForm({ active: pkg.active !== false });
+    setEditing(true);
     setDraft(draftFromPackage(catalog, pkg));
     setAttempted(false);
   }
 
   function cancelEdit() {
-    setForm(null);
+    setEditing(false);
     setDraft(null);
-    setShowReconciliation(false);
   }
 
   function setField(key: string, value: unknown) {
@@ -140,15 +118,14 @@ export function PackagePanel({
 
   const updateMutation = useMutation({
     mutationFn: (termsChoice?: TermsChoice) => {
-      if (!form || !draft || !catalog) throw new Error(i18n("noForm2807394"));
+      if (!editing || !draft || !catalog) throw new Error(i18n("noForm2807394"));
       return updateFinancePackage(token, packageId, {
         ...toPackageRequest(catalog, draft),
-        active: form.active !== false,
         ...(termsChoice ? { terms_choice: termsChoice } : {}),
       });
     },
     onSuccess: async () => {
-      setForm(null);
+      setEditing(false);
       setDraft(null);
       setTermsPreview(null);
       void queryClient.invalidateQueries({ queryKey: ["admin", "finance", "members"] });
@@ -161,11 +138,8 @@ export function PackagePanel({
   // the sheet opens only when a change would reach them.
   const termsPreviewMutation = useMutation({
     mutationFn: () => {
-      if (!form || !draft || !catalog) throw new Error(i18n("noForm2807394"));
-      return previewFinancePackageTerms(token, packageId, {
-        ...toPackageRequest(catalog, draft),
-        active: form.active !== false,
-      });
+      if (!editing || !draft || !catalog) throw new Error(i18n("noForm2807394"));
+      return previewFinancePackageTerms(token, packageId, toPackageRequest(catalog, draft));
     },
     onSuccess: ({ preview }) => {
       if (preview?.needs_choice) setTermsPreview(preview);
@@ -173,31 +147,9 @@ export function PackagePanel({
     },
   });
 
-  const retireMutation = useMutation({
-    mutationFn: () => retireFinancePackage(token, packageId, replacements),
-    onSuccess: async () => {
-      setShowReconciliation(false);
-      setReplacements({});
-      setForm(null);
-      setDraft(null);
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["admin", "finance", "package", packageId] }),
-        queryClient.invalidateQueries({ queryKey: ["admin", "finance", "packages"] }),
-        queryClient.invalidateQueries({ queryKey: ["admin", "finance", "members"] }),
-      ]);
-    },
-  });
-
   function saveChanges() {
     setAttempted(true);
     if (draft && draftIssues(draft).length > 0) return;
-    if (retiring && !impactQuery.isSuccess) return;
-
-    if (retiring && affectedMembers.length > 0) {
-      setShowReconciliation(true);
-      return;
-    }
-
     termsPreviewMutation.mutate();
   }
 
@@ -213,11 +165,11 @@ export function PackagePanel({
             <button
               className="rounded-full px-5 py-2 text-sm font-semibold disabled:opacity-50"
               style={{ background: "var(--text)", color: "var(--bg)" }}
-              disabled={updateMutation.isPending || termsPreviewMutation.isPending || retireMutation.isPending || (retiring && !impactQuery.isSuccess)}
+              disabled={updateMutation.isPending || termsPreviewMutation.isPending}
               onClick={saveChanges}
               type="button"
             >
-              {updateMutation.isPending || termsPreviewMutation.isPending || (retiring && impactQuery.isFetching) ? i18n("checking820d600") : i18n("saveChanges179359b")}
+              {updateMutation.isPending || termsPreviewMutation.isPending ? i18n("checking820d600") : i18n("saveChanges179359b")}
             </button>
             <button
               className="rounded-full px-5 py-2 text-sm font-semibold"
@@ -260,7 +212,14 @@ export function PackagePanel({
         <p style={{ color: "var(--dim)" }}>{i18n("loading33ce417")}</p>
       ) : !pkg ? (
         <p style={{ color: "var(--primary-strong)" }}>{i18n("packageNotFound764673f")}</p>
-      ) : editing && form && draft && catalog && type ? (
+      ) : (
+        <div className="space-y-6">
+          {/* Mockup 1A + 2A (ANR 2026-11-28): the two things staff change most, first. */}
+          <div className="space-y-2" data-testid="package-top-controls">
+            <PackageAvailabilityRow token={token} pkg={pkg} packages={packages} canManage={canManage} />
+            <PackageAudienceRow token={token} pkg={pkg} canManage={canManage} />
+          </div>
+      {editing && draft && catalog && type ? (
         <div className="space-y-6">
           <p className="rounded-2xl px-4 py-3 text-sm" style={{ background: "color-mix(in srgb, var(--primary) 8%, transparent)", color: "var(--text-soft)" }}>
             {t("pkgEditSnapshotNotice")}
@@ -285,7 +244,6 @@ export function PackagePanel({
             </summary>
             <div className="space-y-4 px-4 pb-4">
               <SoldOnlineCard token={token} pkg={pkg} />
-              <PackageAudienceCard token={token} pkg={pkg} />
               <FeaturedPackageCard token={token} pkg={pkg} />
               <AdvancedSettings
                 catalog={catalog}
@@ -299,26 +257,12 @@ export function PackagePanel({
             </div>
           </details>
           <MemberPreview draft={draft} classTypes={classTypes} compact {...previewContext(catalog, draft, packages)} />
-          <label className="flex items-center gap-3 text-sm font-semibold" style={{ color: "var(--text-soft)" }}>
-            <input
-              type="checkbox"
-              checked={form.active !== false}
-              onChange={(e) => {
-                setForm({ ...form, active: e.target.checked });
-                if (e.target.checked) setShowReconciliation(false);
-              }}
-            />
-            {i18n("activea733b80")}
-          </label>
           {updateMutation.error instanceof Error && (
             <ErrorNotice>{localizeError(updateMutation.error, i18n)}</ErrorNotice>
           )}
           {termsPreviewMutation.error instanceof Error && (
             <ErrorNotice>{localizeError(termsPreviewMutation.error, i18n)}</ErrorNotice>
           )}
-          {impactQuery.isError ? (
-            <ErrorNotice>{i18n("couldNotCheckCurrentSubscribersThePackageWilldd8ac35")}</ErrorNotice>
-          ) : null}
         </div>
       ) : (
         <div className="space-y-4">
@@ -328,7 +272,6 @@ export function PackagePanel({
             <Stat label={i18n("codeadac693")} value={field(pkg, "code")} />
             <Stat label={i18n("billingPeriodda59f5a")} value={t(`pkgBilling_${field(pkg, "billing_period", "monthly")}`)} />
             <Stat label={i18n("basePrice708f3d8")} value={money(uiLocale, pkg.base_price_cents)} />
-            <Stat label={i18n("statusbae7d5b")} value={pkg.active !== false ? i18n("activea733b80") : i18n("inactive09af574")} />
             <Stat label={t("pkgAdvancedSettings")} value={Array.isArray(pkg.changed_fields) && pkg.changed_fields.length > 0 ? t("pkgChangesFromSuggested", { count: pkg.changed_fields.length }) : t("pkgNoChangesFromSuggested")} />
           </div>
           {/* ADR-271: «Πωλείται online» lives in the package's advanced settings. */}
@@ -336,11 +279,9 @@ export function PackagePanel({
             <summary className="flex cursor-pointer items-center gap-2 px-4 py-3 text-sm font-semibold" style={{ color: "var(--text)" }}>
               <span className="flex-1">⚙ {t("pkgAdvancedSettings")}</span>
               <SoldOnlineBadge pkg={pkg} />
-              <PackageAudienceBadge pkg={pkg} />
             </summary>
             <div className="space-y-4 px-4 pb-4">
               <SoldOnlineCard token={token} pkg={pkg} />
-              <PackageAudienceCard token={token} pkg={pkg} />
               <FeaturedPackageCard token={token} pkg={pkg} />
             </div>
           </details>
@@ -362,58 +303,8 @@ export function PackagePanel({
           ) : null}
         </div>
       )}
-      {showReconciliation ? (
-        <Dialog
-          onClose={() => setShowReconciliation(false)}
-          eyebrow={<span style={{ color: "var(--warning)" }}>{i18n("requiredReconciliationd3a0ead")}</span>}
-          title={i18n("moveCurrentSubscribersBeforeRetiringThisPackage8116b72")}
-          titleId="package-retirement-title"
-          size="lg"
-          variant="center"
-          footer={
-            <div className="w-full flex flex-wrap gap-3">
-              <button
-                type="button"
-                className="rounded-full px-5 py-2 text-sm font-semibold disabled:opacity-40"
-                style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}
-                disabled={retireMutation.isPending || affectedRoles.some((role) => !replacements[role])}
-                onClick={() => retireMutation.mutate()}
-              >
-                {retireMutation.isPending ? i18n("reconciling4bfc2e9") : i18n("reassignAndRetirec6fc878")}
-              </button>
-              <button type="button" className="rounded-full px-5 py-2 text-sm font-semibold" style={{ background: "var(--border)", color: "var(--text-soft)" }} onClick={() => setShowReconciliation(false)}>
-                {i18n("keepPackageActivef655e90")}
-              </button>
-            </div>
-          }
-        >
-            <p className="text-sm leading-6" style={{ color: "var(--dim)" }}>
-              {i18n("packageSubscribersRequireReplacement", {count: affectedMembers.length})}
-            </p>
-            <div className="mt-5 space-y-3">
-              {affectedRoles.map((role) => (
-                <label key={role} className="block space-y-1">
-                  <span className="text-xs font-semibold capitalize" style={{ color: "var(--text-soft)" }}><RoleLabel role={role} /> {i18n("replacement898d79a")} {i18n("userCount", { count: affectedByRole[role] })}</span>
-                  <Select
-                    className="w-full rounded-xl px-3 py-2 text-sm"
-                    style={{ background: "var(--panel)", border: "1px solid var(--border)", color: "var(--text)" }}
-                    value={replacements[role] ?? ""}
-                    onValueChange={(value) => setReplacements((current) => ({ ...current, [role]: value }))}
-                  >
-                    <option value="">{i18n("selectReplacement2a95f76")}</option>
-                    {replacementOptions.map((candidate) => (
-                      <option key={field(candidate, "id")} value={field(candidate, "id")}>
-                        {field(candidate, "name", field(candidate, "code"))}
-                      </option>
-                    ))}
-                  </Select>
-                </label>
-              ))}
-            </div>
-            {replacementOptions.length === 0 ? <ErrorNotice className="mt-3">{i18n("createAnotherActivePackageBeforeRetiringThisOne619ea88")}</ErrorNotice> : null}
-            {retireMutation.error instanceof Error ? <ErrorNotice className="mt-3">{localizeError(retireMutation.error, i18n)}</ErrorNotice> : null}
-        </Dialog>
-      ) : null}
+        </div>
+      )}
       {termsPreview ? (
         <PackageTermsApplySheet
           preview={termsPreview}
