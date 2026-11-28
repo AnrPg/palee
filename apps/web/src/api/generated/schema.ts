@@ -13542,7 +13542,7 @@ export interface paths {
         };
         /**
          * Get the common role-aware admin user profile shell
-         * @description `programming` (clients only, else null): `{allowed, grant, reason}` says whether a WOD can be assigned to the person: their subscription package needs online programming (`online_programming`) or personal training (`personal_training`), ADR-232.
+         * @description `programming` (clients only, else null): `{allowed, grant, reason}` says whether a WOD can be assigned to the person: their subscription package needs online programming (`online_programming`) or personal training (`personal_training`), ADR-232. `class_visits` (ADR-805, members): the package lets them book classes, so a WOD of their own on a day without a booking uses one class visit instead.
          */
         get: operations["PaleeWeb.AdminUserController.show"];
         put?: never;
@@ -13771,7 +13771,7 @@ export interface paths {
         put?: never;
         /**
          * Copy or save a workout and associate it with this user's assignment, class variant or booked class
-         * @description Athletes receive a personal assignment. Members follow `mode` (ADR-125). Without folder_id, copies are filed automatically (ADR-136): athletes in their folder, class workouts in the class-day folder, member variations in the member's variations folder. Athletes, and members in the personal mode, need a package with online programming or personal training (ADR-232); otherwise 403 `programming_not_in_package`. A class_variant (ADR-785) needs none and is refused with 422 `class_variant_closed` once the class ended.
+         * @description Athletes receive a personal assignment. Members follow `mode` (ADR-125). Without folder_id, copies are filed automatically (ADR-136): athletes in their folder, class workouts in the class-day folder, member variations in the member's variations folder. Athletes need a package with online programming or personal training (ADR-232); otherwise 403 `programming_not_in_package`. A member's `personal` WOD (ADR-805) needs a class booked that day or one class visit of the package for that day (the assignment uses it), else online programming; otherwise 403 `member_wod_not_covered`. A class_variant (ADR-785) needs none and is refused with 422 `class_variant_closed` once the class ended.
          */
         post: operations["PaleeWeb.AdminUserController.program_workout"];
         delete?: never;
