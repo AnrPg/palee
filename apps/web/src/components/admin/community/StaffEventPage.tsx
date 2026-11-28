@@ -428,7 +428,7 @@ function AttendeeRow({ event, row }: { event: StaffEvent; row: StaffAttendee }) 
 function PersonLine({ row, notes }: { row: StaffAttendee; notes: (string | null)[] }) {
   return (
     <>
-      <PersonAvatar name={row.person.nickname} url={row.person.avatar_url} />
+      <PersonAvatar name={row.person.nickname} url={row.person.avatar_url} personId={row.person.id} />
       <span className="min-w-0">
         <span className="block truncate font-bold" style={{ color: "var(--text)" }}>{row.person.nickname ?? "?"}</span>
         {notes.length > 0 ? <span className="block text-xs" style={{ color: "var(--dim)" }}>{notes.join(" · ")}</span> : null}

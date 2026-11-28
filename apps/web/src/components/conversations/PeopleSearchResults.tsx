@@ -77,7 +77,7 @@ export function PeopleSearchResults({
                   style={{ background: "var(--panel)", border: "1px solid var(--border)" }}
                   aria-label={t("messageA11y", { name })}
                 >
-                  <PersonAvatar name={name} url={person.avatar_url} size={40} />
+                  <PersonAvatar name={name} url={person.avatar_url} personId={person.id} size={40} />
                   <span className="min-w-0 flex-1">
                     <span className="flex min-w-0 items-center gap-2">
                       <span className="truncate text-sm font-semibold" style={{ color: "var(--text)" }}>

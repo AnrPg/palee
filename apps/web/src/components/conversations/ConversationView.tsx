@@ -193,7 +193,7 @@ export function ConversationView({ conversationId, onDeclined }: { conversationI
         className="flex min-w-0 items-center gap-3 self-start rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]"
         aria-label={t("viewProfile", { name })}
       >
-        <PersonAvatar name={name} url={current.person.avatar_url} size={44} />
+        <PersonAvatar name={name} url={current.person.avatar_url} personId={current.person.id} size={44} />
         <span className="min-w-0">
           <span className="flex min-w-0 items-center gap-2">
             <span className="truncate text-xl font-extrabold" style={{ color: "var(--text)" }}>

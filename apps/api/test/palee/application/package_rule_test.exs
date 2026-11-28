@@ -443,10 +443,13 @@ defmodule Palee.Application.PackageRuleTest do
         box_slug: "rule"
       })
 
-    staff_types =
-      ctx.owner.id |> Palee.Notifications.list_for_user() |> Enum.map(&to_string(&1.type))
+    staff_notifications = Palee.Notifications.list_for_user(ctx.owner.id)
+    staff_types = Enum.map(staff_notifications, &to_string(&1.type))
 
     assert "package_requested" in staff_types
+    # ADR-784: the request opens that person's «Οικονομικά», where it is answered.
+    requested = Enum.find(staff_notifications, &(to_string(&1.type) == "package_requested"))
+    assert requested.payload["url"] == "/admin/users/#{user.id}?tab=finance"
     assert "package_rule_started" in staff_types
 
     mine = Palee.Notifications.list_for_user(user.id)

@@ -845,7 +845,8 @@ defmodule Palee.Notifications do
              leaving_on: field(payload, :leaving_on),
              reason: field(payload, :reason),
              dedupe_key: "member_leaving:#{field(payload, :left_at)}:#{member_id}:#{staff_id}",
-             url: "/admin/users/#{member_id}"
+             # ADR-784: what they keep and still owe is on «Οικονομικά».
+             url: "/admin/users/#{member_id}?tab=finance"
            }) do
         :ok -> {:cont, :ok}
         error -> {:halt, error}
@@ -872,7 +873,9 @@ defmodule Palee.Notifications do
              currency: field(payload, :currency),
              free: field(payload, :free) == true,
              dedupe_key: "package_requested:#{request_id}:#{staff_id}",
-             url: "/admin/finance?tab=queues&queue=awaiting"
+             # ADR-784 (ANR pick 7): one person's money opens their profile's
+             # «Οικονομικά», where the request is answered too.
+             url: "/admin/users/#{field(payload, :member_user_id)}?tab=finance"
            }) do
         :ok -> {:cont, :ok}
         error -> {:halt, error}

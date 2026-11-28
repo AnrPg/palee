@@ -31,6 +31,7 @@ import { DeskSurchargeQuestion } from "./DeskSurchargeQuestion";
 import { downloadExportDocument, receiptDocument } from "./receipt-pdf";
 import {
   PAYMENT_METHODS,
+  amountInput,
   choosePurpose,
   fieldForErrorCode,
   findPurpose,
@@ -58,7 +59,22 @@ function subscriptionName(subscription: FinanceRecord) {
  * get the document the box's billing setup calls for. Opened from the
  * client's ledger row and from their finance panel.
  */
-export function ReceivePaymentDialog({ userId, nickname, onClose }: { userId: string; nickname: string; onClose: () => void }) {
+export function ReceivePaymentDialog({
+  userId,
+  nickname,
+  onClose,
+  chargeId,
+}: {
+  userId: string;
+  nickname: string;
+  onClose: () => void;
+  /**
+   * ADR-784 (ANR pick 2β): opened from one charge's «Πληρωμή». The money goes
+   * to that charge; the amount starts empty so staff type what is handed over
+   * now, and «Εξόφληση όλου» fills in what is left.
+   */
+  chargeId?: string;
+}) {
   const t = useTranslations("ReceivePayment");
   const i18n = useUiTranslations();
   const uiLocale = useUiLocale();
@@ -80,7 +96,7 @@ export function ReceivePaymentDialog({ userId, nickname, onClose }: { userId: st
 
   const purposes = useMemo(() => paymentPurposes(profileQuery.data, subscriptionName), [profileQuery.data]);
   const [draft, setDraft] = useState<ReceivePaymentForm | null>(null);
-  const form = draft ?? initialForm(purposes);
+  const form = draft ?? initialForm(purposes, chargeId ? `invoice:${chargeId}` : undefined);
   const purpose = findPurpose(purposes, form.purpose);
   const documentMode = settingsQuery.data?.finance.document_mode;
   // One key per payment being entered: a retry or a double press records it once.
@@ -248,6 +264,17 @@ export function ReceivePaymentDialog({ userId, nickname, onClose }: { userId: st
               onChange={(event) => update({ amount: event.target.value })}
               {...invalidFieldProps(fieldMessage("amount_cents"), `${ids}-amount`)}
             />
+            {purpose.kind !== "other" && purpose.amountCents > 0 ? (
+              <button
+                type="button"
+                className="mt-2 rounded-full px-3.5 py-2 text-sm font-semibold"
+                style={{ background: "transparent", color: "var(--text)", border: "1px solid var(--border)" }}
+                onClick={() => update({ amount: amountInput(purpose.amountCents) })}
+                data-testid="receive-payment-full"
+              >
+                {t("payInFull", { amount: money(purpose.amountCents) })}
+              </button>
+            ) : null}
           </FormRow>
 
           <FormRow label={t("method")} errorId={`${ids}-method`} error={fieldMessage("payment_method")}>

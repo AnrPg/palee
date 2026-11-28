@@ -60,7 +60,7 @@ export function PersonLink({ userId, name, handle }: { userId: string | null | u
   if (!userId) return <span className="font-semibold" style={{ color: "var(--text)" }}>{name}</span>;
   return (
     <Link
-      href={adminHref(`/admin/users/${encodeURIComponent(userId)}`, slug)}
+      href={adminHref(`/admin/users/${encodeURIComponent(userId)}?tab=finance`, slug)}
       className="font-semibold underline-offset-2 hover:underline"
       style={{ color: "var(--text)" }}
       data-testid="queue-person-link"

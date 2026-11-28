@@ -66,6 +66,37 @@ function Pill({ selected, onClick, children, testId }: { selected: boolean; onCl
 }
 
 /**
+ * The one-line name of a gift or grace («Χάρη έως …», «+2 επισκέψεις …»),
+ * shared by this card and the movements list (ADR-784).
+ */
+export function useBenefitTitle(allowances: Array<{ key: string; label: string }>) {
+  const t = useTranslations("MemberBenefits");
+  const locale = useUiLocale();
+  const money = (cents: number | null | undefined) => formatMinorUnits(locale, cents ?? 0);
+
+  return (benefit: MemberBenefit) => {
+    switch (benefit.kind) {
+      case "grace":
+        return t("titleGrace", { date: dayText(locale, benefit.ends_on) });
+      case "free_access":
+        return t("titleFreeAccess", { date: dayText(locale, benefit.ends_on) });
+      case "extra_uses": {
+        const key = detail<string>(benefit, "allowance") ?? "";
+        const label = allowances.find((allowance) => allowance.key === key)?.label ?? key;
+        return t("titleExtraUses", { count: detail<number>(benefit, "quantity") ?? 0, what: label, from: dayText(locale, benefit.starts_on), to: dayText(locale, benefit.ends_on) });
+      }
+      case "package":
+        return detail<string>(benefit, "pricing") === "price"
+          ? t("titlePackagePrice", { name: detail<string>(benefit, "package_name") ?? "", price: money(detail<number>(benefit, "price_cents")) })
+          : t("titlePackageFree", { name: detail<string>(benefit, "package_name") ?? "" });
+      default:
+        return t("titleDebtForgiven", { amount: money(benefit.amount_cents) });
+    }
+  };
+
+}
+
+/**
  * ADR-612: «Δώρο ή χάρη» on a member's profile. Staff who take payments give a
  * grace, free access, extra uses, a package for free or cheaper, or forgive a
  * charge; every one is kept with who gave it, when and why, and can be seen
@@ -116,27 +147,7 @@ export function MemberBenefits({
     },
   });
 
-  const money = (cents: number | null | undefined) => formatMinorUnits(locale, cents ?? 0);
-
-  const title = (benefit: MemberBenefit) => {
-    switch (benefit.kind) {
-      case "grace":
-        return t("titleGrace", { date: dayText(locale, benefit.ends_on) });
-      case "free_access":
-        return t("titleFreeAccess", { date: dayText(locale, benefit.ends_on) });
-      case "extra_uses": {
-        const key = detail<string>(benefit, "allowance") ?? "";
-        const label = allowances.find((allowance) => allowance.key === key)?.label ?? key;
-        return t("titleExtraUses", { count: detail<number>(benefit, "quantity") ?? 0, what: label, from: dayText(locale, benefit.starts_on), to: dayText(locale, benefit.ends_on) });
-      }
-      case "package":
-        return detail<string>(benefit, "pricing") === "price"
-          ? t("titlePackagePrice", { name: detail<string>(benefit, "package_name") ?? "", price: money(detail<number>(benefit, "price_cents")) })
-          : t("titlePackageFree", { name: detail<string>(benefit, "package_name") ?? "" });
-      default:
-        return t("titleDebtForgiven", { amount: money(benefit.amount_cents) });
-    }
-  };
+  const title = useBenefitTitle(allowances);
 
   return (
     <div className="space-y-3 rounded-[1.25rem] p-4" style={{ border: "1px solid var(--border)" }} data-testid="member-benefits">

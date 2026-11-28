@@ -111,7 +111,7 @@ export function InvitationRow({ squad, slug }: { squad: PtSquad; slug: string })
     <li className="flex flex-col gap-1 py-2" data-testid="squad-invite">
       <div className={`${itemRow} min-h-14`}>
         <div className={itemRowMain}>
-          <PersonAvatar name={squad.coach.nickname} url={squad.coach.avatar_url} />
+          <PersonAvatar name={squad.coach.nickname} url={squad.coach.avatar_url} personId={squad.coach.id} />
           <div className="min-w-0 grow">
             <span className="block truncate font-bold" style={{ color: "var(--text)" }}>{squad.name}</span>
             <span className="block truncate text-xs" style={{ color: "var(--dim)" }}>
@@ -172,7 +172,7 @@ function ClientPicker({
                   onChange={() => onToggle(client.id)}
                   className="h-5 w-5"
                 />
-                <PersonAvatar name={client.nickname} url={client.avatar_url} />
+                <PersonAvatar name={client.nickname} url={client.avatar_url} personId={client.id} />
                 <span className="truncate text-sm font-semibold" style={{ color: "var(--text)" }}>{client.nickname ?? "?"}</span>
               </label>
             </li>

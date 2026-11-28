@@ -89,7 +89,7 @@ export function BuddyChat({ linkId }: { linkId: string }) {
       <div>
         <BackLink href="/me/buddy">{t("title")}</BackLink>
         <div className="flex items-center gap-3">
-          <PersonAvatar name={name} url={link?.person?.avatar_url} size={40} />
+          <PersonAvatar name={name} url={link?.person?.avatar_url} personId={link?.person?.id} size={40} />
           <h1 className="text-2xl font-extrabold" style={{ color: "var(--text)" }}>{name}</h1>
         </div>
         <p className="text-xs" style={{ color: "var(--dim)" }}>{t("chatPrivate")}</p>
