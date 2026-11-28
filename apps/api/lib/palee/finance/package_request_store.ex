@@ -22,6 +22,8 @@ defmodule Palee.Finance.PackageRequestStore do
   @impl true
   def lapse_before(today, now), do: adapter().lapse_before(today, now)
   @impl true
+  def fulfil_answered(now), do: adapter().fulfil_answered(now)
+  @impl true
   def claim_wait_booking(user_id, scheduled_class_id, allowed, today, now),
     do: adapter().claim_wait_booking(user_id, scheduled_class_id, allowed, today, now)
 

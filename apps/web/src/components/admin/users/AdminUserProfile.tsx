@@ -26,6 +26,7 @@ import type { EffectiveEntitlement } from "@/api/my-finance";
 import { setFinanceMemberAutoRenew, updateFinanceMember } from "@/api/finance";
 import { dossierMode, grantableAllowances, membershipDateCards, packageSubscriptionLabel, prSectionContentCount, visibleAdminProfileSections } from "@/components/admin/users/admin-user-profile";
 import { MemberBenefits } from "@/components/admin/users/MemberBenefits";
+import { PackageTermUpdates } from "@/components/finance/PackageTermUpdates";
 import { MembershipFreezes } from "@/components/admin/users/MembershipFreezes";
 import { MembershipLeaving } from "@/components/admin/users/MembershipLeaving";
 import {
@@ -40,6 +41,7 @@ import { DraftFormsProvider, PageSaveBar, UnsavedChangesDialog, useDraftForm, us
 import { CommitmentOverridePrompt } from "@/components/admin/finance/shared/CommitmentOverridePrompt";
 import { commitmentConflict } from "@/components/admin/finance/shared/membership-commitment";
 import { MemberStatusCell, SubscriptionEndCell } from "@/components/admin/finance/shared/MemberStandingCells";
+import { StandingBadge } from "@/components/finance/StandingBadge";
 import { overrideFor } from "@/components/admin/finance/shared/member-standing";
 import {
   ADMIN_PROFILE_SECTION_REQUEST,
@@ -347,7 +349,7 @@ function FinanceDetails({
               {/* ADR-274: worked out from the subscription and payments; set by hand only with a trace. */}
               <EditableFinanceCard
                 label={i18n("statusbae7d5b")}
-                value={<MemberStatusCell userId={userId} status={valueText(membership.status_shown) === "—" ? draft.status : valueText(membership.status_shown)} override={overrideFor(finance.details.overrides, "status")} />}
+                value={<MemberStatusCell userId={userId} status={valueText(membership.status_shown) === "—" ? draft.status : valueText(membership.status_shown)} override={overrideFor(finance.details.overrides, "status")} standing={finance.summary?.standing ?? null} />}
               />
               <EditableFinanceCard label={i18n("packageSubscriptions09a33f1")} value={packageContent || "—"} />
               {/* Start comes before end, so it sits first (left). */}
@@ -377,6 +379,8 @@ function FinanceDetails({
                 );
               })}
             </div>
+            {/* ADR-770: the same «Νέοι όροι από…» the member sees. */}
+            <PackageTermUpdates updates={currentSubscription?.term_updates as Parameters<typeof PackageTermUpdates>[0]["updates"]} />
             {commitment ? (
               <CommitmentOverridePrompt
                 endsOn={commitment.endsOn}
@@ -745,7 +749,9 @@ export function AdminUserProfile({ userId }: { userId: string }) {
 
   if (sections.has("finance")) {
     overviewItems.push(
-      [i18n("finance1b48d3f"), finance.data?.summary?.current_status?.state ? <SemanticLabel key="finance" value={String(finance.data.summary.current_status.state)} /> : "—"],
+      // The same standing the ledger, the Finance tab and the member show
+      // (never the stored lifecycle, which leaves out what is owed).
+      [i18n("finance1b48d3f"), finance.data?.summary?.standing ? <StandingBadge key="finance" standing={finance.data.summary.standing} /> : "—"],
     );
   }
   if (executions.length) overviewItems.push([i18n("totalCompletionsfa16f4c"), training.data?.summary.completed_count ?? 0]);

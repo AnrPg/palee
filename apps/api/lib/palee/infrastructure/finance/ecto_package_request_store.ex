@@ -5,7 +5,15 @@ defmodule Palee.Infrastructure.Finance.EctoPackageRequestStore do
 
   import Ecto.Query
 
-  alias Palee.Finance.{PackageRequest, PackageWaitBooking}
+  alias Palee.Finance.{
+    FinanceInvoice,
+    Membership,
+    MembershipPackageSubscription,
+    MembershipPayment,
+    PackageRequest,
+    PackageWaitBooking
+  }
+
   alias Palee.Infrastructure.Tenancy.RepoContext
   alias Palee.Repo
 
@@ -138,6 +146,58 @@ defmodule Palee.Infrastructure.Finance.EctoPackageRequestStore do
       |> Repo.update_all(set: [status: "lapsed", closed_at: now, updated_at: now])
 
     Enum.map(rows, &normalize/1)
+  end
+
+  # However the package reached the person (an assignment, «+ Πληρωμή»,
+  # the desk queue, an import), a request it answered never keeps saying
+  # «Περιμένει πληρωμή»: the hourly run closes what a write missed.
+  @impl true
+  def fulfil_answered(%DateTime{} = now) do
+    paid_after_request =
+      from(payment in MembershipPayment,
+        left_join: invoice in FinanceInvoice,
+        on: invoice.id == payment.finance_invoice_id,
+        where:
+          (payment.membership_package_subscription_id == parent_as(:subscription).id or
+             invoice.membership_package_subscription_id == parent_as(:subscription).id) and
+            payment.payment_status == "paid" and is_nil(payment.deleted_at) and
+            payment.inserted_at >= parent_as(:request).inserted_at,
+        select: 1
+      )
+
+    answered =
+      from(request in PackageRequest,
+        as: :request,
+        join: membership in Membership,
+        on:
+          membership.user_id == request.user_id and
+            membership.organization_id == request.organization_id,
+        join: subscription in MembershipPackageSubscription,
+        as: :subscription,
+        on:
+          subscription.membership_id == membership.id and
+            subscription.membership_package_id == request.membership_package_id,
+        where:
+          request.status == "pending" and subscription.status in ["active", "paused"] and
+            is_nil(subscription.removed_on),
+        where: subscription.inserted_at >= request.inserted_at or exists(paid_after_request),
+        order_by: [asc: subscription.inserted_at],
+        select: {request.id, subscription.id}
+      )
+      |> tenant_scope()
+      |> Repo.all()
+      # The first subscription that answered each request.
+      |> Enum.uniq_by(&elem(&1, 0))
+
+    Enum.flat_map(answered, fn {request_id, subscription_id} ->
+      case close(request_id, "activated", %{
+             closed_at: now,
+             membership_package_subscription_id: subscription_id
+           }) do
+        {:ok, closed} -> [closed]
+        {:error, _closed_meanwhile} -> []
+      end
+    end)
   end
 
   @impl true

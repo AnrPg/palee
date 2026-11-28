@@ -985,3 +985,15 @@ msgstr "%{coach} занял(а) экран. Ты можешь вернуть е�
 
 msgid "Your coach gave you your own WOD for a class. Open it to book your place."
 msgstr "Тренер дал тебе собственный WOD для занятия. Открой его, чтобы записаться."
+
+msgid "Your subscription package is changing"
+msgstr "Твой абонемент меняется"
+
+msgid "%{box} · %{package}: some changes apply from today, the rest from %{date}."
+msgstr "%{box} · %{package}: часть изменений действует с сегодняшнего дня, остальные — с %{date}."
+
+msgid "%{box} · %{package}: new terms from %{date}."
+msgstr "%{box} · %{package}: новые условия с %{date}."
+
+msgid "%{box} · %{package}: new terms apply from today."
+msgstr "%{box} · %{package}: новые условия с сегодняшнего дня."

@@ -1022,6 +1022,21 @@ defmodule Palee.Notifications do
         url: "/me/payments?box=#{field(payload, :box_slug)}"
       })
 
+  # ADR-770: staff saved a change of the member's package for its holders:
+  # what changes now and from which day the rest applies.
+  def process_event("package_terms_changed", payload),
+    do:
+      enqueue_simple(:package_terms_changed, payload, %{
+        organization_id: field(payload, :organization_id),
+        box_name: field(payload, :box_name),
+        package_name: field(payload, :package_name),
+        now_count: field(payload, :now_count),
+        next_on: field(payload, :next_on),
+        dedupe_key:
+          "package_terms_changed:#{field(payload, :term_change_id)}:#{field(payload, :subscription_id)}",
+        url: "/me/payments?box=#{field(payload, :box_slug)}"
+      })
+
   # ADR-690: the Palee team adopted or merged a workout type the box made.
   def process_event("workout_kind_adopted", payload),
     do:

@@ -60,7 +60,12 @@ defmodule PaleeWeb.AdminUserController do
     properties: %{
       user_id: @user_id,
       available: %Schema{type: :boolean},
-      summary: %Schema{type: :object, additionalProperties: true, nullable: true},
+      summary: %Schema{
+        type: :object,
+        additionalProperties: true,
+        nullable: true,
+        properties: %{standing: PaleeWeb.Schemas.MemberStanding.schema()}
+      },
       details: @finance_details,
       drill_down: %Schema{type: :object, additionalProperties: true, nullable: true},
       operational_links: %Schema{type: :object, additionalProperties: %Schema{type: :string}}

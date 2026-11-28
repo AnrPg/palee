@@ -984,3 +984,15 @@ msgstr "%{coach} לקח/ה את המסך. אפשר להחזיר אותו מהט�
 
 msgid "Your coach gave you your own WOD for a class. Open it to book your place."
 msgstr "המאמן/ת נתן/ה לך WOD משלך לשיעור. פתח/י אותו כדי להזמין מקום."
+
+msgid "Your subscription package is changing"
+msgstr "חבילת המנוי שלך משתנה"
+
+msgid "%{box} · %{package}: some changes apply from today, the rest from %{date}."
+msgstr "%{box} · %{package}: חלק מהשינויים חלים מהיום והשאר מ-%{date}."
+
+msgid "%{box} · %{package}: new terms from %{date}."
+msgstr "%{box} · %{package}: תנאים חדשים מ-%{date}."
+
+msgid "%{box} · %{package}: new terms apply from today."
+msgstr "%{box} · %{package}: תנאים חדשים מהיום."

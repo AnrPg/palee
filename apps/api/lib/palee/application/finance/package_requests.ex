@@ -412,6 +412,9 @@ defmodule Palee.Application.Finance.PackageRequests do
   """
   def lapse(context, now \\ DateTime.utc_now()) do
     today = Organizations.local_today(context.organization_id, now)
+    # A request the box already answered is fulfilled first, so it never
+    # lapses (nor cancels the person's bookings) while they hold the package.
+    _fulfilled = scoped(context, fn -> PackageRequestStore.fulfil_answered(now) end)
     lapsed = scoped(context, fn -> PackageRequestStore.lapse_before(today, now) end)
 
     lapsed

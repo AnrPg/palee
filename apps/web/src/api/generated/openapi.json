@@ -16115,6 +16115,87 @@
                 },
                 "status": {
                   "type": "string"
+                },
+                "term_updates": {
+                  "description": "ADR-770: the package changes staff gave the package in force (pending first).",
+                  "items": {
+                    "properties": {
+                      "applied_at": {
+                        "format": "date-time",
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "changes": {
+                        "items": {
+                          "properties": {
+                            "from": {
+                              "description": "The value before.",
+                              "nullable": true
+                            },
+                            "key": {
+                              "description": "`price`, or a package contract field key.",
+                              "type": "string"
+                            },
+                            "timing": {
+                              "enum": [
+                                "now",
+                                "next_period"
+                              ],
+                              "type": "string"
+                            },
+                            "to": {
+                              "description": "The new value.",
+                              "nullable": true
+                            }
+                          },
+                          "required": [
+                            "key",
+                            "timing"
+                          ],
+                          "title": "SubscriptionTermChange",
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
+                      "effective_on": {
+                        "format": "date",
+                        "type": "string"
+                      },
+                      "id": {
+                        "format": "uuid",
+                        "type": "string"
+                      },
+                      "inserted_at": {
+                        "format": "date-time",
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "status": {
+                        "enum": [
+                          "pending",
+                          "applied"
+                        ],
+                        "type": "string"
+                      },
+                      "timing": {
+                        "enum": [
+                          "now",
+                          "next_period"
+                        ],
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "timing",
+                      "status",
+                      "effective_on",
+                      "changes"
+                    ],
+                    "title": "SubscriptionTermUpdate",
+                    "type": "object"
+                  },
+                  "type": "array"
                 }
               },
               "required": [
@@ -16407,6 +16488,87 @@
           },
           "status": {
             "type": "string"
+          },
+          "term_updates": {
+            "description": "ADR-770: the package changes staff gave the package in force (pending first).",
+            "items": {
+              "properties": {
+                "applied_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "changes": {
+                  "items": {
+                    "properties": {
+                      "from": {
+                        "description": "The value before.",
+                        "nullable": true
+                      },
+                      "key": {
+                        "description": "`price`, or a package contract field key.",
+                        "type": "string"
+                      },
+                      "timing": {
+                        "enum": [
+                          "now",
+                          "next_period"
+                        ],
+                        "type": "string"
+                      },
+                      "to": {
+                        "description": "The new value.",
+                        "nullable": true
+                      }
+                    },
+                    "required": [
+                      "key",
+                      "timing"
+                    ],
+                    "title": "SubscriptionTermChange",
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "effective_on": {
+                  "format": "date",
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "inserted_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "pending",
+                    "applied"
+                  ],
+                  "type": "string"
+                },
+                "timing": {
+                  "enum": [
+                    "now",
+                    "next_period"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "timing",
+                "status",
+                "effective_on",
+                "changes"
+              ],
+              "title": "SubscriptionTermUpdate",
+              "type": "object"
+            },
+            "type": "array"
           }
         },
         "required": [
@@ -63241,6 +63403,87 @@
                       },
                       "status": {
                         "type": "string"
+                      },
+                      "term_updates": {
+                        "description": "ADR-770: the package changes staff gave the package in force (pending first).",
+                        "items": {
+                          "properties": {
+                            "applied_at": {
+                              "format": "date-time",
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "changes": {
+                              "items": {
+                                "properties": {
+                                  "from": {
+                                    "description": "The value before.",
+                                    "nullable": true
+                                  },
+                                  "key": {
+                                    "description": "`price`, or a package contract field key.",
+                                    "type": "string"
+                                  },
+                                  "timing": {
+                                    "enum": [
+                                      "now",
+                                      "next_period"
+                                    ],
+                                    "type": "string"
+                                  },
+                                  "to": {
+                                    "description": "The new value.",
+                                    "nullable": true
+                                  }
+                                },
+                                "required": [
+                                  "key",
+                                  "timing"
+                                ],
+                                "title": "SubscriptionTermChange",
+                                "type": "object"
+                              },
+                              "type": "array"
+                            },
+                            "effective_on": {
+                              "format": "date",
+                              "type": "string"
+                            },
+                            "id": {
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "inserted_at": {
+                              "format": "date-time",
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "status": {
+                              "enum": [
+                                "pending",
+                                "applied"
+                              ],
+                              "type": "string"
+                            },
+                            "timing": {
+                              "enum": [
+                                "now",
+                                "next_period"
+                              ],
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "timing",
+                            "status",
+                            "effective_on",
+                            "changes"
+                          ],
+                          "title": "SubscriptionTermUpdate",
+                          "type": "object"
+                        },
+                        "type": "array"
                       }
                     },
                     "required": [
@@ -117702,6 +117945,112 @@
         "title": "SubscriptionFreeze",
         "type": "object"
       },
+      "SubscriptionTermChange": {
+        "properties": {
+          "from": {
+            "description": "The value before.",
+            "nullable": true
+          },
+          "key": {
+            "description": "`price`, or a package contract field key.",
+            "type": "string"
+          },
+          "timing": {
+            "enum": [
+              "now",
+              "next_period"
+            ],
+            "type": "string"
+          },
+          "to": {
+            "description": "The new value.",
+            "nullable": true
+          }
+        },
+        "required": [
+          "key",
+          "timing"
+        ],
+        "title": "SubscriptionTermChange",
+        "type": "object"
+      },
+      "SubscriptionTermUpdate": {
+        "properties": {
+          "applied_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "changes": {
+            "items": {
+              "properties": {
+                "from": {
+                  "description": "The value before.",
+                  "nullable": true
+                },
+                "key": {
+                  "description": "`price`, or a package contract field key.",
+                  "type": "string"
+                },
+                "timing": {
+                  "enum": [
+                    "now",
+                    "next_period"
+                  ],
+                  "type": "string"
+                },
+                "to": {
+                  "description": "The new value.",
+                  "nullable": true
+                }
+              },
+              "required": [
+                "key",
+                "timing"
+              ],
+              "title": "SubscriptionTermChange",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "effective_on": {
+            "format": "date",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "inserted_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "applied"
+            ],
+            "type": "string"
+          },
+          "timing": {
+            "enum": [
+              "now",
+              "next_period"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "timing",
+          "status",
+          "effective_on",
+          "changes"
+        ],
+        "title": "SubscriptionTermUpdate",
+        "type": "object"
+      },
       "SupportReply": {
         "properties": {
           "conversation": {
@@ -148882,6 +149231,87 @@
                                 },
                                 "status": {
                                   "type": "string"
+                                },
+                                "term_updates": {
+                                  "description": "ADR-770: the package changes staff gave the package in force (pending first).",
+                                  "items": {
+                                    "properties": {
+                                      "applied_at": {
+                                        "format": "date-time",
+                                        "nullable": true,
+                                        "type": "string"
+                                      },
+                                      "changes": {
+                                        "items": {
+                                          "properties": {
+                                            "from": {
+                                              "description": "The value before.",
+                                              "nullable": true
+                                            },
+                                            "key": {
+                                              "description": "`price`, or a package contract field key.",
+                                              "type": "string"
+                                            },
+                                            "timing": {
+                                              "enum": [
+                                                "now",
+                                                "next_period"
+                                              ],
+                                              "type": "string"
+                                            },
+                                            "to": {
+                                              "description": "The new value.",
+                                              "nullable": true
+                                            }
+                                          },
+                                          "required": [
+                                            "key",
+                                            "timing"
+                                          ],
+                                          "title": "SubscriptionTermChange",
+                                          "type": "object"
+                                        },
+                                        "type": "array"
+                                      },
+                                      "effective_on": {
+                                        "format": "date",
+                                        "type": "string"
+                                      },
+                                      "id": {
+                                        "format": "uuid",
+                                        "type": "string"
+                                      },
+                                      "inserted_at": {
+                                        "format": "date-time",
+                                        "nullable": true,
+                                        "type": "string"
+                                      },
+                                      "status": {
+                                        "enum": [
+                                          "pending",
+                                          "applied"
+                                        ],
+                                        "type": "string"
+                                      },
+                                      "timing": {
+                                        "enum": [
+                                          "now",
+                                          "next_period"
+                                        ],
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "timing",
+                                      "status",
+                                      "effective_on",
+                                      "changes"
+                                    ],
+                                    "title": "SubscriptionTermUpdate",
+                                    "type": "object"
+                                  },
+                                  "type": "array"
                                 }
                               },
                               "required": [
@@ -242700,6 +243130,70 @@
                         "actions"
                       ],
                       "type": "object"
+                    },
+                    "standing": {
+                      "description": "ADR-595: the status and the line under it, worked out once and shown alike to the member and the staff",
+                      "nullable": true,
+                      "properties": {
+                        "access_until": {
+                          "description": "Leaving or former: the last day of the package they kept",
+                          "format": "date",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "benefit": {
+                          "description": "ADR-612: a grace or free access the box gave; it lasts through `grace_until`",
+                          "enum": [
+                            "grace",
+                            "free_access"
+                          ],
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "grace_until": {
+                          "description": "The last day of the grace the member is in",
+                          "format": "date",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "outstanding_cents": {
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "status": {
+                          "enum": [
+                            "active",
+                            "trial",
+                            "comped",
+                            "unpaid",
+                            "overdue",
+                            "leaving",
+                            "expiring",
+                            "paused",
+                            "expired",
+                            "cancelled",
+                            "former",
+                            "no_package"
+                          ],
+                          "type": "string"
+                        },
+                        "unpaid_since": {
+                          "description": "The due date of the oldest charge still open",
+                          "format": "date",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "access_until",
+                        "benefit",
+                        "grace_until",
+                        "outstanding_cents",
+                        "status",
+                        "unpaid_since"
+                      ],
+                      "title": "MemberStanding",
+                      "type": "object"
                     }
                   },
                   "required": [
@@ -247940,6 +248434,31 @@
                     ],
                     "nullable": true,
                     "type": "string"
+                  },
+                  "terms_choice": {
+                    "additionalProperties": false,
+                    "description": "ADR-770: `active` gives the holders the change (now or from their next period), `new_only` keeps their terms. Required when the change would reach holders.",
+                    "properties": {
+                      "apply_to": {
+                        "enum": [
+                          "active",
+                          "new_only"
+                        ],
+                        "type": "string"
+                      },
+                      "excluded_subscription_ids": {
+                        "items": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "maxItems": 5000,
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "apply_to"
+                    ],
+                    "type": "object"
                   }
                 },
                 "type": "object"
@@ -248071,6 +248590,688 @@
           }
         ],
         "summary": "Retire a package and atomically reconcile its effective subscribers",
+        "tags": [
+          "Admin Finance"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/finance/packages/{id}/terms-preview": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminFinanceController.package_terms_preview",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "base_price_cents": {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "billing_period": {
+                    "enum": [
+                      "monthly",
+                      "quarterly",
+                      "semiannual",
+                      "annual",
+                      "custom",
+                      "one_off",
+                      "with_base"
+                    ],
+                    "type": "string"
+                  },
+                  "code": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "currency": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "exemption_reason": {
+                    "description": "Required with `exempt`: the article of the VAT law printed on the document.",
+                    "maxLength": 300,
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "fields": {
+                    "additionalProperties": false,
+                    "description": "Entitlement catalog v2 field values keyed by catalog field key (ADR-096)",
+                    "properties": {
+                      "booking.cancellation_cutoff_hours": {
+                        "nullable": true,
+                        "type": "integer"
+                      },
+                      "booking.daily_limit": {
+                        "nullable": true,
+                        "type": "integer"
+                      },
+                      "booking.no_show_penalty_waived": {
+                        "type": "boolean"
+                      },
+                      "booking.open_bookings_limit": {
+                        "nullable": true,
+                        "type": "integer"
+                      },
+                      "booking.waitlist_priority": {
+                        "type": "string"
+                      },
+                      "booking.window_days": {
+                        "nullable": true,
+                        "type": "integer"
+                      },
+                      "content.advanced_analytics": {
+                        "type": "boolean"
+                      },
+                      "content.on_demand_video": {
+                        "type": "boolean"
+                      },
+                      "content.workout_library": {
+                        "type": "boolean"
+                      },
+                      "facility.amenities": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      "facility.amenities_note": {
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "facility.location_ids": {
+                        "oneOf": [
+                          {
+                            "enum": [
+                              "all"
+                            ],
+                            "type": "string"
+                          },
+                          {
+                            "items": {
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        ]
+                      },
+                      "facility.open_gym": {
+                        "type": "boolean"
+                      },
+                      "facility.open_gym_visits": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "limit": {
+                            "oneOf": [
+                              {
+                                "minimum": 0,
+                                "type": "integer"
+                              },
+                              {
+                                "enum": [
+                                  "unlimited"
+                                ],
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "period": {
+                            "enum": [
+                              "calendar_week",
+                              "calendar_month",
+                              "subscription_period"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "limit",
+                          "period"
+                        ],
+                        "type": "object"
+                      },
+                      "group_classes.class_type_limits": {
+                        "items": {
+                          "additionalProperties": false,
+                          "properties": {
+                            "id": {
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "limit": {
+                              "minimum": 0,
+                              "type": "integer"
+                            },
+                            "period": {
+                              "enum": [
+                                "calendar_week",
+                                "calendar_month",
+                                "subscription_period"
+                              ],
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "limit",
+                            "period"
+                          ],
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
+                      "group_classes.class_types": {
+                        "oneOf": [
+                          {
+                            "enum": [
+                              "all"
+                            ],
+                            "type": "string"
+                          },
+                          {
+                            "items": {
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        ]
+                      },
+                      "group_classes.included": {
+                        "type": "boolean"
+                      },
+                      "group_classes.rollover_max": {
+                        "type": "integer"
+                      },
+                      "group_classes.time_windows": {
+                        "items": {
+                          "additionalProperties": false,
+                          "properties": {
+                            "days": {
+                              "items": {
+                                "maximum": 7,
+                                "minimum": 1,
+                                "type": "integer"
+                              },
+                              "type": "array"
+                            },
+                            "from": {
+                              "type": "string"
+                            },
+                            "to": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "days",
+                            "from",
+                            "to"
+                          ],
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
+                      "group_classes.visits": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "limit": {
+                            "oneOf": [
+                              {
+                                "minimum": 0,
+                                "type": "integer"
+                              },
+                              {
+                                "enum": [
+                                  "unlimited"
+                                ],
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "period": {
+                            "enum": [
+                              "calendar_week",
+                              "calendar_month",
+                              "subscription_period"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "limit",
+                          "period"
+                        ],
+                        "type": "object"
+                      },
+                      "online_coaching.assigned_programming": {
+                        "type": "boolean"
+                      },
+                      "online_coaching.form_reviews": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "limit": {
+                            "oneOf": [
+                              {
+                                "minimum": 0,
+                                "type": "integer"
+                              },
+                              {
+                                "enum": [
+                                  "unlimited"
+                                ],
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "period": {
+                            "enum": [
+                              "calendar_week",
+                              "calendar_month",
+                              "subscription_period"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "limit",
+                          "period"
+                        ],
+                        "type": "object"
+                      },
+                      "online_coaching.included": {
+                        "type": "boolean"
+                      },
+                      "online_coaching.messaging": {
+                        "type": "boolean"
+                      },
+                      "online_coaching.nutrition_plan": {
+                        "type": "boolean"
+                      },
+                      "online_coaching.response_sla_hours": {
+                        "nullable": true,
+                        "type": "integer"
+                      },
+                      "online_coaching.touchpoints": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "limit": {
+                            "oneOf": [
+                              {
+                                "minimum": 0,
+                                "type": "integer"
+                              },
+                              {
+                                "enum": [
+                                  "unlimited"
+                                ],
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "period": {
+                            "enum": [
+                              "calendar_week",
+                              "calendar_month",
+                              "subscription_period"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "limit",
+                          "period"
+                        ],
+                        "type": "object"
+                      },
+                      "perks.event_visits": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "limit": {
+                            "oneOf": [
+                              {
+                                "minimum": 0,
+                                "type": "integer"
+                              },
+                              {
+                                "enum": [
+                                  "unlimited"
+                                ],
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "period": {
+                            "enum": [
+                              "calendar_week",
+                              "calendar_month",
+                              "subscription_period"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "limit",
+                          "period"
+                        ],
+                        "type": "object"
+                      },
+                      "perks.events": {
+                        "type": "boolean"
+                      },
+                      "perks.freeze_days_per_year": {
+                        "type": "integer"
+                      },
+                      "perks.guest_passes": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "limit": {
+                            "oneOf": [
+                              {
+                                "minimum": 0,
+                                "type": "integer"
+                              },
+                              {
+                                "enum": [
+                                  "unlimited"
+                                ],
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "period": {
+                            "enum": [
+                              "calendar_week",
+                              "calendar_month",
+                              "subscription_period"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "limit",
+                          "period"
+                        ],
+                        "type": "object"
+                      },
+                      "perks.member_discount_percent": {
+                        "type": "integer"
+                      },
+                      "perks.member_discount_scope": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      "personal_training.assessments": {
+                        "type": "integer"
+                      },
+                      "personal_training.coach_id": {
+                        "format": "uuid",
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "personal_training.format": {
+                        "type": "string"
+                      },
+                      "personal_training.group_size": {
+                        "type": "integer"
+                      },
+                      "personal_training.included": {
+                        "type": "boolean"
+                      },
+                      "personal_training.session_minutes": {
+                        "type": "integer"
+                      },
+                      "personal_training.sessions": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "limit": {
+                            "oneOf": [
+                              {
+                                "minimum": 0,
+                                "type": "integer"
+                              },
+                              {
+                                "enum": [
+                                  "unlimited"
+                                ],
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "period": {
+                            "enum": [
+                              "calendar_week",
+                              "calendar_month",
+                              "subscription_period"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "limit",
+                          "period"
+                        ],
+                        "type": "object"
+                      },
+                      "terms.allow_minor_beneficiaries": {
+                        "type": "boolean"
+                      },
+                      "terms.auto_renew": {
+                        "type": "boolean"
+                      },
+                      "terms.beneficiaries": {
+                        "type": "integer"
+                      },
+                      "terms.buyers": {
+                        "type": "string"
+                      },
+                      "terms.compatible_package_ids": {
+                        "oneOf": [
+                          {
+                            "enum": [
+                              "all"
+                            ],
+                            "type": "string"
+                          },
+                          {
+                            "items": {
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        ]
+                      },
+                      "terms.conversion_package_id": {
+                        "format": "uuid",
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "terms.enrollment": {
+                        "type": "string"
+                      },
+                      "terms.enrollment_domain": {
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "terms.expiry_reminder_days": {
+                        "type": "integer"
+                      },
+                      "terms.joining_fee_cents": {
+                        "type": "integer"
+                      },
+                      "terms.max_purchases_per_person": {
+                        "nullable": true,
+                        "type": "integer"
+                      },
+                      "terms.minimum_commitment_months": {
+                        "type": "integer"
+                      },
+                      "terms.new_members_only": {
+                        "type": "boolean"
+                      },
+                      "terms.once_per_person": {
+                        "type": "boolean"
+                      },
+                      "terms.prerequisite_package_ids": {
+                        "items": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      "terms.quota_sharing": {
+                        "type": "string"
+                      },
+                      "terms.seat_billing": {
+                        "type": "string"
+                      },
+                      "terms.seats": {
+                        "type": "integer"
+                      },
+                      "terms.stacking": {
+                        "type": "boolean"
+                      },
+                      "terms.validity": {
+                        "additionalProperties": false,
+                        "nullable": true,
+                        "properties": {
+                          "amount": {
+                            "minimum": 1,
+                            "type": "integer"
+                          },
+                          "unit": {
+                            "enum": [
+                              "day",
+                              "week",
+                              "month"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "amount",
+                          "unit"
+                        ],
+                        "type": "object"
+                      },
+                      "terms.validity_starts": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "package_type": {
+                    "enum": [
+                      "membership",
+                      "class_pack",
+                      "drop_in",
+                      "trial",
+                      "pt_pack",
+                      "add_on",
+                      "shared",
+                      "corporate"
+                    ],
+                    "type": "string"
+                  },
+                  "sold_online": {
+                    "type": "boolean"
+                  },
+                  "tags": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "tax_category": {
+                    "description": "ADR-244: the tax category printed on fiscal documents; one the business's country offers (`/admin/fiscal/countries`). Empty means `standard` (`sales_tax` in the US).",
+                    "enum": [
+                      "standard",
+                      "reduced",
+                      "second_reduced",
+                      "super_reduced",
+                      "special",
+                      "zero",
+                      "exempt",
+                      "sales_tax"
+                    ],
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "terms_choice": {
+                    "additionalProperties": false,
+                    "description": "ADR-770: `active` gives the holders the change (now or from their next period), `new_only` keeps their terms. Required when the change would reach holders.",
+                    "properties": {
+                      "apply_to": {
+                        "enum": [
+                          "active",
+                          "new_only"
+                        ],
+                        "type": "string"
+                      },
+                      "excluded_subscription_ids": {
+                        "items": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "maxItems": 5000,
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "apply_to"
+                    ],
+                    "type": "object"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Package change preview"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "What saving a package change would do to the members who hold it (ADR-770)",
         "tags": [
           "Admin Finance"
         ]
@@ -314497,6 +315698,72 @@
                     "summary": {
                       "additionalProperties": true,
                       "nullable": true,
+                      "properties": {
+                        "standing": {
+                          "description": "ADR-595: the status and the line under it, worked out once and shown alike to the member and the staff",
+                          "nullable": true,
+                          "properties": {
+                            "access_until": {
+                              "description": "Leaving or former: the last day of the package they kept",
+                              "format": "date",
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "benefit": {
+                              "description": "ADR-612: a grace or free access the box gave; it lasts through `grace_until`",
+                              "enum": [
+                                "grace",
+                                "free_access"
+                              ],
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "grace_until": {
+                              "description": "The last day of the grace the member is in",
+                              "format": "date",
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "outstanding_cents": {
+                              "minimum": 0,
+                              "type": "integer"
+                            },
+                            "status": {
+                              "enum": [
+                                "active",
+                                "trial",
+                                "comped",
+                                "unpaid",
+                                "overdue",
+                                "leaving",
+                                "expiring",
+                                "paused",
+                                "expired",
+                                "cancelled",
+                                "former",
+                                "no_package"
+                              ],
+                              "type": "string"
+                            },
+                            "unpaid_since": {
+                              "description": "The due date of the oldest charge still open",
+                              "format": "date",
+                              "nullable": true,
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "access_until",
+                            "benefit",
+                            "grace_until",
+                            "outstanding_cents",
+                            "status",
+                            "unpaid_since"
+                          ],
+                          "title": "MemberStanding",
+                          "type": "object"
+                        }
+                      },
                       "type": "object"
                     },
                     "user_id": {

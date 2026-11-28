@@ -984,3 +984,15 @@ msgstr "%{coach} took the screen. You can take it back from your class's timer."
 
 msgid "Your coach gave you your own WOD for a class. Open it to book your place."
 msgstr "Your coach gave you your own WOD for a class. Open it to book your place."
+
+msgid "Your subscription package is changing"
+msgstr "Your subscription package is changing"
+
+msgid "%{box} · %{package}: some changes apply from today, the rest from %{date}."
+msgstr "%{box} · %{package}: some changes apply from today, the rest from %{date}."
+
+msgid "%{box} · %{package}: new terms from %{date}."
+msgstr "%{box} · %{package}: new terms from %{date}."
+
+msgid "%{box} · %{package}: new terms apply from today."
+msgstr "%{box} · %{package}: new terms apply from today."

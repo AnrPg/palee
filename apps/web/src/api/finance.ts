@@ -1,6 +1,7 @@
 import { apiRequest } from "@/api/client";
 import type { PackageCatalog } from "@/components/admin/finance/packages/package-catalog";
 import type { ValueOverride } from "@/components/admin/finance/shared/member-standing";
+import type { Standing } from "@/components/finance/standing";
 import type { LocationScopePayload } from "@/lib/location-scope";
 
 export type FinanceRecord = Record<string, unknown>;
@@ -97,6 +98,52 @@ export async function updateFinancePackage(token: string, packageId: string, bod
   });
 }
 
+/** ADR-770: when a changed term reaches a holder. */
+export type TermTiming = "now" | "next_period" | "never" | "purchase_only";
+
+export type TermChange = { key: string; from: unknown; to: unknown; timing: TermTiming; direction?: "better" | "worse" | "neutral" };
+
+export type TermsHolder = {
+  subscription_id: string;
+  membership_id: string;
+  user_id: string;
+  nickname: string | null;
+  next_period_on: string | null;
+  now_count: number;
+  next_count: number;
+  notes: Array<"custom_price" | "renewal_stopped" | "ends_before">;
+};
+
+export type PackageTermsPreview = {
+  holders_count: number;
+  needs_choice: boolean;
+  changes: TermChange[];
+  earliest_next_on: string | null;
+  holders: TermsHolder[];
+};
+
+export type TermsChoice = { apply_to: "active" | "new_only"; excluded_subscription_ids: string[] };
+
+/** One package change as it reached a subscription (pending until `effective_on`). */
+export type SubscriptionTermUpdate = {
+  id: string;
+  timing: "now" | "next_period";
+  status: "pending" | "applied";
+  effective_on: string;
+  applied_at: string | null;
+  inserted_at: string;
+  changes: TermChange[];
+};
+
+/** ADR-770: what saving `body` would do to the package's holders (nothing is saved). */
+export async function previewFinancePackageTerms(token: string, packageId: string, body: FinanceRecord) {
+  return apiRequest<{ preview: PackageTermsPreview }>(`/admin/finance/packages/${packageId}/terms-preview`, {
+    method: "POST",
+    token,
+    body,
+  });
+}
+
 export async function retireFinancePackage(
   token: string,
   packageId: string,
@@ -146,6 +193,8 @@ export async function fetchFinanceMember(token: string, userId: string) {
     credit_ledger_entries: FinanceRecord[];
     credit_balance: number;
     entitlement?: FinanceRecord;
+    /** The one standing every screen shows (ledger, profile, the member's own pages). */
+    standing?: Standing | null;
   }>(`/admin/finance/members/${userId}`, { token });
 }
 

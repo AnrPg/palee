@@ -26,6 +26,13 @@ defmodule Palee.Finance.Ports.PackageRequestStore do
   @callback lapse_before(Date.t(), DateTime.t()) :: [request()]
 
   @doc """
+  Closes as `activated` every pending request the box already answered:
+  the person holds the package asked for through a subscription assigned,
+  or paid for, after the request was made. Returns them.
+  """
+  @callback fulfil_answered(DateTime.t()) :: [request()]
+
+  @doc """
   ADR-717: counts a class booked while the person's request waits, against
   the box's `allowed` number (per person and box, for good). On success
   `{:ok, {:claimed, id}}` (give it back with `release_wait_booking/1` if

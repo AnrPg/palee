@@ -988,3 +988,15 @@ msgstr "أخذ %{coach} الشاشة. يمكنك استعادتها من مؤق�
 
 msgid "Your coach gave you your own WOD for a class. Open it to book your place."
 msgstr "أعطاك مدربك تمرين WOD خاصًا بك لحصة. افتحه لتحجز مكانك."
+
+msgid "Your subscription package is changing"
+msgstr "باقة اشتراكك تتغيّر"
+
+msgid "%{box} · %{package}: some changes apply from today, the rest from %{date}."
+msgstr "%{box} · %{package}: بعض التغييرات تسري من اليوم والباقي من %{date}."
+
+msgid "%{box} · %{package}: new terms from %{date}."
+msgstr "%{box} · %{package}: شروط جديدة من %{date}."
+
+msgid "%{box} · %{package}: new terms apply from today."
+msgstr "%{box} · %{package}: شروط جديدة من اليوم."

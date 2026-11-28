@@ -19,6 +19,9 @@ import { can } from "@/lib/role-navigation";
 
 import { commitmentConflict } from "./membership-commitment";
 import { OVERRIDABLE_STATUSES, statusTone, toneStyle, type ValueOverride } from "./member-standing";
+import { StandingLine } from "@/components/finance/StandingBadge";
+import type { Standing } from "@/components/finance/standing";
+
 import { OverrideNote } from "./OverrideNote";
 
 type Field = "status" | "ends_on";
@@ -72,16 +75,24 @@ export function useStatusLabel() {
  */
 export function MemberStatusCell({
   userId,
-  status,
+  status: givenStatus,
   override,
   dueSince = null,
+  standing = null,
 }: {
   userId: string;
   status: string;
   override: ValueOverride | null;
+  /**
+   * The server's one standing (status, grace, owed and since when): with it
+   * the cell shows the same line the member and every other staff screen
+   * show, and its status wins over `status`.
+   */
+  standing?: Standing | null;
   /** The oldest unpaid charge's due date, already formatted: an unpaid or overdue status says since when. */
   dueSince?: string | null;
 }) {
+  const status = standing?.status ?? givenStatus;
   const t = useTranslations("MemberStanding");
   const i18n = useUiTranslations();
   const label = useStatusLabel();
@@ -112,12 +123,13 @@ export function MemberStatusCell({
     );
   };
 
-  const owes = (status === "unpaid" || status === "overdue") && Boolean(dueSince);
+  const owes = !standing && (status === "unpaid" || status === "overdue") && Boolean(dueSince);
   const pill = (
     <span className="inline-flex flex-col items-start gap-0.5">
       <span className="rounded-full px-3 py-1 text-xs font-semibold" data-member-status={status} style={toneStyle(statusTone(status))}>
         {label(status)}
       </span>
+      {standing ? <StandingLine standing={standing} className="px-1" /> : null}
       {owes ? (
         <span className="px-1 text-[11px]" data-member-status-since style={{ color: "var(--muted)" }}>
           {t("dueSince", { date: dueSince! })}

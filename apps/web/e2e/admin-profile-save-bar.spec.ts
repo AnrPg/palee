@@ -76,7 +76,15 @@ test.describe("admin profile save bar", () => {
         json({
           user_id: "u-2",
           available: true,
-          summary: { credit_balance: 0, current_status: { state: server.status }, package_relationship: {}, outstanding_items: [], effective_entitlement: null },
+          // The stored lifecycle says active; the one standing says what is owed.
+          summary: {
+            credit_balance: 0,
+            current_status: { state: server.status },
+            standing: { status: "unpaid", grace_until: null, access_until: null, outstanding_cents: 5000, unpaid_since: isoDay(-2), benefit: null },
+            package_relationship: {},
+            outstanding_items: [],
+            effective_entitlement: null,
+          },
           details: {
             membership: { id: "m-2", ...server, leaving_on: null },
             package_subscriptions: [],
@@ -147,6 +155,11 @@ test.describe("admin profile save bar", () => {
     await page.getByTestId("unsaved-changes-dialog").getByRole("button", { name: "Discard" }).click();
     await expect(page).toHaveURL(/tab=overview/);
     expect(patches).toHaveLength(1);
+
+    // The overview shows the same standing as the Finance tab and the ledger.
+    const chip = page.getByTestId("standing-chip");
+    await expect(chip).toBeVisible();
+    await expect(chip).toHaveAttribute("data-status", "unpaid");
   });
 
   test("roles on the Account tab are a draft saved with the same bar", async ({ page }) => {

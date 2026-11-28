@@ -15,9 +15,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   fetchFinanceMembers,
   fetchFinancePackage,
+  previewFinancePackageTerms,
   retireFinancePackage,
   updateFinancePackage,
   type FinanceRecord,
+  type PackageTermsPreview,
+  type TermsChoice,
 } from "@/api/finance";
 import { useSession } from "@/components/session-provider";
 import { SidePanel } from "@/components/admin/finance/shared/SidePanel";
@@ -27,6 +30,7 @@ import { usePackageAuthoring } from "@/components/admin/finance/packages/use-pac
 import { SoldOnlineCard } from "@/components/admin/finance/packages/SoldOnlineCard";
 import { FeaturedPackageCard, PackageAudienceBadge, PackageAudienceCard } from "@/components/admin/finance/packages/PackageAudience";
 import { SoldOnlineBadge } from "@/components/admin/finance/packages/SoldOnlineBadge";
+import { PackageTermsApplySheet } from "@/components/admin/finance/packages/PackageTermsApplySheet";
 import {
   applyLocks,
   changedFields,
@@ -86,6 +90,8 @@ export function PackagePanel({
   const [attempted, setAttempted] = useState(false);
   const [showReconciliation, setShowReconciliation] = useState(false);
   const [replacements, setReplacements] = useState<Record<string, string>>({});
+  // ADR-770: «Ισχύει και για τα ενεργά μέλη;» after «Αποθήκευση αλλαγών».
+  const [termsPreview, setTermsPreview] = useState<PackageTermsPreview | null>(null);
   const editing = form !== null;
   const retiring = Boolean(editing && pkg?.active !== false && form?.active === false);
 
@@ -133,18 +139,37 @@ export function PackagePanel({
   }
 
   const updateMutation = useMutation({
-    mutationFn: () => {
+    mutationFn: (termsChoice?: TermsChoice) => {
       if (!form || !draft || !catalog) throw new Error(i18n("noForm2807394"));
       return updateFinancePackage(token, packageId, {
         ...toPackageRequest(catalog, draft),
         active: form.active !== false,
+        ...(termsChoice ? { terms_choice: termsChoice } : {}),
       });
     },
     onSuccess: async () => {
       setForm(null);
       setDraft(null);
+      setTermsPreview(null);
+      void queryClient.invalidateQueries({ queryKey: ["admin", "finance", "members"] });
       await queryClient.invalidateQueries({ queryKey: ["admin", "finance", "package", packageId] });
       await queryClient.invalidateQueries({ queryKey: ["admin", "finance", "packages"] });
+    },
+  });
+
+  // ADR-770: what the save would do to the members who hold the package;
+  // the sheet opens only when a change would reach them.
+  const termsPreviewMutation = useMutation({
+    mutationFn: () => {
+      if (!form || !draft || !catalog) throw new Error(i18n("noForm2807394"));
+      return previewFinancePackageTerms(token, packageId, {
+        ...toPackageRequest(catalog, draft),
+        active: form.active !== false,
+      });
+    },
+    onSuccess: ({ preview }) => {
+      if (preview?.needs_choice) setTermsPreview(preview);
+      else updateMutation.mutate(undefined);
     },
   });
 
@@ -173,7 +198,7 @@ export function PackagePanel({
       return;
     }
 
-    updateMutation.mutate();
+    termsPreviewMutation.mutate();
   }
 
   return (
@@ -188,11 +213,11 @@ export function PackagePanel({
             <button
               className="rounded-full px-5 py-2 text-sm font-semibold disabled:opacity-50"
               style={{ background: "var(--text)", color: "var(--bg)" }}
-              disabled={updateMutation.isPending || retireMutation.isPending || (retiring && !impactQuery.isSuccess)}
+              disabled={updateMutation.isPending || termsPreviewMutation.isPending || retireMutation.isPending || (retiring && !impactQuery.isSuccess)}
               onClick={saveChanges}
               type="button"
             >
-              {updateMutation.isPending || (retiring && impactQuery.isFetching) ? i18n("checking820d600") : i18n("saveChanges179359b")}
+              {updateMutation.isPending || termsPreviewMutation.isPending || (retiring && impactQuery.isFetching) ? i18n("checking820d600") : i18n("saveChanges179359b")}
             </button>
             <button
               className="rounded-full px-5 py-2 text-sm font-semibold"
@@ -287,6 +312,9 @@ export function PackagePanel({
           </label>
           {updateMutation.error instanceof Error && (
             <ErrorNotice>{localizeError(updateMutation.error, i18n)}</ErrorNotice>
+          )}
+          {termsPreviewMutation.error instanceof Error && (
+            <ErrorNotice>{localizeError(termsPreviewMutation.error, i18n)}</ErrorNotice>
           )}
           {impactQuery.isError ? (
             <ErrorNotice>{i18n("couldNotCheckCurrentSubscribersThePackageWilldd8ac35")}</ErrorNotice>
@@ -385,6 +413,16 @@ export function PackagePanel({
             {replacementOptions.length === 0 ? <ErrorNotice className="mt-3">{i18n("createAnotherActivePackageBeforeRetiringThisOne619ea88")}</ErrorNotice> : null}
             {retireMutation.error instanceof Error ? <ErrorNotice className="mt-3">{localizeError(retireMutation.error, i18n)}</ErrorNotice> : null}
         </Dialog>
+      ) : null}
+      {termsPreview ? (
+        <PackageTermsApplySheet
+          preview={termsPreview}
+          classTypeNames={new Map(classTypes.map((classType) => [String(classType.id), String(classType.name)]))}
+          saving={updateMutation.isPending}
+          error={updateMutation.error ? <ErrorNotice>{localizeError(updateMutation.error, i18n)}</ErrorNotice> : null}
+          onCancel={() => setTermsPreview(null)}
+          onConfirm={(choice) => updateMutation.mutate(choice)}
+        />
       ) : null}
     </SidePanel>
   );

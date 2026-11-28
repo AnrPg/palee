@@ -102,6 +102,26 @@ defmodule Palee.Finance do
   def open_packages_online(context, ids),
     do: scoped(context, fn -> FinanceStore.open_packages_online(ids) end)
 
+  # ── ADR-770: package changes for the members who hold the package ───────
+
+  alias Palee.Finance.PackageTermsStore
+
+  @doc "What saving `params` on the package would do to its holders (nothing is saved)."
+  def preview_package_terms(context, id, params),
+    do: scoped(context, fn -> PackageTermsStore.preview(id, params) end)
+
+  @doc "Saves the package and gives its holders the change when `choice` says so."
+  def update_package_with_terms(context, id, params, choice, actor_id),
+    do: scoped(context, fn -> PackageTermsStore.update(id, params, choice, actor_id) end)
+
+  @doc "Applies the pending package changes due by `today`."
+  def apply_due_package_terms(context, today),
+    do: scoped(context, fn -> PackageTermsStore.apply_due_all(today) end)
+
+  @doc "Per subscription id, its package-change updates (pending first)."
+  def subscription_term_updates(context, subscription_ids),
+    do: scoped(context, fn -> PackageTermsStore.for_subscriptions(subscription_ids) end)
+
   # ── ADR-553: who sees the subscription packages ─────────────────────────
 
   alias Palee.Finance.Domain.PackageAudience

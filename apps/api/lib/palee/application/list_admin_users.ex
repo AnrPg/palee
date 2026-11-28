@@ -98,11 +98,12 @@ defmodule Palee.Application.ListAdminUsers do
       standing:
         if(membership,
           do:
-            MemberStatus.standing(
-              membership,
-              profile.outstanding_balance_cents,
-              profile.oldest_unpaid_due_on
-            ),
+            Map.get(profile, :standing) ||
+              MemberStatus.standing(
+                membership,
+                profile.outstanding_balance_cents,
+                profile.oldest_unpaid_due_on
+              ),
           else: nil
         ),
       attention_count: 0
