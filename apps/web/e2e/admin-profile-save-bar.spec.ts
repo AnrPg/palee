@@ -162,7 +162,8 @@ test.describe("admin profile save bar", () => {
     expect(patches).toHaveLength(1);
 
     // The overview shows the same standing as the Finance tab and the ledger.
-    const chip = page.getByTestId("standing-chip");
+    // The header carries the same chip; the overview is the one checked here.
+    const chip = page.getByRole("tabpanel", { name: "Overview" }).getByTestId("standing-chip");
     await expect(chip).toBeVisible();
     await expect(chip).toHaveAttribute("data-status", "unpaid");
   });
