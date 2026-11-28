@@ -29,6 +29,7 @@ import {
   type RegisterRequest,
 } from "@/api/auth";
 import {
+  ApiError,
   broadcastSessionSignOut,
   SELECTED_ORGANIZATION_SLUG_KEY,
   SESSION_EXPIRED_EVENT,
@@ -295,9 +296,11 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
           return;
         }
         commitSession(restored.tokens, restored.user);
-      } catch {
+      } catch (error) {
         if (cancelled) return;
-        setRestoreFailed(true);
+        // A refused refresh (no saved sign-in, or it expired) is a plain guest;
+        // only a failed or broken restore says so on the sign-in form.
+        if (!(error instanceof ApiError && (error.status === 401 || error.status === 403))) setRestoreFailed(true);
         setStatus("guest");
       }
     }

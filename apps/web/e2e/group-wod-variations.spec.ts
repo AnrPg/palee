@@ -105,7 +105,7 @@ async function asOwner(page: Page) {
 }
 
 test.describe("Schedule › variation for several people", () => {
-  test("staff pick attendees and a WOD; each gets their own version and the outcome is shown", async ({ page }) => {
+  test("staff pick attendees and a WOD; each gets their own variation and the outcome is shown", async ({ page }) => {
     await asOwner(page);
     let sent: Record<string, unknown> | null = null;
     await page.route("**/api/org/box1/admin/users/programming", (route) => {
@@ -129,7 +129,7 @@ test.describe("Schedule › variation for several people", () => {
     await page.getByRole("button", { name: /CrossFit/ }).first().click();
     // ANR pick (2026-11-21): it lives in the WOD card's ⋯.
     await page.getByTestId("workout-more-actions").click();
-    await page.getByRole("menuitem", { name: "Separate WOD for people" }).click();
+    await page.getByRole("menuitem", { name: "Variation for people" }).click();
 
     const dialog = page.getByRole("dialog", { name: "Variation for several people" });
     await expect(dialog).toBeVisible();
@@ -138,7 +138,7 @@ test.describe("Schedule › variation for several people", () => {
     const people = dialog.getByRole("checkbox");
     await expect(people).toHaveCount(3);
     await expect(dialog.getByText("Carl")).toHaveCount(0);
-    await expect(dialog.getByText("Already has a version")).toBeVisible();
+    await expect(dialog.getByText("Already has a variation")).toBeVisible();
 
     // The class has no WOD yet, so one must be chosen first.
     const submit = dialog.getByRole("button", { name: /Create for selected/ });
@@ -172,7 +172,7 @@ test.describe("Schedule › variation for several people", () => {
     await page.getByRole("button", { name: /CrossFit/ }).first().click();
     // ANR pick (2026-11-21): it lives in the WOD card's ⋯.
     await page.getByTestId("workout-more-actions").click();
-    await page.getByRole("menuitem", { name: "Separate WOD for people" }).click();
+    await page.getByRole("menuitem", { name: "Variation for people" }).click();
 
     const dialog = page.getByRole("dialog", { name: "Variation for several people" });
     await dialog.getByRole("button", { name: "Select all" }).click();
@@ -209,7 +209,7 @@ test.describe("Schedule › variation for several people", () => {
     const actions = page.getByTestId("workout-more-actions");
     await expect(actions).toBeVisible();
     await actions.click();
-    await page.getByRole("menuitem", { name: "Separate WOD for people" }).click();
+    await page.getByRole("menuitem", { name: "Variation for people" }).click();
     const dialog = page.getByRole("dialog", { name: "Variation for several people" });
     await expect(dialog).toBeVisible();
 

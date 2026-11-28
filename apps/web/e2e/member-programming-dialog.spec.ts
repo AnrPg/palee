@@ -106,7 +106,7 @@ test.describe("member programming dialog", () => {
     await expect(dialog.getByRole("heading")).not.toContainText(TODAY);
 
     // Recommended path: this member's own version of their only booked class, picked for them.
-    await expect(dialog.getByRole("radio", { name: /Change it for this member only/ })).toBeChecked();
+    await expect(dialog.getByRole("radio", { name: /Variation for this member only/ })).toBeChecked();
     await expect(dialog.getByText(/\d{1,2}:\d{2}.* · CrossFit/)).toBeVisible();
     await expect(dialog.getByRole("radio", { name: "Adapt the class WOD" })).toBeChecked();
     const submit = dialog.getByTestId("programming-submit");
@@ -182,12 +182,12 @@ test.describe("member programming dialog", () => {
       "WODs can't be assigned to Eleni: their subscription package includes neither online programming nor personal training.",
       { timeout: 60_000 },
     );
-    await expect(page.getByTestId("programming-not-in-package")).toContainText("You can still change the WOD of a class they booked.");
+    await expect(page.getByTestId("programming-not-in-package")).toContainText("You can still give them a variation in a class that day.");
 
     await page.getByTestId(`programming-day-${TODAY}`).click();
     const dialog = page.getByTestId("programming-dialog");
     await expect(dialog.getByRole("radio", { name: "Change it for the whole class" })).toBeChecked();
-    await expect(dialog.getByRole("radio", { name: /Change it for this member only/ })).toBeDisabled();
+    await expect(dialog.getByRole("radio", { name: /Variation for this member only/ })).toBeDisabled();
     await expect(dialog.getByRole("radio", { name: /Separate workout/ })).toBeDisabled();
 
     // The class's own WOD is not personal programming, so it stays open.

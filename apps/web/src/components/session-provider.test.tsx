@@ -3,6 +3,7 @@ import { act, render, screen } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { ApiError } from "@/api/client";
 import en from "../../messages/en.json";
 
 const refreshSession = vi.fn();
@@ -80,6 +81,12 @@ describe("SessionProvider restore", () => {
     unmount();
 
     refreshSession.mockResolvedValueOnce({});
+    const second = renderProvider();
+    await screen.findByText("guest:false");
+    second.unmount();
+
+    // A refused refresh (no or expired sign-in cookie) is a plain guest too.
+    refreshSession.mockRejectedValueOnce(new ApiError(401, "unauthorized", { error: "unauthorized" }));
     renderProvider();
     await screen.findByText("guest:false");
   });

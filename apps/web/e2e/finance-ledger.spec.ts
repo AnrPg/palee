@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "./support/test";
 
+import { confirmMoney } from "./support/finance";
 import { chooseOption } from "./support/select";
 
 // Finance › Ledger (the members tab). Staff assign a πακέτο συνδρομής from a
@@ -151,7 +152,7 @@ test.describe("finance ledger", () => {
     await chooseOption(page, menu.getByRole("combobox"), PACKAGE_ID);
     // The menu is still open after the pick, with the package chosen.
     await expect(menu).toBeVisible();
-    await menu.getByRole("button", { name: "Assign", exact: true }).click();
+    await menu.getByRole("button", { name: "Activate package", exact: true }).click();
 
     await expect.poll(() => assigned).toEqual([{ membership_package_id: PACKAGE_ID }]);
     await expect(menu).toBeHidden();
@@ -167,7 +168,7 @@ test.describe("finance ledger", () => {
     await page.getByRole("button", { name: "+ Assign" }).click();
     const menu = page.getByRole("dialog", { name: "Assign" });
     await chooseOption(page, menu.getByRole("combobox"), PACKAGE_ID);
-    await menu.getByRole("button", { name: "Assign", exact: true }).click();
+    await menu.getByRole("button", { name: "Activate package", exact: true }).click();
 
     await expect(menu).toBeVisible();
     await expect(menu.getByRole("alert")).toBeVisible();
@@ -191,6 +192,7 @@ test.describe("finance ledger", () => {
     await expect(dialog.getByTestId("receive-payment-outcome")).toHaveText("A paid receipt is issued, as your billing settings say.");
     await dialog.getByRole("radio", { name: "Card" }).click();
     await dialog.getByRole("button", { name: "Record payment" }).click();
+    await confirmMoney(page, /€\d/);
 
     const done = page.getByRole("dialog", { name: /recorded/ });
     await expect(done).toContainText("Receipt R-0007");
@@ -243,6 +245,7 @@ test.describe("finance ledger", () => {
     await amount.fill("20,00");
     await dialog.getByRole("radio", { name: "Bank transfer" }).click();
     await dialog.getByRole("button", { name: "Record payment" }).click();
+    await confirmMoney(page, /€\d/);
 
     const done = page.getByRole("dialog", { name: /recorded/ });
     await expect(done).toContainText("Invoice INV-7");
@@ -260,6 +263,7 @@ test.describe("finance ledger", () => {
     await page.getByRole("button", { name: "Record a payment from Maria" }).click();
     const dialog = page.getByRole("dialog", { name: "Record payment" });
     await dialog.getByRole("button", { name: "Record payment" }).click();
+    await confirmMoney(page, /€\d/);
     await expect(dialog.getByText("This invoice is already fully paid.")).toBeVisible();
     await expect(dialog.getByRole("combobox", { name: "For" })).toHaveAttribute("aria-invalid", "true");
   });
@@ -376,6 +380,8 @@ test.describe("finance ledger", () => {
   test("staff see every role of a client and change them from the ledger, one or many (ADR-812)", async ({ page }) => {
     const previews: unknown[] = [];
     const changes: unknown[] = [];
+    await ledger(page, () => ({ status: 201, body: {} }), { grantRoles: true, row: { roles: ["coach", "member"] } });
+    // After ledger(): its catch-all route, registered later, would answer these first.
     await page.route("**/api/org/kypseli/admin/users/roles/changes/preview", (route) => {
       previews.push(route.request().postDataJSON());
       return route.fulfill(
@@ -386,7 +392,6 @@ test.describe("finance ledger", () => {
       changes.push(route.request().postDataJSON());
       return route.fulfill(json({ results: [{ user_id: MEMBER_ID, status: "changed", roles: ["member", "athlete", "coach"] }] }));
     });
-    await ledger(page, () => ({ status: 201, body: {} }), { grantRoles: true, row: { roles: ["coach", "member"] } });
 
     const rolesButton = page.getByTestId("ledger-roles-button");
     await expect(rolesButton).toBeVisible();
