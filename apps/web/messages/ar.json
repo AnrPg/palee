@@ -6775,7 +6775,15 @@
     "suggestionsOff": "مخفي من رئيسيتك. تبقى الاقتراحات في «ابحث».",
     "boxInvitesToggle": "دعوات من الصالات التي أتابعها",
     "boxInvitesOn": "الصالات التي تتابعها ترى أنك تتابعها ويمكنها دعوتك لتصبح عضوًا.",
-    "boxInvitesOff": "الصالات التي تتابعها لا تراك في قائمتها ولا ترسل لك دعوات."
+    "boxInvitesOff": "الصالات التي تتابعها لا تراك في قائمتها ولا ترسل لك دعوات.",
+    "avatarView": "فتح الصورة: {name}",
+    "avatarViewerTitle": "صورة الملف الشخصي: {name}",
+    "avatarViewerClose": "إغلاق",
+    "avatarViewerProfile": "الملف الشخصي",
+    "avatarViewerMedia": "الوسائط",
+    "avatarViewerAllMedia": "كل الوسائط",
+    "avatarViewerLocked": "حساب خاص. تابِع لرؤية الوسائط.",
+    "avatarViewerChange": "تغيير الصورة"
   },
   "BoxPage": {
     "allWeek": "الأسبوع كاملًا",

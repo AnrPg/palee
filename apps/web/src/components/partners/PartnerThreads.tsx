@@ -34,7 +34,7 @@ export function PartnerThreads({ onNavigate }: { onNavigate?: () => void }) {
                 style={{ background: "var(--panel)", border: "1px solid var(--border)", opacity: match.status === "active" ? 1 : 0.7 }}
               >
                 <span className="flex min-w-0 items-center gap-3">
-                  <PersonAvatar name={name} url={match.person.avatar_url} size={32} />
+                  <PersonAvatar name={name} url={match.person.avatar_url} personId={match.person.id} size={32} />
                   <span className="min-w-0">
                     <span className="block truncate text-sm font-semibold" style={{ color: "var(--text)" }}>{name}</span>
                     <span className="block truncate text-xs" style={{ color: "var(--dim)" }}>

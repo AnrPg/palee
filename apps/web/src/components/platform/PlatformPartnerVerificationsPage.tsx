@@ -101,7 +101,7 @@ function QueueRow({ item, active, onOpen }: { item: PlatformVerificationItem; ac
       className="flex min-w-0 items-center gap-3 border p-3 text-start"
       style={{ borderColor: active ? "var(--primary)" : "var(--border)", background: "var(--panel)" }}
     >
-      <PersonAvatar name={item.person.nickname} url={item.person.avatar_url} size={36} />
+      <PersonAvatar name={item.person.nickname} url={item.person.avatar_url} personId={item.person.id} size={36} />
       <span className="min-w-0 flex-1">
         <span className="block truncate text-sm font-semibold text-[var(--text)]">{item.person.nickname ?? t("someone")}</span>
         <span className="block text-xs text-[var(--text-soft)]">
@@ -203,7 +203,7 @@ function VerificationDetail({ token, id, onDecided }: { token: string; id: strin
             {request.sponsors.length === 0 ? <span className="text-[var(--text-soft)]">—</span> : null}
             {request.sponsors.map((sponsor) => (
               <span key={sponsor.person.id} className="flex min-w-0 items-center gap-2 text-[var(--text)]">
-                <PersonAvatar name={sponsor.person.nickname} url={sponsor.person.avatar_url} size={24} />
+                <PersonAvatar name={sponsor.person.nickname} url={sponsor.person.avatar_url} personId={sponsor.person.id} size={24} />
                 <span className="truncate">{sponsor.person.nickname ?? t("someone")}</span>
                 <span className="shrink-0 text-xs text-[var(--text-soft)]">· {t(`verifications.channel.${sponsor.channel}`)}</span>
               </span>

@@ -160,7 +160,7 @@ function EventView({ event, invite }: { event: CommunityEvent; invite: string | 
 
       {invitation ? (
         <section className="flex items-center gap-3 rounded-3xl p-4" style={{ background: "color-mix(in srgb, var(--primary) 10%, var(--panel))", border: "1px solid color-mix(in srgb, var(--primary) 45%, transparent)" }}>
-          <PersonAvatar name={invitation.inviter.nickname} url={invitation.inviter.avatar_url} />
+          <PersonAvatar name={invitation.inviter.nickname} url={invitation.inviter.avatar_url} personId={invitation.inviter.id} />
           <div className="min-w-0">
             <p className="font-bold" style={{ color: "var(--text)" }}>{t("invitedBy", { name: invitation.inviter.nickname ?? "?" })}</p>
             <p className="text-sm" style={{ color: "var(--text-soft)" }}>

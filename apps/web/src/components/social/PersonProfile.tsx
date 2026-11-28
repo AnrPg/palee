@@ -129,7 +129,7 @@ function ProfileHeader({ profile }: { profile: Person }) {
     <header className="@container flex flex-col px-4 pt-2">
       <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-[clamp(0.625rem,5cqi,1.25rem)] gap-y-1.5 [grid-template-areas:'avatar_counts''name_name'] @max-[18.75rem]:[grid-template-areas:'avatar_name''counts_counts']">
         <div className="[grid-area:avatar] size-[clamp(3.5rem,22cqi,5.375rem)]">
-          <PersonAvatar name={profile.nickname} url={profile.avatar_url} size="fill" />
+          <PersonAvatar name={profile.nickname} url={profile.avatar_url} size="fill" personId={profile.id} onProfile />
         </div>
         <div className="min-w-0 [grid-area:name]">
           <p className="truncate text-[15px] font-extrabold" style={{ color: "var(--text)" }}>{profile.nickname ?? profile.handle ?? "?"}</p>

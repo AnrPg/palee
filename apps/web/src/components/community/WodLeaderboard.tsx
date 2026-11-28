@@ -15,10 +15,10 @@ import {
   type WorkoutLeaderboardRow,
 } from "@/api/training-floor";
 import { Switch } from "@/components/body/BodyPreferenceSettings";
-import { clubInitials } from "@/components/community/community";
 import { SegmentPicker } from "@/components/filters/SegmentPicker";
 import { useSession } from "@/components/session-provider";
 import { AdvancedDisclosure } from "@/components/settings/AdvancedSettings";
+import { PersonAvatar } from "@/components/social/PersonAvatar";
 import { formatClock } from "@/components/workouts/execution/TimerDisplay";
 import { Dialog } from "@/components/ui/Dialog";
 import { useSelectedMembershipRole } from "@/lib/membership-role";
@@ -314,18 +314,7 @@ function Row({
       data-testid={row.me ? "wod-leaderboard-me" : undefined}
     >
       <span className="w-5 text-center font-mono text-sm font-bold" style={{ color: "var(--dim)" }}>{row.rank ?? "–"}</span>
-      {row.avatar_url ? (
-        // eslint-disable-next-line @next/next/no-img-element -- user-uploaded media origin
-        <img src={row.avatar_url} alt="" className="h-8 w-8 shrink-0 rounded-full object-cover" />
-      ) : (
-        <span
-          aria-hidden="true"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-extrabold"
-          style={{ background: "var(--panel-raised)", color: "var(--text)" }}
-        >
-          {clubInitials(row.nickname ?? "?")}
-        </span>
-      )}
+      <PersonAvatar name={row.nickname} url={row.avatar_url} size={32} personId={row.user_id} />
       <span className="min-w-0 grow">
         <b className="block truncate text-sm" style={{ color: "var(--text)" }}>
           {name}

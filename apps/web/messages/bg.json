@@ -6775,7 +6775,15 @@
     "suggestionsOff": "Скрито от твоето Начало. В «Намери» предложенията остават.",
     "boxInvitesToggle": "Покани от box-ове, които следвам",
     "boxInvitesOn": "Box-овете, които следваш, виждат това и могат да те поканят да станеш член.",
-    "boxInvitesOff": "Box-овете, които следваш, не те виждат в списъка си и не ти пращат покани."
+    "boxInvitesOff": "Box-овете, които следваш, не те виждат в списъка си и не ти пращат покани.",
+    "avatarView": "Отвори снимката: {name}",
+    "avatarViewerTitle": "Профилна снимка: {name}",
+    "avatarViewerClose": "Затвори",
+    "avatarViewerProfile": "Профил",
+    "avatarViewerMedia": "Медия",
+    "avatarViewerAllMedia": "Всички медии",
+    "avatarViewerLocked": "Личен профил. Последвай, за да видиш медиите.",
+    "avatarViewerChange": "Смени снимката"
   },
   "BoxPage": {
     "allWeek": "Цялата седмица",

@@ -6775,7 +6775,15 @@
     "suggestionsOff": "מוסתר ממסך הבית שלך. ב«מצא» ההצעות נשארות.",
     "boxInvitesToggle": "הזמנות מ-Box-ים שאני עוקב/ת אחריהם",
     "boxInvitesOn": "Box-ים שאת/ה עוקב/ת אחריהם רואים זאת ויכולים להזמין אותך להצטרף כחבר/ה.",
-    "boxInvitesOff": "Box-ים שאת/ה עוקב/ת אחריהם לא רואים אותך ברשימה שלהם ולא שולחים לך הזמנות."
+    "boxInvitesOff": "Box-ים שאת/ה עוקב/ת אחריהם לא רואים אותך ברשימה שלהם ולא שולחים לך הזמנות.",
+    "avatarView": "פתיחת התמונה: {name}",
+    "avatarViewerTitle": "תמונת פרופיל: {name}",
+    "avatarViewerClose": "סגירה",
+    "avatarViewerProfile": "פרופיל",
+    "avatarViewerMedia": "מדיה",
+    "avatarViewerAllMedia": "כל המדיה",
+    "avatarViewerLocked": "חשבון פרטי. יש לעקוב כדי לראות את המדיה.",
+    "avatarViewerChange": "החלפת תמונה"
   },
   "BoxPage": {
     "allWeek": "כל השבוע",

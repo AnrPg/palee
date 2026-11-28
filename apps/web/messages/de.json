@@ -6775,7 +6775,15 @@
     "suggestionsOff": "Auf deiner Startseite ausgeblendet. Unter «Finden» bleiben die Vorschläge.",
     "boxInvitesToggle": "Einladungen von Boxen, denen ich folge",
     "boxInvitesOn": "Boxen, denen du folgst, sehen das und können dich einladen, Mitglied zu werden.",
-    "boxInvitesOff": "Boxen, denen du folgst, sehen dich nicht in ihrer Liste und senden dir keine Einladungen."
+    "boxInvitesOff": "Boxen, denen du folgst, sehen dich nicht in ihrer Liste und senden dir keine Einladungen.",
+    "avatarView": "Foto öffnen: {name}",
+    "avatarViewerTitle": "Profilfoto: {name}",
+    "avatarViewerClose": "Schließen",
+    "avatarViewerProfile": "Profil",
+    "avatarViewerMedia": "Medien",
+    "avatarViewerAllMedia": "Alle Medien",
+    "avatarViewerLocked": "Privates Konto. Folge, um die Medien zu sehen.",
+    "avatarViewerChange": "Foto ändern"
   },
   "BoxPage": {
     "allWeek": "Ganze Woche",

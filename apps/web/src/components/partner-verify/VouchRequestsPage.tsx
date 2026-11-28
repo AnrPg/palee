@@ -113,7 +113,7 @@ function VouchRequestCard({
   return (
     <VerifyCard testId={`vouch-request-${request.id}`}>
       <div className="flex min-w-0 items-center gap-3">
-        <PersonAvatar name={request.person.nickname} url={request.person.avatar_url} size={48} />
+        <PersonAvatar name={request.person.nickname} url={request.person.avatar_url} personId={request.person.id} size={48} />
         <div className="min-w-0">
           <p className="text-base font-semibold" style={{ color: "var(--text)" }}>{t("vouch.asks", { name })}</p>
           <p className="text-xs" style={{ color: "var(--dim)" }}>{t("vouch.forPartners")}</p>

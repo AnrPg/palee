@@ -6775,7 +6775,15 @@
     "suggestionsOff": "Oculto en tu Inicio. En «Buscar» las sugerencias siguen.",
     "boxInvitesToggle": "Invitaciones de los boxes que sigo",
     "boxInvitesOn": "Los boxes que sigues ven que los sigues y pueden invitarte a hacerte socio.",
-    "boxInvitesOff": "Los boxes que sigues no te ven en su lista y no te envían invitaciones."
+    "boxInvitesOff": "Los boxes que sigues no te ven en su lista y no te envían invitaciones.",
+    "avatarView": "Abrir foto: {name}",
+    "avatarViewerTitle": "Foto de perfil: {name}",
+    "avatarViewerClose": "Cerrar",
+    "avatarViewerProfile": "Perfil",
+    "avatarViewerMedia": "Multimedia",
+    "avatarViewerAllMedia": "Todo el contenido multimedia",
+    "avatarViewerLocked": "Cuenta privada. Síguele para ver su contenido multimedia.",
+    "avatarViewerChange": "Cambiar foto"
   },
   "BoxPage": {
     "allWeek": "Toda la semana",

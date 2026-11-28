@@ -6775,7 +6775,15 @@
     "suggestionsOff": "Nascosto dalla tua Home. In «Trova» i suggerimenti restano.",
     "boxInvitesToggle": "Inviti dai box che seguo",
     "boxInvitesOn": "I box che segui vedono che li segui e possono invitarti a diventare socio.",
-    "boxInvitesOff": "I box che segui non ti vedono nella loro lista e non ti mandano inviti."
+    "boxInvitesOff": "I box che segui non ti vedono nella loro lista e non ti mandano inviti.",
+    "avatarView": "Apri foto: {name}",
+    "avatarViewerTitle": "Foto profilo: {name}",
+    "avatarViewerClose": "Chiudi",
+    "avatarViewerProfile": "Profilo",
+    "avatarViewerMedia": "Media",
+    "avatarViewerAllMedia": "Tutti i contenuti",
+    "avatarViewerLocked": "Account privato. Seguilo per vedere i suoi contenuti.",
+    "avatarViewerChange": "Cambia foto"
   },
   "BoxPage": {
     "allWeek": "Tutta la settimana",

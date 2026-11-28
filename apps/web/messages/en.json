@@ -6775,7 +6775,15 @@
     "suggestionsOff": "Hidden from your Home. Find still suggests people.",
     "boxInvitesToggle": "Invitations from boxes I follow",
     "boxInvitesOn": "Boxes you follow see that you follow them and can invite you to become a member.",
-    "boxInvitesOff": "Boxes you follow don't see you in their list and don't send you invitations."
+    "boxInvitesOff": "Boxes you follow don't see you in their list and don't send you invitations.",
+    "avatarView": "Open photo: {name}",
+    "avatarViewerTitle": "Profile photo: {name}",
+    "avatarViewerClose": "Close",
+    "avatarViewerProfile": "Profile",
+    "avatarViewerMedia": "Media",
+    "avatarViewerAllMedia": "All media",
+    "avatarViewerLocked": "Private account. Follow to see their media.",
+    "avatarViewerChange": "Change photo"
   },
   "BoxPage": {
     "allWeek": "Whole week",

@@ -6775,7 +6775,15 @@
     "suggestionsOff": "Masqué sur ton Accueil. «Trouver» garde les suggestions.",
     "boxInvitesToggle": "Invitations des box que je suis",
     "boxInvitesOn": "Les box que tu suis voient que tu les suis et peuvent t’inviter à devenir membre.",
-    "boxInvitesOff": "Les box que tu suis ne te voient pas dans leur liste et ne t’envoient pas d’invitations."
+    "boxInvitesOff": "Les box que tu suis ne te voient pas dans leur liste et ne t’envoient pas d’invitations.",
+    "avatarView": "Ouvrir la photo : {name}",
+    "avatarViewerTitle": "Photo de profil : {name}",
+    "avatarViewerClose": "Fermer",
+    "avatarViewerProfile": "Profil",
+    "avatarViewerMedia": "Médias",
+    "avatarViewerAllMedia": "Tous les médias",
+    "avatarViewerLocked": "Compte privé. Abonne-toi pour voir ses médias.",
+    "avatarViewerChange": "Changer la photo"
   },
   "BoxPage": {
     "allWeek": "Toute la semaine",
