@@ -55,10 +55,12 @@ export function ClassTimerControl({ slotId }: { slotId: string }) {
     void timer.send(command);
   }
 
-  if (!timer.payload) {
+  // An answer without a timer or its segments cannot be driven: say so instead of crashing.
+  const malformed = Boolean(timer.payload) && (!timer.payload?.timer || !Array.isArray(timer.payload.segments));
+  if (!timer.payload || malformed) {
     return (
       <div className="flex min-h-dvh items-center justify-center px-6 text-center" style={{ background: "var(--bg)", color: "var(--muted)" }}>
-        {timer.loadError ? i18n("classTimerUnavailable") : i18n("kpiLoading")}
+        {timer.loadError || malformed ? i18n("classTimerUnavailable") : i18n("kpiLoading")}
       </div>
     );
   }

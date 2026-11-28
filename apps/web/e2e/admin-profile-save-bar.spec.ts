@@ -99,6 +99,8 @@ test.describe("admin profile save bar", () => {
       ),
     );
     await page.route("**/api/org/box1/admin/finance/members/u-2", (route) => {
+      // ADR-784: the finance tab also reads this address; only writes are saves.
+      if (route.request().method() === "GET") return route.fallback();
       const body = bodyOf(route.request());
       patches.push(body);
       Object.assign(server, body);
