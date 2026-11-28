@@ -188,6 +188,7 @@ defmodule Palee.Application.GetScheduleCalendar do
             slot.bookings,
             &(&1
               |> roster_booking(slot.id, nickname_cache, roster_attendance)
+              |> Map.put(:waitlist_position, waitlist_position(waitlist, &1))
               |> Map.merge(workout_choice(&1, slot)))
           )
         )
@@ -502,6 +503,8 @@ defmodule Palee.Application.GetScheduleCalendar do
       kind: Map.get(booking, :kind, "member"),
       entitlement_allowance: Map.get(booking, :entitlement_allowance),
       waitlist_priority: Map.get(booking, :waitlist_priority),
+      # ADR-790: staff put this person on the waitlist.
+      waitlisted_by_staff: not is_nil(Map.get(booking, :waitlisted_by_id)),
       admin_message: booking.admin_message,
       inserted_at: booking.inserted_at
     }

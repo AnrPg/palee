@@ -312181,6 +312181,16 @@
               "format": "uuid",
               "type": "string"
             }
+          },
+          {
+            "description": "ADR-790: only this class (the class page), however far away it is.",
+            "in": "query",
+            "name": "slot_id",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -312258,6 +312268,15 @@
                           },
                           "spots_remaining": {
                             "type": "integer"
+                          },
+                          "waitlist": {
+                            "description": "ADR-790: the class is full and takes the member on its waitlist instead (not in a move).",
+                            "type": "boolean"
+                          },
+                          "waitlist_place": {
+                            "description": "ADR-790: the place «Στο τέλος» gives the member, for a waitlist class.",
+                            "nullable": true,
+                            "type": "integer"
                           }
                         },
                         "required": [
@@ -312267,7 +312286,9 @@
                           "name",
                           "scheduled_at",
                           "slot_id",
-                          "spots_remaining"
+                          "spots_remaining",
+                          "waitlist",
+                          "waitlist_place"
                         ],
                         "type": "object"
                       },
@@ -312366,6 +312387,87 @@
           }
         ],
         "summary": "Book a member into a class, optionally moving them out of an upcoming booking in one transaction (ADR-232)",
+        "tags": [
+          "Admin Users"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/users/{id}/class-waitlist": {
+      "post": {
+        "callbacks": {},
+        "description": "Staff of the class's branch put an active member on the waitlist of a future, full class, at the end or first in line. The package is checked as for a staff placement; when a place opens the entry is booked and approved at once. The member is notified.",
+        "operationId": "PaleeWeb.AdminUserController.place_on_waitlist",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "position": {
+                    "description": "«Στο τέλος» (default; package priority counts) or «Πρώτος στη σειρά».",
+                    "enum": [
+                      "end",
+                      "first"
+                    ],
+                    "type": "string"
+                  },
+                  "slot_id": {
+                    "format": "uuid",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "slot_id"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "booking": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    },
+                    "waitlist_position": {
+                      "nullable": true,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "booking",
+                    "waitlist_position"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Waitlist entry"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Put a member on a full class's waitlist (ADR-790)",
         "tags": [
           "Admin Users"
         ]

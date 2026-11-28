@@ -4988,7 +4988,10 @@
     "selectedAthleteCount": "{count, plural, one {נבחר ספורטאי אחד} other {נבחרו # ספורטאים}}",
     "roundCount": "{count, plural, one {סבב אחד} other {# סבבים}}",
     "optionCount": "{count, plural, one {אפשרות אחת} other {# אפשרויות}}",
-    "userCount": "{count, plural, one {משתמש אחד} other {# משתמשים}}"
+    "userCount": "{count, plural, one {משתמש אחד} other {# משתמשים}}",
+    "ntfWaitlistedByStaffTitle": "אתה ברשימת ההמתנה",
+    "ntfWaitlistedByStaffBody": "{class} · מקום {position} בתור. אם יתפנה מקום, תירשם אוטומטית.",
+    "ntfWaitlistedByStaffBodyPlain": "{class}. אם יתפנה מקום, תירשם אוטומטית."
   },
   "PrSharing": {
     "gymLabel": "איפה קבעת את השיא הזה?",
@@ -20763,5 +20766,26 @@
     "staffLine": "חבר/ה בבוקס שלך",
     "staffOpen": "הכספים של החבר/ה",
     "waitingForPayment": "ממתין לתשלום"
+  },
+  "StaffWaitlist": {
+    "addPerson": "הוספה",
+    "title": "הוספה לשיעור",
+    "search": "חיפוש מתאמנים",
+    "noMatches": "אין מתאמן בשם הזה",
+    "checking": "בודק…",
+    "change": "שינוי",
+    "bookHint": "יש מקום פנוי. ההזמנה מאושרת מיד.",
+    "book": "הזמנה",
+    "fullHint": "השיעור מלא. המתאמן נכנס לרשימת ההמתנה, מקבל את המקום אוטומטית ברגע שמישהו מבטל, ומקבל הודעה.",
+    "position": "מקום ברשימה",
+    "positionEnd": "בסוף (מקום {place})",
+    "positionEndPlain": "בסוף",
+    "positionFirst": "ראשון בתור",
+    "waitlist": "לרשימת ההמתנה",
+    "refused": "לא אפשרי: {reason}",
+    "unavailable": "השיעור הזה כבר לא מקבל הזמנות.",
+    "byStaff": "על ידי הצוות",
+    "fullOption": "מלא · רשימת המתנה",
+    "saving": "שומר…"
   }
 }

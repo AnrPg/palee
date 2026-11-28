@@ -4988,7 +4988,10 @@
     "selectedAthleteCount": "{count, plural, one {Избран е # спортист} other {Избрани са # спортисти}}",
     "roundCount": "{count, plural, one {# кръг} other {# кръга}}",
     "optionCount": "{count, plural, one {# опция} other {# опции}}",
-    "userCount": "{count, plural, one {# потребител} other {# потребители}}"
+    "userCount": "{count, plural, one {# потребител} other {# потребители}}",
+    "ntfWaitlistedByStaffTitle": "В списъка на чакащите си",
+    "ntfWaitlistedByStaffBody": "{class} · място {position} в списъка. Ако се освободи място, записът става автоматично.",
+    "ntfWaitlistedByStaffBodyPlain": "{class}. Ако се освободи място, записът става автоматично."
   },
   "PrSharing": {
     "gymLabel": "Къде постигна този рекорд?",
@@ -20763,5 +20766,26 @@
     "staffLine": "Член на твоя бокс",
     "staffOpen": "Финанси на члена",
     "waitingForPayment": "Чака плащане"
+  },
+  "StaffWaitlist": {
+    "addPerson": "Добави",
+    "title": "Добави към часа",
+    "search": "Търсене на членове",
+    "noMatches": "Няма член с това име",
+    "checking": "Проверка…",
+    "change": "Смяна",
+    "bookHint": "Има свободно място. Резервацията се одобрява веднага.",
+    "book": "Резервирай",
+    "fullHint": "Часът е пълен. Членът влиза в списъка на чакащите, получава мястото автоматично, щом някой се откаже, и получава известие.",
+    "position": "Място в списъка",
+    "positionEnd": "Накрая (място {place})",
+    "positionEndPlain": "Накрая",
+    "positionFirst": "Пръв в списъка",
+    "waitlist": "В списъка на чакащите",
+    "refused": "Не може: {reason}",
+    "unavailable": "Този час вече не приема резервации.",
+    "byStaff": "от екипа",
+    "fullOption": "пълен · списък на чакащите",
+    "saving": "Запазване…"
   }
 }

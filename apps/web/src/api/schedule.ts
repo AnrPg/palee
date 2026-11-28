@@ -136,6 +136,8 @@ export type ScheduleBooking = {
   waitlist_priority?: number | null;
   /** 1-based place in the queue, only while waitlisted. */
   waitlist_position?: number | null;
+  /** ADR-790: staff put this person on the waitlist (staff roster only). */
+  waitlisted_by_staff?: boolean;
   /** The member's own attendance on this class (TD-105), e.g. "attended". */
   attendance_status?: string | null;
   /** When the member may check themselves in (own booking only). */

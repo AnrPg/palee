@@ -153,6 +153,15 @@ describe("notificationTargetUrl", () => {
     ).toBe("/box/schedule");
   });
 
+  it("opens the class a member was put on the waitlist of by staff (ADR-790)", () => {
+    expect(
+      notificationTargetUrl(
+        { type: "booking_waitlisted_by_staff", payload: { scheduled_class_id: "slot-3", position: 2 } },
+        "member",
+      ),
+    ).toBe("/box/schedule?open_slot=slot-3");
+  });
+
   it("opens the schedule for a cancelled class (ADR-200)", () => {
     expect(notificationTargetUrl({ type: "class_cancelled", payload: {} }, "member")).toBe("/box/schedule");
   });

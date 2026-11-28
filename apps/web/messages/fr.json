@@ -4988,7 +4988,10 @@
     "selectedAthleteCount": "{count, plural, one {# athlète sélectionné} other {# athlètes sélectionnés}}",
     "roundCount": "{count, plural, one {# tour} other {# tours}}",
     "optionCount": "{count, plural, one {# option} other {# options}}",
-    "userCount": "{count, plural, one {# utilisateur} other {# utilisateurs}}"
+    "userCount": "{count, plural, one {# utilisateur} other {# utilisateurs}}",
+    "ntfWaitlistedByStaffTitle": "Tu es sur la liste d'attente",
+    "ntfWaitlistedByStaffBody": "{class} · place {position} dans la file. Si une place se libère, tu es inscrit automatiquement.",
+    "ntfWaitlistedByStaffBodyPlain": "{class}. Si une place se libère, tu es inscrit automatiquement."
   },
   "PrSharing": {
     "gymLabel": "Où as-tu réalisé ce PR ?",
@@ -20763,5 +20766,26 @@
     "staffLine": "Membre de ta box",
     "staffOpen": "Finances du membre",
     "waitingForPayment": "En attente de paiement"
+  },
+  "StaffWaitlist": {
+    "addPerson": "Ajouter",
+    "title": "Ajouter au cours",
+    "search": "Rechercher un membre",
+    "noMatches": "Aucun membre à ce nom",
+    "checking": "Vérification…",
+    "change": "Changer",
+    "bookHint": "Il reste une place. La réservation est validée tout de suite.",
+    "book": "Réserver",
+    "fullHint": "Le cours est complet. Le membre rejoint la liste d'attente, obtient la place automatiquement dès qu'une personne annule et en est averti.",
+    "position": "Place dans la file",
+    "positionEnd": "À la fin (place {place})",
+    "positionEndPlain": "À la fin",
+    "positionFirst": "En premier",
+    "waitlist": "Mettre en liste d'attente",
+    "refused": "Impossible : {reason}",
+    "unavailable": "Ce cours ne prend plus de réservations.",
+    "byStaff": "par l'équipe",
+    "fullOption": "complet · liste d'attente",
+    "saving": "Enregistrement…"
   }
 }

@@ -991,3 +991,12 @@ msgstr ""
 
 msgid "%{box} · %{package}: new terms apply from today."
 msgstr ""
+
+msgid "You are on the waitlist"
+msgstr ""
+
+msgid "The box put you on the waitlist for %{class} (%{time}). You are number %{position} in line; if a place opens, you are booked automatically."
+msgstr ""
+
+msgid "The box put you on the waitlist for %{class} (%{time}). If a place opens, you are booked automatically."
+msgstr ""

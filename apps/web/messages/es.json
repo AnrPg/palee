@@ -4988,7 +4988,10 @@
     "selectedAthleteCount": "{count, plural, one {# atleta seleccionado} other {# atletas seleccionados}}",
     "roundCount": "{count, plural, one {# ronda} other {# rondas}}",
     "optionCount": "{count, plural, one {# opción} other {# opciones}}",
-    "userCount": "{count, plural, one {# usuario} other {# usuarios}}"
+    "userCount": "{count, plural, one {# usuario} other {# usuarios}}",
+    "ntfWaitlistedByStaffTitle": "Estás en la lista de espera",
+    "ntfWaitlistedByStaffBody": "{class} · puesto {position} en la lista. Si se libera una plaza, se te reserva automáticamente.",
+    "ntfWaitlistedByStaffBodyPlain": "{class}. Si se libera una plaza, se te reserva automáticamente."
   },
   "PrSharing": {
     "gymLabel": "¿Dónde conseguiste este PR?",
@@ -20763,5 +20766,26 @@
     "staffLine": "Miembro de tu box",
     "staffOpen": "Finanzas del miembro",
     "waitingForPayment": "Esperando el pago"
+  },
+  "StaffWaitlist": {
+    "addPerson": "Añadir",
+    "title": "Añadir a la clase",
+    "search": "Buscar socios",
+    "noMatches": "Ningún socio con ese nombre",
+    "checking": "Comprobando…",
+    "change": "Cambiar",
+    "bookHint": "Queda una plaza libre. La reserva se aprueba al momento.",
+    "book": "Reservar",
+    "fullHint": "La clase está llena. Entra en la lista de espera y, en cuanto alguien cancele, obtiene la plaza automáticamente y recibe un aviso.",
+    "position": "Puesto en la lista",
+    "positionEnd": "Al final (puesto {place})",
+    "positionEndPlain": "Al final",
+    "positionFirst": "Primero en la lista",
+    "waitlist": "A la lista de espera",
+    "refused": "No es posible: {reason}",
+    "unavailable": "Esta clase ya no admite reservas.",
+    "byStaff": "por el equipo",
+    "fullOption": "llena · lista de espera",
+    "saving": "Guardando…"
   }
 }

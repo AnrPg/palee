@@ -1079,6 +1079,20 @@ defmodule Palee.Notifications do
         url: "/box/schedule"
       })
 
+  # ADR-790: staff put the member on a full class's waitlist.
+  def process_event("booking_waitlisted_by_staff", payload),
+    do:
+      enqueue_simple(:booking_waitlisted_by_staff, payload, %{
+        organization_id: field(payload, :organization_id),
+        booking_id: field(payload, :booking_id),
+        scheduled_class_id: field(payload, :scheduled_class_id),
+        class_name: field(payload, :class_name),
+        class_starts_at: field(payload, :class_starts_at),
+        position: field(payload, :position),
+        dedupe_key: "booking_waitlisted_by_staff:#{field(payload, :booking_id)}",
+        url: "/box/schedule?open_slot=#{field(payload, :scheduled_class_id)}"
+      })
+
   # ADR-200: staff cancelled a class the member had a place in.
   def process_event("class_cancelled", payload),
     do:

@@ -17,6 +17,7 @@ defmodule PaleeWeb.AdminUserController do
     ListAthletes,
     ListPRDossierMembers,
     PlaceMemberInClass,
+    PlaceMemberOnWaitlist,
     ProgramUserWorkout,
     ProgramWorkoutForUsers
   }
@@ -276,6 +277,28 @@ defmodule PaleeWeb.AdminUserController do
     }
   }
 
+  # ADR-790: staff put a member on a full class's waitlist.
+  @class_waitlist_body %RequestBody{
+    required: true,
+    content: %{
+      "application/json" => %MediaType{
+        schema: %Schema{
+          type: :object,
+          additionalProperties: false,
+          properties: %{
+            slot_id: @user_id,
+            position: %Schema{
+              type: :string,
+              enum: ["end", "first"],
+              description: "«Στο τέλος» (default; package priority counts) or «Πρώτος στη σειρά»."
+            }
+          },
+          required: [:slot_id]
+        }
+      }
+    }
+  }
+
   plug OpenApiSpex.Plug.CastAndValidate,
        [json_render_error_v2: true]
        when action in [
@@ -283,6 +306,7 @@ defmodule PaleeWeb.AdminUserController do
               :program_workout,
               :program_workout_for_users,
               :place_in_class,
+              :place_on_waitlist,
               :freezes,
               :create_freeze,
               :cancel_freeze
@@ -307,6 +331,9 @@ defmodule PaleeWeb.AdminUserController do
     required: [:membership]
   }
 
+  # Placing a member in a class or on its waitlist is authorized by the
+  # application (ClassPlacementAccess, ADR-790): a coach may in the classes
+  # they run, whoever the member is.
   # A coach with scope `:own` reaches only their own clients (ADR-100). PRs are
   # the exception: every coach of the gym reads members' PRs and coach scope
   # must not narrow that (ADR-129); the database policy enforces it instead.
@@ -315,8 +342,6 @@ defmodule PaleeWeb.AdminUserController do
     training_history: [:view_client_training],
     schedule: [:view_client_training, :run_classes],
     program_workout: [:manage_coaching],
-    place_in_class: [:book_for_clients, :manage_schedule],
-    class_placement_options: [:book_for_clients, :manage_schedule],
     incidents: [:view_health],
     messages: [:message_clients],
     coaching_context: [:view_client_training]
@@ -328,8 +353,6 @@ defmodule PaleeWeb.AdminUserController do
               :training_history,
               :schedule,
               :program_workout,
-              :place_in_class,
-              :class_placement_options,
               :incidents,
               :messages,
               :coaching_context
@@ -480,6 +503,28 @@ defmodule PaleeWeb.AdminUserController do
     responses: [created: {"Class placement result", "application/json", @summary_object}]
   )
 
+  operation(:place_on_waitlist,
+    summary: "Put a member on a full class's waitlist (ADR-790)",
+    description:
+      "Staff of the class's branch put an active member on the waitlist of a future, full class, " <>
+        "at the end or first in line. The package is checked as for a staff placement; when a " <>
+        "place opens the entry is booked and approved at once. The member is notified.",
+    parameters: [@id_parameter],
+    request_body: @class_waitlist_body,
+    responses: [
+      created:
+        {"Waitlist entry", "application/json",
+         %Schema{
+           type: :object,
+           required: [:booking, :waitlist_position],
+           properties: %{
+             booking: %Schema{type: :object, additionalProperties: true},
+             waitlist_position: %Schema{type: :integer, nullable: true}
+           }
+         }}
+    ]
+  )
+
   @placement_class %Schema{
     type: :object,
     additionalProperties: false,
@@ -490,7 +535,9 @@ defmodule PaleeWeb.AdminUserController do
       :name,
       :scheduled_at,
       :slot_id,
-      :spots_remaining
+      :spots_remaining,
+      :waitlist,
+      :waitlist_place
     ],
     properties: %{
       slot_id: @user_id,
@@ -504,6 +551,16 @@ defmodule PaleeWeb.AdminUserController do
         nullable: true,
         description:
           "Why the class cannot take the member now, as the booking error code (slot_full, class_paused, class_not_published, already_booked, finance_*), or null."
+      },
+      waitlist: %Schema{
+        type: :boolean,
+        description:
+          "ADR-790: the class is full and takes the member on its waitlist instead (not in a move)."
+      },
+      waitlist_place: %Schema{
+        type: :integer,
+        nullable: true,
+        description: "ADR-790: the place «Στο τέλος» gives the member, for a waitlist class."
       }
     }
   }
@@ -533,7 +590,16 @@ defmodule PaleeWeb.AdminUserController do
 
   operation(:class_placement_options,
     summary: "What staff can choose when booking a member into a class or moving them (ADR-232)",
-    parameters: [@id_parameter],
+    parameters: [
+      @id_parameter,
+      %Parameter{
+        name: :slot_id,
+        in: :query,
+        required: false,
+        description: "ADR-790: only this class (the class page), however far away it is.",
+        schema: %Schema{type: :string, format: :uuid}
+      }
+    ],
     responses: [ok: {"Class placement options", "application/json", @placement_options}]
   )
 
@@ -1102,11 +1168,23 @@ defmodule PaleeWeb.AdminUserController do
     end
   end
 
+  def place_on_waitlist(conn, params) do
+    with {:ok, payload} <-
+           PlaceMemberOnWaitlist.call(
+             conn.assigns.tenant_context,
+             params["id"] || params[:id],
+             conn.body_params
+           ) do
+      conn |> put_status(:created) |> json(payload)
+    end
+  end
+
   def class_placement_options(conn, params) do
     with {:ok, payload} <-
            GetClassPlacementOptions.call(
              conn.assigns.tenant_context,
-             params["id"] || params[:id]
+             params["id"] || params[:id],
+             slot_id: blank_to_nil(params["slot_id"] || params[:slot_id])
            ) do
       json(conn, payload)
     end
@@ -1151,6 +1229,9 @@ defmodule PaleeWeb.AdminUserController do
   end
 
   defp truthy?(value), do: value in [true, "true", "1"]
+
+  defp blank_to_nil(value) when value in [nil, ""], do: nil
+  defp blank_to_nil(value), do: value
 
   defp render_service(conn, service, params) do
     with {:ok, payload} <- service.call(conn.assigns.tenant_context, params["id"] || params[:id]) do

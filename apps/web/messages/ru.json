@@ -4988,7 +4988,10 @@
     "selectedAthleteCount": "{count, plural, one {Выбран # спортсмен} few {Выбрано # спортсмена} many {Выбрано # спортсменов} other {Выбрано # спортсмена}}",
     "roundCount": "{count, plural, one {# раунд} few {# раунда} many {# раундов} other {# раунда}}",
     "optionCount": "{count, plural, one {# вариант} few {# варианта} many {# вариантов} other {# варианта}}",
-    "userCount": "{count, plural, one {# пользователь} few {# пользователя} many {# пользователей} other {# пользователя}}"
+    "userCount": "{count, plural, one {# пользователь} few {# пользователя} many {# пользователей} other {# пользователя}}",
+    "ntfWaitlistedByStaffTitle": "Ты в листе ожидания",
+    "ntfWaitlistedByStaffBody": "{class} · место {position} в очереди. Если освободится место, запись произойдёт автоматически.",
+    "ntfWaitlistedByStaffBodyPlain": "{class}. Если освободится место, запись произойдёт автоматически."
   },
   "PrSharing": {
     "gymLabel": "Где ты установил этот PR?",
@@ -20763,5 +20766,26 @@
     "staffLine": "Участник вашего бокса",
     "staffOpen": "Финансы участника",
     "waitingForPayment": "Ожидает оплаты"
+  },
+  "StaffWaitlist": {
+    "addPerson": "Добавить",
+    "title": "Добавить в занятие",
+    "search": "Поиск участников",
+    "noMatches": "Нет участника с таким именем",
+    "checking": "Проверка…",
+    "change": "Изменить",
+    "bookHint": "Есть свободное место. Запись подтверждается сразу.",
+    "book": "Записать",
+    "fullHint": "Занятие заполнено. Участник попадает в лист ожидания, получает место автоматически, как только кто-то отменит запись, и получает уведомление.",
+    "position": "Место в очереди",
+    "positionEnd": "В конец (место {place})",
+    "positionEndPlain": "В конец",
+    "positionFirst": "Первым в очереди",
+    "waitlist": "В лист ожидания",
+    "refused": "Нельзя: {reason}",
+    "unavailable": "Это занятие больше не принимает записи.",
+    "byStaff": "от команды",
+    "fullOption": "заполнено · лист ожидания",
+    "saving": "Сохранение…"
   }
 }

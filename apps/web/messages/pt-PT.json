@@ -4988,7 +4988,10 @@
     "selectedAthleteCount": "{count, plural, one {# atleta selecionado} other {# atletas selecionados}}",
     "roundCount": "{count, plural, one {# ronda} other {# rondas}}",
     "optionCount": "{count, plural, one {# opção} other {# opções}}",
-    "userCount": "{count, plural, one {# utilizador} other {# utilizadores}}"
+    "userCount": "{count, plural, one {# utilizador} other {# utilizadores}}",
+    "ntfWaitlistedByStaffTitle": "Estás na lista de espera",
+    "ntfWaitlistedByStaffBody": "{class} · lugar {position} na lista. Se abrir um lugar, ficas reservado automaticamente.",
+    "ntfWaitlistedByStaffBodyPlain": "{class}. Se abrir um lugar, ficas reservado automaticamente."
   },
   "PrSharing": {
     "gymLabel": "Onde fizeste este PR?",
@@ -20763,5 +20766,26 @@
     "staffLine": "Membro da tua box",
     "staffOpen": "Finanças do membro",
     "waitingForPayment": "À espera de pagamento"
+  },
+  "StaffWaitlist": {
+    "addPerson": "Adicionar",
+    "title": "Adicionar à aula",
+    "search": "Pesquisar membros",
+    "noMatches": "Nenhum membro com esse nome",
+    "checking": "A verificar…",
+    "change": "Alterar",
+    "bookHint": "Há um lugar livre. A reserva é aprovada de imediato.",
+    "book": "Reservar",
+    "fullHint": "A aula está cheia. Entra na lista de espera e, assim que alguém cancelar, fica com o lugar automaticamente e recebe um aviso.",
+    "position": "Lugar na lista",
+    "positionEnd": "No fim (lugar {place})",
+    "positionEndPlain": "No fim",
+    "positionFirst": "Primeiro na lista",
+    "waitlist": "Para a lista de espera",
+    "refused": "Não é possível: {reason}",
+    "unavailable": "Esta aula já não aceita reservas.",
+    "byStaff": "pela equipa",
+    "fullOption": "cheia · lista de espera",
+    "saving": "A guardar…"
   }
 }

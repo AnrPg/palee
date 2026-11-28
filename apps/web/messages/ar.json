@@ -4988,7 +4988,10 @@
     "selectedAthleteCount": "{count, plural, one {تم اختيار رياضي واحد} two {تم اختيار رياضيَّين} few {تم اختيار # رياضيين} many {تم اختيار # رياضيًا} other {تم اختيار # رياضي}}",
     "roundCount": "{count, plural, one {جولة واحدة} two {جولتان} few {# جولات} many {# جولة} other {# جولة}}",
     "optionCount": "{count, plural, one {خيار واحد} two {خياران} few {# خيارات} many {# خيارًا} other {# خيار}}",
-    "userCount": "{count, plural, one {مستخدم واحد} two {مستخدمان} few {# مستخدمين} many {# مستخدمًا} other {# مستخدم}}"
+    "userCount": "{count, plural, one {مستخدم واحد} two {مستخدمان} few {# مستخدمين} many {# مستخدمًا} other {# مستخدم}}",
+    "ntfWaitlistedByStaffTitle": "أنت على قائمة الانتظار",
+    "ntfWaitlistedByStaffBody": "{class} · المركز {position} في الدور. إذا توفر مكان، يتم حجزك تلقائيًا.",
+    "ntfWaitlistedByStaffBodyPlain": "{class}. إذا توفر مكان، يتم حجزك تلقائيًا."
   },
   "PrSharing": {
     "gymLabel": "أين حققت هذا الرقم القياسي؟",
@@ -20763,5 +20766,26 @@
     "staffLine": "عضو في البوكس الخاص بك",
     "staffOpen": "مالية العضو",
     "waitingForPayment": "بانتظار الدفع"
+  },
+  "StaffWaitlist": {
+    "addPerson": "إضافة",
+    "title": "إضافة إلى الحصة",
+    "search": "البحث عن عضو",
+    "noMatches": "لا يوجد عضو بهذا الاسم",
+    "checking": "جارٍ التحقق…",
+    "change": "تغيير",
+    "bookHint": "يوجد مكان شاغر. يُعتمد الحجز فورًا.",
+    "book": "حجز",
+    "fullHint": "الحصة ممتلئة. ينضم العضو إلى قائمة الانتظار، ويحصل على المكان تلقائيًا عندما يلغي أحدهم، ويتلقى إشعارًا.",
+    "position": "الترتيب في القائمة",
+    "positionEnd": "في النهاية (المركز {place})",
+    "positionEndPlain": "في النهاية",
+    "positionFirst": "الأول في الدور",
+    "waitlist": "إلى قائمة الانتظار",
+    "refused": "غير ممكن: {reason}",
+    "unavailable": "هذه الحصة لم تعد تقبل الحجوزات.",
+    "byStaff": "من الفريق",
+    "fullOption": "ممتلئة · قائمة الانتظار",
+    "saving": "جارٍ الحفظ…"
   }
 }

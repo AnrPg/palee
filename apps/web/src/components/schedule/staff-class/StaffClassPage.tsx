@@ -18,6 +18,7 @@ import { Dialog } from "@/components/ui/Dialog";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { MoreMenu, type MoreMenuItem } from "@/components/ui/MoreMenu";
 import { InjuryWarningBadge, RosterInjuryWarningsPanel, useSlotInjuryWarnings } from "@/components/wellbeing/InjuryWarnings";
+import { useSession } from "@/components/session-provider";
 import { FeltSummaryCard } from "@/components/wod-goals/FeltSummaryCard";
 import { WorkoutEditModal } from "@/components/workouts/WorkoutEditModal";
 import { YourTime } from "@/components/zoned-time";
@@ -25,10 +26,12 @@ import { useUiTranslations } from "@/i18n/ui";
 import { formatMinutes } from "@/lib/duration-parts";
 import { downloadIcsEvent } from "@/lib/ics";
 import { warningLevelFor, warningLevelsByUser } from "@/lib/injury-warnings";
-import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
+import { selectedMembership } from "@/lib/membership-role";
+import { adminHref, useOrganizationMemberships, useOrganizationSlug } from "@/lib/organization-slug";
 import { SPARK_ACTIVE_STYLE, SPARK_GO_STYLE } from "@/lib/spark";
 import { workoutTypeColor } from "@/lib/workout-colors";
 import { zonedText } from "@/lib/zoned-time";
+import { mayAddToClass } from "./add-to-class";
 import { classPhase, minutesUntilStart, nextPhaseChange, staffCheckInOpen, type ClassPhase } from "./class-phase";
 import { StaffClassRoster, initials, useBookingLabel } from "./StaffClassRoster";
 import { StaffClassWod } from "./StaffClassWod";
@@ -114,6 +117,9 @@ export function StaffClassPage({
   const rulesT = useTranslations("BookingRules");
   const locale = useLocale();
   const organizationSlug = useOrganizationSlug();
+  const memberships = useOrganizationMemberships();
+  const { currentUser } = useSession();
+  const membership = selectedMembership(Array.isArray(memberships.data) ? memberships.data : [], organizationSlug);
   const personLabel = useBookingLabel();
 
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -471,6 +477,12 @@ export function StaffClassPage({
                   visits={visitBadges.data?.people}
                   onChanged={onSlotChanged}
                   workouts={workouts}
+                  canAdd={
+                    (phase === "upcoming" || phase === "soon") &&
+                    !slot.cancelled_at &&
+                    !slot.paused_at &&
+                    mayAddToClass(membership, slot, currentUser?.id)
+                  }
                 />
                 {/* What members felt in this class (WOD goals, ADR-163). */}
                 {slot.workout && phase === "ended" ? <FeltSummaryCard source={{ kind: "slot", id: slot.id }} /> : null}

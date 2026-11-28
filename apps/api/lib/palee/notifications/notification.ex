@@ -26,6 +26,7 @@ defmodule Palee.Notifications.Notification do
     :invoice_issued,
     :payment_reminder,
     :booking_waitlist_promoted,
+    :booking_waitlisted_by_staff,
     :package_expiring,
     :form_review_submitted,
     :form_review_completed,

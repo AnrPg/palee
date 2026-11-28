@@ -1537,7 +1537,12 @@ defmodule Palee.Infrastructure.Scheduling.EctoSchedulingStore do
       if approved_booking_count(organization_id, slot.id) >= slot.capacity,
         do: Repo.rollback(:slot_full)
 
-      status = if slot.auto_approve, do: :approved, else: :pending
+      # ADR-790: a place offered from a staff entry is approved at once, as
+      # when staff place the member in a class with room.
+      status =
+        if slot.auto_approve or not is_nil(booking.waitlisted_by_id),
+          do: :approved,
+          else: :pending
 
       promoted =
         booking
@@ -1573,6 +1578,8 @@ defmodule Palee.Infrastructure.Scheduling.EctoSchedulingStore do
       "entitlement_allowance",
       "kind",
       "waitlist_priority",
+      "waitlisted_by_id",
+      "waitlist_front_at",
       "client_operation_id"
     ])
     |> Map.new(fn {key, value} -> {String.to_existing_atom(key), value} end)
@@ -1973,6 +1980,8 @@ defmodule Palee.Infrastructure.Scheduling.EctoSchedulingStore do
       resolution_operation_id: booking.resolution_operation_id,
       waitlist_priority: booking.waitlist_priority,
       waitlisted_at: booking.waitlisted_at,
+      waitlisted_by_id: booking.waitlisted_by_id,
+      waitlist_front_at: booking.waitlist_front_at,
       guest_name: booking.guest_name,
       entitlement_allowance: booking.entitlement_allowance,
       kind: booking.kind,
@@ -1994,6 +2003,8 @@ defmodule Palee.Infrastructure.Scheduling.EctoSchedulingStore do
       timeout_job_id: booking.timeout_job_id,
       waitlist_priority: booking.waitlist_priority,
       waitlisted_at: booking.waitlisted_at,
+      waitlisted_by_id: booking.waitlisted_by_id,
+      waitlist_front_at: booking.waitlist_front_at,
       guest_name: booking.guest_name,
       entitlement_allowance: booking.entitlement_allowance,
       kind: booking.kind,

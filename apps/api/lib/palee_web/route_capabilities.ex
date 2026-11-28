@@ -121,8 +121,22 @@ defmodule PaleeWeb.RouteCapabilities do
     {W.AdminUserController, :schedule} => [:view_client_training, :run_classes],
     {W.AdminUserController, :program_workout} => [:manage_coaching],
     {W.AdminUserController, :program_workout_for_users} => [:manage_coaching],
-    {W.AdminUserController, :place_in_class} => [:book_for_clients, :manage_schedule],
-    {W.AdminUserController, :class_placement_options} => [:book_for_clients, :manage_schedule],
+    # ADR-790: coaches in the classes they run (ClassPlacementAccess).
+    {W.AdminUserController, :place_in_class} => [
+      :book_for_clients,
+      :manage_schedule,
+      :run_classes
+    ],
+    {W.AdminUserController, :place_on_waitlist} => [
+      :book_for_clients,
+      :manage_schedule,
+      :run_classes
+    ],
+    {W.AdminUserController, :class_placement_options} => [
+      :book_for_clients,
+      :manage_schedule,
+      :run_classes
+    ],
     {W.AdminUserController, :prs} => [:view_client_training],
     {W.AdminUserController, :pr_members} => [:view_client_training],
     {W.AdminUserController, :incidents} => [:view_health],

@@ -4988,7 +4988,10 @@
     "selectedAthleteCount": "{count, plural, one {# Athlet ausgewählt} other {# Athleten ausgewählt}}",
     "roundCount": "{count, plural, one {# Runde} other {# Runden}}",
     "optionCount": "{count, plural, one {# Option} other {# Optionen}}",
-    "userCount": "{count, plural, one {# Benutzer} other {# Benutzer}}"
+    "userCount": "{count, plural, one {# Benutzer} other {# Benutzer}}",
+    "ntfWaitlistedByStaffTitle": "Du stehst auf der Warteliste",
+    "ntfWaitlistedByStaffBody": "{class} · Platz {position} in der Reihe. Wird ein Platz frei, wirst du automatisch gebucht.",
+    "ntfWaitlistedByStaffBodyPlain": "{class}. Wird ein Platz frei, wirst du automatisch gebucht."
   },
   "PrSharing": {
     "gymLabel": "Wo hast du diesen PR aufgestellt?",
@@ -20763,5 +20766,26 @@
     "staffLine": "Mitglied deiner Box",
     "staffOpen": "Finanzen des Mitglieds",
     "waitingForPayment": "Wartet auf Zahlung"
+  },
+  "StaffWaitlist": {
+    "addPerson": "Hinzufügen",
+    "title": "Zur Stunde hinzufügen",
+    "search": "Mitglieder suchen",
+    "noMatches": "Kein Mitglied mit diesem Namen",
+    "checking": "Wird geprüft…",
+    "change": "Ändern",
+    "bookHint": "Es ist ein Platz frei. Die Buchung wird sofort bestätigt.",
+    "book": "Buchen",
+    "fullHint": "Die Stunde ist voll. Das Mitglied kommt auf die Warteliste, bekommt den Platz automatisch, sobald jemand absagt, und wird benachrichtigt.",
+    "position": "Platz in der Warteliste",
+    "positionEnd": "Am Ende (Platz {place})",
+    "positionEndPlain": "Am Ende",
+    "positionFirst": "Als Erste/r",
+    "waitlist": "Auf die Warteliste",
+    "refused": "Nicht möglich: {reason}",
+    "unavailable": "Diese Stunde nimmt keine Buchungen mehr an.",
+    "byStaff": "vom Team",
+    "fullOption": "voll · Warteliste",
+    "saving": "Wird gespeichert…"
   }
 }

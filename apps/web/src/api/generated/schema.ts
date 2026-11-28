@@ -13500,6 +13500,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/users/{id}/class-waitlist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Put a member on a full class's waitlist (ADR-790)
+         * @description Staff of the class's branch put an active member on the waitlist of a future, full class, at the end or first in line. The package is checked as for a staff placement; when a place opens the entry is booked and approved at once. The member is notified.
+         */
+        post: operations["PaleeWeb.AdminUserController.place_on_waitlist"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/users/{id}/coach-scope": {
         parameters: {
             query?: never;
@@ -127889,7 +127909,10 @@ export interface operations {
     };
     "PaleeWeb.AdminUserController.class_placement_options": {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description ADR-790: only this class (the class page), however far away it is. */
+                slot_id?: string;
+            };
             header?: never;
             path: {
                 id: string;
@@ -127927,6 +127950,10 @@ export interface operations {
                             /** Format: uuid */
                             slot_id: string;
                             spots_remaining: number;
+                            /** @description ADR-790: the class is full and takes the member on its waitlist instead (not in a move). */
+                            waitlist: boolean;
+                            /** @description ADR-790: the place «Στο τέλος» gives the member, for a waitlist class. */
+                            waitlist_place: number | null;
                         }[];
                         lookahead_days: number;
                         /** @description The box's IANA time zone (ADR-179). */
@@ -127963,6 +127990,45 @@ export interface operations {
                 content: {
                     "application/json": {
                         [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminUserController.place_on_waitlist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description «Στο τέλος» (default; package priority counts) or «Πρώτος στη σειρά».
+                     * @enum {string}
+                     */
+                    position?: "end" | "first";
+                    /** Format: uuid */
+                    slot_id: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Waitlist entry */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        booking: {
+                            [key: string]: unknown;
+                        };
+                        waitlist_position: number | null;
                     };
                 };
             };

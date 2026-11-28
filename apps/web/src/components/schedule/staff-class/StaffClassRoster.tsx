@@ -13,8 +13,10 @@ import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { MoreMenu } from "@/components/ui/MoreMenu";
 import { localizeError } from "@/i18n/presentation";
 import { useUiTranslations } from "@/i18n/ui";
-import { SPARK_ACTIVE_STYLE } from "@/lib/spark";
+import { SPARK_ACTIVE_STYLE, SPARK_CREATE_STYLE } from "@/lib/spark";
 import { newcomers, visitFor } from "@/lib/training-floor";
+
+import { AddToClassDialog } from "./AddToClassDialog";
 
 /** «Σ» for Σοφία Λ., «ΝΚ» for Νίκος Κ.: the row's avatar, never its only label. */
 export function initials(name: string) {
@@ -60,6 +62,7 @@ export function StaffClassRoster({
   visits,
   onChanged,
   workouts = [],
+  canAdd = false,
 }: {
   slot: ScheduleSlot;
   accessToken: string;
@@ -69,11 +72,15 @@ export function StaffClassRoster({
   onChanged?: () => void;
   /** ADR-746: the class's WODs in order; more than one groups the people. */
   workouts?: WorkoutPreview[];
+  /** ADR-790: «+ Προσθήκη» (book, or the waitlist when full), before the class starts. */
+  canAdd?: boolean;
 }) {
   const tWods = useTranslations("ClassWods");
   const i18n = useUiTranslations();
   const t = useTranslations("StaffClass");
   const tTrials = useTranslations("Trials");
+  const tWait = useTranslations("StaffWaitlist");
+  const [adding, setAdding] = useState(false);
   const personLabel = useBookingLabel();
   const { booked, waitlist } = splitRoster(slot.bookings);
   const coming = booked.filter((booking) => booking.status !== "pending");
@@ -285,6 +292,28 @@ export function StaffClassRoster({
         )}
       </div>
 
+      {canAdd ? (
+        <button
+          type="button"
+          className="mt-3 inline-flex min-h-11 items-center gap-1.5 rounded-full px-4 text-sm font-bold"
+          style={SPARK_CREATE_STYLE}
+          onClick={() => setAdding(true)}
+          data-testid="class-roster-add"
+        >
+          <span aria-hidden="true">+</span>
+          {tWait("addPerson")}
+        </button>
+      ) : null}
+
+      {adding ? (
+        <AddToClassDialog
+          slot={slot}
+          accessToken={accessToken}
+          onClose={() => setAdding(false)}
+          onAdded={() => onChanged?.()}
+        />
+      ) : null}
+
       {waitlist.length > 0 ? (
         <div className="mt-5">
           <h4 className="text-sm font-semibold" style={{ color: "var(--text)" }}>
@@ -301,12 +330,20 @@ export function StaffClassRoster({
                 style={{ background: "var(--panel-muted)" }}
               >
                 <span className="w-5 text-center font-semibold tabular-nums" style={{ color: "var(--dim)" }}>
-                  {index + 1}
+                  {booking.waitlist_position ?? index + 1}
                 </span>
                 <span className="min-w-0 flex-1 truncate font-semibold" style={{ color: "var(--text)" }}>
                   {personLabel(booking)}
                 </span>
                 {badgeFor?.(booking)}
+                {booking.waitlisted_by_staff ? (
+                  <span
+                    className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
+                    style={{ background: "var(--panel)", color: "var(--muted)", border: "1px solid var(--border)" }}
+                  >
+                    {tWait("byStaff")}
+                  </span>
+                ) : null}
                 {(booking.waitlist_priority ?? 0) > 0 ? (
                   <span
                     className="rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider"

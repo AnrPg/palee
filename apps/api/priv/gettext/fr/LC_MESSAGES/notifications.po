@@ -996,3 +996,12 @@ msgstr "%{box} · %{package} : nouvelles conditions à partir du %{date}."
 
 msgid "%{box} · %{package}: new terms apply from today."
 msgstr "%{box} · %{package} : nouvelles conditions dès aujourd'hui."
+
+msgid "You are on the waitlist"
+msgstr "Tu es sur la liste d'attente"
+
+msgid "The box put you on the waitlist for %{class} (%{time}). You are number %{position} in line; if a place opens, you are booked automatically."
+msgstr "La box t'a mis sur la liste d'attente pour %{class} (%{time}). Tu es numéro %{position} ; si une place se libère, tu es inscrit automatiquement."
+
+msgid "The box put you on the waitlist for %{class} (%{time}). If a place opens, you are booked automatically."
+msgstr "La box t'a mis sur la liste d'attente pour %{class} (%{time}). Si une place se libère, tu es inscrit automatiquement."

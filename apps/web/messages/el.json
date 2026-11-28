@@ -4988,7 +4988,10 @@
     "selectedAthleteCount": "{count, plural, one {Επιλέχθηκε # αθλητής} other {Επιλέχθηκαν # αθλητές}}",
     "roundCount": "{count, plural, one {# γύρος} other {# γύροι}}",
     "optionCount": "{count, plural, one {# επιλογή} other {# επιλογές}}",
-    "userCount": "{count, plural, one {# χρήστης} other {# χρήστες}}"
+    "userCount": "{count, plural, one {# χρήστης} other {# χρήστες}}",
+    "ntfWaitlistedByStaffTitle": "Είσαι στη λίστα αναμονής",
+    "ntfWaitlistedByStaffBody": "{class} · θέση {position} στη σειρά. Αν ανοίξει θέση, η κράτησή σου γίνεται αυτόματα.",
+    "ntfWaitlistedByStaffBodyPlain": "{class}. Αν ανοίξει θέση, η κράτησή σου γίνεται αυτόματα."
   },
   "PrSharing": {
     "gymLabel": "Πού πέτυχες αυτό το PR;",
@@ -20763,5 +20766,26 @@
     "staffLine": "Μέλος του box σου",
     "staffOpen": "Οικονομικά μέλους",
     "waitingForPayment": "Περιμένει πληρωμή"
+  },
+  "StaffWaitlist": {
+    "addPerson": "Προσθήκη",
+    "title": "Προσθήκη στο τμήμα",
+    "search": "Αναζήτηση μέλους",
+    "noMatches": "Κανένα μέλος με αυτό το όνομα",
+    "checking": "Έλεγχος…",
+    "change": "Αλλαγή",
+    "bookHint": "Υπάρχει ελεύθερη θέση. Η κράτηση εγκρίνεται αμέσως.",
+    "book": "Κράτηση",
+    "fullHint": "Το τμήμα είναι γεμάτο. Μπαίνει στη λίστα αναμονής και, μόλις ακυρώσει κάποιος, κλείνει θέση αυτόματα και ειδοποιείται.",
+    "position": "Θέση στη λίστα",
+    "positionEnd": "Στο τέλος (θέση {place})",
+    "positionEndPlain": "Στο τέλος",
+    "positionFirst": "Πρώτος στη σειρά",
+    "waitlist": "Στη λίστα αναμονής",
+    "refused": "Δεν μπορεί να μπει: {reason}",
+    "unavailable": "Το τμήμα δεν δέχεται πια κρατήσεις.",
+    "byStaff": "από staff",
+    "fullOption": "γεμάτο · λίστα αναμονής",
+    "saving": "Αποθήκευση…"
   }
 }

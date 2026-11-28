@@ -137,11 +137,38 @@ defmodule Palee.Scheduling.Domain.BookingPolicy do
 
   defp has_guest?(_slot, _user_id), do: false
 
-  @doc "Waitlist order: higher priority first, then earliest join."
+  @doc """
+  Waitlist order: the entries staff put «Πρώτος στη σειρά» (ADR-790) first,
+  the latest of them first; then higher package priority, then earliest join.
+  """
   def waitlist_order(entries) do
     Enum.sort_by(entries, fn entry ->
-      {-(entry.waitlist_priority || 0), DateTime.to_unix(entry.waitlisted_at, :microsecond)}
+      case Map.get(entry, :waitlist_front_at) do
+        %DateTime{} = front_at ->
+          {0, -DateTime.to_unix(front_at, :microsecond), 0}
+
+        nil ->
+          {1, -(entry.waitlist_priority || 0),
+           DateTime.to_unix(entry.waitlisted_at, :microsecond)}
+      end
     end)
+  end
+
+  @doc """
+  The place a new waitlist entry takes (ADR-790): 1 for «Πρώτος στη σειρά»,
+  else after everyone it does not outrank (higher package priority goes
+  ahead of earlier joins, staff «first» entries always stay ahead).
+  """
+  def waitlist_place(_entries, :first, _priority), do: 1
+
+  def waitlist_place(entries, :end, priority) do
+    ahead =
+      Enum.count(entries, fn entry ->
+        not is_nil(Map.get(entry, :waitlist_front_at)) or
+          (entry.waitlist_priority || 0) >= (priority || 0)
+      end)
+
+    ahead + 1
   end
 
   def waitlist_priority("high"), do: 1

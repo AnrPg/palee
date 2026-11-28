@@ -996,3 +996,12 @@ msgstr "%{box} · %{package}: нови условия от %{date}."
 
 msgid "%{box} · %{package}: new terms apply from today."
 msgstr "%{box} · %{package}: нови условия от днес."
+
+msgid "You are on the waitlist"
+msgstr "В списъка на чакащите си"
+
+msgid "The box put you on the waitlist for %{class} (%{time}). You are number %{position} in line; if a place opens, you are booked automatically."
+msgstr "Залата те добави в списъка на чакащите за %{class} (%{time}). Ти си номер %{position}; ако се освободи място, записът става автоматично."
+
+msgid "The box put you on the waitlist for %{class} (%{time}). If a place opens, you are booked automatically."
+msgstr "Залата те добави в списъка на чакащите за %{class} (%{time}). Ако се освободи място, записът става автоматично."

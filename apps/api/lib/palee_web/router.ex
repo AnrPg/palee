@@ -1377,6 +1377,8 @@ defmodule PaleeWeb.Router do
     post("/users/:id/programming", AdminUserController, :program_workout)
     get("/users/:id/class-placement", AdminUserController, :class_placement_options)
     post("/users/:id/class-placement", AdminUserController, :place_in_class)
+    # ADR-790: staff put a member on a full class's waitlist.
+    post("/users/:id/class-waitlist", AdminUserController, :place_on_waitlist)
     get("/users/:id/incidents", AdminUserController, :incidents)
     get("/users/:id/messages", AdminUserController, :messages)
     get("/users/:id/coaching-context", AdminUserController, :coaching_context)

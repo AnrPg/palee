@@ -333,6 +333,34 @@ defmodule PaleeWeb.LibraryProgrammingAndSeriesControllerTest do
            |> get("/api/org/#{organization.slug}/admin/users/#{athlete.id}/class-placement")
            |> json_response(422)
            |> Map.fetch!("code") == "class_placement_requires_member"
+
+    # ADR-790: the waitlist route answers for a class with room, and its
+    # position is one of the two the API names.
+    waitlist_url = "/api/org/#{organization.slug}/admin/users/#{member.id}/class-waitlist"
+
+    assert admin_conn
+           |> recycle()
+           |> put_req_header("content-type", "application/json")
+           |> post(waitlist_url, Jason.encode!(%{slot_id: morning["id"], position: "end"}))
+           |> json_response(409)
+           |> Map.fetch!("code") == "slot_not_full"
+
+    assert admin_conn
+           |> recycle()
+           |> put_req_header("content-type", "application/json")
+           |> post(waitlist_url, Jason.encode!(%{slot_id: morning["id"], position: "middle"}))
+           |> json_response(422)
+
+    only_evening =
+      admin_conn
+      |> recycle()
+      |> get(
+        "/api/org/#{organization.slug}/admin/users/#{member.id}/class-placement?slot_id=#{morning["id"]}"
+      )
+      |> json_response(200)
+
+    assert [%{"slot_id" => only_id, "waitlist" => false}] = only_evening["classes"]
+    assert only_id == morning["id"]
   end
 
   test "athlete profile can save a newly-created WOD in a folder and assign that same copy",

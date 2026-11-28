@@ -996,3 +996,12 @@ msgstr "%{box} · %{package}: νέοι όροι από %{date}."
 
 msgid "%{box} · %{package}: new terms apply from today."
 msgstr "%{box} · %{package}: νέοι όροι από σήμερα."
+
+msgid "You are on the waitlist"
+msgstr "Είσαι στη λίστα αναμονής"
+
+msgid "The box put you on the waitlist for %{class} (%{time}). You are number %{position} in line; if a place opens, you are booked automatically."
+msgstr "Το box σε έβαλε στη λίστα αναμονής για το %{class} (%{time}). Είσαι στη θέση %{position} της σειράς· αν ανοίξει θέση, η κράτησή σου γίνεται αυτόματα."
+
+msgid "The box put you on the waitlist for %{class} (%{time}). If a place opens, you are booked automatically."
+msgstr "Το box σε έβαλε στη λίστα αναμονής για το %{class} (%{time}). Αν ανοίξει θέση, η κράτησή σου γίνεται αυτόματα."

@@ -3555,6 +3555,9 @@ defmodule PaleeWeb.FallbackController do
       {:unprocessable_entity, "The freeze exceeds the yearly freeze days"},
     freeze_already_cancelled: {:conflict, "The freeze is already cancelled"},
     slot_not_full: {:conflict, "The class still has free spots"},
+    # ADR-790: «Στο τέλος» or «Πρώτος στη σειρά».
+    invalid_waitlist_position:
+      {:unprocessable_entity, "Choose the end of the line or first in line"},
     # ADR-176: a draft class has no WOD yet.
     class_not_published: {:conflict, "This class isn't open yet"},
     # ADR-230: day WODs.

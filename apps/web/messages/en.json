@@ -4988,7 +4988,10 @@
     "selectedAthleteCount": "{count, plural, one {# athlete selected} other {# athletes selected}}",
     "roundCount": "{count, plural, one {# round} other {# rounds}}",
     "optionCount": "{count, plural, one {# option} other {# options}}",
-    "userCount": "{count, plural, one {# user} other {# users}}"
+    "userCount": "{count, plural, one {# user} other {# users}}",
+    "ntfWaitlistedByStaffTitle": "You are on the waitlist",
+    "ntfWaitlistedByStaffBody": "{class} · place {position} in line. If a spot opens, you are booked automatically.",
+    "ntfWaitlistedByStaffBodyPlain": "{class}. If a spot opens, you are booked automatically."
   },
   "PrSharing": {
     "gymLabel": "Where did you set this PR?",
@@ -20763,5 +20766,26 @@
     "staffLine": "Member of your box",
     "staffOpen": "Member finances",
     "waitingForPayment": "Waiting for payment"
+  },
+  "StaffWaitlist": {
+    "addPerson": "Add",
+    "title": "Add to the class",
+    "search": "Search members",
+    "noMatches": "No member with that name",
+    "checking": "Checking…",
+    "change": "Change",
+    "bookHint": "There is a free spot. The booking is approved at once.",
+    "book": "Book",
+    "fullHint": "The class is full. They join the waitlist and, as soon as someone cancels, get the spot automatically and are notified.",
+    "position": "Place in line",
+    "positionEnd": "At the end (place {place})",
+    "positionEndPlain": "At the end",
+    "positionFirst": "First in line",
+    "waitlist": "Add to waitlist",
+    "refused": "Can't join: {reason}",
+    "unavailable": "This class no longer takes bookings.",
+    "byStaff": "by staff",
+    "fullOption": "full · waitlist",
+    "saving": "Saving…"
   }
 }

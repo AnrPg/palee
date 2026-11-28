@@ -446,6 +446,25 @@ export function useNotificationText() {
       return [nickname, requestedFor, note].filter(Boolean).join(" · ");
     }
 
+    // ADR-790: staff put the member on a full class's waitlist.
+    if (notification.type === "booking_waitlisted_by_staff") {
+      const className =
+        typeof notification.payload.class_name === "string" ? notification.payload.class_name : "";
+      const startsAt =
+        typeof notification.payload.class_starts_at === "string" ? notification.payload.class_starts_at : null;
+      const when =
+        typeof notification.payload.class_when === "string" && notification.payload.class_when
+          ? notification.payload.class_when
+          : startsAt && !Number.isNaN(new Date(startsAt).getTime())
+            ? formatTimestamp(uiLocale, startsAt)
+            : "";
+      const detail = [className, when].filter(Boolean).join(" · ");
+      const position = notification.payload.position;
+      return typeof position === "number"
+        ? i18n("ntfWaitlistedByStaffBody", { class: detail, position })
+        : i18n("ntfWaitlistedByStaffBodyPlain", { class: detail });
+    }
+
     if (notification.type === "booking_waitlist_promoted") {
       const className =
         typeof notification.payload.class_name === "string" ? notification.payload.class_name : "";
@@ -710,6 +729,8 @@ export function useNotificationText() {
         return i18n("outstandingBalancee9fd5bb");
       case "booking_waitlist_promoted":
         return i18n("mbNotifWaitlistPromotedTitle");
+      case "booking_waitlisted_by_staff":
+        return i18n("ntfWaitlistedByStaffTitle");
       case "package_expiring":
         return i18n("mbNotifPackageExpiringTitle");
       case "form_review_submitted":
@@ -1122,6 +1143,8 @@ const FILTER_TYPES: Record<FilterTab, string[] | null> = {
     "booking_rejected",
     "booking_timeout",
     "booking_waitlist_promoted",
+    // ADR-790
+    "booking_waitlisted_by_staff",
     // ADR-098 appointments
     "appointment_booked",
     "appointment_cancelled",

@@ -12,31 +12,43 @@ defmodule Palee.Application.GetClassPlacementOptions do
   reserving anything. A class refused only for
   `finance_allowance_exhausted` can still take the member in a move, since
   the move returns the old booking's visit first; the dialog allows it then.
+
+  ADR-790: a full class the member could wait for comes with `waitlist:
+  true` and `waitlist_place`, the place «Στο τέλος» would give them; staff
+  then put them on its waitlist (`PlaceMemberOnWaitlist`). A move never goes
+  to a waitlist, so the dialog keeps those classes closed while moving.
+  `slot_id:` limits the answer to that one class (the class page's «+
+  Προσθήκη»), however far away it is.
   """
 
   alias Palee.{Finance, Identity, Organizations, Scheduling}
-  alias Palee.Application.PlaceMemberInClass
+  alias Palee.Application.{BookingTerms, ClassPlacementAccess, PlaceMemberInClass}
   alias Palee.Scheduling.Domain.BookingPolicy
 
   @lookahead_days 30
   @movable_statuses [:pending, :approved]
 
-  def call(%{organization_id: organization_id} = context, user_id)
+  def call(context, user_id, opts \\ [])
+
+  def call(%{organization_id: organization_id} = context, user_id, opts)
       when is_binary(organization_id) do
     with %{} = user <- Identity.find_by_id(user_id) || {:error, :not_found},
-         :ok <- PlaceMemberInClass.require_member(context, user.id) do
+         :ok <- ClassPlacementAccess.authorize(context, user.id, Keyword.get(opts, :slot_id)),
+         :ok <- PlaceMemberInClass.require_member(context, user.id),
+         {:ok, window_end, only} <- window(context, Keyword.get(opts, :slot_id)) do
       now = DateTime.utc_now()
 
       slots =
         context
         |> Scheduling.get_calendar_week(%{
           start_at: now,
-          end_at: DateTime.add(now, @lookahead_days * 86_400, :second),
+          end_at: window_end,
           class_type_ids: [],
           include_drafts: true
         })
         |> Enum.filter(
-          &(DateTime.compare(&1.scheduled_at, now) == :gt and is_nil(Map.get(&1, :cancelled_at)))
+          &(DateTime.compare(&1.scheduled_at, now) == :gt and is_nil(Map.get(&1, :cancelled_at)) and
+              (is_nil(only) or &1.id == only))
         )
         |> then(&Organizations.filter_by_location_scope(context, &1))
         |> Enum.sort_by(& &1.scheduled_at, DateTime)
@@ -53,7 +65,26 @@ defmodule Palee.Application.GetClassPlacementOptions do
     end
   end
 
-  def call(_context, _user_id), do: {:error, :organization_context_required}
+  def call(_context, _user_id, _opts), do: {:error, :organization_context_required}
+
+  # ADR-790: the class page asks about one class, which may be further away
+  # than the profile's 30 days.
+  defp window(_context, nil), do: {:ok, lookahead_end(), nil}
+
+  defp window(context, slot_id) when is_binary(slot_id) do
+    case Scheduling.get_slot(context, slot_id) do
+      nil ->
+        {:error, :not_found}
+
+      slot ->
+        later = DateTime.add(slot.scheduled_at, 60, :second)
+        default = lookahead_end()
+
+        {:ok, if(DateTime.compare(later, default) == :gt, do: later, else: default), slot.id}
+    end
+  end
+
+  defp lookahead_end, do: DateTime.add(DateTime.utc_now(), @lookahead_days * 86_400, :second)
 
   defp movable_booking(slot, user_id) do
     Enum.find(slot.bookings, fn booking ->
@@ -77,13 +108,13 @@ defmodule Palee.Application.GetClassPlacementOptions do
   defp class_options(_context, [], _user, _now), do: []
 
   defp class_options(context, slots, user, now) do
-    {bookable, closed} =
+    {open, closed} =
       slots
-      |> Enum.map(&{&1, policy_reason(&1, user.id, now)})
-      |> Enum.split_with(fn {_slot, reason} -> is_nil(reason) end)
+      |> Enum.map(&policy(&1, user.id, now))
+      |> Enum.split_with(fn {_slot, reason, _mode} -> is_nil(reason) end)
 
     requests =
-      Enum.map(bookable, fn {slot, nil} ->
+      Enum.map(open, fn {slot, nil, _mode} ->
         slot
         |> BookingPolicy.entitlement_request()
         |> Map.merge(%{
@@ -102,11 +133,13 @@ defmodule Palee.Application.GetClassPlacementOptions do
       end)
 
     checked =
-      Enum.zip_with(bookable, package_reasons, fn {slot, nil}, reason -> {slot, reason} end)
+      Enum.zip_with(open, package_reasons, fn {slot, nil, mode}, reason ->
+        {slot, reason, mode}
+      end)
 
     (checked ++ closed)
-    |> Enum.sort_by(fn {slot, _reason} -> slot.scheduled_at end, DateTime)
-    |> Enum.map(fn {slot, reason} ->
+    |> Enum.sort_by(fn {slot, _reason, _mode} -> slot.scheduled_at end, DateTime)
+    |> Enum.map(fn {slot, reason, mode} ->
       %{
         slot_id: slot.id,
         name: slot.name,
@@ -114,15 +147,38 @@ defmodule Palee.Application.GetClassPlacementOptions do
         duration_minutes: slot.duration_minutes,
         capacity: slot.capacity,
         spots_remaining: max(slot.spots_remaining || 0, 0),
-        blocked_reason: reason
+        blocked_reason: reason,
+        waitlist: mode == :waitlist,
+        waitlist_place: waitlist_place(context, user.id, slot, mode)
       }
     end)
   end
 
-  defp policy_reason(slot, user_id, now) do
+  # ADR-790: a full class takes the member on its waitlist instead.
+  defp policy(slot, user_id, now) do
     case BookingPolicy.can_book?(slot, user_id: user_id, now: now) do
-      :ok -> nil
-      {:error, reason} -> Atom.to_string(reason)
+      :ok ->
+        {slot, nil, :book}
+
+      {:error, :slot_full} ->
+        case BookingPolicy.can_join_waitlist?(slot, user_id: user_id, now: now) do
+          :ok -> {slot, nil, :waitlist}
+          {:error, reason} -> {slot, Atom.to_string(reason), :book}
+        end
+
+      {:error, reason} ->
+        {slot, Atom.to_string(reason), :book}
     end
   end
+
+  # Where «Στο τέλος» would put the member (package priority counts).
+  defp waitlist_place(context, user_id, slot, :waitlist) do
+    priority = BookingTerms.for_slot(context, user_id, slot).waitlist_priority
+
+    slot.bookings
+    |> Enum.filter(&(&1.status == :waitlisted))
+    |> BookingPolicy.waitlist_place(:end, priority)
+  end
+
+  defp waitlist_place(_context, _user_id, _slot, _mode), do: nil
 end
