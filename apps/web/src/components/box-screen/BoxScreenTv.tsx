@@ -533,6 +533,7 @@ function LeaderboardPanel({
   fresh: Set<string>;
 }) {
   const t = useTranslations("BoxScreens");
+  const tWods = useTranslations("ClassWods");
   const entries = board?.entries ?? [];
   return (
     <section className="grid min-h-0 content-start gap-[0.4vw] overflow-hidden p-[1.6vw]" style={tv.panel} data-testid="tv-leaderboard">
@@ -558,9 +559,15 @@ function LeaderboardPanel({
                   background: isNew ? "color-mix(in srgb, var(--spark) 18%, transparent)" : undefined,
                 }}
               >
-                <b className="font-mono" style={{ color: "var(--muted)" }}>{entry.rank}</b>
+                <b className="font-mono" style={{ color: "var(--muted)" }}>{entry.variant ? "·" : entry.rank}</b>
                 <span className="truncate font-semibold">
                   {entry.name}
+                  {/* ADR-785 (6A): a member's own variation, after the ranks. */}
+                  {entry.variant ? (
+                    <span className="ml-[0.6vw] rounded-[0.5vw] px-[0.8vw] py-[0.2vw] font-extrabold" style={{ fontSize: "0.7em", background: "var(--spark)", color: "var(--spark-contrast)" }}>
+                      {tWods("variationTag")}
+                    </span>
+                  ) : null}
                   {isNew ? (
                     <span className="ml-[0.6vw] rounded-[0.5vw] px-[0.8vw] py-[0.2vw] font-extrabold" style={{ fontSize: "0.7em", background: "var(--spark)", color: "var(--spark-contrast)" }}>
                       {t("tvNew")}

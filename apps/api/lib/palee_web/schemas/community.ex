@@ -365,7 +365,15 @@ defmodule PaleeWeb.Schemas.Community do
       title: "WodLeaderboardEntry",
       type: :object,
       properties: %{
-        rank: %Schema{type: :integer},
+        rank: %Schema{
+          type: :integer,
+          nullable: true,
+          description: "Null on a member's own variant (ADR-785), listed after the ranks"
+        },
+        variant: %Schema{
+          type: :boolean,
+          description: "ADR-785: the member did their own «Παραλλαγή» of this WOD"
+        },
         user_id: @uuid,
         nickname: %Schema{type: :string, nullable: true},
         avatar_url: %Schema{type: :string, nullable: true},

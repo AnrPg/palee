@@ -12681,6 +12681,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/schedule/slots/{id}/variants/{assignment_id}/keep": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Keep a member's variant after the class WOD changed
+         * @description ADR-785: «Κράτησέ τη». The class WOD as it reads now becomes the variant's starting point, so the roster stops saying it changed.
+         */
+        post: operations["PaleeWeb.ClassVariantController.keep"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/schedule/slots/{id}/visit-badges": {
         parameters: {
             query?: never;
@@ -13751,7 +13771,7 @@ export interface paths {
         put?: never;
         /**
          * Copy or save a workout and associate it with this user's assignment, class variant or booked class
-         * @description Athletes receive a personal assignment. Members follow `mode` (ADR-125). Without folder_id, copies are filed automatically (ADR-136): athletes in their folder, class workouts in the class-day folder, member variations in the member's variations folder. Athletes, and members in the personal and class_variant modes, need a package with online programming or personal training (ADR-232); otherwise 403 `programming_not_in_package`.
+         * @description Athletes receive a personal assignment. Members follow `mode` (ADR-125). Without folder_id, copies are filed automatically (ADR-136): athletes in their folder, class workouts in the class-day folder, member variations in the member's variations folder. Athletes, and members in the personal mode, need a package with online programming or personal training (ADR-232); otherwise 403 `programming_not_in_package`. A class_variant (ADR-785) needs none and is refused with 422 `class_variant_closed` once the class ended.
          */
         post: operations["PaleeWeb.AdminUserController.program_workout"];
         delete?: never;
@@ -17403,6 +17423,26 @@ export interface paths {
         /** Get the schedule window */
         get: operations["PaleeWeb.ScheduleController.index"];
         put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/schedule/slots/{id}/my-variant": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Do my variant of the class, or a WOD of the class
+         * @description ADR-785: active=false goes back to the class's WODs (the variant stays); active=true does the variant again.
+         */
+        put: operations["PaleeWeb.ClassVariantController.update_mine"];
         post?: never;
         delete?: never;
         options?: never;
@@ -28274,10 +28314,13 @@ export interface components {
             entries: {
                 /** @description First word of the display name */
                 name: string;
-                rank: number;
+                /** @description Null on a member's own variant (ADR-785), listed after the ranks */
+                rank: number | null;
                 scale_level_slug: string | null;
                 unit: string | null;
                 value: string | null;
+                /** @description ADR-785: the member did their own «Παραλλαγή» of this WOD */
+                variant?: boolean;
             }[];
             score: {
                 name?: string | null;
@@ -28394,10 +28437,13 @@ export interface components {
                 entries: {
                     /** @description First word of the display name */
                     name: string;
-                    rank: number;
+                    /** @description Null on a member's own variant (ADR-785), listed after the ranks */
+                    rank: number | null;
                     scale_level_slug: string | null;
                     unit: string | null;
                     value: string | null;
+                    /** @description ADR-785: the member did their own «Παραλλαγή» of this WOD */
+                    variant?: boolean;
                 }[];
                 score: {
                     name?: string | null;
@@ -58946,12 +58992,15 @@ export interface components {
                 planned_ms: number;
                 ran_ms: number;
             } | null;
-            rank: number;
+            /** @description Null on a member's own variant (ADR-785), listed after the ranks */
+            rank: number | null;
             scale_level_slug?: string | null;
             unit?: string | null;
             /** Format: uuid */
             user_id: string;
             value?: string | null;
+            /** @description ADR-785: the member did their own «Παραλλαγή» of this WOD */
+            variant?: boolean;
         };
         /** WodTodayCard */
         WodTodayCard: {
@@ -58976,12 +59025,15 @@ export interface components {
                     planned_ms: number;
                     ran_ms: number;
                 } | null;
-                rank: number;
+                /** @description Null on a member's own variant (ADR-785), listed after the ranks */
+                rank: number | null;
                 scale_level_slug?: string | null;
                 unit?: string | null;
                 /** Format: uuid */
                 user_id: string;
                 value?: string | null;
+                /** @description ADR-785: the member did their own «Παραλλαγή» of this WOD */
+                variant?: boolean;
             }[];
             logged_by_me: boolean;
             /** @description ADR-746: the day's other class WODs, each its own card. */
@@ -59003,12 +59055,15 @@ export interface components {
                         planned_ms: number;
                         ran_ms: number;
                     } | null;
-                    rank: number;
+                    /** @description Null on a member's own variant (ADR-785), listed after the ranks */
+                    rank: number | null;
                     scale_level_slug?: string | null;
                     unit?: string | null;
                     /** Format: uuid */
                     user_id: string;
                     value?: string | null;
+                    /** @description ADR-785: the member did their own «Παραλλαγή» of this WOD */
+                    variant?: boolean;
                 }[];
                 logged_by_me: boolean;
                 score?: {
@@ -63640,10 +63695,13 @@ export interface operations {
                             entries: {
                                 /** @description First word of the display name */
                                 name: string;
-                                rank: number;
+                                /** @description Null on a member's own variant (ADR-785), listed after the ranks */
+                                rank: number | null;
                                 scale_level_slug: string | null;
                                 unit: string | null;
                                 value: string | null;
+                                /** @description ADR-785: the member did their own «Παραλλαγή» of this WOD */
+                                variant?: boolean;
                             }[];
                             score: {
                                 name?: string | null;
@@ -123453,6 +123511,45 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.ClassVariantController.keep": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Scheduled class ID */
+                id: string;
+                /** @description The variant (assigned workout) ID */
+                assignment_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Kept */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        ok: boolean;
+                    };
+                };
+            };
+            /** @description No such variant of this class */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminVisitBadgesController.show": {
         parameters: {
             query?: never;
@@ -128131,7 +128228,7 @@ export interface operations {
                     /** Format: uuid */
                     master_workout_id?: string;
                     /**
-                     * @description Member programming mode (ADR-125; ignored for athletes). `class_workout` (default) replaces the booked class's workout for everyone; `class_variant` assigns this member's own version of the booked class (source defaults to the class's workout when `master_workout_id` is omitted); `personal` assigns a personal workout without a class. Both assignment modes require the member's package to include personal programming.
+                     * @description Member programming mode (ADR-125; ignored for athletes). `class_variant` (default, ADR-785) assigns this member's own «Παραλλαγή» of one class (source defaults to the WOD the member does in it when `master_workout_id` is omitted), with no programming grant, until the class ends; `class_workout` replaces the booked class's workout for everyone; `personal` assigns a personal workout without a class and requires the member's package to include personal programming.
                      * @enum {string}
                      */
                     mode?: "class_workout" | "class_variant" | "personal";
@@ -129082,7 +129179,7 @@ export interface operations {
                     /** Format: uuid */
                     master_workout_id?: string;
                     /**
-                     * @description Member programming mode (ADR-125; ignored for athletes). `class_workout` (default) replaces the booked class's workout for everyone; `class_variant` assigns this member's own version of the booked class (source defaults to the class's workout when `master_workout_id` is omitted); `personal` assigns a personal workout without a class. Both assignment modes require the member's package to include personal programming.
+                     * @description Member programming mode (ADR-125; ignored for athletes). `class_variant` (default, ADR-785) assigns this member's own «Παραλλαγή» of one class (source defaults to the WOD the member does in it when `master_workout_id` is omitted), with no programming grant, until the class ends; `class_workout` replaces the booked class's workout for everyone; `personal` assigns a personal workout without a class and requires the member's package to include personal programming.
                      * @enum {string}
                      */
                     mode?: "class_workout" | "class_variant" | "personal";
@@ -140937,12 +141034,15 @@ export interface operations {
                                 planned_ms: number;
                                 ran_ms: number;
                             } | null;
-                            rank: number;
+                            /** @description Null on a member's own variant (ADR-785), listed after the ranks */
+                            rank: number | null;
                             scale_level_slug?: string | null;
                             unit?: string | null;
                             /** Format: uuid */
                             user_id: string;
                             value?: string | null;
+                            /** @description ADR-785: the member did their own «Παραλλαγή» of this WOD */
+                            variant?: boolean;
                         }[];
                         logged_by_me: boolean;
                         /** @description ADR-746: the day's other class WODs, each its own card. */
@@ -140964,12 +141064,15 @@ export interface operations {
                                     planned_ms: number;
                                     ran_ms: number;
                                 } | null;
-                                rank: number;
+                                /** @description Null on a member's own variant (ADR-785), listed after the ranks */
+                                rank: number | null;
                                 scale_level_slug?: string | null;
                                 unit?: string | null;
                                 /** Format: uuid */
                                 user_id: string;
                                 value?: string | null;
+                                /** @description ADR-785: the member did their own «Παραλλαγή» of this WOD */
+                                variant?: boolean;
                             }[];
                             logged_by_me: boolean;
                             score?: {
@@ -150061,6 +150164,49 @@ export interface operations {
                         })[];
                         /** Format: date */
                         start_date: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.ClassVariantController.update_mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Scheduled class ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    active: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Saved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        ok: boolean;
+                    };
+                };
+            };
+            /** @description No variant of mine in this class */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
                     };
                 };
             };

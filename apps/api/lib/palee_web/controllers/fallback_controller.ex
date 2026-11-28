@@ -2967,6 +2967,22 @@ defmodule PaleeWeb.FallbackController do
     |> json(%{code: "already_booked", error: "User already booked this slot"})
   end
 
+  # ADR-785: a variant is made only while its class is still to come or running.
+  def call(conn, {:error, :class_variant_closed}) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> json(%{
+      code: "class_variant_closed",
+      error: "The class has ended or was cancelled, so it takes no new variant"
+    })
+  end
+
+  def call(conn, {:error, :class_variant_not_found}) do
+    conn
+    |> put_status(:not_found)
+    |> json(%{code: "class_variant_not_found", error: "No variant of this class"})
+  end
+
   def call(conn, {:error, :slot_not_booked_by_member}) do
     conn
     |> put_status(:unprocessable_entity)

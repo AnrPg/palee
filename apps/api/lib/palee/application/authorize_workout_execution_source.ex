@@ -117,7 +117,9 @@ defmodule Palee.Application.AuthorizeWorkoutExecutionSource do
              source: "assigned",
              source_reference_id: assignment_id,
              organization_id: access.organization_id,
-             instructions: Map.get(access, :instructions)
+             instructions: Map.get(access, :instructions),
+             # ADR-785: a class variant is done as part of its class.
+             class_variant: is_binary(Map.get(access, :source_slot_id))
            }}
         else
           {:error, :execution_source_forbidden}

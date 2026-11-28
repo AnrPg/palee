@@ -12,6 +12,7 @@ import { fetchClassVisitBadges, visitBadgesKey } from "@/api/training-floor";
 import { ClassNoticeDialog } from "@/components/channels/ClassNoticeDialog";
 import { ClassStateNotice, classActionsFor } from "@/components/schedule/ClassState";
 import { ClassVariationDialog } from "@/components/schedule/ClassVariationDialog";
+import type { VariationPerson } from "@/lib/group-variations";
 import { slotCoachName } from "@/components/schedule/member-booking";
 import { ClassRoomDialog } from "@/components/spaces/ClassRoomDialog";
 import { Dialog } from "@/components/ui/Dialog";
@@ -119,7 +120,8 @@ export function StaffClassPage({
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [noticeOpen, setNoticeOpen] = useState(false);
   const [editWorkoutOpen, setEditWorkoutOpen] = useState(false);
-  const [variationOpen, setVariationOpen] = useState(false);
+  // ADR-785: null = closed; [] = «Παραλλαγή για άτομα»; one person from their roster row.
+  const [variationPeople, setVariationPeople] = useState<VariationPerson[] | null>(null);
   const [roomOpen, setRoomOpen] = useState(false);
 
   // The box's «Ρυθμίσεις › Check-in» window; its default when the role can't read it.
@@ -133,6 +135,8 @@ export function StaffClassPage({
   const windowBefore = rules.data?.window_before_minutes;
   const now = usePhaseClock(slot, windowBefore);
   const phase = classPhase(slot, now);
+  // ADR-785 (α): variations from now until the class ends, never for a cancelled one.
+  const variationsOpen = canProgramVariations && phase !== "ended" && !slot.cancelled_at;
   const isPast = Date.parse(slot.scheduled_at) <= now;
   const checkInOpen = !slot.cancelled_at && staffCheckInOpen(slot, now, windowBefore);
 
@@ -215,7 +219,7 @@ export function StaffClassPage({
       ? [{ label: tWods("moveLater"), onSelect: () => void wod.move(viewed.id, 1) }]
       : []),
     // ADR-201: without a class WOD, the dialog asks which WOD to start from.
-    ...(canProgramVariations ? [{ label: i18n("groupVariationAction"), onSelect: () => setVariationOpen(true) }] : []),
+    ...(variationsOpen ? [{ label: i18n("groupVariationAction"), onSelect: () => setVariationPeople([]) }] : []),
     ...(viewed && several
       ? [
           {
@@ -464,6 +468,7 @@ export function StaffClassPage({
               {liveSwitch.error ? <ErrorNotice>{liveSwitch.error}</ErrorNotice> : null}
               <div className="space-y-5">
                 <StaffClassRoster
+                  onVariation={variationsOpen ? (person) => setVariationPeople([person]) : undefined}
                   slot={slot}
                   accessToken={accessToken}
                   checkInOpen={checkInOpen}
@@ -539,11 +544,13 @@ export function StaffClassPage({
           onClose={() => setEditWorkoutOpen(false)}
         />
       ) : null}
-      {variationOpen && canProgramVariations ? (
+      {variationPeople && canProgramVariations ? (
         <ClassVariationDialog
+          key={variationPeople.map((person) => person.userId).join(",") || "many"}
           slot={slot}
           accessToken={accessToken}
-          onClose={() => setVariationOpen(false)}
+          initialPeople={variationPeople}
+          onClose={() => setVariationPeople(null)}
           onProgrammed={onSlotChanged}
         />
       ) : null}

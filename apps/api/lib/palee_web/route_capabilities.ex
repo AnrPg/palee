@@ -251,6 +251,8 @@ defmodule PaleeWeb.RouteCapabilities do
     ],
     {W.AdminClassWorkoutsController, :put_live} => [:manage_schedule, :run_classes],
     {W.AdminClassWorkoutsController, :put_booking_workout} => [:manage_schedule, :run_classes],
+    # ADR-785: «Κράτησέ τη» on a member's variant, for whoever makes variants.
+    {W.ClassVariantController, :keep} => [:manage_coaching],
     {W.AdminScheduleController, :approve_booking} => [:run_classes],
     {W.AdminScheduleController, :reject_booking} => [:run_classes],
     {W.AdminScheduleController, :record_attendance} => [:run_classes],

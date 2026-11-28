@@ -72,12 +72,13 @@ defmodule Palee.Workouts.Domain.AssignmentAudiencePolicy do
 
   @doc """
   Parses the member programming mode of the admin profile flow. A missing mode
-  keeps the ADR-071 behaviour (replace the booked class's workout).
+  is a class variant (ADR-785 ζ): changing a class for everyone is only ever
+  done when asked for by name (`class_workout`).
   """
   @spec member_programming_mode(String.t() | nil) ::
           {:ok, :class_workout | :class_variant | :personal}
           | {:error, :invalid_programming_mode}
-  def member_programming_mode(nil), do: {:ok, :class_workout}
+  def member_programming_mode(nil), do: {:ok, :class_variant}
 
   def member_programming_mode(mode) when is_binary(mode) do
     case Map.fetch(@member_modes, mode) do

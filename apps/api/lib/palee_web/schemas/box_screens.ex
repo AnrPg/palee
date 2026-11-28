@@ -440,11 +440,19 @@ defmodule PaleeWeb.Schemas.BoxScreens do
           items: %Schema{
             type: :object,
             properties: %{
-              rank: %Schema{type: :integer},
+              rank: %Schema{
+                type: :integer,
+                nullable: true,
+                description: "Null on a member's own variant (ADR-785), listed after the ranks"
+              },
               name: %Schema{type: :string, description: "First word of the display name"},
               value: @nullable_text,
               unit: @nullable_text,
-              scale_level_slug: @nullable_text
+              scale_level_slug: @nullable_text,
+              variant: %Schema{
+                type: :boolean,
+                description: "ADR-785: the member did their own «Παραλλαγή» of this WOD"
+              }
             },
             required: [:name, :rank, :scale_level_slug, :unit, :value]
           }

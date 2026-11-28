@@ -199,11 +199,12 @@ defmodule PaleeWeb.AdminUserController do
               enum: ["class_workout", "class_variant", "personal"],
               description:
                 "Member programming mode (ADR-125; ignored for athletes). " <>
-                  "`class_workout` (default) replaces the booked class's workout for everyone; " <>
-                  "`class_variant` assigns this member's own version of the booked class " <>
-                  "(source defaults to the class's workout when `master_workout_id` is omitted); " <>
-                  "`personal` assigns a personal workout without a class. Both assignment " <>
-                  "modes require the member's package to include personal programming."
+                  "`class_variant` (default, ADR-785) assigns this member's own «Παραλλαγή» of one " <>
+                  "class (source defaults to the WOD the member does in it when `master_workout_id` " <>
+                  "is omitted), with no programming grant, until the class ends; " <>
+                  "`class_workout` replaces the booked class's workout for everyone; " <>
+                  "`personal` assigns a personal workout without a class and requires the " <>
+                  "member's package to include personal programming."
             }
           },
           required: [:scheduled_for, :copy_source]
@@ -451,8 +452,9 @@ defmodule PaleeWeb.AdminUserController do
         "Without folder_id, copies are filed automatically (ADR-136): athletes in their " <>
         "folder, class workouts in the class-day folder, member variations in the " <>
         "member's variations folder. " <>
-        "Athletes, and members in the personal and class_variant modes, need a package with " <>
-        "online programming or personal training (ADR-232); otherwise 403 `programming_not_in_package`.",
+        "Athletes, and members in the personal mode, need a package with " <>
+        "online programming or personal training (ADR-232); otherwise 403 `programming_not_in_package`. " <>
+        "A class_variant (ADR-785) needs none and is refused with 422 `class_variant_closed` once the class ended.",
     parameters: [@id_parameter],
     request_body: @program_body,
     responses: [created: {"Programming result", "application/json", @summary_object}]

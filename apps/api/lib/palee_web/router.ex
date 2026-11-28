@@ -1017,6 +1017,8 @@ defmodule PaleeWeb.Router do
     get("/schedule/slots/:id/space", ScheduleController, :slot_space)
     # ADR-746: which of the class's WODs I do.
     put("/schedule/slots/:id/my-workout", ClassWorkoutChoiceController, :update)
+    # ADR-785: my variant of the class, or back to its WODs.
+    put("/schedule/slots/:id/my-variant", ClassVariantController, :update_mine)
     get("/landing", LandingController, :show)
     post("/landing/leaderboard-opt-in", LandingController, :update_leaderboard_preference)
     post("/bookings", ScheduleController, :create_booking)
@@ -1695,6 +1697,12 @@ defmodule PaleeWeb.Router do
     # ADR-746: every WOD of a class, its «Τώρα», and someone's WOD.
     put("/schedule/slots/:id/workouts", AdminClassWorkoutsController, :put_workouts)
     put("/schedule/slots/:id/live-workout", AdminClassWorkoutsController, :put_live)
+    # ADR-785: «Κράτησέ τη» after the class WOD changed.
+    post(
+      "/schedule/slots/:id/variants/:assignment_id/keep",
+      ClassVariantController,
+      :keep
+    )
 
     put(
       "/schedule/slots/:id/bookings/:booking_id/workout",

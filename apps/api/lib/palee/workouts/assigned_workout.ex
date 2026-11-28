@@ -14,6 +14,13 @@ defmodule Palee.Workouts.AssignedWorkout do
     # ADR-125: set when the assignment is a per-member variant of a class
     # occurrence (loose reference to a Scheduling-owned scheduled class).
     field :source_scheduled_class_id, :binary_id
+    # ADR-785: the class WOD a variant stands in for, that WOD's content hash
+    # when the variant was made (or kept), when the member went back to a
+    # class WOD instead, and the staff member who made it.
+    field :variant_of_workout_id, :binary_id
+    field :variant_source_hash, :string
+    field :variant_set_aside_at, :utc_datetime_usec
+    field :assigned_by_user_id, :binary_id
     # ADR-167: set when the assignment is part of a season's programme (loose
     # reference to a Seasons-owned offering); members see the season's name.
     field :season_offering_id, :binary_id
@@ -37,6 +44,9 @@ defmodule Palee.Workouts.AssignedWorkout do
       :scheduled_for,
       :instructions,
       :source_scheduled_class_id,
+      :variant_of_workout_id,
+      :variant_source_hash,
+      :assigned_by_user_id,
       :season_offering_id,
       :all_locations,
       :location_ids
@@ -59,6 +69,11 @@ defmodule Palee.Workouts.AssignedWorkout do
     |> unique_constraint([:master_workout_id, :scheduled_for, :instructions],
       name: :assigned_workouts_workout_date_notes_index
     )
+  end
+
+  @doc "ADR-785: the variant's own facts (kept hash, set aside), never its class link."
+  def variant_changeset(assignment, params) do
+    cast(assignment, params, [:variant_source_hash, :variant_set_aside_at])
   end
 
   defp normalize_instructions(value) when is_binary(value) do

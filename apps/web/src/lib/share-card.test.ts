@@ -29,6 +29,15 @@ describe("share card (ADR-565)", () => {
     expect(leaderboardPlace([{ rank: 1, me: false, opted_in: true }])).toBeNull();
   });
 
+  it("gives no place for a variation row and leaves it out of the total (ADR-785)", () => {
+    const rows = [
+      { rank: 1, me: false, opted_in: true },
+      { rank: null, me: true, opted_in: true },
+    ];
+    expect(leaderboardPlace(rows)).toBeNull();
+    expect(leaderboardPlace([{ rank: 1, me: true, opted_in: true }, rows[1]])).toEqual({ rank: 1, total: 1 });
+  });
+
   it("wraps text into at most the given lines and ends a cut line with …", () => {
     const measure = (value: string) => value.length * 10;
     expect(wrapText("one two three", 80, measure)).toEqual(["one two", "three"]);

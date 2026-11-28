@@ -102,7 +102,7 @@ export function AvatarButton({
 }
 
 /** What already takes the press around a photo (a link, a button, a whole-row control). */
-const INTERACTIVE_ANCESTOR = "a[href], button, [role='button'], [role='link'], label, summary";
+const INTERACTIVE_ANCESTOR = ["a[href]", "button", "[role=button]", "[role=link]", "label", "summary"].join(",");
 
 /**
  * The photo full size on a dark screen (mockup C): name on top, the four
