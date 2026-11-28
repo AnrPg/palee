@@ -25,6 +25,7 @@ import { AddTabButton, EditProfileButton, ShareProfileButton } from "@/component
 import { ProfileBadges } from "@/components/social/ProfileBadges";
 import { ProfileProgress, ProfileWorkouts } from "@/components/social/ProfileJournalTabs";
 import { BuddyBadge, LockedNote } from "@/components/social/SocialBits";
+import { StaffMemberLine } from "@/components/social/StaffMemberLine";
 import { countsParts, personTab, postsLockKey, profileTabs, type PersonTab } from "@/components/social/social-model";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { useSelectedMembershipRole } from "@/lib/membership-role";
@@ -73,6 +74,8 @@ function Profile({ profile }: { profile: Person }) {
       </div>
 
       <ProfileHeader profile={profile} />
+
+      {mine ? null : <StaffMemberLine personId={profile.id} />}
 
       {mine && !profile.box?.rank ? <OwnRankLine /> : null}
 

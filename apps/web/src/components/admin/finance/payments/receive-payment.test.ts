@@ -38,6 +38,13 @@ describe("receive payment form", () => {
     expect(initialForm(paymentPurposes({}, name))).toMatchObject({ purpose: "other", amount: "" });
   });
 
+  it("opened on one charge, pays that charge and leaves the amount for staff to type (ADR-784)", () => {
+    const purposes = paymentPurposes(profile, name);
+    expect(initialForm(purposes, "invoice:inv-late")).toMatchObject({ purpose: "invoice:inv-late", amount: "" });
+    // A charge that is no longer open falls back to the usual start.
+    expect(initialForm(purposes, "invoice:inv-paid")).toMatchObject({ purpose: "invoice:inv-old", amount: "10.00" });
+  });
+
   it("fills in what is owed when the purpose changes, and keeps a typed amount for something else", () => {
     const purposes = paymentPurposes(profile, name);
     const form = choosePurpose(initialForm(purposes), purposes, "package:sub-1");

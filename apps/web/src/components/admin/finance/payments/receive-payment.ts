@@ -94,12 +94,17 @@ export function amountInput(amountCents: number): string {
   return amountCents > 0 ? (amountCents / 100).toFixed(2) : "";
 }
 
-/** A fresh form: the first purpose (the oldest open invoice, if any) and cash. */
-export function initialForm(purposes: PaymentPurpose[]): ReceivePaymentForm {
-  const first = purposes[0] ?? { kind: "other" };
+/**
+ * A fresh form: the first purpose (the oldest open invoice, if any) and cash.
+ * Opened on one charge (ADR-784), that charge is the purpose and the amount
+ * starts empty: staff type what is handed over now or press «Εξόφληση όλου».
+ */
+export function initialForm(purposes: PaymentPurpose[], chosen?: string): ReceivePaymentForm {
+  const picked = chosen ? purposes.find((purpose) => purposeValue(purpose) === chosen) : undefined;
+  const first = picked ?? purposes[0] ?? { kind: "other" };
   return {
     purpose: purposeValue(first),
-    amount: first.kind === "other" ? "" : amountInput(first.amountCents),
+    amount: picked || first.kind === "other" ? "" : amountInput(first.amountCents),
     method: "cash",
     paidOn: "",
     description: "",

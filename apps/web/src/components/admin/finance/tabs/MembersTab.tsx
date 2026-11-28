@@ -653,7 +653,6 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
           userId={field(openMember, "id")}
           nickname={field(openMember, "nickname")}
           onClose={() => setParam({ member: null })}
-          onRemovePackage={(subscriptionId) => setRemoving({ member: openMember, subscriptionId })}
         />
       ) : null}
 
