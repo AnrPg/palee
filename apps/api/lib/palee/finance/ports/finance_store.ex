@@ -28,7 +28,10 @@ defmodule Palee.Finance.Ports.FinanceStore do
   @callback update_invoice_params(Ecto.UUID.t(), map()) :: {:ok, map()} | {:error, term()}
   @callback update_invoice(Ecto.UUID.t(), map()) :: {:ok, map()} | {:error, term()}
   @callback mark_overdue_invoices() :: :ok | {:error, term()}
-  @callback list_finance_cleanup_records(map()) :: [map()]
+  @callback list_finance_cleanup_records(Palee.Finance.Domain.CleanupRecordFilter.t()) ::
+              %{records: [map()], next_cursor: String.t() | nil}
+  @callback get_finance_cleanup_record(String.t(), String.t()) :: map() | nil
+  @callback list_finance_customer_ids() :: [Ecto.UUID.t()]
   @callback soft_delete_finance_record(String.t(), Ecto.UUID.t(), Ecto.UUID.t(), map()) ::
               {:ok, map()} | {:error, term()}
   @callback create_invoice(Ecto.UUID.t(), map()) :: {:ok, map()} | {:error, term()}

@@ -64,6 +64,7 @@ defmodule Palee.Finance do
     ListReferralRewards,
     OperationalQueues,
     ListFinanceCleanupRecords,
+    GetFinanceCleanupRecord,
     SearchMemberSummaries
   }
 
@@ -273,6 +274,17 @@ defmodule Palee.Finance do
 
   def list_finance_cleanup_records(context, params),
     do: scoped(context, fn -> list_finance_cleanup_records(params) end)
+
+  defdelegate get_finance_cleanup_record(record_type, record_id),
+    to: GetFinanceCleanupRecord,
+    as: :call
+
+  def get_finance_cleanup_record(context, record_type, record_id),
+    do: scoped(context, fn -> get_finance_cleanup_record(record_type, record_id) end)
+
+  @doc "ADR-797: everyone who ever had a membership in the business."
+  def list_finance_customer_ids(context),
+    do: scoped(context, fn -> FinanceStore.list_finance_customer_ids() end)
 
   defdelegate soft_delete_finance_record(record_type, record_id, admin_id, params),
     to: SoftDeleteFinanceRecord,

@@ -2009,6 +2009,8 @@ defmodule PaleeWeb.Router do
     put("/shop/pricing-targets", AdminShopReportController, :put_pricing_target)
     get("/finance/queues", AdminFinanceController, :operational_queues)
     get("/finance/cleanup-records", AdminFinanceController, :cleanup_records)
+    get("/finance/cleanup-records/packages", AdminFinanceController, :cleanup_record_packages)
+    get("/finance/cleanup-records/:id", AdminFinanceController, :cleanup_record)
     post("/finance/cleanup-records/:id/purge", AdminFinanceController, :purge_record)
     # ADR-167: seasons.
     get("/seasons", AdminSeasonController, :index)
