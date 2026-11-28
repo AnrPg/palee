@@ -163,7 +163,8 @@ test.describe("member programming dialog", () => {
     // The title is the clicked day itself, never shifted by a time zone.
     await expect(dialog.getByRole("heading")).toContainText(new RegExp(`\\b${Number(TOMORROW.slice(8))}\\b`));
 
-    await expect(dialog.getByTestId("programming-no-class")).toContainText("No class booked this day");
+    // ADR-785 (ζ): the default is the member's variation, which needs a class that day still to come.
+    await expect(dialog.getByTestId("programming-no-class")).toContainText("No class that day is still to come or running");
     await expect(dialog.getByRole("radio", { name: "Adapt the class WOD" })).toHaveCount(0);
     await expect(dialog.getByTestId("programming-submit")).toBeDisabled();
 
@@ -186,9 +187,16 @@ test.describe("member programming dialog", () => {
 
     await page.getByTestId(`programming-day-${TODAY}`).click();
     const dialog = page.getByTestId("programming-dialog");
-    await expect(dialog.getByRole("radio", { name: "Change it for the whole class" })).toBeChecked();
-    await expect(dialog.getByRole("radio", { name: /Variation for this member only/ })).toBeDisabled();
+    // ADR-785 (ζ): the member's variation needs no programming grant and stays the default;
+    // a separate workout needs one (or a class visit, ADR-805).
+    const variation = dialog.getByRole("radio", { name: /Variation for this member only/ });
+    await expect(variation).toBeChecked();
+    await expect(variation).toBeEnabled();
     await expect(dialog.getByRole("radio", { name: /Separate workout/ })).toBeDisabled();
+    const wholeClass = dialog.getByRole("radio", { name: "Change it for the whole class" });
+    await expect(wholeClass).toBeEnabled();
+    await wholeClass.check();
+    await expect(wholeClass).toBeChecked();
 
     // The class's own WOD is not personal programming, so it stays open.
     const submit = dialog.getByTestId("programming-submit");
