@@ -245247,6 +245247,15 @@
                           "format": "date",
                           "type": "string"
                         },
+                        "replacement_package_name": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "replacement_subscription_id": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        },
                         "subscription_id": {
                           "format": "uuid",
                           "type": "string"
@@ -246104,6 +246113,12 @@
                   },
                   "reason_shared": {
                     "type": "boolean"
+                  },
+                  "replacement_package_id": {
+                    "description": "«Αλλαγή πακέτου»: this package starts today in the same step, in place of the removed one",
+                    "format": "uuid",
+                    "nullable": true,
+                    "type": "string"
                   }
                 },
                 "type": "object"
@@ -246138,6 +246153,15 @@
                         },
                         "removed_on": {
                           "format": "date",
+                          "type": "string"
+                        },
+                        "replacement_package_name": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "replacement_subscription_id": {
+                          "format": "uuid",
+                          "nullable": true,
                           "type": "string"
                         },
                         "subscription_id": {
@@ -246182,7 +246206,7 @@
             "bearerAuth": []
           }
         ],
-        "summary": "Remove a member's package completely from today (ADR-660); undone within a minute, then settled",
+        "summary": "Remove a member's package completely from today, or change it for another (ADR-660); undone within a minute, then settled",
         "tags": [
           "Admin Finance"
         ]

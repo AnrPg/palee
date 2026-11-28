@@ -8989,7 +8989,7 @@ export interface paths {
         /** What removing a member's package would do (ADR-660): unpaid invoices, money kept, bookings */
         get: operations["PaleeWeb.AdminFinanceController.package_removal_preview"];
         put?: never;
-        /** Remove a member's package completely from today (ADR-660); undone within a minute, then settled */
+        /** Remove a member's package completely from today, or change it for another (ADR-660); undone within a minute, then settled */
         post: operations["PaleeWeb.AdminFinanceController.remove_package"];
         delete?: never;
         options?: never;
@@ -104004,6 +104004,9 @@ export interface operations {
                             package_name: string;
                             /** Format: date */
                             removed_on: string;
+                            replacement_package_name?: string | null;
+                            /** Format: uuid */
+                            replacement_subscription_id?: string | null;
                             /** Format: uuid */
                             subscription_id: string;
                             /** Format: date-time */
@@ -104374,6 +104377,11 @@ export interface operations {
                     invoice_choice?: "void" | "keep" | null;
                     reason?: string | null;
                     reason_shared?: boolean;
+                    /**
+                     * Format: uuid
+                     * @description «Αλλαγή πακέτου»: this package starts today in the same step, in place of the removed one
+                     */
+                    replacement_package_id?: string | null;
                 };
             };
         };
@@ -104393,6 +104401,9 @@ export interface operations {
                             package_name: string;
                             /** Format: date */
                             removed_on: string;
+                            replacement_package_name?: string | null;
+                            /** Format: uuid */
+                            replacement_subscription_id?: string | null;
                             /** Format: uuid */
                             subscription_id: string;
                             /** Format: date-time */

@@ -180,16 +180,13 @@ defmodule Palee.Application.PackageRemoval do
   defp replacement_assignable(_context, nil), do: :ok
 
   defp replacement_assignable(context, package_id) do
-    with {:ok, _uuid} <- cast_uuid(package_id),
+    with {:ok, _uuid} <- Ecto.UUID.cast(package_id),
          package when not is_nil(package) <- Finance.get_package(context, package_id) do
       PackageAssignmentPolicy.can_assign?(package)
     else
       _missing -> {:error, :not_found}
     end
   end
-
-  defp cast_uuid(value) when is_binary(value), do: Ecto.UUID.cast(value)
-  defp cast_uuid(_value), do: :error
 
   defp blank_to_nil(value) when is_binary(value) do
     case String.trim(value) do
