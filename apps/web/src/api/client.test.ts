@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { apiRequest, SELECTED_ORGANIZATION_SLUG_KEY } from "@/api/client";
+import { apiRequest, REFRESH_LOCK_WAIT_MS, SELECTED_ORGANIZATION_SLUG_KEY } from "@/api/client";
 
 describe("apiRequest tenant headers", () => {
   afterEach(() => {
@@ -284,5 +284,37 @@ describe("apiRequest tenant headers", () => {
       "/api/workouts/workout-1/timer-sequence?source=self_selected",
       expect.anything(),
     );
+  });
+});
+
+describe("token refresh lock", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+    Reflect.deleteProperty(navigator, "locks");
+  });
+
+  it("refreshes without the lock when another tab holds it too long (a frozen iOS tab)", async () => {
+    vi.useFakeTimers();
+    // A lock another tab never releases: granted never, rejected only on abort.
+    const request = vi.fn((_name: string, options: { signal: AbortSignal }) =>
+      new Promise((_resolve, reject) => {
+        options.signal.addEventListener("abort", () => reject(new DOMException("aborted", "AbortError")));
+      }),
+    );
+    Object.defineProperty(navigator, "locks", { value: { request }, configurable: true });
+    const expiredToken = `x.${btoa(JSON.stringify({ exp: 1 }))}.y`;
+    const fetchMock = vi.spyOn(window, "fetch").mockImplementation(async (input) =>
+      String(input).endsWith("/auth/refresh")
+        ? new Response(JSON.stringify({ access_token: "fresh" }), { status: 200 })
+        : new Response(JSON.stringify({ ok: true }), { status: 200 }),
+    );
+
+    const pending = apiRequest<{ ok: boolean }>("/me/profile", { token: expiredToken, scope: "account" });
+    await vi.advanceTimersByTimeAsync(REFRESH_LOCK_WAIT_MS);
+
+    await expect(pending).resolves.toEqual({ ok: true });
+    const authorization = (fetchMock.mock.calls.at(-1)![1] as RequestInit).headers as Record<string, string>;
+    expect(authorization.Authorization).toBe("Bearer fresh");
   });
 });

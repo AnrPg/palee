@@ -41,7 +41,7 @@ export function AuthGuard({ children, roles, roleRedirects }: AuthGuardProps) {
   const i18n = useUiTranslations();
   const router = useRouter();
   const pathname = usePathname();
-  const { status, currentUser } = useSession();
+  const { status, currentUser, restoreFailed } = useSession();
   const { isLoading: membershipRoleLoading, membership, role } = useSelectedMembershipRole();
   const accountRole = currentUser?.role;
   const redirectRole =
@@ -58,8 +58,11 @@ export function AuthGuard({ children, roles, roleRedirects }: AuthGuardProps) {
       // Keep the query string and fragment so links such as a company
       // enrollment link (ADR-098) or an emailed activation link (ADR-205)
       // survive signing in.
+      // A restore that failed or timed out says so on the sign-in form.
       router.replace(
-        `/login?next=${encodeURIComponent(pathname + window.location.search + window.location.hash)}`,
+        `/login?next=${encodeURIComponent(pathname + window.location.search + window.location.hash)}${
+          restoreFailed ? "&restore=failed" : ""
+        }`,
       );
       return;
     }
@@ -84,6 +87,7 @@ export function AuthGuard({ children, roles, roleRedirects }: AuthGuardProps) {
     membershipRoleLoading,
     pathname,
     redirectRole,
+    restoreFailed,
     roles,
     roleRedirects,
     router,
@@ -103,6 +107,12 @@ export function AuthGuard({ children, roles, roleRedirects }: AuthGuardProps) {
         <p className="text-sm font-medium uppercase tracking-[0.24em] text-[var(--dim)]">
           {i18n("restoringSession5a59aa5")}
         </p>
+        <SplashFallback
+          message={i18n("restoreTakingLong")}
+          retryLabel={i18n("restoreTryAgain")}
+          retryHref={pathname}
+          loginLabel={i18n("restoreSignInAgain")}
+        />
       </main>
     );
   }
@@ -117,4 +127,43 @@ export function AuthGuard({ children, roles, roleRedirects }: AuthGuardProps) {
   if (roleKey && roleRedirects?.[roleKey]) return null;
 
   return <>{children}</>;
+}
+
+/**
+ * Shown by CSS alone (globals.css `.splash-fallback`) once the splash has
+ * stayed up too long, so it appears even when the page's JavaScript never
+ * ran (an old browser, a failed download): plain links, no handlers.
+ */
+function SplashFallback({
+  message,
+  retryLabel,
+  retryHref,
+  loginLabel,
+}: {
+  message: string;
+  retryLabel: string;
+  retryHref: string;
+  loginLabel: string;
+}) {
+  return (
+    <div className="splash-fallback flex max-w-xs flex-col items-center gap-3" data-testid="splash-fallback">
+      <p className="text-sm text-[var(--text-soft)]">{message}</p>
+      <div className="flex flex-wrap justify-center gap-2">
+        <a
+          href={retryHref}
+          className="rounded-2xl px-4 py-2 text-sm font-semibold"
+          style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}
+        >
+          {retryLabel}
+        </a>
+        <a
+          href={`/login?next=${encodeURIComponent(retryHref)}&restore=failed`}
+          className="rounded-2xl border px-4 py-2 text-sm font-semibold"
+          style={{ borderColor: "var(--border-strong)", color: "var(--text-soft)" }}
+        >
+          {loginLabel}
+        </a>
+      </div>
+    </div>
+  );
 }

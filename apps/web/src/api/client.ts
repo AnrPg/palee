@@ -225,6 +225,8 @@ function rememberCanonicalOrganizationSlug(response: Response, requestedSlug: st
 }
 
 let refreshPromise: Promise<string | null> | null = null;
+/** How long a refresh waits for another tab's refresh lock before going ahead without it. */
+export const REFRESH_LOCK_WAIT_MS = 5_000;
 let sessionUser: unknown | null = null;
 let latestSharedAccessToken: string | null = null;
 let sessionChannel: BroadcastChannel | null = null;
@@ -371,9 +373,26 @@ async function refreshAccessToken(): Promise<string | null> {
 
   refreshPromise = (async () => {
     if (typeof navigator !== "undefined" && navigator.locks) {
-      return await navigator.locks.request("palee-refresh-cookie", async () => {
+      // The lock only keeps two tabs from rotating the cookie at once. A tab
+      // the phone froze while holding it (iOS suspends background tabs) must
+      // not hold this one forever: after a short wait, refresh without it.
+      const lockWait = new AbortController();
+      const timer = setTimeout(() => lockWait.abort(), REFRESH_LOCK_WAIT_MS);
+      try {
+        return await navigator.locks.request(
+          "palee-refresh-cookie",
+          { signal: lockWait.signal },
+          async () => {
+            clearTimeout(timer);
+            return await performRefresh();
+          },
+        );
+      } catch (error) {
+        if (!lockWait.signal.aborted) throw error;
         return await performRefresh();
-      });
+      } finally {
+        clearTimeout(timer);
+      }
     }
 
     return await performRefresh();

@@ -63,9 +63,7 @@ export function GreetingCard({
     return pool[Math.floor(Math.random() * pool.length)]!;
   });
 
-  // One sentence per line: the pieces are glued without a space after the
-  // full stop, so break after . ! ? … when a new capital letter follows.
-  const greetingLines = greeting.split(/(?<=[.!?…])\s*(?=\p{Lu})/u).filter(Boolean);
+  const greetingLines = greetingSentences(greeting);
 
   return (
     <section className="rounded-3xl p-5" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
@@ -109,4 +107,16 @@ export function GreetingCard({
       </blockquote>
     </section>
   );
+}
+
+/**
+ * One sentence per line: the pieces are glued without a space after the full
+ * stop, so break after . ! ? … when a new capital letter follows. Written
+ * without a lookbehind, which older iPhones (WebKit before 16.4) cannot even
+ * parse: there the whole page's script fails and the app never opens.
+ */
+export function greetingSentences(text: string): string[] {
+  return (text.match(/[\s\S]+?(?:[.!?…]+(?=\s*\p{Lu})|$)/gu) ?? [])
+    .map((sentence) => sentence.trim())
+    .filter(Boolean);
 }

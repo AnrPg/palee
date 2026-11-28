@@ -47,3 +47,28 @@ export function persistLocaleCookie(locale: AppLocale) {
   document.documentElement.lang = locale;
   document.documentElement.dir = localeDirection(locale);
 }
+
+const LOCALE_RELOAD_KEY = "palee:locale-reload";
+
+/**
+ * Whether the page may reload once to show `locale` (the signed-in person's
+ * language). A tab reloads for a given locale at most once, so a browser that
+ * refuses the locale cookie, or rewrites the page, can never loop reloads.
+ * Without session storage, no reload: the page stays in its language.
+ */
+export function claimLocaleReload(locale: AppLocale) {
+  try {
+    if (window.sessionStorage.getItem(LOCALE_RELOAD_KEY) === locale) return false;
+    window.sessionStorage.setItem(LOCALE_RELOAD_KEY, locale);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** The page is in the person's language: a later language change may reload again. */
+export function forgetLocaleReload() {
+  try {
+    window.sessionStorage.removeItem(LOCALE_RELOAD_KEY);
+  } catch {}
+}

@@ -81,8 +81,8 @@ export function loginUser(payload: LoginRequest) {
   return apiRequest<AuthTokens>("/auth/login", { method: "POST", body: payload, headers: deviceHeaders() });
 }
 
-export function refreshSession() {
-  return apiRequest<AuthTokens | undefined>("/auth/refresh", { method: "POST" }, false);
+export function refreshSession(signal?: AbortSignal) {
+  return apiRequest<AuthTokens | undefined>("/auth/refresh", { method: "POST", signal }, false);
 }
 
 export function logoutSession() {
