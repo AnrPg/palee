@@ -17,9 +17,34 @@ export function modeRequiresBookedClass(mode: MemberProgrammingMode): boolean {
   return mode === "class_variant" || mode === "class_workout";
 }
 
-/** Modes that need the member's package to include personal programming. */
+/**
+ * Modes that need the member's package to include personal programming.
+ * ADR-785: a class variant is part of the class, so only `personal` does.
+ */
 export function modeRequiresProgrammingEntitlement(mode: MemberProgrammingMode): boolean {
-  return mode === "class_variant" || mode === "personal";
+  return mode === "personal";
+}
+
+type OfferableSlot = { id: string; scheduled_at: string; duration_minutes?: number | null; cancelled_at?: string | null };
+
+/** ADR-785 (α): a class takes a variant from now until it ends, never once cancelled. */
+export function classTakesVariant(slot: OfferableSlot, now: number): boolean {
+  if (slot.cancelled_at) return false;
+  const start = Date.parse(slot.scheduled_at);
+  if (Number.isNaN(start)) return false;
+  return start + (slot.duration_minutes ?? 60) * 60_000 > now;
+}
+
+/**
+ * ADR-785 (1A): the classes of a day a member's variant can go to from their
+ * profile, beyond those they booked: still open (see `classTakesVariant`)
+ * and not booked by them, in time order. Booking is not needed: they get the
+ * variant and a notice with «Κράτηση».
+ */
+export function offerableClasses<T extends OfferableSlot>(slots: readonly T[], bookedIds: ReadonlySet<string>, now: number): T[] {
+  return slots
+    .filter((slot) => !bookedIds.has(slot.id) && classTakesVariant(slot, now))
+    .sort((a, b) => a.scheduled_at.localeCompare(b.scheduled_at));
 }
 
 /** Translation key for the staff-dialog success message of a programming run. */
@@ -71,6 +96,7 @@ export function canProgramMorePeople(role: "member" | "athlete" | "admin", mode:
  */
 export function programmingBlocker(input: {
   needsClass: boolean;
+  /** Booked classes of the day, plus (for a variant, ADR-785) the other open ones. */
   hasBookedClasses: boolean;
   slotId: string;
   source: ProgrammingSource;

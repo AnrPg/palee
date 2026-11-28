@@ -13,6 +13,12 @@ defmodule Palee.Application.AssignWorkout do
   member who has not booked the class (`offer_booking: true`). It does not
   book them: the WOD is in their programme that day and their notice opens
   the class, where they can book it.
+
+  ADR-785 (ANR, 2026-11-28): a class variant is part of the class, like
+  scaling. It needs no online programming or personal training, meters no
+  coaching touchpoint, is made only while the class is still to come or
+  running, replaces the member's earlier variant of that class, and lands in
+  the bell without a push.
   """
 
   alias Palee.Application.{
@@ -42,7 +48,7 @@ defmodule Palee.Application.AssignWorkout do
          {:ok, classified} <- AssignmentAudiencePolicy.classify(assignee_ids, roles),
          :ok <- AssignmentAudiencePolicy.validate_class_variant(source_slot_id, classified),
          {:ok, params} <- attach_source_slot(context, params, source_slot_id, classified),
-         {:ok, grants} <- AuthorizeProgramming.grants(context, assignee_ids) do
+         {:ok, grants} <- programming_grants(context, assignee_ids, source_slot_id) do
       do_assign(context, params, Identity.list_by_ids(assignee_ids), classified, grants)
     end
   end
@@ -90,6 +96,13 @@ defmodule Palee.Application.AssignWorkout do
     end
   end
 
+  # ADR-785: a class variant is the class's, not online programming.
+  defp programming_grants(_context, _assignee_ids, slot_id) when is_binary(slot_id),
+    do: {:ok, %{}}
+
+  defp programming_grants(context, assignee_ids, nil),
+    do: AuthorizeProgramming.grants(context, assignee_ids)
+
   defp source_slot_id(params) do
     case Map.get(params, :source_slot_id, Map.get(params, "source_slot_id")) do
       value when is_binary(value) and value != "" -> value
@@ -105,8 +118,9 @@ defmodule Palee.Application.AssignWorkout do
 
   defp attach_source_slot(context, params, slot_id, %{members: [member_id]}) do
     with {:ok, slot_id} <- cast_uuid(slot_id),
-         %{scheduled_at: %DateTime{} = scheduled_at} <-
+         %{scheduled_at: %DateTime{} = scheduled_at} = slot <-
            Scheduling.get_slot(context, slot_id) || {:error, :slot_not_found},
+         :ok <- class_open(slot),
          {:ok, booked?} <- booked_or_offered(context, member_id, slot_id, scheduled_at, params) do
       scheduled_for =
         Map.get(params, :scheduled_for) || Map.get(params, "scheduled_for") ||
@@ -128,6 +142,17 @@ defmodule Palee.Application.AssignWorkout do
          if(booked?, do: nil, else: %{slot_id: slot_id, day: scheduled_for})
        )}
     end
+  end
+
+  # ADR-785 (α): from now until the class ends, never for a cancelled one.
+  defp class_open(%{cancelled_at: %DateTime{}}), do: {:error, :class_variant_closed}
+
+  defp class_open(%{scheduled_at: scheduled_at} = slot) do
+    ends_at = DateTime.add(scheduled_at, (Map.get(slot, :duration_minutes) || 60) * 60)
+
+    if DateTime.compare(ends_at, DateTime.utc_now()) == :gt,
+      do: :ok,
+      else: {:error, :class_variant_closed}
   end
 
   # ADR-746: a member who has not booked gets the version only when the
@@ -262,7 +287,14 @@ defmodule Palee.Application.AssignWorkout do
       scheduled_for: assignment.scheduled_for,
       notification_batch_at: DateTime.utc_now() |> DateTime.truncate(:second),
       # ADR-746: the class it is for, when the member has not booked it.
-      class_offer: class_offer && %{slot_id: class_offer.slot_id, day: to_string(class_offer.day)}
+      class_offer:
+        class_offer && %{slot_id: class_offer.slot_id, day: to_string(class_offer.day)},
+      # ADR-785 (δ): a class variant lands in the bell without a push and
+      # opens its class.
+      class_variant: is_binary(Map.get(assignment, :source_slot_id)),
+      class_variant_slot:
+        is_binary(Map.get(assignment, :source_slot_id)) &&
+          %{slot_id: assignment.source_slot_id, day: to_string(assignment.scheduled_for)}
     })
 
     :ok

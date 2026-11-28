@@ -62,10 +62,11 @@ export function buildTodayTraining(input: {
     .sort((a, b) => a.scheduled_at.localeCompare(b.scheduled_at));
 
   for (const slot of classes) {
-    // ADR-125: the member's own version of the class replaces the class WOD.
+    // ADR-125: the member's own version of the class replaces the class WOD,
+    // unless they went back to the class's WODs (ADR-785, 4A).
     const version = slot.my_version;
-    if (version) {
-      variantIds.add(version.assignment_id);
+    if (version) variantIds.add(version.assignment_id);
+    if (version && version.active !== false) {
       items.push({
         key: `class:${slot.id}`,
         kind: "class",
@@ -76,6 +77,7 @@ export function buildTodayTraining(input: {
         injuryContext: { surface: "assignment_detail", id: version.assignment_id },
         slotId: slot.id,
         completed: version.execution_status === "completed",
+        instructions: version.instructions?.trim() || undefined,
       });
       continue;
     }

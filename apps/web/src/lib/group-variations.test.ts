@@ -4,6 +4,8 @@ import { ApiError } from "@/api/client";
 import {
   GROUP_PROGRAMMING_LIMIT,
   classDay,
+  classWorkoutIds,
+  memberClassWorkoutId,
   groupOutcomeRows,
   outcomeCounts,
   toggleSelection,
@@ -122,5 +124,29 @@ describe("variationSections (ADR-746)", () => {
       { userId: "u8", nickname: "Πάπας", hasVersion: false, booked: false },
       { userId: "u7", nickname: "Παππάς Ά", hasVersion: false, booked: false },
     ]);
+  });
+});
+
+describe("the class WOD a variation starts from (ADR-785)", () => {
+  const slot = {
+    master_workout_id: "a",
+    workouts: [{ id: "a" }, { id: "b" }],
+    live_workout_id: "b",
+    bookings: [
+      { user_id: "maria", status: "approved", chosen_workout_id: "a", guest_name: null },
+      { user_id: "nikos", status: "approved", chosen_workout_id: null, guest_name: null },
+    ],
+  };
+
+  it("lists the class WODs once, the first one first", () => {
+    expect(classWorkoutIds(slot)).toEqual(["a", "b"]);
+    expect(classWorkoutIds({ workout: { id: "x" } })).toEqual(["x"]);
+  });
+
+  it("starts from the member's pick, else «Τώρα», else the first", () => {
+    expect(memberClassWorkoutId(slot, "maria")).toBe("a");
+    expect(memberClassWorkoutId(slot, "nikos")).toBe("b");
+    expect(memberClassWorkoutId({ ...slot, live_workout_id: null }, "nikos")).toBe("a");
+    expect(memberClassWorkoutId({ workouts: [] }, "nikos")).toBeNull();
   });
 });

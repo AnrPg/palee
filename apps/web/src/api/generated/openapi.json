@@ -21234,6 +21234,8 @@
                   "type": "string"
                 },
                 "rank": {
+                  "description": "Null on a member's own variant (ADR-785), listed after the ranks",
+                  "nullable": true,
                   "type": "integer"
                 },
                 "scale_level_slug": {
@@ -21247,6 +21249,10 @@
                 "value": {
                   "nullable": true,
                   "type": "string"
+                },
+                "variant": {
+                  "description": "ADR-785: the member did their own «Παραλλαγή» of this WOD",
+                  "type": "boolean"
                 }
               },
               "required": [
@@ -21561,6 +21567,8 @@
                         "type": "string"
                       },
                       "rank": {
+                        "description": "Null on a member's own variant (ADR-785), listed after the ranks",
+                        "nullable": true,
                         "type": "integer"
                       },
                       "scale_level_slug": {
@@ -21574,6 +21582,10 @@
                       "value": {
                         "nullable": true,
                         "type": "string"
+                      },
+                      "variant": {
+                        "description": "ADR-785: the member did their own «Παραλλαγή» of this WOD",
+                        "type": "boolean"
                       }
                     },
                     "required": [
@@ -122647,6 +122659,8 @@
             "type": "object"
           },
           "rank": {
+            "description": "Null on a member's own variant (ADR-785), listed after the ranks",
+            "nullable": true,
             "type": "integer"
           },
           "scale_level_slug": {
@@ -122664,6 +122678,10 @@
           "value": {
             "nullable": true,
             "type": "string"
+          },
+          "variant": {
+            "description": "ADR-785: the member did their own «Παραλλαγή» of this WOD",
+            "type": "boolean"
           }
         },
         "required": [
@@ -122742,6 +122760,8 @@
                   "type": "object"
                 },
                 "rank": {
+                  "description": "Null on a member's own variant (ADR-785), listed after the ranks",
+                  "nullable": true,
                   "type": "integer"
                 },
                 "scale_level_slug": {
@@ -122759,6 +122779,10 @@
                 "value": {
                   "nullable": true,
                   "type": "string"
+                },
+                "variant": {
+                  "description": "ADR-785: the member did their own «Παραλλαγή» of this WOD",
+                  "type": "boolean"
                 }
               },
               "required": [
@@ -122835,6 +122859,8 @@
                         "type": "object"
                       },
                       "rank": {
+                        "description": "Null on a member's own variant (ADR-785), listed after the ranks",
+                        "nullable": true,
                         "type": "integer"
                       },
                       "scale_level_slug": {
@@ -122852,6 +122878,10 @@
                       "value": {
                         "nullable": true,
                         "type": "string"
+                      },
+                      "variant": {
+                        "description": "ADR-785: the member did their own «Παραλλαγή» of this WOD",
+                        "type": "boolean"
                       }
                     },
                     "required": [
@@ -135220,6 +135250,8 @@
                                   "type": "string"
                                 },
                                 "rank": {
+                                  "description": "Null on a member's own variant (ADR-785), listed after the ranks",
+                                  "nullable": true,
                                   "type": "integer"
                                 },
                                 "scale_level_slug": {
@@ -135233,6 +135265,10 @@
                                 "value": {
                                   "nullable": true,
                                   "type": "string"
+                                },
+                                "variant": {
+                                  "description": "ADR-785: the member did their own «Παραλλαγή» of this WOD",
+                                  "type": "boolean"
                                 }
                               },
                               "required": [
@@ -298782,6 +298818,86 @@
         ]
       }
     },
+    "/api/org/{organization_slug}/admin/schedule/slots/{id}/variants/{assignment_id}/keep": {
+      "post": {
+        "callbacks": {},
+        "description": "ADR-785: «Κράτησέ τη». The class WOD as it reads now becomes the variant's starting point, so the roster stops saying it changed.",
+        "operationId": "PaleeWeb.ClassVariantController.keep",
+        "parameters": [
+          {
+            "description": "Scheduled class ID",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "The variant (assigned workout) ID",
+            "in": "path",
+            "name": "assignment_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "ok"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Kept"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such variant of this class"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Keep a member's variant after the class WOD changed",
+        "tags": [
+          "Schedule"
+        ]
+      }
+    },
     "/api/org/{organization_slug}/admin/schedule/slots/{id}/visit-badges": {
       "get": {
         "callbacks": {},
@@ -311898,7 +312014,7 @@
                     "type": "string"
                   },
                   "mode": {
-                    "description": "Member programming mode (ADR-125; ignored for athletes). `class_workout` (default) replaces the booked class's workout for everyone; `class_variant` assigns this member's own version of the booked class (source defaults to the class's workout when `master_workout_id` is omitted); `personal` assigns a personal workout without a class. Both assignment modes require the member's package to include personal programming.",
+                    "description": "Member programming mode (ADR-125; ignored for athletes). `class_variant` (default, ADR-785) assigns this member's own «Παραλλαγή» of one class (source defaults to the WOD the member does in it when `master_workout_id` is omitted), with no programming grant, until the class ends; `class_workout` replaces the booked class's workout for everyone; `personal` assigns a personal workout without a class and requires the member's package to include personal programming.",
                     "enum": [
                       "class_workout",
                       "class_variant",
@@ -314046,7 +314162,7 @@
     "/api/org/{organization_slug}/admin/users/{id}/programming": {
       "post": {
         "callbacks": {},
-        "description": "Athletes receive a personal assignment. Members follow `mode` (ADR-125). Without folder_id, copies are filed automatically (ADR-136): athletes in their folder, class workouts in the class-day folder, member variations in the member's variations folder. Athletes, and members in the personal and class_variant modes, need a package with online programming or personal training (ADR-232); otherwise 403 `programming_not_in_package`.",
+        "description": "Athletes receive a personal assignment. Members follow `mode` (ADR-125). Without folder_id, copies are filed automatically (ADR-136): athletes in their folder, class workouts in the class-day folder, member variations in the member's variations folder. Athletes, and members in the personal mode, need a package with online programming or personal training (ADR-232); otherwise 403 `programming_not_in_package`. A class_variant (ADR-785) needs none and is refused with 422 `class_variant_closed` once the class ended.",
         "operationId": "PaleeWeb.AdminUserController.program_workout",
         "parameters": [
           {
@@ -314087,7 +314203,7 @@
                     "type": "string"
                   },
                   "mode": {
-                    "description": "Member programming mode (ADR-125; ignored for athletes). `class_workout` (default) replaces the booked class's workout for everyone; `class_variant` assigns this member's own version of the booked class (source defaults to the class's workout when `master_workout_id` is omitted); `personal` assigns a personal workout without a class. Both assignment modes require the member's package to include personal programming.",
+                    "description": "Member programming mode (ADR-125; ignored for athletes). `class_variant` (default, ADR-785) assigns this member's own «Παραλλαγή» of one class (source defaults to the WOD the member does in it when `master_workout_id` is omitted), with no programming grant, until the class ends; `class_workout` replaces the booked class's workout for everyone; `personal` assigns a personal workout without a class and requires the member's package to include personal programming.",
                     "enum": [
                       "class_workout",
                       "class_variant",
@@ -351043,6 +351159,8 @@
                             "type": "object"
                           },
                           "rank": {
+                            "description": "Null on a member's own variant (ADR-785), listed after the ranks",
+                            "nullable": true,
                             "type": "integer"
                           },
                           "scale_level_slug": {
@@ -351060,6 +351178,10 @@
                           "value": {
                             "nullable": true,
                             "type": "string"
+                          },
+                          "variant": {
+                            "description": "ADR-785: the member did their own «Παραλλαγή» of this WOD",
+                            "type": "boolean"
                           }
                         },
                         "required": [
@@ -351136,6 +351258,8 @@
                                   "type": "object"
                                 },
                                 "rank": {
+                                  "description": "Null on a member's own variant (ADR-785), listed after the ranks",
+                                  "nullable": true,
                                   "type": "integer"
                                 },
                                 "scale_level_slug": {
@@ -351153,6 +351277,10 @@
                                 "value": {
                                   "nullable": true,
                                   "type": "string"
+                                },
+                                "variant": {
+                                  "description": "ADR-785: the member did their own «Παραλλαγή» of this WOD",
+                                  "type": "boolean"
                                 }
                               },
                               "required": [
@@ -374279,6 +374407,95 @@
           }
         ],
         "summary": "Get the schedule window",
+        "tags": [
+          "Schedule"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/schedule/slots/{id}/my-variant": {
+      "put": {
+        "callbacks": {},
+        "description": "ADR-785: active=false goes back to the class's WODs (the variant stays); active=true does the variant again.",
+        "operationId": "PaleeWeb.ClassVariantController.update_mine",
+        "parameters": [
+          {
+            "description": "Scheduled class ID",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "active": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "active"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "ok"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Saved"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "error"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No variant of mine in this class"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Do my variant of the class, or a WOD of the class",
         "tags": [
           "Schedule"
         ]

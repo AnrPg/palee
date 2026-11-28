@@ -80,8 +80,8 @@ defmodule Palee.Workouts.Domain.AssignmentAudiencePolicyTest do
     refute Policy.live_status?(:archived)
   end
 
-  test "a member mode for profile programming defaults to the ADR-071 class swap" do
-    assert {:ok, :class_workout} = Policy.member_programming_mode(nil)
+  test "a member mode for profile programming defaults to the member's own variant (ADR-785 ζ)" do
+    assert {:ok, :class_variant} = Policy.member_programming_mode(nil)
     assert {:ok, :class_workout} = Policy.member_programming_mode("class_workout")
     assert {:ok, :class_variant} = Policy.member_programming_mode("class_variant")
     assert {:ok, :personal} = Policy.member_programming_mode("personal")

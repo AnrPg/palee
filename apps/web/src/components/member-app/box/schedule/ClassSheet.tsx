@@ -11,6 +11,7 @@ import { gateReady, gateSteps } from "@/components/documents/documents-model";
 import {
   cancelBooking,
   chooseMyClassWorkout,
+  setMyClassVariantActive,
   classLevelsOf,
   classWorkouts,
   joinWaitlist,
@@ -39,6 +40,7 @@ import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
 import { dateKeyInZone, formatInZone, zonedText } from "@/lib/zoned-time";
 import { YourTime } from "@/components/zoned-time";
 import { Dialog } from "@/components/ui/Dialog";
+import { SPARK_ACTIVE_STYLE } from "@/lib/spark";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { ClassStateNotice } from "@/components/schedule/ClassState";
 
@@ -158,6 +160,26 @@ export function ClassSheet({
     null;
   const focus = viewed?.focus ?? [];
   const counts = slot.workout_choice_counts;
+
+  // ADR-785 (4A): the coach's variant for me; I can do a class WOD instead and come back.
+  const variant = slot.my_version ?? null;
+  const variantActive = Boolean(variant) && variant?.active !== false;
+
+  async function chooseVariant(active: boolean, workoutId?: string) {
+    if (choiceBusy) return;
+    setChoiceBusy(true);
+    setChoiceError(null);
+    try {
+      await setMyClassVariantActive(accessToken, slot.id, active);
+      if (!active && several && workoutId && workoutId !== chosenId) await chooseMyClassWorkout(accessToken, slot.id, workoutId);
+      if (workoutId) setViewedId(workoutId);
+      onChanged();
+    } catch (reason) {
+      setChoiceError(localizeError(reason, i18n));
+    } finally {
+      setChoiceBusy(false);
+    }
+  }
 
   async function chooseWorkout(workoutId: string | null) {
     if (choiceBusy || workoutId === chosenId) return;
@@ -483,10 +505,71 @@ export function ClassSheet({
             <h3 className="text-xs font-bold uppercase tracking-[0.18em]" style={{ color: "var(--dim)" }}>
               {t("wod")}
             </h3>
-            {slot.my_version ? (
-              <p className="mt-2 text-sm font-semibold" style={{ color: "var(--primary-strong)" }}>
-                {i18n("memberProgrammingYourVersion")}: {slot.my_version.workout.title}
-              </p>
+            {variant ? (
+              <div
+                className="mt-2 rounded-2xl p-3 text-sm"
+                style={
+                  variantActive
+                    ? { background: "color-mix(in srgb, var(--spark) 22%, var(--panel))", border: "1px solid color-mix(in srgb, var(--spark) 70%, var(--border))" }
+                    : { background: "var(--panel-muted)", border: "1px solid var(--border)" }
+                }
+                data-testid="class-sheet-variation"
+              >
+                <p className="flex flex-wrap items-center gap-2">
+                  <span className="rounded-full px-2 py-0.5 text-[11px] font-bold" style={SPARK_ACTIVE_STYLE}>
+                    {tWods("yourVariation")}
+                  </span>
+                  {variant.assigned_by_nickname ? (
+                    <span className="text-xs" style={{ color: "var(--muted)" }}>
+                      {tWods("variationBy", { name: variant.assigned_by_nickname })}
+                    </span>
+                  ) : null}
+                </p>
+                <p className="mt-1.5 font-semibold" style={{ color: "var(--text)" }}>
+                  {variant.workout.title}
+                </p>
+                {variant.instructions ? (
+                  <p className="mt-1 text-xs" style={{ color: "var(--text-soft)" }}>
+                    «{variant.instructions}»
+                  </p>
+                ) : null}
+                {ownBooking && workouts.length ? (
+                  variantActive ? (
+                    <div className="mt-2.5">
+                      <p className="text-xs" style={{ color: "var(--muted)" }}>
+                        {tWods("variationOrClass")}
+                      </p>
+                      <div className="mt-1.5 flex flex-wrap gap-1.5">
+                        {workouts.map((item) => (
+                          <button
+                            key={item.id}
+                            type="button"
+                            disabled={choiceBusy}
+                            data-testid="class-sheet-variation-class-wod"
+                            className="min-h-10 max-w-[14rem] truncate rounded-full px-3.5 text-sm font-semibold disabled:opacity-60"
+                            style={{ border: "1px solid var(--border)", color: "var(--text-soft)", background: "var(--panel)" }}
+                            onClick={() => void chooseVariant(false, item.id)}
+                          >
+                            {item.title}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled={choiceBusy}
+                      data-testid="class-sheet-variation-back"
+                      className="mt-2.5 min-h-10 rounded-full px-3.5 text-sm font-semibold disabled:opacity-60"
+                      style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}
+                      onClick={() => void chooseVariant(true)}
+                    >
+                      {tWods("variationBackToMine")}
+                    </button>
+                  )
+                ) : null}
+                {choiceError && variantActive ? <ErrorNotice variant="field" className="mt-2">{choiceError}</ErrorNotice> : null}
+              </div>
             ) : null}
             {several ? (
               <div role="group" aria-label={tWods("classWodsLabel")} className="mt-2 flex flex-wrap gap-1.5" data-testid="class-sheet-wods">
@@ -521,7 +604,7 @@ export function ClassSheet({
             {viewed ? <WodGoalsStrip workoutId={viewed.id} className="mt-3" /> : null}
           </section>
 
-          {several && ownBooking ? (
+          {several && ownBooking && !variantActive ? (
             <section className="mt-4" data-testid="class-my-wod">
               <h3 className="text-sm font-semibold" style={{ color: "var(--text)" }}>
                 {tWods("whichWod")}{" "}

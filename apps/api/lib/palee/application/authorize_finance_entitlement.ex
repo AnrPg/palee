@@ -37,6 +37,11 @@ defmodule Palee.Application.AuthorizeFinanceEntitlement do
   def execution_request(%{source: "class_booking"}),
     do: %{capability: :execute_class_workouts}
 
+  # ADR-785: a member's variant of a class needs what the class needs, not
+  # online programming.
+  def execution_request(%{source: "assigned", class_variant: true}),
+    do: %{capability: :execute_class_workouts}
+
   def execution_request(%{source: "assigned"}),
     do: %{channel: :personal_programming, capability: :execute_assigned_workouts}
 

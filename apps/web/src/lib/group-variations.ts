@@ -150,3 +150,38 @@ function normalizeName(value: string) {
     .toLocaleLowerCase()
     .trim();
 }
+
+type ClassLike = {
+  master_workout_id?: string | null;
+  workout?: { id: string } | null;
+  workouts?: readonly { id: string }[];
+  live_workout_id?: string | null;
+  bookings?: readonly (BookingLike & { chosen_workout_id?: string | null })[];
+};
+
+/** ADR-746: the class's WOD ids in order, tolerating payloads from before the list. */
+export function classWorkoutIds(slot: ClassLike): string[] {
+  const ids = (slot.workouts ?? []).map((workout) => workout.id);
+  const first = slot.master_workout_id ?? slot.workout?.id ?? null;
+  return [...new Set([...(first ? [first] : []), ...ids])];
+}
+
+/**
+ * ADR-785 (3A): the class WOD a person's variant starts from: the WOD they
+ * picked, else the coach's «Τώρα», else the first. Null when the class has
+ * none. Matches the API's default when no source is sent.
+ */
+export function memberClassWorkoutId(slot: ClassLike, userId: string | null): string | null {
+  const ids = classWorkoutIds(slot);
+  const booking = userId
+    ? slot.bookings?.find(
+        (entry) =>
+          entry.user_id === userId && !entry.guest_name && (entry.status === "approved" || entry.status === "pending"),
+      )
+    : undefined;
+  const chosen = booking?.chosen_workout_id;
+  if (chosen && ids.includes(chosen)) return chosen;
+  const live = slot.live_workout_id;
+  if (live && ids.includes(live)) return live;
+  return ids[0] ?? null;
+}

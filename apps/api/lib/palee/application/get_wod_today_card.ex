@@ -103,7 +103,9 @@ defmodule Palee.Application.GetWodTodayCard do
         unit: row.unit,
         me: row.user_id == viewer_id,
         opted_in: row.opted_in,
-        part_of_time: Map.get(row, :part_of_time)
+        part_of_time: Map.get(row, :part_of_time),
+        # ADR-785: an unranked member's own «Παραλλαγή» of this WOD.
+        variant: row.variant
       }
     end)
   end
