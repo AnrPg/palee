@@ -7,6 +7,12 @@ defmodule Palee.Finance.Ports.FinanceStore do
   @callback get_package(Ecto.UUID.t()) :: map() | nil
   @callback upsert_membership(Ecto.UUID.t(), map()) :: {:ok, map()} | {:error, Ecto.Changeset.t()}
   @callback get_member_profile(Ecto.UUID.t()) :: map() | nil
+  @doc """
+  ADR-812: writes the client role a finance profile is held as
+  (`memberships.user_type_snapshot`) after the person's box roles changed.
+  Updates an existing profile only; returns how many rows changed.
+  """
+  @callback sync_user_type(Ecto.UUID.t(), String.t()) :: {:ok, non_neg_integer()}
   @callback search_member_summaries(map()) :: %{optional(Ecto.UUID.t()) => map()}
   @callback assign_package(Ecto.UUID.t(), Ecto.UUID.t(), map()) :: {:ok, map()} | {:error, term()}
   @callback record_payment(Ecto.UUID.t(), map()) :: {:ok, map()} | {:error, term()}

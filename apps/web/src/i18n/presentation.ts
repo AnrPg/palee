@@ -513,6 +513,8 @@ const API_ERROR_KEYS: Record<string, string> = {
   owner_location_scope: "apiErrorOwnerLocationScope",
   cannot_change_own_membership: "apiErrorCannotChangeOwnMembership",
   role_ceiling_exceeded: "apiErrorRoleCeilingExceeded",
+  // ADR-812: a ledger change keeps the person a client of the box.
+  client_role_required: "apiErrorClientRoleRequired",
   own_top_role_locked: "apiErrorOwnTopRoleLocked",
   promotion_location_not_included: "apiErrorPromotionLocationNotIncluded",
   location_not_found: "mbErrLocationNotFound",

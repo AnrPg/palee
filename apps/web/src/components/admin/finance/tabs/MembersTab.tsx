@@ -27,14 +27,15 @@ import { InlineCell } from "@/components/admin/finance/shared/InlineCell";
 import { MemberStatusCell, SubscriptionEndCell, useStatusLabel } from "@/components/admin/finance/shared/MemberStandingCells";
 import { memberEndsOn, overrideFor, shownStatus } from "@/components/admin/finance/shared/member-standing";
 import { Combobox, type ComboboxOption } from "@/components/admin/finance/shared/Combobox";
-import { SemanticLabel } from "@/components/semantic-label";
-import { semanticLabel } from "@/i18n/presentation";
+import { roleLabel } from "@/i18n/presentation";
 import { MemberPanel } from "@/components/admin/finance/panels/MemberPanel";
 import { ReceivePaymentDialog } from "@/components/admin/finance/payments/ReceivePaymentDialog";
 import { ShareExportDialog } from "@/components/share-export/ShareExportDialog";
 import { useShareExport } from "@/components/share-export/useShareExport";
 import { ReferralEventWizard } from "@/components/admin/finance/ReferralEventWizard";
 import { InlineAssignPackage } from "@/components/admin/finance/shared/InlineAssignPackage";
+import { BulkRolesDialog, RolesCell, useLedgerRoleRights } from "@/components/admin/finance/shared/LedgerRoles";
+import { LEDGER_ROLE_ORDER, memberRoles } from "@/components/admin/finance/shared/ledger-roles";
 import { giveMemberBenefit } from "@/api/member-benefits";
 import { PackageRemovedToast } from "@/components/admin/finance/shared/PackageRemovedToast";
 import { RemovePackageDialog, type ReplacementPackage } from "@/components/admin/finance/shared/RemovePackageDialog";
@@ -217,6 +218,24 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
   const bottomOpen = showBottomLedger || currentMembers.length === 0;
 
   const [userQuery, setUserQuery] = useState("");
+  // ADR-812 C: people picked for one change of roles.
+  const rolesT = useTranslations("LedgerRoles");
+  const { canChange: canChangeRoles } = useLedgerRoleRights();
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
+  const [bulkRolesOpen, setBulkRolesOpen] = useState(false);
+  const selectedMembers = members.filter((member) => selectedIds.has(field(member, "id")));
+  const toggleSelected = (id: string) =>
+    setSelectedIds((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  const allShownSelected =
+    filteredMembers.length > 0 && filteredMembers.every((member) => selectedIds.has(field(member, "id")));
+  const toggleAllShown = () =>
+    setSelectedIds(allShownSelected ? new Set() : new Set(filteredMembers.map((member) => field(member, "id"))));
+  const heldRoles = LEDGER_ROLE_ORDER.filter((role) => members.some((member) => memberRoles(member).includes(role)));
   const [shareOpen, setShareOpen] = useState(false);
 
   const updateMutation = useMutation({
@@ -303,7 +322,7 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
     return filtered.slice(0, 30).map((u) => ({
       value: field(u, "id"),
       label: field(u, "nickname"),
-      sublabel: semanticLabel(field(u, "identity_role"), i18n),
+      sublabel: memberRoles(u).map((role) => roleLabel(role, i18n)).join(" · "),
     }));
   }
 
@@ -383,6 +402,18 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
             : i18n("filteredMemberCount", {filtered: filteredMembers.length, total: members.length})}
         </p>
         <div className="flex items-center gap-3">
+          {canChangeRoles && filteredMembers.length > 0 ? (
+            <label className="flex items-center gap-2 text-xs" style={{ color: "var(--text-soft)" }}>
+              <input
+                type="checkbox"
+                checked={allShownSelected}
+                onChange={toggleAllShown}
+                className="accent-[var(--primary)]"
+                data-testid="ledger-select-all"
+              />
+              {rolesT("selectShown")}
+            </label>
+          ) : null}
           {hasActiveFilters && (
             <button
               type="button"
@@ -403,6 +434,28 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
           </button>
         </div>
       </div>
+
+      {canChangeRoles && selectedMembers.length > 0 ? (
+        <div
+          className="flex flex-wrap items-center gap-3 rounded-2xl px-4 py-2 text-sm font-semibold"
+          data-testid="ledger-bulk-bar"
+          style={{ background: "var(--text)", color: "var(--bg)" }}
+        >
+          <span>{rolesT("selected", { count: selectedMembers.length })}</span>
+          <button
+            type="button"
+            onClick={() => setBulkRolesOpen(true)}
+            className="rounded-full px-3 py-1 text-xs font-semibold"
+            style={{ background: "var(--panel)", color: "var(--text)" }}
+            data-testid="ledger-bulk-roles-open"
+          >
+            {rolesT("bulkChange")}
+          </button>
+          <button type="button" onClick={() => setSelectedIds(new Set())} className="text-xs underline">
+            {rolesT("clearSelection")}
+          </button>
+        </div>
+      ) : null}
 
       <div
         className="rounded-[2rem] overflow-hidden"
@@ -436,13 +489,13 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
                 />
                 <SortableHeader
                   column="type"
-                  label={i18n("type3deb745")}
+                  label={rolesT("column")}
                   sort={sort}
                   hasFilter={Boolean(filters.type)}
                   onSort={() => cycleSort("type")}
                   filterSlot={
                     <MultiCheck
-                      options={["athlete", "member"].map((v) => ({ label: v, value: v }))}
+                      options={heldRoles.map((role) => ({ label: roleLabel(role, i18n), value: role }))}
                       values={(filters.type as { kind: "multi"; values: string[] } | undefined)?.values ?? []}
                       onChange={(vals) =>
                         vals.length
@@ -598,6 +651,9 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
                       onAssignPackage={(packageId) =>
                         assignPackageMutation.mutateAsync({ userId: field(member, "id"), packageId })
                       }
+                      selectable={canChangeRoles}
+                      selected={selectedIds.has(field(member, "id"))}
+                      onToggleSelected={() => toggleSelected(field(member, "id"))}
                       onOpenPanel={() => setParam({ member: field(member, "id"), tab: "members" })}
                       onReceivePayment={() => setParam({ receive: field(member, "id"), tab: "members" })}
                       onGiveFreePackage={(packageId, reason) =>
@@ -646,7 +702,10 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
                               onAssignPackage={(packageId) =>
                                 assignPackageMutation.mutateAsync({ userId: field(member, "id"), packageId })
                               }
-                              onOpenPanel={() => setParam({ member: field(member, "id"), tab: "members" })}
+                              selectable={canChangeRoles}
+                      selected={selectedIds.has(field(member, "id"))}
+                      onToggleSelected={() => toggleSelected(field(member, "id"))}
+                      onOpenPanel={() => setParam({ member: field(member, "id"), tab: "members" })}
                               onReceivePayment={() => setParam({ receive: field(member, "id"), tab: "members" })}
                               onGiveFreePackage={(packageId, reason) =>
                                 giveFreeMutation.mutateAsync({ userId: field(member, "id"), packageId, reason })
@@ -708,6 +767,17 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
         />
       ) : null}
 
+      {bulkRolesOpen && selectedMembers.length > 0 ? (
+        <BulkRolesDialog
+          members={selectedMembers}
+          onClose={() => setBulkRolesOpen(false)}
+          onDone={() => {
+            setBulkRolesOpen(false);
+            setSelectedIds(new Set());
+          }}
+        />
+      ) : null}
+
       {receiveFrom ? (
         <ReceivePaymentDialog
           userId={field(receiveFrom, "id")}
@@ -751,6 +821,9 @@ function MemberRow({
   assignPending,
   onSave,
   onAssignPackage,
+  selectable,
+  selected,
+  onToggleSelected,
   onOpenPanel,
   onReceivePayment,
   onGiveFreePackage,
@@ -769,6 +842,10 @@ function MemberRow({
   assignPending: boolean;
   onSave: (body: FinanceRecord) => void;
   onAssignPackage: (packageId: string) => Promise<unknown>;
+  /** ADR-812 C: a checkbox for one change of roles to many people. */
+  selectable: boolean;
+  selected: boolean;
+  onToggleSelected: () => void;
   onOpenPanel: () => void;
   onReceivePayment: () => void;
   /** ADR-795 «Χωρίς χρέωση». */
@@ -781,6 +858,7 @@ function MemberRow({
 }) {
   const i18n = useUiTranslations();
   const receiveT = useTranslations("ReceivePayment");
+  const rolesT = useTranslations("LedgerRoles");
   const standingT = useTranslations("MemberStanding");
   const uiLocale = useUiLocale();
   const eur = new Intl.NumberFormat(uiLocale, { style: "currency", currency: "EUR" });
@@ -804,7 +882,6 @@ function MemberRow({
         : 0;
   const outstandingCents =
     typeof member.outstanding_balance_cents === "number" ? member.outstanding_balance_cents : 0;
-  const userType = field(membership, "user_type_snapshot") || field(member, "identity_role");
   const currentPlanCode = activeSub ? field(activeSub, "package_code_snapshot") || null : null;
   const currentPlanLabel = activeSub ? packageLabelFromSubscription(activeSub, packages) || null : null;
   const lastPaidOn = field(member, "last_payment_on");
@@ -818,6 +895,17 @@ function MemberRow({
     <tr style={{ borderBottom: borderStyle }}>
       {/* Nickname — sticky, opens detail panel */}
       <td className="sticky start-0 z-10 px-4 py-3" style={{ background: "var(--panel)" }}>
+        <span className="flex items-center gap-2">
+        {selectable ? (
+          <input
+            type="checkbox"
+            checked={selected}
+            onChange={onToggleSelected}
+            aria-label={rolesT("selectPerson", { name: field(member, "nickname") })}
+            className="accent-[var(--primary)]"
+            data-testid="ledger-select-row"
+          />
+        ) : null}
         <button
           className="text-sm font-semibold text-start hover:opacity-70 transition-opacity"
           style={{ color: "var(--text)" }}
@@ -826,24 +914,12 @@ function MemberRow({
         >
           {field(member, "nickname")}
         </button>
+        </span>
       </td>
 
-      {/* Type */}
-      <td className="px-4 py-3" style={{ whiteSpace: "nowrap" }}>
-        {userType ? (
-          <span
-            className="rounded-full px-2 py-1 text-[10px] font-semibold uppercase tracking-wider"
-            style={{
-              background:
-                userType === "athlete" ? "color-mix(in srgb, var(--primary) 12%, transparent)" : "color-mix(in srgb, var(--muted) 12%, transparent)",
-              color: userType === "athlete" ? "var(--primary)" : "var(--muted)",
-            }}
-          >
-            <SemanticLabel value={userType} />
-          </span>
-        ) : (
-          <span className="text-xs" style={{ color: "var(--dim)" }}>—</span>
-        )}
+      {/* Roles (ADR-812): every role in the box, changed here by whoever may change roles. */}
+      <td className="px-4 py-3">
+        <RolesCell member={member} />
       </td>
 
       {/* Status */}

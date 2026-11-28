@@ -257,6 +257,20 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
   end
 
   @impl true
+  def sync_user_type(user_id, user_type) when user_type in ["member", "athlete", "guest"] do
+    {count, _rows} =
+      Membership
+      |> tenant_scope()
+      |> where(
+        [membership],
+        membership.user_id == ^user_id and membership.user_type_snapshot != ^user_type
+      )
+      |> Repo.update_all(set: [user_type_snapshot: user_type, updated_at: DateTime.utc_now()])
+
+    {:ok, count}
+  end
+
+  @impl true
   def upsert_membership(user_id, params) do
     params =
       params

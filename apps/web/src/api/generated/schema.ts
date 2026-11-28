@@ -13567,6 +13567,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/users/roles/changes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Change the box roles of one or many clients (ADR-812)
+         * @description Each person's roles become their current roles plus `add` minus `remove`, through the same checks as `PUT /users/{id}/roles`. The new roles must keep a buyer role (member, athlete or guest). One person failing does not undo the others.
+         */
+        post: operations["PaleeWeb.AdminUserController.change_client_roles"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/users/roles/changes/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Preview a change of box roles of one or many clients (ADR-812)
+         * @description Nothing changes. Each result carries the roles the person would have and the impact: future bookings that would be cancelled and the running package that stays to its end.
+         */
+        post: operations["PaleeWeb.AdminUserController.preview_client_roles"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/users/{id}": {
         parameters: {
             query?: never;
@@ -128685,6 +128725,144 @@ export interface operations {
                 };
             };
             /** @description No people or too many */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminUserController.change_client_roles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    add?: ("owner" | "admin" | "coach" | "front_desk" | "accountant" | "janitor" | "member" | "athlete" | "guest")[];
+                    remove?: ("owner" | "admin" | "coach" | "front_desk" | "accountant" | "janitor" | "member" | "athlete" | "guest")[];
+                    user_ids: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description One result per person */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        results: {
+                            /** @description Why the person was refused. */
+                            code?: string;
+                            impact?: {
+                                future_bookings: number;
+                                kept_package?: {
+                                    /** Format: date */
+                                    ends_on?: string | null;
+                                    name: string | null;
+                                } | null;
+                            };
+                            /** @description The roles after the change (preview: would be; refused: as they are). */
+                            roles: ("owner" | "admin" | "coach" | "front_desk" | "accountant" | "janitor" | "member" | "athlete" | "guest")[];
+                            /** @enum {string} */
+                            status: "changed" | "unchanged" | "preview" | "refused";
+                            /** Format: uuid */
+                            user_id: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description No right to change roles */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description No people, too many or no roles */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminUserController.preview_client_roles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    add?: ("owner" | "admin" | "coach" | "front_desk" | "accountant" | "janitor" | "member" | "athlete" | "guest")[];
+                    remove?: ("owner" | "admin" | "coach" | "front_desk" | "accountant" | "janitor" | "member" | "athlete" | "guest")[];
+                    user_ids: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description One result per person */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        results: {
+                            /** @description Why the person was refused. */
+                            code?: string;
+                            impact?: {
+                                future_bookings: number;
+                                kept_package?: {
+                                    /** Format: date */
+                                    ends_on?: string | null;
+                                    name: string | null;
+                                } | null;
+                            };
+                            /** @description The roles after the change (preview: would be; refused: as they are). */
+                            roles: ("owner" | "admin" | "coach" | "front_desk" | "accountant" | "janitor" | "member" | "athlete" | "guest")[];
+                            /** @enum {string} */
+                            status: "changed" | "unchanged" | "preview" | "refused";
+                            /** Format: uuid */
+                            user_id: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description No right to change roles */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description No people, too many or no roles */
             422: {
                 headers: {
                     [name: string]: unknown;

@@ -4991,7 +4991,8 @@
     "programmingDialogNoOpenClass": "Няма час през този ден, който още не е свършил. Избери „Отделна тренировка“ или друг ден.",
     "ntfWaitlistedByStaffTitle": "В списъка на чакащите си",
     "ntfWaitlistedByStaffBody": "{class} · място {position} в списъка. Ако се освободи място, записът става автоматично.",
-    "ntfWaitlistedByStaffBodyPlain": "{class}. Ако се освободи място, записът става автоматично."
+    "ntfWaitlistedByStaffBodyPlain": "{class}. Ако се освободи място, записът става автоматично.",
+    "apiErrorClientRoleRequired": "Всеки клиент запазва клиентска роля: член на бокса, атлет или гост."
   },
   "PrSharing": {
     "gymLabel": "Къде постигна този рекорд?",
@@ -21616,5 +21617,40 @@
     "byStaff": "от екипа",
     "fullOption": "пълен · списък на чакащите",
     "saving": "Запазване…"
+  },
+  "LedgerRoles": {
+    "column": "Роли",
+    "changeFor": "Промяна на роли: {name}",
+    "title": "Роли: {name}",
+    "hint_member": "Запазва места в часове",
+    "hint_athlete": "Получава лична програма",
+    "hint_guest": "Купува само на рецепция",
+    "clientRoleRequired": "Запази поне една клиентска роля: член на бокса, атлет или гост.",
+    "bookingsCancelled": "{count, plural, one {Ще бъде отменена # бъдеща резервация.} other {Ще бъдат отменени # бъдещи резервации.}}",
+    "bulkBookingsCancelled": "{count, plural, one {Общо ще бъде отменена # бъдеща резервация.} other {Общо ще бъдат отменени # бъдещи резервации.}}",
+    "packageKept": "„{name}“ остава активен до {date}, без резервации за часове.",
+    "packageKeptOpen": "„{name}“ остава активен до изтичането си, без резервации за часове.",
+    "bulkPackagesKept": "{count, plural, one {# абонаментен пакет остава активен до изтичането си.} other {# абонаментни пакета остават активни до изтичането си.}}",
+    "save": "Запази",
+    "saving": "Запазване…",
+    "cancel": "Отказ",
+    "close": "Затвори",
+    "selectShown": "Избери всички",
+    "selectPerson": "Избери {name}",
+    "selected": "{count, plural, one {# избран} other {# избрани}}",
+    "bulkChange": "Промяна на роли",
+    "clearSelection": "Изчисти",
+    "bulkTitle": "{count, plural, one {Промяна на ролите на # клиент} other {Промяна на ролите на # клиенти}}",
+    "bulkHelp": "Избери какво се добавя и какво се премахва. Другите роли на всеки остават както са.",
+    "choiceFor": "Какво става с ролята {role}",
+    "keep": "Без промяна",
+    "add": "Добави",
+    "remove": "Премахни",
+    "bulkWillChange": "{count, plural, =0 {Никой няма да се промени.} one {Ще се промени # клиент.} other {Ще се променят # клиенти.}}",
+    "bulkApply": "{count, plural, =0 {Приложи} other {Приложи за #}}",
+    "bulkDone": "{count, plural, =0 {Никой не се промени.} one {Промени се # клиент.} other {Промениха се # клиенти.}}",
+    "bulkWillRefuse": "{count, plural, one {# човек няма да се промени:} other {# души няма да се променят:}}",
+    "bulkRefused": "{count, plural, one {# човек не се промени:} other {# души не се промениха:}}",
+    "refusedLine": "{name}: {reason}"
   }
 }

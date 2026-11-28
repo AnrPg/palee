@@ -316075,6 +316075,392 @@
         ]
       }
     },
+    "/api/org/{organization_slug}/admin/users/roles/changes": {
+      "post": {
+        "callbacks": {},
+        "description": "Each person's roles become their current roles plus `add` minus `remove`, through the same checks as `PUT /users/{id}/roles`. The new roles must keep a buyer role (member, athlete or guest). One person failing does not undo the others.",
+        "operationId": "PaleeWeb.AdminUserController.change_client_roles",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "add": {
+                    "items": {
+                      "enum": [
+                        "owner",
+                        "admin",
+                        "coach",
+                        "front_desk",
+                        "accountant",
+                        "janitor",
+                        "member",
+                        "athlete",
+                        "guest"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "remove": {
+                    "items": {
+                      "enum": [
+                        "owner",
+                        "admin",
+                        "coach",
+                        "front_desk",
+                        "accountant",
+                        "janitor",
+                        "member",
+                        "athlete",
+                        "guest"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "user_ids": {
+                    "items": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "maxItems": 50,
+                    "minItems": 1,
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "user_ids"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "results": {
+                      "items": {
+                        "properties": {
+                          "code": {
+                            "description": "Why the person was refused.",
+                            "type": "string"
+                          },
+                          "impact": {
+                            "properties": {
+                              "future_bookings": {
+                                "minimum": 0,
+                                "type": "integer"
+                              },
+                              "kept_package": {
+                                "nullable": true,
+                                "properties": {
+                                  "ends_on": {
+                                    "format": "date",
+                                    "nullable": true,
+                                    "type": "string"
+                                  },
+                                  "name": {
+                                    "nullable": true,
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "name"
+                                ],
+                                "type": "object"
+                              }
+                            },
+                            "required": [
+                              "future_bookings"
+                            ],
+                            "type": "object"
+                          },
+                          "roles": {
+                            "description": "The roles after the change (preview: would be; refused: as they are).",
+                            "items": {
+                              "enum": [
+                                "owner",
+                                "admin",
+                                "coach",
+                                "front_desk",
+                                "accountant",
+                                "janitor",
+                                "member",
+                                "athlete",
+                                "guest"
+                              ],
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "status": {
+                            "enum": [
+                              "changed",
+                              "unchanged",
+                              "preview",
+                              "refused"
+                            ],
+                            "type": "string"
+                          },
+                          "user_id": {
+                            "format": "uuid",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "user_id",
+                          "status",
+                          "roles"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "results"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "One result per person"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No right to change roles"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No people, too many or no roles"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Change the box roles of one or many clients (ADR-812)",
+        "tags": [
+          "Admin Users"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/users/roles/changes/preview": {
+      "post": {
+        "callbacks": {},
+        "description": "Nothing changes. Each result carries the roles the person would have and the impact: future bookings that would be cancelled and the running package that stays to its end.",
+        "operationId": "PaleeWeb.AdminUserController.preview_client_roles",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "add": {
+                    "items": {
+                      "enum": [
+                        "owner",
+                        "admin",
+                        "coach",
+                        "front_desk",
+                        "accountant",
+                        "janitor",
+                        "member",
+                        "athlete",
+                        "guest"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "remove": {
+                    "items": {
+                      "enum": [
+                        "owner",
+                        "admin",
+                        "coach",
+                        "front_desk",
+                        "accountant",
+                        "janitor",
+                        "member",
+                        "athlete",
+                        "guest"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "user_ids": {
+                    "items": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "maxItems": 50,
+                    "minItems": 1,
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "user_ids"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "results": {
+                      "items": {
+                        "properties": {
+                          "code": {
+                            "description": "Why the person was refused.",
+                            "type": "string"
+                          },
+                          "impact": {
+                            "properties": {
+                              "future_bookings": {
+                                "minimum": 0,
+                                "type": "integer"
+                              },
+                              "kept_package": {
+                                "nullable": true,
+                                "properties": {
+                                  "ends_on": {
+                                    "format": "date",
+                                    "nullable": true,
+                                    "type": "string"
+                                  },
+                                  "name": {
+                                    "nullable": true,
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "name"
+                                ],
+                                "type": "object"
+                              }
+                            },
+                            "required": [
+                              "future_bookings"
+                            ],
+                            "type": "object"
+                          },
+                          "roles": {
+                            "description": "The roles after the change (preview: would be; refused: as they are).",
+                            "items": {
+                              "enum": [
+                                "owner",
+                                "admin",
+                                "coach",
+                                "front_desk",
+                                "accountant",
+                                "janitor",
+                                "member",
+                                "athlete",
+                                "guest"
+                              ],
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "status": {
+                            "enum": [
+                              "changed",
+                              "unchanged",
+                              "preview",
+                              "refused"
+                            ],
+                            "type": "string"
+                          },
+                          "user_id": {
+                            "format": "uuid",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "user_id",
+                          "status",
+                          "roles"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "results"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "One result per person"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No right to change roles"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No people, too many or no roles"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Preview a change of box roles of one or many clients (ADR-812)",
+        "tags": [
+          "Admin Users"
+        ]
+      }
+    },
     "/api/org/{organization_slug}/admin/users/{id}": {
       "delete": {
         "callbacks": {},

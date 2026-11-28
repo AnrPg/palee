@@ -68,6 +68,9 @@ defmodule Palee.Application.ListFinanceMembers do
       id: user.id,
       nickname: user.nickname,
       identity_role: client_role(roles_by_user, user),
+      # ADR-812: every role the person holds in the box, client roles first;
+      # the ledger shows them all and filters by any of them.
+      roles: box_roles(roles_by_user, user),
       membership: membership,
       active_package_subscription: active_sub,
       referrals_made_user_ids: made,
@@ -86,6 +89,33 @@ defmodule Palee.Application.ListFinanceMembers do
       notes: membership && Map.get(membership, :notes)
     }
   end
+
+  @client_first [
+    :athlete,
+    :member,
+    :guest,
+    :owner,
+    :admin,
+    :coach,
+    :front_desk,
+    :accountant,
+    :janitor
+  ]
+
+  defp box_roles(roles_by_user, user) do
+    held =
+      case Map.get(roles_by_user, user.id) do
+        %{roles: roles} when is_list(roles) -> Enum.map(roles, &to_atom_role/1)
+        _none -> [:member]
+      end
+
+    for role <- @client_first, role in held, do: Atom.to_string(role)
+  end
+
+  defp to_atom_role(role) when is_atom(role), do: role
+
+  defp to_atom_role(role) when is_binary(role),
+    do: Enum.find(@client_first, :member, &(Atom.to_string(&1) == role))
 
   defp client_role(roles_by_user, user) do
     case Map.get(roles_by_user, user.id) do

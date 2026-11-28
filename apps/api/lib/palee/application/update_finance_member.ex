@@ -19,7 +19,7 @@ defmodule Palee.Application.UpdateFinanceMember do
         enriched =
           params
           |> string_key_map()
-          |> Map.put_new("user_type_snapshot", Atom.to_string(client_role))
+          |> Map.put("user_type_snapshot", Atom.to_string(client_role))
 
         Finance.upsert_membership(context, user_id, enriched)
     end

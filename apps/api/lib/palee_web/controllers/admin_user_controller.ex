@@ -306,6 +306,8 @@ defmodule PaleeWeb.AdminUserController do
               :update_role,
               :program_workout,
               :program_workout_for_users,
+              :change_client_roles,
+              :preview_client_roles,
               :place_in_class,
               :place_on_waitlist,
               :freezes,
@@ -494,6 +496,104 @@ defmodule PaleeWeb.AdminUserController do
     responses: [
       ok: {"One result per person", "application/json", @program_many_response},
       unprocessable_entity: {"No people or too many", "application/json", @summary_object}
+    ]
+  )
+
+  @role_names Enum.map(Palee.Organizations.roles(), &to_string/1)
+  @role_list %Schema{type: :array, items: %Schema{type: :string, enum: @role_names}}
+
+  @change_roles_body %RequestBody{
+    required: true,
+    content: %{
+      "application/json" => %MediaType{
+        schema: %Schema{
+          type: :object,
+          additionalProperties: false,
+          properties: %{
+            user_ids: %Schema{
+              type: :array,
+              items: %Schema{type: :string, format: :uuid},
+              minItems: 1,
+              maxItems: Palee.Application.ChangeClientRoles.max_users()
+            },
+            add: @role_list,
+            remove: @role_list
+          },
+          required: [:user_ids]
+        }
+      }
+    }
+  }
+
+  @change_roles_response %Schema{
+    type: :object,
+    required: [:results],
+    properties: %{
+      results: %Schema{
+        type: :array,
+        items: %Schema{
+          type: :object,
+          required: [:user_id, :status, :roles],
+          properties: %{
+            user_id: %Schema{type: :string, format: :uuid},
+            status: %Schema{
+              type: :string,
+              enum: ["changed", "unchanged", "preview", "refused"]
+            },
+            roles: %Schema{
+              type: :array,
+              items: %Schema{type: :string, enum: @role_names},
+              description: "The roles after the change (preview: would be; refused: as they are)."
+            },
+            code: %Schema{type: :string, description: "Why the person was refused."},
+            impact: %Schema{
+              type: :object,
+              required: [:future_bookings],
+              properties: %{
+                future_bookings: %Schema{type: :integer, minimum: 0},
+                kept_package: %Schema{
+                  type: :object,
+                  nullable: true,
+                  required: [:name],
+                  properties: %{
+                    name: %Schema{type: :string, nullable: true},
+                    ends_on: %Schema{type: :string, format: :date, nullable: true}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  operation(:preview_client_roles,
+    summary: "Preview a change of box roles of one or many clients (ADR-812)",
+    description:
+      "Nothing changes. Each result carries the roles the person would have and the impact: " <>
+        "future bookings that would be cancelled and the running package that stays to its end.",
+    request_body: @change_roles_body,
+    responses: [
+      ok: {"One result per person", "application/json", @change_roles_response},
+      forbidden: {"No right to change roles", "application/json", @summary_object},
+      unprocessable_entity:
+        {"No people, too many or no roles", "application/json", @summary_object}
+    ]
+  )
+
+  operation(:change_client_roles,
+    summary: "Change the box roles of one or many clients (ADR-812)",
+    description:
+      "Each person's roles become their current roles plus `add` minus `remove`, through the " <>
+        "same checks as `PUT /users/{id}/roles`. The new roles must keep a buyer role (member, " <>
+        "athlete or guest). One person failing does not undo the others.",
+    request_body: @change_roles_body,
+    responses: [
+      ok: {"One result per person", "application/json", @change_roles_response},
+      forbidden: {"No right to change roles", "application/json", @summary_object},
+      unprocessable_entity:
+        {"No people, too many or no roles", "application/json", @summary_object}
     ]
   )
 
@@ -1174,6 +1274,21 @@ defmodule PaleeWeb.AdminUserController do
              admin,
              body[:user_ids] || body["user_ids"],
              body
+           ) do
+      json(conn, payload)
+    end
+  end
+
+  def preview_client_roles(conn, _params), do: client_roles(conn, true)
+
+  def change_client_roles(conn, _params), do: client_roles(conn, false)
+
+  defp client_roles(conn, dry_run?) do
+    with {:ok, payload} <-
+           Palee.Application.ChangeClientRoles.call(
+             conn.assigns.tenant_context,
+             conn.body_params,
+             dry_run?
            ) do
       json(conn, payload)
     end

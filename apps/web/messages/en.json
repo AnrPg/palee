@@ -4991,7 +4991,8 @@
     "programmingDialogNoOpenClass": "No class that day is still to come or running. Choose “Separate workout” or another day.",
     "ntfWaitlistedByStaffTitle": "You are on the waitlist",
     "ntfWaitlistedByStaffBody": "{class} · place {position} in line. If a spot opens, you are booked automatically.",
-    "ntfWaitlistedByStaffBodyPlain": "{class}. If a spot opens, you are booked automatically."
+    "ntfWaitlistedByStaffBodyPlain": "{class}. If a spot opens, you are booked automatically.",
+    "apiErrorClientRoleRequired": "Every client keeps a client role: Box member, Athlete or Guest."
   },
   "PrSharing": {
     "gymLabel": "Where did you set this PR?",
@@ -21616,5 +21617,40 @@
     "byStaff": "by staff",
     "fullOption": "full · waitlist",
     "saving": "Saving…"
+  },
+  "LedgerRoles": {
+    "column": "Roles",
+    "changeFor": "Change roles: {name}",
+    "title": "Roles: {name}",
+    "hint_member": "Books places in classes",
+    "hint_athlete": "Gets personal programming",
+    "hint_guest": "Buys at the front desk only",
+    "clientRoleRequired": "Keep at least one client role: Box member, Athlete or Guest.",
+    "bookingsCancelled": "{count, plural, one {# future booking will be cancelled.} other {# future bookings will be cancelled.}}",
+    "bulkBookingsCancelled": "{count, plural, one {# future booking will be cancelled in total.} other {# future bookings will be cancelled in total.}}",
+    "packageKept": "“{name}” stays active until {date}, without class bookings.",
+    "packageKeptOpen": "“{name}” stays active until it ends, without class bookings.",
+    "bulkPackagesKept": "{count, plural, one {# subscription package stays active until it ends.} other {# subscription packages stay active until they end.}}",
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "close": "Close",
+    "selectShown": "Select all",
+    "selectPerson": "Select {name}",
+    "selected": "{count, plural, one {# selected} other {# selected}}",
+    "bulkChange": "Change roles",
+    "clearSelection": "Clear",
+    "bulkTitle": "{count, plural, one {Change roles of # client} other {Change roles of # clients}}",
+    "bulkHelp": "Choose what is added and what is removed. Everyone keeps their other roles as they are.",
+    "choiceFor": "What happens to the role {role}",
+    "keep": "As is",
+    "add": "Add",
+    "remove": "Remove",
+    "bulkWillChange": "{count, plural, =0 {Nobody will change.} one {# client will change.} other {# clients will change.}}",
+    "bulkApply": "{count, plural, =0 {Apply} other {Apply to #}}",
+    "bulkDone": "{count, plural, =0 {Nobody changed.} one {# client changed.} other {# clients changed.}}",
+    "bulkWillRefuse": "{count, plural, one {# person will not change:} other {# people will not change:}}",
+    "bulkRefused": "{count, plural, one {# person did not change:} other {# people did not change:}}",
+    "refusedLine": "{name}: {reason}"
   }
 }

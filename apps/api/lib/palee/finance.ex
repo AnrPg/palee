@@ -178,6 +178,16 @@ defmodule Palee.Finance do
 
   defdelegate upsert_membership(user_id, params), to: UpsertMembership, as: :call
 
+  @doc """
+  ADR-812: one source of truth for what a client is. After their box roles
+  change, the finance profile follows the role they now buy as (`:athlete`,
+  `:member`, then `:guest`); with no buyer role it keeps the last one.
+  """
+  def sync_user_type(context, user_id, role) when role in [:member, :athlete, :guest],
+    do: scoped(context, fn -> FinanceStore.sync_user_type(user_id, Atom.to_string(role)) end)
+
+  def sync_user_type(_context, _user_id, _role), do: {:ok, 0}
+
   def upsert_membership(context, user_id, params),
     do: scoped(context, fn -> upsert_membership(user_id, params) end)
 

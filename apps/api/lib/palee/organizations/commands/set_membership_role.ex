@@ -62,12 +62,15 @@ defmodule Palee.Organizations.Commands.SetMembershipRole do
          :ok <- authorize_branches(context, membership, roles, who),
          :ok <- keep_an_owner(context, membership, roles) do
       OrganizationStore.transaction(fn ->
-        with :ok <- reconcile_role_owned_state(context, membership, roles) do
-          OrganizationStore.update_membership_roles(
-            context.organization_id,
-            membership.id,
-            roles
-          )
+        with :ok <- reconcile_role_owned_state(context, membership, roles),
+             {:ok, updated} <-
+               OrganizationStore.update_membership_roles(
+                 context.organization_id,
+                 membership.id,
+                 roles
+               ),
+             :ok <- sync_finance_user_type(context, membership, roles) do
+          {:ok, updated}
         end
       end)
       |> broadcast_change(context)
@@ -150,34 +153,71 @@ defmodule Palee.Organizations.Commands.SetMembershipRole do
   # made in, so losing :athlete at one gym cannot archive assignments at
   # another.
   defp reconcile_role_owned_state(context, membership, roles) do
-    Enum.reduce_while(membership.roles -- roles, :ok, fn lost, :ok ->
-      case abandon_role_state(context, lost, membership.user_id) do
+    keeps_bookings? = not cancels_bookings?(membership.roles, roles)
+
+    (membership.roles -- roles)
+    |> Enum.reduce_while(:ok, fn lost, :ok ->
+      case abandon_role_state(context, lost, membership.user_id, keeps_bookings?) do
         :ok -> {:cont, :ok}
         error -> {:halt, error}
       end
     end)
   end
 
+  @doc """
+  ADR-812: whether a change cancels the person's future bookings. Only
+  leaving every client role does: dropping «Μέλος box» while still an
+  athlete keeps them a client of the box, so their bookings stay. Public so
+  the ledger's preview (`ChangeClientRoles`) reads the same rule.
+  """
+  def cancels_bookings?(current, roles) do
+    :member in List.wrap(current) and :member not in List.wrap(roles) and
+      not MembershipPolicy.client?(roles)
+  end
+
+  # ADR-812: the finance profile is held as the role the person now buys as,
+  # so the ledger, analytics and package retirement read one truth.
+  # Writes only when the stored value differs, so it also heals a profile
+  # that went stale before ADR-812.
+  defp sync_finance_user_type(context, membership, roles) do
+    case MembershipPolicy.buyer_role(roles) do
+      nil ->
+        :ok
+
+      role ->
+        with {:ok, _count} <- Finance.sync_user_type(context, membership.user_id, role),
+             do: :ok
+    end
+  end
+
   # ADR-125: members may also hold personal assignments and class variants;
-  # leaving the role archives them like leaving :athlete does.
-  defp abandon_role_state(context, :member, user_id) do
-    with {:ok, release_facts} <-
-           Scheduling.cancel_active_future_bookings_for_user(context, user_id),
-         :ok <- release_booking_entitlements(context, release_facts),
+  # leaving the role archives them like leaving :athlete does. ADR-812: the
+  # bookings stay while the person is still a client (an athlete).
+  defp abandon_role_state(context, :member, user_id, keeps_bookings?) do
+    with :ok <- cancel_bookings(context, user_id, keeps_bookings?),
          {:ok, _assignment_ids} <-
            Workouts.archive_active_assignments_for_athlete(context, user_id) do
       :ok
     end
   end
 
-  defp abandon_role_state(context, :athlete, user_id) do
+  defp abandon_role_state(context, :athlete, user_id, _keeps_bookings?) do
     case Workouts.archive_active_assignments_for_athlete(context, user_id) do
       {:ok, _assignment_ids} -> :ok
       error -> error
     end
   end
 
-  defp abandon_role_state(_context, _role, _user_id), do: :ok
+  defp abandon_role_state(_context, _role, _user_id, _keeps_bookings?), do: :ok
+
+  defp cancel_bookings(_context, _user_id, true), do: :ok
+
+  defp cancel_bookings(context, user_id, false) do
+    with {:ok, release_facts} <-
+           Scheduling.cancel_active_future_bookings_for_user(context, user_id) do
+      release_booking_entitlements(context, release_facts)
+    end
+  end
 
   defp release_booking_entitlements(context, release_facts) do
     Enum.reduce_while(release_facts, :ok, fn fact, :ok ->

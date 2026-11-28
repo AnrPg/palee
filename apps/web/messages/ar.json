@@ -4991,7 +4991,8 @@
     "programmingDialogNoOpenClass": "لا توجد حصة في ذلك اليوم لم تنتهِ بعد. اختر «تمرين منفصل» أو يومًا آخر.",
     "ntfWaitlistedByStaffTitle": "أنت على قائمة الانتظار",
     "ntfWaitlistedByStaffBody": "{class} · المركز {position} في الدور. إذا توفر مكان، يتم حجزك تلقائيًا.",
-    "ntfWaitlistedByStaffBodyPlain": "{class}. إذا توفر مكان، يتم حجزك تلقائيًا."
+    "ntfWaitlistedByStaffBodyPlain": "{class}. إذا توفر مكان، يتم حجزك تلقائيًا.",
+    "apiErrorClientRoleRequired": "يحتفظ كل عميل بدور عميل: عضو البوكس أو رياضي أو ضيف."
   },
   "PrSharing": {
     "gymLabel": "أين حققت هذا الرقم القياسي؟",
@@ -21616,5 +21617,40 @@
     "byStaff": "من الفريق",
     "fullOption": "ممتلئة · قائمة الانتظار",
     "saving": "جارٍ الحفظ…"
+  },
+  "LedgerRoles": {
+    "column": "الأدوار",
+    "changeFor": "تغيير الأدوار: {name}",
+    "title": "الأدوار: {name}",
+    "hint_member": "يحجز أماكن في الحصص",
+    "hint_athlete": "يحصل على برنامج شخصي",
+    "hint_guest": "يشتري من الاستقبال فقط",
+    "clientRoleRequired": "احتفظ بدور عميل واحد على الأقل: عضو البوكس أو رياضي أو ضيف.",
+    "bookingsCancelled": "{count, plural, one {سيُلغى حجز قادم واحد.} other {ستُلغى حجوزات قادمة: #.}}",
+    "bulkBookingsCancelled": "{count, plural, one {سيُلغى حجز قادم واحد إجمالاً.} other {ستُلغى حجوزات قادمة إجمالاً: #.}}",
+    "packageKept": "تبقى «{name}» فعّالة حتى {date}، دون حجز الحصص.",
+    "packageKeptOpen": "تبقى «{name}» فعّالة حتى انتهائها، دون حجز الحصص.",
+    "bulkPackagesKept": "{count, plural, one {تبقى باقة اشتراك واحدة فعّالة حتى انتهائها.} other {تبقى باقات اشتراك فعّالة حتى انتهائها: #.}}",
+    "save": "حفظ",
+    "saving": "جارٍ الحفظ…",
+    "cancel": "إلغاء",
+    "close": "إغلاق",
+    "selectShown": "تحديد الكل",
+    "selectPerson": "تحديد {name}",
+    "selected": "{count, plural, other {المحدد: #}}",
+    "bulkChange": "تغيير الأدوار",
+    "clearSelection": "مسح",
+    "bulkTitle": "{count, plural, one {تغيير أدوار عميل واحد} other {تغيير أدوار العملاء: #}}",
+    "bulkHelp": "اختر ما يُضاف وما يُزال. يحتفظ كل شخص بأدواره الأخرى كما هي.",
+    "choiceFor": "ما يحدث للدور {role}",
+    "keep": "كما هو",
+    "add": "إضافة",
+    "remove": "إزالة",
+    "bulkWillChange": "{count, plural, =0 {لن يتغير أحد.} one {سيتغير عميل واحد.} other {سيتغير العملاء: #.}}",
+    "bulkApply": "{count, plural, =0 {تطبيق} other {تطبيق على #}}",
+    "bulkDone": "{count, plural, =0 {لم يتغير أحد.} one {تغيّر عميل واحد.} other {تغيّر العملاء: #.}}",
+    "bulkWillRefuse": "{count, plural, one {شخص واحد لن يتغير:} other {أشخاص لن يتغيروا: #:}}",
+    "bulkRefused": "{count, plural, one {شخص واحد لم يتغير:} other {أشخاص لم يتغيروا: #:}}",
+    "refusedLine": "{name}: {reason}"
   }
 }

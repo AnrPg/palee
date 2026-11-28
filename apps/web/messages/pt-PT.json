@@ -4991,7 +4991,8 @@
     "programmingDialogNoOpenClass": "Nesse dia não há aula por começar ou a decorrer. Escolhe «Treino à parte» ou outro dia.",
     "ntfWaitlistedByStaffTitle": "Estás na lista de espera",
     "ntfWaitlistedByStaffBody": "{class} · lugar {position} na lista. Se abrir um lugar, ficas reservado automaticamente.",
-    "ntfWaitlistedByStaffBodyPlain": "{class}. Se abrir um lugar, ficas reservado automaticamente."
+    "ntfWaitlistedByStaffBodyPlain": "{class}. Se abrir um lugar, ficas reservado automaticamente.",
+    "apiErrorClientRoleRequired": "Cada cliente mantém uma função de cliente: membro da box, atleta ou convidado."
   },
   "PrSharing": {
     "gymLabel": "Onde fizeste este PR?",
@@ -21616,5 +21617,40 @@
     "byStaff": "pela equipa",
     "fullOption": "cheia · lista de espera",
     "saving": "A guardar…"
+  },
+  "LedgerRoles": {
+    "column": "Funções",
+    "changeFor": "Alterar funções: {name}",
+    "title": "Funções: {name}",
+    "hint_member": "Reserva lugares nas aulas",
+    "hint_athlete": "Recebe programação pessoal",
+    "hint_guest": "Compra apenas na receção",
+    "clientRoleRequired": "Mantém pelo menos uma função de cliente: membro da box, atleta ou convidado.",
+    "bookingsCancelled": "{count, plural, one {Será cancelada # reserva futura.} other {Serão canceladas # reservas futuras.}}",
+    "bulkBookingsCancelled": "{count, plural, one {Será cancelada # reserva futura no total.} other {Serão canceladas # reservas futuras no total.}}",
+    "packageKept": "«{name}» continua ativo até {date}, sem reservas de aulas.",
+    "packageKeptOpen": "«{name}» continua ativo até terminar, sem reservas de aulas.",
+    "bulkPackagesKept": "{count, plural, one {# pacote de subscrição continua ativo até terminar.} other {# pacotes de subscrição continuam ativos até terminarem.}}",
+    "save": "Guardar",
+    "saving": "A guardar…",
+    "cancel": "Cancelar",
+    "close": "Fechar",
+    "selectShown": "Selecionar todos",
+    "selectPerson": "Selecionar {name}",
+    "selected": "{count, plural, one {# selecionado} other {# selecionados}}",
+    "bulkChange": "Alterar funções",
+    "clearSelection": "Limpar",
+    "bulkTitle": "{count, plural, one {Alterar funções de # cliente} other {Alterar funções de # clientes}}",
+    "bulkHelp": "Escolhe o que é adicionado e o que é removido. Cada um mantém as outras funções como estão.",
+    "choiceFor": "O que acontece à função {role}",
+    "keep": "Igual",
+    "add": "Adicionar",
+    "remove": "Remover",
+    "bulkWillChange": "{count, plural, =0 {Ninguém vai mudar.} one {Vai mudar # cliente.} other {Vão mudar # clientes.}}",
+    "bulkApply": "{count, plural, =0 {Aplicar} other {Aplicar a #}}",
+    "bulkDone": "{count, plural, =0 {Ninguém mudou.} one {Mudou # cliente.} other {Mudaram # clientes.}}",
+    "bulkWillRefuse": "{count, plural, one {# pessoa não vai mudar:} other {# pessoas não vão mudar:}}",
+    "bulkRefused": "{count, plural, one {# pessoa não mudou:} other {# pessoas não mudaram:}}",
+    "refusedLine": "{name}: {reason}"
   }
 }

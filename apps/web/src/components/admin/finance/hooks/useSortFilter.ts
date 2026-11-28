@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import type { FinanceRecord } from "@/api/finance";
 import { memberEndsOn, shownStatus } from "@/components/admin/finance/shared/member-standing";
+import { memberRoles, roleRank } from "@/components/admin/finance/shared/ledger-roles";
 
 export type ColumnKey =
   | "nickname"
@@ -70,9 +71,8 @@ function applyFilter(member: FinanceRecord, col: ColumnKey, filter: FilterValue)
     }
     case "type": {
       if (filter.kind !== "multi" || filter.values.length === 0) return true;
-      const role =
-        str(field(mem, "user_type_snapshot")) || str(field(member, "identity_role"));
-      return filter.values.includes(role);
+      // ADR-812 ε: anyone holding one of the chosen roles, whatever else they hold.
+      return memberRoles(member).some((role) => filter.values.includes(role));
     }
     case "status": {
       if (filter.kind !== "multi" || filter.values.length === 0) return true;
@@ -162,9 +162,7 @@ function cmp(a: FinanceRecord, b: FinanceRecord, col: ColumnKey): number {
     case "nickname":
       return str(field(a, "nickname")).localeCompare(str(field(b, "nickname")));
     case "type": {
-      const ta = str(field(memA, "user_type_snapshot")) || str(field(a, "identity_role"));
-      const tb = str(field(memB, "user_type_snapshot")) || str(field(b, "identity_role"));
-      return ta.localeCompare(tb);
+      return roleRank(a) - roleRank(b);
     }
     case "status":
       return shownStatus(a).localeCompare(shownStatus(b));

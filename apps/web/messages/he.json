@@ -4991,7 +4991,8 @@
     "programmingDialogNoOpenClass": "אין באותו יום שיעור שעוד לא הסתיים. בחר „אימון נפרד” או יום אחר.",
     "ntfWaitlistedByStaffTitle": "אתה ברשימת ההמתנה",
     "ntfWaitlistedByStaffBody": "{class} · מקום {position} בתור. אם יתפנה מקום, תירשם אוטומטית.",
-    "ntfWaitlistedByStaffBodyPlain": "{class}. אם יתפנה מקום, תירשם אוטומטית."
+    "ntfWaitlistedByStaffBodyPlain": "{class}. אם יתפנה מקום, תירשם אוטומטית.",
+    "apiErrorClientRoleRequired": "כל לקוח שומר תפקיד לקוח: חבר בוקס, ספורטאי או אורח."
   },
   "PrSharing": {
     "gymLabel": "איפה קבעת את השיא הזה?",
@@ -21616,5 +21617,40 @@
     "byStaff": "על ידי הצוות",
     "fullOption": "מלא · רשימת המתנה",
     "saving": "שומר…"
+  },
+  "LedgerRoles": {
+    "column": "תפקידים",
+    "changeFor": "שינוי תפקידים: {name}",
+    "title": "תפקידים: {name}",
+    "hint_member": "מזמין מקומות בשיעורים",
+    "hint_athlete": "מקבל תוכנית אישית",
+    "hint_guest": "קונה בקבלה בלבד",
+    "clientRoleRequired": "השאר לפחות תפקיד לקוח אחד: חבר בוקס, ספורטאי או אורח.",
+    "bookingsCancelled": "{count, plural, one {הזמנה עתידית אחת תבוטל.} other {# הזמנות עתידיות יבוטלו.}}",
+    "bulkBookingsCancelled": "{count, plural, one {בסך הכול תבוטל הזמנה עתידית אחת.} other {בסך הכול יבוטלו # הזמנות עתידיות.}}",
+    "packageKept": "‏„{name}” נשאר פעיל עד {date}, בלי הזמנת שיעורים.",
+    "packageKeptOpen": "‏„{name}” נשאר פעיל עד שיסתיים, בלי הזמנת שיעורים.",
+    "bulkPackagesKept": "{count, plural, one {חבילת מנוי אחת נשארת פעילה עד שתסתיים.} other {# חבילות מנוי נשארות פעילות עד שיסתיימו.}}",
+    "save": "שמירה",
+    "saving": "שומר…",
+    "cancel": "ביטול",
+    "close": "סגירה",
+    "selectShown": "בחירת הכול",
+    "selectPerson": "בחירת {name}",
+    "selected": "{count, plural, one {נבחר אחד} other {# נבחרו}}",
+    "bulkChange": "שינוי תפקידים",
+    "clearSelection": "ניקוי",
+    "bulkTitle": "{count, plural, one {שינוי תפקידים ללקוח אחד} other {שינוי תפקידים ל־# לקוחות}}",
+    "bulkHelp": "בחר מה נוסף ומה מוסר. שאר התפקידים של כל אחד נשארים כמו שהם.",
+    "choiceFor": "מה קורה לתפקיד {role}",
+    "keep": "ללא שינוי",
+    "add": "הוספה",
+    "remove": "הסרה",
+    "bulkWillChange": "{count, plural, =0 {אף אחד לא ישתנה.} one {לקוח אחד ישתנה.} other {# לקוחות ישתנו.}}",
+    "bulkApply": "{count, plural, =0 {החלה} other {החלה על #}}",
+    "bulkDone": "{count, plural, =0 {אף אחד לא השתנה.} one {לקוח אחד השתנה.} other {# לקוחות השתנו.}}",
+    "bulkWillRefuse": "{count, plural, one {אדם אחד לא ישתנה:} other {# אנשים לא ישתנו:}}",
+    "bulkRefused": "{count, plural, one {אדם אחד לא השתנה:} other {# אנשים לא השתנו:}}",
+    "refusedLine": "{name}: {reason}"
   }
 }

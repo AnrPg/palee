@@ -130,6 +130,8 @@ defmodule PaleeWeb.RouteActivity do
     {W.AdminUserController, :delete} => "member.remove",
     {W.AdminUserController, :update_role} => "member.role_change",
     {W.AdminUserController, :update_roles} => "member.role_change",
+    {W.AdminUserController, :change_client_roles} => "member.role_change",
+    {W.AdminUserController, :preview_client_roles} => :skip,
     {W.RoleAccessController, :update} => "role_access.change",
     {W.OwnerOrganizationController, :transfer} => "organization.transfer",
     {W.OwnerOrganizationController, :archive} => "organization.archive",

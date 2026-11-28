@@ -1383,6 +1383,9 @@ defmodule PaleeWeb.Router do
 
     get("/users", AdminUserController, :index)
     post("/users/programming", AdminUserController, :program_workout_for_users)
+    # ADR-812: change box roles of one or many clients from the finance ledger.
+    post("/users/roles/changes/preview", AdminUserController, :preview_client_roles)
+    post("/users/roles/changes", AdminUserController, :change_client_roles)
     get("/users/:id", AdminUserController, :show)
     get("/users/:id/finance", AdminUserController, :finance)
     get("/users/:id/training-history", AdminUserController, :training_history)

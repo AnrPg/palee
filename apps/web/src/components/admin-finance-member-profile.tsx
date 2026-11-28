@@ -305,7 +305,6 @@ export function AdminFinanceMemberProfile({ userId }: { userId: string }) {
   const updateMembershipMutation = useMutation({
     mutationFn: async (overrideReason?: string) =>
       updateFinanceMember(token!, userId, {
-        user_type_snapshot: membershipForm.user_type_snapshot,
         status: membershipForm.status,
         signup_source: membershipForm.signup_source,
         starts_on: membershipForm.starts_on || null,
@@ -542,14 +541,7 @@ export function AdminFinanceMemberProfile({ userId }: { userId: string }) {
                 updateMembershipMutation.mutate(undefined);
               }}
             >
-              <Select
-                label={i18n("userType0bea7a8")}
-                value={membershipForm.user_type_snapshot}
-                options={["member", "athlete"]}
-                onChange={(user_type_snapshot) =>
-                  setMembershipOverrides({ ...membershipOverrides, user_type_snapshot })
-                }
-              />
+              {/* ADR-812: the type follows the box roles; it is changed there, never here. */}
               <Select
                 label={i18n("statusbae7d5b")}
                 value={membershipForm.status}

@@ -4991,7 +4991,8 @@
     "programmingDialogNoOpenClass": "Δεν υπάρχει τμήμα αυτή τη μέρα που να μην έχει τελειώσει. Διάλεξε «Ξεχωριστή προπόνηση» ή άλλη μέρα.",
     "ntfWaitlistedByStaffTitle": "Είσαι στη λίστα αναμονής",
     "ntfWaitlistedByStaffBody": "{class} · θέση {position} στη σειρά. Αν ανοίξει θέση, η κράτησή σου γίνεται αυτόματα.",
-    "ntfWaitlistedByStaffBodyPlain": "{class}. Αν ανοίξει θέση, η κράτησή σου γίνεται αυτόματα."
+    "ntfWaitlistedByStaffBodyPlain": "{class}. Αν ανοίξει θέση, η κράτησή σου γίνεται αυτόματα.",
+    "apiErrorClientRoleRequired": "Κάθε πελάτης κρατά έναν ρόλο πελάτη: Μέλος box, Αθλητής ή Επισκέπτης."
   },
   "PrSharing": {
     "gymLabel": "Πού πέτυχες αυτό το PR;",
@@ -21616,5 +21617,40 @@
     "byStaff": "από staff",
     "fullOption": "γεμάτο · λίστα αναμονής",
     "saving": "Αποθήκευση…"
+  },
+  "LedgerRoles": {
+    "column": "Ρόλοι",
+    "changeFor": "Αλλαγή ρόλων: {name}",
+    "title": "Ρόλοι: {name}",
+    "hint_member": "Κλείνει θέσεις σε τμήματα",
+    "hint_athlete": "Παίρνει προσωπικό πρόγραμμα",
+    "hint_guest": "Αγοράζει μόνο στην υποδοχή",
+    "clientRoleRequired": "Κράτα τουλάχιστον έναν ρόλο πελάτη: Μέλος box, Αθλητής ή Επισκέπτης.",
+    "bookingsCancelled": "{count, plural, one {Θα ακυρωθεί # μελλοντική κράτηση.} other {Θα ακυρωθούν # μελλοντικές κρατήσεις.}}",
+    "bulkBookingsCancelled": "{count, plural, one {Θα ακυρωθεί # μελλοντική κράτηση συνολικά.} other {Θα ακυρωθούν # μελλοντικές κρατήσεις συνολικά.}}",
+    "packageKept": "Το «{name}» μένει ενεργό μέχρι {date}, χωρίς κρατήσεις τμημάτων.",
+    "packageKeptOpen": "Το «{name}» μένει ενεργό μέχρι να λήξει, χωρίς κρατήσεις τμημάτων.",
+    "bulkPackagesKept": "{count, plural, one {# πακέτο συνδρομής μένει ενεργό μέχρι να λήξει.} other {# πακέτα συνδρομής μένουν ενεργά μέχρι να λήξουν.}}",
+    "save": "Αποθήκευση",
+    "saving": "Αποθήκευση…",
+    "cancel": "Άκυρο",
+    "close": "Κλείσιμο",
+    "selectShown": "Επιλογή όλων",
+    "selectPerson": "Επιλογή: {name}",
+    "selected": "{count, plural, one {# επιλεγμένος} other {# επιλεγμένοι}}",
+    "bulkChange": "Αλλαγή ρόλων",
+    "clearSelection": "Καθάρισμα",
+    "bulkTitle": "{count, plural, one {Αλλαγή ρόλων σε # πελάτη} other {Αλλαγή ρόλων σε # πελάτες}}",
+    "bulkHelp": "Διάλεξε τι προστίθεται και τι αφαιρείται. Οι άλλοι ρόλοι του καθενός μένουν όπως είναι.",
+    "choiceFor": "Τι γίνεται με τον ρόλο {role}",
+    "keep": "Ως έχει",
+    "add": "Προσθήκη",
+    "remove": "Αφαίρεση",
+    "bulkWillChange": "{count, plural, =0 {Κανείς δεν θα αλλάξει.} one {Θα αλλάξει # πελάτης.} other {Θα αλλάξουν # πελάτες.}}",
+    "bulkApply": "{count, plural, =0 {Εφαρμογή} other {Εφαρμογή σε #}}",
+    "bulkDone": "{count, plural, =0 {Δεν άλλαξε κανείς.} one {Άλλαξε # πελάτης.} other {Άλλαξαν # πελάτες.}}",
+    "bulkWillRefuse": "{count, plural, one {# άτομο δεν θα αλλάξει:} other {# άτομα δεν θα αλλάξουν:}}",
+    "bulkRefused": "{count, plural, one {# άτομο δεν άλλαξε:} other {# άτομα δεν άλλαξαν:}}",
+    "refusedLine": "{name}: {reason}"
   }
 }

@@ -42,6 +42,8 @@ async function ledger(
     receive?: (body: Record<string, unknown>) => Reply;
     /** ADR-274: fields of the ledger row (status, period, values set by hand). */
     row?: Record<string, unknown>;
+    /** ADR-812: the owner may change roles from the ledger. */
+    grantRoles?: boolean;
   } = {},
 ) {
   const persona = owner();
@@ -71,6 +73,7 @@ async function ledger(
             manage_memberships: "all",
             manage_packages: "all",
             view_package_catalog: "all",
+            ...(money.grantRoles ? { grant_staff_roles: "all" } : {}),
           },
           organization: { id: "org-1", slug: "kypseli", name: "Box Kypseli" },
           settings: { brand_name: "Box Kypseli", brand_logo_url: null, brand_primary_color: null },
@@ -368,5 +371,57 @@ test.describe("finance ledger", () => {
     await expect(page.getByText("€45.00")).toBeVisible();
     await page.getByRole("button", { name: "+ Payment" }).nth(1).click();
     await expect(page.getByRole("dialog", { name: "Record payment" })).toBeVisible();
+  });
+
+  test("staff see every role of a client and change them from the ledger, one or many (ADR-812)", async ({ page }) => {
+    const previews: unknown[] = [];
+    const changes: unknown[] = [];
+    await page.route("**/api/org/kypseli/admin/users/roles/changes/preview", (route) => {
+      previews.push(route.request().postDataJSON());
+      return route.fulfill(
+        json({ results: [{ user_id: MEMBER_ID, status: "preview", roles: ["member", "athlete", "coach"], impact: { future_bookings: 0, kept_package: null } }] }),
+      );
+    });
+    await page.route("**/api/org/kypseli/admin/users/roles/changes", (route) => {
+      changes.push(route.request().postDataJSON());
+      return route.fulfill(json({ results: [{ user_id: MEMBER_ID, status: "changed", roles: ["member", "athlete", "coach"] }] }));
+    });
+    await ledger(page, () => ({ status: 201, body: {} }), { grantRoles: true, row: { roles: ["coach", "member"] } });
+
+    const rolesButton = page.getByTestId("ledger-roles-button");
+    await expect(rolesButton).toBeVisible();
+    await expect(rolesButton.locator("[data-role]")).toHaveText(["Box member", "Coach"]);
+
+    await rolesButton.click();
+    const editor = page.getByRole("dialog", { name: "Roles: Maria" });
+    await expect(editor).toBeVisible();
+    const athlete = editor.locator('[data-role="athlete"]');
+    await expect(athlete).toBeEnabled();
+    await athlete.click();
+    await expect.poll(() => previews.length).toBeGreaterThan(0);
+    const save = editor.getByTestId("ledger-roles-save");
+    await expect(save).toBeEnabled();
+    await save.click();
+    await expect.poll(() => changes).toEqual([{ user_ids: [MEMBER_ID], add: ["athlete"], remove: [] }]);
+    await expect(editor).toBeHidden();
+
+    // Many at once: pick the row, then one change for everyone picked.
+    const pick = page.getByTestId("ledger-select-row");
+    await expect(pick).toBeVisible();
+    await pick.check();
+    const open = page.getByTestId("ledger-bulk-roles-open");
+    await expect(open).toBeVisible();
+    await open.click();
+    const bulk = page.getByTestId("ledger-bulk-roles");
+    await expect(bulk).toBeVisible();
+    const addGuest = bulk.locator('[data-role="guest"][data-choice="add"]');
+    await expect(addGuest).toBeEnabled();
+    await addGuest.click();
+    const apply = bulk.getByTestId("ledger-bulk-apply");
+    await expect(apply).toBeEnabled();
+    await apply.click();
+    await expect.poll(() => changes.length).toBe(2);
+    expect(changes[1]).toEqual({ user_ids: [MEMBER_ID], add: ["guest"], remove: [] });
+    await expect(bulk.getByTestId("ledger-bulk-done")).toBeVisible();
   });
 });

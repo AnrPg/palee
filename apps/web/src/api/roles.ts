@@ -58,6 +58,36 @@ export async function updateMemberRoles(token: string, userId: string, roles: Ro
   return response.membership;
 }
 
+type ClientRolesResponse = Json<Op["PaleeWeb.AdminUserController.change_client_roles"]["responses"][200]>;
+export type ClientRolesResult = ClientRolesResponse["results"][number];
+export type ClientRolesChange = { user_ids: string[]; add: RoleName[]; remove: RoleName[] };
+
+/** ADR-812: at most this many people per request; callers send larger sets in parts. */
+export const CLIENT_ROLES_BATCH = 50;
+
+async function clientRolesRequest(token: string, path: string, change: ClientRolesChange) {
+  const results: ClientRolesResult[] = [];
+  for (let start = 0; start < change.user_ids.length; start += CLIENT_ROLES_BATCH) {
+    const response = await apiRequest<ClientRolesResponse>(path, {
+      method: "POST",
+      token,
+      body: { ...change, user_ids: change.user_ids.slice(start, start + CLIENT_ROLES_BATCH) },
+    });
+    results.push(...response.results);
+  }
+  return results;
+}
+
+/** ADR-812: what adding and removing roles would do to each person; changes nothing. */
+export function previewClientRoles(token: string, change: ClientRolesChange) {
+  return clientRolesRequest(token, "/admin/users/roles/changes/preview", change);
+}
+
+/** ADR-812: adds and removes roles on each person (the finance ledger, one or many). */
+export function changeClientRoles(token: string, change: ClientRolesChange) {
+  return clientRolesRequest(token, "/admin/users/roles/changes", change);
+}
+
 type MyRolesResponse = Json<Op["PaleeWeb.MyRolesController.update"]["responses"][200]>;
 
 /** Settings › My roles: roles below my top role in this box (ADR-219). */

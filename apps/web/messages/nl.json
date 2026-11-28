@@ -4991,7 +4991,8 @@
     "programmingDialogNoOpenClass": "Die dag is er geen les meer die nog komt of bezig is. Kies ‘Losse training’ of een andere dag.",
     "ntfWaitlistedByStaffTitle": "Je staat op de wachtlijst",
     "ntfWaitlistedByStaffBody": "{class} · plaats {position} in de rij. Komt er een plek vrij, dan word je automatisch ingeschreven.",
-    "ntfWaitlistedByStaffBodyPlain": "{class}. Komt er een plek vrij, dan word je automatisch ingeschreven."
+    "ntfWaitlistedByStaffBodyPlain": "{class}. Komt er een plek vrij, dan word je automatisch ingeschreven.",
+    "apiErrorClientRoleRequired": "Elke klant houdt een klantrol: boxlid, atleet of gast."
   },
   "PrSharing": {
     "gymLabel": "Waar heb je dit PR neergezet?",
@@ -21616,5 +21617,40 @@
     "byStaff": "door het team",
     "fullOption": "vol · wachtlijst",
     "saving": "Opslaan…"
+  },
+  "LedgerRoles": {
+    "column": "Rollen",
+    "changeFor": "Rollen wijzigen: {name}",
+    "title": "Rollen: {name}",
+    "hint_member": "Boekt plaatsen in lessen",
+    "hint_athlete": "Krijgt persoonlijke programmering",
+    "hint_guest": "Koopt alleen aan de balie",
+    "clientRoleRequired": "Houd minstens één klantrol: boxlid, atleet of gast.",
+    "bookingsCancelled": "{count, plural, one {# toekomstige boeking wordt geannuleerd.} other {# toekomstige boekingen worden geannuleerd.}}",
+    "bulkBookingsCancelled": "{count, plural, one {In totaal wordt # toekomstige boeking geannuleerd.} other {In totaal worden # toekomstige boekingen geannuleerd.}}",
+    "packageKept": "‘{name}’ blijft actief tot {date}, zonder lesboekingen.",
+    "packageKeptOpen": "‘{name}’ blijft actief tot het afloopt, zonder lesboekingen.",
+    "bulkPackagesKept": "{count, plural, one {# abonnementspakket blijft actief tot het afloopt.} other {# abonnementspakketten blijven actief tot ze aflopen.}}",
+    "save": "Opslaan",
+    "saving": "Opslaan…",
+    "cancel": "Annuleren",
+    "close": "Sluiten",
+    "selectShown": "Alles selecteren",
+    "selectPerson": "{name} selecteren",
+    "selected": "{count, plural, one {# geselecteerd} other {# geselecteerd}}",
+    "bulkChange": "Rollen wijzigen",
+    "clearSelection": "Wissen",
+    "bulkTitle": "{count, plural, one {Rollen van # klant wijzigen} other {Rollen van # klanten wijzigen}}",
+    "bulkHelp": "Kies wat erbij komt en wat eraf gaat. Ieders andere rollen blijven zoals ze zijn.",
+    "choiceFor": "Wat er met de rol {role} gebeurt",
+    "keep": "Ongewijzigd",
+    "add": "Toevoegen",
+    "remove": "Verwijderen",
+    "bulkWillChange": "{count, plural, =0 {Niemand verandert.} one {# klant verandert.} other {# klanten veranderen.}}",
+    "bulkApply": "{count, plural, =0 {Toepassen} other {Toepassen op #}}",
+    "bulkDone": "{count, plural, =0 {Niemand is gewijzigd.} one {# klant is gewijzigd.} other {# klanten zijn gewijzigd.}}",
+    "bulkWillRefuse": "{count, plural, one {# persoon verandert niet:} other {# personen veranderen niet:}}",
+    "bulkRefused": "{count, plural, one {# persoon is niet gewijzigd:} other {# personen zijn niet gewijzigd:}}",
+    "refusedLine": "{name}: {reason}"
   }
 }

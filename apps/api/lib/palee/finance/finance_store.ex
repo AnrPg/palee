@@ -27,6 +27,8 @@ defmodule Palee.Finance.FinanceStore do
   @impl true
   def get_member_profile(user_id), do: adapter().get_member_profile(user_id)
   @impl true
+  def sync_user_type(user_id, user_type), do: adapter().sync_user_type(user_id, user_type)
+  @impl true
   def member_shop_terms(user_id), do: adapter().member_shop_terms(user_id)
   @impl true
   def search_member_summaries(params), do: adapter().search_member_summaries(params)

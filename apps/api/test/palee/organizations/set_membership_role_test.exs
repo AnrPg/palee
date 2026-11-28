@@ -252,9 +252,56 @@ defmodule Palee.Organizations.SetMembershipRoleTest do
       assert {:ok, booking} = SubmitBooking.call(context, member, slot.id)
       assert booking.status == :pending
 
-      assert {:ok, updated} = Organizations.set_membership_role(context, member.id, :athlete)
-      assert updated.role == :athlete
+      assert {:ok, updated} = Organizations.set_membership_role(context, member.id, :guest)
+      assert updated.role == :guest
       assert Scheduling.get_booking(context, booking.id) == nil
+    end
+
+    # ADR-812: still an athlete, so still a client of the box.
+    test "dropping :member while staying an athlete keeps the bookings and syncs the finance type" do
+      admin = TestFixtures.admin_fixture()
+      member = TestFixtures.user_fixture(%{role: :member})
+      {:ok, organization} = Organizations.create_organization(%{name: "Kept Booking Gym"})
+
+      for {user, role} <- [{admin, :owner}, {member, :member}] do
+        {:ok, _} =
+          Organizations.add_membership(%{
+            organization_id: organization.id,
+            user_id: user.id,
+            role: role,
+            status: :active,
+            joined_at: DateTime.utc_now()
+          })
+      end
+
+      {:ok, context} = Organizations.resolve_tenant_context(admin, organization.slug)
+
+      Repo.query!("SELECT set_config($1, $2, false)", [
+        "app.organization_id",
+        context.organization_id
+      ])
+
+      Repo.query!("SELECT set_config($1, $2, false)", ["app.user_id", member.id])
+
+      workout = TestFixtures.workout_fixture(admin)
+      TestFixtures.class_type_fixture(%{tenant_context: context})
+      slot = TestFixtures.slot_fixture(workout, %{auto_approve: false, tenant_context: context})
+
+      assert {:ok, booking} = SubmitBooking.call(context, member, slot.id)
+
+      {:ok, _profile} =
+        Palee.Finance.upsert_membership(context, member.id, %{
+          user_type_snapshot: "member",
+          status: "active",
+          signup_source: "admin_created"
+        })
+
+      assert {:ok, updated} = Organizations.set_membership_roles(context, member.id, [:athlete])
+      assert updated.roles == [:athlete]
+      assert %{status: :pending} = Scheduling.get_booking(context, booking.id)
+
+      assert Palee.Finance.get_member_profile(context, member.id).membership.user_type_snapshot ==
+               "athlete"
     end
 
     test "archiving assignment access does not reach another organization" do

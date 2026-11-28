@@ -629,7 +629,7 @@ export function buildFinanceMembersDocument(
       const referrals = Array.isArray(member.referrals_made_user_ids) ? member.referrals_made_user_ids : [];
       const nickname = displayValue(member.nickname || member.id || labels.members);
       const details = compact([
-        `${labels.type}: ${displayValue(member.identity_role ?? membership.user_type_snapshot)}`,
+        `${labels.type}: ${displayValue(Array.isArray(member.roles) && member.roles.length > 0 ? member.roles.join(", ") : (member.identity_role ?? membership.user_type_snapshot))}`,
         `${labels.status}: ${displayValue(membership.status)}`,
         `${labels.plan}: ${displayValue(financePackageLabel(subscription))}`,
         `${labels.expires}: ${displayValue(subscription.ends_on)}`,
