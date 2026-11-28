@@ -35,7 +35,7 @@ export function useMoneyConfirmation(kind: MoneyConfirmationKind) {
     mutationFn: () => skipConfirmationToday(token!, kind),
     onSuccess: (data) => queryClient.setQueryData(CONFIRMATION_SKIPS_KEY, data),
   });
-  const skipped = skips.data?.skipped.includes(kind) ?? false;
+  const skipped = skips.data?.skipped?.includes(kind) ?? false;
   return { ask: !skipped, skipToday: () => skip.mutateAsync() };
 }
 

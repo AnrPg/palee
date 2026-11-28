@@ -1,4 +1,5 @@
 import { expect, test, type Page, type Route } from "./support/test";
+import { confirmMoney } from "./support/finance";
 
 // Card surcharge (ADR-340, W1 mockup): s1 B the 3-step guide in
 // Ρυθμίσεις › Πληρωμές, s3 A «Τι κάρτα έδωσε;» at «Κάρτα στο POS» when
@@ -171,6 +172,7 @@ test("at «Κάρτα στο POS» the desk asks what card it was and shows the 
   await expect(question.getByTestId("desk-surcharge-total")).toContainText("60,90");
 
   await dialog.getByRole("button", { name: "Καταγραφή πληρωμής", exact: true }).click();
+  await confirmMoney(page, /60,\d\d/);
   const receivePath = `/api/admin/finance/members/${MEMBER_ID}/payments/receive`;
   await expect.poll(() => writes.some((write) => write.path === receivePath)).toBe(true);
   const receive = writes.find((write) => write.path === receivePath);

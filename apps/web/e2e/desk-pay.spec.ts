@@ -1,5 +1,6 @@
 import { createServer, type Server } from "node:http";
 
+import { confirmMoney } from "./support/finance";
 import { expect, test, type Page, type Route } from "./support/test";
 
 import { stubApiPort } from "../playwright.config";
@@ -268,6 +269,7 @@ test("the desk sees «Περιμένουν πληρωμή», opens the person's 
   await dialog.getByRole("radio", { name: /Μετρητά/ }).click();
   await expect(dialog.getByTestId("desk-collect-confirm")).toHaveText("Εισπράχθηκαν 75,00 €");
   await dialog.getByTestId("desk-collect-confirm").click();
+  await confirmMoney(page, "75,00");
   await expect(page.getByText("R-0008")).toBeVisible();
   const collect = writes.find((write) => write.path === "/api/admin/finance/package-requests/req-1/collect");
   expect(collect?.body).toEqual({ payment_method: "cash" });
