@@ -127,7 +127,7 @@ export function Goers({ event, max = 5 }: { event: CommunityEvent; max?: number 
         <span className="flex -space-x-2 rtl:space-x-reverse">
           {faces.map((person) => (
             <span key={person.id} className="rounded-full" style={{ boxShadow: "0 0 0 2px var(--panel)" }}>
-              <PersonAvatar name={person.nickname} url={person.avatar_url} size={32} />
+              <PersonAvatar name={person.nickname} url={person.avatar_url} personId={person.id} size={32} />
             </span>
           ))}
         </span>

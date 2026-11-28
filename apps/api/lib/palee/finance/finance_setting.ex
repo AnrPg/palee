@@ -31,6 +31,10 @@ defmodule Palee.Finance.FinanceSetting do
     # ADR-717: classes a person may book while their «Το θέλω» waits for the
     # front desk, per person and box (0 = none until the desk activates).
     field :package_wait_bookings, :integer, default: 3
+    # ADR-795: when a package's period and next payment start: the member's
+    # first completed class or WOD, or the payment.
+    # ADR-795: nil = the platform default (`PackageStart.default_mode/0`).
+    field :package_starts_with, :string
 
     timestamps(type: :utc_datetime_usec)
   end
@@ -49,7 +53,8 @@ defmodule Palee.Finance.FinanceSetting do
       :package_modules,
       :package_audience,
       :featured_package_id,
-      :package_wait_bookings
+      :package_wait_bookings,
+      :package_starts_with
     ])
     |> validate_required([
       :payment_reminder_interval_days,
@@ -80,6 +85,10 @@ defmodule Palee.Finance.FinanceSetting do
     ])
     |> validate_length(:entitlement_timezone, min: 1, max: 100)
     |> validate_inclusion(:document_mode, ["invoice", "receipt"])
+    |> validate_inclusion(:package_starts_with, Palee.Finance.Domain.PackageStart.modes())
+    |> check_constraint(:package_starts_with,
+      name: :finance_settings_package_starts_with_check
+    )
     |> validate_package_modules()
     |> validate_inclusion(:package_audience, Palee.Finance.Domain.PackageAudience.audiences())
     |> foreign_key_constraint(:featured_package_id)

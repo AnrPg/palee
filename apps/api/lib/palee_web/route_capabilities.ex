@@ -425,6 +425,9 @@ defmodule PaleeWeb.RouteCapabilities do
     {W.AdminCoachPayController, :archive_item} => [:manage_settings],
     # A staff member's own statements: every staff role may be paid (ADR-382);
     # the service only ever reads the caller's own.
+    # ADR-795: the money questions are asked of whoever records money.
+    {W.AdminConfirmationSkipsController, :index} => [:take_payments, :manage_billing],
+    {W.AdminConfirmationSkipsController, :create} => [:take_payments, :manage_billing],
     {W.MyCoachPayController, :index} => @own_pay,
     {W.MyCoachPayController, :payslip} => @own_pay,
     # ADR-340: the card surcharge.

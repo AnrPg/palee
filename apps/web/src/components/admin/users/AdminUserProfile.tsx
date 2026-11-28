@@ -27,6 +27,7 @@ import { setFinanceMemberAutoRenew, updateFinanceMember } from "@/api/finance";
 import { dossierMode, grantableAllowances, membershipDateCards, prSectionContentCount, visibleAdminProfileSections } from "@/components/admin/users/admin-user-profile";
 import { MemberBenefits } from "@/components/admin/users/MemberBenefits";
 import { PackageTermUpdates } from "@/components/finance/PackageTermUpdates";
+import { PackageStartNotice, type PackageStartView } from "@/components/finance/PackageStartNotice";
 import { MembershipFreezes } from "@/components/admin/users/MembershipFreezes";
 import { MembershipLeaving } from "@/components/admin/users/MembershipLeaving";
 import {
@@ -366,6 +367,11 @@ function FinanceDetails({
                 );
               })}
             </div>
+            {/* ADR-795: waiting for the first class, or for the member's «Το κατάλαβα». */}
+            {subscriptions.map((subscription) => {
+              const start = (subscription as { package_start?: PackageStartView | null }).package_start;
+              return start ? <PackageStartNotice key={start.id} start={start} audience="staff" /> : null;
+            })}
             {/* ADR-770: the same «Νέοι όροι από…» the member sees. */}
             <PackageTermUpdates updates={currentSubscription?.term_updates as Parameters<typeof PackageTermUpdates>[0]["updates"]} />
             {commitment ? (

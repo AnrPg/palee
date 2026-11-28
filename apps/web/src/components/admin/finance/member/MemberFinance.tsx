@@ -5,11 +5,12 @@ import { useTranslations } from "next-intl";
 import { useId, useState, type CSSProperties, type ReactNode } from "react";
 
 import { assignFinancePackage, fetchFinanceMember, fetchFinancePackages, reverseFinancePayment, type FinanceRecord, type PackageRemoval } from "@/api/finance";
-import { fetchMemberBenefits } from "@/api/member-benefits";
+import { fetchMemberBenefits, giveMemberBenefit } from "@/api/member-benefits";
 import { DeskPackageRequestRows, useDeskPackageRequests } from "@/components/admin/finance/payments/DeskPackageRequests";
 import { ReceivePaymentDialog } from "@/components/admin/finance/payments/ReceivePaymentDialog";
 import { parseAmountCents, amountInput } from "@/components/admin/finance/payments/receive-payment";
 import { InlineAssignPackage } from "@/components/admin/finance/shared/InlineAssignPackage";
+import { MoneyConfirmDialog, useMoneyConfirmation } from "@/components/admin/finance/shared/MoneyConfirm";
 import { PackageRemovedToast } from "@/components/admin/finance/shared/PackageRemovedToast";
 import { RemovePackageDialog, type ReplacementPackage } from "@/components/admin/finance/shared/RemovePackageDialog";
 import { useBenefitTitle } from "@/components/admin/users/MemberBenefits";
@@ -154,6 +155,18 @@ export function MemberFinance({
     mutationFn: (packageId: string) => assignFinancePackage(token, userId, { membership_package_id: packageId }),
     onSuccess: refresh,
   });
+  // ADR-795 «Χωρίς χρέωση»: an ADR-612 free package instead of a made-up payment.
+  const giveFreeMutation = useMutation({
+    mutationFn: ({ packageId, reason }: { packageId: string; reason: string | null }) =>
+      giveMemberBenefit(token, userId, {
+        kind: "package",
+        package_id: packageId,
+        pricing: { mode: "this_period_free" },
+        reason,
+        idempotency_key: `free-package-${userId}-${packageId}-${Date.now()}`,
+      }),
+    onSuccess: refresh,
+  });
 
   const profile = profileQuery.data;
   const packages = packagesQuery.data?.packages ?? [];
@@ -280,6 +293,8 @@ export function MemberFinance({
                     }
                   : undefined
               }
+              onReceive={() => setPaying({})}
+              onGiveFree={(packageId, reason) => giveFreeMutation.mutateAsync({ packageId, reason })}
             />
           ) : null}
         </div>
@@ -608,6 +623,11 @@ function RefundDialog({
         : null
     : null;
 
+  // ADR-795: «Έδωσες πραγματικά … σε μετρητά;» before a cash refund, unless skipped today.
+  const cashConfirmation = useMoneyConfirmation("cash_refund");
+  const [confirmingCash, setConfirmingCash] = useState(false);
+  const cash = payment.method === "cash" && payment.status !== "waived";
+
   const mutation = useMutation({
     mutationFn: () =>
       reverseFinancePayment(token, userId, payment.id, {
@@ -618,6 +638,21 @@ function RefundDialog({
       }),
     onSuccess: onDone,
   });
+
+  if (confirmingCash) {
+    return (
+      <MoneyConfirmDialog
+        kind="cash_refund"
+        amount={formatMinorUnits(locale, cents ?? 0)}
+        pending={mutation.isPending}
+        onBack={() => setConfirmingCash(false)}
+        onConfirm={() => {
+          setConfirmingCash(false);
+          mutation.mutate();
+        }}
+      />
+    );
+  }
 
   return (
     <Dialog
@@ -632,7 +667,8 @@ function RefundDialog({
         event.preventDefault();
         setChecked(true);
         if (cents === null || cents > payment.refundableCents) return;
-        mutation.mutate();
+        if (cash && cashConfirmation.ask) setConfirmingCash(true);
+        else mutation.mutate();
       }}
       error={mutation.error ? <ErrorNotice variant="field">{localizeError(mutation.error, i18n)}</ErrorNotice> : null}
       footer={

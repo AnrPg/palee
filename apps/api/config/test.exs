@@ -80,6 +80,11 @@ config :palee, :token_issuer, Palee.Infrastructure.Auth.GuardianTokenIssuer
 config :palee, :token_verifier, Palee.Infrastructure.Auth.GuardianTokenVerifier
 config :palee, :password_verifier, Palee.Infrastructure.Auth.Password
 
+# ADR-795: boxes that have not chosen start packages with the first class;
+# the tests written before it describe packages that start on payment. The
+# ADR-795 tests choose `first_session` themselves.
+config :palee, :package_starts_default, "payment"
+
 config :palee, :meilisearch,
   url: System.get_env("MEILI_URL", "http://localhost:7700"),
   api_key: System.get_env("MEILI_MASTER_KEY", "dev-meili-master-key"),

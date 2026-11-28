@@ -287,7 +287,7 @@ function PersonRow({ entry, marker = true, children }: { entry: FollowEntry; mar
       </span>
     ) : null;
   return (
-    <Row href={`/people/${person.id}`} name={person.nickname ?? "?"} image={person.avatar_url} detail={detail}>
+    <Row href={`/people/${person.id}`} personId={person.id} name={person.nickname ?? "?"} image={person.avatar_url} detail={detail}>
       {children}
     </Row>
   );
@@ -295,12 +295,14 @@ function PersonRow({ entry, marker = true, children }: { entry: FollowEntry; mar
 
 function Row({
   href,
+  personId,
   name,
   image,
   detail,
   children,
 }: {
   href: string;
+  personId?: string;
   name: string;
   image?: string | null;
   detail?: React.ReactNode;
@@ -309,7 +311,7 @@ function Row({
   return (
     <li className={`${itemRow} rounded-3xl p-3`} style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
       <Link href={href} className={itemRowMain}>
-        <PersonAvatar name={name} url={image} />
+        <PersonAvatar name={name} url={image} personId={personId} />
         <span className="min-w-0">
           <span className="block truncate font-bold" style={{ color: "var(--text)" }}>{name}</span>
           {detail}

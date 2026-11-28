@@ -1,5 +1,6 @@
 "use client";
 
+import { MoneyConfirmDialog, useMoneyConfirmation } from "@/components/admin/finance/shared/MoneyConfirm";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
@@ -133,11 +134,32 @@ export function OrderPanel({ orderId, onClose }: { orderId: string; onClose: () 
   const [refund, setRefund] = useState<Record<string, number>>({});
   const [restock, setRestock] = useState(true);
   const data = order.data;
+  // ADR-795: «Πληρώθηκε στην υποδοχή;» before a pickup that takes money, unless skipped today.
+  const pickupConfirmation = useMoneyConfirmation("shop_pickup");
+  const [confirmingPickup, setConfirmingPickup] = useState(false);
 
   const done = () => setStep(null);
+  const pickup = () => {
+    if (!data) return;
+    gate(() => act.mutate({ action: "pickup", payment_method: pickupNeedsPayment(data) ? method : undefined }, { onSuccess: done }));
+  };
   const actions = data ? orderActions(data) : [];
 
   return (
+    <>
+    {confirmingPickup && data ? (
+      <MoneyConfirmDialog
+        kind="shop_pickup"
+        amount={formatMoney(data.total_cents - data.paid_cents, locale, data.currency)}
+        detail={<p>{customerOf(data, t("walkIn"))} · {t(`mode.${method}`)}</p>}
+        pending={act.isPending}
+        onBack={() => setConfirmingPickup(false)}
+        onConfirm={() => {
+          setConfirmingPickup(false);
+          pickup();
+        }}
+      />
+    ) : null}
     <SidePanel title={data ? orderLabel(data) : t("loading")} subtitle={data ? t(`status.${data.status}`) : undefined} onClose={onClose}>
       {order.isLoading ? (
         <StatusText tone="muted">{t("loading")}</StatusText>
@@ -201,7 +223,7 @@ export function OrderPanel({ orderId, onClose }: { orderId: string; onClose: () 
                   className={primaryButtonClass}
                   style={primaryButtonStyle}
                   disabled={act.isPending}
-                  onClick={() => gate(() => act.mutate({ action: "pickup", payment_method: pickupNeedsPayment(data) ? method : undefined }, { onSuccess: done }))}
+                  onClick={() => (pickupNeedsPayment(data) && pickupConfirmation.ask ? setConfirmingPickup(true) : pickup())}
                 >
                   {t("confirmPickup")}
                 </button>
@@ -283,6 +305,7 @@ export function OrderPanel({ orderId, onClose }: { orderId: string; onClose: () 
         </div>
       )}
     </SidePanel>
+    </>
   );
 }
 

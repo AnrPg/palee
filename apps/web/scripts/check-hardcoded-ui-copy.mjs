@@ -41,10 +41,10 @@ const technicalProperties = new Set([
   "inputMode", "inputType", "key", "kind", "localeMatcher", "manifest", "margin", "method", "minute", "month", "name",
   "padding", "pattern", "rel", "role", "scope", "second", "slug", "source", "status", "style",
   "step", "target", "timeStyle", "tone", "type", "unit", "value", "variant", "weekday", "width", "year",
-  "aria-current", "panelClassName", "bodyClassName", "panelStyle", "paddingTop",
+  "aria-current", "panelClassName", "bodyClassName", "panelStyle", "paddingTop", "idempotency_key",
 ]);
 const technicalCalls = new Set([
-  "addEventListener", "endsWith", "get", "getItem", "getPropertyValue", "includes", "join",
+  "addEventListener", "closest", "endsWith", "get", "getItem", "getPropertyValue", "includes", "join",
   "localeCompare", "open", "querySelector", "removeEventListener", "removeItem", "replace", "replaceAll",
   "set", "setItem", "setProperty", "slice", "split", "startsWith", "substring", "useTranslations", "getTranslations",
 ]);

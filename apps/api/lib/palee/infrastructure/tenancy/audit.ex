@@ -27,6 +27,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     finance_value_overrides finance_package_requests finance_package_wait_bookings
     finance_package_audience_exceptions
     finance_package_term_changes finance_subscription_term_updates
+    finance_package_starts finance_confirmation_skips
     leads lead_tasks lead_events
     box_automations automation_deliveries automation_member_preferences
     retention_risks retention_risk_actions

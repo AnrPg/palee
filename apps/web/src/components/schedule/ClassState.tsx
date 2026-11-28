@@ -186,6 +186,16 @@ export function ClassActionDialog({
         <p className="text-sm leading-6" style={{ color: "var(--text-soft)" }}>
           {t(`classActionBody_${action}`)}
         </p>
+        {/* ADR-795: how many people the cancellation reaches, said before it happens. */}
+        {action === "cancel" && (slot.approved_booking_count ?? 0) + (slot.waitlist_count ?? 0) > 0 ? (
+          <p
+            className="rounded-2xl px-4 py-3 text-sm font-semibold"
+            style={{ background: "color-mix(in srgb, var(--danger) 10%, var(--panel))", border: "1px solid var(--danger-border)", color: "var(--text)" }}
+            data-testid="class-cancel-count"
+          >
+            {t("classCancelReaches", { count: (slot.approved_booking_count ?? 0) + (slot.waitlist_count ?? 0) })}
+          </p>
+        ) : null}
         {action === "cancel" ? (
           <label className="block space-y-2 text-sm font-semibold" style={{ color: "var(--muted)" }}>
             <span>{t("classCancelReasonLabel")}</span>

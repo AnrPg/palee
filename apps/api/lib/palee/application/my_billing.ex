@@ -22,6 +22,7 @@ defmodule Palee.Application.MyBilling do
   require Logger
 
   alias Palee.Application.{EntitlementClassTypeNames, MemberPerks, MembershipRenewal, MyProviders}
+  alias Palee.Application.Finance.PackageStarts
   alias Palee.{Finance, Organizations, Referrals, Seasons, Trials}
   alias Palee.Finance.Domain.MemberStatus
 
@@ -260,11 +261,14 @@ defmodule Palee.Application.MyBilling do
     listed = Enum.take(profile.package_subscriptions, @history_limit)
     # ADR-770: the package changes staff gave the package in force.
     term_updates = Finance.subscription_term_updates(tenant, List.wrap(active_id))
+    # ADR-795: a package waiting for the first class, or for «Το κατάλαβα».
+    starts = PackageStarts.for_subscriptions(tenant, listed)
 
     Enum.map(listed, fn subscription ->
       subscription
       |> present_subscription(active_id, leaving?(profile.membership))
       |> Map.put(:term_updates, Map.get(term_updates, subscription.id, []))
+      |> Map.put(:package_start, Map.get(starts, subscription.id))
     end)
   end
 

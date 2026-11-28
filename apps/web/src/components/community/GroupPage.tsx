@@ -412,7 +412,7 @@ function MemberRow({ club, group, row }: { club: CommunityClub; group: Community
     <li className="flex flex-col gap-1 py-2">
       <div className="flex min-h-12 items-center gap-3">
         <Link href={`/people/${userId}`} className="flex min-w-0 grow items-center gap-3">
-          <PersonAvatar name={row.person.nickname} url={row.person.avatar_url} />
+          <PersonAvatar name={row.person.nickname} url={row.person.avatar_url} personId={row.person.id} />
           <span className="truncate font-bold" style={{ color: "var(--text)" }}>{row.person.nickname ?? "?"}</span>
         </Link>
         {row.role === "admin" && row.status === "member" ? <Badge>{t("groupAdmin")}</Badge> : null}

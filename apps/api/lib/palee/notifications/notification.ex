@@ -129,6 +129,8 @@ defmodule Palee.Notifications.Notification do
     :package_removed,
     # ADR-770: the member's package changes for its holders.
     :package_terms_changed,
+    # ADR-795: the package changed while it waited for the first session.
+    :package_start_review,
     # ADR-690: the Palee team adopted or merged a type the box made.
     :workout_kind_adopted,
     # ADR-633: «Χωρίς πακέτο, χωρίς κράτηση».

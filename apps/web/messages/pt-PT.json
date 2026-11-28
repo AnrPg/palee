@@ -323,7 +323,8 @@
     "slotOwnWod": "WOD próprio (o do dia é «{title}»).",
     "slotFollowDay": "Voltar ao WOD do dia",
     "classCoachChip": "Coach: {coach}",
-    "wodPickerChoose": "Escolher WOD"
+    "wodPickerChoose": "Escolher WOD",
+    "classCancelReaches": "{count, plural, one {# pessoa com reserva ou em espera vai ser avisada e o lugar cancelado.} other {# pessoas com reserva ou em espera vão ser avisadas e os lugares cancelados.}}"
   },
   "Ui": {
     "exercise1091b7f": "Exercício",
@@ -3091,7 +3092,6 @@
     "pkgFieldTermsConversionPackageIdHint": "A mensalidade que recomendamos ao membro quando a experiência termina.",
     "pkgFieldTermsMinimumCommitmentMonths": "Fidelização mínima",
     "pkgFieldTermsJoiningFeeCents": "Taxa de inscrição",
-    "pkgFieldTermsValidityStarts": "Início da validade",
     "pkgFieldTermsExpiryReminderDays": "Lembrete de expiração",
     "pkgFieldTermsCompatiblePackageIds": "Pacotes de subscrição compatíveis",
     "pkgFieldTermsBeneficiaries": "Pessoas incluídas",
@@ -3380,7 +3380,6 @@
     "pkgSummaryEvents": "Eventos e workshops",
     "pkgSummaryCommitment": "{count, plural, one {Fidelização mínima: # mês} other {Fidelização mínima: # meses}}",
     "pkgSummaryJoiningFee": "Taxa de inscrição única {amount}",
-    "pkgSummaryValidityFromFirstUse": "A validade começa na sua primeira visita",
     "pkgLocationsAll": "Todos os espaços",
     "pkgLocationsSome": "Espaços selecionados",
     "pkgNoLocationsYet": "Válido em todos os espaços. Adicione espaços nas definições para limitar.",
@@ -3403,8 +3402,6 @@
     "pkgFieldBookingCancellationCutoffHoursSuffix": "{count, plural, one {hora antes da aula} other {horas antes da aula}}",
     "pkgFieldPerksFreezeDaysPerYearSuffix": "{count, plural, one {dia por ano} other {dias por ano}}",
     "pkgFieldPerksMemberDiscountPercentSuffix": "%",
-    "pkgFieldTermsValidityStarts_purchase": "Na compra",
-    "pkgFieldTermsValidityStarts_first_use": "Na primeira visita",
     "pkgFieldBookingWaitlistPriority_normal": "Normal",
     "pkgFieldBookingWaitlistPriority_high": "Alta",
     "pkgFieldPerksMemberDiscountScope_products": "Produtos",
@@ -3416,7 +3413,6 @@
     "pkgModule_eventsHint": "Workshops e sessões especiais reservados como aulas.",
     "pkgFieldTermsMinimumCommitmentMonthsHint": "Os sócios não podem cancelar antes, a menos que abra uma exceção.",
     "pkgFieldTermsJoiningFeeCentsHint": "É adicionada uma vez à primeira fatura do membro para este pacote de subscrição.",
-    "pkgFieldTermsValidityStartsHint": "Com a primeira visita, a validade começa a contar quando o membro usa o pacote de subscrição pela primeira vez.",
     "pkgFieldTermsExpiryReminderDaysHint": "Avisamos o membro este número de dias antes de o pacote de subscrição terminar. 0 desativa o aviso.",
     "pkgFieldGroupClassesRolloverMaxHint": "As aulas não usadas passam para o período seguinte, até este número.",
     "pkgFieldGroupClassesTimeWindowsHint": "Para pacotes de subscrição fora das horas de ponta: os membros da box só podem reservar aulas nestes horários.",
@@ -4989,7 +4985,24 @@
     "selectedAthleteCount": "{count, plural, one {# atleta selecionado} other {# atletas selecionados}}",
     "roundCount": "{count, plural, one {# ronda} other {# rondas}}",
     "optionCount": "{count, plural, one {# opção} other {# opções}}",
-    "userCount": "{count, plural, one {# utilizador} other {# utilizadores}}"
+    "userCount": "{count, plural, one {# utilizador} other {# utilizadores}}",
+    "pkgStartWaitingMember": "Começa com o teu primeiro treino",
+    "pkgStartWaitingStaff": "Começa com o primeiro treino",
+    "pkgStartWaitingHint": "Atribuído a {date}. O período e o próximo pagamento contam a partir da primeira aula ou WOD concluído.",
+    "pkgStartReview_important": "{package} custa mais agora",
+    "pkgStartReview_serious": "{package} dá menos agora",
+    "pkgStartReview_warning": "{package} mudou",
+    "pkgStartReviewHintMember": "Mudou enquanto esperava o teu primeiro treino. Vê o que mudou: «Percebi» começa-o hoje. Até lá, sem novas reservas.",
+    "pkgStartReviewHintStaff": "À espera que o membro veja as alterações e carregue em «Percebi». Até lá, sem novas reservas.",
+    "pkgStartName": "Nome",
+    "pkgStartFirstPeriodPrice": "O primeiro período mantém o preço da compra. O novo preço aplica-se a partir do próximo pagamento.",
+    "pkgStartAcknowledge": "Percebi",
+    "mbErrPackageReview": "O teu pacote de subscrição mudou enquanto esperava. Vê as alterações em Eu › Pagamentos e carrega em «Percebi» para reservar.",
+    "apiErrorPackageChangedAgain": "O pacote de subscrição acabou de mudar outra vez. Vê as novas alterações e carrega de novo em «Percebi».",
+    "apiErrorPackageStartNotInReview": "Este pacote de subscrição já começou.",
+    "admCheckInPackageReview": "O pacote de subscrição deste membro mudou enquanto esperava. Primeiro tem de ver as alterações e carregar em «Percebi».",
+    "exportPersonalData": "{count, plural, one {O ficheiro tem dados pessoais de # pessoa.} other {O ficheiro tem dados pessoais de # pessoas.}} Guarda-o em segurança e partilha-o só com quem precisa.",
+    "roleGrantNotice": "Com uma nova função de staff vai ver o que a função permite (Definições › Acesso por função), p. ex. finanças, saúde e lesões, contactos dos membros. Guarda só se for essa a intenção."
   },
   "PrSharing": {
     "gymLabel": "Onde fizeste este PR?",
@@ -6776,7 +6789,15 @@
     "suggestionsOff": "Escondido do teu Início. Em «Procurar» as sugestões continuam.",
     "boxInvitesToggle": "Convites das boxes que sigo",
     "boxInvitesOn": "As boxes que segues veem que as segues e podem convidar-te a seres membro.",
-    "boxInvitesOff": "As boxes que segues não te veem na lista delas nem te enviam convites."
+    "boxInvitesOff": "As boxes que segues não te veem na lista delas nem te enviam convites.",
+    "avatarView": "Abrir fotografia: {name}",
+    "avatarViewerTitle": "Fotografia de perfil: {name}",
+    "avatarViewerClose": "Fechar",
+    "avatarViewerProfile": "Perfil",
+    "avatarViewerMedia": "Multimédia",
+    "avatarViewerAllMedia": "Todo o multimédia",
+    "avatarViewerLocked": "Conta privada. Segue para veres o multimédia.",
+    "avatarViewerChange": "Alterar fotografia"
   },
   "BoxPage": {
     "allWeek": "Semana toda",
@@ -12938,7 +12959,9 @@
     "rowButton": "+ Pagamento",
     "rowButtonLabel": "Registar um pagamento de {name}",
     "panelButton": "+ Registar pagamento",
-    "payInFull": "Liquidar tudo · {amount}"
+    "payInFull": "Liquidar tudo · {amount}",
+    "confirmPackageWayOut": "Se não recebeste dinheiro, não é preciso pagamento: o membro já tem {name} e fica em dívida como «Vai pagar mais tarde».",
+    "confirmPackageWayOutAction": "Fechar sem pagamento"
   },
   "OnlinePayments": {
     "sectionTitle": "Pagamentos",
@@ -13055,7 +13078,12 @@
     "doneRetryFailed": "Recusado outra vez",
     "doneCardLink": "Link para mudar de cartão enviado",
     "doneDismiss": "Pago na receção",
-    "doneBadge": "Feito"
+    "doneBadge": "Feito",
+    "packageStarts": "Quando começa um pacote de subscrição",
+    "packageStartsFirstSession": "Com o primeiro treino",
+    "packageStartsPayment": "Com o pagamento",
+    "packageStartsFirstSessionHint": "O período e o próximo pagamento contam a partir da primeira aula que o membro conclui («Chegou», ou a aula terminou sem «Faltou») ou do primeiro WOD que marca como feito. Se o pacote mudou entretanto, o membro vê as alterações antes de começar.",
+    "packageStartsPaymentHint": "O período e o próximo pagamento contam a partir da compra online ou do pagamento na receção."
   },
   "FiscalIdentity": {
     "backToSettings": "Definições",
@@ -15753,7 +15781,8 @@
     "freeHeldBody": "O box vai ativá-lo em breve e avisamos-te. Até lá podes reservar tantas aulas quantas o box permitir.",
     "freePending": "À espera de ativação",
     "freePendingBody": "O box vai ativá-lo. Guardamo-lo até {date}.",
-    "freeActivateHint": "Pacote grátis: começa hoje, sem cobrança e sem dívida."
+    "freeActivateHint": "Pacote grátis: começa hoje, sem cobrança e sem dívida.",
+    "confirmWayOut": "Se não recebeste dinheiro, ativa-o sem pagamento: começa e a dívida fica."
   },
   "Sms": {
     "connectionsTitle": "Ligações",
@@ -20484,7 +20513,10 @@
     "submit_package": "Dar o pacote",
     "submit_debt_forgiven": "Perdoar a dívida",
     "givenBySystem": "Pela Palee, {when}",
-    "reasonRollout": "Reservar exige agora um pacote: 14 dias para quem já treinava"
+    "reasonRollout": "Reservar exige agora um pacote: 14 dias para quem já treinava",
+    "reviewDebt": "Perdoas {amount} a {name}. Fica registado com o teu nome e deixa de ser cobrado.",
+    "reviewPackage": "Dás {package} a {name} sem pagamento. Fica registado com o teu nome.",
+    "reviewYes": "Sim, é isso"
   },
   "BoxRelation": {
     "member": "{kind, select, coach {Treinam juntos} other {Membro da box}}",
@@ -21420,5 +21452,37 @@
     "staffLine": "Membro da tua box",
     "staffOpen": "Finanças do membro",
     "waitingForPayment": "À espera de pagamento"
+  },
+  "PackageActivation": {
+    "activate": "Ativar pacote",
+    "startsFirstSession": "Começa com o primeiro treino do membro.",
+    "startsOnPayment": "Começa hoje.",
+    "moneyQuestion": "Os {amount}?",
+    "later": "Vai pagar mais tarde",
+    "laterHint": "Fica em dívida do membro.",
+    "paidNow": "Recebi agora",
+    "paidNowHint": "Abre «Registar pagamento» para este pacote.",
+    "free": "Sem custo",
+    "freeHint": "Um pacote gratuito, registado com o teu nome.",
+    "freeConfirm": "Dás {package} ({amount}) sem pagamento. Fica registado com o teu nome.",
+    "freeReason": "Porquê? (opcional)",
+    "freeSubmit": "Sim, sem custo",
+    "back": "Voltar"
+  },
+  "MoneyConfirm": {
+    "title_record_payment": "Recebeste mesmo {amount}?",
+    "title_desk_collect": "Recebeste mesmo {amount}?",
+    "title_shop_pickup": "Foram mesmo pagos {amount} na receção?",
+    "title_cash_refund": "Devolveste mesmo {amount} em dinheiro?",
+    "body_record_payment": "É registado um pagamento e emitido um recibo ou uma fatura (também para o myDATA, se estiver ligado).",
+    "body_desk_collect": "É registado um pagamento e emitido um recibo ou uma fatura (também para o myDATA, se estiver ligado).",
+    "body_shop_pickup": "É registado o pagamento da encomenda e emitido um recibo.",
+    "body_cash_refund": "É registado um reembolso e emitido um recibo de reembolso.",
+    "yes_record_payment": "Sim, recebi",
+    "yes_desk_collect": "Sim, recebi",
+    "yes_shop_pickup": "Sim, foi pago",
+    "yes_cash_refund": "Sim, devolvi",
+    "back": "Não, voltar",
+    "notToday": "Não mostrar mais hoje"
   }
 }

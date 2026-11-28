@@ -35,6 +35,7 @@ import { ShareExportDialog } from "@/components/share-export/ShareExportDialog";
 import { useShareExport } from "@/components/share-export/useShareExport";
 import { ReferralEventWizard } from "@/components/admin/finance/ReferralEventWizard";
 import { InlineAssignPackage } from "@/components/admin/finance/shared/InlineAssignPackage";
+import { giveMemberBenefit } from "@/api/member-benefits";
 import { PackageRemovedToast } from "@/components/admin/finance/shared/PackageRemovedToast";
 import { RemovePackageDialog, type ReplacementPackage } from "@/components/admin/finance/shared/RemovePackageDialog";
 import type { PackageRemoval } from "@/api/finance";
@@ -269,6 +270,21 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
     replacement?: ReplacementPackage;
   } | null>(null);
   const [removed, setRemoved] = useState<{ userId: string; nickname: string; removal: PackageRemoval } | null>(null);
+
+  // ADR-795 «Χωρίς χρέωση»: an ADR-612 free package instead of a made-up payment.
+  const giveFreeMutation = useMutation({
+    mutationFn: ({ userId, packageId, reason }: { userId: string; packageId: string; reason: string | null }) =>
+      giveMemberBenefit(token, userId, {
+        kind: "package",
+        package_id: packageId,
+        pricing: { mode: "this_period_free" },
+        reason,
+        idempotency_key: `free-package-${userId}-${packageId}-${Date.now()}`,
+      }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["admin", "finance"] });
+    },
+  });
 
   const assignPackageMutation = useMutation({
     mutationFn: ({ userId, packageId }: { userId: string; packageId: string }) =>
@@ -584,6 +600,9 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
                       }
                       onOpenPanel={() => setParam({ member: field(member, "id"), tab: "members" })}
                       onReceivePayment={() => setParam({ receive: field(member, "id"), tab: "members" })}
+                      onGiveFreePackage={(packageId, reason) =>
+                        giveFreeMutation.mutateAsync({ userId: field(member, "id"), packageId, reason })
+                      }
                       onOpenReferralWizard={() =>
                         setParam({ "new-referral": "true", referrer: field(member, "id") })
                       }
@@ -629,6 +648,9 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
                               }
                               onOpenPanel={() => setParam({ member: field(member, "id"), tab: "members" })}
                               onReceivePayment={() => setParam({ receive: field(member, "id"), tab: "members" })}
+                              onGiveFreePackage={(packageId, reason) =>
+                                giveFreeMutation.mutateAsync({ userId: field(member, "id"), packageId, reason })
+                              }
                               onOpenReferralWizard={() =>
                                 setParam({ "new-referral": "true", referrer: field(member, "id") })
                               }
@@ -708,6 +730,7 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
         <ShareExportDialog
           copy={shareExport.copy}
           document={buildFinanceMembersDocument(filteredMembers, shareExport.labels, uiLocale)}
+          personalData={i18n("exportPersonalData", { count: filteredMembers.length })}
           onClose={() => setShareOpen(false)}
         />
       ) : null}
@@ -730,6 +753,7 @@ function MemberRow({
   onAssignPackage,
   onOpenPanel,
   onReceivePayment,
+  onGiveFreePackage,
   onOpenReferralWizard,
   onRemovePackage,
   onChangePackage,
@@ -747,6 +771,8 @@ function MemberRow({
   onAssignPackage: (packageId: string) => Promise<unknown>;
   onOpenPanel: () => void;
   onReceivePayment: () => void;
+  /** ADR-795 «Χωρίς χρέωση». */
+  onGiveFreePackage: (packageId: string, reason: string | null) => Promise<unknown>;
   onOpenReferralWizard: () => void;
   /** ADR-660: «Αφαίρεση πακέτου…» for the package the member holds now. */
   onRemovePackage: (subscriptionId: string) => void;
@@ -844,7 +870,9 @@ function MemberRow({
           pending={assignPending}
           onAssign={onAssignPackage}
           onRemove={activeSub ? () => onRemovePackage(field(activeSub, "id")) : undefined}
-          onChange={activeSub ? (replacement) => onChangePackage(field(activeSub, "id"), replacement) : undefined}
+          onChange={activeSub ? (replacement: ReplacementPackage) => onChangePackage(field(activeSub, "id"), replacement) : undefined}
+          onReceive={onReceivePayment}
+          onGiveFree={onGiveFreePackage}
         />
       </td>
 

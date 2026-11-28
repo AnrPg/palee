@@ -138,7 +138,7 @@ export function RequestView({ id, request, loading }: { id: string; request: Pas
     <div className="flex flex-col gap-5">
       {back}
       <header className="flex items-start gap-3">
-        <PersonAvatar name={person.display_name} url={person.avatar_url} size={56} />
+        <PersonAvatar name={person.display_name} url={person.avatar_url} personId={person.user_id} size={56} />
         <div className="flex min-w-0 flex-col gap-0.5">
           <h1 className="truncate text-xl font-semibold text-[var(--text)]">{person.display_name}</h1>
           <p className="truncate text-sm text-[var(--dim)]">@{person.handle}</p>

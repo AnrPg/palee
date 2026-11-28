@@ -110,24 +110,6 @@ defmodule Palee.Finance.PackagePhaseBTest do
     assert entitlement.subscription.ends_on == subscription.ends_on
   end
 
-  test "first-use packages activate on the first reservation" do
-    {:ok, pack} =
-      Finance.create_package(%{
-        name: "First use",
-        package_type: "class_pack",
-        fields: %{"terms.validity_starts" => "first_use"}
-      })
-
-    {user, membership} = member()
-    {:ok, subscription} = Finance.assign_package(membership.id, pack.id, %{})
-    assert subscription.ends_on == nil
-
-    assert {:ok, _} = Finance.reserve_entitlement(user.id, visit("first-use:1"))
-    entitlement = Finance.get_effective_entitlement(user.id)
-    assert entitlement.subscription.activated_on == gym_today()
-    assert entitlement.subscription.ends_on
-  end
-
   test "minimum commitment blocks cancellation without a reason" do
     {:ok, package} =
       Finance.create_package(%{

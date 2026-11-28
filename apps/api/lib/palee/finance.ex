@@ -195,6 +195,35 @@ defmodule Palee.Finance do
   def assign_package(context, membership_id, package_id, params),
     do: scoped(context, fn -> assign_package(membership_id, package_id, params) end)
 
+  # ADR-795: packages that wait for the member's first class or WOD.
+  def waiting_subscription_for_session(context, user_id, source_context, source_id),
+    do:
+      scoped(context, fn ->
+        FinanceStore.waiting_subscription_for_session(user_id, source_context, source_id)
+      end)
+
+  def begin_package_start(context, subscription_id, session),
+    do: scoped(context, fn -> FinanceStore.begin_package_start(subscription_id, session) end)
+
+  def acknowledge_package_start(context, start_id, actor_id),
+    do: scoped(context, fn -> FinanceStore.acknowledge_package_start(start_id, actor_id) end)
+
+  def list_package_starts(context, filters),
+    do: scoped(context, fn -> FinanceStore.list_package_starts(filters) end)
+
+  def list_waiting_package_starts(context),
+    do: scoped(context, fn -> FinanceStore.list_waiting_user_ids() end)
+
+  @doc "ADR-795: the money questions staff may choose not to see again today."
+  def confirmation_kinds, do: Palee.Finance.Domain.MoneyConfirmations.kinds()
+
+  @doc "ADR-795: «Να μην εμφανιστεί ξανά σήμερα» for the money questions."
+  def confirmation_skips(context, user_id, day),
+    do: scoped(context, fn -> FinanceStore.confirmation_skips(user_id, day) end)
+
+  def skip_confirmation(context, user_id, kind, day),
+    do: scoped(context, fn -> FinanceStore.skip_confirmation(user_id, kind, day) end)
+
   defdelegate record_payment(membership_id, params), to: RecordPayment, as: :call
 
   def record_payment(context, membership_id, params),

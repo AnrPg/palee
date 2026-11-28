@@ -115,7 +115,7 @@ function RequestRow({ request }: { request: PasswordResetRequest }) {
         href={`/password-resets?request=${encodeURIComponent(request.id)}`}
         className="flex min-w-0 flex-1 items-start gap-3 rounded-xl py-1 pe-1 transition-colors hover:bg-[var(--panel-muted)]"
       >
-        <PersonAvatar name={name} url={request.person.avatar_url} size={44} />
+        <PersonAvatar name={name} url={request.person.avatar_url} personId={request.person.user_id} size={44} />
         <span className="flex min-w-0 flex-1 flex-col gap-0.5">
           <span className="flex min-w-0 flex-wrap items-baseline gap-x-2">
             <span className="truncate font-semibold text-[var(--text)]">{name}</span>

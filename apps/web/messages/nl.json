@@ -323,7 +323,8 @@
     "slotOwnWod": "Eigen WOD (die van de dag is «{title}»).",
     "slotFollowDay": "Terug naar de dag-WOD",
     "classCoachChip": "Coach: {coach}",
-    "wodPickerChoose": "Kies een WOD"
+    "wodPickerChoose": "Kies een WOD",
+    "classCancelReaches": "{count, plural, one {# geboekte of wachtende persoon krijgt bericht en de plek wordt geannuleerd.} other {# geboekte of wachtende personen krijgen bericht en hun plekken worden geannuleerd.}}"
   },
   "Ui": {
     "exercise1091b7f": "Oefening",
@@ -3091,7 +3092,6 @@
     "pkgFieldTermsConversionPackageIdHint": "Het abonnement dat we het lid aanraden als de proefperiode afloopt.",
     "pkgFieldTermsMinimumCommitmentMonths": "Minimale looptijd",
     "pkgFieldTermsJoiningFeeCents": "Inschrijfgeld",
-    "pkgFieldTermsValidityStarts": "Geldig vanaf",
     "pkgFieldTermsExpiryReminderDays": "Herinnering vóór verlopen",
     "pkgFieldTermsCompatiblePackageIds": "Combineerbare abonnementspakketten",
     "pkgFieldTermsBeneficiaries": "Inbegrepen personen",
@@ -3380,7 +3380,6 @@
     "pkgSummaryEvents": "Evenementen en workshops",
     "pkgSummaryCommitment": "{count, plural, one {Minimale looptijd: # maand} other {Minimale looptijd: # maanden}}",
     "pkgSummaryJoiningFee": "Eenmalig inschrijfgeld {amount}",
-    "pkgSummaryValidityFromFirstUse": "De geldigheid start bij je eerste bezoek",
     "pkgLocationsAll": "Alle locaties",
     "pkgLocationsSome": "Gekozen locaties",
     "pkgNoLocationsYet": "Geldig op elke locatie. Voeg locaties toe in de instellingen om dit te beperken.",
@@ -3403,8 +3402,6 @@
     "pkgFieldBookingCancellationCutoffHoursSuffix": "{count, plural, one {uur voor de les} other {uur voor de les}}",
     "pkgFieldPerksFreezeDaysPerYearSuffix": "{count, plural, one {dag per jaar} other {dagen per jaar}}",
     "pkgFieldPerksMemberDiscountPercentSuffix": "%",
-    "pkgFieldTermsValidityStarts_purchase": "Bij aankoop",
-    "pkgFieldTermsValidityStarts_first_use": "Bij eerste bezoek",
     "pkgFieldBookingWaitlistPriority_normal": "Normaal",
     "pkgFieldBookingWaitlistPriority_high": "Hoog",
     "pkgFieldPerksMemberDiscountScope_products": "Producten",
@@ -3416,7 +3413,6 @@
     "pkgModule_eventsHint": "Workshops en speciale sessies die je boekt als lessen.",
     "pkgFieldTermsMinimumCommitmentMonthsHint": "Leden kunnen niet eerder opzeggen, tenzij je een uitzondering maakt.",
     "pkgFieldTermsJoiningFeeCentsHint": "Wordt eenmalig op de eerste factuur van het lid voor dit abonnementspakket gezet.",
-    "pkgFieldTermsValidityStartsHint": "Bij eerste bezoek start de geldigheid pas wanneer het lid het abonnementspakket voor het eerst gebruikt.",
     "pkgFieldTermsExpiryReminderDaysHint": "We laten het het lid zoveel dagen voor het einde van het abonnementspakket weten. 0 zet het uit.",
     "pkgFieldGroupClassesRolloverMaxHint": "Ongebruikte lessen schuiven door naar de volgende periode, tot dit aantal.",
     "pkgFieldGroupClassesTimeWindowsHint": "Voor daluren-abonnementspakketten: leden van de box kunnen alleen binnen deze tijden lessen boeken.",
@@ -4989,7 +4985,24 @@
     "selectedAthleteCount": "{count, plural, one {# atleet geselecteerd} other {# atleten geselecteerd}}",
     "roundCount": "{count, plural, one {# ronde} other {# rondes}}",
     "optionCount": "{count, plural, one {# optie} other {# opties}}",
-    "userCount": "{count, plural, one {# gebruiker} other {# gebruikers}}"
+    "userCount": "{count, plural, one {# gebruiker} other {# gebruikers}}",
+    "pkgStartWaitingMember": "Start met je eerste training",
+    "pkgStartWaitingStaff": "Start met de eerste training",
+    "pkgStartWaitingHint": "Gegeven op {date}. De periode en de volgende betaling tellen vanaf de eerste afgeronde les of WOD.",
+    "pkgStartReview_important": "{package} kost nu meer",
+    "pkgStartReview_serious": "{package} geeft nu minder",
+    "pkgStartReview_warning": "{package} is veranderd",
+    "pkgStartReviewHintMember": "Het is veranderd terwijl het op je eerste training wachtte. Bekijk wat er veranderde: «Begrepen» start het vandaag. Tot dan geen nieuwe boekingen.",
+    "pkgStartReviewHintStaff": "Wacht tot het lid de wijzigingen ziet en op «Begrepen» drukt. Tot dan geen nieuwe boekingen.",
+    "pkgStartName": "Naam",
+    "pkgStartFirstPeriodPrice": "De eerste periode houdt de aankoopprijs. De nieuwe prijs geldt vanaf de volgende betaling.",
+    "pkgStartAcknowledge": "Begrepen",
+    "mbErrPackageReview": "Je abonnementspakket is veranderd terwijl het wachtte. Bekijk de wijzigingen in Ik › Betalingen en druk op «Begrepen» om te boeken.",
+    "apiErrorPackageChangedAgain": "Het abonnementspakket is net opnieuw veranderd. Bekijk de nieuwe wijzigingen en druk nog eens op «Begrepen».",
+    "apiErrorPackageStartNotInReview": "Dit abonnementspakket is al gestart.",
+    "admCheckInPackageReview": "Het abonnementspakket van dit lid is veranderd terwijl het wachtte. Het lid moet eerst de wijzigingen zien en op «Begrepen» drukken.",
+    "exportPersonalData": "{count, plural, one {Het bestand bevat persoonsgegevens van # persoon.} other {Het bestand bevat persoonsgegevens van # personen.}} Bewaar het veilig en deel het alleen met wie het nodig heeft.",
+    "roleGrantNotice": "Met een nieuwe staffrol ziet die persoon wat de rol toestaat (Instellingen › Toegang per rol), bijv. financiën, gezondheid en blessures, contactgegevens van leden. Sla alleen op als je dat bedoelt."
   },
   "PrSharing": {
     "gymLabel": "Waar heb je dit PR neergezet?",
@@ -6776,7 +6789,15 @@
     "suggestionsOff": "Verborgen op je Home. Bij «Zoeken» blijven de suggesties.",
     "boxInvitesToggle": "Uitnodigingen van boxen die ik volg",
     "boxInvitesOn": "Boxen die je volgt zien dat je ze volgt en kunnen je uitnodigen om boxlid te worden.",
-    "boxInvitesOff": "Boxen die je volgt zien je niet in hun lijst en sturen je geen uitnodigingen."
+    "boxInvitesOff": "Boxen die je volgt zien je niet in hun lijst en sturen je geen uitnodigingen.",
+    "avatarView": "Foto openen: {name}",
+    "avatarViewerTitle": "Profielfoto: {name}",
+    "avatarViewerClose": "Sluiten",
+    "avatarViewerProfile": "Profiel",
+    "avatarViewerMedia": "Media",
+    "avatarViewerAllMedia": "Alle media",
+    "avatarViewerLocked": "Privéaccount. Volg om de media te zien.",
+    "avatarViewerChange": "Foto wijzigen"
   },
   "BoxPage": {
     "allWeek": "Hele week",
@@ -12938,7 +12959,9 @@
     "rowButton": "+ Betaling",
     "rowButtonLabel": "Betaling van {name} vastleggen",
     "panelButton": "+ Betaling vastleggen",
-    "payInFull": "Alles voldoen · {amount}"
+    "payInFull": "Alles voldoen · {amount}",
+    "confirmPackageWayOut": "Heb je geen geld ontvangen, dan is geen betaling nodig: het lid heeft {name} al en het blijft open staan als «Betaalt later».",
+    "confirmPackageWayOutAction": "Sluiten zonder betaling"
   },
   "OnlinePayments": {
     "sectionTitle": "Betalingen",
@@ -13055,7 +13078,12 @@
     "doneRetryFailed": "Opnieuw geweigerd",
     "doneCardLink": "Link om de kaart te wijzigen verstuurd",
     "doneDismiss": "Betaald aan de balie",
-    "doneBadge": "Gedaan"
+    "doneBadge": "Gedaan",
+    "packageStarts": "Wanneer een abonnementspakket start",
+    "packageStartsFirstSession": "Met de eerste training",
+    "packageStartsPayment": "Met de betaling",
+    "packageStartsFirstSessionHint": "De periode en de volgende betaling tellen vanaf de eerste les die het lid afrondt («Aanwezig», of de les eindigde zonder «Niet gekomen») of de eerste WOD die het als klaar markeert. Is het pakket intussen veranderd, dan ziet het lid de wijzigingen voordat het start.",
+    "packageStartsPaymentHint": "De periode en de volgende betaling tellen vanaf de online aankoop of de betaling aan de balie."
   },
   "FiscalIdentity": {
     "backToSettings": "Instellingen",
@@ -15753,7 +15781,8 @@
     "freeHeldBody": "De box activeert het binnenkort en we laten het je weten. Tot dan kun je zoveel lessen boeken als de box toestaat.",
     "freePending": "Wacht op activering",
     "freePendingBody": "De box activeert het. We houden het tot {date}.",
-    "freeActivateHint": "Gratis pakket: het begint vandaag, zonder inning en zonder schuld."
+    "freeActivateHint": "Gratis pakket: het begint vandaag, zonder inning en zonder schuld.",
+    "confirmWayOut": "Heb je geen geld ontvangen, activeer het dan zonder betaling: het start en het bedrag blijft open."
   },
   "Sms": {
     "connectionsTitle": "Koppelingen",
@@ -20484,7 +20513,10 @@
     "submit_package": "Pakket geven",
     "submit_debt_forgiven": "Schuld kwijtschelden",
     "givenBySystem": "Door Palee, {when}",
-    "reasonRollout": "Boeken vraagt nu een pakket: 14 dagen voor wie al trainde"
+    "reasonRollout": "Boeken vraagt nu een pakket: 14 dagen voor wie al trainde",
+    "reviewDebt": "Je scheldt {name} {amount} kwijt. Het wordt met jouw naam vastgelegd en niet meer gevraagd.",
+    "reviewPackage": "Je geeft {name} {package} zonder betaling. Het wordt met jouw naam vastgelegd.",
+    "reviewYes": "Ja, zo bedoeld"
   },
   "BoxRelation": {
     "member": "{kind, select, coach {Jullie trainen samen} other {Boxlid}}",
@@ -21420,5 +21452,37 @@
     "staffLine": "Lid van je box",
     "staffOpen": "Financiën van het lid",
     "waitingForPayment": "Wacht op betaling"
+  },
+  "PackageActivation": {
+    "activate": "Pakket activeren",
+    "startsFirstSession": "Start met de eerste training van het lid.",
+    "startsOnPayment": "Start vandaag.",
+    "moneyQuestion": "De {amount}?",
+    "later": "Betaalt later",
+    "laterHint": "Blijft open staan bij het lid.",
+    "paidNow": "Nu ontvangen",
+    "paidNowHint": "Opent «Betaling vastleggen» voor dit pakket.",
+    "free": "Zonder kosten",
+    "freeHint": "Een gratis pakket, vastgelegd met jouw naam.",
+    "freeConfirm": "Je geeft {package} ({amount}) zonder betaling. Het wordt met jouw naam vastgelegd.",
+    "freeReason": "Waarom? (optioneel)",
+    "freeSubmit": "Ja, zonder kosten",
+    "back": "Terug"
+  },
+  "MoneyConfirm": {
+    "title_record_payment": "Heb je echt {amount} ontvangen?",
+    "title_desk_collect": "Heb je echt {amount} ontvangen?",
+    "title_shop_pickup": "Is er echt {amount} aan de balie betaald?",
+    "title_cash_refund": "Heb je echt {amount} contant teruggegeven?",
+    "body_record_payment": "Er wordt een betaling vastgelegd en een bon of factuur uitgegeven (ook naar myDATA, als dat gekoppeld is).",
+    "body_desk_collect": "Er wordt een betaling vastgelegd en een bon of factuur uitgegeven (ook naar myDATA, als dat gekoppeld is).",
+    "body_shop_pickup": "De betaling van de bestelling wordt vastgelegd en er komt een bon.",
+    "body_cash_refund": "Er wordt een terugbetaling vastgelegd en een terugbetalingsbon uitgegeven.",
+    "yes_record_payment": "Ja, ontvangen",
+    "yes_desk_collect": "Ja, ontvangen",
+    "yes_shop_pickup": "Ja, betaald",
+    "yes_cash_refund": "Ja, teruggegeven",
+    "back": "Nee, terug",
+    "notToday": "Vandaag niet meer tonen"
   }
 }

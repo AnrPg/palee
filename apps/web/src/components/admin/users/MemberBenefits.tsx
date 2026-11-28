@@ -273,7 +273,12 @@ function GiveSheet({
   const [draft, setDraft] = useState<BenefitDraft>(EMPTY_DRAFT);
   const [customEnd, setCustomEnd] = useState(false);
   const presets = endPresets(today);
-  const edit = (change: Partial<BenefitDraft>) => setDraft((value) => ({ ...value, ...change }));
+  // ADR-795: forgiving money or giving a package free is always looked at once more.
+  const [reviewing, setReviewing] = useState(false);
+  const edit = (change: Partial<BenefitDraft>) => {
+    setReviewing(false);
+    setDraft((value) => ({ ...value, ...change }));
+  };
 
   const packagesQuery = useQuery({
     queryKey: ["admin", "finance", "packages"],
@@ -296,6 +301,17 @@ function GiveSheet({
   const money = (cents: unknown) => formatMinorUnits(locale, Number(cents ?? 0));
   const ready = draftReady(draft, today);
   const kinds = BENEFIT_KINDS.filter((kind) => kind !== "extra_uses" || allowances.length > 0);
+  const needsReview = draft.kind === "debt_forgiven" || draft.kind === "package";
+  const forgivenCents = invoices
+    .filter((invoice) => draft.invoice_ids.includes(String(invoice.id)))
+    .reduce((sum, invoice) => sum + Number(invoice.balance_due_cents ?? 0), 0);
+  const pickedPackage = packages.find((item) => String(item.id) === draft.package_id);
+  const review =
+    draft.kind === "debt_forgiven"
+      ? t("reviewDebt", { amount: money(forgivenCents), name: nickname })
+      : draft.kind === "package"
+        ? t("reviewPackage", { package: String(pickedPackage?.name ?? ""), name: nickname })
+        : null;
 
   return (
     <Dialog
@@ -313,12 +329,17 @@ function GiveSheet({
             style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}
             type="submit"
           >
-            {give.isPending ? t("giving") : t(`submit_${draft.kind ?? "none"}`)}
+            {give.isPending ? t("giving") : reviewing ? t("reviewYes") : t(`submit_${draft.kind ?? "none"}`)}
           </button>
         </>
       }
       onClose={onClose}
-      onSubmit={(event) => { event.preventDefault(); if (ready) give.mutate(); }}
+      onSubmit={(event) => {
+        event.preventDefault();
+        if (!ready) return;
+        if (needsReview && !reviewing) setReviewing(true);
+        else give.mutate();
+      }}
       size="lg"
       title={t("sheetTitle", { name: nickname })}
       variant="sheet"
@@ -331,7 +352,7 @@ function GiveSheet({
             className="rounded-2xl p-3 text-start"
             data-testid={`member-benefit-kind-${kind}`}
             key={kind}
-            onClick={() => { give.reset(); setCustomEnd(false); setDraft({ ...EMPTY_DRAFT, reason: draft.reason, reason_shared: draft.reason_shared, kind }); }}
+            onClick={() => { give.reset(); setReviewing(false); setCustomEnd(false); setDraft({ ...EMPTY_DRAFT, reason: draft.reason, reason_shared: draft.reason_shared, kind }); }}
             style={{
               background: draft.kind === kind ? "color-mix(in srgb, var(--primary) 10%, var(--panel))" : "var(--panel-muted)",
               border: `1px solid ${draft.kind === kind ? "var(--primary)" : "var(--border)"}`,
@@ -445,6 +466,16 @@ function GiveSheet({
         <div className="mt-3">
           <ShareWithMember checked={draft.reason_shared} onChange={(next) => edit({ reason_shared: next })} testId="benefit-share-with-member" />
         </div>
+      ) : null}
+      {reviewing && review ? (
+        <p
+          className="mt-4 rounded-xl px-3 py-2 text-sm font-semibold"
+          role="alert"
+          style={{ background: "color-mix(in srgb, var(--warning) 12%, var(--panel))", border: "1px solid var(--warning)", color: "var(--text)" }}
+          data-testid="member-benefit-review"
+        >
+          {review}
+        </p>
       ) : null}
     </Dialog>
   );
