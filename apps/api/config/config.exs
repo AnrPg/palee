@@ -48,6 +48,7 @@ config :palee, Oban,
        # ADR-346: automatic messages (outbox every 5 minutes, daily recipes hourly).
        {"*/5 * * * *", Palee.Workers.DispatchAutomationsJob},
        {"7 * * * *", Palee.Workers.DailyAutomationsJob},
+       {"3 * * * *", Palee.Workers.ActivityLogDigestJob},
        # ADR-347: «Σε κίνδυνο», scored once a day before the boxes open.
        {"30 3 * * *", Palee.Workers.RefreshMemberRisksJob},
        {"17 * * * *", Palee.Workers.ReconcileEntitlementReservationsJob},

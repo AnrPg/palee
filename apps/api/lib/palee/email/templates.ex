@@ -10,6 +10,7 @@ defmodule Palee.Email.Templates do
 
   @templates %{
     account_deletion_confirm: Palee.Email.Templates.AccountDeletionConfirm,
+    activity_log_digest: Palee.Email.Templates.ActivityLogDigest,
     api_key_created: Palee.Email.Templates.ApiKeyCreated,
     booking_invite: Palee.Email.Templates.BookingInvite,
     box_automation: Palee.Email.Templates.BoxAutomation,

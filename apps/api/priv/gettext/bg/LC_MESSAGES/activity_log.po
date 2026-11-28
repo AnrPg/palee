@@ -1,0 +1,175 @@
+msgid ""
+msgstr ""
+"Language: bg\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# ADR-760 (ANR 12B): the owners' morning summary of yesterday's sensitive actions.
+msgid "%{box}: %{count} sensitive action yesterday"
+msgid_plural "%{box}: %{count} sensitive actions yesterday"
+msgstr[0] "%{box}: вчера %{count} чувствително действие"
+msgstr[1] "%{box}: вчера %{count} чувствителни действия"
+
+# One line per kind of action: «Πιστωτικά: 2».
+msgid "%{label}: %{count}"
+msgstr "%{label}: %{count}"
+
+# The email's first line.
+msgid "What your staff did at %{box} yesterday, %{date}, that the activity log marks as sensitive:"
+msgstr "Какво направи вчера, %{date}, персоналът в %{box}, което дневникът на действията отбелязва като чувствително:"
+
+# The email's button.
+msgid "Open the activity log"
+msgstr "Отвори дневника на действията"
+
+# The email's footer.
+msgid "You get this email because you are an owner of %{box} on Palee."
+msgstr "Получаваш този имейл, защото си собственик на %{box} в Palee."
+
+# Kinds without their own words yet.
+msgid "Other sensitive actions"
+msgstr "Други чувствителни действия"
+
+# Kind `member.remove`.
+msgid "Box members removed"
+msgstr "Премахнати членове на бокса"
+
+# Kind `member.role_change`.
+msgid "Role changes"
+msgstr "Промени на роли"
+
+# Kind `member.status_set`.
+msgid "Statuses set by hand"
+msgstr "Статуси, зададени ръчно"
+
+# Kind `member.status_reset`.
+msgid "Statuses back to automatic"
+msgstr "Статуси, върнати на автоматични"
+
+# Kind `role_access.change`.
+msgid "Role permission changes"
+msgstr "Промени в правата на ролите"
+
+# Kind `import.apply`.
+msgid "Imports applied"
+msgstr "Приложени импорти"
+
+# Kind `import.undo`.
+msgid "Imports undone"
+msgstr "Отменени импорти"
+
+# Kind `payment.reverse`.
+msgid "Payments reversed"
+msgstr "Сторнирани плащания"
+
+# Kind `payment.refund`.
+msgid "Refunds"
+msgstr "Възстановени суми"
+
+# Kind `payment.charge_dismiss`.
+msgid "Failed charges closed"
+msgstr "Закрити неуспешни таксувания"
+
+# Kind `payment_account.save`.
+msgid "Payment account changes"
+msgstr "Промени в платежната сметка"
+
+# Kind `payment_account.connect`.
+msgid "Payment accounts connected"
+msgstr "Свързани платежни сметки"
+
+# Kind `payment_account.disconnect`.
+msgid "Payment accounts disconnected"
+msgstr "Прекъснати платежни сметки"
+
+# Kind `invoice.void`.
+msgid "Invoices voided"
+msgstr "Анулирани фактури"
+
+# Kind `credit.create`.
+msgid "Credits given"
+msgstr "Предоставени кредити"
+
+# Kind `credit.reverse`.
+msgid "Credits reversed"
+msgstr "Сторнирани кредити"
+
+# Kind `benefit.give`.
+msgid "Gifts to box members"
+msgstr "Подаръци за членове на бокса"
+
+# Kind `benefit.revoke`.
+msgid "Gifts taken back"
+msgstr "Отнети подаръци"
+
+# Kind `corporate.payment_reverse`.
+msgid "Company payments reversed"
+msgstr "Сторнирани фирмени плащания"
+
+# Kind `finance_record.purge`.
+msgid "Financial records deleted"
+msgstr "Изтрити финансови записи"
+
+# Kind `fiscal.credit_note`.
+msgid "Credit notes"
+msgstr "Кредитни известия"
+
+# Kind `fiscal.connection_save`.
+msgid "Fiscal connection changes"
+msgstr "Промени в данъчните връзки"
+
+# Kind `package.remove`.
+msgid "Subscription packages removed"
+msgstr "Премахнати абонаментни пакети"
+
+# Kind `package.end_set`.
+msgid "Subscription package end dates set by hand"
+msgstr "Крайни дати на абонаментни пакети, зададени ръчно"
+
+# Kind `package.end_reset`.
+msgid "Subscription package end dates reset"
+msgstr "Възстановени крайни дати на абонаментни пакети"
+
+# Kind `package_request.activate_unpaid`.
+msgid "Subscription packages activated before payment"
+msgstr "Абонаментни пакети, активирани преди плащане"
+
+# Kind `door.unlock`.
+msgid "Doors opened remotely"
+msgstr "Врати, отворени дистанционно"
+
+# Kind `shop.order_refund`.
+msgid "Shop order refunds"
+msgstr "Възстановени суми за поръчки от магазина"
+
+# Kind `programme.refund`.
+msgid "Programme refunds"
+msgstr "Възстановени суми за програми"
+
+# Kind `pay_period.reopen`.
+msgid "Pay periods reopened"
+msgstr "Отново отворени периоди на възнаграждения"
+
+# Kind `organization.transfer`.
+msgid "Ownership transfers"
+msgstr "Прехвърляния на собственост"
+
+# Kind `organization.archive`.
+msgid "Box archived"
+msgstr "Боксът е архивиран"
+
+# Kind `data_export.create`.
+msgid "Data exports"
+msgstr "Експорти на данни"
+
+# Kind `integration.key_create`.
+msgid "API keys created"
+msgstr "Създадени API ключове"
+
+# Kind `integration.key_rotate`.
+msgid "API keys renewed"
+msgstr "Подновени API ключове"
+
+# Kind `integration.key_revoke`.
+msgid "API keys revoked"
+msgstr "Отменени API ключове"

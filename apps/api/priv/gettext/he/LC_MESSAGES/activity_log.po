@@ -1,0 +1,175 @@
+msgid ""
+msgstr ""
+"Language: he\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# ADR-760 (ANR 12B): the owners' morning summary of yesterday's sensitive actions.
+msgid "%{box}: %{count} sensitive action yesterday"
+msgid_plural "%{box}: %{count} sensitive actions yesterday"
+msgstr[0] "%{box}: פעולה רגישה אחת אתמול"
+msgstr[1] "%{box}: %{count} פעולות רגישות אתמול"
+
+# One line per kind of action: «Πιστωτικά: 2».
+msgid "%{label}: %{count}"
+msgstr "%{label}: %{count}"
+
+# The email's first line.
+msgid "What your staff did at %{box} yesterday, %{date}, that the activity log marks as sensitive:"
+msgstr "מה שהצוות שלך עשה אתמול, %{date}, ב-%{box} ושיומן הפעולות מסמן כרגיש:"
+
+# The email's button.
+msgid "Open the activity log"
+msgstr "פתיחת יומן הפעולות"
+
+# The email's footer.
+msgid "You get this email because you are an owner of %{box} on Palee."
+msgstr "קיבלת את המייל הזה כי את/ה בעלים של %{box} ב-Palee."
+
+# Kinds without their own words yet.
+msgid "Other sensitive actions"
+msgstr "פעולות רגישות אחרות"
+
+# Kind `member.remove`.
+msgid "Box members removed"
+msgstr "חברי בוקס שהוסרו"
+
+# Kind `member.role_change`.
+msgid "Role changes"
+msgstr "שינויי תפקיד"
+
+# Kind `member.status_set`.
+msgid "Statuses set by hand"
+msgstr "סטטוסים שנקבעו ידנית"
+
+# Kind `member.status_reset`.
+msgid "Statuses back to automatic"
+msgstr "סטטוסים שחזרו לאוטומטי"
+
+# Kind `role_access.change`.
+msgid "Role permission changes"
+msgstr "שינויי הרשאות תפקידים"
+
+# Kind `import.apply`.
+msgid "Imports applied"
+msgstr "ייבואים שהוחלו"
+
+# Kind `import.undo`.
+msgid "Imports undone"
+msgstr "ייבואים שבוטלו"
+
+# Kind `payment.reverse`.
+msgid "Payments reversed"
+msgstr "תשלומים שבוטלו"
+
+# Kind `payment.refund`.
+msgid "Refunds"
+msgstr "החזרים כספיים"
+
+# Kind `payment.charge_dismiss`.
+msgid "Failed charges closed"
+msgstr "חיובים שנכשלו ונסגרו"
+
+# Kind `payment_account.save`.
+msgid "Payment account changes"
+msgstr "שינויים בחשבון התשלומים"
+
+# Kind `payment_account.connect`.
+msgid "Payment accounts connected"
+msgstr "חשבונות תשלום שחוברו"
+
+# Kind `payment_account.disconnect`.
+msgid "Payment accounts disconnected"
+msgstr "חשבונות תשלום שנותקו"
+
+# Kind `invoice.void`.
+msgid "Invoices voided"
+msgstr "חשבוניות שבוטלו"
+
+# Kind `credit.create`.
+msgid "Credits given"
+msgstr "זיכויים שניתנו"
+
+# Kind `credit.reverse`.
+msgid "Credits reversed"
+msgstr "זיכויים שבוטלו"
+
+# Kind `benefit.give`.
+msgid "Gifts to box members"
+msgstr "מתנות לחברי הבוקס"
+
+# Kind `benefit.revoke`.
+msgid "Gifts taken back"
+msgstr "מתנות שנלקחו בחזרה"
+
+# Kind `corporate.payment_reverse`.
+msgid "Company payments reversed"
+msgstr "תשלומי חברות שבוטלו"
+
+# Kind `finance_record.purge`.
+msgid "Financial records deleted"
+msgstr "רשומות כספיות שנמחקו"
+
+# Kind `fiscal.credit_note`.
+msgid "Credit notes"
+msgstr "חשבוניות זיכוי"
+
+# Kind `fiscal.connection_save`.
+msgid "Fiscal connection changes"
+msgstr "שינויים בחיבורי המס"
+
+# Kind `package.remove`.
+msgid "Subscription packages removed"
+msgstr "חבילות מנוי שהוסרו"
+
+# Kind `package.end_set`.
+msgid "Subscription package end dates set by hand"
+msgstr "תאריכי סיום של חבילות מנוי שנקבעו ידנית"
+
+# Kind `package.end_reset`.
+msgid "Subscription package end dates reset"
+msgstr "תאריכי סיום של חבילות מנוי שאופסו"
+
+# Kind `package_request.activate_unpaid`.
+msgid "Subscription packages activated before payment"
+msgstr "חבילות מנוי שהופעלו לפני תשלום"
+
+# Kind `door.unlock`.
+msgid "Doors opened remotely"
+msgstr "דלתות שנפתחו מרחוק"
+
+# Kind `shop.order_refund`.
+msgid "Shop order refunds"
+msgstr "החזרים על הזמנות מהחנות"
+
+# Kind `programme.refund`.
+msgid "Programme refunds"
+msgstr "החזרים על תוכניות"
+
+# Kind `pay_period.reopen`.
+msgid "Pay periods reopened"
+msgstr "תקופות שכר שנפתחו מחדש"
+
+# Kind `organization.transfer`.
+msgid "Ownership transfers"
+msgstr "העברות בעלות"
+
+# Kind `organization.archive`.
+msgid "Box archived"
+msgstr "הבוקס הועבר לארכיון"
+
+# Kind `data_export.create`.
+msgid "Data exports"
+msgstr "ייצואי נתונים"
+
+# Kind `integration.key_create`.
+msgid "API keys created"
+msgstr "מפתחות API שנוצרו"
+
+# Kind `integration.key_rotate`.
+msgid "API keys renewed"
+msgstr "מפתחות API שחודשו"
+
+# Kind `integration.key_revoke`.
+msgid "API keys revoked"
+msgstr "מפתחות API שבוטלו"

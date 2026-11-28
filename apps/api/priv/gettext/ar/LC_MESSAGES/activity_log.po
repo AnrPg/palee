@@ -1,0 +1,179 @@
+msgid ""
+msgstr ""
+"Language: ar\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# ADR-760 (ANR 12B): the owners' morning summary of yesterday's sensitive actions.
+msgid "%{box}: %{count} sensitive action yesterday"
+msgid_plural "%{box}: %{count} sensitive actions yesterday"
+msgstr[0] "%{box}: %{count} إجراء حساس أمس"
+msgstr[1] "%{box}: إجراء حساس واحد أمس"
+msgstr[2] "%{box}: إجراءان حساسان أمس"
+msgstr[3] "%{box}: %{count} إجراءات حساسة أمس"
+msgstr[4] "%{box}: %{count} إجراءً حساسًا أمس"
+msgstr[5] "%{box}: %{count} إجراء حساس أمس"
+
+# One line per kind of action: «Πιστωτικά: 2».
+msgid "%{label}: %{count}"
+msgstr "%{label}: %{count}"
+
+# The email's first line.
+msgid "What your staff did at %{box} yesterday, %{date}, that the activity log marks as sensitive:"
+msgstr "ما قام به فريقك أمس، %{date}، في %{box} ويصنّفه سجل الإجراءات على أنه حساس:"
+
+# The email's button.
+msgid "Open the activity log"
+msgstr "افتح سجل الإجراءات"
+
+# The email's footer.
+msgid "You get this email because you are an owner of %{box} on Palee."
+msgstr "تتلقى هذا البريد لأنك مالك %{box} على Palee."
+
+# Kinds without their own words yet.
+msgid "Other sensitive actions"
+msgstr "إجراءات حساسة أخرى"
+
+# Kind `member.remove`.
+msgid "Box members removed"
+msgstr "أعضاء البوكس الذين أُزيلوا"
+
+# Kind `member.role_change`.
+msgid "Role changes"
+msgstr "تغييرات الأدوار"
+
+# Kind `member.status_set`.
+msgid "Statuses set by hand"
+msgstr "حالات عُيّنت يدويًا"
+
+# Kind `member.status_reset`.
+msgid "Statuses back to automatic"
+msgstr "حالات أُعيدت إلى الوضع التلقائي"
+
+# Kind `role_access.change`.
+msgid "Role permission changes"
+msgstr "تغييرات صلاحيات الأدوار"
+
+# Kind `import.apply`.
+msgid "Imports applied"
+msgstr "عمليات استيراد طُبّقت"
+
+# Kind `import.undo`.
+msgid "Imports undone"
+msgstr "عمليات استيراد أُلغيت"
+
+# Kind `payment.reverse`.
+msgid "Payments reversed"
+msgstr "مدفوعات أُلغيت"
+
+# Kind `payment.refund`.
+msgid "Refunds"
+msgstr "المبالغ المستردة"
+
+# Kind `payment.charge_dismiss`.
+msgid "Failed charges closed"
+msgstr "رسوم فاشلة أُغلقت"
+
+# Kind `payment_account.save`.
+msgid "Payment account changes"
+msgstr "تغييرات حساب الدفع"
+
+# Kind `payment_account.connect`.
+msgid "Payment accounts connected"
+msgstr "حسابات دفع رُبطت"
+
+# Kind `payment_account.disconnect`.
+msgid "Payment accounts disconnected"
+msgstr "حسابات دفع فُصلت"
+
+# Kind `invoice.void`.
+msgid "Invoices voided"
+msgstr "فواتير أُلغيت"
+
+# Kind `credit.create`.
+msgid "Credits given"
+msgstr "أرصدة مُنحت"
+
+# Kind `credit.reverse`.
+msgid "Credits reversed"
+msgstr "أرصدة أُلغيت"
+
+# Kind `benefit.give`.
+msgid "Gifts to box members"
+msgstr "هدايا لأعضاء البوكس"
+
+# Kind `benefit.revoke`.
+msgid "Gifts taken back"
+msgstr "هدايا سُحبت"
+
+# Kind `corporate.payment_reverse`.
+msgid "Company payments reversed"
+msgstr "مدفوعات شركات أُلغيت"
+
+# Kind `finance_record.purge`.
+msgid "Financial records deleted"
+msgstr "سجلات مالية حُذفت"
+
+# Kind `fiscal.credit_note`.
+msgid "Credit notes"
+msgstr "إشعارات دائنة"
+
+# Kind `fiscal.connection_save`.
+msgid "Fiscal connection changes"
+msgstr "تغييرات الاتصالات الضريبية"
+
+# Kind `package.remove`.
+msgid "Subscription packages removed"
+msgstr "باقات اشتراك أُزيلت"
+
+# Kind `package.end_set`.
+msgid "Subscription package end dates set by hand"
+msgstr "تواريخ انتهاء باقات اشتراك عُيّنت يدويًا"
+
+# Kind `package.end_reset`.
+msgid "Subscription package end dates reset"
+msgstr "تواريخ انتهاء باقات اشتراك أُعيد ضبطها"
+
+# Kind `package_request.activate_unpaid`.
+msgid "Subscription packages activated before payment"
+msgstr "باقات اشتراك فُعّلت قبل الدفع"
+
+# Kind `door.unlock`.
+msgid "Doors opened remotely"
+msgstr "أبواب فُتحت عن بُعد"
+
+# Kind `shop.order_refund`.
+msgid "Shop order refunds"
+msgstr "مبالغ مستردة لطلبات المتجر"
+
+# Kind `programme.refund`.
+msgid "Programme refunds"
+msgstr "مبالغ مستردة للبرامج"
+
+# Kind `pay_period.reopen`.
+msgid "Pay periods reopened"
+msgstr "فترات أجور أُعيد فتحها"
+
+# Kind `organization.transfer`.
+msgid "Ownership transfers"
+msgstr "عمليات نقل الملكية"
+
+# Kind `organization.archive`.
+msgid "Box archived"
+msgstr "أُرشف البوكس"
+
+# Kind `data_export.create`.
+msgid "Data exports"
+msgstr "عمليات تصدير البيانات"
+
+# Kind `integration.key_create`.
+msgid "API keys created"
+msgstr "مفاتيح API أُنشئت"
+
+# Kind `integration.key_rotate`.
+msgid "API keys renewed"
+msgstr "مفاتيح API جُدّدت"
+
+# Kind `integration.key_revoke`.
+msgid "API keys revoked"
+msgstr "مفاتيح API أُلغيت"
