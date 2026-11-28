@@ -4362,6 +4362,7 @@
     "mpTabWellbeing": "Welzijn",
     "mpTabCoaching": "Coaching",
     "mpTabFinance": "Financiën",
+    "mpTabHistory": "Geschiedenis",
     "mpTabAccount": "Account",
     "bmTitle": "Bericht van de box",
     "bmBody": "Bericht",
@@ -20549,7 +20550,6 @@
     "refund": "Terugbetalen…",
     "nothingOpen": "Voor dit pakket staat niets open.",
     "reason": "Reden (optioneel)",
-    "shareReason": "Het lid ziet die in de melding",
     "cancel": "Annuleren",
     "confirm": "Pakket verwijderen",
     "removing": "Verwijderen…",
@@ -20670,5 +20670,651 @@
     "variationSearch": "Zoek in alle leden",
     "whichWod": "Welke WOD?",
     "wodCount": "{count, plural, one {# WOD} other {# WOD's}}"
+  },
+  "ActivityLog": {
+    "title": "Activiteitenlogboek",
+    "intro": "Wie van het personeel wat deed, wanneer, bij wie en waarom. Tik op een regel voor details.",
+    "back": "Beheer",
+    "forbidden": "Jouw rol ziet het activiteitenlogboek niet.",
+    "filters": "Filters van het activiteitenlogboek",
+    "search": "Zoek in redenen en namen",
+    "area": "Soort",
+    "staffMember": "Door wie",
+    "anyStaff": "Alle personeel",
+    "person": "Bij wie",
+    "personPlaceholder": "Typ een naam",
+    "clearPerson": "Filter voor {name} wissen",
+    "from": "Van",
+    "to": "Tot",
+    "export": "CSV exporteren",
+    "exporting": "Bezig met exporteren…",
+    "loading": "Laden…",
+    "empty": "Er is nog niets vastgelegd.",
+    "emptyFiltered": "Geen regels met deze filters.",
+    "count": "{count, plural, one {# regel} other {# regels}}",
+    "today": "Vandaag",
+    "yesterday": "Gisteren",
+    "more": "Meer",
+    "fullLog": "Het hele logboek →",
+    "system": "Automatisch",
+    "deletedMember": "Verwijderd lid",
+    "onePerson": "Eén persoon",
+    "changeLabel": "Wijziging",
+    "period": "Periode",
+    "periodRange": "{from} – {to}",
+    "about": "Betreft",
+    "reason": "Reden",
+    "noReason": "Zonder reden",
+    "by": "Door",
+    "memberSaw": "Het lid zag het ook",
+    "yes": "Ja",
+    "no": "Nee",
+    "onlyPerson": "Alleen {name}",
+    "onlyActor": "Alleen wat {name} deed",
+    "none": "leeg",
+    "shareWithMember": "Het lid ziet het ook",
+    "historyTitle": "Geschiedenis",
+    "theBox": "De box",
+    "reasonShown": "Reden: {reason}",
+    "fields": {
+      "status": "Status",
+      "ends_on": "Laatste dag"
+    },
+    "areas": {
+      "members": "Leden",
+      "money": "Geld",
+      "packages": "Abonnementspakketten",
+      "classes": "Lessen",
+      "training": "Training",
+      "spaces": "Ruimtes en uitrusting",
+      "shop": "Winkel en programma's",
+      "community": "Community",
+      "communication": "Berichten",
+      "staff_pay": "Beloning personeel",
+      "settings": "Instellingen"
+    },
+    "actions": {
+      "accounting_export": {
+        "request": "Boekhoudexport aangevraagd"
+      },
+      "appointment": {
+        "attendance": "Aanwezigheid bij afspraak vastgelegd",
+        "book": "Afspraak geboekt",
+        "cancel": "Afspraak geannuleerd",
+        "slot_cancel": "Afspraaktijden geannuleerd",
+        "slot_create": "Afspraaktijden opengezet"
+      },
+      "assigned_workout": {
+        "create": "Training toegewezen",
+        "delete": "Toegewezen training verwijderd",
+        "update": "Toegewezen training bewerkt"
+      },
+      "attendance": {
+        "record": "Aanwezigheid vastgelegd",
+        "remove": "Aanwezigheid verwijderd"
+      },
+      "automation": {
+        "update": "Automatisch bericht gewijzigd"
+      },
+      "benefit": {
+        "give": "Cadeau of coulance gegeven",
+        "revoke": "Cadeau of coulance ingetrokken"
+      },
+      "booking": {
+        "approve": "Boeking goedgekeurd",
+        "reject": "Boeking afgewezen"
+      },
+      "box_review": {
+        "reply": "Op een boxrecensie gereageerd",
+        "report": "Boxrecensie gemeld"
+      },
+      "box_screen": {
+        "create": "Boxscherm toegevoegd",
+        "delete": "Boxscherm verwijderd",
+        "override_end": "Boxscherm terug naar schema",
+        "override_set": "Boxscherm overgenomen",
+        "pairing_code": "Koppelcode voor scherm gemaakt",
+        "update": "Boxscherm bewerkt"
+      },
+      "branch": {
+        "archive": "Vestiging gearchiveerd",
+        "create": "Vestiging toegevoegd",
+        "update": "Vestiging bewerkt"
+      },
+      "business": {
+        "activation_request": "Activering van het bedrijf aangevraagd"
+      },
+      "card_surcharge": {
+        "update": "Kaarttoeslag gewijzigd"
+      },
+      "challenge": {
+        "create": "Uitdaging aangemaakt",
+        "delete": "Uitdaging verwijderd",
+        "update": "Uitdaging bewerkt"
+      },
+      "channel": {
+        "settings_save": "Kanaalinstellingen opgeslagen",
+        "template_delete": "Berichtsjabloon verwijderd",
+        "template_save": "Berichtsjabloon opgeslagen"
+      },
+      "check_in": {
+        "door_rotate": "Deurcode gewijzigd",
+        "member": "Boxlid ingecheckt",
+        "member_code_revoke": "Check-incode van een lid ingetrokken",
+        "nfc_rotate": "Code van de NFC-tag vernieuwd",
+        "nfc_update": "NFC-tag gewijzigd",
+        "poster_rotate": "Code van de check-inposter vernieuwd",
+        "poster_update": "Check-inposter gewijzigd",
+        "record": "Iemand ingecheckt",
+        "settings_update": "Check-ininstellingen gewijzigd"
+      },
+      "class": {
+        "booking_workout": "WOD van een boeking ingesteld",
+        "create": "Les aangemaakt",
+        "day_workout_follow": "Les volgt de dag-WOD",
+        "delete": "Les verwijderd",
+        "live_workout": "Lopende WOD gewisseld",
+        "series_create": "Terugkerende les aangemaakt",
+        "state_change": "Les geannuleerd of heropend",
+        "update": "Les bewerkt",
+        "workout_link": "WOD aan een les gekoppeld",
+        "workouts_set": "WOD's van een les ingesteld"
+      },
+      "class_notice": {
+        "send": "Bericht aan een les gestuurd"
+      },
+      "class_type": {
+        "create": "Lestype aangemaakt",
+        "delete": "Lestype verwijderd",
+        "update": "Lestype bewerkt"
+      },
+      "cleaning": {
+        "area_archive": "Schoonmaakgebied gearchiveerd",
+        "area_create": "Schoonmaakgebied toegevoegd",
+        "area_update": "Schoonmaakgebied bewerkt",
+        "finish": "Schoonmaak afgerond",
+        "schedule_delete": "Schoonmaakrooster verwijderd",
+        "schedule_set": "Schoonmaakrooster ingesteld",
+        "start": "Schoonmaak gestart"
+      },
+      "club": {
+        "archive": "Club gearchiveerd",
+        "create": "Club aangemaakt",
+        "member_remove": "Iemand uit een club verwijderd",
+        "request_answer": "Clubverzoek beantwoord",
+        "update": "Club bewerkt"
+      },
+      "coach_note": {
+        "create": "Coachnotitie geschreven",
+        "delete": "Coachnotitie verwijderd",
+        "update": "Coachnotitie bewerkt"
+      },
+      "coaching_relationship": {
+        "create": "Coach toegewezen",
+        "end": "Coaching beëindigd"
+      },
+      "community": {
+        "group_decide": "Over een ledengroep beslist",
+        "group_reopen": "Aanvraag van ledengroep heropend",
+        "report_act": "Melding afgehandeld",
+        "settings_update": "Community-instellingen gewijzigd"
+      },
+      "contact": {
+        "consent": "Toestemming van een contact gewijzigd",
+        "delete": "Contact verwijderd",
+        "save": "Contact opgeslagen"
+      },
+      "corporate": {
+        "client_create": "Zakelijke klant toegevoegd",
+        "client_update": "Zakelijke klant bewerkt",
+        "invoice_create": "Zakelijke factuur aangemaakt",
+        "invoice_send": "Zakelijke factuur verstuurd",
+        "invoice_status": "Zakelijke factuur gewijzigd",
+        "payment_record": "Zakelijke betaling vastgelegd",
+        "payment_reverse": "Zakelijke betaling teruggedraaid",
+        "seat_add": "Zakelijke plek toegevoegd",
+        "seat_end": "Zakelijke plek beëindigd"
+      },
+      "credit": {
+        "apply": "Tegoed gebruikt",
+        "create": "Tegoed gegeven",
+        "reverse": "Tegoed teruggedraaid"
+      },
+      "data_export": {
+        "create": "Gegevens van de box geëxporteerd"
+      },
+      "day_workout": {
+        "delete": "Dag-WOD verwijderd",
+        "set": "Dag-WOD ingesteld"
+      },
+      "demo_data": {
+        "remove": "Demogegevens verwijderd",
+        "seed": "Demogegevens toegevoegd"
+      },
+      "document": {
+        "request": "Handtekening gevraagd",
+        "request_cancel": "Handtekeningverzoek ingetrokken",
+        "requirement_set": "Gewijzigd wie een document tekent",
+        "settings_update": "Documentinstellingen gewijzigd",
+        "template_archive": "Document gearchiveerd",
+        "template_create": "Document aangemaakt",
+        "template_publish": "Document gepubliceerd"
+      },
+      "door": {
+        "create": "Deur toegevoegd",
+        "delete": "Deur verwijderd",
+        "token_rotate": "Sleutel van een deur vernieuwd",
+        "unlock": "Deur vanaf de balie geopend",
+        "update": "Deur bewerkt"
+      },
+      "email_sender": {
+        "delete": "E-mailafzender verwijderd",
+        "save": "E-mailafzender opgeslagen"
+      },
+      "event": {
+        "attendee_remove": "Deelnemer verwijderd",
+        "cancel": "Evenement geannuleerd",
+        "check_in": "Ingecheckt bij een evenement",
+        "cohost_answer": "Uitnodiging als medeorganisator beantwoord",
+        "cohost_invite": "Medeorganisator uitgenodigd",
+        "cohost_remove": "Medeorganisator verwijderd",
+        "cohost_trial_offer": "Proefles aangeboden met een medeorganisator",
+        "create": "Evenement aangemaakt",
+        "mark_paid": "Evenementplek als betaald gemarkeerd",
+        "message": "Bericht aan deelnemers gestuurd",
+        "refund": "Evenementplek terugbetaald",
+        "trial_offer": "Proefles aangeboden bij een evenement",
+        "update": "Evenement bewerkt"
+      },
+      "finance_record": {
+        "purge": "Financiële gegevens verwijderd"
+      },
+      "fiscal": {
+        "connection_save": "Fiscale koppeling opgeslagen",
+        "credit_note": "Creditnota uitgegeven",
+        "document_email": "Fiscaal document per e-mail verstuurd",
+        "einvoice_retry": "E-factuur opnieuw verstuurd",
+        "export_settings_save": "Exportinstellingen opgeslagen",
+        "identity_save": "Belastinggegevens opgeslagen",
+        "null_receipt": "Nulbon uitgegeven",
+        "tax_rates_save": "Btw-tarieven opgeslagen",
+        "till_retry": "Opnieuw naar de kassa gestuurd",
+        "transmission_retry": "Fiscaal document opnieuw verzonden"
+      },
+      "fitness_display": {
+        "update": "Gewijzigd wat de fitheidskaart toont"
+      },
+      "floor_plan": {
+        "create": "Plattegrond toegevoegd",
+        "delete": "Plattegrond verwijderd",
+        "update": "Plattegrond bewerkt"
+      },
+      "follower_invite": {
+        "send": "Volger uitgenodigd om lid te worden"
+      },
+      "form_review": {
+        "complete": "Techniekvideo beantwoord"
+      },
+      "health_certificate": {
+        "add": "Gezondheidsverklaring toegevoegd",
+        "delete": "Gezondheidsverklaring verwijderd"
+      },
+      "import": {
+        "apply": "Import toegepast",
+        "create": "Import gestart",
+        "delete": "Import verwijderd",
+        "invite": "Geïmporteerde mensen uitgenodigd",
+        "undo": "Import ongedaan gemaakt"
+      },
+      "injury": {
+        "create": "Blessure vastgelegd",
+        "heal": "Blessure als genezen gemarkeerd",
+        "reopen": "Blessure heropend",
+        "update": "Blessure bewerkt"
+      },
+      "injury_warning": {
+        "acknowledge": "Blessurewaarschuwing bevestigd"
+      },
+      "integration": {
+        "delivery_replay": "Webhooklevering opnieuw verstuurd",
+        "email_list_delete": "Koppeling met mailinglijst verwijderd",
+        "email_list_save": "Koppeling met mailinglijst opgeslagen",
+        "email_list_sync": "Mailinglijst gesynchroniseerd",
+        "key_create": "API-sleutel aangemaakt",
+        "key_revoke": "API-sleutel ingetrokken",
+        "key_rotate": "API-sleutel vernieuwd",
+        "unsubscribe_url_rotate": "Afmeldlink vernieuwd",
+        "webhook_create": "Webhook toegevoegd",
+        "webhook_delete": "Webhook verwijderd",
+        "webhook_secret_rotate": "Webhookgeheim vernieuwd",
+        "webhook_update": "Webhook bewerkt"
+      },
+      "inventory": {
+        "machine_archive": "Apparaat gearchiveerd",
+        "machine_create": "Apparaat toegevoegd",
+        "machine_event": "Apparaatmelding vastgelegd",
+        "machine_place": "Apparaat verplaatst",
+        "machine_update": "Apparaat bewerkt",
+        "supply_archive": "Verbruiksartikel gearchiveerd",
+        "supply_create": "Verbruiksartikel toegevoegd",
+        "supply_low": "Bijna op verbruiksartikel gemeld",
+        "supply_movement": "Voorraadmutatie vastgelegd",
+        "supply_update": "Verbruiksartikel bewerkt"
+      },
+      "invoice": {
+        "create": "Factuur aangemaakt",
+        "file_attach": "Bestand aan factuur toegevoegd",
+        "issue": "Factuur uitgegeven",
+        "renewal_create": "Verlengingsfactuur aangemaakt",
+        "update": "Factuur bewerkt",
+        "void": "Factuur geannuleerd"
+      },
+      "join_request": {
+        "accept": "Aanmeldverzoek geaccepteerd",
+        "decline": "Aanmeldverzoek afgewezen"
+      },
+      "lead": {
+        "contacted": "Geïnteresseerde gecontacteerd",
+        "convert": "Geïnteresseerde lid van de box gemaakt",
+        "create": "Geïnteresseerde toegevoegd",
+        "delete": "Geïnteresseerde verwijderd",
+        "import": "Geïnteresseerden geïmporteerd",
+        "move": "Geïnteresseerde naar andere fase verplaatst",
+        "note": "Notitie bij geïnteresseerde geschreven",
+        "opt_out": "Berichten aan geïnteresseerde gestopt",
+        "task_add": "Taak bij geïnteresseerde toegevoegd",
+        "task_done": "Taak van geïnteresseerde afgerond",
+        "update": "Geïnteresseerde bewerkt"
+      },
+      "logo": {
+        "remove": "Logo verwijderd",
+        "set": "Logo gewijzigd"
+      },
+      "member": {
+        "branches_change": "Vestigingen gewijzigd",
+        "class_placement": "Naar een andere les verplaatst",
+        "coach_scope_change": "Gewijzigd welke klanten de coach ziet",
+        "guest_create": "Als gast van de box toegevoegd",
+        "home_branch_change": "Hoofdvestiging gewijzigd",
+        "leave_record": "Vertrek uit de box vastgelegd",
+        "leave_undo": "Vertrek ongedaan gemaakt",
+        "programming": "Training ingepland",
+        "remove": "Uit de box verwijderd",
+        "risk_contacted": "Als gecontacteerd gemarkeerd",
+        "risk_snooze": "Risicomelding gepauzeerd",
+        "role_change": "Rollen gewijzigd",
+        "status_reset": "Status weer automatisch",
+        "status_set": "Status handmatig ingesteld",
+        "update": "Gegevens bewerkt"
+      },
+      "message": {
+        "cancel": "Bericht geannuleerd",
+        "retry": "Bericht opnieuw verstuurd",
+        "send": "Bericht verstuurd"
+      },
+      "metric": {
+        "reset": "Meting gereset",
+        "reset_undo": "Reset van meting ongedaan gemaakt"
+      },
+      "nutrition_plan": {
+        "save": "Voedingsplan opgeslagen"
+      },
+      "organization": {
+        "archive": "Box gesloten",
+        "transfer": "Eigendom van de box overgedragen"
+      },
+      "package": {
+        "assign": "Abonnementspakket toegewezen",
+        "auto_renew": "Automatische verlenging gewijzigd",
+        "beneficiary_add": "Medegebruiker van het pakket toegevoegd",
+        "beneficiary_remove": "Medegebruiker van het pakket verwijderd",
+        "create": "Abonnementspakket aangemaakt",
+        "end_reset": "Laatste dag van het pakket weer automatisch",
+        "end_set": "Laatste dag van het pakket handmatig ingesteld",
+        "entitlements_refresh": "Rechten van het pakket herberekend",
+        "freeze": "Abonnement bevroren",
+        "freeze_cancel": "Bevriezing geannuleerd",
+        "removal_undo": "Verwijderen van pakket ongedaan gemaakt",
+        "remove": "Abonnementspakket verwijderd",
+        "retire": "Verkoop van abonnementspakket gestopt",
+        "update": "Abonnementspakket bewerkt"
+      },
+      "package_audience": {
+        "exception_add": "Uitzondering voor iemand toegevoegd",
+        "exception_remove": "Uitzondering voor iemand verwijderd",
+        "featured_update": "Uitgelichte pakketten gewijzigd",
+        "package_update": "Gewijzigd wie een pakket mag kopen",
+        "update": "Gewijzigd wie pakketten mag kopen"
+      },
+      "package_request": {
+        "activate_unpaid": "Pakketaanvraag onbetaald geactiveerd",
+        "collect": "Pakketaanvraag afgerekend",
+        "decline": "Pakketaanvraag afgewezen"
+      },
+      "pay_item": {
+        "archive": "Beloningsonderdeel gearchiveerd",
+        "create": "Beloningsonderdeel aangemaakt",
+        "update": "Beloningsonderdeel bewerkt"
+      },
+      "pay_period": {
+        "adjustment_add": "Beloningscorrectie toegevoegd",
+        "adjustment_delete": "Beloningscorrectie verwijderd",
+        "approve": "Betaalperiode goedgekeurd",
+        "calculate": "Betaalperiode berekend",
+        "create": "Betaalperiode geopend",
+        "item_line_add": "Eenmalige beloningsregel toegevoegd",
+        "item_restore": "Beloningsregel hersteld",
+        "line_basis": "Grondslag van een beloningsregel gewijzigd",
+        "reopen": "Betaalperiode heropend"
+      },
+      "pay_rule": {
+        "archive": "Beloningsregel gearchiveerd",
+        "create": "Beloningsregel aangemaakt",
+        "update": "Beloningsregel bewerkt"
+      },
+      "payment": {
+        "card_link": "Link om een kaart op te slaan verstuurd",
+        "charge_dismiss": "Mislukte kaartafschrijving genegeerd",
+        "charge_retry": "Kaartafschrijving opnieuw geprobeerd",
+        "receipt_email": "Bon per e-mail verstuurd",
+        "receive": "Betaling ontvangen",
+        "record": "Betaling vastgelegd",
+        "refund": "Geld terugbetaald",
+        "retry": "Betaling opnieuw geprobeerd",
+        "reverse": "Betaling teruggedraaid",
+        "terminal_cancel": "Betaling op de pinautomaat geannuleerd",
+        "terminal_result": "Antwoord van de pinautomaat vastgelegd",
+        "terminal_start": "Betaling op de pinautomaat gestart"
+      },
+      "payment_account": {
+        "connect": "Online betalingen gekoppeld",
+        "disconnect": "Online betalingen ontkoppeld",
+        "options": "Betaalopties gewijzigd",
+        "save": "Betaalaccount opgeslagen"
+      },
+      "perk": {
+        "claim_revoke": "Geclaimd voordeel ingetrokken",
+        "claim_use": "Voordeel als gebruikt gemarkeerd",
+        "codes_add": "Voordeelcodes toegevoegd",
+        "create": "Voordeel aangemaakt",
+        "delete": "Voordeel verwijderd",
+        "expire": "Voordeel beëindigd",
+        "pause": "Voordeel gepauzeerd",
+        "publish": "Voordeel gepubliceerd",
+        "update": "Voordeel bewerkt"
+      },
+      "programme": {
+        "archive": "Trainingsprogramma gearchiveerd",
+        "cover_remove": "Programmacover verwijderd",
+        "cover_set": "Programmacover ingesteld",
+        "create": "Trainingsprogramma aangemaakt",
+        "publish": "Trainingsprogramma gepubliceerd",
+        "refund": "Trainingsprogramma terugbetaald",
+        "restore": "Trainingsprogramma hersteld",
+        "review_moderate": "Programmarecensie gemodereerd",
+        "update": "Trainingsprogramma bewerkt"
+      },
+      "promotion": {
+        "code_create": "Kortingscodes aangemaakt",
+        "create": "Actie aangemaakt",
+        "redeem": "Kortingscode toegepast"
+      },
+      "public_profile": {
+        "photo_add": "Foto aan de openbare pagina toegevoegd",
+        "publish": "Openbare boxpagina gepubliceerd",
+        "unpublish": "Openbare boxpagina verborgen",
+        "update": "Openbare boxpagina bewerkt"
+      },
+      "rank": {
+        "award": "Rang toegekend",
+        "revoke": "Rang ingetrokken",
+        "skill_check": "Vaardigheid afgevinkt",
+        "skills_batch": "Meerdere vaardigheden afgevinkt"
+      },
+      "rank_ladder": {
+        "create": "Rangladder aangemaakt",
+        "delete": "Rangladder verwijderd",
+        "update": "Rangladder bewerkt"
+      },
+      "receipt": {
+        "create": "Bon uitgegeven"
+      },
+      "reconciliation": {
+        "match": "Bankboeking gekoppeld",
+        "record": "Bankboeking vastgelegd",
+        "unmatch": "Koppeling van bankboeking verwijderd"
+      },
+      "referral": {
+        "approve": "Verwijzing goedgekeurd",
+        "create": "Verwijzing vastgelegd",
+        "friend_gift": "Cadeau voor de vriend gegeven",
+        "reassign": "Verwijzing aan iemand anders toegewezen",
+        "reject": "Verwijzing afgewezen",
+        "reward_create": "Verwijsbeloning toegevoegd",
+        "reward_given": "Verwijsbeloning gegeven",
+        "reward_status": "Verwijsbeloning gewijzigd",
+        "status": "Verwijzing gewijzigd"
+      },
+      "referral_program": {
+        "create": "Verwijsprogramma aangemaakt",
+        "update": "Verwijsprogramma gewijzigd"
+      },
+      "review": {
+        "status": "Status van een recensie gewijzigd"
+      },
+      "review_asks": {
+        "update": "Recensieverzoeken gewijzigd"
+      },
+      "role_access": {
+        "change": "Rechten van een rol gewijzigd"
+      },
+      "scale_levels": {
+        "update": "Schaalniveaus gewijzigd"
+      },
+      "scaling_suggestion": {
+        "approve": "Schaalvoorstel goedgekeurd",
+        "dismiss": "Schaalvoorstel afgewezen"
+      },
+      "season": {
+        "create": "Seizoen aangemaakt",
+        "enrollment_confirm": "Seizoensplek bevestigd",
+        "enrollment_decline": "Seizoensaanvraag afgewezen",
+        "enrollment_remove": "Uit een seizoen verwijderd",
+        "update": "Seizoen bewerkt"
+      },
+      "settings": {
+        "ai": "AI-instellingen gewijzigd",
+        "onboarding": "Welkomststappen gewijzigd",
+        "recipe_apply": "Kant-en-klare instelling toegepast",
+        "time_zone": "Tijdzone gewijzigd",
+        "update": "Boxinstellingen gewijzigd"
+      },
+      "shop": {
+        "desk_sale": "Aan de balie verkocht",
+        "order_cancel": "Bestelling geannuleerd",
+        "order_fiscal_receipt": "Bon van een bestelling uitgegeven",
+        "order_payment": "Bestelling afgerekend",
+        "order_pickup": "Bestelling overhandigd",
+        "order_ready": "Bestelling als klaar gemarkeerd",
+        "order_refund": "Bestelling terugbetaald",
+        "pricing_target": "Prijsdoel ingesteld",
+        "product_create": "Product toegevoegd",
+        "product_promote": "Product gepromoot",
+        "product_status": "Productstatus gewijzigd",
+        "product_update": "Product bewerkt",
+        "promotion_code_update": "Kortingscode van de winkel bewerkt",
+        "stock_movement": "Voorraad gewijzigd",
+        "variant_archive": "Productvariant gearchiveerd",
+        "variant_create": "Productvariant toegevoegd",
+        "variant_update": "Productvariant bewerkt"
+      },
+      "space": {
+        "archive": "Ruimte gearchiveerd",
+        "cleaning_point_add": "Schoonmaakpunt toegevoegd",
+        "cleaning_point_delete": "Schoonmaakpunt verwijderd",
+        "cleaning_point_update": "Schoonmaakpunt bewerkt",
+        "cleaning_points_order": "Schoonmaakpunten opnieuw geordend",
+        "create": "Ruimte aangemaakt",
+        "photo_add": "Ruimtefoto toegevoegd",
+        "photo_delete": "Ruimtefoto verwijderd",
+        "photo_update": "Ruimtefoto bewerkt",
+        "photos_order": "Ruimtefoto's opnieuw geordend",
+        "restore": "Ruimte hersteld",
+        "settings_update": "Ruimte-instellingen gewijzigd",
+        "unavailable": "Ruimte onbeschikbaar gemaakt",
+        "unavailable_end": "Ruimte weer beschikbaar",
+        "update": "Ruimte bewerkt"
+      },
+      "training_goal": {
+        "set": "Weekdoel ingesteld"
+      },
+      "trial": {
+        "accept": "Proefles geaccepteerd",
+        "attendance": "Aanwezigheid bij proefles vastgelegd",
+        "decline": "Proefles afgewezen"
+      },
+      "trial_policy": {
+        "update": "Regels voor proeflessen gewijzigd"
+      },
+      "video": {
+        "archive": "Video gearchiveerd",
+        "create": "Video toegevoegd",
+        "publish": "Video gepubliceerd",
+        "update": "Video bewerkt"
+      },
+      "website": {
+        "domain_add": "Websitedomein toegevoegd",
+        "domain_instructions": "Domeininstructies verstuurd",
+        "domain_primary": "Hoofddomein van de website gewijzigd",
+        "domain_remove": "Websitedomein verwijderd",
+        "draft_discard": "Websiteconcept verworpen",
+        "publish": "Website gepubliceerd",
+        "translations_keep": "Websitevertalingen behouden",
+        "translations_machine": "Website automatisch vertaald",
+        "translations_save": "Websitevertalingen opgeslagen",
+        "update": "Website bewerkt"
+      },
+      "workout": {
+        "copy": "WOD gekopieerd",
+        "create": "WOD aangemaakt",
+        "delete": "WOD verwijderd",
+        "duplicate": "WOD gedupliceerd",
+        "exercise_matches": "Oefeningen van een WOD gekoppeld",
+        "goals_update": "Doelen van een WOD gewijzigd",
+        "publish": "WOD gepubliceerd",
+        "reopen": "WOD opnieuw geopend voor bewerking",
+        "update": "WOD bewerkt"
+      },
+      "workout_folder": {
+        "create": "WOD-map aangemaakt",
+        "delete": "WOD-map verwijderd",
+        "update": "WOD-map bewerkt"
+      },
+      "workout_type": {
+        "create": "Trainingstype toegevoegd",
+        "merge": "Trainingstypes samengevoegd",
+        "update": "Trainingstype bewerkt"
+      }
+    }
   }
 }

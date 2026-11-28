@@ -4362,6 +4362,7 @@
     "mpTabWellbeing": "רווחה",
     "mpTabCoaching": "אימון אישי",
     "mpTabFinance": "כספים",
+    "mpTabHistory": "היסטוריה",
     "mpTabAccount": "חשבון",
     "bmTitle": "הודעה מהמכון",
     "bmBody": "הודעה",
@@ -20549,7 +20550,6 @@
     "refund": "החזר כספי…",
     "nothingOpen": "אין שום דבר פתוח בחבילה הזו.",
     "reason": "סיבה (לא חובה)",
-    "shareReason": "החבר רואה אותה בהודעה",
     "cancel": "ביטול",
     "confirm": "הסרת חבילה",
     "removing": "מסיר…",
@@ -20670,5 +20670,651 @@
     "variationSearch": "חיפוש בכל החברים",
     "whichWod": "איזה WOD?",
     "wodCount": "{count, plural, one {WOD אחד} two {# WODים} other {# WODים}}"
+  },
+  "ActivityLog": {
+    "title": "יומן פעולות",
+    "intro": "מי מהצוות עשה מה, מתי, למי ולמה. הקש על שורה לפרטים.",
+    "back": "ניהול",
+    "forbidden": "התפקיד שלך לא רואה את יומן הפעולות.",
+    "filters": "מסנני יומן הפעולות",
+    "search": "חיפוש בסיבות ובשמות",
+    "area": "סוג",
+    "staffMember": "על ידי מי",
+    "anyStaff": "כל הצוות",
+    "person": "למי",
+    "personPlaceholder": "הקלד שם",
+    "clearPerson": "הסר את הסינון עבור {name}",
+    "from": "מתאריך",
+    "to": "עד",
+    "export": "ייצוא CSV",
+    "exporting": "מייצא…",
+    "loading": "טוען…",
+    "empty": "עדיין לא נרשם דבר.",
+    "emptyFiltered": "אין רשומות עם המסננים האלה.",
+    "count": "{count, plural, one {רשומה אחת} two {שתי רשומות} other {# רשומות}}",
+    "today": "היום",
+    "yesterday": "אתמול",
+    "more": "עוד",
+    "fullLog": "כל היומן ←",
+    "system": "אוטומטי",
+    "deletedMember": "חבר שנמחק",
+    "onePerson": "אדם אחד",
+    "changeLabel": "שינוי",
+    "period": "תקופה",
+    "periodRange": "{from} – {to}",
+    "about": "נוגע ל",
+    "reason": "סיבה",
+    "noReason": "ללא סיבה",
+    "by": "על ידי",
+    "memberSaw": "גם החבר ראה",
+    "yes": "כן",
+    "no": "לא",
+    "onlyPerson": "רק {name}",
+    "onlyActor": "רק מה ש{name} עשה",
+    "none": "ריק",
+    "shareWithMember": "שגם החבר יראה",
+    "historyTitle": "היסטוריה",
+    "theBox": "הבוקס",
+    "reasonShown": "סיבה: {reason}",
+    "fields": {
+      "status": "סטטוס",
+      "ends_on": "יום אחרון"
+    },
+    "areas": {
+      "members": "חברים",
+      "money": "כסף",
+      "packages": "חבילות מנוי",
+      "classes": "שיעורים",
+      "training": "אימונים",
+      "spaces": "חללים וציוד",
+      "shop": "חנות ותוכניות",
+      "community": "קהילה",
+      "communication": "הודעות",
+      "staff_pay": "שכר הצוות",
+      "settings": "הגדרות"
+    },
+    "actions": {
+      "accounting_export": {
+        "request": "ביקש ייצוא להנהלת חשבונות"
+      },
+      "appointment": {
+        "attendance": "רשם נוכחות בפגישה",
+        "book": "קבע פגישה",
+        "cancel": "ביטל פגישה",
+        "slot_cancel": "ביטל זמנים לפגישות",
+        "slot_create": "פתח זמנים לפגישות"
+      },
+      "assigned_workout": {
+        "create": "שייך אימון",
+        "delete": "הסיר אימון ששויך",
+        "update": "ערך אימון ששויך"
+      },
+      "attendance": {
+        "record": "רשם נוכחות",
+        "remove": "הסיר נוכחות"
+      },
+      "automation": {
+        "update": "שינה הודעה אוטומטית"
+      },
+      "benefit": {
+        "give": "נתן מתנה או הקלה",
+        "revoke": "לקח בחזרה מתנה או הקלה"
+      },
+      "booking": {
+        "approve": "אישר הזמנה",
+        "reject": "דחה הזמנה"
+      },
+      "box_review": {
+        "reply": "הגיב לביקורת על הבוקס",
+        "report": "דיווח על ביקורת על הבוקס"
+      },
+      "box_screen": {
+        "create": "הוסיף מסך בוקס",
+        "delete": "הסיר מסך בוקס",
+        "override_end": "החזיר מסך בוקס ללוח הזמנים",
+        "override_set": "השתלט על מסך בוקס",
+        "pairing_code": "יצר קוד צימוד למסך",
+        "update": "ערך מסך בוקס"
+      },
+      "branch": {
+        "archive": "העביר סניף לארכיון",
+        "create": "הוסיף סניף",
+        "update": "ערך סניף"
+      },
+      "business": {
+        "activation_request": "ביקש להפעיל את העסק"
+      },
+      "card_surcharge": {
+        "update": "שינה את עמלת הכרטיס"
+      },
+      "challenge": {
+        "create": "יצר אתגר",
+        "delete": "מחק אתגר",
+        "update": "ערך אתגר"
+      },
+      "channel": {
+        "settings_save": "שמר את הגדרות הערוצים",
+        "template_delete": "מחק תבנית הודעה",
+        "template_save": "שמר תבנית הודעה"
+      },
+      "check_in": {
+        "door_rotate": "החליף את קוד הדלת",
+        "member": "רשם צ׳ק-אין לחבר בוקס",
+        "member_code_revoke": "ביטל קוד צ׳ק-אין של חבר",
+        "nfc_rotate": "חידש את קוד תג ה-NFC",
+        "nfc_update": "שינה את תג ה-NFC",
+        "poster_rotate": "חידש את קוד הפוסטר",
+        "poster_update": "שינה את פוסטר הצ׳ק-אין",
+        "record": "רשם צ׳ק-אין",
+        "settings_update": "שינה את הגדרות הצ׳ק-אין"
+      },
+      "class": {
+        "booking_workout": "קבע WOD להזמנה",
+        "create": "יצר שיעור",
+        "day_workout_follow": "הגדיר שיעור לפי WOD היום",
+        "delete": "מחק שיעור",
+        "live_workout": "החליף את ה-WOD הפעיל",
+        "series_create": "יצר שיעור קבוע",
+        "state_change": "ביטל או פתח מחדש שיעור",
+        "update": "ערך שיעור",
+        "workout_link": "קישר WOD לשיעור",
+        "workouts_set": "קבע את ה-WOD של שיעור"
+      },
+      "class_notice": {
+        "send": "שלח הודעה לשיעור"
+      },
+      "class_type": {
+        "create": "יצר סוג שיעור",
+        "delete": "מחק סוג שיעור",
+        "update": "ערך סוג שיעור"
+      },
+      "cleaning": {
+        "area_archive": "העביר אזור ניקיון לארכיון",
+        "area_create": "הוסיף אזור ניקיון",
+        "area_update": "ערך אזור ניקיון",
+        "finish": "סיים ניקיון",
+        "schedule_delete": "הסיר לוח ניקיון",
+        "schedule_set": "קבע לוח ניקיון",
+        "start": "התחיל ניקיון"
+      },
+      "club": {
+        "archive": "העביר מועדון לארכיון",
+        "create": "יצר מועדון",
+        "member_remove": "הסיר מישהו ממועדון",
+        "request_answer": "ענה לבקשת מועדון",
+        "update": "ערך מועדון"
+      },
+      "coach_note": {
+        "create": "כתב הערת מאמן",
+        "delete": "מחק הערת מאמן",
+        "update": "ערך הערת מאמן"
+      },
+      "coaching_relationship": {
+        "create": "שייך מאמן",
+        "end": "סיים ליווי מאמן"
+      },
+      "community": {
+        "group_decide": "החליט על קבוצת חברים",
+        "group_reopen": "פתח מחדש בקשת קבוצת חברים",
+        "report_act": "טיפל בדיווח",
+        "settings_update": "שינה את הגדרות הקהילה"
+      },
+      "contact": {
+        "consent": "שינה הסכמה של איש קשר",
+        "delete": "מחק איש קשר",
+        "save": "שמר איש קשר"
+      },
+      "corporate": {
+        "client_create": "הוסיף לקוח עסקי",
+        "client_update": "ערך לקוח עסקי",
+        "invoice_create": "יצר חשבונית עסקית",
+        "invoice_send": "שלח חשבונית עסקית",
+        "invoice_status": "שינה חשבונית עסקית",
+        "payment_record": "רשם תשלום עסקי",
+        "payment_reverse": "ביטל תשלום עסקי",
+        "seat_add": "הוסיף מקום עסקי",
+        "seat_end": "סיים מקום עסקי"
+      },
+      "credit": {
+        "apply": "ניצל זיכוי",
+        "create": "נתן זיכוי",
+        "reverse": "ביטל זיכוי"
+      },
+      "data_export": {
+        "create": "ייצא את נתוני הבוקס"
+      },
+      "day_workout": {
+        "delete": "הסיר את WOD היום",
+        "set": "קבע את WOD היום"
+      },
+      "demo_data": {
+        "remove": "הסיר נתוני הדגמה",
+        "seed": "הוסיף נתוני הדגמה"
+      },
+      "document": {
+        "request": "ביקש חתימה",
+        "request_cancel": "ביטל בקשת חתימה",
+        "requirement_set": "שינה מי חותם על מסמך",
+        "settings_update": "שינה את הגדרות המסמכים",
+        "template_archive": "העביר מסמך לארכיון",
+        "template_create": "יצר מסמך",
+        "template_publish": "פרסם מסמך"
+      },
+      "door": {
+        "create": "הוסיף דלת",
+        "delete": "הסיר דלת",
+        "token_rotate": "חידש מפתח של דלת",
+        "unlock": "פתח דלת מהקבלה",
+        "update": "ערך דלת"
+      },
+      "email_sender": {
+        "delete": "הסיר את שולח המייל",
+        "save": "שמר את שולח המייל"
+      },
+      "event": {
+        "attendee_remove": "הסיר משתתף מאירוע",
+        "cancel": "ביטל אירוע",
+        "check_in": "צ׳ק-אין באירוע",
+        "cohost_answer": "ענה להזמנת שותפות באירוע",
+        "cohost_invite": "הזמין מארגן שותף",
+        "cohost_remove": "הסיר מארגן שותף",
+        "cohost_trial_offer": "הציע ניסיון עם מארגן שותף",
+        "create": "יצר אירוע",
+        "mark_paid": "סימן מקום באירוע כשולם",
+        "message": "שלח הודעה למשתתפי אירוע",
+        "refund": "החזיר כסף על מקום באירוע",
+        "trial_offer": "הציע ניסיון באירוע",
+        "update": "ערך אירוע"
+      },
+      "finance_record": {
+        "purge": "מחק רשומות כספיות"
+      },
+      "fiscal": {
+        "connection_save": "שמר את החיבור לרשות המסים",
+        "credit_note": "הנפיק חשבונית זיכוי",
+        "document_email": "שלח מסמך מס במייל",
+        "einvoice_retry": "שלח שוב חשבונית אלקטרונית",
+        "export_settings_save": "שמר את הגדרות הייצוא",
+        "identity_save": "שמר את פרטי המס",
+        "null_receipt": "הנפיק קבלה אפס",
+        "tax_rates_save": "שמר את שיעורי המע״מ",
+        "till_retry": "שלח שוב לקופה",
+        "transmission_retry": "שלח שוב מסמך מס"
+      },
+      "fitness_display": {
+        "update": "שינה מה כרטיס הכושר מציג"
+      },
+      "floor_plan": {
+        "create": "הוסיף תוכנית קומה",
+        "delete": "מחק תוכנית קומה",
+        "update": "ערך תוכנית קומה"
+      },
+      "follower_invite": {
+        "send": "הזמין עוקב להצטרף"
+      },
+      "form_review": {
+        "complete": "ענה על סרטון טכניקה"
+      },
+      "health_certificate": {
+        "add": "הוסיף אישור רפואי",
+        "delete": "מחק אישור רפואי"
+      },
+      "import": {
+        "apply": "החיל ייבוא",
+        "create": "התחיל ייבוא",
+        "delete": "מחק ייבוא",
+        "invite": "הזמין את האנשים שיובאו",
+        "undo": "ביטל ייבוא"
+      },
+      "injury": {
+        "create": "רשם פציעה",
+        "heal": "סימן פציעה כמחלימה",
+        "reopen": "פתח מחדש פציעה",
+        "update": "ערך פציעה"
+      },
+      "injury_warning": {
+        "acknowledge": "אישר אזהרת פציעה"
+      },
+      "integration": {
+        "delivery_replay": "שלח שוב משלוח וובהוק",
+        "email_list_delete": "הסיר חיבור לרשימת תפוצה",
+        "email_list_save": "שמר חיבור לרשימת תפוצה",
+        "email_list_sync": "סנכרן רשימת תפוצה",
+        "key_create": "יצר מפתח API",
+        "key_revoke": "ביטל מפתח API",
+        "key_rotate": "חידש מפתח API",
+        "unsubscribe_url_rotate": "חידש את קישור ההסרה מרשימה",
+        "webhook_create": "הוסיף וובהוק",
+        "webhook_delete": "מחק וובהוק",
+        "webhook_secret_rotate": "חידש סוד של וובהוק",
+        "webhook_update": "ערך וובהוק"
+      },
+      "inventory": {
+        "machine_archive": "העביר מכשיר לארכיון",
+        "machine_create": "הוסיף מכשיר",
+        "machine_event": "רשם אירוע במכשיר",
+        "machine_place": "העביר מכשיר",
+        "machine_update": "ערך מכשיר",
+        "supply_archive": "העביר מוצר מתכלה לארכיון",
+        "supply_create": "הוסיף מוצר מתכלה",
+        "supply_low": "דיווח על מוצר מתכלה שנגמר",
+        "supply_movement": "רשם תנועת מלאי",
+        "supply_update": "ערך מוצר מתכלה"
+      },
+      "invoice": {
+        "create": "יצר חשבונית",
+        "file_attach": "צירף קובץ לחשבונית",
+        "issue": "הנפיק חשבונית",
+        "renewal_create": "יצר חשבונית חידוש",
+        "update": "ערך חשבונית",
+        "void": "ביטל חשבונית"
+      },
+      "join_request": {
+        "accept": "אישר בקשת הצטרפות",
+        "decline": "דחה בקשת הצטרפות"
+      },
+      "lead": {
+        "contacted": "יצר קשר עם מתעניין",
+        "convert": "הפך מתעניין לחבר בוקס",
+        "create": "הוסיף מתעניין",
+        "delete": "מחק מתעניין",
+        "import": "ייבא מתעניינים",
+        "move": "העביר מתעניין לשלב אחר",
+        "note": "כתב הערה על מתעניין",
+        "opt_out": "עצר הודעות למתעניין",
+        "task_add": "הוסיף משימה למתעניין",
+        "task_done": "סיים משימה של מתעניין",
+        "update": "ערך מתעניין"
+      },
+      "logo": {
+        "remove": "הסיר את הלוגו",
+        "set": "שינה את הלוגו"
+      },
+      "member": {
+        "branches_change": "שינה את הסניפים",
+        "class_placement": "הועבר לשיעור אחר",
+        "coach_scope_change": "שינה אילו לקוחות המאמן רואה",
+        "guest_create": "הוסיף כאורח של הבוקס",
+        "home_branch_change": "שינה את הסניף הראשי",
+        "leave_record": "רשם עזיבה של הבוקס",
+        "leave_undo": "ביטל את העזיבה",
+        "programming": "תכנן אימון",
+        "remove": "הוסר מהבוקס",
+        "risk_contacted": "סומן כנוצר קשר",
+        "risk_snooze": "השהה את התראת הסיכון",
+        "role_change": "שינה את התפקידים",
+        "status_reset": "החזיר את הסטטוס לאוטומטי",
+        "status_set": "קבע את הסטטוס ידנית",
+        "update": "ערך את הפרטים"
+      },
+      "message": {
+        "cancel": "ביטל הודעה",
+        "retry": "שלח שוב הודעה",
+        "send": "שלח הודעה"
+      },
+      "metric": {
+        "reset": "איפס מדידה",
+        "reset_undo": "ביטל איפוס מדידה"
+      },
+      "nutrition_plan": {
+        "save": "שמר תוכנית תזונה"
+      },
+      "organization": {
+        "archive": "סגר את הבוקס",
+        "transfer": "העביר את הבעלות על הבוקס"
+      },
+      "package": {
+        "assign": "הקצה חבילת מנוי",
+        "auto_renew": "שינה את החידוש האוטומטי",
+        "beneficiary_add": "הוסיף מי שחולק את החבילה",
+        "beneficiary_remove": "הסיר מי שחולק את החבילה",
+        "create": "יצר חבילת מנוי",
+        "end_reset": "החזיר לאוטומטי את היום האחרון של החבילה",
+        "end_set": "קבע ידנית את היום האחרון של החבילה",
+        "entitlements_refresh": "חישב מחדש מה החבילה נותנת",
+        "freeze": "הקפיא את המנוי",
+        "freeze_cancel": "ביטל הקפאה",
+        "removal_undo": "ביטל הסרת חבילת מנוי",
+        "remove": "הסיר חבילת מנוי",
+        "retire": "הפסיק למכור חבילת מנוי",
+        "update": "ערך חבילת מנוי"
+      },
+      "package_audience": {
+        "exception_add": "הוסיף חריגה לאדם",
+        "exception_remove": "הסיר חריגה לאדם",
+        "featured_update": "שינה את החבילות המומלצות",
+        "package_update": "שינה מי רשאי לקנות חבילה",
+        "update": "שינה מי רשאי לקנות חבילות"
+      },
+      "package_request": {
+        "activate_unpaid": "הפעיל בקשת חבילה ללא תשלום",
+        "collect": "גבה תשלום על בקשת חבילה",
+        "decline": "דחה בקשת חבילה"
+      },
+      "pay_item": {
+        "archive": "העביר פריט תשלום לארכיון",
+        "create": "יצר פריט תשלום",
+        "update": "ערך פריט תשלום"
+      },
+      "pay_period": {
+        "adjustment_add": "הוסיף התאמת שכר",
+        "adjustment_delete": "מחק התאמת שכר",
+        "approve": "אישר תקופת שכר",
+        "calculate": "חישב תקופת שכר",
+        "create": "פתח תקופת שכר",
+        "item_line_add": "הוסיף שורת שכר חד-פעמית",
+        "item_restore": "שחזר שורת שכר",
+        "line_basis": "שינה את הבסיס של שורת שכר",
+        "reopen": "פתח מחדש תקופת שכר"
+      },
+      "pay_rule": {
+        "archive": "העביר כלל תשלום לארכיון",
+        "create": "יצר כלל תשלום",
+        "update": "ערך כלל תשלום"
+      },
+      "payment": {
+        "card_link": "שלח קישור לשמירת כרטיס",
+        "charge_dismiss": "התעלם מחיוב כרטיס שנכשל",
+        "charge_retry": "ניסה שוב חיוב בכרטיס",
+        "receipt_email": "שלח קבלה במייל",
+        "receive": "גבה תשלום",
+        "record": "רשם תשלום",
+        "refund": "החזיר כסף",
+        "retry": "ניסה שוב תשלום",
+        "reverse": "ביטל תשלום",
+        "terminal_cancel": "ביטל תשלום במסוף",
+        "terminal_result": "רשם את תשובת המסוף",
+        "terminal_start": "התחיל תשלום במסוף"
+      },
+      "payment_account": {
+        "connect": "חיבר תשלומים מקוונים",
+        "disconnect": "ניתק תשלומים מקוונים",
+        "options": "שינה את אפשרויות התשלום",
+        "save": "שמר את חשבון התשלומים"
+      },
+      "perk": {
+        "claim_revoke": "לקח בחזרה הטבה שנדרשה",
+        "claim_use": "סימן הטבה כמנוצלת",
+        "codes_add": "הוסיף קודי הטבה",
+        "create": "יצר הטבה",
+        "delete": "מחק הטבה",
+        "expire": "סיים הטבה",
+        "pause": "השהה הטבה",
+        "publish": "פרסם הטבה",
+        "update": "ערך הטבה"
+      },
+      "programme": {
+        "archive": "העביר תוכנית אימונים לארכיון",
+        "cover_remove": "הסיר עטיפה מתוכנית",
+        "cover_set": "קבע עטיפה לתוכנית",
+        "create": "יצר תוכנית אימונים",
+        "publish": "פרסם תוכנית אימונים",
+        "refund": "החזיר כסף על תוכנית אימונים",
+        "restore": "שחזר תוכנית אימונים",
+        "review_moderate": "ניהל ביקורת על תוכנית",
+        "update": "ערך תוכנית אימונים"
+      },
+      "promotion": {
+        "code_create": "יצר קודי הנחה",
+        "create": "יצר מבצע",
+        "redeem": "החיל קוד הנחה"
+      },
+      "public_profile": {
+        "photo_add": "הוסיף תמונה לדף הציבורי",
+        "publish": "פרסם את הדף הציבורי של הבוקס",
+        "unpublish": "הסתיר את הדף הציבורי של הבוקס",
+        "update": "ערך את הדף הציבורי של הבוקס"
+      },
+      "rank": {
+        "award": "העניק דרגה",
+        "revoke": "שלל דרגה",
+        "skill_check": "סימן מיומנות",
+        "skills_batch": "סימן כמה מיומנויות"
+      },
+      "rank_ladder": {
+        "create": "יצר סולם דרגות",
+        "delete": "מחק סולם דרגות",
+        "update": "ערך סולם דרגות"
+      },
+      "receipt": {
+        "create": "הנפיק קבלה"
+      },
+      "reconciliation": {
+        "match": "התאים תנועה בנקאית",
+        "record": "רשם תנועה בנקאית",
+        "unmatch": "ביטל התאמת תנועה בנקאית"
+      },
+      "referral": {
+        "approve": "אישר הפניה",
+        "create": "רשם הפניה",
+        "friend_gift": "נתן את מתנת החבר",
+        "reassign": "העביר הפניה לאדם אחר",
+        "reject": "דחה הפניה",
+        "reward_create": "הוסיף תגמול הפניה",
+        "reward_given": "נתן תגמול הפניה",
+        "reward_status": "שינה תגמול הפניה",
+        "status": "שינה הפניה"
+      },
+      "referral_program": {
+        "create": "יצר תוכנית חבר מביא חבר",
+        "update": "שינה את תוכנית חבר מביא חבר"
+      },
+      "review": {
+        "status": "שינה סטטוס של ביקורת"
+      },
+      "review_asks": {
+        "update": "שינה בקשות לביקורת"
+      },
+      "role_access": {
+        "change": "שינה הרשאות של תפקיד"
+      },
+      "scale_levels": {
+        "update": "שינה את רמות ההתאמה"
+      },
+      "scaling_suggestion": {
+        "approve": "אישר הצעת התאמה",
+        "dismiss": "דחה הצעת התאמה"
+      },
+      "season": {
+        "create": "יצר עונה",
+        "enrollment_confirm": "אישר מקום בעונה",
+        "enrollment_decline": "דחה בקשת עונה",
+        "enrollment_remove": "הוסר מעונה",
+        "update": "ערך עונה"
+      },
+      "settings": {
+        "ai": "שינה את הגדרות הבינה המלאכותית",
+        "onboarding": "שינה את שלבי קבלת הפנים",
+        "recipe_apply": "החיל הגדרה מוכנה",
+        "time_zone": "שינה את אזור הזמן",
+        "update": "שינה את הגדרות הבוקס"
+      },
+      "shop": {
+        "desk_sale": "מכר בקבלה",
+        "order_cancel": "ביטל הזמנה",
+        "order_fiscal_receipt": "הנפיק קבלה להזמנה",
+        "order_payment": "גבה תשלום על הזמנה",
+        "order_pickup": "מסר הזמנה",
+        "order_ready": "סימן הזמנה כמוכנה",
+        "order_refund": "החזיר כסף על הזמנה",
+        "pricing_target": "קבע יעד מחיר",
+        "product_create": "הוסיף מוצר",
+        "product_promote": "קידם מוצר",
+        "product_status": "שינה סטטוס של מוצר",
+        "product_update": "ערך מוצר",
+        "promotion_code_update": "ערך קוד הנחה בחנות",
+        "stock_movement": "שינה את המלאי",
+        "variant_archive": "העביר גרסת מוצר לארכיון",
+        "variant_create": "הוסיף גרסת מוצר",
+        "variant_update": "ערך גרסת מוצר"
+      },
+      "space": {
+        "archive": "העביר חלל לארכיון",
+        "cleaning_point_add": "הוסיף נקודת ניקיון",
+        "cleaning_point_delete": "מחק נקודת ניקיון",
+        "cleaning_point_update": "ערך נקודת ניקיון",
+        "cleaning_points_order": "סידר מחדש את נקודות הניקיון",
+        "create": "יצר חלל",
+        "photo_add": "הוסיף תמונת חלל",
+        "photo_delete": "מחק תמונת חלל",
+        "photo_update": "ערך תמונת חלל",
+        "photos_order": "סידר מחדש את תמונות החלל",
+        "restore": "שחזר חלל",
+        "settings_update": "שינה את הגדרות החללים",
+        "unavailable": "הפך חלל ללא זמין",
+        "unavailable_end": "החזיר חלל לזמינות",
+        "update": "ערך חלל"
+      },
+      "training_goal": {
+        "set": "קבע יעד שבועי"
+      },
+      "trial": {
+        "accept": "אישר שיעור ניסיון",
+        "attendance": "רשם נוכחות בשיעור ניסיון",
+        "decline": "דחה שיעור ניסיון"
+      },
+      "trial_policy": {
+        "update": "שינה את כללי שיעורי הניסיון"
+      },
+      "video": {
+        "archive": "העביר סרטון לארכיון",
+        "create": "הוסיף סרטון",
+        "publish": "פרסם סרטון",
+        "update": "ערך סרטון"
+      },
+      "website": {
+        "domain_add": "הוסיף דומיין לאתר",
+        "domain_instructions": "שלח הוראות לדומיין",
+        "domain_primary": "שינה את הדומיין הראשי של האתר",
+        "domain_remove": "הסיר דומיין מהאתר",
+        "draft_discard": "ביטל את הטיוטה של האתר",
+        "publish": "פרסם את האתר",
+        "translations_keep": "השאיר תרגומים לאתר",
+        "translations_machine": "תרגם את האתר אוטומטית",
+        "translations_save": "שמר תרגומים לאתר",
+        "update": "ערך את האתר"
+      },
+      "workout": {
+        "copy": "העתיק WOD",
+        "create": "יצר WOD",
+        "delete": "מחק WOD",
+        "duplicate": "שכפל WOD",
+        "exercise_matches": "התאים את התרגילים של WOD",
+        "goals_update": "שינה את היעדים של WOD",
+        "publish": "פרסם WOD",
+        "reopen": "פתח מחדש WOD לעריכה",
+        "update": "ערך WOD"
+      },
+      "workout_folder": {
+        "create": "יצר תיקיית WOD",
+        "delete": "מחק תיקיית WOD",
+        "update": "ערך תיקיית WOD"
+      },
+      "workout_type": {
+        "create": "הוסיף סוג אימון",
+        "merge": "מיזג סוגי אימון",
+        "update": "ערך סוג אימון"
+      }
+    }
   }
 }

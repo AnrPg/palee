@@ -4362,6 +4362,7 @@
     "mpTabWellbeing": "Bienestar",
     "mpTabCoaching": "Coaching",
     "mpTabFinance": "Finanzas",
+    "mpTabHistory": "Historial",
     "mpTabAccount": "Cuenta",
     "bmTitle": "Mensaje del box",
     "bmBody": "Mensaje",
@@ -20549,7 +20550,6 @@
     "refund": "Devolver dinero…",
     "nothingOpen": "No hay nada pendiente de este paquete.",
     "reason": "Motivo (opcional)",
-    "shareReason": "El miembro lo ve en la notificación",
     "cancel": "Cancelar",
     "confirm": "Quitar paquete",
     "removing": "Quitando…",
@@ -20670,5 +20670,651 @@
     "variationSearch": "Buscar entre todos los miembros",
     "whichWod": "¿Qué WOD?",
     "wodCount": "{count, plural, one {# WOD} other {# WOD}}"
+  },
+  "ActivityLog": {
+    "title": "Registro de actividad",
+    "intro": "Quién del personal hizo qué, cuándo, a quién y por qué. Toca una fila para ver los detalles.",
+    "back": "Gestión",
+    "forbidden": "Tu rol no ve el registro de actividad.",
+    "filters": "Filtros del registro de actividad",
+    "search": "Buscar en motivos y nombres",
+    "area": "Tipo",
+    "staffMember": "Por quién",
+    "anyStaff": "Todo el personal",
+    "person": "A quién",
+    "personPlaceholder": "Escribe un nombre",
+    "clearPerson": "Quitar el filtro de {name}",
+    "from": "Desde",
+    "to": "Hasta",
+    "export": "Exportar CSV",
+    "exporting": "Exportando…",
+    "loading": "Cargando…",
+    "empty": "Todavía no hay nada registrado.",
+    "emptyFiltered": "No hay entradas con estos filtros.",
+    "count": "{count, plural, one {# entrada} other {# entradas}}",
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "more": "Más",
+    "fullLog": "Todo el registro →",
+    "system": "Automático",
+    "deletedMember": "Miembro eliminado",
+    "onePerson": "Una persona",
+    "changeLabel": "Cambio",
+    "period": "Periodo",
+    "periodRange": "{from} – {to}",
+    "about": "Afecta a",
+    "reason": "Motivo",
+    "noReason": "Sin motivo",
+    "by": "Por",
+    "memberSaw": "El miembro también lo vio",
+    "yes": "Sí",
+    "no": "No",
+    "onlyPerson": "Solo {name}",
+    "onlyActor": "Solo lo que hizo {name}",
+    "none": "vacío",
+    "shareWithMember": "Que también lo vea el miembro",
+    "historyTitle": "Historial",
+    "theBox": "La box",
+    "reasonShown": "Motivo: {reason}",
+    "fields": {
+      "status": "Estado",
+      "ends_on": "Último día"
+    },
+    "areas": {
+      "members": "Miembros",
+      "money": "Dinero",
+      "packages": "Paquetes de suscripción",
+      "classes": "Clases",
+      "training": "Entrenamiento",
+      "spaces": "Espacios y equipamiento",
+      "shop": "Tienda y programas",
+      "community": "Comunidad",
+      "communication": "Mensajes",
+      "staff_pay": "Pagos al personal",
+      "settings": "Ajustes"
+    },
+    "actions": {
+      "accounting_export": {
+        "request": "Pidió una exportación contable"
+      },
+      "appointment": {
+        "attendance": "Registró la asistencia a una cita",
+        "book": "Reservó una cita",
+        "cancel": "Canceló una cita",
+        "slot_cancel": "Canceló horarios de citas",
+        "slot_create": "Abrió horarios de citas"
+      },
+      "assigned_workout": {
+        "create": "Asignó un entrenamiento",
+        "delete": "Quitó un entrenamiento asignado",
+        "update": "Editó un entrenamiento asignado"
+      },
+      "attendance": {
+        "record": "Registró la asistencia",
+        "remove": "Quitó la asistencia"
+      },
+      "automation": {
+        "update": "Cambió un mensaje automático"
+      },
+      "benefit": {
+        "give": "Dio un regalo o una cortesía",
+        "revoke": "Retiró un regalo o una cortesía"
+      },
+      "booking": {
+        "approve": "Aprobó una reserva",
+        "reject": "Rechazó una reserva"
+      },
+      "box_review": {
+        "reply": "Respondió a una reseña de la box",
+        "report": "Denunció una reseña de la box"
+      },
+      "box_screen": {
+        "create": "Añadió una pantalla de box",
+        "delete": "Quitó una pantalla de box",
+        "override_end": "Devolvió una pantalla a su horario",
+        "override_set": "Tomó el control de una pantalla",
+        "pairing_code": "Creó un código para vincular la pantalla",
+        "update": "Editó una pantalla de box"
+      },
+      "branch": {
+        "archive": "Archivó una sede",
+        "create": "Añadió una sede",
+        "update": "Editó una sede"
+      },
+      "business": {
+        "activation_request": "Pidió activar el negocio"
+      },
+      "card_surcharge": {
+        "update": "Cambió el recargo por tarjeta"
+      },
+      "challenge": {
+        "create": "Creó un reto",
+        "delete": "Borró un reto",
+        "update": "Editó un reto"
+      },
+      "channel": {
+        "settings_save": "Guardó los ajustes de canales",
+        "template_delete": "Borró una plantilla de mensaje",
+        "template_save": "Guardó una plantilla de mensaje"
+      },
+      "check_in": {
+        "door_rotate": "Cambió el código de la puerta",
+        "member": "Hizo el check-in de un miembro",
+        "member_code_revoke": "Anuló el código de check-in de un miembro",
+        "nfc_rotate": "Renovó el código de la etiqueta NFC",
+        "nfc_update": "Cambió la etiqueta NFC",
+        "poster_rotate": "Renovó el código del cartel",
+        "poster_update": "Cambió el cartel de check-in",
+        "record": "Hizo el check-in de alguien",
+        "settings_update": "Cambió los ajustes de check-in"
+      },
+      "class": {
+        "booking_workout": "Fijó el WOD de una reserva",
+        "create": "Creó una clase",
+        "day_workout_follow": "Hizo que una clase siga el WOD del día",
+        "delete": "Borró una clase",
+        "live_workout": "Cambió el WOD en curso",
+        "series_create": "Creó una clase recurrente",
+        "state_change": "Canceló o reabrió una clase",
+        "update": "Editó una clase",
+        "workout_link": "Vinculó un WOD a una clase",
+        "workouts_set": "Fijó los WOD de una clase"
+      },
+      "class_notice": {
+        "send": "Envió un aviso a una clase"
+      },
+      "class_type": {
+        "create": "Creó un tipo de clase",
+        "delete": "Borró un tipo de clase",
+        "update": "Editó un tipo de clase"
+      },
+      "cleaning": {
+        "area_archive": "Archivó una zona de limpieza",
+        "area_create": "Añadió una zona de limpieza",
+        "area_update": "Editó una zona de limpieza",
+        "finish": "Terminó la limpieza",
+        "schedule_delete": "Quitó un horario de limpieza",
+        "schedule_set": "Fijó un horario de limpieza",
+        "start": "Empezó la limpieza"
+      },
+      "club": {
+        "archive": "Archivó un club",
+        "create": "Creó un club",
+        "member_remove": "Quitó a alguien de un club",
+        "request_answer": "Respondió a una solicitud del club",
+        "update": "Editó un club"
+      },
+      "coach_note": {
+        "create": "Escribió una nota del coach",
+        "delete": "Borró una nota del coach",
+        "update": "Editó una nota del coach"
+      },
+      "coaching_relationship": {
+        "create": "Asignó un coach",
+        "end": "Terminó el coaching"
+      },
+      "community": {
+        "group_decide": "Decidió sobre un grupo de miembros",
+        "group_reopen": "Reabrió la solicitud de un grupo de miembros",
+        "report_act": "Gestionó una denuncia",
+        "settings_update": "Cambió los ajustes de la comunidad"
+      },
+      "contact": {
+        "consent": "Cambió el consentimiento de un contacto",
+        "delete": "Borró un contacto",
+        "save": "Guardó un contacto"
+      },
+      "corporate": {
+        "client_create": "Añadió un cliente corporativo",
+        "client_update": "Editó un cliente corporativo",
+        "invoice_create": "Creó una factura corporativa",
+        "invoice_send": "Envió una factura corporativa",
+        "invoice_status": "Cambió una factura corporativa",
+        "payment_record": "Registró un pago corporativo",
+        "payment_reverse": "Revirtió un pago corporativo",
+        "seat_add": "Añadió una plaza corporativa",
+        "seat_end": "Terminó una plaza corporativa"
+      },
+      "credit": {
+        "apply": "Aplicó un crédito",
+        "create": "Concedió un crédito",
+        "reverse": "Revirtió un crédito"
+      },
+      "data_export": {
+        "create": "Exportó los datos de la box"
+      },
+      "day_workout": {
+        "delete": "Quitó el WOD del día",
+        "set": "Fijó el WOD del día"
+      },
+      "demo_data": {
+        "remove": "Quitó los datos de demostración",
+        "seed": "Añadió datos de demostración"
+      },
+      "document": {
+        "request": "Pidió una firma",
+        "request_cancel": "Retiró una solicitud de firma",
+        "requirement_set": "Cambió quién firma un documento",
+        "settings_update": "Cambió los ajustes de documentos",
+        "template_archive": "Archivó un documento",
+        "template_create": "Creó un documento",
+        "template_publish": "Publicó un documento"
+      },
+      "door": {
+        "create": "Añadió una puerta",
+        "delete": "Quitó una puerta",
+        "token_rotate": "Renovó la clave de una puerta",
+        "unlock": "Abrió una puerta desde recepción",
+        "update": "Editó una puerta"
+      },
+      "email_sender": {
+        "delete": "Quitó el remitente de email",
+        "save": "Guardó el remitente de email"
+      },
+      "event": {
+        "attendee_remove": "Quitó a un asistente del evento",
+        "cancel": "Canceló un evento",
+        "check_in": "Hizo el check-in en un evento",
+        "cohost_answer": "Respondió a una invitación de coorganización",
+        "cohost_invite": "Invitó a un coorganizador",
+        "cohost_remove": "Quitó a un coorganizador",
+        "cohost_trial_offer": "Ofreció una prueba con un coorganizador",
+        "create": "Creó un evento",
+        "mark_paid": "Marcó una plaza del evento como pagada",
+        "message": "Envió un mensaje a los asistentes",
+        "refund": "Reembolsó una plaza del evento",
+        "trial_offer": "Ofreció una prueba en un evento",
+        "update": "Editó un evento"
+      },
+      "finance_record": {
+        "purge": "Borró registros financieros"
+      },
+      "fiscal": {
+        "connection_save": "Guardó la conexión fiscal",
+        "credit_note": "Emitió una nota de crédito",
+        "document_email": "Envió un documento fiscal por email",
+        "einvoice_retry": "Reenvió una factura electrónica",
+        "export_settings_save": "Guardó los ajustes de exportación",
+        "identity_save": "Guardó los datos fiscales",
+        "null_receipt": "Emitió un recibo a cero",
+        "tax_rates_save": "Guardó los tipos de IVA",
+        "till_retry": "Reenvió a la caja",
+        "transmission_retry": "Reenvió un documento fiscal"
+      },
+      "fitness_display": {
+        "update": "Cambió lo que muestra la tarjeta de forma"
+      },
+      "floor_plan": {
+        "create": "Añadió un plano",
+        "delete": "Borró un plano",
+        "update": "Editó un plano"
+      },
+      "follower_invite": {
+        "send": "Invitó a un seguidor a unirse"
+      },
+      "form_review": {
+        "complete": "Respondió a un vídeo de técnica"
+      },
+      "health_certificate": {
+        "add": "Añadió un certificado médico",
+        "delete": "Borró un certificado médico"
+      },
+      "import": {
+        "apply": "Aplicó una importación",
+        "create": "Inició una importación",
+        "delete": "Borró una importación",
+        "invite": "Invitó a las personas importadas",
+        "undo": "Deshizo una importación"
+      },
+      "injury": {
+        "create": "Registró una lesión",
+        "heal": "Marcó una lesión como curada",
+        "reopen": "Reabrió una lesión",
+        "update": "Editó una lesión"
+      },
+      "injury_warning": {
+        "acknowledge": "Confirmó un aviso de lesión"
+      },
+      "integration": {
+        "delivery_replay": "Reenvió una entrega de webhook",
+        "email_list_delete": "Quitó la conexión con una lista de correo",
+        "email_list_save": "Guardó la conexión con una lista de correo",
+        "email_list_sync": "Sincronizó una lista de correo",
+        "key_create": "Creó una clave API",
+        "key_revoke": "Revocó una clave API",
+        "key_rotate": "Renovó una clave API",
+        "unsubscribe_url_rotate": "Renovó el enlace de baja",
+        "webhook_create": "Añadió un webhook",
+        "webhook_delete": "Borró un webhook",
+        "webhook_secret_rotate": "Renovó el secreto de un webhook",
+        "webhook_update": "Editó un webhook"
+      },
+      "inventory": {
+        "machine_archive": "Archivó una máquina",
+        "machine_create": "Añadió una máquina",
+        "machine_event": "Registró un incidente de máquina",
+        "machine_place": "Movió una máquina",
+        "machine_update": "Editó una máquina",
+        "supply_archive": "Archivó un consumible",
+        "supply_create": "Añadió un consumible",
+        "supply_low": "Avisó de un consumible que se acaba",
+        "supply_movement": "Registró un movimiento de stock",
+        "supply_update": "Editó un consumible"
+      },
+      "invoice": {
+        "create": "Creó una factura",
+        "file_attach": "Adjuntó un archivo a una factura",
+        "issue": "Emitió una factura",
+        "renewal_create": "Creó una factura de renovación",
+        "update": "Editó una factura",
+        "void": "Anuló una factura"
+      },
+      "join_request": {
+        "accept": "Aceptó una solicitud de alta",
+        "decline": "Rechazó una solicitud de alta"
+      },
+      "lead": {
+        "contacted": "Contactó a un interesado",
+        "convert": "Convirtió un interesado en miembro de la box",
+        "create": "Añadió un interesado",
+        "delete": "Borró un interesado",
+        "import": "Importó interesados",
+        "move": "Movió un interesado de etapa",
+        "note": "Escribió una nota sobre un interesado",
+        "opt_out": "Detuvo los mensajes a un interesado",
+        "task_add": "Añadió una tarea a un interesado",
+        "task_done": "Completó una tarea de un interesado",
+        "update": "Editó un interesado"
+      },
+      "logo": {
+        "remove": "Quitó el logotipo",
+        "set": "Cambió el logotipo"
+      },
+      "member": {
+        "branches_change": "Sedes cambiadas",
+        "class_placement": "Movido a otra clase",
+        "coach_scope_change": "Cambió qué clientes ve el coach",
+        "guest_create": "Añadido como invitado de la box",
+        "home_branch_change": "Sede principal cambiada",
+        "leave_record": "Registró la salida de la box",
+        "leave_undo": "Deshizo la salida",
+        "programming": "Programó un entrenamiento",
+        "remove": "Quitado de la box",
+        "risk_contacted": "Marcado como contactado",
+        "risk_snooze": "Pausó el aviso de riesgo",
+        "role_change": "Roles cambiados",
+        "status_reset": "Estado devuelto a automático",
+        "status_set": "Estado fijado a mano",
+        "update": "Datos editados"
+      },
+      "message": {
+        "cancel": "Canceló un mensaje",
+        "retry": "Reenvió un mensaje",
+        "send": "Envió un mensaje"
+      },
+      "metric": {
+        "reset": "Reinició una medición",
+        "reset_undo": "Deshizo el reinicio de una medición"
+      },
+      "nutrition_plan": {
+        "save": "Guardó un plan de nutrición"
+      },
+      "organization": {
+        "archive": "Cerró la box",
+        "transfer": "Transfirió la propiedad de la box"
+      },
+      "package": {
+        "assign": "Asignó un paquete de suscripción",
+        "auto_renew": "Cambió la renovación automática",
+        "beneficiary_add": "Añadió a alguien que comparte el paquete",
+        "beneficiary_remove": "Quitó a alguien que comparte el paquete",
+        "create": "Creó un paquete de suscripción",
+        "end_reset": "Devolvió a automático el último día del paquete",
+        "end_set": "Fijó a mano el último día del paquete",
+        "entitlements_refresh": "Recalculó lo que da el paquete",
+        "freeze": "Congeló la suscripción",
+        "freeze_cancel": "Canceló una congelación",
+        "removal_undo": "Deshizo la retirada del paquete",
+        "remove": "Quitó un paquete de suscripción",
+        "retire": "Dejó de vender un paquete de suscripción",
+        "update": "Editó un paquete de suscripción"
+      },
+      "package_audience": {
+        "exception_add": "Añadió una excepción para una persona",
+        "exception_remove": "Quitó una excepción para una persona",
+        "featured_update": "Cambió los paquetes destacados",
+        "package_update": "Cambió quién puede comprar un paquete",
+        "update": "Cambió quién puede comprar paquetes"
+      },
+      "package_request": {
+        "activate_unpaid": "Activó una solicitud de paquete sin pago",
+        "collect": "Cobró una solicitud de paquete",
+        "decline": "Rechazó una solicitud de paquete"
+      },
+      "pay_item": {
+        "archive": "Archivó un concepto de pago",
+        "create": "Creó un concepto de pago",
+        "update": "Editó un concepto de pago"
+      },
+      "pay_period": {
+        "adjustment_add": "Añadió un ajuste de pago",
+        "adjustment_delete": "Borró un ajuste de pago",
+        "approve": "Aprobó un periodo de pago",
+        "calculate": "Calculó un periodo de pago",
+        "create": "Abrió un periodo de pago",
+        "item_line_add": "Añadió una línea de pago puntual",
+        "item_restore": "Restauró una línea de pago",
+        "line_basis": "Cambió la base de una línea de pago",
+        "reopen": "Reabrió un periodo de pago"
+      },
+      "pay_rule": {
+        "archive": "Archivó una regla de pago",
+        "create": "Creó una regla de pago",
+        "update": "Editó una regla de pago"
+      },
+      "payment": {
+        "card_link": "Envió un enlace para guardar la tarjeta",
+        "charge_dismiss": "Descartó un cargo con tarjeta fallido",
+        "charge_retry": "Reintentó un cargo con tarjeta",
+        "receipt_email": "Envió un recibo por email",
+        "receive": "Cobró un pago",
+        "record": "Registró un pago",
+        "refund": "Devolvió dinero",
+        "retry": "Reintentó un pago",
+        "reverse": "Revirtió un pago",
+        "terminal_cancel": "Canceló un cobro en el datáfono",
+        "terminal_result": "Registró la respuesta del datáfono",
+        "terminal_start": "Inició un cobro en el datáfono"
+      },
+      "payment_account": {
+        "connect": "Conectó los pagos online",
+        "disconnect": "Desconectó los pagos online",
+        "options": "Cambió las opciones de pago",
+        "save": "Guardó la cuenta de pagos"
+      },
+      "perk": {
+        "claim_revoke": "Retiró una ventaja reclamada",
+        "claim_use": "Marcó una ventaja como usada",
+        "codes_add": "Añadió códigos de ventaja",
+        "create": "Creó una ventaja",
+        "delete": "Borró una ventaja",
+        "expire": "Terminó una ventaja",
+        "pause": "Pausó una ventaja",
+        "publish": "Publicó una ventaja",
+        "update": "Editó una ventaja"
+      },
+      "programme": {
+        "archive": "Archivó un programa de entrenamiento",
+        "cover_remove": "Quitó la portada de un programa",
+        "cover_set": "Fijó la portada de un programa",
+        "create": "Creó un programa de entrenamiento",
+        "publish": "Publicó un programa de entrenamiento",
+        "refund": "Reembolsó un programa de entrenamiento",
+        "restore": "Restauró un programa de entrenamiento",
+        "review_moderate": "Moderó una reseña de programa",
+        "update": "Editó un programa de entrenamiento"
+      },
+      "promotion": {
+        "code_create": "Creó códigos de descuento",
+        "create": "Creó una promoción",
+        "redeem": "Aplicó un código de descuento"
+      },
+      "public_profile": {
+        "photo_add": "Añadió una foto a la página pública",
+        "publish": "Publicó la página pública de la box",
+        "unpublish": "Ocultó la página pública de la box",
+        "update": "Editó la página pública de la box"
+      },
+      "rank": {
+        "award": "Otorgó un grado",
+        "revoke": "Retiró un grado",
+        "skill_check": "Marcó una habilidad",
+        "skills_batch": "Marcó varias habilidades"
+      },
+      "rank_ladder": {
+        "create": "Creó una escala de grados",
+        "delete": "Borró una escala de grados",
+        "update": "Editó una escala de grados"
+      },
+      "receipt": {
+        "create": "Emitió un recibo"
+      },
+      "reconciliation": {
+        "match": "Conció un movimiento bancario",
+        "record": "Registró un movimiento bancario",
+        "unmatch": "Deshizo una conciliación bancaria"
+      },
+      "referral": {
+        "approve": "Aprobó un referido",
+        "create": "Registró un referido",
+        "friend_gift": "Entregó el regalo del amigo",
+        "reassign": "Reasignó un referido",
+        "reject": "Rechazó un referido",
+        "reward_create": "Añadió una recompensa por referido",
+        "reward_given": "Entregó una recompensa por referido",
+        "reward_status": "Cambió una recompensa por referido",
+        "status": "Cambió un referido"
+      },
+      "referral_program": {
+        "create": "Creó un programa de referidos",
+        "update": "Cambió el programa de referidos"
+      },
+      "review": {
+        "status": "Cambió el estado de una reseña"
+      },
+      "review_asks": {
+        "update": "Cambió las solicitudes de reseña"
+      },
+      "role_access": {
+        "change": "Cambió los permisos de un rol"
+      },
+      "scale_levels": {
+        "update": "Cambió los niveles de escalado"
+      },
+      "scaling_suggestion": {
+        "approve": "Aprobó una sugerencia de escalado",
+        "dismiss": "Descartó una sugerencia de escalado"
+      },
+      "season": {
+        "create": "Creó una temporada",
+        "enrollment_confirm": "Confirmó una plaza de temporada",
+        "enrollment_decline": "Rechazó una solicitud de temporada",
+        "enrollment_remove": "Quitó de una temporada",
+        "update": "Editó una temporada"
+      },
+      "settings": {
+        "ai": "Cambió los ajustes de IA",
+        "onboarding": "Cambió los pasos de bienvenida",
+        "recipe_apply": "Aplicó una configuración lista",
+        "time_zone": "Cambió la zona horaria",
+        "update": "Cambió los ajustes de la box"
+      },
+      "shop": {
+        "desk_sale": "Vendió en recepción",
+        "order_cancel": "Canceló un pedido",
+        "order_fiscal_receipt": "Emitió el recibo de un pedido",
+        "order_payment": "Cobró un pedido",
+        "order_pickup": "Entregó un pedido",
+        "order_ready": "Marcó un pedido como listo",
+        "order_refund": "Reembolsó un pedido",
+        "pricing_target": "Fijó un objetivo de precio",
+        "product_create": "Añadió un producto",
+        "product_promote": "Promocionó un producto",
+        "product_status": "Cambió el estado de un producto",
+        "product_update": "Editó un producto",
+        "promotion_code_update": "Editó un código de descuento de la tienda",
+        "stock_movement": "Cambió el stock",
+        "variant_archive": "Archivó una variante",
+        "variant_create": "Añadió una variante",
+        "variant_update": "Editó una variante"
+      },
+      "space": {
+        "archive": "Archivó un espacio",
+        "cleaning_point_add": "Añadió un punto de limpieza",
+        "cleaning_point_delete": "Borró un punto de limpieza",
+        "cleaning_point_update": "Editó un punto de limpieza",
+        "cleaning_points_order": "Reordenó los puntos de limpieza",
+        "create": "Creó un espacio",
+        "photo_add": "Añadió una foto del espacio",
+        "photo_delete": "Borró una foto del espacio",
+        "photo_update": "Editó una foto del espacio",
+        "photos_order": "Reordenó las fotos del espacio",
+        "restore": "Restauró un espacio",
+        "settings_update": "Cambió los ajustes de espacios",
+        "unavailable": "Marcó un espacio como no disponible",
+        "unavailable_end": "Volvió a dejar disponible un espacio",
+        "update": "Editó un espacio"
+      },
+      "training_goal": {
+        "set": "Fijó un objetivo semanal"
+      },
+      "trial": {
+        "accept": "Aceptó una clase de prueba",
+        "attendance": "Registró la asistencia a la prueba",
+        "decline": "Rechazó una clase de prueba"
+      },
+      "trial_policy": {
+        "update": "Cambió las reglas de prueba"
+      },
+      "video": {
+        "archive": "Archivó un vídeo",
+        "create": "Añadió un vídeo",
+        "publish": "Publicó un vídeo",
+        "update": "Editó un vídeo"
+      },
+      "website": {
+        "domain_add": "Añadió un dominio de la web",
+        "domain_instructions": "Envió las instrucciones del dominio",
+        "domain_primary": "Cambió el dominio principal de la web",
+        "domain_remove": "Quitó un dominio de la web",
+        "draft_discard": "Descartó el borrador de la web",
+        "publish": "Publicó la web",
+        "translations_keep": "Mantuvo traducciones de la web",
+        "translations_machine": "Tradujo la web automáticamente",
+        "translations_save": "Guardó traducciones de la web",
+        "update": "Editó la web"
+      },
+      "workout": {
+        "copy": "Copió un WOD",
+        "create": "Creó un WOD",
+        "delete": "Borró un WOD",
+        "duplicate": "Duplicó un WOD",
+        "exercise_matches": "Asoció los ejercicios de un WOD",
+        "goals_update": "Cambió los objetivos de un WOD",
+        "publish": "Publicó un WOD",
+        "reopen": "Reabrió un WOD para editarlo",
+        "update": "Editó un WOD"
+      },
+      "workout_folder": {
+        "create": "Creó una carpeta de WOD",
+        "delete": "Borró una carpeta de WOD",
+        "update": "Editó una carpeta de WOD"
+      },
+      "workout_type": {
+        "create": "Añadió un tipo de entrenamiento",
+        "merge": "Fusionó tipos de entrenamiento",
+        "update": "Editó un tipo de entrenamiento"
+      }
+    }
   }
 }

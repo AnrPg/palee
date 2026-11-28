@@ -4362,6 +4362,7 @@
     "mpTabWellbeing": "Bem-estar",
     "mpTabCoaching": "Coaching",
     "mpTabFinance": "Finanças",
+    "mpTabHistory": "Histórico",
     "mpTabAccount": "Conta",
     "bmTitle": "Mensagem da box",
     "bmBody": "Mensagem",
@@ -20549,7 +20550,6 @@
     "refund": "Devolver dinheiro…",
     "nothingOpen": "Não há nada em aberto neste pacote.",
     "reason": "Motivo (opcional)",
-    "shareReason": "O membro vê-o na notificação",
     "cancel": "Cancelar",
     "confirm": "Retirar pacote",
     "removing": "A retirar…",
@@ -20670,5 +20670,651 @@
     "variationSearch": "Procurar em todos os membros",
     "whichWod": "Que WOD?",
     "wodCount": "{count, plural, one {# WOD} other {# WODs}}"
+  },
+  "ActivityLog": {
+    "title": "Registo de atividade",
+    "intro": "Quem da equipa fez o quê, quando, a quem e porquê. Toca numa linha para ver os detalhes.",
+    "back": "Gestão",
+    "forbidden": "A tua função não vê o registo de atividade.",
+    "filters": "Filtros do registo de atividade",
+    "search": "Pesquisar motivos e nomes",
+    "area": "Tipo",
+    "staffMember": "Por quem",
+    "anyStaff": "Toda a equipa",
+    "person": "A quem",
+    "personPlaceholder": "Escreve um nome",
+    "clearPerson": "Retirar o filtro de {name}",
+    "from": "De",
+    "to": "Até",
+    "export": "Exportar CSV",
+    "exporting": "A exportar…",
+    "loading": "A carregar…",
+    "empty": "Ainda não há nada registado.",
+    "emptyFiltered": "Sem entradas com estes filtros.",
+    "count": "{count, plural, one {# entrada} other {# entradas}}",
+    "today": "Hoje",
+    "yesterday": "Ontem",
+    "more": "Mais",
+    "fullLog": "Todo o registo →",
+    "system": "Automático",
+    "deletedMember": "Membro eliminado",
+    "onePerson": "Uma pessoa",
+    "changeLabel": "Alteração",
+    "period": "Período",
+    "periodRange": "{from} – {to}",
+    "about": "Diz respeito a",
+    "reason": "Motivo",
+    "noReason": "Sem motivo",
+    "by": "Por",
+    "memberSaw": "O membro também viu",
+    "yes": "Sim",
+    "no": "Não",
+    "onlyPerson": "Só {name}",
+    "onlyActor": "Só o que {name} fez",
+    "none": "vazio",
+    "shareWithMember": "O membro também vê",
+    "historyTitle": "Histórico",
+    "theBox": "A box",
+    "reasonShown": "Motivo: {reason}",
+    "fields": {
+      "status": "Estado",
+      "ends_on": "Último dia"
+    },
+    "areas": {
+      "members": "Membros",
+      "money": "Dinheiro",
+      "packages": "Pacotes de subscrição",
+      "classes": "Aulas",
+      "training": "Treino",
+      "spaces": "Espaços e equipamento",
+      "shop": "Loja e programas",
+      "community": "Comunidade",
+      "communication": "Mensagens",
+      "staff_pay": "Pagamentos à equipa",
+      "settings": "Definições"
+    },
+    "actions": {
+      "accounting_export": {
+        "request": "Pediu uma exportação contabilística"
+      },
+      "appointment": {
+        "attendance": "Registou a presença numa marcação",
+        "book": "Marcou uma marcação",
+        "cancel": "Cancelou uma marcação",
+        "slot_cancel": "Cancelou horários de marcações",
+        "slot_create": "Abriu horários de marcações"
+      },
+      "assigned_workout": {
+        "create": "Atribuiu um treino",
+        "delete": "Removeu um treino atribuído",
+        "update": "Editou um treino atribuído"
+      },
+      "attendance": {
+        "record": "Registou a presença",
+        "remove": "Removeu a presença"
+      },
+      "automation": {
+        "update": "Alterou uma mensagem automática"
+      },
+      "benefit": {
+        "give": "Deu uma oferta ou cortesia",
+        "revoke": "Retirou uma oferta ou cortesia"
+      },
+      "booking": {
+        "approve": "Aprovou uma reserva",
+        "reject": "Rejeitou uma reserva"
+      },
+      "box_review": {
+        "reply": "Respondeu a uma avaliação da box",
+        "report": "Denunciou uma avaliação da box"
+      },
+      "box_screen": {
+        "create": "Adicionou um ecrã da box",
+        "delete": "Removeu um ecrã da box",
+        "override_end": "Devolveu um ecrã ao seu horário",
+        "override_set": "Assumiu o controlo de um ecrã",
+        "pairing_code": "Criou um código para emparelhar o ecrã",
+        "update": "Editou um ecrã da box"
+      },
+      "branch": {
+        "archive": "Arquivou uma filial",
+        "create": "Adicionou uma filial",
+        "update": "Editou uma filial"
+      },
+      "business": {
+        "activation_request": "Pediu a ativação do negócio"
+      },
+      "card_surcharge": {
+        "update": "Alterou a taxa do cartão"
+      },
+      "challenge": {
+        "create": "Criou um desafio",
+        "delete": "Eliminou um desafio",
+        "update": "Editou um desafio"
+      },
+      "channel": {
+        "settings_save": "Guardou as definições dos canais",
+        "template_delete": "Eliminou um modelo de mensagem",
+        "template_save": "Guardou um modelo de mensagem"
+      },
+      "check_in": {
+        "door_rotate": "Mudou o código da porta",
+        "member": "Fez o check-in de um membro",
+        "member_code_revoke": "Anulou o código de check-in de um membro",
+        "nfc_rotate": "Renovou o código da etiqueta NFC",
+        "nfc_update": "Alterou a etiqueta NFC",
+        "poster_rotate": "Renovou o código do cartaz",
+        "poster_update": "Alterou o cartaz de check-in",
+        "record": "Fez o check-in de alguém",
+        "settings_update": "Alterou as definições de check-in"
+      },
+      "class": {
+        "booking_workout": "Definiu o WOD de uma reserva",
+        "create": "Criou uma aula",
+        "day_workout_follow": "Pôs uma aula a seguir o WOD do dia",
+        "delete": "Eliminou uma aula",
+        "live_workout": "Mudou o WOD em curso",
+        "series_create": "Criou uma aula recorrente",
+        "state_change": "Cancelou ou reabriu uma aula",
+        "update": "Editou uma aula",
+        "workout_link": "Ligou um WOD a uma aula",
+        "workouts_set": "Definiu os WOD de uma aula"
+      },
+      "class_notice": {
+        "send": "Enviou um aviso a uma aula"
+      },
+      "class_type": {
+        "create": "Criou um tipo de aula",
+        "delete": "Eliminou um tipo de aula",
+        "update": "Editou um tipo de aula"
+      },
+      "cleaning": {
+        "area_archive": "Arquivou uma zona de limpeza",
+        "area_create": "Adicionou uma zona de limpeza",
+        "area_update": "Editou uma zona de limpeza",
+        "finish": "Terminou a limpeza",
+        "schedule_delete": "Removeu um horário de limpeza",
+        "schedule_set": "Definiu um horário de limpeza",
+        "start": "Começou a limpeza"
+      },
+      "club": {
+        "archive": "Arquivou um clube",
+        "create": "Criou um clube",
+        "member_remove": "Removeu alguém de um clube",
+        "request_answer": "Respondeu a um pedido do clube",
+        "update": "Editou um clube"
+      },
+      "coach_note": {
+        "create": "Escreveu uma nota do coach",
+        "delete": "Eliminou uma nota do coach",
+        "update": "Editou uma nota do coach"
+      },
+      "coaching_relationship": {
+        "create": "Atribuiu um coach",
+        "end": "Terminou o coaching"
+      },
+      "community": {
+        "group_decide": "Decidiu sobre um grupo de membros",
+        "group_reopen": "Reabriu o pedido de um grupo de membros",
+        "report_act": "Tratou uma denúncia",
+        "settings_update": "Alterou as definições da comunidade"
+      },
+      "contact": {
+        "consent": "Alterou o consentimento de um contacto",
+        "delete": "Eliminou um contacto",
+        "save": "Guardou um contacto"
+      },
+      "corporate": {
+        "client_create": "Adicionou um cliente empresarial",
+        "client_update": "Editou um cliente empresarial",
+        "invoice_create": "Criou uma fatura empresarial",
+        "invoice_send": "Enviou uma fatura empresarial",
+        "invoice_status": "Alterou uma fatura empresarial",
+        "payment_record": "Registou um pagamento empresarial",
+        "payment_reverse": "Estornou um pagamento empresarial",
+        "seat_add": "Adicionou um lugar empresarial",
+        "seat_end": "Terminou um lugar empresarial"
+      },
+      "credit": {
+        "apply": "Usou um crédito",
+        "create": "Concedeu um crédito",
+        "reverse": "Estornou um crédito"
+      },
+      "data_export": {
+        "create": "Exportou os dados da box"
+      },
+      "day_workout": {
+        "delete": "Removeu o WOD do dia",
+        "set": "Definiu o WOD do dia"
+      },
+      "demo_data": {
+        "remove": "Removeu os dados de demonstração",
+        "seed": "Adicionou dados de demonstração"
+      },
+      "document": {
+        "request": "Pediu uma assinatura",
+        "request_cancel": "Cancelou um pedido de assinatura",
+        "requirement_set": "Alterou quem assina um documento",
+        "settings_update": "Alterou as definições dos documentos",
+        "template_archive": "Arquivou um documento",
+        "template_create": "Criou um documento",
+        "template_publish": "Publicou um documento"
+      },
+      "door": {
+        "create": "Adicionou uma porta",
+        "delete": "Removeu uma porta",
+        "token_rotate": "Renovou a chave de uma porta",
+        "unlock": "Abriu uma porta a partir da receção",
+        "update": "Editou uma porta"
+      },
+      "email_sender": {
+        "delete": "Removeu o remetente de email",
+        "save": "Guardou o remetente de email"
+      },
+      "event": {
+        "attendee_remove": "Removeu um participante",
+        "cancel": "Cancelou um evento",
+        "check_in": "Fez o check-in num evento",
+        "cohost_answer": "Respondeu a um convite de coorganização",
+        "cohost_invite": "Convidou um coorganizador",
+        "cohost_remove": "Removeu um coorganizador",
+        "cohost_trial_offer": "Ofereceu uma experiência com um coorganizador",
+        "create": "Criou um evento",
+        "mark_paid": "Marcou um lugar no evento como pago",
+        "message": "Enviou uma mensagem aos participantes",
+        "refund": "Reembolsou um lugar no evento",
+        "trial_offer": "Ofereceu uma experiência num evento",
+        "update": "Editou um evento"
+      },
+      "finance_record": {
+        "purge": "Eliminou registos financeiros"
+      },
+      "fiscal": {
+        "connection_save": "Guardou a ligação fiscal",
+        "credit_note": "Emitiu uma nota de crédito",
+        "document_email": "Enviou um documento fiscal por email",
+        "einvoice_retry": "Reenviou uma fatura eletrónica",
+        "export_settings_save": "Guardou as definições de exportação",
+        "identity_save": "Guardou os dados fiscais",
+        "null_receipt": "Emitiu um recibo a zero",
+        "tax_rates_save": "Guardou as taxas de IVA",
+        "till_retry": "Reenviou para a caixa",
+        "transmission_retry": "Reenviou um documento fiscal"
+      },
+      "fitness_display": {
+        "update": "Alterou o que o cartão de forma mostra"
+      },
+      "floor_plan": {
+        "create": "Adicionou uma planta",
+        "delete": "Eliminou uma planta",
+        "update": "Editou uma planta"
+      },
+      "follower_invite": {
+        "send": "Convidou um seguidor a aderir"
+      },
+      "form_review": {
+        "complete": "Respondeu a um vídeo de técnica"
+      },
+      "health_certificate": {
+        "add": "Adicionou um atestado médico",
+        "delete": "Eliminou um atestado médico"
+      },
+      "import": {
+        "apply": "Aplicou uma importação",
+        "create": "Iniciou uma importação",
+        "delete": "Eliminou uma importação",
+        "invite": "Convidou as pessoas importadas",
+        "undo": "Anulou uma importação"
+      },
+      "injury": {
+        "create": "Registou uma lesão",
+        "heal": "Marcou uma lesão como curada",
+        "reopen": "Reabriu uma lesão",
+        "update": "Editou uma lesão"
+      },
+      "injury_warning": {
+        "acknowledge": "Confirmou um aviso de lesão"
+      },
+      "integration": {
+        "delivery_replay": "Reenviou uma entrega de webhook",
+        "email_list_delete": "Removeu a ligação a uma lista de email",
+        "email_list_save": "Guardou a ligação a uma lista de email",
+        "email_list_sync": "Sincronizou uma lista de email",
+        "key_create": "Criou uma chave API",
+        "key_revoke": "Revogou uma chave API",
+        "key_rotate": "Renovou uma chave API",
+        "unsubscribe_url_rotate": "Renovou o link de cancelamento",
+        "webhook_create": "Adicionou um webhook",
+        "webhook_delete": "Eliminou um webhook",
+        "webhook_secret_rotate": "Renovou o segredo de um webhook",
+        "webhook_update": "Editou um webhook"
+      },
+      "inventory": {
+        "machine_archive": "Arquivou uma máquina",
+        "machine_create": "Adicionou uma máquina",
+        "machine_event": "Registou uma ocorrência de máquina",
+        "machine_place": "Moveu uma máquina",
+        "machine_update": "Editou uma máquina",
+        "supply_archive": "Arquivou um consumível",
+        "supply_create": "Adicionou um consumível",
+        "supply_low": "Avisou que um consumível está a acabar",
+        "supply_movement": "Registou um movimento de stock",
+        "supply_update": "Editou um consumível"
+      },
+      "invoice": {
+        "create": "Criou uma fatura",
+        "file_attach": "Anexou um ficheiro a uma fatura",
+        "issue": "Emitiu uma fatura",
+        "renewal_create": "Criou uma fatura de renovação",
+        "update": "Editou uma fatura",
+        "void": "Anulou uma fatura"
+      },
+      "join_request": {
+        "accept": "Aceitou um pedido de adesão",
+        "decline": "Recusou um pedido de adesão"
+      },
+      "lead": {
+        "contacted": "Contactou um interessado",
+        "convert": "Tornou um interessado membro da box",
+        "create": "Adicionou um interessado",
+        "delete": "Eliminou um interessado",
+        "import": "Importou interessados",
+        "move": "Moveu um interessado de etapa",
+        "note": "Escreveu uma nota sobre um interessado",
+        "opt_out": "Parou as mensagens a um interessado",
+        "task_add": "Adicionou uma tarefa a um interessado",
+        "task_done": "Concluiu uma tarefa de um interessado",
+        "update": "Editou um interessado"
+      },
+      "logo": {
+        "remove": "Removeu o logótipo",
+        "set": "Alterou o logótipo"
+      },
+      "member": {
+        "branches_change": "Filiais alteradas",
+        "class_placement": "Movido para outra aula",
+        "coach_scope_change": "Alterou os clientes que o coach vê",
+        "guest_create": "Adicionado como convidado da box",
+        "home_branch_change": "Filial principal alterada",
+        "leave_record": "Registou a saída da box",
+        "leave_undo": "Anulou a saída",
+        "programming": "Programou um treino",
+        "remove": "Removido da box",
+        "risk_contacted": "Marcado como contactado",
+        "risk_snooze": "Pausou o alerta de risco",
+        "role_change": "Funções alteradas",
+        "status_reset": "Estado reposto como automático",
+        "status_set": "Estado definido manualmente",
+        "update": "Dados editados"
+      },
+      "message": {
+        "cancel": "Cancelou uma mensagem",
+        "retry": "Reenviou uma mensagem",
+        "send": "Enviou uma mensagem"
+      },
+      "metric": {
+        "reset": "Repôs uma medição",
+        "reset_undo": "Anulou a reposição de uma medição"
+      },
+      "nutrition_plan": {
+        "save": "Guardou um plano alimentar"
+      },
+      "organization": {
+        "archive": "Fechou a box",
+        "transfer": "Transferiu a propriedade da box"
+      },
+      "package": {
+        "assign": "Atribuiu um pacote de subscrição",
+        "auto_renew": "Alterou a renovação automática",
+        "beneficiary_add": "Adicionou alguém que partilha o pacote",
+        "beneficiary_remove": "Removeu alguém que partilha o pacote",
+        "create": "Criou um pacote de subscrição",
+        "end_reset": "Repôs como automático o último dia do pacote",
+        "end_set": "Definiu manualmente o último dia do pacote",
+        "entitlements_refresh": "Recalculou o que o pacote dá",
+        "freeze": "Congelou a subscrição",
+        "freeze_cancel": "Cancelou um congelamento",
+        "removal_undo": "Anulou a remoção do pacote",
+        "remove": "Removeu um pacote de subscrição",
+        "retire": "Deixou de vender um pacote de subscrição",
+        "update": "Editou um pacote de subscrição"
+      },
+      "package_audience": {
+        "exception_add": "Adicionou uma exceção para uma pessoa",
+        "exception_remove": "Removeu uma exceção para uma pessoa",
+        "featured_update": "Alterou os pacotes em destaque",
+        "package_update": "Alterou quem pode comprar um pacote",
+        "update": "Alterou quem pode comprar pacotes"
+      },
+      "package_request": {
+        "activate_unpaid": "Ativou um pedido de pacote sem pagamento",
+        "collect": "Cobrou um pedido de pacote",
+        "decline": "Recusou um pedido de pacote"
+      },
+      "pay_item": {
+        "archive": "Arquivou um item de pagamento",
+        "create": "Criou um item de pagamento",
+        "update": "Editou um item de pagamento"
+      },
+      "pay_period": {
+        "adjustment_add": "Adicionou um ajuste de pagamento",
+        "adjustment_delete": "Eliminou um ajuste de pagamento",
+        "approve": "Aprovou um período de pagamento",
+        "calculate": "Calculou um período de pagamento",
+        "create": "Abriu um período de pagamento",
+        "item_line_add": "Adicionou uma linha de pagamento pontual",
+        "item_restore": "Restaurou uma linha de pagamento",
+        "line_basis": "Alterou a base de uma linha de pagamento",
+        "reopen": "Reabriu um período de pagamento"
+      },
+      "pay_rule": {
+        "archive": "Arquivou uma regra de pagamento",
+        "create": "Criou uma regra de pagamento",
+        "update": "Editou uma regra de pagamento"
+      },
+      "payment": {
+        "card_link": "Enviou um link para guardar o cartão",
+        "charge_dismiss": "Descartou uma cobrança falhada",
+        "charge_retry": "Tentou de novo uma cobrança no cartão",
+        "receipt_email": "Enviou um recibo por email",
+        "receive": "Recebeu um pagamento",
+        "record": "Registou um pagamento",
+        "refund": "Devolveu dinheiro",
+        "retry": "Tentou de novo um pagamento",
+        "reverse": "Estornou um pagamento",
+        "terminal_cancel": "Cancelou um pagamento no terminal",
+        "terminal_result": "Registou a resposta do terminal",
+        "terminal_start": "Iniciou um pagamento no terminal"
+      },
+      "payment_account": {
+        "connect": "Ligou os pagamentos online",
+        "disconnect": "Desligou os pagamentos online",
+        "options": "Alterou as opções de pagamento",
+        "save": "Guardou a conta de pagamentos"
+      },
+      "perk": {
+        "claim_revoke": "Retirou uma vantagem pedida",
+        "claim_use": "Marcou uma vantagem como usada",
+        "codes_add": "Adicionou códigos de vantagem",
+        "create": "Criou uma vantagem",
+        "delete": "Eliminou uma vantagem",
+        "expire": "Terminou uma vantagem",
+        "pause": "Pausou uma vantagem",
+        "publish": "Publicou uma vantagem",
+        "update": "Editou uma vantagem"
+      },
+      "programme": {
+        "archive": "Arquivou um programa de treino",
+        "cover_remove": "Removeu a capa de um programa",
+        "cover_set": "Definiu a capa de um programa",
+        "create": "Criou um programa de treino",
+        "publish": "Publicou um programa de treino",
+        "refund": "Reembolsou um programa de treino",
+        "restore": "Restaurou um programa de treino",
+        "review_moderate": "Moderou uma avaliação de programa",
+        "update": "Editou um programa de treino"
+      },
+      "promotion": {
+        "code_create": "Criou códigos de desconto",
+        "create": "Criou uma promoção",
+        "redeem": "Aplicou um código de desconto"
+      },
+      "public_profile": {
+        "photo_add": "Adicionou uma foto à página pública",
+        "publish": "Publicou a página pública da box",
+        "unpublish": "Ocultou a página pública da box",
+        "update": "Editou a página pública da box"
+      },
+      "rank": {
+        "award": "Atribuiu um grau",
+        "revoke": "Retirou um grau",
+        "skill_check": "Marcou uma competência",
+        "skills_batch": "Marcou várias competências"
+      },
+      "rank_ladder": {
+        "create": "Criou uma escala de graus",
+        "delete": "Eliminou uma escala de graus",
+        "update": "Editou uma escala de graus"
+      },
+      "receipt": {
+        "create": "Emitiu um recibo"
+      },
+      "reconciliation": {
+        "match": "Conciliou um movimento bancário",
+        "record": "Registou um movimento bancário",
+        "unmatch": "Anulou uma conciliação bancária"
+      },
+      "referral": {
+        "approve": "Aprovou uma indicação",
+        "create": "Registou uma indicação",
+        "friend_gift": "Deu a oferta do amigo",
+        "reassign": "Reatribuiu uma indicação",
+        "reject": "Rejeitou uma indicação",
+        "reward_create": "Adicionou uma recompensa de indicação",
+        "reward_given": "Deu uma recompensa de indicação",
+        "reward_status": "Alterou uma recompensa de indicação",
+        "status": "Alterou uma indicação"
+      },
+      "referral_program": {
+        "create": "Criou um programa de indicações",
+        "update": "Alterou o programa de indicações"
+      },
+      "review": {
+        "status": "Alterou o estado de uma avaliação"
+      },
+      "review_asks": {
+        "update": "Alterou os pedidos de avaliação"
+      },
+      "role_access": {
+        "change": "Alterou as permissões de uma função"
+      },
+      "scale_levels": {
+        "update": "Alterou os níveis de escalonamento"
+      },
+      "scaling_suggestion": {
+        "approve": "Aprovou uma sugestão de escalonamento",
+        "dismiss": "Descartou uma sugestão de escalonamento"
+      },
+      "season": {
+        "create": "Criou uma temporada",
+        "enrollment_confirm": "Confirmou um lugar na temporada",
+        "enrollment_decline": "Recusou um pedido de temporada",
+        "enrollment_remove": "Removeu de uma temporada",
+        "update": "Editou uma temporada"
+      },
+      "settings": {
+        "ai": "Alterou as definições de IA",
+        "onboarding": "Alterou os passos de boas-vindas",
+        "recipe_apply": "Aplicou uma configuração pronta",
+        "time_zone": "Alterou o fuso horário",
+        "update": "Alterou as definições da box"
+      },
+      "shop": {
+        "desk_sale": "Vendeu na receção",
+        "order_cancel": "Cancelou uma encomenda",
+        "order_fiscal_receipt": "Emitiu o recibo de uma encomenda",
+        "order_payment": "Cobrou uma encomenda",
+        "order_pickup": "Entregou uma encomenda",
+        "order_ready": "Marcou uma encomenda como pronta",
+        "order_refund": "Reembolsou uma encomenda",
+        "pricing_target": "Definiu um objetivo de preço",
+        "product_create": "Adicionou um produto",
+        "product_promote": "Promoveu um produto",
+        "product_status": "Alterou o estado de um produto",
+        "product_update": "Editou um produto",
+        "promotion_code_update": "Editou um código de desconto da loja",
+        "stock_movement": "Alterou o stock",
+        "variant_archive": "Arquivou uma variante",
+        "variant_create": "Adicionou uma variante",
+        "variant_update": "Editou uma variante"
+      },
+      "space": {
+        "archive": "Arquivou um espaço",
+        "cleaning_point_add": "Adicionou um ponto de limpeza",
+        "cleaning_point_delete": "Eliminou um ponto de limpeza",
+        "cleaning_point_update": "Editou um ponto de limpeza",
+        "cleaning_points_order": "Reordenou os pontos de limpeza",
+        "create": "Criou um espaço",
+        "photo_add": "Adicionou uma foto do espaço",
+        "photo_delete": "Eliminou uma foto do espaço",
+        "photo_update": "Editou uma foto do espaço",
+        "photos_order": "Reordenou as fotos do espaço",
+        "restore": "Restaurou um espaço",
+        "settings_update": "Alterou as definições dos espaços",
+        "unavailable": "Tornou um espaço indisponível",
+        "unavailable_end": "Tornou um espaço disponível de novo",
+        "update": "Editou um espaço"
+      },
+      "training_goal": {
+        "set": "Definiu um objetivo semanal"
+      },
+      "trial": {
+        "accept": "Aceitou uma aula experimental",
+        "attendance": "Registou a presença na aula experimental",
+        "decline": "Recusou uma aula experimental"
+      },
+      "trial_policy": {
+        "update": "Alterou as regras das experiências"
+      },
+      "video": {
+        "archive": "Arquivou um vídeo",
+        "create": "Adicionou um vídeo",
+        "publish": "Publicou um vídeo",
+        "update": "Editou um vídeo"
+      },
+      "website": {
+        "domain_add": "Adicionou um domínio do site",
+        "domain_instructions": "Enviou as instruções do domínio",
+        "domain_primary": "Alterou o domínio principal do site",
+        "domain_remove": "Removeu um domínio do site",
+        "draft_discard": "Descartou o rascunho do site",
+        "publish": "Publicou o site",
+        "translations_keep": "Manteve traduções do site",
+        "translations_machine": "Traduziu o site automaticamente",
+        "translations_save": "Guardou traduções do site",
+        "update": "Editou o site"
+      },
+      "workout": {
+        "copy": "Copiou um WOD",
+        "create": "Criou um WOD",
+        "delete": "Eliminou um WOD",
+        "duplicate": "Duplicou um WOD",
+        "exercise_matches": "Associou os exercícios de um WOD",
+        "goals_update": "Alterou os objetivos de um WOD",
+        "publish": "Publicou um WOD",
+        "reopen": "Reabriu um WOD para edição",
+        "update": "Editou um WOD"
+      },
+      "workout_folder": {
+        "create": "Criou uma pasta de WOD",
+        "delete": "Eliminou uma pasta de WOD",
+        "update": "Editou uma pasta de WOD"
+      },
+      "workout_type": {
+        "create": "Adicionou um tipo de treino",
+        "merge": "Fundiu tipos de treino",
+        "update": "Editou um tipo de treino"
+      }
+    }
   }
 }
