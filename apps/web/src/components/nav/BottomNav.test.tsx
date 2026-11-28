@@ -110,8 +110,11 @@ describe("BottomNav", () => {
     const nav = screen.getByTestId("bottom-nav");
     expect(nav).toHaveAttribute("data-state", "hidden");
     expect(nav).toHaveAttribute("aria-hidden", "true");
+    // A page's own bottom bar drops to the screen's edge while the bar is away.
+    expect(document.documentElement.dataset.bottomNavShown).toBeUndefined();
     rerender(<BottomNav />);
     expect(screen.getByTestId("bottom-nav")).toHaveAttribute("data-state", "shown");
+    expect(document.documentElement.dataset.bottomNavShown).toBe("");
   });
 
   it("shows for a signed-in person without any membership", () => {

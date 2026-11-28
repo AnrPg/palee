@@ -131,7 +131,7 @@ export function WodAtlasView({
         </div>
       ) : null}
       <div className="flex flex-col gap-2" data-testid="wod-atlas-figure">
-        <AnatomyFigure highlights={highlights} view="both" interactive size="card" focus={selected} onPick={(id) => setSelected(id)} />
+        <AnatomyFigure highlights={highlights} view="both" interactive size="card" focus={selected} selected={selected} onPick={(id) => setSelected(id)} />
         {view === "wod" ? <RoleLegend /> : view === "explore" ? null : <HeatLegend />}
       </div>
       <section

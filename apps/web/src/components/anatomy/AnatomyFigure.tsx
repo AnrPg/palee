@@ -23,6 +23,11 @@ export type AnatomyFigureProps = {
   onPick?: (nodeId: MuscleNodeId, level: AnatomyPickLevel) => void;
   /** Animates the camera to frame this node (bounds from the atlas index). */
   focus?: MuscleNodeId | null;
+  /**
+   * The selected node, painted in the theme's strong selected colour whatever
+   * its role. Left out, the figure marks its own last tap.
+   */
+  selected?: MuscleNodeId | null;
   /** thumb ~64px tall, card ~240px tall, full: the container's width. Default `card`. */
   size?: AnatomyFigureSize;
   className?: string;
@@ -45,6 +50,7 @@ export function AnatomyFigure({
   interactive = false,
   onPick,
   focus = null,
+  selected,
   size = "card",
   className = "",
 }: AnatomyFigureProps) {
@@ -58,6 +64,7 @@ export function AnatomyFigure({
       interactive={interactive}
       onPick={onPick}
       focus={focus}
+      selected={selected}
       size={size}
       className={className}
     />
@@ -70,9 +77,10 @@ function LiveFigure({
   interactive,
   onPick,
   focus,
+  selected,
   size,
   className,
-}: Required<Omit<AnatomyFigureProps, "onPick" | "focus">> & Pick<AnatomyFigureProps, "onPick" | "focus">) {
+}: Required<Omit<AnatomyFigureProps, "onPick" | "focus" | "selected">> & Pick<AnatomyFigureProps, "onPick" | "focus" | "selected">) {
   const t = useTranslations("Anatomy");
   const label = useAnatomyLabel(highlights);
   const palette = useAnatomyPalette();
@@ -86,11 +94,11 @@ function LiveFigure({
   const pickable = onPick != null;
 
   // Latest values for the mount effect, which must not re-run on every change.
-  const initial = useRef({ highlights, view, interactive, focus: focus ?? null, palette, reducedMotion, pickable });
+  const initial = useRef({ highlights, view, interactive, focus: focus ?? null, selected, palette, reducedMotion, pickable });
 
   useEffect(() => {
     onPickRef.current = onPick;
-    initial.current = { highlights, view, interactive, focus: focus ?? null, palette, reducedMotion, pickable };
+    initial.current = { highlights, view, interactive, focus: focus ?? null, selected, palette, reducedMotion, pickable };
   });
 
   useEffect(() => {
@@ -133,11 +141,12 @@ function LiveFigure({
       view,
       interactive,
       focus: focus ?? null,
+      selected,
       palette,
       reducedMotion,
       onPick: pickable ? (pick) => onPickRef.current?.(pick.nodeId, pick.level) : null,
     });
-  }, [highlights, view, interactive, focus, palette, reducedMotion, pickable, status]);
+  }, [highlights, view, interactive, focus, selected, palette, reducedMotion, pickable, status]);
 
   const sizeClass =
     size === "thumb"

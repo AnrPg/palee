@@ -147,6 +147,7 @@ export function AtlasScreen() {
             // On a phone the panel sits under the figure; keep it in reach.
             className="max-md:h-[48vh]"
             focus={selected}
+            selected={selected}
             onPick={(id) => select(id)}
           />
           {mode === "heat" ? <HeatLegend /> : mode === "wod" ? <RoleLegend /> : null}

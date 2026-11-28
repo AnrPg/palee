@@ -44,6 +44,15 @@ export function useBottomTabBarVisible() {
  */
 export const BOTTOM_NAV_SPACE = "var(--bottom-nav-space)";
 
+/**
+ * Where a page's own fixed bottom bar sits: on top of the floating bar while
+ * it shows, on the screen's bottom edge while it is scrolled away (0 then).
+ * BOTTOM_BAR_SAFE_AREA is the safe-area inset such a bar must pad by itself
+ * while it touches the edge (0 while the floating bar takes it).
+ */
+export const BOTTOM_BAR_SPACE = "var(--bottom-bar-space)";
+export const BOTTOM_BAR_SAFE_AREA = "var(--bottom-bar-safe-area)";
+
 const TAB_ICONS: Record<string, NavIconName> = { home: "feed", box: "box", journal: "journal" };
 
 export function Badge({ count }: { count: number }) {
@@ -107,9 +116,23 @@ export function BottomNav() {
     };
   }, [visible]);
 
+  const hidden = hiddenByScreen || scrollHidden;
+  const shown = visible && Boolean(currentUser) && !hidden;
+
+  // --bottom-bar-space (globals.css): the room the bar takes while it shows,
+  // 0 while it is scrolled or stepped away, so a page's own bottom bar can
+  // follow it down and sit flush on the screen's edge.
+  useEffect(() => {
+    const root = document.documentElement;
+    if (shown) root.dataset.bottomNavShown = "";
+    else delete root.dataset.bottomNavShown;
+    return () => {
+      delete root.dataset.bottomNavShown;
+    };
+  }, [shown]);
+
   if (!visible || !currentUser) return null;
 
-  const hidden = hiddenByScreen || scrollHidden;
   const active = activeItemId(pathname, clientNavItems());
   const entries = bottomNavEntries();
   const hasOtherProfiles = (currentUser.profile_count ?? 1) > 1;

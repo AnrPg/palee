@@ -135,42 +135,42 @@ export class AnatomyScene {
     this.scene.environmentIntensity = 0.45;
   }
 
-  private material(role: AnatomyRole, palette: AnatomyPalette, selected: boolean): THREE.MeshPhysicalMaterial {
-    const key = `${role}:${selected ? 1 : 0}`;
-    let material = this.roleMaterials.get(key);
+  private material(role: AnatomyRole, palette: AnatomyPalette): THREE.MeshPhysicalMaterial {
+    let material = this.roleMaterials.get(role);
     if (!material) {
       material = new THREE.MeshPhysicalMaterial({ roughness: 0.45, sheen: 0.4, clearcoat: 0.35 });
-      this.roleMaterials.set(key, material);
+      this.roleMaterials.set(role, material);
     }
     material.color.set(palette[role]);
-    material.emissive.set(selected ? palette[role] : 0x000000);
-    material.emissiveIntensity = selected ? 0.35 : 0;
     return material;
   }
 
-  private selectedBase: THREE.MeshPhysicalMaterial | null = null;
+  // The picked muscle, in its own strong colour (theme token --anatomy-selected)
+  // with a glow, so it stands out from every role and heat colour around it.
+  private readonly selectedMaterial = new THREE.MeshPhysicalMaterial({ roughness: 0.4, sheen: 0.4, clearcoat: 0.4, emissiveIntensity: 0.15 });
 
-  /** Paints highlights; `selected` ta2 ids get a glow so a pick is visible. */
+  /** Paints highlights; `selected` ta2 ids take the selected colour, whatever their role. */
   paint(highlights: AnatomyHighlights, palette: AnatomyPalette, selected: ReadonlySet<string> = new Set()) {
     const roles = roleByTa2(highlights);
     this.baseMaterial.color.set(palette.base);
     this.boneMaterial.color.set(palette.bone);
-    if (!this.selectedBase) this.selectedBase = this.baseMaterial.clone();
-    this.selectedBase.color.set(palette.base);
-    this.selectedBase.emissive.set(palette.base);
-    this.selectedBase.emissiveIntensity = 0.45;
+    this.selectedMaterial.color.set(palette.selected);
+    this.selectedMaterial.emissive.set(palette.selected);
     for (const mesh of this.muscleMeshes) {
       const ta2 = mesh.userData.ta2 as string | undefined;
+      if (ta2 && selected.has(ta2)) {
+        mesh.material = this.selectedMaterial;
+        continue;
+      }
       const role = ta2 ? roles.get(ta2) : undefined;
-      const isSelected = ta2 ? selected.has(ta2) : false;
-      mesh.material = role ? this.material(role, palette, isSelected) : isSelected ? this.selectedBase : this.baseMaterial;
+      mesh.material = role ? this.material(role, palette) : this.baseMaterial;
     }
   }
 
   dispose() {
     this.boneMaterial.dispose();
     this.baseMaterial.dispose();
-    this.selectedBase?.dispose();
+    this.selectedMaterial.dispose();
     for (const material of this.roleMaterials.values()) material.dispose();
     this.environment?.dispose();
   }

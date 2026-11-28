@@ -121,7 +121,8 @@ export function focusBounds(nodeId: MuscleNodeId, index: AtlasIndex): FocusBound
   return { center, size, posterior: zSum / count < POSTERIOR_Z };
 }
 
-export type AnatomyPalette = Record<AnatomyRole | "base" | "bone", string>;
+/** Role colours, plus `selected`: the muscle the person picked, in its own strong colour whatever its role. */
+export type AnatomyPalette = Record<AnatomyRole | "selected" | "base" | "bone", string>;
 
 /** Used before CSS is readable (tests, SSR) and when a token is missing. */
 const defaults = APP_THEMES[DEFAULT_THEME_SLUG].tokens;
@@ -133,6 +134,7 @@ export const DEFAULT_ANATOMY_PALETTE: AnatomyPalette = {
   "heat-low": defaults.anatomyHeatLow,
   "heat-medium": defaults.anatomyHeatMedium,
   "heat-high": defaults.anatomyHeatHigh,
+  selected: defaults.anatomySelected,
   base: defaults.anatomyBase,
   bone: defaults.anatomyBone,
 };
@@ -145,6 +147,7 @@ const PALETTE_TOKENS: Record<keyof AnatomyPalette, string> = {
   "heat-low": "--anatomy-heat-low",
   "heat-medium": "--anatomy-heat-medium",
   "heat-high": "--anatomy-heat-high",
+  selected: "--anatomy-selected",
   base: "--anatomy-base",
   bone: "--anatomy-bone",
 };

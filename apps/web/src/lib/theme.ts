@@ -142,6 +142,7 @@ export type ThemeTokens = {
   anatomyHeatLow: string;
   anatomyHeatMedium: string;
   anatomyHeatHigh: string;
+  anatomySelected: string;
   anatomyBase: string;
   anatomyBone: string;
   // Street maps (MapLibre style colours)
@@ -186,6 +187,10 @@ const SPARK = "#E4FF6E";
 const SPARK_DEEP = "#C8FF4D";
 const HEAT = "#E0203F";
 const HEAT_GLOW = "#FF4D6A";
+// The muscle picked in the anatomy figure (ANR 2026-11-28): a dense,
+// saturated lime that the figure's lighting cannot wash out, unlike Spark,
+// and far from every blue role and the red «felt», in both themes.
+const PICKED_MUSCLE = "#7ACC00";
 
 export const APP_THEMES: Record<ThemeSlug, AppTheme> = {
   frost: {
@@ -294,6 +299,7 @@ export const APP_THEMES: Record<ThemeSlug, AppTheme> = {
       anatomyHeatLow: "#C9D5FF",
       anatomyHeatMedium: "#5B7CFF",
       anatomyHeatHigh: "#1F45E0",
+      anatomySelected: PICKED_MUSCLE,
       anatomyBase: "#A2A8B3",
       anatomyBone: "#DFE2E8",
       mapLand: FROST,
@@ -415,6 +421,7 @@ export const APP_THEMES: Record<ThemeSlug, AppTheme> = {
       anatomyHeatLow: "#3A4A8C",
       anatomyHeatMedium: DOJO_GLOW,
       anatomyHeatHigh: "#C9D5FF",
+      anatomySelected: PICKED_MUSCLE,
       anatomyBase: "#4A4F5A",
       anatomyBone: "#2C2F37",
       mapLand: GRAPHITE,
