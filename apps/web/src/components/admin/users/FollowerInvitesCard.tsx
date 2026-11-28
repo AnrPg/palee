@@ -232,7 +232,7 @@ function FollowerRow({ row, picked, onPick, onInvite }: { row: BoxFollower; pick
       ) : (
         <span aria-hidden="true" className="h-5 w-5 shrink-0" />
       )}
-      <PersonAvatar name={name} url={row.person.avatar_url} size={36} />
+      <PersonAvatar name={name} url={row.person.avatar_url} personId={row.person.id} size={36} />
       <span className="min-w-0 flex-1">
         <span className="flex flex-wrap items-center gap-1.5">
           <span className="truncate text-sm font-bold" style={{ color: "var(--text)" }}>{name}</span>

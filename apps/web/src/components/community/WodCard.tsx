@@ -7,11 +7,12 @@ import Link from "next/link";
 import { SPARK_ACTIVE_STYLE } from "@/lib/spark";
 
 import { WOD_KEY, type CommunityClub, type WodLeaderboardEntry, type WodTodayCard } from "@/api/community";
-import { builtInChannel, channelName, clubInitials } from "@/components/community/community";
+import { builtInChannel, channelName } from "@/components/community/community";
 import { useWodToday } from "@/components/community/use-community";
 import { WodLeaderboard } from "@/components/community/WodLeaderboard";
 import { HubCard } from "@/components/member-app/HubParts";
 import { useSession } from "@/components/session-provider";
+import { PersonAvatar } from "@/components/social/PersonAvatar";
 import { TrainingLogDialog, type TrainingLogDialogState } from "@/components/training-log/TrainingLog";
 import { useUiLocale } from "@/i18n/use-ui-locale";
 import { formatClock } from "@/lib/clock";
@@ -227,18 +228,7 @@ function LeaderboardRow({ row }: { row: WodLeaderboardEntry }) {
       style={{ background: row.me ? "var(--panel-raised)" : "transparent" }}
     >
       <span className="w-5 text-center font-mono text-sm font-bold" style={{ color: "var(--dim)" }}>{variation ? "·" : row.rank}</span>
-      {row.avatar_url ? (
-        // eslint-disable-next-line @next/next/no-img-element -- user-uploaded media origin
-        <img src={row.avatar_url} alt="" className="h-8 w-8 shrink-0 rounded-full object-cover" />
-      ) : (
-        <span
-          aria-hidden="true"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-extrabold"
-          style={{ background: "var(--panel-raised)", color: "var(--text)" }}
-        >
-          {clubInitials(row.nickname ?? "?")}
-        </span>
-      )}
+      <PersonAvatar name={row.nickname} url={row.avatar_url} size={32} personId={row.user_id} />
       <b className="grow truncate text-sm" style={{ color: "var(--text)" }}>
         {name}
         {row.scale_level_slug ? (

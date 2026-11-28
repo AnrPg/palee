@@ -173,7 +173,7 @@ function CandidateRow({
   return (
     <li className="flex items-center justify-between gap-3 rounded-2xl px-3 py-2" style={{ background: "var(--panel-raised)" }}>
       <span className="flex min-w-0 items-center gap-3">
-        <PersonAvatar name={name} url={candidate.person?.avatar_url} size={36} />
+        <PersonAvatar name={name} url={candidate.person?.avatar_url} personId={candidate.person?.id} size={36} />
         <span className="min-w-0">
           <span className="block truncate text-sm font-bold" style={{ color: "var(--text)" }}>{name}</span>
           <span className="block truncate text-xs" style={{ color: "var(--dim)" }}>{t(key("relation", candidate.relation))}</span>

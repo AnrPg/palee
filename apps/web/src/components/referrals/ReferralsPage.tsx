@@ -320,7 +320,7 @@ function InviteRow({ invite }: { invite: ReferralInvite }) {
 
   return (
     <li className="flex items-center gap-3 py-2">
-      <PersonAvatar name={name} url={invite.friend.avatar_url} size={36} />
+      <PersonAvatar name={name} url={invite.friend.avatar_url} personId={invite.friend.id} size={36} />
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-bold" style={{ color: "var(--text)" }}>{name}</p>
         <p className="truncate text-xs" style={{ color: "var(--dim)" }}>

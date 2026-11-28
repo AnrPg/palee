@@ -90,7 +90,7 @@ function ReportGroupCard({ token, group, onDone }: { token: string; group: Repor
   return (
     <article className="flex min-w-0 flex-col gap-3 border border-[var(--border)] bg-[var(--panel)] p-4" data-testid={`report-group-${group.target.id}`}>
       <div className="flex min-w-0 flex-wrap items-center gap-3">
-        <PersonAvatar name={group.target.nickname} url={group.target.avatar_url} size={40} />
+        <PersonAvatar name={group.target.nickname} url={group.target.avatar_url} personId={group.target.id} size={40} />
         <div className="min-w-0 flex-1">
           <p className="truncate text-base font-semibold text-[var(--text)]">{name}</p>
           <p className="text-xs text-[var(--text-soft)]">{t("reports.count", { count: group.reports.length })}</p>

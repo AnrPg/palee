@@ -24,7 +24,7 @@ import {
 import type { PRSupportingMetrics } from "@/api/gamification";
 import type { EffectiveEntitlement } from "@/api/my-finance";
 import { setFinanceMemberAutoRenew, updateFinanceMember } from "@/api/finance";
-import { dossierMode, grantableAllowances, membershipDateCards, packageSubscriptionLabel, prSectionContentCount, visibleAdminProfileSections } from "@/components/admin/users/admin-user-profile";
+import { dossierMode, grantableAllowances, membershipDateCards, prSectionContentCount, visibleAdminProfileSections } from "@/components/admin/users/admin-user-profile";
 import { MemberBenefits } from "@/components/admin/users/MemberBenefits";
 import { PackageTermUpdates } from "@/components/finance/PackageTermUpdates";
 import { MembershipFreezes } from "@/components/admin/users/MembershipFreezes";
@@ -42,6 +42,9 @@ import { CommitmentOverridePrompt } from "@/components/admin/finance/shared/Comm
 import { commitmentConflict } from "@/components/admin/finance/shared/membership-commitment";
 import { MemberStatusCell, SubscriptionEndCell } from "@/components/admin/finance/shared/MemberStandingCells";
 import { StandingBadge } from "@/components/finance/StandingBadge";
+import { MemberFinance } from "@/components/admin/finance/member/MemberFinance";
+import { showsHeaderPayment } from "@/components/admin/finance/member/member-finance";
+import { ReceivePaymentDialog } from "@/components/admin/finance/payments/ReceivePaymentDialog";
 import { overrideFor } from "@/components/admin/finance/shared/member-standing";
 import {
   ADMIN_PROFILE_SECTION_REQUEST,
@@ -326,29 +329,13 @@ function FinanceDetails({
   const currentSubscription = subscriptions.find((subscription) => subscription.status === "active") ?? null;
   const currentPeriod = (currentSubscription?.current_period ?? null) as { ends_on?: string | null; renews?: boolean } | null;
   const currentEnds = String(currentPeriod?.ends_on ?? currentSubscription?.ends_on ?? "").slice(0, 10);
-  const packageContent = subscriptions
-    .map((subscription) => {
-      const label = packageSubscriptionLabel(subscription);
-      return [label, semanticLabel(valueText(subscription.status), i18n), money(subscription.price_cents_snapshot)]
-        .filter((part) => part && part !== "—")
-        .join(" · ");
-    })
-    .filter(Boolean)
-    .join("\n");
-
   return (
-    <div className="mt-5 space-y-6">
+    <div className="space-y-6">
       <div>
         <p className="mb-3 font-semibold" style={{ color: "var(--text)" }}>{i18n("membership53bc967")}</p>
         {membership ? (
           <div className="space-y-2">
             <div className="grid gap-2 sm:grid-cols-2">
-              {/* ADR-274: worked out from the subscription and payments; set by hand only with a trace. */}
-              <EditableFinanceCard
-                label={i18n("statusbae7d5b")}
-                value={<MemberStatusCell userId={userId} status={valueText(membership.status_shown) === "—" ? draft.status : valueText(membership.status_shown)} override={overrideFor(finance.details.overrides, "status")} standing={finance.summary?.standing ?? null} />}
-              />
-              <EditableFinanceCard label={i18n("packageSubscriptions09a33f1")} value={packageContent || "—"} />
               {/* Start comes before end, so it sits first (left). */}
               {membershipDateCards(Boolean(currentSubscription)).map((key) => {
                 if (key === "subscription_end") {
@@ -528,11 +515,6 @@ function FinanceRecordList({ title, records, personKey }: { title: string; recor
   );
 }
 
-function money(value: unknown) {
-  const cents = Number(value);
-  return Number.isFinite(cents) ? `${(cents / 100).toFixed(2)} €` : "—";
-}
-
 function arrayCount(value: unknown) {
   return Array.isArray(value) ? value.length : 0;
 }
@@ -577,6 +559,7 @@ export function AdminUserProfile({ userId }: { userId: string }) {
   const tGoal = useTranslations("TrainingGoal");
   const tBodyDevices = useTranslations("BodyDevices");
   const tSms = useTranslations("Sms");
+  const tFinance = useTranslations("MemberFinance");
   const { tokens, currentUser } = useSession();
   const token = tokens?.access_token;
   const organizationSlug = useOrganizationSlug();
@@ -606,6 +589,7 @@ export function AdminUserProfile({ userId }: { userId: string }) {
   const [assignRequestDate, setAssignRequestDate] = useState<string | null>(null);
   const clearAssignRequest = useCallback(() => setAssignRequestDate(null), []);
   const [placementOpen, setPlacementOpen] = useState(false);
+  const [headerPaying, setHeaderPaying] = useState(false);
   const [scheduleVersion, setScheduleVersion] = useState(0);
   const deleteMutation = useMutation({
     mutationFn: () => deleteAdminUser(token!, userId),
@@ -655,6 +639,10 @@ export function AdminUserProfile({ userId }: { userId: string }) {
   const executions = training.data?.executions ?? [];
   const scores = training.data?.scores ?? [];
   const effectiveEntitlement = finance.data?.summary?.effective_entitlement;
+  const financeAllowances = grantableAllowances(effectiveEntitlement?.allowances).map((key) => ({
+    key,
+    label: allowanceLabel(key, i18n, effectiveEntitlement?.class_type_names),
+  }));
   const canDelete = currentUser?.id !== userId;
   const coachingDrillDown = coaching.data?.drill_down;
   const coachingCount = coachingDrillDown
@@ -794,7 +782,23 @@ export function AdminUserProfile({ userId }: { userId: string }) {
               </button>
             </HoverHint>
           ) : null}
+          {/* ADR-784 (ANR pick 1 C): while something is owed, the status and «+ Πληρωμή» on every tab but «Οικονομικά», which shows them already. */}
+          {finance.data?.summary?.standing &&
+          showsHeaderPayment({ owedCents: finance.data.summary.standing.outstanding_cents, onFinanceTab: tab === "finance", canTakePayments: can(actor, "take_payments") }) ? (
+            <div className="flex flex-wrap items-center gap-3" data-testid="profile-header-payment">
+              <StandingBadge standing={finance.data.summary.standing} />
+              <button
+                type="button"
+                className="inline-flex items-center rounded-full px-5 py-3 text-sm font-semibold"
+                style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}
+                onClick={() => setHeaderPaying(true)}
+              >
+                {tFinance("pay")}
+              </button>
+            </div>
+          ) : null}
         </section>
+        {headerPaying ? <ReceivePaymentDialog userId={userId} nickname={profile.identity.nickname} onClose={() => setHeaderPaying(false)} /> : null}
         {placementOpen && token ? (
           <MemberClassPlacementModal
             token={token}
@@ -846,7 +850,31 @@ export function AdminUserProfile({ userId }: { userId: string }) {
 
           {token && trains && inTab("schedule") ? <Panel id="schedule" title={i18n("featureScheduleProgramming")}><UserProgrammingSchedule key={scheduleVersion} token={token} userId={userId} role={clientRole ?? "member"} nickname={profile.identity.nickname} programming={profile.programming} assignRequestDate={assignRequestDate} onAssignRequestHandled={clearAssignRequest} /></Panel> : null}
 
-          {inTab("finance") ? <Panel id="finance" title={i18n("finance1b48d3f")}>{finance.data && token ? <FinanceDetails finance={finance.data} token={token} userId={userId} nickname={profile?.identity.nickname ?? ""} canGiveBenefits={can(actor, "take_payments")} effectiveEntitlement={effectiveEntitlement} onRefresh={() => queryClient.invalidateQueries({ queryKey: ["admin", "users", userId, "finance"] })} /> : null}</Panel> : null}
+          {/* ADR-784: the one money component, shared with the ledger's side panel; dates, freezes, gifts and leaving sit under «Περισσότερα». */}
+          {inTab("finance") ? (
+            <Panel id="finance" title={i18n("finance1b48d3f")}>
+              {finance.data && token ? (
+                <div className="mt-5">
+                  <MemberFinance
+                    userId={userId}
+                    nickname={profile.identity.nickname}
+                    allowances={financeAllowances}
+                    status={
+                      finance.data.details.membership ? (
+                        <MemberStatusCell
+                          userId={userId}
+                          status={valueText(finance.data.details.membership.status_shown)}
+                          override={overrideFor(finance.data.details.overrides, "status")}
+                          standing={finance.data.summary?.standing ?? null}
+                        />
+                      ) : null
+                    }
+                    more={<FinanceDetails finance={finance.data} token={token} userId={userId} nickname={profile.identity.nickname} canGiveBenefits={can(actor, "take_payments")} effectiveEntitlement={effectiveEntitlement} onRefresh={() => queryClient.invalidateQueries({ queryKey: ["admin", "users", userId, "finance"] })} />}
+                  />
+                </div>
+              ) : null}
+            </Panel>
+          ) : null}
 
 
           {token && inTab("training_history") ? (

@@ -30,6 +30,7 @@ import { formatScore } from "@/components/pantheon/PantheonCard";
 import { SemanticLabel } from "@/components/semantic-label";
 import { ProductPostCard } from "@/components/shop/ProductPostCard";
 import { useSession } from "@/components/session-provider";
+import { PersonAvatar } from "@/components/social/PersonAvatar";
 import { useUiTranslations } from "@/i18n/ui";
 import { useUiLocale } from "@/i18n/use-ui-locale";
 import type { PRRecord } from "@/api/gamification";
@@ -289,18 +290,7 @@ function PersonHeader({ post, author, locale, t }: HeaderProps) {
         {post.pinned ? ` · ${t("pinned")}` : ""}
       </p>
       <header className="flex items-center gap-3">
-        {post.author.avatar_url ? (
-          // eslint-disable-next-line @next/next/no-img-element -- user-uploaded media origin
-          <img src={post.author.avatar_url} alt="" className="h-10 w-10 shrink-0 rounded-full object-cover" />
-        ) : (
-          <span
-            aria-hidden="true"
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-extrabold"
-            style={{ background: "var(--panel-raised)", color: "var(--text)" }}
-          >
-            {clubInitials(author)}
-          </span>
-        )}
+        <PersonAvatar name={author} url={post.author.avatar_url} size={40} personId={post.author.id} />
         <div className="min-w-0 grow">
           <Link href={`/people/${post.author.id}`} className="block truncate font-bold" style={{ color: "var(--text)" }}>
             {author}

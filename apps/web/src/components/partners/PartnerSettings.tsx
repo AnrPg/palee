@@ -84,7 +84,7 @@ export function BlockedPeople() {
             return (
               <li key={row.person.id} className="flex min-h-12 items-center justify-between gap-3">
                 <span className="flex min-w-0 items-center gap-3">
-                  <PersonAvatar name={name} url={row.person.avatar_url} size={32} />
+                  <PersonAvatar name={name} url={row.person.avatar_url} personId={row.person.id} size={32} />
                   <span className="min-w-0">
                     <span className="block truncate text-sm font-semibold" style={{ color: "var(--text)" }}>{name}</span>
                     <span className="block text-xs" style={{ color: "var(--dim)" }}>
