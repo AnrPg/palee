@@ -194,7 +194,12 @@ defmodule Palee.Application.MyBilling do
       membership: present_membership(profile.membership, leave_preview(tenant, profile)),
       # ADR-595: the same status and line the staff see.
       standing:
-        MemberStatus.standing(profile.membership, outstanding_cents, unpaid_since(open_invoices)),
+        Map.get(profile, :standing) ||
+          MemberStatus.standing(
+            profile.membership,
+            outstanding_cents,
+            unpaid_since(open_invoices)
+          ),
       entitlement: entitlement(tenant, user_id),
       subscriptions:
         profile.package_subscriptions

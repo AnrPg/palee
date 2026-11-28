@@ -102618,6 +102618,35 @@ export interface operations {
                                 }[];
                             };
                         };
+                        /**
+                         * MemberStanding
+                         * @description ADR-595: the status and the line under it, worked out once and shown alike to the member and the staff
+                         */
+                        standing?: {
+                            /**
+                             * Format: date
+                             * @description Leaving or former: the last day of the package they kept
+                             */
+                            access_until: string | null;
+                            /**
+                             * @description ADR-612: a grace or free access the box gave; it lasts through `grace_until`
+                             * @enum {string|null}
+                             */
+                            benefit: "grace" | "free_access" | null;
+                            /**
+                             * Format: date
+                             * @description The last day of the grace the member is in
+                             */
+                            grace_until: string | null;
+                            outstanding_cents: number;
+                            /** @enum {string} */
+                            status: "active" | "trial" | "comped" | "unpaid" | "overdue" | "leaving" | "expiring" | "paused" | "expired" | "cancelled" | "former" | "no_package";
+                            /**
+                             * Format: date
+                             * @description The due date of the oldest charge still open
+                             */
+                            unpaid_since: string | null;
+                        } | null;
                     } & {
                         [key: string]: unknown;
                     };
@@ -127730,9 +127759,39 @@ export interface operations {
                         operational_links: {
                             [key: string]: string;
                         };
-                        summary: {
+                        summary: ({
+                            /**
+                             * MemberStanding
+                             * @description ADR-595: the status and the line under it, worked out once and shown alike to the member and the staff
+                             */
+                            standing?: {
+                                /**
+                                 * Format: date
+                                 * @description Leaving or former: the last day of the package they kept
+                                 */
+                                access_until: string | null;
+                                /**
+                                 * @description ADR-612: a grace or free access the box gave; it lasts through `grace_until`
+                                 * @enum {string|null}
+                                 */
+                                benefit: "grace" | "free_access" | null;
+                                /**
+                                 * Format: date
+                                 * @description The last day of the grace the member is in
+                                 */
+                                grace_until: string | null;
+                                outstanding_cents: number;
+                                /** @enum {string} */
+                                status: "active" | "trial" | "comped" | "unpaid" | "overdue" | "leaving" | "expiring" | "paused" | "expired" | "cancelled" | "former" | "no_package";
+                                /**
+                                 * Format: date
+                                 * @description The due date of the oldest charge still open
+                                 */
+                                unpaid_since: string | null;
+                            } | null;
+                        } & {
                             [key: string]: unknown;
-                        } | null;
+                        }) | null;
                         /** Format: uuid */
                         user_id: string;
                     };

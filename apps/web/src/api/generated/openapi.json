@@ -239635,6 +239635,70 @@
                         "actions"
                       ],
                       "type": "object"
+                    },
+                    "standing": {
+                      "description": "ADR-595: the status and the line under it, worked out once and shown alike to the member and the staff",
+                      "nullable": true,
+                      "properties": {
+                        "access_until": {
+                          "description": "Leaving or former: the last day of the package they kept",
+                          "format": "date",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "benefit": {
+                          "description": "ADR-612: a grace or free access the box gave; it lasts through `grace_until`",
+                          "enum": [
+                            "grace",
+                            "free_access"
+                          ],
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "grace_until": {
+                          "description": "The last day of the grace the member is in",
+                          "format": "date",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "outstanding_cents": {
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "status": {
+                          "enum": [
+                            "active",
+                            "trial",
+                            "comped",
+                            "unpaid",
+                            "overdue",
+                            "leaving",
+                            "expiring",
+                            "paused",
+                            "expired",
+                            "cancelled",
+                            "former",
+                            "no_package"
+                          ],
+                          "type": "string"
+                        },
+                        "unpaid_since": {
+                          "description": "The due date of the oldest charge still open",
+                          "format": "date",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "access_until",
+                        "benefit",
+                        "grace_until",
+                        "outstanding_cents",
+                        "status",
+                        "unpaid_since"
+                      ],
+                      "title": "MemberStanding",
+                      "type": "object"
                     }
                   },
                   "required": [
@@ -311414,6 +311478,72 @@
                     "summary": {
                       "additionalProperties": true,
                       "nullable": true,
+                      "properties": {
+                        "standing": {
+                          "description": "ADR-595: the status and the line under it, worked out once and shown alike to the member and the staff",
+                          "nullable": true,
+                          "properties": {
+                            "access_until": {
+                              "description": "Leaving or former: the last day of the package they kept",
+                              "format": "date",
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "benefit": {
+                              "description": "ADR-612: a grace or free access the box gave; it lasts through `grace_until`",
+                              "enum": [
+                                "grace",
+                                "free_access"
+                              ],
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "grace_until": {
+                              "description": "The last day of the grace the member is in",
+                              "format": "date",
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "outstanding_cents": {
+                              "minimum": 0,
+                              "type": "integer"
+                            },
+                            "status": {
+                              "enum": [
+                                "active",
+                                "trial",
+                                "comped",
+                                "unpaid",
+                                "overdue",
+                                "leaving",
+                                "expiring",
+                                "paused",
+                                "expired",
+                                "cancelled",
+                                "former",
+                                "no_package"
+                              ],
+                              "type": "string"
+                            },
+                            "unpaid_since": {
+                              "description": "The due date of the oldest charge still open",
+                              "format": "date",
+                              "nullable": true,
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "access_until",
+                            "benefit",
+                            "grace_until",
+                            "outstanding_cents",
+                            "status",
+                            "unpaid_since"
+                          ],
+                          "title": "MemberStanding",
+                          "type": "object"
+                        }
+                      },
                       "type": "object"
                     },
                     "user_id": {

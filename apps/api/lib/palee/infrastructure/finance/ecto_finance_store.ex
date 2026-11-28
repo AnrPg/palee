@@ -304,8 +304,19 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
         nil
 
       %Membership{} = membership ->
+        today = GymClock.today()
+
         %{
           membership: normalize_membership(membership),
+          # The one standing every screen shows (ledger, profile, the
+          # member's own pages): status, grace, what is owed and since when.
+          standing:
+            MemberStatus.standing(
+              normalize_membership(membership),
+              membership_outstanding_balance_cents(membership.id),
+              MemberStanding.oldest_unpaid_due_on_by_membership([membership.id], today)
+              |> Map.get(membership.id)
+            ),
           package_subscriptions: list_subscriptions(membership.id),
           active_package_subscription: active_subscription_for_membership(membership.id),
           invoices: list_invoices(membership.id),
@@ -548,6 +559,7 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
             {:error, reason} -> Repo.rollback(reason)
           end
 
+        fulfil_package_requests_paid!(membership, payment)
         refresh_invoice_and_entitlement(payment.finance_invoice_id, membership.id)
         normalize_payment(payment)
       else
@@ -555,6 +567,41 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
         {:error, reason} -> Repo.rollback(reason)
       end
     end)
+  end
+
+  # Money taken for a package the person holds is the desk answering their
+  # «Το θέλω» for it too: the request leaves «Περιμένει πληρωμή» on every
+  # screen (member, desk queue, profile) in the same transaction.
+  defp fulfil_package_requests_paid!(
+         membership,
+         %MembershipPayment{payment_status: "paid"} = payment
+       ) do
+    subscription_id =
+      payment.membership_package_subscription_id ||
+        invoice_subscription_id(payment.finance_invoice_id)
+
+    case subscription_id && Repo.get(MembershipPackageSubscription, subscription_id) do
+      %MembershipPackageSubscription{} = subscription ->
+        activate_package_requests!(
+          membership,
+          %{id: subscription.membership_package_id},
+          subscription
+        )
+
+      _none ->
+        :ok
+    end
+  end
+
+  defp fulfil_package_requests_paid!(_membership, _payment), do: :ok
+
+  defp invoice_subscription_id(nil), do: nil
+
+  defp invoice_subscription_id(invoice_id) do
+    FinanceInvoice
+    |> where([invoice], invoice.id == ^invoice_id)
+    |> select([invoice], invoice.membership_package_subscription_id)
+    |> Repo.one()
   end
 
   @impl true
@@ -566,7 +613,8 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
   # request is retried (the membership row lock serialises retries).
   @impl true
   def receive_payment(membership_id, params) do
-    params = params |> string_key_map() |> toward_open_charge()
+    params =
+      params |> string_key_map() |> toward_held_package(membership_id) |> toward_open_charge()
 
     with :ok <- ReceivedPayment.validate(params) do
       document =
@@ -626,6 +674,71 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
   end
 
   defp toward_open_charge(params), do: params
+
+  # Money «for the package» from someone who already holds it and still
+  # owes its charge (e.g. activated with «Εκκρεμεί πληρωμή») pays that
+  # charge. Assigning it again would leave the first charge open, so the
+  # ledger, the profile and the history would each tell a different story,
+  # and the person would hold the package twice.
+  defp toward_held_package(%{"purchase_package_id" => package_id} = params, membership_id)
+       when is_binary(package_id) and package_id != "" do
+    if blank_id?(params["membership_package_subscription_id"]) and
+         blank_id?(params["finance_invoice_id"]) do
+      case owing_subscription_of(membership_id, package_id) do
+        nil ->
+          params
+
+        subscription_id ->
+          params
+          |> Map.delete("purchase_package_id")
+          |> Map.put("membership_package_subscription_id", subscription_id)
+      end
+    else
+      params
+    end
+  end
+
+  defp toward_held_package(params, _membership_id), do: params
+
+  # The held subscription of the package with the oldest charge still owed.
+  defp owing_subscription_of(membership_id, package_id) do
+    with {:ok, membership_id} <- Ecto.UUID.cast(membership_id),
+         {:ok, package_id} <- Ecto.UUID.cast(package_id) do
+      charges =
+        FinanceInvoice
+        |> tenant_scope()
+        |> join(:inner, [invoice], subscription in MembershipPackageSubscription,
+          on: subscription.id == invoice.membership_package_subscription_id
+        )
+        |> where(
+          [invoice, subscription],
+          invoice.membership_id == ^membership_id and
+            subscription.membership_package_id == ^package_id and
+            subscription.status in ["active", "paused"] and is_nil(subscription.removed_on) and
+            invoice.invoice_type in ["subscription", "renewal"] and
+            invoice.status in ^InvoiceLifecycle.blocking_invoice_statuses() and
+            is_nil(invoice.deleted_at)
+        )
+        |> select([invoice, subscription], {invoice.id, subscription.id, invoice.due_date})
+        |> Repo.all()
+
+      balances = charges |> Enum.map(&elem(&1, 0)) |> invoice_balance_due_map()
+
+      charges
+      |> Enum.filter(fn {id, _subscription_id, _due} -> Map.get(balances, id, 0) > 0 end)
+      |> Enum.sort_by(fn {_id, _subscription_id, due} -> due end, &date_before_or_nil?/2)
+      |> case do
+        [{_id, subscription_id, _due} | _] -> subscription_id
+        [] -> nil
+      end
+    else
+      :error -> nil
+    end
+  end
+
+  defp date_before_or_nil?(nil, _other), do: false
+  defp date_before_or_nil?(_date, nil), do: true
+  defp date_before_or_nil?(a, b), do: Date.compare(a, b) != :gt
 
   defp blank_id?(value), do: value in [nil, ""]
 
@@ -5917,6 +6030,12 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
          # ADR-274: values staff set by hand, and the oldest unpaid charge.
          overrides: Map.get(overrides_by_membership_id, membership.id, []),
          oldest_unpaid_due_on: Map.get(unpaid_due_by_membership_id, membership.id),
+         standing:
+           MemberStatus.standing(
+             normalize_membership(membership),
+             outstanding_cents,
+             Map.get(unpaid_due_by_membership_id, membership.id)
+           ),
          credit_balance: credit_balance_cents,
          credit_balance_cents: credit_balance_cents,
          outstanding_balance_cents: outstanding_cents,

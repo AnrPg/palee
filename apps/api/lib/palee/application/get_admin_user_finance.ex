@@ -28,6 +28,8 @@ defmodule Palee.Application.GetAdminUserFinance do
              available: true,
              summary: %{
                credit_balance: profile.credit_balance,
+               # The one standing the ledger and the member see too.
+               standing: Map.get(profile, :standing),
                current_status: profile.drill_down.current_status,
                package_relationship: profile.drill_down.package_relationship,
                outstanding_items: profile.drill_down.outstanding_items,

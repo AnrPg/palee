@@ -275,6 +275,7 @@ test.describe("finance ledger", () => {
         },
         outstanding_balance_cents: 4500,
         oldest_unpaid_due_on: "2026-10-29",
+        standing: { status: "unpaid", grace_until: null, access_until: null, outstanding_cents: 4500, unpaid_since: "2026-10-29", benefit: null },
         last_payment_on: "2026-10-29",
         last_payment_amount_cents: 500,
         overrides: [

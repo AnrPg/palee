@@ -41,6 +41,7 @@ import { DateInput } from "@/components/ui/DateInput";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { useStatusLabel } from "@/components/admin/finance/shared/MemberStandingCells";
 import { shownStatus, statusTone, toneStyle } from "@/components/admin/finance/shared/member-standing";
+import { StandingBadge } from "@/components/finance/StandingBadge";
 
 function field(record: FinanceRecord | null | undefined, key: string, fallback = "") {
   const value = record?.[key];
@@ -127,6 +128,7 @@ export function MemberPanel({
 
   const profile = profileQuery.data;
   const packages = packagesQuery.data?.packages ?? [];
+  const standing = profile?.standing ?? null;
   const packageSubscriptions = ((profile?.package_subscriptions as FinanceRecord[] | undefined) ?? []).filter(
     (sub) => field(sub, "status") === "active",
   );
@@ -284,9 +286,19 @@ export function MemberPanel({
                 {profile.membership ? (
                   <>
                     {/* ADR-274: the worked-out status and the running subscription's last day. */}
-                    <InfoRow label={i18n("statusbae7d5b")} value={statusLabel(shownStatus(profile))} color={toneStyle(statusTone(shownStatus(profile))).color} />
+                    {/* The one standing the ledger row, the profile and the member show; its line says grace and debt. */}
+                    {standing ? (
+                      <div className="flex items-start justify-between gap-4 text-sm">
+                        <span style={{ color: "var(--dim)" }}>{i18n("statusbae7d5b")}</span>
+                        <StandingBadge standing={standing} align="end" />
+                      </div>
+                    ) : (
+                      <InfoRow label={i18n("statusbae7d5b")} value={statusLabel(shownStatus(profile))} color={toneStyle(statusTone(shownStatus(profile))).color} />
+                    )}
                     <InfoRow label={i18n("expiresa99be3d")} value={field(packageSubscriptions[0], "ends_on") || field(profile.membership, "expires_on") || "—"} />
-                    <InfoRow label={i18n("entitlement8994749")} value={field(profile.membership, "entitlement_status") ? semanticLabel(field(profile.membership, "entitlement_status"), i18n) : "—"} />
+                    {standing ? null : (
+                      <InfoRow label={i18n("entitlement8994749")} value={field(profile.membership, "entitlement_status") ? semanticLabel(field(profile.membership, "entitlement_status"), i18n) : "—"} />
+                    )}
                     <InfoRow label={i18n("creditBalance471f025")} value={money(uiLocale, profile.credit_balance)} />
                   </>
                 ) : (

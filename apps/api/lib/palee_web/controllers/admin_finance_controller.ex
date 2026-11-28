@@ -72,7 +72,10 @@ defmodule PaleeWeb.AdminFinanceController do
   @drill_down_schema AdminDrillDown.finance_drill_down_schema()
   @member_profile_response %Schema{
     type: :object,
-    properties: %{drill_down: @drill_down_schema},
+    properties: %{
+      drill_down: @drill_down_schema,
+      standing: PaleeWeb.Schemas.MemberStanding.schema()
+    },
     required: [:drill_down],
     additionalProperties: true
   }

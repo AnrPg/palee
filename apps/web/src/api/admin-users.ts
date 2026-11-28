@@ -65,6 +65,8 @@ export type AdminUserFinance = {
     package_relationship: Record<string, unknown>;
     outstanding_items: Array<Record<string, unknown>>;
     effective_entitlement: EffectiveEntitlement | null;
+    /** The one standing every screen shows (ledger, profile, the member's own pages). */
+    standing?: Standing | null;
   };
   details: {
     membership: null | Record<string, unknown>;

@@ -79,6 +79,8 @@ defmodule Palee.Application.ListFinanceMembers do
       # ADR-274: the oldest charge that fell due unpaid, and the values staff
       # set by hand (shown with a dot and a tooltip in the ledger).
       oldest_unpaid_due_on: profile && Map.get(profile, :oldest_unpaid_due_on),
+      # The one standing every screen shows (MemberStatus.standing/3).
+      standing: profile && Map.get(profile, :standing),
       overrides:
         FinanceValueOverrides.with_names((profile && Map.get(profile, :overrides)) || []),
       notes: membership && Map.get(membership, :notes)

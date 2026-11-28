@@ -1,6 +1,7 @@
 import { apiRequest } from "@/api/client";
 import type { PackageCatalog } from "@/components/admin/finance/packages/package-catalog";
 import type { ValueOverride } from "@/components/admin/finance/shared/member-standing";
+import type { Standing } from "@/components/finance/standing";
 import type { LocationScopePayload } from "@/lib/location-scope";
 
 export type FinanceRecord = Record<string, unknown>;
@@ -146,6 +147,8 @@ export async function fetchFinanceMember(token: string, userId: string) {
     credit_ledger_entries: FinanceRecord[];
     credit_balance: number;
     entitlement?: FinanceRecord;
+    /** The one standing every screen shows (ledger, profile, the member's own pages). */
+    standing?: Standing | null;
   }>(`/admin/finance/members/${userId}`, { token });
 }
 
