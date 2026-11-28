@@ -213,6 +213,15 @@ defmodule Palee.Scheduling do
     to: GetApprovedBookingForClass,
     as: :call
 
+  @doc "ADR-795: classes the member completed from `from` on (the first one starts a waiting package)."
+  def completed_member_classes(
+        context,
+        user_id,
+        %DateTime{} = from,
+        %DateTime{} = now \\ DateTime.utc_now()
+      ),
+      do: Palee.Scheduling.SchedulingStore.completed_member_classes(context, user_id, from, now)
+
   defdelegate get_calendar_week(context, params), to: GetCalendarWeek, as: :call
   defdelegate get_calendar_week(params), to: GetCalendarWeek, as: :call
   defdelegate get_pending_bookings(context), to: GetPendingBookings, as: :call

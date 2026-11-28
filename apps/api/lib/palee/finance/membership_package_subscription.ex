@@ -39,6 +39,8 @@ defmodule Palee.Finance.MembershipPackageSubscription do
     field :charges_from, :date
     # ADR-660: the box day staff removed the package («Αφαίρεση πακέτου»).
     field :removed_on, :date
+    # ADR-795: given, and waiting for the member's first class or WOD.
+    field :awaiting_first_session, :boolean, default: false
 
     timestamps(type: :utc_datetime_usec)
   end
@@ -59,6 +61,7 @@ defmodule Palee.Finance.MembershipPackageSubscription do
       :referral_reward_applied,
       :commitment_ends_on,
       :activated_on,
+      :awaiting_first_session,
       :base_subscription_id,
       :corporate_client_id,
       :corporate_enrolled_via,

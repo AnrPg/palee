@@ -696,3 +696,19 @@ export async function fetchAdminSearch(
     token,
   });
 }
+
+// ── ADR-795: «Να μην εμφανιστεί ξανά σήμερα» on the money questions ─────────
+
+export type MoneyConfirmationKind = "record_payment" | "desk_collect" | "shop_pickup" | "cash_refund";
+export type ConfirmationSkips = { day: string; skipped: MoneyConfirmationKind[] };
+export const CONFIRMATION_SKIPS_KEY = ["admin", "confirmation-skips"] as const;
+
+/** The money questions this staff member chose not to see again today (the box's day). */
+export function fetchConfirmationSkips(token: string) {
+  return apiRequest<ConfirmationSkips>("/admin/confirmation-skips", { token });
+}
+
+/** Not again today, on every device of the account, until the box's midnight. */
+export function skipConfirmationToday(token: string, kind: MoneyConfirmationKind) {
+  return apiRequest<ConfirmationSkips>("/admin/confirmation-skips", { token, method: "POST", body: { kind } });
+}

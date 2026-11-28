@@ -83,7 +83,7 @@ export function PersonResultRow({ person }: { person: PeopleSearchPerson }) {
   return (
     <li className={`${itemRow} rounded-3xl p-3`} style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
       <Link href={`/people/${person.id}`} className={itemRowMain}>
-        <PersonAvatar name={name} url={person.avatar_url} />
+        <PersonAvatar name={name} url={person.avatar_url} personId={person.id} />
         <span className="min-w-0">
           <span className="block truncate font-bold" style={{ color: "var(--text)" }}>{name}</span>
           <span className="flex min-w-0 items-center gap-1.5 text-xs" style={{ color: "var(--dim)" }}>

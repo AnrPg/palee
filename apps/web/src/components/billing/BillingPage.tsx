@@ -24,6 +24,7 @@ import { inboxHref } from "@/components/chat/inbox/inbox-model";
 import { boxChatHref } from "@/components/trials/box-chat-links";
 import { StandingBadge } from "@/components/finance/StandingBadge";
 import { PackageTermUpdates } from "@/components/finance/PackageTermUpdates";
+import { MemberPackageStart } from "./MemberPackageStart";
 
 import { billingTab, sessionsLeft, validityProgress, type BillingTab } from "./billing-model";
 import { OffersSegment } from "./OffersSegment";
@@ -290,13 +291,21 @@ function MembershipSegment({
   const t = useTranslations("Billing");
   const locale = useUiLocale();
   const current = provider.subscriptions.find((entry) => entry.current) ?? null;
-  const past = provider.subscriptions.filter((entry) => !entry.current);
+  const past = provider.subscriptions.filter((entry) => !entry.current && !entry.package_start);
+  // ADR-795: a package waiting for the first class, or for «Το κατάλαβα».
+  const starting = provider.subscriptions.filter((entry) => !entry.current && entry.package_start);
 
   return (
     <>
+      {starting.map((subscription) => (
+        <HubCard key={subscription.id}>
+          <MemberPackageStart provider={provider} subscription={subscription} />
+        </HubCard>
+      ))}
       {current ? (
         <HubCard>
           <SubscriptionDetails subscription={current} standing={provider.standing} currency={currencyOf(provider)} />
+          <MemberPackageStart provider={provider} subscription={current} />
           <PackageTermUpdates updates={current.term_updates} />
           {/* ADR-220: the member's own choice; otherwise the box arranges it. */}
           {current.can_change_auto_renew ? (

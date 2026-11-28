@@ -51,6 +51,7 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
     PackageCode,
     PackageContract,
     PackageRemovalPolicy,
+    PackageStart,
     PaymentModelPolicy,
     PromotionRedemptionPolicy,
     ReceivedPayment,
@@ -65,6 +66,7 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
   }
 
   alias Palee.Finance.FinanceValueOverride
+  alias Palee.Finance.PackageStart, as: PackageStartRecord
   alias Palee.Finance.MemberBenefitStore
   alias Palee.Infrastructure.Finance.EctoCleanupRecordStore
   alias Palee.Infrastructure.Finance.MemberStanding
@@ -396,13 +398,24 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
                today: GymClock.today()
              ),
            {:ok, params} <- payment_model_params(membership, package, string_key_map(params)) do
+        params = put_awaiting_first_session(params, package)
         subscription = insert_subscription!(membership, package, params)
         rejoin!(membership)
         activate_package_requests!(membership, package, subscription)
 
         # ADR-274: what the package costs is owed from the day it starts.
-        if params["charge_now"] != false,
-          do: charge_subscription(subscription, GymClock.today()) |> ok_or_rollback!()
+        # ADR-795: a package waiting for the first class or WOD starts (and
+        # is charged) then.
+        cond do
+          subscription.awaiting_first_session ->
+            insert_package_start!(membership, package, subscription)
+
+          params["charge_now"] != false ->
+            charge_subscription(subscription, GymClock.today()) |> ok_or_rollback!()
+
+          true ->
+            :ok
+        end
 
         refresh_entitlement_snapshot(membership.id)
         normalize_subscription(subscription)
@@ -445,6 +458,33 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
     end
   end
 
+  # ADR-795: with the box's «Με την πρώτη προπόνηση», a package given
+  # without a fixed start day (and billed by Palee as usual) waits for the
+  # member's first completed class or WOD. Add-ons follow their base and
+  # company seats their contract, so they start at once.
+  defp put_awaiting_first_session(params, package) do
+    waits? =
+      PackageStart.waits?(get_finance_settings().package_starts_with, params) and
+        params["charges_from"] in [nil, ""] and is_nil(params["corporate_client_id"]) and
+        PackageContract.type_from_params(package.params) not in ["add_on", "corporate"]
+
+    Map.put(params, "awaiting_first_session", waits?)
+  end
+
+  defp insert_package_start!(membership, package, subscription) do
+    %PackageStartRecord{}
+    |> PackageStartRecord.changeset(%{
+      subscription_id: subscription.id,
+      membership_id: membership.id,
+      user_id: membership.user_id,
+      package_name: package.name || package_identity_snapshot(package),
+      waiting_since: GymClock.today(),
+      status: "waiting"
+    })
+    |> Repo.insert()
+    |> ok_or_rollback!()
+  end
+
   defp insert_subscription!(membership, package, params) do
     params =
       params
@@ -459,7 +499,10 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
         "params_snapshot" => package.params || %{}
       })
 
-    params = Map.put(params, "charges_from", charges_from(params))
+    params =
+      if params["awaiting_first_session"],
+        do: Map.put(params, "charges_from", nil),
+        else: Map.put(params, "charges_from", charges_from(params))
 
     %MembershipPackageSubscription{}
     |> MembershipPackageSubscription.changeset(params)
@@ -3199,55 +3242,78 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
     {subscription, request} =
       select_subscription(membership.id, base_entitlement, request, occurred_on)
 
-    if is_nil(subscription) and mode != :observe and Map.get(request, :actor_role) != :admin and
-         frozen_subscriptions(membership.id, occurred_on) != [] do
-      {:error, :finance_membership_frozen}
-    else
-      entitlement =
-        if subscription do
-          Map.put(base_entitlement, :plan, subscription.params_snapshot || %{})
-        else
-          base_entitlement
+    cond do
+      is_nil(subscription) and mode != :observe and Map.get(request, :actor_role) != :admin and
+          frozen_subscriptions(membership.id, occurred_on) != [] ->
+        {:error, :finance_membership_frozen}
+
+      is_nil(subscription) and Map.get(request, :actor_role) != :admin and
+          package_start_in_review?(membership.id) ->
+        {:error, :finance_package_review_required}
+
+      true ->
+        authorize_with_subscription(
+          membership,
+          request,
+          subscription,
+          base_entitlement,
+          mode,
+          occurred_on
+        )
+    end
+  end
+
+  defp authorize_with_subscription(
+         membership,
+         request,
+         subscription,
+         base_entitlement,
+         mode,
+         occurred_on
+       ) do
+    entitlement =
+      if subscription do
+        Map.put(base_entitlement, :plan, subscription.params_snapshot || %{})
+      else
+        base_entitlement
+      end
+
+    allowance = Map.get(request, :allowance)
+
+    {period_start, period_end, committed, extensions, limit} =
+      allowance_state(subscription, allowance, occurred_on, membership.id)
+
+    policy_request =
+      request
+      |> Map.put(:committed, committed)
+      |> Map.put(:limit, effective_limit(limit, extensions))
+
+    evaluation = %{
+      request: request,
+      subscription: subscription,
+      occurred_on: occurred_on,
+      period_start: period_start,
+      period_end: period_end
+    }
+
+    case EntitlementPolicy.authorize(entitlement, policy_request,
+           mode: mode,
+           actor_role: Map.get(request, :actor_role)
+         ) do
+      {:ok, decision} ->
+        {:ok, Map.put(evaluation, :decision, decision)}
+
+      :ok ->
+        {:ok, %{evaluation | subscription: nil} |> Map.put(:decision, %{remaining: :not_metered})}
+
+      {:error, reason} ->
+        case entitlement_denial_details(reason, policy_request) do
+          nil -> {:error, reason}
+          details -> {:error, {reason, details}}
         end
 
-      allowance = Map.get(request, :allowance)
-
-      {period_start, period_end, committed, extensions, limit} =
-        allowance_state(subscription, allowance, occurred_on, membership.id)
-
-      policy_request =
-        request
-        |> Map.put(:committed, committed)
-        |> Map.put(:limit, effective_limit(limit, extensions))
-
-      evaluation = %{
-        request: request,
-        subscription: subscription,
-        occurred_on: occurred_on,
-        period_start: period_start,
-        period_end: period_end
-      }
-
-      case EntitlementPolicy.authorize(entitlement, policy_request,
-             mode: mode,
-             actor_role: Map.get(request, :actor_role)
-           ) do
-        {:ok, decision} ->
-          {:ok, Map.put(evaluation, :decision, decision)}
-
-        :ok ->
-          {:ok,
-           %{evaluation | subscription: nil} |> Map.put(:decision, %{remaining: :not_metered})}
-
-        {:error, reason} ->
-          case entitlement_denial_details(reason, policy_request) do
-            nil -> {:error, reason}
-            details -> {:error, {reason, details}}
-          end
-
-        {:error, reason, details} ->
-          {:error, {reason, details}}
-      end
+      {:error, reason, details} ->
+        {:error, {reason, details}}
     end
   end
 
@@ -3557,12 +3623,42 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
       |> Repo.all()
 
     frozen = frozen_subscription_ids(Enum.map(subscriptions, & &1.id), occurred_on)
+    in_review = package_start_review_ids(subscriptions)
 
-    subscriptions
-    |> Enum.reject(&(&1.id in frozen))
-    |> PaymentModelPolicy.drop_orphan_add_ons()
-    |> SubscriptionSelection.order()
+    # ADR-795: a package waiting for its first session is used only after the
+    # running ones (it must not start while another still covers the
+    # member), and not at all while the member has not seen its changes.
+    {waiting, running} =
+      subscriptions
+      |> Enum.reject(&(&1.id in frozen or &1.id in in_review))
+      |> PaymentModelPolicy.drop_orphan_add_ons()
+      |> Enum.split_with(& &1.awaiting_first_session)
+
+    (SubscriptionSelection.order(running) ++ SubscriptionSelection.order(waiting))
     |> with_lapsed_fallback(membership_id, occurred_on)
+  end
+
+  defp package_start_review_ids(subscriptions) do
+    case for(s <- subscriptions, s.awaiting_first_session, do: s.id) do
+      [] ->
+        []
+
+      ids ->
+        PackageStartRecord
+        |> tenant_scope()
+        |> where([s], s.subscription_id in ^ids and s.status == "review")
+        |> select([s], s.subscription_id)
+        |> Repo.all()
+    end
+  end
+
+  # ADR-795: a member whose package waits for them to see what changed in
+  # it books nothing until they press «Το κατάλαβα».
+  defp package_start_in_review?(membership_id) do
+    PackageStartRecord
+    |> tenant_scope()
+    |> where([s], s.membership_id == ^membership_id and s.status == "review")
+    |> Repo.exists?()
   end
 
   # ADR-112: during the grace slack after the last subscription ended, the one
@@ -3625,11 +3721,15 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
   defp put_local_start(request), do: request
 
   defp activate_on_first_use!(
-         %MembershipPackageSubscription{activated_on: nil} = subscription,
+         %MembershipPackageSubscription{
+           activated_on: nil,
+           ends_on: nil,
+           awaiting_first_session: false
+         } = subscription,
          occurred_on
        ) do
-    with {:ok, plan} <- EntitlementPlan.parse(subscription.params_snapshot || %{}),
-         "first_use" <- plan.terms[:validity_starts],
+    with true <- legacy_first_use?(subscription.params_snapshot || %{}),
+         {:ok, plan} <- EntitlementPlan.parse(subscription.params_snapshot || %{}),
          ends_on when not is_nil(ends_on) <-
            SubscriptionTerms.activation_ends_on(occurred_on, plan.terms[:validity]) do
       subscription
@@ -3645,6 +3745,312 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
   end
 
   defp activate_on_first_use!(_subscription, _occurred_on), do: :ok
+
+  # ADR-097 «Με την πρώτη επίσκεψη» left the catalog (ADR-795); packages
+  # sold with it keep it in their own copy, read here before the catalog
+  # drops the key.
+  defp legacy_first_use?(params) do
+    get_in(params, ["fields", "terms.validity_starts"]) == "first_use" or
+      get_in(params, ["terms", "validity_starts"]) == "first_use"
+  end
+
+  # ── ADR-795: packages that wait for the first class or WOD ──────────────
+
+  @impl true
+  def waiting_subscription_for_session(user_id, source_context, source_id) do
+    membership = tenant_scope(Membership) |> where([m], m.user_id == ^user_id) |> Repo.one()
+
+    with %Membership{} <- membership do
+      reserved =
+        source_id &&
+          FinanceEntitlementUsageEntry
+          |> where([entry], entry.membership_id == ^membership.id)
+          |> where([entry], entry.source_context == ^source_context)
+          |> where([entry], entry.source_id == ^source_id)
+          |> where([entry], entry.event_type == "reserve")
+          |> join(:inner, [entry], s in MembershipPackageSubscription,
+            on: s.id == entry.membership_package_subscription_id
+          )
+          |> where([_entry, s], s.awaiting_first_session)
+          |> select([_entry, s], s.id)
+          |> limit(1)
+          |> Repo.one()
+
+      reserved || waiting_without_running(membership.id)
+    end
+  end
+
+  # A session the ledger did not tie to a package (a WOD, a class booked
+  # before the package): it starts the oldest waiting package, unless a
+  # running one covers the member that day.
+  defp waiting_without_running(membership_id) do
+    today = GymClock.today()
+
+    {waiting, running} =
+      MembershipPackageSubscription
+      |> tenant_scope()
+      |> where([s], s.membership_id == ^membership_id and s.status == "active")
+      |> where([s], is_nil(s.removed_on))
+      |> where([s], is_nil(s.ends_on) or s.ends_on >= ^today)
+      |> order_by([s], asc: s.inserted_at)
+      |> Repo.all()
+      |> Enum.split_with(& &1.awaiting_first_session)
+
+    if running == [], do: Enum.find_value(waiting, & &1.id), else: nil
+  end
+
+  @impl true
+  def begin_package_start(subscription_id, session) do
+    Repo.transaction(fn ->
+      with %PackageStartRecord{status: "waiting"} = start <-
+             locked_package_start(subscription_id),
+           %MembershipPackageSubscription{
+             awaiting_first_session: true,
+             status: "active",
+             removed_on: nil
+           } = subscription <- locked_waiting_subscription(subscription_id) do
+        session_fields = %{
+          session_kind: session.kind,
+          session_id: session.id,
+          session_on: session.on
+        }
+
+        case package_start_changes(subscription, start) do
+          [] ->
+            started = start_subscription!(subscription, start, session.on, [], session_fields)
+            {:started, started}
+
+          changes ->
+            start
+            |> PackageStartRecord.changeset(
+              Map.merge(session_fields, %{
+                status: "review",
+                severity: PackageStart.overall(changes),
+                changes: PackageStart.serialize(changes),
+                reviewed_at: DateTime.utc_now()
+              })
+            )
+            |> Repo.update()
+            |> ok_or_rollback!()
+            |> then(&{:review, &1})
+        end
+      else
+        _not_waiting -> :not_waiting
+      end
+    end)
+  end
+
+  @impl true
+  def acknowledge_package_start(start_id, actor_id) do
+    Repo.transaction(fn ->
+      with %PackageStartRecord{status: "review"} = start <-
+             PackageStartRecord
+             |> tenant_scope()
+             |> where([s], s.id == ^start_id)
+             |> lock("FOR UPDATE")
+             |> Repo.one(),
+           %MembershipPackageSubscription{
+             awaiting_first_session: true,
+             status: "active",
+             removed_on: nil
+           } = subscription <- locked_waiting_subscription(start.subscription_id) do
+        changes = package_start_changes(subscription, start)
+
+        # The package changed again while the member was reading: they see
+        # the new list first (kept, so the next look shows it).
+        if changes != [] and PackageStart.serialize(changes) != start.changes do
+          start
+          |> PackageStartRecord.changeset(%{
+            severity: PackageStart.overall(changes),
+            changes: PackageStart.serialize(changes),
+            reviewed_at: DateTime.utc_now()
+          })
+          |> Repo.update()
+          |> ok_or_rollback!()
+
+          :package_changed_again
+        else
+          start_subscription!(subscription, start, GymClock.today(), changes, %{
+            acknowledged_at: DateTime.utc_now(),
+            acknowledged_by_id: actor_id
+          })
+        end
+      else
+        nil -> Repo.rollback(:not_found)
+        _started -> Repo.rollback(:package_start_not_in_review)
+      end
+    end)
+    |> case do
+      {:ok, :package_changed_again} -> {:error, :package_changed_again}
+      result -> result
+    end
+  end
+
+  @impl true
+  def list_package_starts(filters) do
+    PackageStartRecord
+    |> tenant_scope()
+    # A removed package (ADR-660) neither waits nor starts.
+    |> join(:inner, [s], sub in MembershipPackageSubscription, on: sub.id == s.subscription_id)
+    |> where([_s, sub], sub.status == "active" and is_nil(sub.removed_on))
+    |> then(fn query ->
+      case filters[:user_id] do
+        nil -> query
+        user_id -> where(query, [s], s.user_id == ^user_id)
+      end
+    end)
+    |> then(fn query ->
+      case filters[:subscription_ids] do
+        nil -> query
+        ids -> where(query, [s], s.subscription_id in ^ids)
+      end
+    end)
+    |> then(fn query ->
+      case filters[:statuses] do
+        nil -> query
+        statuses -> where(query, [s], s.status in ^statuses)
+      end
+    end)
+    |> order_by([s], asc: s.inserted_at)
+    |> Repo.all()
+  end
+
+  @impl true
+  def list_waiting_user_ids do
+    PackageStartRecord
+    |> tenant_scope()
+    |> join(:inner, [s], sub in MembershipPackageSubscription, on: sub.id == s.subscription_id)
+    |> where(
+      [s, sub],
+      s.status == "waiting" and sub.status == "active" and is_nil(sub.removed_on)
+    )
+    |> select([s], {s.user_id, s.subscription_id, s.waiting_since})
+    |> Repo.all()
+  end
+
+  @impl true
+  def confirmation_skips(user_id, %Date{} = day) do
+    Palee.Finance.ConfirmationSkip
+    |> tenant_scope()
+    |> where([s], s.user_id == ^user_id and s.skip_on == ^day)
+    |> select([s], s.kind)
+    |> Repo.all()
+  end
+
+  @impl true
+  def skip_confirmation(user_id, kind, %Date{} = day) do
+    %Palee.Finance.ConfirmationSkip{user_id: user_id}
+    |> Palee.Finance.ConfirmationSkip.changeset(%{kind: kind, skip_on: day})
+    |> Repo.insert(on_conflict: :nothing)
+    |> case do
+      {:ok, _skip} -> :ok
+      {:error, changeset} -> {:error, changeset}
+    end
+  end
+
+  defp locked_package_start(subscription_id) do
+    PackageStartRecord
+    |> tenant_scope()
+    |> where([s], s.subscription_id == ^subscription_id)
+    |> lock("FOR UPDATE")
+    |> Repo.one()
+  end
+
+  defp locked_waiting_subscription(subscription_id) do
+    MembershipPackageSubscription
+    |> tenant_scope()
+    |> where([s], s.id == ^subscription_id)
+    |> lock("FOR UPDATE")
+    |> Repo.one()
+  end
+
+  # What changed between what the member bought and the package now.
+  defp package_start_changes(subscription, start) do
+    case tenant_scope(MembershipPackage) |> Repo.get(subscription.membership_package_id) do
+      nil ->
+        []
+
+      package ->
+        PackageStart.changes(
+          %{
+            name: start.package_name,
+            price_cents: subscription.price_cents_snapshot,
+            billing_period: subscription.billing_period_snapshot,
+            params: subscription.params_snapshot || %{}
+          },
+          %{
+            name: package.name,
+            price_cents: package.base_price_cents,
+            billing_period: package.billing_period,
+            params: package.params || %{}
+          }
+        )
+    end
+  end
+
+  # The package starts on `on`: its terms (with what changed meanwhile),
+  # validity, commitment and billing count from that day; the first period
+  # is charged at the bought price (1δ), the new price applies from the
+  # next payment.
+  defp start_subscription!(subscription, start, on, changes, start_fields) do
+    taken = PackageStart.taken(changes)
+
+    %{params_snapshot: params} =
+      Palee.Finance.Domain.PackageTermChanges.apply_terms(subscription, taken.fields, nil)
+
+    commitment = package_terms(params)[:minimum_commitment_months]
+    ends_on = SubscriptionSelection.ends_on(on, params)
+
+    started =
+      subscription
+      |> MembershipPackageSubscription.changeset(%{
+        params_snapshot: params,
+        starts_on: on,
+        ends_on: ends_on,
+        commitment_ends_on: SubscriptionTerms.commitment_ends_on(on, commitment),
+        activated_on: on,
+        awaiting_first_session: false,
+        charges_from: SubscriptionCharges.charges_from(%{subscription | starts_on: on})
+      })
+      |> Repo.update()
+      |> ok_or_rollback!()
+
+    rebase_waiting_usage!(started)
+    charge_subscription(started, GymClock.today()) |> ok_or_rollback!()
+
+    if is_integer(taken.next_price_cents) do
+      started
+      |> Ecto.Changeset.change(price_cents_snapshot: taken.next_price_cents)
+      |> Repo.update!()
+    end
+
+    start
+    |> PackageStartRecord.changeset(
+      Map.merge(start_fields, %{
+        status: "started",
+        started_on: on,
+        changes: PackageStart.serialize(changes),
+        severity: PackageStart.overall(changes)
+      })
+    )
+    |> Repo.update()
+    |> ok_or_rollback!()
+    |> tap(fn _ -> refresh_entitlement_snapshot(subscription.membership_id) end)
+  end
+
+  # Allowances counted over the subscription period while the package
+  # waited move to its first real period.
+  defp rebase_waiting_usage!(subscription) do
+    FinanceEntitlementUsageEntry
+    |> where([entry], entry.membership_package_subscription_id == ^subscription.id)
+    |> where([entry], entry.period_end == ^PackageStart.waiting_period_end())
+    |> Repo.update_all(
+      set: [
+        period_start: subscription.starts_on,
+        period_end: subscription.ends_on || subscription.starts_on
+      ]
+    )
+  end
 
   # Picks the first stacked subscription that authorizes the request under
   # enforcement and resolves class-type allowances against its plan. When none
@@ -7129,6 +7535,7 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
       status: subscription.status,
       starts_on: subscription.starts_on,
       ends_on: subscription.ends_on,
+      awaiting_first_session: subscription.awaiting_first_session,
       package_name: package && package.name,
       package_code_snapshot: subscription.package_code_snapshot,
       package_family_snapshot: subscription.package_family_snapshot,
@@ -7578,6 +7985,15 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
     end
   end
 
+  # ADR-795: a waiting package has no end and no commitment yet; both count
+  # from the day it starts (`start_waiting_subscription/2`).
+  defp put_subscription_window(%{"awaiting_first_session" => true} = params, _package) do
+    params
+    |> Map.put("starts_on", GymClock.today())
+    |> Map.put("ends_on", nil)
+    |> Map.put("commitment_ends_on", nil)
+  end
+
   defp put_subscription_window(params, package) do
     starts_on = parse_date(params["starts_on"], GymClock.today())
     terms = package_terms(package.params)
@@ -7585,10 +8001,7 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
     ends_on =
       case params["ends_on"] do
         value when value in [nil, ""] ->
-          # ADR-097: validity from first use starts on the first reservation.
-          if terms[:validity_starts] == "first_use",
-            do: nil,
-            else: SubscriptionSelection.ends_on(starts_on, package.params || %{})
+          SubscriptionSelection.ends_on(starts_on, package.params || %{})
 
         value ->
           value
@@ -7664,7 +8077,8 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
           package_modules: Palee.Finance.Domain.PackageType.default_modules(),
           package_audience: "all",
           package_rule_since: nil,
-          package_wait_bookings: 3
+          package_wait_bookings: 3,
+          package_starts_with: PackageStart.default_mode()
         }
 
       settings ->
@@ -7727,6 +8141,7 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
       package_audience: s.package_audience,
       package_rule_since: s.package_rule_since,
       package_wait_bookings: s.package_wait_bookings,
+      package_starts_with: s.package_starts_with || PackageStart.default_mode(),
       inserted_at: s.inserted_at,
       updated_at: s.updated_at
     }

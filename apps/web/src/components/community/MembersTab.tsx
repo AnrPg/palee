@@ -51,7 +51,7 @@ export function MembersTab({ club }: { club: Pick<CommunityClub, "id"> }) {
             {rows.map((member) => (
               <li key={member.id}>
                 <Link href={`/people/${member.id}`} className="flex min-h-14 items-center gap-3 py-2">
-                  <PersonAvatar name={member.nickname} url={member.avatar_url} />
+                  <PersonAvatar name={member.nickname} url={member.avatar_url} personId={member.id} />
                   <span className="min-w-0 grow truncate font-bold" style={{ color: "var(--text)" }}>
                     {member.nickname ?? "?"}
                   </span>

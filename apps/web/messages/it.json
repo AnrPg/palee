@@ -323,7 +323,8 @@
     "slotOwnWod": "WOD proprio (quello del giorno è «{title}»).",
     "slotFollowDay": "Torna al WOD del giorno",
     "classCoachChip": "Coach: {coach}",
-    "wodPickerChoose": "Scegli un WOD"
+    "wodPickerChoose": "Scegli un WOD",
+    "classCancelReaches": "{count, plural, one {# persona prenotata o in attesa verrà avvisata e il suo posto annullato.} other {# persone prenotate o in attesa verranno avvisate e i loro posti annullati.}}"
   },
   "Ui": {
     "exercise1091b7f": "Esercizio",
@@ -3073,7 +3074,6 @@
     "pkgFieldTermsConversionPackageIdHint": "L'abbonamento che consigliamo al socio quando finisce la lezione di prova.",
     "pkgFieldTermsMinimumCommitmentMonths": "Durata minima",
     "pkgFieldTermsJoiningFeeCents": "Quota di iscrizione",
-    "pkgFieldTermsValidityStarts": "Inizio validità",
     "pkgFieldTermsExpiryReminderDays": "Promemoria scadenza",
     "pkgFieldTermsCompatiblePackageIds": "Pacchetti di abbonamento compatibili",
     "pkgFieldTermsBeneficiaries": "Persone incluse",
@@ -3362,7 +3362,6 @@
     "pkgSummaryEvents": "Eventi e workshop",
     "pkgSummaryCommitment": "{count, plural, one {Durata minima: # mese} other {Durata minima: # mesi}}",
     "pkgSummaryJoiningFee": "Quota d'iscrizione una tantum {amount}",
-    "pkgSummaryValidityFromFirstUse": "La validità parte dal tuo primo ingresso",
     "pkgLocationsAll": "Tutte le sedi",
     "pkgLocationsSome": "Sedi selezionate",
     "pkgNoLocationsYet": "Valido in tutte le sedi. Aggiungi sedi nelle impostazioni per limitarlo.",
@@ -3385,8 +3384,6 @@
     "pkgFieldBookingCancellationCutoffHoursSuffix": "{count, plural, one {ora prima della lezione} other {ore prima della lezione}}",
     "pkgFieldPerksFreezeDaysPerYearSuffix": "{count, plural, one {giorno all'anno} other {giorni all'anno}}",
     "pkgFieldPerksMemberDiscountPercentSuffix": "%",
-    "pkgFieldTermsValidityStarts_purchase": "All'acquisto",
-    "pkgFieldTermsValidityStarts_first_use": "Al primo ingresso",
     "pkgFieldBookingWaitlistPriority_normal": "Normale",
     "pkgFieldBookingWaitlistPriority_high": "Alta",
     "pkgFieldPerksMemberDiscountScope_products": "Prodotti",
@@ -3398,7 +3395,6 @@
     "pkgModule_eventsHint": "Workshop e sessioni speciali prenotati come le lezioni.",
     "pkgFieldTermsMinimumCommitmentMonthsHint": "I clienti non possono disdire prima di questo numero di mesi, salvo tua eccezione.",
     "pkgFieldTermsJoiningFeeCentsHint": "Aggiunta una volta alla prima fattura del socio per questo pacchetto di abbonamento.",
-    "pkgFieldTermsValidityStartsHint": "Con «Al primo ingresso», la validità parte quando il socio usa il pacchetto di abbonamento per la prima volta.",
     "pkgFieldTermsExpiryReminderDaysHint": "Avvisiamo il socio questi giorni prima della scadenza del pacchetto di abbonamento. 0 lo disattiva.",
     "pkgFieldGroupClassesRolloverMaxHint": "Le lezioni non usate passano al periodo successivo, fino a questo numero.",
     "pkgFieldGroupClassesTimeWindowsHint": "Per pacchetti di abbonamento fuori picco: i soci prenotano lezioni in queste fasce.",
@@ -4970,7 +4966,24 @@
     "selectedAthleteCount": "{count, plural, one {# atleta selezionato} other {# atleti selezionati}}",
     "roundCount": "{count, plural, one {# round} other {# round}}",
     "optionCount": "{count, plural, one {# opzione} other {# opzioni}}",
-    "userCount": "{count, plural, one {# utente} other {# utenti}}"
+    "userCount": "{count, plural, one {# utente} other {# utenti}}",
+    "pkgStartWaitingMember": "Inizia con il tuo primo allenamento",
+    "pkgStartWaitingStaff": "Inizia con il primo allenamento",
+    "pkgStartWaitingHint": "Dato il {date}. Il periodo e il prossimo pagamento contano dalla prima lezione o WOD completato.",
+    "pkgStartReview_important": "{package} ora costa di più",
+    "pkgStartReview_serious": "{package} ora offre meno",
+    "pkgStartReview_warning": "{package} è cambiato",
+    "pkgStartReviewHintMember": "È cambiato mentre aspettava il tuo primo allenamento. Guarda cosa è cambiato: «Ho capito» lo fa iniziare oggi. Fino ad allora niente nuove prenotazioni.",
+    "pkgStartReviewHintStaff": "In attesa che il membro veda le modifiche e prema «Ho capito». Fino ad allora niente nuove prenotazioni.",
+    "pkgStartName": "Nome",
+    "pkgStartFirstPeriodPrice": "Il primo periodo mantiene il prezzo d'acquisto. Il nuovo prezzo vale dal prossimo pagamento.",
+    "pkgStartAcknowledge": "Ho capito",
+    "mbErrPackageReview": "Il tuo pacchetto di abbonamento è cambiato mentre aspettava. Guarda le modifiche in Io › Pagamenti e premi «Ho capito» per prenotare.",
+    "apiErrorPackageChangedAgain": "Il pacchetto di abbonamento è appena cambiato di nuovo. Guarda le nuove modifiche e premi di nuovo «Ho capito».",
+    "apiErrorPackageStartNotInReview": "Questo pacchetto di abbonamento è già iniziato.",
+    "admCheckInPackageReview": "Il pacchetto di abbonamento di questo membro è cambiato mentre aspettava. Prima deve vedere le modifiche e premere «Ho capito».",
+    "exportPersonalData": "{count, plural, one {Il file contiene dati personali di # persona.} other {Il file contiene dati personali di # persone.}} Conservalo al sicuro e condividilo solo con chi ne ha bisogno.",
+    "roleGrantNotice": "Con un nuovo ruolo staff vedrà ciò che il ruolo consente (Impostazioni › Accesso per ruolo), ad es. finanze, salute e infortuni, contatti dei membri. Salva solo se è ciò che vuoi."
   },
   "PrSharing": {
     "gymLabel": "Dove hai stabilito questo PR?",
@@ -6757,7 +6770,15 @@
     "suggestionsOff": "Nascosto dalla tua Home. In «Trova» i suggerimenti restano.",
     "boxInvitesToggle": "Inviti dai box che seguo",
     "boxInvitesOn": "I box che segui vedono che li segui e possono invitarti a diventare socio.",
-    "boxInvitesOff": "I box che segui non ti vedono nella loro lista e non ti mandano inviti."
+    "boxInvitesOff": "I box che segui non ti vedono nella loro lista e non ti mandano inviti.",
+    "avatarView": "Apri foto: {name}",
+    "avatarViewerTitle": "Foto profilo: {name}",
+    "avatarViewerClose": "Chiudi",
+    "avatarViewerProfile": "Profilo",
+    "avatarViewerMedia": "Media",
+    "avatarViewerAllMedia": "Tutti i contenuti",
+    "avatarViewerLocked": "Account privato. Seguilo per vedere i suoi contenuti.",
+    "avatarViewerChange": "Cambia foto"
   },
   "BoxPage": {
     "allWeek": "Tutta la settimana",
@@ -12919,7 +12940,9 @@
     "rowButton": "+ Pagamento",
     "rowButtonLabel": "Registra un pagamento di {name}",
     "panelButton": "+ Registra pagamento",
-    "payInFull": "Salda tutto · {amount}"
+    "payInFull": "Salda tutto · {amount}",
+    "confirmPackageWayOut": "Se non hai ricevuto denaro, non serve un pagamento: il membro ha già {name} e resta un debito come «Pagherà più tardi».",
+    "confirmPackageWayOutAction": "Chiudi senza pagamento"
   },
   "OnlinePayments": {
     "sectionTitle": "Pagamenti",
@@ -13036,7 +13059,12 @@
     "doneRetryFailed": "Rifiutato di nuovo",
     "doneCardLink": "Link per cambiare carta inviato",
     "doneDismiss": "Pagato alla reception",
-    "doneBadge": "Fatto"
+    "doneBadge": "Fatto",
+    "packageStarts": "Quando inizia un pacchetto di abbonamento",
+    "packageStartsFirstSession": "Con il primo allenamento",
+    "packageStartsPayment": "Con il pagamento",
+    "packageStartsFirstSessionHint": "Il periodo e il prossimo pagamento contano dalla prima lezione che il membro completa («Presente», o la lezione è finita senza «Assente») o dal primo WOD che segna come fatto. Se il pacchetto è cambiato nel frattempo, il membro vede le modifiche prima che inizi.",
+    "packageStartsPaymentHint": "Il periodo e il prossimo pagamento contano dall'acquisto online o dal pagamento alla reception."
   },
   "FiscalIdentity": {
     "backToSettings": "Impostazioni",
@@ -15734,7 +15762,8 @@
     "freeHeldBody": "Il box lo attiverà presto e ti avviseremo. Nel frattempo puoi prenotare tante lezioni quante ne consente il box.",
     "freePending": "In attesa di attivazione",
     "freePendingBody": "Il box lo attiverà. Lo teniamo fino al {date}.",
-    "freeActivateHint": "Pacchetto gratuito: inizia oggi, senza incasso e senza debito."
+    "freeActivateHint": "Pacchetto gratuito: inizia oggi, senza incasso e senza debito.",
+    "confirmWayOut": "Se non hai ricevuto denaro, attivalo senza pagamento: inizia e il debito resta."
   },
   "Sms": {
     "connectionsTitle": "Connessioni",
@@ -20465,7 +20494,10 @@
     "submit_package": "Dai il pacchetto",
     "submit_debt_forgiven": "Condona il debito",
     "givenBySystem": "Da Palee, {when}",
-    "reasonRollout": "Ora per prenotare serve un pacchetto: 14 giorni a chi si allenava già"
+    "reasonRollout": "Ora per prenotare serve un pacchetto: 14 giorni a chi si allenava già",
+    "reviewDebt": "Condoni {amount} a {name}. Viene registrato con il tuo nome e non più richiesto.",
+    "reviewPackage": "Dai {package} a {name} senza pagamento. Viene registrato con il tuo nome.",
+    "reviewYes": "Sì, è voluto"
   },
   "BoxRelation": {
     "member": "{kind, select, coach {Vi allenate insieme} other {Membro del box}}",
@@ -20745,6 +20777,38 @@
     "staffLine": "Membro del tuo box",
     "staffOpen": "Finanze del membro",
     "waitingForPayment": "In attesa di pagamento"
+  },
+  "PackageActivation": {
+    "activate": "Attiva pacchetto",
+    "startsFirstSession": "Inizia con il primo allenamento del membro.",
+    "startsOnPayment": "Inizia oggi.",
+    "moneyQuestion": "I {amount}?",
+    "later": "Pagherà più tardi",
+    "laterHint": "Resta un debito del membro.",
+    "paidNow": "Li ho ricevuti ora",
+    "paidNowHint": "Apre «Registra pagamento» per questo pacchetto.",
+    "free": "Senza addebito",
+    "freeHint": "Un pacchetto gratuito, registrato con il tuo nome.",
+    "freeConfirm": "Dai {package} ({amount}) senza pagamento. Viene registrato con il tuo nome.",
+    "freeReason": "Perché? (facoltativo)",
+    "freeSubmit": "Sì, senza addebito",
+    "back": "Indietro"
+  },
+  "MoneyConfirm": {
+    "title_record_payment": "Hai davvero ricevuto {amount}?",
+    "title_desk_collect": "Hai davvero ricevuto {amount}?",
+    "title_shop_pickup": "Sono stati davvero pagati {amount} alla reception?",
+    "title_cash_refund": "Hai davvero restituito {amount} in contanti?",
+    "body_record_payment": "Viene registrato un pagamento ed emessa una ricevuta o una fattura (anche su myDATA, se collegato).",
+    "body_desk_collect": "Viene registrato un pagamento ed emessa una ricevuta o una fattura (anche su myDATA, se collegato).",
+    "body_shop_pickup": "Viene registrato l'incasso dell'ordine ed emessa una ricevuta.",
+    "body_cash_refund": "Viene registrato un rimborso ed emessa una ricevuta di rimborso.",
+    "yes_record_payment": "Sì, ricevuti",
+    "yes_desk_collect": "Sì, ricevuti",
+    "yes_shop_pickup": "Sì, pagati",
+    "yes_cash_refund": "Sì, restituiti",
+    "back": "No, indietro",
+    "notToday": "Non mostrare più oggi"
   },
   "FinanceCleanup": {
     "title": "Pulizia delle registrazioni finanziarie",

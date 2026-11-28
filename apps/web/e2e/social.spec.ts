@@ -201,6 +201,60 @@ test.describe("social", () => {
     await expect(page.getByRole("tab", { name: "Media" })).toHaveAttribute("aria-selected", "true");
   });
 
+  test("tapping a person's photo shows it full size with their newest media; the name still opens the profile (2026-11-28)", async ({ page }) => {
+    await stub(page);
+    const withPhoto = { ...nikos, avatar_url: "/icon.svg" };
+    await page.route("**/api/me/followers**", (route) =>
+      route.fulfill(json({ entries: [{ follow_id: "follow-1", status: "active", since, person: { ...withPhoto, my_status: "none" } }], next_cursor: null })),
+    );
+    await page.route("**/api/people/person-2", (route) => route.fulfill(json(personProfile({ ...withPhoto, followers_count: 10, follows_me: true }))));
+    await page.route("**/api/me/buddies-list**", (route) => route.fulfill(json({ entries: [], next_cursor: null })));
+    await page.goto("/me/connections?tab=followers");
+
+    // The row's link keeps its name; the photo inside it opens the viewer instead of the profile.
+    const row = page.getByRole("link", { name: /Nikos/ });
+    await expect(row).toHaveAttribute("href", "/people/person-2");
+    const photo = row.getByTestId("avatar-button");
+    await expect(photo).toBeVisible();
+    await photo.click();
+    const viewer = page.getByRole("dialog", { name: "Profile photo: Nikos" });
+    await expect(viewer).toBeVisible();
+    await expect(page).toHaveURL(/\/me\/connections/);
+    await expect(viewer.getByTestId("avatar-viewer-strip").getByRole("link")).toHaveCount(2);
+    await expect(viewer.getByRole("link", { name: "Profile" })).toHaveAttribute("href", "/people/person-2");
+    await page.screenshot({ path: "test-results/social/avatar-viewer.png" });
+    await page.keyboard.press("Escape");
+    await expect(viewer).toHaveCount(0);
+
+    // A tile of the strip opens that post on the profile's Media tab.
+    await expect(photo).toBeVisible();
+    await photo.click();
+    const tile = viewer.getByTestId("avatar-viewer-strip").getByRole("link", { name: "2 photos: Rings" });
+    await expect(tile).toBeVisible();
+    await tile.click();
+    await expect(page).toHaveURL(/\/people\/person-2\?tab=media&post=post-album/);
+    await expect(page.getByRole("dialog", { name: "Nikos's post" }).getByText("Open gym Saturday")).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(page).not.toHaveURL(/post=/);
+
+    // On the profile itself the header photo offers only «Media».
+    const header = page.getByRole("button", { name: "Open photo: Nikos" });
+    await expect(header).toBeVisible();
+    await header.click();
+    await expect(viewer).toBeVisible();
+    await expect(viewer.getByRole("link", { name: "Profile" })).toHaveCount(0);
+    await expect(viewer.getByRole("link", { name: "All media" })).toHaveAttribute("href", "/people/person-2?tab=media");
+    await viewer.getByRole("button", { name: "Close" }).click();
+    await expect(viewer).toHaveCount(0);
+
+    // Back in the list, the name still goes to the whole profile.
+    await page.goto("/me/connections?tab=followers");
+    const name = page.getByRole("link", { name: /Nikos/ }).getByText("Nikos", { exact: true });
+    await expect(name).toBeVisible();
+    await name.click();
+    await expect(page).toHaveURL(/\/people\/person-2$/);
+  });
+
   test("a person's tabs are Media · Posts plus the ones they added, with no counts and no Clubs tab", async ({ page }) => {
     await stub(page);
     await page.goto("/people/person-2");

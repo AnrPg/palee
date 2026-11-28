@@ -88,7 +88,7 @@ function SquadView({ club, clubs, squad }: { club: CommunityClub; clubs: Communi
           {t("label")} · {t("members", { count: squad.member_count })}
         </p>
         <div className="mt-2 flex items-center gap-3">
-          <PersonAvatar name={squad.coach.nickname} url={squad.coach.avatar_url} size={32} />
+          <PersonAvatar name={squad.coach.nickname} url={squad.coach.avatar_url} personId={squad.coach.id} size={32} />
           <p className="text-sm" style={{ color: "var(--text)" }}>{t("coachedBy", { coach: squad.coach.nickname ?? "?" })}</p>
         </div>
         {squad.description ? <p className="mt-2 text-sm" style={{ color: "var(--text)" }}>{squad.description}</p> : null}
@@ -281,7 +281,7 @@ function SquadMembers({ club, squad }: { club: CommunityClub; squad: PtSquad }) 
         <ul className="flex flex-col divide-y" style={{ borderColor: "var(--border)" }}>
           <li className="flex min-h-12 items-center gap-3 py-2">
             <Link href={`/people/${squad.coach.id}`} className="flex min-w-0 grow items-center gap-3">
-              <PersonAvatar name={squad.coach.nickname} url={squad.coach.avatar_url} />
+              <PersonAvatar name={squad.coach.nickname} url={squad.coach.avatar_url} personId={squad.coach.id} />
               <span className="truncate font-bold" style={{ color: "var(--text)" }}>{squad.coach.nickname ?? "?"}</span>
             </Link>
             <Badge>{t("coachLabel")}</Badge>
@@ -320,7 +320,7 @@ function MemberRow({ club, squad, row }: { club: CommunityClub; squad: PtSquad; 
     <li className="flex flex-col gap-1 py-2">
       <div className="flex min-h-12 items-center gap-3">
         <Link href={`/people/${row.person.id}`} className="flex min-w-0 grow items-center gap-3">
-          <PersonAvatar name={row.person.nickname} url={row.person.avatar_url} />
+          <PersonAvatar name={row.person.nickname} url={row.person.avatar_url} personId={row.person.id} />
           <span className="truncate font-bold" style={{ color: "var(--text)" }}>{row.person.nickname ?? "?"}</span>
         </Link>
         {row.status === "invited" ? <Badge muted>{t("statusInvited")}</Badge> : null}

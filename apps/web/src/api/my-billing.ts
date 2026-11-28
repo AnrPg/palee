@@ -75,3 +75,13 @@ export function leaveProvider(token: string, slug: string, reason: string | null
     { token, method: "POST", body: { reason } },
   );
 }
+
+// ── ADR-795: a package that changed while it waited for the first class ─────
+
+/** «Το κατάλαβα»: the member saw what changed; the package starts today. */
+export function acknowledgeMyPackageStart(token: string, slug: string, startId: string) {
+  return apiRequest<{ package_start: Record<string, unknown> }>(
+    orgPath(slug, `/me/membership/package-starts/${encodeURIComponent(startId)}/acknowledge`),
+    { token, method: "POST" },
+  );
+}

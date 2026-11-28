@@ -28,7 +28,7 @@ defmodule Palee.DomainEvents do
       (staff ticked «Ήρθε» at a club event, ADR-156)
     * `:membership_payment_recorded` - `%{organization_id, user_id, membership_id, payment_id,
       amount_cents, at}` (a package payment or receipt, not an event payment, ADR-156)
-    * `:workout_result_recorded` - `%{organization_id, workout_id, at}`: a result of a box's
+    * `:workout_result_recorded` - `%{organization_id, workout_id, user_id, at}`: a result of a box's
       workout was finished in the app or logged (ADR-253); box screens refresh their
       leaderboards
   """

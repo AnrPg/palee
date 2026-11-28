@@ -13,6 +13,7 @@ const CHECK_IN_ERROR_KEYS: Record<string, string> = {
   finance_allowance_not_included: "admCheckInNoOpenGym",
   finance_allowance_exhausted: "admCheckInAllowanceExhausted",
   finance_membership_frozen: "admCheckInFrozen",
+  finance_package_review_required: "admCheckInPackageReview",
   finance_location_not_included: "admCheckInLocationNotIncluded",
 };
 

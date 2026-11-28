@@ -32,6 +32,10 @@ defmodule Palee.Finance.Domain.TenantDataPolicy do
               # subscriptions, memberships and the package change.
               %{table: "finance_subscription_term_updates"},
               %{table: "finance_package_term_changes"},
+              # ADR-795: package starts reference subscriptions and memberships;
+              # skipped money questions reference only the person.
+              %{table: "finance_package_starts"},
+              %{table: "finance_confirmation_skips"},
               %{table: "finance_entitlement_usage_entries"},
               %{table: "finance_credit_ledger_entries"},
               %{table: "finance_payment_reversals"},

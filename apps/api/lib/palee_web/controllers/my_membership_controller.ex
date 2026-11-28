@@ -1,5 +1,8 @@
 defmodule PaleeWeb.MyMembershipController do
-  @moduledoc "ADR-220: the member's renewal choice; ADR-595: leaving the box."
+  @moduledoc """
+  ADR-220: the member's renewal choice; ADR-595: leaving the box; ADR-795:
+  «Το κατάλαβα» on a package that changed while it waited.
+  """
   use PaleeWeb, :controller
   use PaleeWeb.ControllerSpecs
 
@@ -61,6 +64,37 @@ defmodule PaleeWeb.MyMembershipController do
   def leave(conn, _params) do
     with {:ok, result} <- MembershipRenewal.member_leave(conn.assigns.tenant_context, body(conn)) do
       json(conn, result)
+    end
+  end
+
+  operation(:acknowledge_package_start,
+    summary:
+      "«Το κατάλαβα» (ADR-795): I saw what changed in my package while it waited; it starts today",
+    parameters: [
+      id: [in: :path, required: true, schema: %Schema{type: :string, format: :uuid}]
+    ],
+    responses: [
+      ok: {"Package start", "application/json", @open_object},
+      conflict:
+        {"Already started, or the package changed again", "application/json", @open_object},
+      not_found: {"No such package start", "application/json", @open_object}
+    ]
+  )
+
+  def acknowledge_package_start(conn, %{"id" => id}) do
+    user_id =
+      case Guardian.Plug.current_resource(conn) do
+        %{id: user_id} -> user_id
+        _anonymous -> nil
+      end
+
+    with {:ok, start} <-
+           Palee.Application.Finance.PackageStarts.acknowledge(
+             conn.assigns.tenant_context,
+             user_id,
+             id
+           ) do
+      json(conn, %{package_start: Palee.Application.Finance.PackageStarts.present(start)})
     end
   end
 

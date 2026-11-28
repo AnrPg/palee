@@ -52,7 +52,7 @@ function RowBody({ conversation }: { conversation: PersonConversation }) {
   const preview = last ? previewLine(last.body) : "";
   return (
     <span className="flex min-w-0 flex-1 items-center gap-3">
-      <PersonAvatar name={name} url={conversation.person.avatar_url} size={44} />
+      <PersonAvatar name={name} url={conversation.person.avatar_url} personId={conversation.person.id} size={44} />
       <span className="min-w-0 flex-1">
         <span className="flex min-w-0 items-center gap-2">
           <span

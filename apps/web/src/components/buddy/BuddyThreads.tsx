@@ -35,7 +35,7 @@ export function BuddyThreads({ onNavigate }: { onNavigate?: () => void } = {}) {
                 style={{ background: "var(--panel)", border: "1px solid var(--border)" }}
               >
                 <span className="flex min-w-0 items-center gap-3">
-                  <PersonAvatar name={name} url={link.person?.avatar_url} size={32} />
+                  <PersonAvatar name={name} url={link.person?.avatar_url} personId={link.person?.id} size={32} />
                   <span className="min-w-0">
                     <span className="block truncate text-sm font-semibold" style={{ color: "var(--text)" }}>{name}</span>
                     <span className="block truncate text-xs" style={{ color: "var(--dim)" }}>

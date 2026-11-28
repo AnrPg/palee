@@ -323,7 +323,8 @@
     "slotOwnWod": "Δικό του WOD (της ημέρας είναι το «{title}»).",
     "slotFollowDay": "Επαναφορά στο WOD ημέρας",
     "classCoachChip": "Coach: {coach}",
-    "wodPickerChoose": "Διάλεξε WOD"
+    "wodPickerChoose": "Διάλεξε WOD",
+    "classCancelReaches": "{count, plural, one {Θα ειδοποιηθεί # άτομο με κράτηση ή σε αναμονή και η θέση του ακυρώνεται.} other {Θα ειδοποιηθούν # άτομα με κράτηση ή σε αναμονή και οι θέσεις τους ακυρώνονται.}}"
   },
   "Ui": {
     "exercise1091b7f": "Άσκηση",
@@ -3073,7 +3074,6 @@
     "pkgFieldTermsConversionPackageIdHint": "Η συνδρομή που προτείνουμε στο μέλος όταν τελειώσει το δοκιμαστικό.",
     "pkgFieldTermsMinimumCommitmentMonths": "Ελάχιστη δέσμευση",
     "pkgFieldTermsJoiningFeeCents": "Τέλος εγγραφής",
-    "pkgFieldTermsValidityStarts": "Έναρξη ισχύος",
     "pkgFieldTermsExpiryReminderDays": "Υπενθύμιση λήξης",
     "pkgFieldTermsCompatiblePackageIds": "Συμβατά πακέτα συνδρομής",
     "pkgFieldTermsBeneficiaries": "Άτομα που περιλαμβάνονται",
@@ -3362,7 +3362,6 @@
     "pkgSummaryEvents": "Εκδηλώσεις και workshops",
     "pkgSummaryCommitment": "{count, plural, one {Ελάχιστη διάρκεια: # μήνας} other {Ελάχιστη διάρκεια: # μήνες}}",
     "pkgSummaryJoiningFee": "Εφάπαξ κόστος εγγραφής {amount}",
-    "pkgSummaryValidityFromFirstUse": "Η ισχύς ξεκινά από την πρώτη σου επίσκεψη",
     "pkgLocationsAll": "Όλα τα παραρτήματα",
     "pkgLocationsSome": "Επιλεγμένα παραρτήματα",
     "pkgNoLocationsYet": "Ισχύει σε όλα τα παραρτήματα. Πρόσθεσε παραρτήματα στις ρυθμίσεις για να το περιορίσεις.",
@@ -3385,8 +3384,6 @@
     "pkgFieldBookingCancellationCutoffHoursSuffix": "{count, plural, one {ώρα πριν το τμήμα} other {ώρες πριν το τμήμα}}",
     "pkgFieldPerksFreezeDaysPerYearSuffix": "{count, plural, one {ημέρα τον χρόνο} other {ημέρες τον χρόνο}}",
     "pkgFieldPerksMemberDiscountPercentSuffix": "%",
-    "pkgFieldTermsValidityStarts_purchase": "Με την αγορά",
-    "pkgFieldTermsValidityStarts_first_use": "Με την πρώτη επίσκεψη",
     "pkgFieldBookingWaitlistPriority_normal": "Κανονική",
     "pkgFieldBookingWaitlistPriority_high": "Υψηλή",
     "pkgFieldPerksMemberDiscountScope_products": "Προϊόντα",
@@ -3398,7 +3395,6 @@
     "pkgModule_eventsHint": "Workshops και ειδικές εκδηλώσεις που κλείνονται όπως τα τμήματα.",
     "pkgFieldTermsMinimumCommitmentMonthsHint": "Οι πελάτες δεν μπορούν να ακυρώσουν πριν από αυτούς τους μήνες, εκτός αν το παρακάμψεις.",
     "pkgFieldTermsJoiningFeeCentsHint": "Προστίθεται μία φορά στο πρώτο τιμολόγιο του μέλους για αυτό το πακέτο συνδρομής.",
-    "pkgFieldTermsValidityStartsHint": "Με την πρώτη επίσκεψη, η ισχύς μετράει από τη στιγμή που το μέλος χρησιμοποιεί πρώτη φορά το πακέτο συνδρομής.",
     "pkgFieldTermsExpiryReminderDaysHint": "Ειδοποιούμε το μέλος τόσες ημέρες πριν τη λήξη. Με 0 απενεργοποιείται.",
     "pkgFieldGroupClassesRolloverMaxHint": "Τα αχρησιμοποίητα τμήματα μεταφέρονται στην επόμενη περίοδο, έως αυτόν τον αριθμό.",
     "pkgFieldGroupClassesTimeWindowsHint": "Για πακέτα συνδρομής εκτός αιχμής: τα μέλη του box κλείνουν τμήματα μόνο μέσα σε αυτές τις ώρες.",
@@ -4970,7 +4966,24 @@
     "selectedAthleteCount": "{count, plural, one {Επιλέχθηκε # αθλητής} other {Επιλέχθηκαν # αθλητές}}",
     "roundCount": "{count, plural, one {# γύρος} other {# γύροι}}",
     "optionCount": "{count, plural, one {# επιλογή} other {# επιλογές}}",
-    "userCount": "{count, plural, one {# χρήστης} other {# χρήστες}}"
+    "userCount": "{count, plural, one {# χρήστης} other {# χρήστες}}",
+    "pkgStartWaitingMember": "Ξεκινά με την πρώτη σου προπόνηση",
+    "pkgStartWaitingStaff": "Ξεκινά με την πρώτη προπόνηση",
+    "pkgStartWaitingHint": "Δόθηκε στις {date}. Η περίοδος και η επόμενη πληρωμή μετράνε από το πρώτο ολοκληρωμένο τμήμα ή WOD.",
+    "pkgStartReview_important": "Το {package} κοστίζει περισσότερο τώρα",
+    "pkgStartReview_serious": "Το {package} δίνει λιγότερα τώρα",
+    "pkgStartReview_warning": "Το {package} άλλαξε",
+    "pkgStartReviewHintMember": "Άλλαξε όσο περίμενε την πρώτη σου προπόνηση. Δες τι άλλαξε: με «Το κατάλαβα» ξεκινά σήμερα. Ως τότε δεν γίνονται νέες κρατήσεις.",
+    "pkgStartReviewHintStaff": "Περιμένει να δει το μέλος τις αλλαγές και να πατήσει «Το κατάλαβα». Ως τότε δεν γίνονται νέες κρατήσεις.",
+    "pkgStartName": "Όνομα",
+    "pkgStartFirstPeriodPrice": "Η πρώτη περίοδος μένει στην τιμή της αγοράς. Η νέα τιμή ισχύει από την επόμενη πληρωμή.",
+    "pkgStartAcknowledge": "Το κατάλαβα",
+    "mbErrPackageReview": "Το πακέτο συνδρομής σου άλλαξε όσο περίμενε. Δες τι άλλαξε στο Εγώ › Πληρωμές και πάτησε «Το κατάλαβα» για να κάνεις κράτηση.",
+    "apiErrorPackageChangedAgain": "Το πακέτο συνδρομής άλλαξε ξανά μόλις τώρα. Δες τις νέες αλλαγές και πάτησε ξανά «Το κατάλαβα».",
+    "apiErrorPackageStartNotInReview": "Αυτό το πακέτο συνδρομής έχει ήδη ξεκινήσει.",
+    "admCheckInPackageReview": "Το πακέτο συνδρομής αυτού του μέλους άλλαξε όσο περίμενε. Πρέπει πρώτα να δει τις αλλαγές και να πατήσει «Το κατάλαβα».",
+    "exportPersonalData": "{count, plural, one {Το αρχείο έχει προσωπικά δεδομένα # ατόμου.} other {Το αρχείο έχει προσωπικά δεδομένα # ατόμων.}} Κράτα το ασφαλές και δώσ' το μόνο σε όσους πρέπει.",
+    "roleGrantNotice": "Με νέο ρόλο staff θα βλέπει ό,τι επιτρέπει ο ρόλος (Ρυθμίσεις › Πρόσβαση ρόλων), π.χ. οικονομικά, υγεία και τραυματισμούς, στοιχεία επικοινωνίας μελών. Αποθήκευσε μόνο αν το εννοείς."
   },
   "PrSharing": {
     "gymLabel": "Πού πέτυχες αυτό το PR;",
@@ -6757,7 +6770,15 @@
     "suggestionsOff": "Κρυμμένο από την Αρχική σου. Στο «+ Βρες» οι προτάσεις μένουν.",
     "boxInvitesToggle": "Προσκλήσεις από box που ακολουθώ",
     "boxInvitesOn": "Τα box που ακολουθείς βλέπουν ότι τα ακολουθείς και μπορούν να σε προσκαλέσουν να γίνεις μέλος.",
-    "boxInvitesOff": "Τα box που ακολουθείς δεν σε βλέπουν στη λίστα τους και δεν σου στέλνουν προσκλήσεις."
+    "boxInvitesOff": "Τα box που ακολουθείς δεν σε βλέπουν στη λίστα τους και δεν σου στέλνουν προσκλήσεις.",
+    "avatarView": "Άνοιγμα φωτογραφίας: {name}",
+    "avatarViewerTitle": "Φωτογραφία προφίλ: {name}",
+    "avatarViewerClose": "Κλείσιμο",
+    "avatarViewerProfile": "Προφίλ",
+    "avatarViewerMedia": "Πολυμέσα",
+    "avatarViewerAllMedia": "Όλα τα πολυμέσα",
+    "avatarViewerLocked": "Ιδιωτικός λογαριασμός. Ακολούθησε για να δεις τα πολυμέσα.",
+    "avatarViewerChange": "Αλλαγή φωτογραφίας"
   },
   "BoxPage": {
     "allWeek": "Όλη η εβδομάδα",
@@ -12919,7 +12940,9 @@
     "rowButton": "+ Πληρωμή",
     "rowButtonLabel": "Καταγραφή πληρωμής από {name}",
     "panelButton": "+ Καταγραφή πληρωμής",
-    "payInFull": "Εξόφληση όλου · {amount}"
+    "payInFull": "Εξόφληση όλου · {amount}",
+    "confirmPackageWayOut": "Αν δεν πήρες χρήματα, δεν χρειάζεται πληρωμή: το μέλος έχει ήδη το {name} και η οφειλή μένει ως «Θα πληρώσει αργότερα».",
+    "confirmPackageWayOutAction": "Κλείσιμο χωρίς πληρωμή"
   },
   "OnlinePayments": {
     "sectionTitle": "Πληρωμές",
@@ -13036,7 +13059,12 @@
     "doneRetryFailed": "Απορρίφθηκε ξανά",
     "doneCardLink": "Στάλθηκε σύνδεσμος αλλαγής κάρτας",
     "doneDismiss": "Πληρώθηκε στο ταμείο",
-    "doneBadge": "Έγινε"
+    "doneBadge": "Έγινε",
+    "packageStarts": "Πότε ξεκινά ένα πακέτο συνδρομής",
+    "packageStartsFirstSession": "Με την πρώτη προπόνηση",
+    "packageStartsPayment": "Με την πληρωμή",
+    "packageStartsFirstSessionHint": "Η περίοδος και η επόμενη πληρωμή μετράνε από το πρώτο τμήμα που ολοκληρώνει το μέλος («Ήρθε», ή το τμήμα τελείωσε χωρίς «Δεν ήρθε») ή το πρώτο WOD που σημειώνει ολοκληρωμένο. Αν το πακέτο άλλαξε στο μεταξύ, το μέλος βλέπει τι άλλαξε πριν ξεκινήσει.",
+    "packageStartsPaymentHint": "Η περίοδος και η επόμενη πληρωμή μετράνε από την αγορά online ή την πληρωμή στην υποδοχή."
   },
   "FiscalIdentity": {
     "backToSettings": "Ρυθμίσεις",
@@ -15734,7 +15762,8 @@
     "freeHeldBody": "Το box θα το ενεργοποιήσει σύντομα και θα σε ειδοποιήσουμε. Μέχρι τότε μπορείς να κλείσεις όσα τμήματα επιτρέπει το box.",
     "freePending": "Περιμένει ενεργοποίηση",
     "freePendingBody": "Το box θα το ενεργοποιήσει. Το κρατάμε έως {date}.",
-    "freeActivateHint": "Δωρεάν πακέτο: ξεκινά σήμερα, χωρίς είσπραξη και χωρίς οφειλή."
+    "freeActivateHint": "Δωρεάν πακέτο: ξεκινά σήμερα, χωρίς είσπραξη και χωρίς οφειλή.",
+    "confirmWayOut": "Αν δεν πήρες χρήματα, ενεργοποίησέ το χωρίς πληρωμή: ξεκινά και η οφειλή μένει."
   },
   "Sms": {
     "connectionsTitle": "Συνδέσεις",
@@ -20465,7 +20494,10 @@
     "submit_package": "Δώσε το πακέτο",
     "submit_debt_forgiven": "Χάρισε την οφειλή",
     "givenBySystem": "Από το Palee, {when}",
-    "reasonRollout": "Οι κρατήσεις θέλουν πλέον πακέτο: 14 μέρες για όσους ήδη προπονούνταν"
+    "reasonRollout": "Οι κρατήσεις θέλουν πλέον πακέτο: 14 μέρες για όσους ήδη προπονούνταν",
+    "reviewDebt": "Χαρίζεις {amount} στο μέλος {name}. Γράφεται με το όνομά σου και δεν ζητείται πια.",
+    "reviewPackage": "Δίνεις το {package} στο μέλος {name} χωρίς πληρωμή. Γράφεται με το όνομά σου.",
+    "reviewYes": "Ναι, το εννοώ"
   },
   "BoxRelation": {
     "member": "{kind, select, coach {Προπονείσαι μαζί} other {Μέλος box}}",
@@ -20745,6 +20777,38 @@
     "staffLine": "Μέλος του box σου",
     "staffOpen": "Οικονομικά μέλους",
     "waitingForPayment": "Περιμένει πληρωμή"
+  },
+  "PackageActivation": {
+    "activate": "Ενεργοποίηση πακέτου",
+    "startsFirstSession": "Ξεκινά με την πρώτη προπόνηση του μέλους.",
+    "startsOnPayment": "Ξεκινά σήμερα.",
+    "moneyQuestion": "Τα {amount};",
+    "later": "Θα πληρώσει αργότερα",
+    "laterHint": "Μένει οφειλή για το μέλος.",
+    "paidNow": "Τα πήρα τώρα",
+    "paidNowHint": "Ανοίγει η «Καταγραφή πληρωμής» για αυτό το πακέτο.",
+    "free": "Χωρίς χρέωση",
+    "freeHint": "Δωρεάν πακέτο, γράφεται με το όνομά σου.",
+    "freeConfirm": "Δίνεις το {package} ({amount}) χωρίς πληρωμή. Γράφεται με το όνομά σου.",
+    "freeReason": "Γιατί; (προαιρετικό)",
+    "freeSubmit": "Ναι, χωρίς χρέωση",
+    "back": "Πίσω"
+  },
+  "MoneyConfirm": {
+    "title_record_payment": "Έλαβες πραγματικά {amount};",
+    "title_desk_collect": "Έλαβες πραγματικά {amount};",
+    "title_shop_pickup": "Πληρώθηκαν πραγματικά {amount} στην υποδοχή;",
+    "title_cash_refund": "Έδωσες πραγματικά πίσω {amount} σε μετρητά;",
+    "body_record_payment": "Γράφεται πληρωμή και βγαίνει απόδειξη ή τιμολόγιο (και στο myDATA, αν είναι συνδεδεμένο).",
+    "body_desk_collect": "Γράφεται πληρωμή και βγαίνει απόδειξη ή τιμολόγιο (και στο myDATA, αν είναι συνδεδεμένο).",
+    "body_shop_pickup": "Γράφεται είσπραξη για την παραγγελία και βγαίνει απόδειξη.",
+    "body_cash_refund": "Γράφεται επιστροφή χρημάτων και βγαίνει απόδειξη επιστροφής.",
+    "yes_record_payment": "Ναι, τα πήρα",
+    "yes_desk_collect": "Ναι, τα πήρα",
+    "yes_shop_pickup": "Ναι, πληρώθηκαν",
+    "yes_cash_refund": "Ναι, τα έδωσα",
+    "back": "Όχι, πίσω",
+    "notToday": "Να μην εμφανιστεί ξανά σήμερα"
   },
   "FinanceCleanup": {
     "title": "Εκκαθάριση οικονομικών εγγραφών",

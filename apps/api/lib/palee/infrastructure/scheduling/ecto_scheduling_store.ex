@@ -1165,6 +1165,44 @@ defmodule Palee.Infrastructure.Scheduling.EctoSchedulingStore do
     |> Enum.map(&as_utc/1)
   end
 
+  # ADR-795: the classes a member completed from `from` on: the class is over
+  # and not cancelled, the booking is still approved and no attendance says
+  # «Δεν ήρθε» (or a late cancel). Oldest first.
+  @impl true
+  def completed_member_classes(
+        %{organization_id: organization_id},
+        user_id,
+        %DateTime{} = from,
+        %DateTime{} = now
+      ) do
+    from_at = DateTime.truncate(from, :second)
+    now_at = DateTime.truncate(now, :second)
+
+    Booking
+    |> join(:inner, [booking], slot in ScheduledClass, on: slot.id == booking.scheduled_class_id)
+    |> join(:left, [booking, slot], record in ClassAttendanceRecord,
+      on: record.scheduled_class_id == slot.id and record.user_id == booking.user_id
+    )
+    |> where(
+      [booking, slot, record],
+      booking.organization_id == ^organization_id and booking.user_id == ^user_id and
+        booking.status == :approved and is_nil(booking.guest_name) and
+        booking.kind == "member" and is_nil(slot.cancelled_at) and
+        slot.scheduled_at >= ^from_at and
+        fragment(
+          "? + make_interval(mins => ?) <= ?",
+          slot.scheduled_at,
+          slot.duration_minutes,
+          ^now_at
+        ) and
+        (is_nil(record.id) or record.status == "attended")
+    )
+    |> order_by([_booking, slot], asc: slot.scheduled_at)
+    |> select([_booking, slot], %{scheduled_class_id: slot.id, scheduled_at: slot.scheduled_at})
+    |> Repo.all()
+    |> Enum.map(&%{&1 | scheduled_at: as_utc(&1.scheduled_at)})
+  end
+
   @impl true
   def coach_classes(%{organization_id: organization_id}, %DateTime{} = from, %DateTime{} = to) do
     from_at = DateTime.truncate(from, :second)

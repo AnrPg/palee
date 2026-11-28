@@ -167,6 +167,18 @@ export function MemberRolesEditor({
 
       {roles.length === 0 ? <ErrorNotice variant="field">{t("chooseOneRole")}</ErrorNotice> : null}
 
+      {/* ADR-795: a new staff role opens members' personal data; said before «Αποθήκευση». */}
+      {!self && roles.some((role) => STAFF.includes(role) && !current.includes(role)) ? (
+        <p
+          className="rounded-2xl px-4 py-3 text-sm font-semibold"
+          role="note"
+          style={{ background: "color-mix(in srgb, var(--warning) 12%, var(--panel))", border: "1px solid var(--warning)", color: "var(--text)" }}
+          data-testid="role-grant-notice"
+        >
+          {i18n("roleGrantNotice")}
+        </p>
+      ) : null}
+
       {showHeadCoach ? (
         <label className="flex items-start gap-3 rounded-2xl p-4" style={{ background: "var(--panel-muted)", border: "1px solid var(--border)" }}>
           <input

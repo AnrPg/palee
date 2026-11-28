@@ -81,7 +81,7 @@ export function SponsorsStep({ token, request, limits }: { token: string; reques
         ))}
         {viaLink.map((sponsor) => (
           <li key={sponsor.id} className="flex min-h-12 min-w-0 items-center gap-3 py-1">
-            <PersonAvatar name={sponsor.person.nickname} url={sponsor.person.avatar_url} size={40} />
+            <PersonAvatar name={sponsor.person.nickname} url={sponsor.person.avatar_url} personId={sponsor.person.id} size={40} />
             <span className="min-w-0 flex-1">
               <span className="block truncate text-sm font-semibold" style={{ color: "var(--text)" }}>{sponsor.person.nickname ?? t("someone")}</span>
               <span className="block text-xs" style={{ color: "var(--success)" }}>{t("sponsors.viaLink")}</span>
@@ -155,7 +155,7 @@ function CandidateRow({
   return (
     <li className="flex min-w-0 flex-col gap-1 py-1" data-testid={`sponsor-${candidate.person.id}`}>
       <div className="flex min-h-12 min-w-0 items-center gap-3">
-        <PersonAvatar name={candidate.person.nickname} url={candidate.person.avatar_url} size={40} />
+        <PersonAvatar name={candidate.person.nickname} url={candidate.person.avatar_url} personId={candidate.person.id} size={40} />
         <span className="min-w-0 flex-1">
           <span className="block truncate text-sm font-semibold" style={{ color: "var(--text)" }}>{name}</span>
           <span className="flex items-center gap-1 text-xs" style={{ color }}>
