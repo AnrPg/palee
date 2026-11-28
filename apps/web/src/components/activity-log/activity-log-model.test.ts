@@ -6,6 +6,7 @@ import {
   actorsOf,
   canReadActivityLog,
   changesOf,
+  exportFileName,
   dayKey,
   groupByDay,
   mainRole,
@@ -58,6 +59,7 @@ describe("activity log model (ADR-760)", () => {
     expect(periodOf(gone)).toBeNull();
     expect(personName(entry({ person: { id: "p", name: "Maria" } }), "Deleted member")).toBe("Maria");
     expect(personName(entry({ person: null }), "Deleted member")).toBeNull();
+    expect(personName(entry({ person: null, redacted: true }), "Deleted member")).toBe("Deleted member");
   });
 
   it("reads before → after and the period from the details", () => {
@@ -88,5 +90,9 @@ describe("activity log model (ADR-760)", () => {
     expect(activityLogQuery({ areas: ["money", "packages"], person_id: "p1", actor_id: "s1", from: "2026-11-01", to: "2026-11-23", q: "  ankle " }, "c1")).toBe(
       "?areas=money%2Cpackages&person_id=p1&actor_id=s1&from=2026-11-01&to=2026-11-23&q=ankle&cursor=c1",
     );
+  });
+
+  it("names the CSV after the day it was downloaded", () => {
+    expect(exportFileName(new Date("2026-11-28T09:00:00Z"))).toBe("activity-log-2026-11-28.csv");
   });
 });

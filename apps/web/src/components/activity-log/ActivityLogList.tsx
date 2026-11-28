@@ -34,6 +34,7 @@ import { FRESHNESS } from "@/lib/query-policy";
 import {
   actorsOf,
   changesOf,
+  exportFileName,
   groupByDay,
   mainRole,
   periodOf,
@@ -155,7 +156,7 @@ export function ActivityLogList({
     setExportError(null);
     try {
       const blob = await exportActivityLog(token, filters);
-      saveFile(blob, `activity-log-${new Date().toISOString().slice(0, 10)}.csv`);
+      saveFile(blob, exportFileName(new Date()));
     } catch (error) {
       setExportError(error);
     } finally {

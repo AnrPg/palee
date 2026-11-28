@@ -93,8 +93,10 @@ export function personName(
   entry: Pick<MemberActivityEntry, "person" | "redacted">,
   deletedLabel: string,
 ): string | null {
+  // 9A: a redacted row's person was deleted, even when the API no longer names who it was.
+  if (entry.redacted) return deletedLabel;
   if (!entry.person) return null;
-  if (entry.redacted || !entry.person.name) return deletedLabel;
+  if (!entry.person.name) return deletedLabel;
   return entry.person.name;
 }
 
@@ -125,4 +127,9 @@ export function actorsOf(entries: ActivityLogEntry[]): Array<{ id: string; name:
 /** The request body fields of the «Να το δει και το μέλος» choice (6A): always sent, unticked by default. */
 export function sharedField(shared: boolean) {
   return { reason_shared: shared };
+}
+
+/** The CSV's file name: the day it was downloaded (10A). */
+export function exportFileName(at: Date) {
+  return `activity-log-${at.toISOString().slice(0, 10)}.csv`;
 }
