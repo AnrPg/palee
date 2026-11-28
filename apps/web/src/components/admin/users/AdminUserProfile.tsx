@@ -76,6 +76,8 @@ import {
   visibleProfileTabs,
   type ProfileTab,
 } from "@/components/admin/users/member-profile-tabs";
+import { canReadActivityLog } from "@/components/activity-log/activity-log-model";
+import { ActivityLogList } from "@/components/activity-log/ActivityLogList";
 import { useSelectedMembershipRole } from "@/lib/membership-role";
 import { can, membershipRoles } from "@/lib/role-navigation";
 import { useUiTranslations } from "@/i18n/ui";
@@ -139,6 +141,7 @@ const PROFILE_TAB_KEYS: Record<ProfileTab, string> = {
   body: "mpTabBody",
   coaching: "mpTabCoaching",
   finance: "mpTabFinance",
+  history: "mpTabHistory",
   account: "mpTabAccount",
 };
 
@@ -701,6 +704,8 @@ export function AdminUserProfile({ userId }: { userId: string }) {
   if (isClient && actorCoaches && can(actor, "view_client_training")) tabSections.add("training_depth");
   // ADR-395: only the client's coach (the API checks the coaching relationship).
   if (showsClientFitnessDisplay({ isClient, actorCoaches, canViewClientTraining: can(actor, "view_client_training") })) tabSections.add("fitness_display");
+  // ADR-760 (1A): staff who read any area of the log see what was done about the person.
+  if (canReadActivityLog(actor)) tabSections.add("activity_log");
   const tabs = visibleProfileTabs(tabSections);
   const tab = activeProfileTab(tabs, searchParams.get("tab"), hashSection);
   const inTab = (section: string) => SECTION_TAB[section] === tab && tabSections.has(section);
@@ -925,6 +930,15 @@ export function AdminUserProfile({ userId }: { userId: string }) {
 
 
           {inTab("messages") ? <Panel id="messages" title={i18n("chat2ced57f")} href="/messages"><p>{i18n("conversationSummary", { threads: messages.data?.summary.thread_count ?? 0, unread: messages.data?.summary.unread_thread_count ?? 0 })}</p><div className="mt-3 grid gap-3">{messages.data?.threads.length ? messages.data.threads.slice(0, 6).map((thread) => <GenericRecordCard key={thread.id} title={<SemanticLabel value={thread.context_type} />} meta={`${i18n("messageCount", { count: thread.message_count })} · ${date(thread.latest_message?.inserted_at)}`} detail={<p>{thread.latest_message?.body ?? i18n("emptyThreadfee51b1")}</p>} href="/messages" />) : <Empty>{i18n("noConversationsRecordedd525265")}</Empty>}</div></Panel> : null}
+
+          {inTab("activity_log") ? (
+            <Panel id="activity_log" title={i18n("mpTabHistory")}>
+              <ActivityLogList
+                personId={userId}
+                fullLogHref={adminHref(`/admin/activity-log?person=${encodeURIComponent(userId)}&name=${encodeURIComponent(profile.identity.nickname)}`, organizationSlug)}
+              />
+            </Panel>
+          ) : null}
 
           {inTab("admin_actions") ? (
             <Panel id="admin_actions" title={i18n("adminActionsfa81c61")}>

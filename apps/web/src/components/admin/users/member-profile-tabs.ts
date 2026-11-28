@@ -5,7 +5,7 @@ import type { CoachNote, CoachNoteSubjectKind } from "@/api/roles";
  * ADR-158 adds «Σώμα» for a client's coach (snapshots the member shared).
  * The active tab is in the URL (`?tab=`), so a link opens the right one.
  */
-export const PROFILE_TABS = ["overview", "training", "wellbeing", "body", "coaching", "finance", "account"] as const;
+export const PROFILE_TABS = ["overview", "training", "wellbeing", "body", "coaching", "finance", "history", "account"] as const;
 export type ProfileTab = (typeof PROFILE_TABS)[number];
 
 /** Which tab holds each section (the `#section` anchors keep working). */
@@ -32,6 +32,8 @@ export const SECTION_TAB: Record<string, ProfileTab> = {
   coach_notes: "coaching",
   messages: "coaching",
   finance: "finance",
+  // ADR-760 (1A): the box's «Αρχείο ενεργειών» about this person.
+  activity_log: "history",
   admin_actions: "account",
 };
 
