@@ -15,13 +15,32 @@ const finance = vi.hoisted(() => ({
         id: "inv-1",
         record_type: "invoice" as const,
         code: "INV-0007",
-        label: "Invoice INV-0007",
         amount_cents: 4500,
         currency: "EUR",
-        status: "open",
+        status: "issued",
         issued_on: "2026-11-01",
+        occurred_on: "2026-11-01",
+        customer_name: "Maria P.",
+        package_name: "Monthly",
       },
     ],
+    next_cursor: null,
+  })),
+  fetchFinanceCleanupPackages: vi.fn(async () => ({ packages: [] })),
+  fetchFinanceCleanupRecord: vi.fn(async () => ({
+    record: {
+      id: "inv-1",
+      record_type: "invoice" as const,
+      code: "INV-0007",
+      amount_cents: 4500,
+      currency: "EUR",
+      status: "issued",
+      occurred_on: "2026-11-01",
+      user_id: "user-1",
+      customer_name: "Maria P.",
+      lines: [],
+      linked: [],
+    },
   })),
   purgeFinanceRecord: vi.fn(async () => ({ record: { id: "inv-1" } })),
 }));
@@ -34,6 +53,11 @@ vi.mock("@/api/finance-accounting", async (original) => ({
   listAccountingExports: vi.fn(async () => ({ accounting_exports: [] })),
 }));
 vi.mock("@/components/admin/collect/TipsSummaryCard", () => ({ TipsSummaryCard: () => null }));
+vi.mock("@/lib/organization-slug", async (original) => ({
+  ...(await original<object>()),
+  useOrganizationSlug: () => "box",
+  useOrganizationTimeZone: () => "Europe/Athens",
+}));
 vi.mock("@/components/session-provider", () => ({
   useSession: () => ({ status: "authenticated", tokens: { access_token: "token" } }),
 }));
@@ -60,29 +84,30 @@ describe("AccountingTab finance cleanup", () => {
   it("purges a record after the password is re-entered", async () => {
     wrap(<AccountingTab />);
 
-    expect(screen.getByText(en.Ui.featureFinanceCleanupTitle)).toBeInTheDocument();
+    expect(screen.getByText(en.FinanceCleanup.title)).toBeInTheDocument();
     expect(finance.fetchFinanceCleanupRecords).not.toHaveBeenCalled();
 
-    fireEvent.click(screen.getByRole("button", { name: en.Ui.featureFinanceCleanupOpen }));
-    fireEvent.click(await screen.findByRole("button", { name: /INV-0007/ }));
+    fireEvent.click(screen.getByRole("button", { name: en.FinanceCleanup.open }));
+    fireEvent.click(await screen.findByRole("button", { name: /Maria P\./ }));
+    fireEvent.click(await screen.findByRole("button", { name: en.FinanceCleanup.startCleanup }));
 
-    const submit = screen.getByRole("button", { name: en.Ui.featureFinanceCleanupSubmit });
+    const submit = screen.getByRole("button", { name: en.FinanceCleanup.submit });
     expect(submit).toBeDisabled();
     expect(screen.getByRole("link", { name: en.authRecovery.forgotPasswordLink })).toHaveAttribute(
       "href",
       "/forgot-password",
     );
 
-    fireEvent.change(screen.getByLabelText(en.Ui.featureFinanceCleanupPassword, { exact: false }), { target: { value: "secret" } });
+    fireEvent.change(screen.getByLabelText(en.FinanceCleanup.password, { exact: false }), { target: { value: "secret" } });
     fireEvent.click(submit);
 
     await waitFor(() =>
       expect(finance.purgeFinanceRecord).toHaveBeenCalledWith("token", "inv-1", {
         record_type: "invoice",
         password: "secret",
-        reason: en.Ui.featureFinanceCleanupDefaultReason,
+        reason: en.FinanceCleanup.defaultReason,
       }),
     );
-    expect(await screen.findByText(en.Ui.featureFinanceCleanupSuccess)).toBeInTheDocument();
+    expect(await screen.findByText(en.FinanceCleanup.success)).toBeInTheDocument();
   });
 });

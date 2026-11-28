@@ -29,8 +29,21 @@ export function placementReasonKey(code: string | null | undefined): string | nu
 /**
  * A move returns the old booking's visit before the new booking takes one,
  * so a member out of visits can still be moved: only that reason gives way.
+ * A full class (ADR-790) takes a new member on its waitlist, never a move.
  */
-export function placementBlocked(option: Pick<ClassPlacementClass, "blocked_reason">, moving: boolean): boolean {
+export function placementBlocked(
+  option: Pick<ClassPlacementClass, "blocked_reason"> & { waitlist?: boolean },
+  moving: boolean,
+): boolean {
+  if (option.waitlist && moving) return true;
   if (!option.blocked_reason) return false;
-  return !(moving && option.blocked_reason === "finance_allowance_exhausted");
+  return !(moving && !option.waitlist && option.blocked_reason === "finance_allowance_exhausted");
+}
+
+/** The error code that explains a blocked class: a full class in a move says «γεμάτο». */
+export function placementBlockedCode(
+  option: Pick<ClassPlacementClass, "blocked_reason"> & { waitlist?: boolean },
+  moving: boolean,
+): string | null {
+  return option.waitlist && moving ? "slot_full" : (option.blocked_reason ?? null);
 }

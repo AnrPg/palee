@@ -66,8 +66,7 @@ export function AvatarButton({
   // Known only once mounted, so the server and the first render agree.
   const [standalone, setStandalone] = useState(false);
   useEffect(() => {
-    // What already takes the press around a photo (a link, a button, a whole-row control).
-    setStandalone(!ref.current?.parentElement?.closest("a[href], button, [role='button'], [role='link'], label, summary"));
+    setStandalone(!ref.current?.parentElement?.closest(INTERACTIVE_ANCESTOR));
   }, []);
   const openViewer = (event: MouseEvent | KeyboardEvent) => {
     // The row around the photo may be a link to the profile: this press is the photo's.
@@ -101,6 +100,9 @@ export function AvatarButton({
     </>
   );
 }
+
+/** What already takes the press around a photo (a link, a button, a whole-row control). */
+const INTERACTIVE_ANCESTOR = ["a[href]", "button", "[role=button]", "[role=link]", "label", "summary"].join(",");
 
 /**
  * The photo full size on a dark screen (mockup C): name on top, the four

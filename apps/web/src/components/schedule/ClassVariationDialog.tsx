@@ -5,8 +5,10 @@ import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 
 import { fetchAdminUsers, programWorkoutForUsers, type ProgramForUsersResult } from "@/api/admin-users";
-import type { ScheduleSlot } from "@/api/schedule";
-import { listAdminWorkouts, type WorkoutRecord } from "@/api/workouts";
+import { classWorkouts, type ScheduleSlot } from "@/api/schedule";
+import { duplicateWorkout, listAdminWorkouts, type WorkoutRecord } from "@/api/workouts";
+import { ContextualWorkoutCreator } from "@/components/workouts/creation/ContextualWorkoutCreator";
+import { useWorkoutCreationStore } from "@/stores/workout-creation";
 import { Dialog, DialogButton } from "@/components/ui/Dialog";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { Select } from "@/components/ui/Select";
@@ -18,6 +20,7 @@ import {
   GROUP_PROGRAMMING_LIMIT,
   classDay,
   groupOutcomeRows,
+  memberClassWorkoutId,
   toggleSelection,
   variationCandidates,
   variationSections,
@@ -34,16 +37,26 @@ import {
  * two sections that update as you type: those who booked («Έκλεισαν θέση»)
  * first, then «Άλλα μέλη». Someone who has not booked is not booked by it:
  * the WOD is in their programme that day and their notice opens the class.
+ *
+ * ADR-785 (ANR picks 1A, 3A, 2026-11-28): the roster's «Παραλλαγή μόνο για …»
+ * opens it for one person (`initialPeople`). «Ξεκίνα από» defaults to the WOD
+ * each person does in the class (their pick, else «Τώρα»); the class's other
+ * WODs and the library follow. For one person «Αλλαγές πριν την αποθήκευση»
+ * opens the copy in the editor and saves it as their variant on publish. The
+ * optional «Γιατί» is shown to the member. No online programming is needed.
  */
 export function ClassVariationDialog({
   slot,
   accessToken,
   onClose,
   onProgrammed,
+  initialPeople = [],
 }: {
   slot: ScheduleSlot;
   accessToken: string;
   onClose: () => void;
+  /** ADR-785: start with these people picked (the roster's one-person entry). */
+  initialPeople?: readonly VariationPerson[];
   /** Called after at least one person got their version. */
   onProgrammed?: () => void;
 }) {
@@ -53,7 +66,7 @@ export function ClassVariationDialog({
     [slot.bookings, slot.member_versions],
   );
   const tWods = useTranslations("ClassWods");
-  const [selected, setSelected] = useState<string[]>([]);
+  const [selected, setSelected] = useState<string[]>(() => initialPeople.map((person) => person.userId));
   const [search, setSearch] = useState("");
   const typed = useDebounced(search.trim(), 250);
   const directory = useQuery({
@@ -67,7 +80,14 @@ export function ClassVariationDialog({
     [candidates, directory.data, typed, search],
   );
   // Names of everyone picked, so a pick keeps its name after the search changes.
-  const [known, setKnown] = useState<ReadonlyMap<string, string>>(new Map());
+  const [known, setKnown] = useState<ReadonlyMap<string, string>>(
+    () => new Map(initialPeople.map((person) => [person.userId, person.nickname] as const)),
+  );
+  const single = initialPeople.length === 1 ? initialPeople[0] : null;
+  const classWods = classWorkouts(slot);
+  const [instructions, setInstructions] = useState("");
+  const [creating, setCreating] = useState(false);
+  const [draftId, setDraftId] = useState<string | null>(null);
   function toggle(person: VariationPerson) {
     setKnown((current) => (current.has(person.userId) ? current : new Map(current).set(person.userId, person.nickname)));
     setSelected((current) => toggleSelection(current, person.userId));
@@ -95,10 +115,46 @@ export function ClassVariationDialog({
 
   const classHasWorkout = Boolean(slot.master_workout_id ?? slot.workout?.id);
   const needsWorkout = !classHasWorkout && !workoutId;
+  const classWodIds = new Set(classWods.map((workout) => workout.id));
+  const ownWodId = single ? memberClassWorkoutId(slot, single.userId) : null;
+  const ownWodTitle = classWods.find((workout) => workout.id === ownWodId)?.title ?? null;
+  const defaultSourceLabel = !classHasWorkout
+    ? i18n("featureChooseWod")
+    : single && ownWodTitle
+      ? tWods("variationStartTheirWod", { title: ownWodTitle })
+      : classWods.length > 1
+        ? tWods("variationStartEachOwn")
+        : i18n("groupVariationClassWod");
+  // The source an «Αλλαγές πριν την αποθήκευση» copy starts from.
+  const adaptSourceId = workoutId || ownWodId;
   const allSelected = candidates.length > 0 && candidates.slice(0, GROUP_PROGRAMMING_LIMIT).every((c) => selected.includes(c.userId));
 
-  async function submit() {
-    if (!selected.length || needsWorkout) return;
+  async function adapt() {
+    if (!single || !adaptSourceId) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const draft = await duplicateWorkout(accessToken, adaptSourceId, { slot_id: slot.id });
+      useWorkoutCreationStore.getState().resetDraft();
+      setDraftId(draft.id);
+      setCreating(true);
+    } catch (reason) {
+      setError(localizeAdminAssignmentError(reason, i18n));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  // The edited copy is the person's variant as it is (no second copy).
+  async function saveAdapted(publishedId: string) {
+    await submit({ masterWorkoutId: publishedId, copySource: false });
+    setCreating(false);
+    setDraftId(null);
+  }
+
+  async function submit(source?: { masterWorkoutId: string; copySource: boolean }) {
+    if (!selected.length || (needsWorkout && !source)) return;
+    const chosenId = source?.masterWorkoutId ?? workoutId;
     setBusy(true);
     setError(null);
     try {
@@ -109,12 +165,13 @@ export function ClassVariationDialog({
         if (!userIds.length) continue;
         const response = await programWorkoutForUsers(accessToken, {
           user_ids: userIds,
-          ...(workoutId ? { master_workout_id: workoutId } : {}),
+          ...(chosenId ? { master_workout_id: chosenId } : {}),
           folder_id: null,
           scheduled_for: classDay(slot.scheduled_at),
           slot_id: slot.id,
-          copy_source: true,
+          copy_source: source?.copySource ?? true,
           mode: "class_variant",
+          ...(instructions.trim() ? { instructions: instructions.trim() } : {}),
           // ADR-746: people who have not booked get the WOD and a notice, not a booking.
           ...(index === 1 ? { offer_booking: true } : {}),
         });
@@ -137,8 +194,8 @@ export function ClassVariationDialog({
       onClose={onClose}
       dismissible={!busy}
       eyebrow={slot.class_type.name}
-      title={i18n("groupVariationTitle")}
-      description={i18n("groupVariationIntro")}
+      title={single ? tWods("variationForPerson", { name: single.nickname }) : i18n("groupVariationTitle")}
+      description={single ? tWods("variationForPersonIntro") : i18n("groupVariationIntro")}
       size="lg"
       variant="center"
       testId="class-variation-dialog"
@@ -147,6 +204,11 @@ export function ClassVariationDialog({
           <DialogButton tone="ghost" onClick={onClose} disabled={busy}>
             {i18n("closefeb3e25")}
           </DialogButton>
+          {single ? (
+            <DialogButton tone="ghost" onClick={() => void adapt()} disabled={busy || !adaptSourceId}>
+              {tWods("variationAdaptFirst")}
+            </DialogButton>
+          ) : null}
           <DialogButton
             tone="primary"
             onClick={() => void submit()}
@@ -166,16 +228,41 @@ export function ClassVariationDialog({
             value={workoutId}
             onValueChange={(value) => setWorkoutId(value)}
           >
-            <option value="">
-              {classHasWorkout ? i18n("groupVariationClassWod") : i18n("featureChooseWod")}
-            </option>
-            {workouts.map((workout) => (
-              <option key={workout.id} value={workout.id}>
-                {workout.title}
-              </option>
-            ))}
+            <option value="">{defaultSourceLabel}</option>
+            {classWods.length > 1
+              ? classWods
+                  .filter((workout) => workout.id !== ownWodId)
+                  .map((workout) => (
+                    <option key={`class-${workout.id}`} value={workout.id}>
+                      {tWods("variationStartClassWod", { title: workout.title })}
+                    </option>
+                  ))
+              : null}
+            {workouts
+              .filter((workout) => !classWodIds.has(workout.id))
+              .map((workout) => (
+                <option key={workout.id} value={workout.id}>
+                  {workout.title}
+                </option>
+              ))}
           </Select>
         </label>
+        <label className="block text-xs font-semibold" style={{ color: "var(--text)" }}>
+          {tWods("variationWhy")}
+          <input
+            type="text"
+            value={instructions}
+            maxLength={500}
+            onChange={(event) => setInstructions(event.target.value)}
+            placeholder={tWods("variationWhyPlaceholder")}
+            data-testid="class-variation-why"
+            className="mt-2 w-full rounded-xl px-3 py-2 text-base sm:text-sm"
+            style={{ background: "var(--panel)", border: "1px solid var(--border)", color: "var(--text)" }}
+          />
+        </label>
+        <p className="text-xs" style={{ color: "var(--muted)" }}>
+          {tWods("variationNoCharge")}
+        </p>
         {needsWorkout ? (
           <p className="text-xs" style={{ color: "var(--muted)" }}>
             {i18n("groupVariationClassHasNoWod")}
@@ -251,6 +338,17 @@ export function ClassVariationDialog({
         {error ? <ErrorNotice>{error}</ErrorNotice> : null}
         <GroupOutcomeList rows={rows} />
       </div>
+      {creating ? (
+        <ContextualWorkoutCreator
+          target={[single?.nickname, slot.class_type.name].filter(Boolean).join(" · ") || null}
+          draftId={draftId}
+          onClose={() => {
+            setCreating(false);
+            setDraftId(null);
+          }}
+          onPublished={saveAdapted}
+        />
+      ) : null}
     </Dialog>
   );
 }

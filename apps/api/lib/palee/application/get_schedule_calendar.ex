@@ -2,6 +2,7 @@ defmodule Palee.Application.GetScheduleCalendar do
   alias Palee.{Community, Facility, Finance, Identity, Organizations, Scheduling, Workouts}
   alias Palee.Application.{AuthorizeWodAccess, BookingTerms, ClassSpace, DayWorkouts}
   alias Palee.Scheduling.Domain.{BookingPolicy, ClassWorkouts}
+  alias Palee.Workouts.Domain.ClassVariant
   alias Palee.TimeZones.ZonedTime
 
   def call(%{organization_id: organization_id} = context, actor, params)
@@ -104,6 +105,9 @@ defmodule Palee.Application.GetScheduleCalendar do
         do: slots |> class_variants(context, actor) |> attach_assignee_nicknames(nickname_cache),
         else: class_variants(slots, context, actor)
 
+    # ADR-785: «από coach …» on every variant.
+    variants = attach_variant_authors(variants, nickname_cache)
+
     # ADR-746: every WOD of every class, not only the first.
     workout_cache =
       slots
@@ -188,10 +192,11 @@ defmodule Palee.Application.GetScheduleCalendar do
             slot.bookings,
             &(&1
               |> roster_booking(slot.id, nickname_cache, roster_attendance)
+              |> Map.put(:waitlist_position, waitlist_position(waitlist, &1))
               |> Map.merge(workout_choice(&1, slot)))
           )
         )
-        |> Map.put(:member_versions, staff_versions(variants, slot.id))
+        |> Map.put(:member_versions, staff_versions(context, variants, slot))
       else
         base
         |> Map.put(:bookings, [])
@@ -301,22 +306,72 @@ defmodule Palee.Application.GetScheduleCalendar do
           status: variant.assignee_status,
           execution_status: Map.get(variant, :execution_status),
           # Same shape as a /my-workouts assignment workout.
-          workout: variant.workout
+          workout: variant.workout,
+          # ADR-785: «Η παραλλαγή σου · από coach …», the coach's «Γιατί»,
+          # the class WOD it stands in for, and whether the member went back
+          # to a class WOD.
+          instructions: Map.get(variant, :instructions),
+          assigned_by_nickname: Map.get(variant, :assigned_by_nickname),
+          variant_of_workout_id: Map.get(variant, :variant_of_workout_id),
+          active: ClassVariant.active?(variant)
         }
     end
   end
 
-  defp staff_versions(variants, slot_id) do
-    variants
-    |> Enum.filter(&(&1.source_slot_id == slot_id))
+  defp staff_versions(context, variants, slot) do
+    class_ids = ClassWorkouts.ids(slot)
+    mine = Enum.filter(variants, &(&1.source_slot_id == slot.id))
+
+    # Read as the variant was made (ProgramUserWorkout), so the hashes compare.
+    hashes =
+      mine
+      |> Enum.map(&Map.get(&1, :variant_of_workout_id))
+      |> Enum.filter(&(is_binary(&1) and &1 in class_ids))
+      |> Enum.uniq()
+      |> Map.new(&{&1, content_hash(Workouts.get_workout_for_admin(context, &1))})
+
+    mine
     |> Enum.map(fn variant ->
       %{
         assignment_id: variant.assignment_id,
         user_id: variant.assignee_id,
         user_nickname: Map.get(variant, :assignee_nickname),
         master_workout_id: variant.master_workout_id,
-        workout_title: variant.workout && variant.workout.title
+        workout_title: variant.workout && variant.workout.title,
+        # ADR-785: the roster's «Παραλλαγή» and «Το WOD άλλαξε μετά».
+        instructions: Map.get(variant, :instructions),
+        assigned_by_nickname: Map.get(variant, :assigned_by_nickname),
+        variant_of_workout_id: Map.get(variant, :variant_of_workout_id),
+        active: ClassVariant.active?(variant),
+        stale: ClassVariant.stale(variant, class_ids, hashes)
       }
+    end)
+  end
+
+  defp content_hash(nil), do: nil
+  defp content_hash(workout), do: workout |> Workouts.build_snapshot() |> Map.get(:content_hash)
+
+  defp attach_variant_authors([], _nickname_cache), do: []
+
+  defp attach_variant_authors(variants, nickname_cache) do
+    ids =
+      variants
+      |> Enum.map(&Map.get(&1, :assigned_by_user_id))
+      |> Enum.reject(&(is_nil(&1) or Map.has_key?(nickname_cache, &1)))
+      |> Enum.uniq()
+
+    names =
+      ids
+      |> Identity.list_by_ids()
+      |> Map.new(&{&1.id, &1.nickname})
+      |> Map.merge(nickname_cache)
+
+    Enum.map(variants, fn variant ->
+      Map.put(
+        variant,
+        :assigned_by_nickname,
+        Map.get(names, Map.get(variant, :assigned_by_user_id))
+      )
     end)
   end
 
@@ -502,6 +557,8 @@ defmodule Palee.Application.GetScheduleCalendar do
       kind: Map.get(booking, :kind, "member"),
       entitlement_allowance: Map.get(booking, :entitlement_allowance),
       waitlist_priority: Map.get(booking, :waitlist_priority),
+      # ADR-790: staff put this person on the waitlist.
+      waitlisted_by_staff: not is_nil(Map.get(booking, :waitlisted_by_id)),
       admin_message: booking.admin_message,
       inserted_at: booking.inserted_at
     }

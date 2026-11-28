@@ -16,7 +16,7 @@ defmodule Palee.Application.PlaceMemberInClass do
   freed place run only after the transaction commits.
   """
 
-  alias Palee.Application.{ClassLocation, SubmitBooking, WithdrawBooking}
+  alias Palee.Application.{ClassPlacementAccess, SubmitBooking, WithdrawBooking}
   alias Palee.{Identity, Organizations, Scheduling}
 
   def call(context, user_id, params) do
@@ -24,11 +24,12 @@ defmodule Palee.Application.PlaceMemberInClass do
     from_booking_id = value(params, :from_booking_id)
 
     with %{} = user <- Identity.find_by_id(user_id) || {:error, :not_found},
-         # ADR-186: staff place members in classes of their own branches.
-         :ok <- ClassLocation.authorize_class(context, slot_id),
+         # ADR-186: staff place members in classes of their own branches;
+         # ADR-790: a coach in the classes they run.
+         :ok <- ClassPlacementAccess.authorize(context, user.id, slot_id),
          :ok <- require_member(context, user.id),
          {:ok, previous} <- previous_booking(context, user.id, from_booking_id),
-         :ok <- authorize_previous(context, previous),
+         :ok <- authorize_previous(context, user.id, previous),
          {:ok, written} <- write(context, user, slot_id, previous) do
       announce(context, written)
       {:ok, %{booking: written.booking, previous_booking_id: previous && previous.id}}
@@ -119,10 +120,10 @@ defmodule Palee.Application.PlaceMemberInClass do
   end
 
   # ADR-186: moving a member out of a class is also an action on that class.
-  defp authorize_previous(_context, nil), do: :ok
+  defp authorize_previous(_context, _user_id, nil), do: :ok
 
-  defp authorize_previous(context, previous),
-    do: ClassLocation.authorize_class(context, previous.scheduled_class_id)
+  defp authorize_previous(context, user_id, previous),
+    do: ClassPlacementAccess.authorize(context, user_id, previous.scheduled_class_id)
 
   defp value(map, key) do
     case Map.fetch(map, key) do

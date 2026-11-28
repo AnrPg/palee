@@ -328,4 +328,85 @@ test.describe("Staff class page", () => {
     await makeLive.click();
     await expect.poll(() => live).toEqual({ workout_id: "w-legs" });
   });
+
+  test("«+ Add» puts a member on a full class's waitlist, first in line (ADR-790)", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    const full = classAt(inMinutes(180), {
+      capacity: 2,
+      approved_booking_count: 2,
+      spots_remaining: 0,
+      waitlist_count: 1,
+      bookings: [
+        booking("b-1", "u-maria", "Maria D.", "approved"),
+        booking("b-2", "u-nikos", "Nikos K.", "approved"),
+        booking("b-4", "u-sofia", "Sofia L.", "waitlisted", { waitlist_position: 1 }),
+      ],
+    });
+    await asOwner(page, full);
+    const entries: unknown[] = [];
+    await page.route("**/api/org/box1/admin/athletes?**", (route) =>
+      route.fulfill(
+        json({
+          athletes: [
+            { id: "u-maria", nickname: "Maria D.", role: "member" },
+            { id: "u-dimitra", nickname: "Dimitra A.", role: "member" },
+            { id: "u-coachee", nickname: "Dina Online", role: "athlete" },
+          ],
+        }),
+      ),
+    );
+    await page.route("**/api/org/box1/admin/users/u-dimitra/class-placement?**", (route) =>
+      route.fulfill(
+        json({
+          timezone: "UTC",
+          lookahead_days: 30,
+          bookings: [],
+          classes: [
+            {
+              slot_id: "slot-1",
+              name: "Bodybuilding",
+              scheduled_at: full.scheduled_at,
+              duration_minutes: 60,
+              capacity: 2,
+              spots_remaining: 0,
+              blocked_reason: null,
+              waitlist: true,
+              waitlist_place: 2,
+            },
+          ],
+        }),
+      ),
+    );
+    await page.route("**/api/org/box1/admin/users/u-dimitra/class-waitlist", (route) => {
+      entries.push(JSON.parse(route.request().postData() ?? "{}"));
+      return route.fulfill(json({ booking: { id: "b-5", status: "waitlisted" }, waitlist_position: 1 }, 201));
+    });
+    await openClass(page);
+
+    const dialog = page.getByRole("dialog", { name: "Bodybuilding" });
+    const add = dialog.getByTestId("class-roster-add");
+    await add.scrollIntoViewIfNeeded();
+    await expect(add).toBeVisible();
+    await add.click();
+
+    const sheet = page.getByTestId("add-to-class-dialog");
+    await expect(sheet).toBeVisible();
+    await sheet.getByTestId("add-to-class-search").fill("D");
+    // Only members not in the class yet.
+    await expect(sheet.getByRole("button", { name: "Dimitra A." })).toBeVisible();
+    await expect(sheet.getByRole("button", { name: "Maria D." })).toHaveCount(0);
+    await expect(sheet.getByRole("button", { name: "Dina Online" })).toHaveCount(0);
+    await sheet.getByRole("button", { name: "Dimitra A." }).click();
+
+    const position = sheet.getByTestId("waitlist-position");
+    await expect(position.getByRole("radio", { name: "At the end (place 2)" })).toBeChecked();
+    await position.getByRole("radio", { name: "First in line" }).check();
+    const confirm = sheet.getByTestId("add-to-class-confirm");
+    await expect(confirm).toHaveText("Add to waitlist");
+    await expect(confirm).toBeEnabled();
+    await confirm.click();
+    await expect.poll(() => entries).toEqual([{ slot_id: "slot-1", position: "first" }]);
+    await expect(sheet).toBeHidden();
+  });
 });
+

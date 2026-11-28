@@ -1022,6 +1022,8 @@ defmodule PaleeWeb.Router do
     get("/schedule/slots/:id/space", ScheduleController, :slot_space)
     # ADR-746: which of the class's WODs I do.
     put("/schedule/slots/:id/my-workout", ClassWorkoutChoiceController, :update)
+    # ADR-785: my variant of the class, or back to its WODs.
+    put("/schedule/slots/:id/my-variant", ClassVariantController, :update_mine)
     get("/landing", LandingController, :show)
     post("/landing/leaderboard-opt-in", LandingController, :update_leaderboard_preference)
     post("/bookings", ScheduleController, :create_booking)
@@ -1389,6 +1391,8 @@ defmodule PaleeWeb.Router do
     post("/users/:id/programming", AdminUserController, :program_workout)
     get("/users/:id/class-placement", AdminUserController, :class_placement_options)
     post("/users/:id/class-placement", AdminUserController, :place_in_class)
+    # ADR-790: staff put a member on a full class's waitlist.
+    post("/users/:id/class-waitlist", AdminUserController, :place_on_waitlist)
     get("/users/:id/incidents", AdminUserController, :incidents)
     get("/users/:id/messages", AdminUserController, :messages)
     get("/users/:id/coaching-context", AdminUserController, :coaching_context)
@@ -1700,6 +1704,12 @@ defmodule PaleeWeb.Router do
     # ADR-746: every WOD of a class, its «Τώρα», and someone's WOD.
     put("/schedule/slots/:id/workouts", AdminClassWorkoutsController, :put_workouts)
     put("/schedule/slots/:id/live-workout", AdminClassWorkoutsController, :put_live)
+    # ADR-785: «Κράτησέ τη» after the class WOD changed.
+    post(
+      "/schedule/slots/:id/variants/:assignment_id/keep",
+      ClassVariantController,
+      :keep
+    )
 
     put(
       "/schedule/slots/:id/bookings/:booking_id/workout",
@@ -2021,6 +2031,8 @@ defmodule PaleeWeb.Router do
     put("/shop/pricing-targets", AdminShopReportController, :put_pricing_target)
     get("/finance/queues", AdminFinanceController, :operational_queues)
     get("/finance/cleanup-records", AdminFinanceController, :cleanup_records)
+    get("/finance/cleanup-records/packages", AdminFinanceController, :cleanup_record_packages)
+    get("/finance/cleanup-records/:id", AdminFinanceController, :cleanup_record)
     post("/finance/cleanup-records/:id/purge", AdminFinanceController, :purge_record)
     # ADR-167: seasons.
     get("/seasons", AdminSeasonController, :index)

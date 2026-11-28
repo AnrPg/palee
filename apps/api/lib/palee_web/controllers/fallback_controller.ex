@@ -2967,6 +2967,22 @@ defmodule PaleeWeb.FallbackController do
     |> json(%{code: "already_booked", error: "User already booked this slot"})
   end
 
+  # ADR-785: a variant is made only while its class is still to come or running.
+  def call(conn, {:error, :class_variant_closed}) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> json(%{
+      code: "class_variant_closed",
+      error: "The class has ended or was cancelled, so it takes no new variant"
+    })
+  end
+
+  def call(conn, {:error, :class_variant_not_found}) do
+    conn
+    |> put_status(:not_found)
+    |> json(%{code: "class_variant_not_found", error: "No variant of this class"})
+  end
+
   def call(conn, {:error, :slot_not_booked_by_member}) do
     conn
     |> put_status(:unprocessable_entity)
@@ -3561,6 +3577,9 @@ defmodule PaleeWeb.FallbackController do
       {:unprocessable_entity, "The freeze exceeds the yearly freeze days"},
     freeze_already_cancelled: {:conflict, "The freeze is already cancelled"},
     slot_not_full: {:conflict, "The class still has free spots"},
+    # ADR-790: «Στο τέλος» or «Πρώτος στη σειρά».
+    invalid_waitlist_position:
+      {:unprocessable_entity, "Choose the end of the line or first in line"},
     # ADR-176: a draft class has no WOD yet.
     class_not_published: {:conflict, "This class isn't open yet"},
     # ADR-230: day WODs.

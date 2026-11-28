@@ -136,6 +136,8 @@ export type ScheduleBooking = {
   waitlist_priority?: number | null;
   /** 1-based place in the queue, only while waitlisted. */
   waitlist_position?: number | null;
+  /** ADR-790: staff put this person on the waitlist (staff roster only). */
+  waitlisted_by_staff?: boolean;
   /** The member's own attendance on this class (TD-105), e.g. "attended". */
   attendance_status?: string | null;
   /** When the member may check themselves in (own booking only). */
@@ -234,7 +236,18 @@ export type MemberClassVersion = {
   status?: "accepted" | null;
   execution_status?: "completed" | null;
   workout: AssignedWorkoutPreview;
+  /** ADR-785: the coach's «Γιατί». */
+  instructions?: string | null;
+  /** ADR-785: «από coach …». */
+  assigned_by_nickname?: string | null;
+  /** ADR-785: the class WOD this variant stands in for. */
+  variant_of_workout_id?: string | null;
+  /** ADR-785: false once the member went back to a WOD of the class. */
+  active?: boolean;
 };
+
+/** ADR-785: why the roster asks the coach to look at a variant again. */
+export type ClassVariantStale = "changed" | "removed";
 
 export type StaffMemberClassVersion = {
   assignment_id: string;
@@ -242,6 +255,11 @@ export type StaffMemberClassVersion = {
   user_nickname?: string | null;
   master_workout_id: string;
   workout_title?: string | null;
+  instructions?: string | null;
+  assigned_by_nickname?: string | null;
+  variant_of_workout_id?: string | null;
+  active?: boolean;
+  stale?: ClassVariantStale | null;
 };
 
 export type ScheduleWindow = {
@@ -574,6 +592,23 @@ export async function chooseMyClassWorkout(token: string, slotId: string, workou
     method: "PUT",
     token,
     body: { workout_id: workoutId },
+  });
+}
+
+/** ADR-785: I do my variant of the class (true) or one of its WODs (false). */
+export async function setMyClassVariantActive(token: string, slotId: string, active: boolean) {
+  await apiRequest<unknown>(`/schedule/slots/${slotId}/my-variant`, {
+    method: "PUT",
+    token,
+    body: { active },
+  });
+}
+
+/** ADR-785: «Κράτησέ τη», after the class WOD changed. */
+export async function keepClassVariant(token: string, slotId: string, assignmentId: string) {
+  await apiRequest<unknown>(`/admin/schedule/slots/${slotId}/variants/${assignmentId}/keep`, {
+    method: "POST",
+    token,
   });
 }
 

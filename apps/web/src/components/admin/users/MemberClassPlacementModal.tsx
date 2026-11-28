@@ -1,8 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
-import { fetchClassPlacementOptions, placeAdminUserInClass, type ClassPlacementOptions } from "@/api/admin-users";
+import {
+  fetchClassPlacementOptions,
+  placeAdminUserInClass,
+  placeAdminUserOnWaitlist,
+  type ClassPlacementOptions,
+  type WaitlistPosition,
+} from "@/api/admin-users";
 import { ApiError } from "@/api/client";
 import { localizeAdminAssignmentError } from "@/i18n/presentation";
 import { useUiTranslations } from "@/i18n/ui";
@@ -11,7 +18,8 @@ import { zonedText } from "@/lib/zoned-time";
 import { Dialog } from "@/components/ui/Dialog";
 import { Select } from "@/components/ui/Select";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
-import { placementBlocked, placementReasonKey } from "@/components/admin/users/class-placement";
+import { placementBlocked, placementBlockedCode, placementReasonKey } from "@/components/admin/users/class-placement";
+import { WaitlistPositionPicker } from "@/components/schedule/WaitlistPositionPicker";
 
 type Props = {
   token: string;
@@ -25,10 +33,14 @@ type Props = {
  * ADR-232: staff book a member into a class, or move one of their upcoming
  * bookings to another class. The API lists what can be chosen and why a
  * class cannot take the member; times read on the box's clock (ADR-179).
+ * ADR-790 (ANR pick 1C): a full class offers its waitlist («γεμάτο · λίστα
+ * αναμονής»); staff choose the place in line each time (pick 2B).
  */
 export function MemberClassPlacementModal({ token, userId, nickname, onClose, onPlaced }: Props) {
   const i18n = useUiTranslations();
+  const tWait = useTranslations("StaffWaitlist");
   const locale = useUiLocale();
+  const [position, setPosition] = useState<WaitlistPosition>("end");
   const [options, setOptions] = useState<ClassPlacementOptions | null>(null);
   const [fromBookingId, setFromBookingId] = useState("");
   const [targetSlotId, setTargetSlotId] = useState("");
@@ -58,6 +70,7 @@ export function MemberClassPlacementModal({ token, userId, nickname, onClose, on
   };
   const classes = options?.classes ?? [];
   const target = classes.find((option) => option.slot_id === targetSlotId) ?? null;
+  const toWaitlist = Boolean(target?.waitlist) && !moving;
 
   function chooseFrom(bookingId: string) {
     setFromBookingId(bookingId);
@@ -70,7 +83,8 @@ export function MemberClassPlacementModal({ token, userId, nickname, onClose, on
     setSaving(true);
     setError(null);
     try {
-      await placeAdminUserInClass(token, userId, { slot_id: targetSlotId, from_booking_id: fromBookingId || null });
+      if (toWaitlist) await placeAdminUserOnWaitlist(token, userId, { slot_id: targetSlotId, position });
+      else await placeAdminUserInClass(token, userId, { slot_id: targetSlotId, from_booking_id: fromBookingId || null });
       onPlaced();
       onClose();
     } catch (failure) {
@@ -101,7 +115,13 @@ export function MemberClassPlacementModal({ token, userId, nickname, onClose, on
             {i18n("cancel77dfd21")}
           </button>
           <button type="submit" disabled={!targetSlotId || saving || loading} className="rounded-full px-4 py-2 text-sm font-semibold disabled:opacity-50" style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}>
-            {saving ? i18n("featureMovePlacing") : moving ? i18n("placementConfirmMove") : i18n("featureConfirmMove")}
+            {saving
+              ? i18n("featureMovePlacing")
+              : moving
+                ? i18n("placementConfirmMove")
+                : toWaitlist
+                  ? tWait("waitlist")
+                  : i18n("featureConfirmMove")}
           </button>
         </>
       }
@@ -121,11 +141,25 @@ export function MemberClassPlacementModal({ token, userId, nickname, onClose, on
 
         <label className="mt-4 block text-sm font-semibold" style={{ color: "var(--muted)" }}>
           {i18n("featureTargetClass")}
-          <Select className="mt-2 w-full rounded-xl px-3 py-2 text-sm" style={fieldStyle} value={targetSlotId} disabled={loading} onValueChange={(value) => setTargetSlotId(value)} data-testid="placement-target">
+          <Select
+            className="mt-2 w-full rounded-xl px-3 py-2 text-sm"
+            style={fieldStyle}
+            value={targetSlotId}
+            disabled={loading}
+            onValueChange={(value) => {
+              setTargetSlotId(value);
+              setPosition("end");
+            }}
+            data-testid="placement-target"
+          >
             <option value="">{i18n("placementChooseClass")}</option>
             {classes.map((option) => {
               const blocked = placementBlocked(option, moving);
-              const detail = blocked ? reason(option.blocked_reason) : i18n("featureSpotsLeft", { count: option.spots_remaining });
+              const detail = blocked
+                ? reason(placementBlockedCode(option, moving))
+                : option.waitlist
+                  ? tWait("fullOption")
+                  : i18n("featureSpotsLeft", { count: option.spots_remaining });
               return (
                 <option key={option.slot_id} value={option.slot_id} disabled={blocked}>
                   {when(option.scheduled_at)} · {option.name} · {detail}
@@ -137,6 +171,18 @@ export function MemberClassPlacementModal({ token, userId, nickname, onClose, on
 
         {moving ? (
           <p className="mt-3 text-sm" style={{ color: "var(--dim)" }}>{i18n("placementMoveNote")}</p>
+        ) : null}
+        {toWaitlist ? (
+          <div className="mt-4 space-y-3">
+            <p className="text-sm" style={{ color: "var(--muted)" }}>{tWait("fullHint")}</p>
+            <WaitlistPositionPicker
+              name="placement-waitlist-position"
+              value={position}
+              onChange={setPosition}
+              endPlace={target?.waitlist_place}
+              disabled={saving}
+            />
+          </div>
         ) : null}
         {!loading && options && classes.length === 0 ? (
           <p className="mt-3 text-sm" style={{ color: "var(--dim)" }}>{i18n("featureNoUpcomingClasses", { days: options.lookahead_days })}</p>

@@ -99,7 +99,13 @@ defmodule Palee.Finance.FinanceStore do
   @impl true
   def mark_overdue_invoices, do: adapter().mark_overdue_invoices()
   @impl true
-  def list_finance_cleanup_records(params), do: adapter().list_finance_cleanup_records(params)
+  def list_finance_cleanup_records(filter), do: adapter().list_finance_cleanup_records(filter)
+  @impl true
+  def get_finance_cleanup_record(record_type, record_id),
+    do: adapter().get_finance_cleanup_record(record_type, record_id)
+
+  @impl true
+  def list_finance_customer_ids, do: adapter().list_finance_customer_ids()
   @impl true
   def soft_delete_finance_record(record_type, record_id, admin_id, params),
     do: adapter().soft_delete_finance_record(record_type, record_id, admin_id, params)

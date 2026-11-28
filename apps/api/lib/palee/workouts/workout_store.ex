@@ -64,6 +64,21 @@ defmodule Palee.Workouts.WorkoutStore do
   def list_class_variants(context, slot_ids, assignee_id),
     do: within_tenant(context, fn -> adapter().list_class_variants(slot_ids, assignee_id) end)
 
+  def update_class_variant(context, assignment_id, attrs),
+    do: within_tenant(context, fn -> adapter().update_class_variant(assignment_id, attrs) end)
+
+  def delete_class_variants(context, slot_id, assignee_id, keep_ids \\ []),
+    do:
+      within_tenant(context, fn ->
+        adapter().delete_class_variants(slot_id, assignee_id, keep_ids)
+      end)
+
+  def list_variants_standing_in_for(context, workout_id, from_date, to_date),
+    do:
+      within_tenant(context, fn ->
+        adapter().list_variants_standing_in_for(workout_id, from_date, to_date)
+      end)
+
   def get_assignment_execution_access(context, assignment_id, athlete_id),
     do:
       within_tenant(context, fn ->

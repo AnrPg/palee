@@ -121,8 +121,22 @@ defmodule PaleeWeb.RouteCapabilities do
     {W.AdminUserController, :schedule} => [:view_client_training, :run_classes],
     {W.AdminUserController, :program_workout} => [:manage_coaching],
     {W.AdminUserController, :program_workout_for_users} => [:manage_coaching],
-    {W.AdminUserController, :place_in_class} => [:book_for_clients, :manage_schedule],
-    {W.AdminUserController, :class_placement_options} => [:book_for_clients, :manage_schedule],
+    # ADR-790: coaches in the classes they run (ClassPlacementAccess).
+    {W.AdminUserController, :place_in_class} => [
+      :book_for_clients,
+      :manage_schedule,
+      :run_classes
+    ],
+    {W.AdminUserController, :place_on_waitlist} => [
+      :book_for_clients,
+      :manage_schedule,
+      :run_classes
+    ],
+    {W.AdminUserController, :class_placement_options} => [
+      :book_for_clients,
+      :manage_schedule,
+      :run_classes
+    ],
     {W.AdminUserController, :prs} => [:view_client_training],
     {W.AdminUserController, :pr_members} => [:view_client_training],
     {W.AdminUserController, :incidents} => [:view_health],
@@ -251,6 +265,8 @@ defmodule PaleeWeb.RouteCapabilities do
     ],
     {W.AdminClassWorkoutsController, :put_live} => [:manage_schedule, :run_classes],
     {W.AdminClassWorkoutsController, :put_booking_workout} => [:manage_schedule, :run_classes],
+    # ADR-785: «Κράτησέ τη» on a member's variant, for whoever makes variants.
+    {W.ClassVariantController, :keep} => [:manage_coaching],
     {W.AdminScheduleController, :approve_booking} => [:run_classes],
     {W.AdminScheduleController, :reject_booking} => [:run_classes],
     {W.AdminScheduleController, :record_attendance} => [:run_classes],
@@ -513,6 +529,8 @@ defmodule PaleeWeb.RouteCapabilities do
     {W.AdminShopReportController, :put_pricing_target} => [:manage_shop, :manage_settings],
     {W.AdminFinanceController, :operational_queues} => [:view_finance_reports],
     {W.AdminFinanceController, :cleanup_records} => [:manage_billing],
+    {W.AdminFinanceController, :cleanup_record_packages} => [:manage_billing],
+    {W.AdminFinanceController, :cleanup_record} => [:manage_billing],
     {W.AdminFinanceController, :purge_record} => [:manage_billing],
     {W.AdminFinanceController, :packages} => [:view_package_catalog],
     {W.AdminPackageAudienceController, :show} => [:manage_packages, :view_package_catalog],

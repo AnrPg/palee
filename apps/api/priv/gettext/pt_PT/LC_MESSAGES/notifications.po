@@ -1015,3 +1015,12 @@ msgstr "O teu pacote mudou"
 
 msgid "%{box} · %{package} changed while it waited. See what changed to start it."
 msgstr "%{box} · %{package} mudou enquanto esperava. Vê o que mudou para o começar."
+
+msgid "You are on the waitlist"
+msgstr "Estás na lista de espera"
+
+msgid "The box put you on the waitlist for %{class} (%{time}). You are number %{position} in line; if a place opens, you are booked automatically."
+msgstr "A box pôs-te na lista de espera de %{class} (%{time}). És o número %{position}; se abrir um lugar, ficas reservado automaticamente."
+
+msgid "The box put you on the waitlist for %{class} (%{time}). If a place opens, you are booked automatically."
+msgstr "A box pôs-te na lista de espera de %{class} (%{time}). Se abrir um lugar, ficas reservado automaticamente."

@@ -258,8 +258,24 @@ export type ClassPlacementOptions =
 export type ClassPlacementBooking = ClassPlacementOptions["bookings"][number];
 export type ClassPlacementClass = ClassPlacementOptions["classes"][number];
 
-export function fetchClassPlacementOptions(token: string, userId: string) {
-  return apiRequest<ClassPlacementOptions>(`/admin/users/${userId}/class-placement`, { token });
+/** ADR-790: `slotId` asks about that one class only (the class page's «+ Προσθήκη»). */
+export function fetchClassPlacementOptions(token: string, userId: string, slotId?: string) {
+  const query = slotId ? `?slot_id=${encodeURIComponent(slotId)}` : "";
+  return apiRequest<ClassPlacementOptions>(`/admin/users/${userId}/class-placement${query}`, { token });
+}
+
+export type WaitlistPosition = "end" | "first";
+
+/** ADR-790: staff put a member on a full class's waitlist, at the end or first in line. */
+export function placeAdminUserOnWaitlist(
+  token: string,
+  userId: string,
+  body: { slot_id: string; position: WaitlistPosition },
+) {
+  return apiRequest<{ booking: Record<string, unknown>; waitlist_position: number | null }>(
+    `/admin/users/${userId}/class-waitlist`,
+    { token, method: "POST", body },
+  );
 }
 
 export function placeAdminUserInClass(

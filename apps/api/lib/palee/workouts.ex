@@ -182,6 +182,24 @@ defmodule Palee.Workouts do
   def list_class_variants(context, slot_ids, assignee_id),
     do: ListClassVariants.call(context, slot_ids, assignee_id)
 
+  @doc "ADR-785: changes a variant's kept hash or its set-aside time."
+  def update_class_variant(context, assignment_id, attrs),
+    do: Palee.Workouts.WorkoutStore.update_class_variant(context, assignment_id, attrs)
+
+  @doc "ADR-785: removes the class's variants (one assignee's, or everyone's), except `keep_ids`."
+  def delete_class_variants(context, slot_id, assignee_id, keep_ids \\ []),
+    do: Palee.Workouts.WorkoutStore.delete_class_variants(context, slot_id, assignee_id, keep_ids)
+
+  @doc "ADR-785: live variants that stand in for `workout_id` between two dates."
+  def list_variants_standing_in_for(context, workout_id, from_date, to_date),
+    do:
+      Palee.Workouts.WorkoutStore.list_variants_standing_in_for(
+        context,
+        workout_id,
+        from_date,
+        to_date
+      )
+
   defdelegate list_workouts(context), to: ListAdminWorkouts, as: :all
 
   @doc "The WOD picker: published library WODs as summaries, searched and paged."

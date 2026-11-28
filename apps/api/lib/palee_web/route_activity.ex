@@ -121,6 +121,8 @@ defmodule PaleeWeb.RouteActivity do
     {W.AdminUserController, :program_workout_for_users} => "member.programming",
     {W.AdminUserController, :program_workout} => "member.programming",
     {W.AdminUserController, :place_in_class} => "member.class_placement",
+    # ADR-790: staff put a member on a full class's waitlist.
+    {W.AdminUserController, :place_on_waitlist} => "member.class_placement",
     {W.AdminUserController, :create_freeze} => "package.freeze",
     {W.AdminUserController, :cancel_freeze} => "package.freeze_cancel",
     {W.AdminUserController, :delete} => "member.remove",

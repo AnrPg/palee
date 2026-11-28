@@ -177,19 +177,44 @@ defmodule PaleeWeb.GroupWodVariationsControllerTest do
       |> by_user()
 
     assert results[entitled.id]["status"] == "ok"
+    # ADR-785: a class variant is the class's; a class-only package is enough.
+    assert results[plain.id]["status"] == "ok"
+
+    assert %{"status" => "error", "code" => "slot_not_booked_by_member"} =
+             results[not_booked.id]
+
+    owners =
+      gym.context
+      |> Palee.Workouts.list_class_variants([slot.id], nil)
+      |> Enum.map(& &1.assignee_id)
+      |> Enum.sort()
+
+    assert owners == Enum.sort([entitled.id, plain.id])
+  end
+
+  test "a personal WOD still needs online programming or personal training", %{conn: conn} do
+    gym = tenant("grp_personal_gate")
+    plain = member(gym, "grp_personal_plain", @class_only_plan)
+    wod = workout_fixture(gym.admin, %{title: "Personal gate WOD", tenant_context: gym.context})
+    day = Date.utc_today() |> Date.add(1) |> Date.to_iso8601()
+
+    results =
+      conn
+      |> program_many(gym, %{
+        user_ids: [plain.id],
+        master_workout_id: wod.id,
+        scheduled_for: day,
+        copy_source: true,
+        mode: "personal"
+      })
+      |> json_response(200)
+      |> Map.fetch!("results")
+      |> by_user()
 
     assert %{"status" => "error", "code" => "programming_not_in_package", "params" => params} =
              results[plain.id]
 
     assert params["nickname"] == plain.nickname
-
-    assert %{"status" => "error", "code" => "slot_not_booked_by_member"} =
-             results[not_booked.id]
-
-    assert [%{assignee_id: user_id}] =
-             Palee.Workouts.list_class_variants(gym.context, [slot.id], nil)
-
-    assert user_id == entitled.id
   end
 
   test "duplicate ids are programmed once; an empty or oversized list is refused", %{conn: conn} do

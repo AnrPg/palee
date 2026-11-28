@@ -539,6 +539,8 @@ config :palee, :domain_event_handlers, %{
   class_moved: [Palee.Application.BookingInviteEmails],
   class_cancelled: [
     Palee.Application.TrialReactions,
+    # ADR-785: a class that is gone takes its members' variants with it.
+    Palee.Application.ClassVariants,
     Palee.Application.BoxScreenReactions,
     Palee.Application.Integrations.WebhookEvents
   ],

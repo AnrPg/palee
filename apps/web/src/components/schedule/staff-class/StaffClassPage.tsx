@@ -12,12 +12,14 @@ import { fetchClassVisitBadges, visitBadgesKey } from "@/api/training-floor";
 import { ClassNoticeDialog } from "@/components/channels/ClassNoticeDialog";
 import { ClassStateNotice, classActionsFor } from "@/components/schedule/ClassState";
 import { ClassVariationDialog } from "@/components/schedule/ClassVariationDialog";
+import type { VariationPerson } from "@/lib/group-variations";
 import { slotCoachName } from "@/components/schedule/member-booking";
 import { ClassRoomDialog } from "@/components/spaces/ClassRoomDialog";
 import { Dialog } from "@/components/ui/Dialog";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { MoreMenu, type MoreMenuItem } from "@/components/ui/MoreMenu";
 import { InjuryWarningBadge, RosterInjuryWarningsPanel, useSlotInjuryWarnings } from "@/components/wellbeing/InjuryWarnings";
+import { useSession } from "@/components/session-provider";
 import { FeltSummaryCard } from "@/components/wod-goals/FeltSummaryCard";
 import { WorkoutEditModal } from "@/components/workouts/WorkoutEditModal";
 import { YourTime } from "@/components/zoned-time";
@@ -25,10 +27,12 @@ import { useUiTranslations } from "@/i18n/ui";
 import { formatMinutes } from "@/lib/duration-parts";
 import { downloadIcsEvent } from "@/lib/ics";
 import { warningLevelFor, warningLevelsByUser } from "@/lib/injury-warnings";
-import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
+import { selectedMembership } from "@/lib/membership-role";
+import { adminHref, useOrganizationMemberships, useOrganizationSlug } from "@/lib/organization-slug";
 import { SPARK_ACTIVE_STYLE, SPARK_GO_STYLE } from "@/lib/spark";
 import { workoutTypeColor } from "@/lib/workout-colors";
 import { zonedText } from "@/lib/zoned-time";
+import { mayAddToClass } from "./add-to-class";
 import { classPhase, minutesUntilStart, nextPhaseChange, staffCheckInOpen, type ClassPhase } from "./class-phase";
 import { StaffClassRoster, initials, useBookingLabel } from "./StaffClassRoster";
 import { StaffClassWod } from "./StaffClassWod";
@@ -114,12 +118,16 @@ export function StaffClassPage({
   const rulesT = useTranslations("BookingRules");
   const locale = useLocale();
   const organizationSlug = useOrganizationSlug();
+  const memberships = useOrganizationMemberships();
+  const { currentUser } = useSession();
+  const membership = selectedMembership(Array.isArray(memberships.data) ? memberships.data : [], organizationSlug);
   const personLabel = useBookingLabel();
 
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [noticeOpen, setNoticeOpen] = useState(false);
   const [editWorkoutOpen, setEditWorkoutOpen] = useState(false);
-  const [variationOpen, setVariationOpen] = useState(false);
+  // ADR-785: null = closed; [] = «Παραλλαγή για άτομα»; one person from their roster row.
+  const [variationPeople, setVariationPeople] = useState<VariationPerson[] | null>(null);
   const [roomOpen, setRoomOpen] = useState(false);
 
   // The box's «Ρυθμίσεις › Check-in» window; its default when the role can't read it.
@@ -133,6 +141,8 @@ export function StaffClassPage({
   const windowBefore = rules.data?.window_before_minutes;
   const now = usePhaseClock(slot, windowBefore);
   const phase = classPhase(slot, now);
+  // ADR-785 (α): variations from now until the class ends, never for a cancelled one.
+  const variationsOpen = canProgramVariations && phase !== "ended" && !slot.cancelled_at;
   const isPast = Date.parse(slot.scheduled_at) <= now;
   const checkInOpen = !slot.cancelled_at && staffCheckInOpen(slot, now, windowBefore);
 
@@ -215,7 +225,7 @@ export function StaffClassPage({
       ? [{ label: tWods("moveLater"), onSelect: () => void wod.move(viewed.id, 1) }]
       : []),
     // ADR-201: without a class WOD, the dialog asks which WOD to start from.
-    ...(canProgramVariations ? [{ label: i18n("groupVariationAction"), onSelect: () => setVariationOpen(true) }] : []),
+    ...(variationsOpen ? [{ label: i18n("groupVariationAction"), onSelect: () => setVariationPeople([]) }] : []),
     ...(viewed && several
       ? [
           {
@@ -464,6 +474,7 @@ export function StaffClassPage({
               {liveSwitch.error ? <ErrorNotice>{liveSwitch.error}</ErrorNotice> : null}
               <div className="space-y-5">
                 <StaffClassRoster
+                  onVariation={variationsOpen ? (person) => setVariationPeople([person]) : undefined}
                   slot={slot}
                   accessToken={accessToken}
                   checkInOpen={checkInOpen}
@@ -471,6 +482,12 @@ export function StaffClassPage({
                   visits={visitBadges.data?.people}
                   onChanged={onSlotChanged}
                   workouts={workouts}
+                  canAdd={
+                    (phase === "upcoming" || phase === "soon") &&
+                    !slot.cancelled_at &&
+                    !slot.paused_at &&
+                    mayAddToClass(membership, slot, currentUser?.id)
+                  }
                 />
                 {/* What members felt in this class (WOD goals, ADR-163). */}
                 {slot.workout && phase === "ended" ? <FeltSummaryCard source={{ kind: "slot", id: slot.id }} /> : null}
@@ -539,11 +556,13 @@ export function StaffClassPage({
           onClose={() => setEditWorkoutOpen(false)}
         />
       ) : null}
-      {variationOpen && canProgramVariations ? (
+      {variationPeople && canProgramVariations ? (
         <ClassVariationDialog
+          key={variationPeople.map((person) => person.userId).join(",") || "many"}
           slot={slot}
           accessToken={accessToken}
-          onClose={() => setVariationOpen(false)}
+          initialPeople={variationPeople}
+          onClose={() => setVariationPeople(null)}
           onProgrammed={onSlotChanged}
         />
       ) : null}

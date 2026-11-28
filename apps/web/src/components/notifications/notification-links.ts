@@ -19,7 +19,11 @@ function payloadUrl(notification: LinkableNotification) {
 // opens Billing even when the payload carries no explicit URL.
 function preferredUrl(notification: LinkableNotification) {
   const slotId = notification.payload.scheduled_class_id;
-  if (notification.type === "booking_waitlist_promoted" && typeof slotId === "string" && slotId) {
+  if (
+    (notification.type === "booking_waitlist_promoted" || notification.type === "booking_waitlisted_by_staff") &&
+    typeof slotId === "string" &&
+    slotId
+  ) {
     return `/box/schedule?open_slot=${encodeURIComponent(slotId)}`;
   }
   // ADR-153: event notifications open the event page; the trial offer keeps
@@ -114,7 +118,12 @@ function phaseCUrl(notification: LinkableNotification, role: string | null | und
 function fallbackUrl(notification: LinkableNotification) {
   // ADR-161: a Garmin sync error opens the devices page to reconnect.
   if (notification.type === "device_sync_error") return "/me/devices";
-  if (notification.type === "booking_waitlist_promoted" || notification.type === "class_cancelled") return "/box/schedule";
+  if (
+    notification.type === "booking_waitlist_promoted" ||
+    notification.type === "booking_waitlisted_by_staff" ||
+    notification.type === "class_cancelled"
+  )
+    return "/box/schedule";
   if (notification.type === "package_expiring") return "/me/payments";
   // ADR-156: the member's referral notices open their invites, staff's the queue.
   if (notification.type === "referral_progress" || notification.type === "referral_reward") return "/me/referrals?tab=invites";

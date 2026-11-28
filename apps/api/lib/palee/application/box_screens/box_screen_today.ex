@@ -36,9 +36,17 @@ defmodule Palee.Application.BoxScreens.BoxScreenToday do
     results =
       Map.new(workouts, &{&1.id, WorkoutDayLeaderboard.results(context, &1.id, day.from, day.to)})
 
+    # ADR-785: members' own variants of each WOD, after its ranked rows.
+    variant_results =
+      Map.new(
+        workouts,
+        &{&1.id, WorkoutDayLeaderboard.variant_results(context, &1, day.from, day.to)}
+      )
+
     people_ids =
       Enum.flat_map(classes, &[&1.coach_user_id | ScreenPrivacy.nameable_user_ids(&1.bookings)]) ++
-        Enum.flat_map(Map.values(results), fn rows -> Enum.map(rows, & &1.user_id) end)
+        Enum.flat_map(Map.values(results), fn rows -> Enum.map(rows, & &1.user_id) end) ++
+        Enum.flat_map(Map.values(variant_results), fn rows -> Enum.map(rows, & &1.user_id) end)
 
     {hidden, names} = people(people_ids)
 
@@ -59,7 +67,14 @@ defmodule Palee.Application.BoxScreens.BoxScreenToday do
       leaderboards:
         Enum.map(
           workouts,
-          &leaderboard(context, &1, day, Map.fetch!(results, &1.id), hidden, names)
+          &leaderboard(
+            context,
+            &1,
+            day,
+            {Map.fetch!(results, &1.id), Map.fetch!(variant_results, &1.id)},
+            hidden,
+            names
+          )
         ),
       focus:
         BoxScreens.focus(
@@ -193,10 +208,11 @@ defmodule Palee.Application.BoxScreens.BoxScreenToday do
     }
   end
 
-  defp leaderboard(context, workout, day, results, hidden, names) do
+  defp leaderboard(context, workout, day, {results, variant_results}, hidden, names) do
     %{section: section, rows: rows} =
       WorkoutDayLeaderboard.rank(context, workout, day.from, day.to,
         results: results,
+        variant_results: variant_results,
         exclude_user_ids: MapSet.to_list(hidden),
         limit: @leaderboard_size
       )
@@ -212,7 +228,8 @@ defmodule Palee.Application.BoxScreens.BoxScreenToday do
             name: ScreenPrivacy.first_name(Map.get(names, row.user_id)),
             value: row.value,
             unit: row.unit,
-            scale_level_slug: row.scale_level_slug
+            scale_level_slug: row.scale_level_slug,
+            variant: row.variant
           }
         end)
         |> Enum.reject(&is_nil(&1.name))

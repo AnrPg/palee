@@ -22,6 +22,16 @@ describe("splitRoster", () => {
     expect(waitlist.map((entry) => entry.id)).toEqual(["f", "c", "e", "b"]);
   });
 
+  it("follows the server's numbering, which puts staff «first» entries ahead (ADR-790)", () => {
+    const { waitlist } = splitRoster([
+      { ...booking("p", "waitlisted", "2026-10-01T08:00:00Z", 1), waitlist_position: 2 },
+      { ...booking("q", "waitlisted", "2026-10-01T11:00:00Z", 0), waitlist_position: 1, waitlisted_by_staff: true },
+      { ...booking("r", "waitlisted", "2026-10-01T09:00:00Z", 0), waitlist_position: 3 },
+    ]);
+
+    expect(waitlist.map((entry) => entry.id)).toEqual(["q", "p", "r"]);
+  });
+
   it("does not reorder the caller's array", () => {
     const bookings = [booking("x", "waitlisted", "2026-10-01T10:00:00Z"), booking("y", "waitlisted", "2026-10-01T09:00:00Z")];
     splitRoster(bookings);

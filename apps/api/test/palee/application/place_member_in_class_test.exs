@@ -168,7 +168,9 @@ defmodule Palee.Application.PlaceMemberInClassTest do
     reasons = Map.new(options.classes, &{&1.slot_id, &1.blocked_reason})
     # The member's one visit is held by their booking: only a move can take them.
     assert reasons[open.id] == "finance_allowance_exhausted"
-    assert reasons[full.id] == "slot_full"
+    # ADR-790: a full class offers its waitlist instead; the package decides.
+    assert reasons[full.id] == "finance_allowance_exhausted"
+    assert Enum.find(options.classes, &(&1.slot_id == full.id)).waitlist
     refute Map.has_key?(reasons, booked.id)
 
     # Checking the package reserved nothing.

@@ -142,4 +142,62 @@ test.describe("Member profile › Book or move (ADR-232)", () => {
     await dialog.getByRole("button", { name: "Book", exact: true }).click();
     await expect(dialog).toContainText("Not done: full.");
   });
+
+  test("a full class offers its waitlist, at the end or first in line (ADR-790)", async ({ page }) => {
+    await common(page);
+    const entries: unknown[] = [];
+    await page.route("**/api/org/*/admin/users/u-1/class-waitlist", (route) => {
+      entries.push(bodyOf(route.request()));
+      return route.fulfill(json({ booking: { id: "bk-wait", status: "waitlisted" }, waitlist_position: 1 }, 201));
+    });
+    await page.route("**/api/org/*/admin/users/u-1/class-placement", (route) =>
+      route.fulfill(
+        json({
+          timezone: "Europe/Athens",
+          lookahead_days: 30,
+          bookings: [{ booking_id: "bk-1", slot_id: "s-1", name: "WOD 07:00", scheduled_at: inDays(1, 5), status: "approved" }],
+          classes: [{ ...option("s-3", "WOD 19:00", inDays(1, 17), null, 0), waitlist: true, waitlist_place: 3 }],
+        }),
+      ),
+    );
+
+    await page.goto("/admin/users/u-1");
+    await page.getByRole("button", { name: "Book or move" }).click({ timeout: 60_000 });
+    const dialog = page.getByRole("dialog");
+    const target = dialog.getByTestId("placement-target");
+
+    await target.click();
+    await expect(page.locator('[role="option"][data-value="s-3"]')).toContainText("full · waitlist");
+    await page.keyboard.press("Escape");
+    await chooseOption(page, target, "s-3");
+
+    const position = dialog.getByTestId("waitlist-position");
+    await expect(position.getByRole("radio", { name: "At the end (place 3)" })).toBeChecked();
+    await position.getByRole("radio", { name: "First in line" }).check();
+    await dialog.getByRole("button", { name: "Add to waitlist", exact: true }).click();
+    await expect.poll(() => entries).toEqual([{ slot_id: "s-3", position: "first" }]);
+    await expect(dialog).toBeHidden();
+  });
+
+  test("a move never goes to a waitlist", async ({ page }) => {
+    await common(page);
+    await page.route("**/api/org/*/admin/users/u-1/class-placement", (route) =>
+      route.fulfill(
+        json({
+          timezone: "Europe/Athens",
+          lookahead_days: 30,
+          bookings: [{ booking_id: "bk-1", slot_id: "s-1", name: "WOD 07:00", scheduled_at: inDays(1, 5), status: "approved" }],
+          classes: [{ ...option("s-3", "WOD 19:00", inDays(1, 17), null, 0), waitlist: true, waitlist_place: 1 }],
+        }),
+      ),
+    );
+
+    await page.goto("/admin/users/u-1");
+    await page.getByRole("button", { name: "Book or move" }).click({ timeout: 60_000 });
+    const dialog = page.getByRole("dialog");
+    await chooseOption(page, dialog.getByTestId("placement-from"), "bk-1");
+    await dialog.getByTestId("placement-target").click();
+    await expect(page.locator('[role="option"][data-value="s-3"]')).toHaveAttribute("aria-disabled", "true");
+    await expect(page.locator('[role="option"][data-value="s-3"]')).toContainText("full");
+  });
 });

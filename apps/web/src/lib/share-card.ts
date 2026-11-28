@@ -69,13 +69,16 @@ export function exercisesLine(exercises: CardExercise[], unit = "kg", max = 3): 
   return parts.length > max ? `${shown} +${parts.length - max}` : shown;
 }
 
-/** The viewer's place on a day leaderboard, when they are on it and opted in. */
+/**
+ * The viewer's place on a day leaderboard, when they are on it, ranked and opted in.
+ * A «Παραλλαγή» row (ADR-785) has no rank and does not count in the total.
+ */
 export function leaderboardPlace(
-  rows: Array<{ rank: number; me: boolean; opted_in: boolean }>,
+  rows: Array<{ rank: number | null; me: boolean; opted_in: boolean }>,
 ): { rank: number; total: number } | null {
   const mine = rows.find((row) => row.me);
-  if (!mine || !mine.opted_in) return null;
-  return { rank: mine.rank, total: rows.filter((row) => row.opted_in).length };
+  if (!mine || !mine.opted_in || mine.rank == null) return null;
+  return { rank: mine.rank, total: rows.filter((row) => row.opted_in && row.rank != null).length };
 }
 
 /** Splits text into lines no wider than `maxWidth`, at most `maxLines` (the last ends with …). */

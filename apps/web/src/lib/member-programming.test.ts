@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 import {
   MEMBER_PROGRAMMING_MODES,
   canProgramMorePeople,
+  classTakesVariant,
+  offerableClasses,
   dayFormatter,
   modeRequiresBookedClass,
   modeRequiresProgrammingEntitlement,
@@ -24,8 +26,8 @@ describe("member programming rules (ADR-125)", () => {
     expect(modeRequiresBookedClass("personal")).toBe(false);
   });
 
-  it("requires the personal-programming package grant only for member assignments", () => {
-    expect(modeRequiresProgrammingEntitlement("class_variant")).toBe(true);
+  it("requires the personal-programming package grant only for a separate workout (ADR-785: a variation needs none)", () => {
+    expect(modeRequiresProgrammingEntitlement("class_variant")).toBe(false);
     expect(modeRequiresProgrammingEntitlement("personal")).toBe(true);
     expect(modeRequiresProgrammingEntitlement("class_workout")).toBe(false);
   });
@@ -85,5 +87,33 @@ describe("dayFormatter", () => {
     const long = dayFormatter("el", { weekday: "long", day: "numeric", month: "long" });
     expect(long.format("2026-10-29")).toBe("Πέμπτη 29 Οκτωβρίου");
     expect(dayFormatter("en", { day: "numeric", month: "short" }).formatRange("2026-10-28", "2026-11-03")).toMatch(/Oct 28.*Nov 3/);
+  });
+});
+
+describe("classes a variation can go to (ADR-785)", () => {
+  const now = Date.parse("2026-11-28T10:00:00Z");
+  const slot = (id: string, at: string, extra: { duration_minutes?: number; cancelled_at?: string | null } = {}) => ({
+    id,
+    scheduled_at: at,
+    duration_minutes: 60,
+    cancelled_at: null,
+    ...extra,
+  });
+
+  it("takes a variation until the class ends, also while it runs, never when cancelled", () => {
+    expect(classTakesVariant(slot("a", "2026-11-28T11:00:00Z"), now)).toBe(true);
+    expect(classTakesVariant(slot("b", "2026-11-28T09:30:00Z"), now)).toBe(true);
+    expect(classTakesVariant(slot("c", "2026-11-28T08:00:00Z"), now)).toBe(false);
+    expect(classTakesVariant(slot("d", "2026-11-28T11:00:00Z", { cancelled_at: "2026-11-27T10:00:00Z" }), now)).toBe(false);
+  });
+
+  it("offers the open classes the member has not booked, in time order", () => {
+    const slots = [
+      slot("late", "2026-11-28T18:00:00Z"),
+      slot("booked", "2026-11-28T12:00:00Z"),
+      slot("ended", "2026-11-28T07:00:00Z"),
+      slot("early", "2026-11-28T11:00:00Z"),
+    ];
+    expect(offerableClasses(slots, new Set(["booked"]), now).map((entry) => entry.id)).toEqual(["early", "late"]);
   });
 });

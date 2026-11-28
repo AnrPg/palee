@@ -1376,6 +1376,35 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
     }
   end
 
+  # ADR-790: staff put the member on a full class's waitlist.
+  def build("booking_waitlisted_by_staff", payload, localize) do
+    values = %{
+      class: payload["class_name"] || "",
+      time: payload["class_when"] || payload["class_starts_at"] || ""
+    }
+
+    body =
+      case payload["position"] do
+        position when is_integer(position) ->
+          localize.(
+            "The box put you on the waitlist for %{class} (%{time}). You are number %{position} in line; if a place opens, you are booked automatically.",
+            Map.put(values, :position, position)
+          )
+
+        _unknown ->
+          localize.(
+            "The box put you on the waitlist for %{class} (%{time}). If a place opens, you are booked automatically.",
+            values
+          )
+      end
+
+    %{
+      title: localize.("You are on the waitlist", %{}),
+      body: body,
+      url: payload["url"] || "/box/schedule"
+    }
+  end
+
   # ADR-252: neutral wording; the document's title, never its text.
   def build("document_signature_requested", payload, localize) do
     %{

@@ -22,6 +22,10 @@ defmodule Palee.Scheduling.Booking do
     field :resolution_operation_id, Ecto.UUID
     field :waitlist_priority, :integer, default: 0
     field :waitlisted_at, :utc_datetime_usec
+    # ADR-790: staff who put the member on the waitlist (nil: the member did),
+    # and when staff chose «Πρώτος στη σειρά» for them.
+    field :waitlisted_by_id, :binary_id
+    field :waitlist_front_at, :utc_datetime_usec
     field :guest_name, :string
     field :entitlement_allowance, :string, default: "class_visits"
     field :kind, :string, default: "member"
@@ -45,6 +49,8 @@ defmodule Palee.Scheduling.Booking do
       :client_operation_id,
       :waitlist_priority,
       :waitlisted_at,
+      :waitlisted_by_id,
+      :waitlist_front_at,
       :guest_name,
       :entitlement_allowance,
       :kind
@@ -91,7 +97,7 @@ defmodule Palee.Scheduling.Booking do
 
   @doc "Moves a waitlist entry into the normal booking flow (ADR-097)."
   def promotion_changeset(booking, status) when status in [:pending, :approved] do
-    change(booking, status: status, waitlisted_at: nil)
+    change(booking, status: status, waitlisted_at: nil, waitlist_front_at: nil)
   end
 
   def statuses, do: @statuses
