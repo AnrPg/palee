@@ -762,7 +762,9 @@ defmodule PaleeWeb.PersonalizedMemberProgrammingControllerTest do
 
     # ADR-805: a member whose package books classes gets a day WOD for a visit.
     classes =
-      gym |> customer(:member, "pm_flag_classes") |> then(&give_package(gym, &1, @class_visits_plan))
+      gym
+      |> customer(:member, "pm_flag_classes")
+      |> then(&give_package(gym, &1, @class_visits_plan))
 
     assert %{"allowed" => false, "class_visits" => true} = programming.(classes)
     assert %{"allowed" => true, "grant" => "online_programming"} = programming.(online)

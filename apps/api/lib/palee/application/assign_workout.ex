@@ -111,7 +111,11 @@ defmodule Palee.Application.AssignWorkout do
 
   # ADR-805: members' own day WODs follow a booking's rules; athletes ADR-225.
   defp programming_grants(context, %{athletes: athletes, members: members}, nil, params) do
-    date = AuthorizeMemberDayWod.to_date(context, Map.get(params, :scheduled_for, Map.get(params, "scheduled_for")))
+    date =
+      AuthorizeMemberDayWod.to_date(
+        context,
+        Map.get(params, :scheduled_for, Map.get(params, "scheduled_for"))
+      )
 
     with {:ok, athlete_grants} <- AuthorizeProgramming.grants(context, athletes),
          {:ok, member_grants} <- AuthorizeMemberDayWod.grants(context, members, date) do
@@ -122,7 +126,11 @@ defmodule Palee.Application.AssignWorkout do
   # What each assignee's delivery takes: an online-programming touchpoint
   # (ADR-040) or, ADR-805, one class visit for that day.
   defp charged(context, athletes, grants, params, delivery_id) do
-    date = AuthorizeMemberDayWod.to_date(context, Map.get(params, :scheduled_for, Map.get(params, "scheduled_for")))
+    date =
+      AuthorizeMemberDayWod.to_date(
+        context,
+        Map.get(params, :scheduled_for, Map.get(params, "scheduled_for"))
+      )
 
     Enum.flat_map(athletes, fn athlete ->
       grant = grants[athlete.id]
