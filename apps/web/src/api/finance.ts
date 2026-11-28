@@ -284,6 +284,9 @@ export type PackageRemoval = {
   voided_invoice_count: number;
   undo_until: string;
   undone_at?: string | null;
+  /** «Αλλαγή πακέτου»: the package that took this one's place today. */
+  replacement_subscription_id?: string | null;
+  replacement_package_name?: string | null;
 };
 
 export async function fetchPackageRemovalPreview(token: string, userId: string, subscriptionId: string) {
@@ -293,12 +296,15 @@ export async function fetchPackageRemovalPreview(token: string, userId: string, 
   );
 }
 
-/** ADR-660: removes the package from today; it can be undone until `undo_until`. */
+/**
+ * ADR-660: removes the package from today, or changes it for
+ * `replacement_package_id` in the same step; it can be undone until `undo_until`.
+ */
 export async function removeFinancePackage(
   token: string,
   userId: string,
   subscriptionId: string,
-  body: { invoice_choice?: "void" | "keep"; reason?: string; reason_shared?: boolean },
+  body: { invoice_choice?: "void" | "keep"; reason?: string; reason_shared?: boolean; replacement_package_id?: string },
 ) {
   return apiRequest<{ removal: PackageRemoval }>(
     `/admin/finance/members/${userId}/subscriptions/${encodeURIComponent(subscriptionId)}/removal`,

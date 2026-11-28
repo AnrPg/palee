@@ -20586,7 +20586,15 @@
     "confirm": "Retirar pacote",
     "removing": "A retirar…",
     "removed": "«{package}» foi retirado a {name}.",
-    "undo": "Anular"
+    "undo": "Anular",
+    "change": "Mudar de pacote",
+    "addAlongside": "Ou adiciona-o como segundo pacote",
+    "changeTitle": "Mudar «{package}» para «{replacement}»?",
+    "changeTitleLoading": "Mudar de pacote",
+    "changeFromToday": "A partir de hoje vale «{replacement}». «{package}» termina e não volta a ser cobrado.",
+    "confirmChange": "Mudar de pacote",
+    "changing": "A mudar…",
+    "changed": "«{package}» passou a «{replacement}» · {name}"
   },
   "PlatformWorkoutKinds": {
     "back": "Organizações",

@@ -965,6 +965,13 @@ msgstr ""
 msgid "Your package was removed"
 msgstr ""
 
+# ADR-660: staff changed the member's package for another one.
+msgid "%{box} changed your package from %{package} to %{replacement}."
+msgstr ""
+
+msgid "Your package was changed"
+msgstr ""
+
 msgid "Palee reviewed your workout type"
 msgstr ""
 

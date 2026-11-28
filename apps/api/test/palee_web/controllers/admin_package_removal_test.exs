@@ -319,6 +319,134 @@ defmodule PaleeWeb.AdminPackageRemovalTest do
            |> json_response(403)
   end
 
+  defp free_package!(ctx) do
+    {:ok, free} =
+      Finance.create_package(ctx.staff, %{
+        code: "free-#{System.unique_integer([:positive])}",
+        name: "Δωρεάν",
+        package_type: "membership",
+        base_price_cents: 0
+      })
+
+    free
+  end
+
+  defp active_subscriptions(ctx),
+    do: Enum.filter(profile(ctx).package_subscriptions, &(&1.status == "active"))
+
+  test "«Αλλαγή πακέτου» ends the paid package and its invoice, starts the new one, and nothing comes back",
+       ctx do
+    invoice = open_invoice(ctx)
+    free = free_package!(ctx)
+
+    body =
+      ctx.conn
+      |> authed(ctx.owner)
+      |> post(removal_path(ctx), %{
+        invoice_choice: "void",
+        replacement_package_id: free.id,
+        reason: "Test account"
+      })
+      |> json_response(201)
+
+    assert %{
+             "package_name" => "Μηνιαίο",
+             "replacement_package_name" => "Δωρεάν",
+             "replacement_subscription_id" => replacement_id,
+             "voided_invoice_count" => 1
+           } = body["removal"]
+
+    # One package, the new one; the old one and its invoice are gone for good.
+    assert [%{id: ^replacement_id, membership_package_id: free_id}] = active_subscriptions(ctx)
+    assert free_id == free.id
+    assert subscription(ctx).status == "cancelled"
+    assert Enum.find(profile(ctx).invoices, &(&1.id == invoice.id)).status == "void"
+
+    # The hourly run, today and on the days after, issues nothing again
+    # (it used to bring the invoice and «Ληξιπρόθεσμο» back every day).
+    today = Organizations.local_today(ctx.box.id)
+
+    for day <- [today, Date.add(today, 1), Date.shift(today, month: 1)] do
+      Finance.charge_due_subscriptions(ctx.staff, day)
+    end
+
+    assert Enum.all?(profile(ctx).invoices, &(&1.status == "void"))
+    assert Finance.membership_outstanding_balance_cents(ctx.staff, ctx.membership.id) == 0
+    assert profile(ctx).membership.status_shown == "comped"
+
+    # The member hears that the package changed, and keeps their bookings.
+    {:ok, removal} = removal_record(ctx, body["removal"]["id"])
+
+    assert :ok =
+             PackageRemoval.settle(
+               %{organization_id: ctx.box.id},
+               removal.id,
+               after_undo(removal)
+             )
+
+    assert [payload] = notifications(ctx)
+    assert payload["replacement_package_name"] == "Δωρεάν"
+    assert payload["body"] =~ "Δωρεάν"
+    assert payload["cancelled_bookings"] in [0, "0"]
+  end
+
+  test "«Αλλαγή πακέτου» to the same package starts it again from a clean slate", ctx do
+    invoice = open_invoice(ctx)
+
+    %{"removal" => %{"replacement_subscription_id" => replacement_id}} =
+      ctx.conn
+      |> authed(ctx.owner)
+      |> post(removal_path(ctx), %{
+        invoice_choice: "void",
+        replacement_package_id: ctx.subscription.membership_package_id
+      })
+      |> json_response(201)
+
+    assert [%{id: ^replacement_id}] = active_subscriptions(ctx)
+    assert Enum.find(profile(ctx).invoices, &(&1.id == invoice.id)).status == "void"
+
+    # Its first period is charged once, as for any new package.
+    assert [charge] = Enum.filter(profile(ctx).invoices, &(&1.status in ["issued", "overdue"]))
+    assert charge.membership_package_subscription_id == replacement_id
+  end
+
+  test "«Αναίρεση» of a change gives the old package back and takes the new one away", ctx do
+    invoice = open_invoice(ctx)
+    free = free_package!(ctx)
+
+    %{"removal" => %{"id" => removal_id}} =
+      ctx.conn
+      |> authed(ctx.owner)
+      |> post(removal_path(ctx), %{invoice_choice: "void", replacement_package_id: free.id})
+      |> json_response(201)
+
+    assert ctx.conn
+           |> authed(ctx.owner)
+           |> delete("#{admin(ctx)}/package-removals/#{removal_id}")
+           |> json_response(200)
+
+    assert [%{id: id}] = active_subscriptions(ctx)
+    assert id == ctx.subscription.id
+
+    assert Enum.find(profile(ctx).invoices, &(&1.id == invoice.id)).status in [
+             "issued",
+             "overdue"
+           ]
+  end
+
+  test "a change to a package that does not exist or is inactive changes nothing", ctx do
+    assert ctx.conn
+           |> authed(ctx.owner)
+           |> post(removal_path(ctx), %{
+             invoice_choice: "void",
+             replacement_package_id: Ecto.UUID.generate()
+           })
+           |> json_response(404)
+
+    assert subscription(ctx).status == "active"
+    assert open_invoice(ctx)
+  end
+
   test "after the undo minute the member's upcoming bookings are cancelled and counted", ctx do
     booking = upcoming_booking!(ctx)
 

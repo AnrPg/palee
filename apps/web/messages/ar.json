@@ -20586,7 +20586,15 @@
     "confirm": "إزالة الباقة",
     "removing": "جارٍ الإزالة…",
     "removed": "أُزيلت «{package}» من {name}.",
-    "undo": "تراجع"
+    "undo": "تراجع",
+    "change": "تغيير الباقة",
+    "addAlongside": "أو أضفها كباقة ثانية",
+    "changeTitle": "تغيير «{package}» إلى «{replacement}»؟",
+    "changeTitleLoading": "تغيير الباقة",
+    "changeFromToday": "من اليوم تسري «{replacement}». تتوقف «{package}» ولن تُحتسب مجددًا.",
+    "confirmChange": "تغيير الباقة",
+    "changing": "جارٍ التغيير…",
+    "changed": "أصبحت «{package}» الآن «{replacement}» · {name}"
   },
   "PlatformWorkoutKinds": {
     "back": "المؤسسات",

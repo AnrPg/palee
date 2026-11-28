@@ -108,6 +108,35 @@ defmodule Palee.Finance.MemberStandingTest do
     assert {:ok, []} = Finance.charge_subscription_now(subscription.id)
   end
 
+  test "a charge staff voided or purged is never issued again by the hourly run",
+       %{owner: owner, user: user, membership: membership, package: package} do
+    starts_on = Date.shift(gym_today(), month: -1)
+
+    {:ok, _subscription} =
+      Finance.assign_package(membership.id, package.id, %{starts_on: starts_on, charge_now: false})
+
+    assert [first, second] = Finance.charge_due_subscriptions(gym_today())
+
+    # Staff void one period's charge and purge the other («Εκκαθάριση»).
+    assert {:ok, _voided} = Finance.void_invoice(first.id, %{})
+
+    assert {:ok, _purged} =
+             Finance.soft_delete_finance_record(:invoice, second.id, owner.id, %{
+               "reason" => "Test account"
+             })
+
+    # Before 2026-11-28 the next run issued both periods again, every hour.
+    assert Finance.charge_due_subscriptions(gym_today()) == []
+    assert Finance.charge_due_subscriptions(Date.add(gym_today(), 1)) == []
+    assert Enum.all?(profile(user).invoices, &(&1.status == "void"))
+    assert Finance.membership_outstanding_balance_cents(membership.id) == 0
+
+    # The next period is a new one: it is charged as usual.
+    next_period = Date.shift(starts_on, month: 2)
+    assert [renewal] = Finance.charge_due_subscriptions(next_period)
+    assert renewal.service_period_start == next_period
+  end
+
   test "the hourly run charges each new period once, and only while renewal is on",
        %{context: context, user: user, membership: membership, package: package} do
     starts_on = Date.shift(gym_today(), month: -2)

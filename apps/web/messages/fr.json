@@ -20586,7 +20586,15 @@
     "confirm": "Retirer la formule",
     "removing": "Retrait…",
     "removed": "«{package}» a été retiré à {name}.",
-    "undo": "Annuler le retrait"
+    "undo": "Annuler le retrait",
+    "change": "Changer de forfait",
+    "addAlongside": "Ou l’ajouter comme second forfait",
+    "changeTitle": "Remplacer «{package}» par «{replacement}» ?",
+    "changeTitleLoading": "Changer de forfait",
+    "changeFromToday": "Dès aujourd’hui, «{replacement}» s’applique. «{package}» s’arrête et n’est plus jamais facturé.",
+    "confirmChange": "Changer de forfait",
+    "changing": "Changement…",
+    "changed": "«{package}» est devenu «{replacement}» · {name}"
   },
   "PlatformWorkoutKinds": {
     "back": "Organisations",

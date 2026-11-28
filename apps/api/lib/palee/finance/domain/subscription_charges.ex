@@ -143,6 +143,24 @@ defmodule Palee.Finance.Domain.SubscriptionCharges do
     end
   end
 
+  @doc """
+  The period starts already charged, from every charge document Palee ever
+  issued for the subscription (`"subscription"` or `"renewal"` invoices),
+  whatever became of it: paid, still open, voided or purged.
+
+  A period is charged once. When staff void or purge its charge they decide
+  it is not owed, so Palee never issues it again by itself (it used to,
+  every hour, because only live charges counted). Staff who want it billed
+  after all add a charge by hand.
+  """
+  def charged_starts(documents) do
+    documents
+    |> Enum.filter(&(field(&1, :invoice_type) in ["subscription", "renewal"]))
+    |> Enum.map(&field(&1, :service_period_start))
+    |> Enum.filter(&match?(%Date{}, &1))
+    |> Enum.uniq()
+  end
+
   @doc "Whether `start` begins the subscription's first period."
   def first_period?(subscription, %Date{} = start),
     do: field(subscription, :starts_on) == start

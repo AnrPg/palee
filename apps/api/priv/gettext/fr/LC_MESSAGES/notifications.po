@@ -970,6 +970,13 @@ msgstr "Raison : %{reason}"
 msgid "Your package was removed"
 msgstr "Ta formule a été retirée"
 
+# ADR-660: staff changed the member's package for another one.
+msgid "%{box} changed your package from %{package} to %{replacement}."
+msgstr "%{box} a changé ton forfait %{package} pour %{replacement}."
+
+msgid "Your package was changed"
+msgstr "Ton forfait a été changé"
+
 msgid "Palee reviewed your workout type"
 msgstr "Palee a examiné ton type d’entraînement"
 

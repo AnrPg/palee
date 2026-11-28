@@ -17,13 +17,18 @@ defmodule Palee.Application.PackageRemoval do
 
   Whoever takes payments may remove a package; writing a debt off needs
   `manage_billing`. Every step is logged with who did it.
+
+  «Αλλαγή πακέτου» is the same removal with `replacement_package_id`: the
+  new package starts today in the same transaction (never two packages
+  side by side by mistake, never a moment without one), the member is told
+  their package changed, and undo takes the new package back as well.
   """
 
   require Logger
 
   alias Palee.Application.RevokeAccess
   alias Palee.{Finance, Notifications, Organizations, Scheduling}
-  alias Palee.Finance.Domain.PackageRemovalPolicy
+  alias Palee.Finance.Domain.{PackageAssignmentPolicy, PackageRemovalPolicy}
   alias Palee.Organizations.Domain.TenantAuthorization
   alias Palee.Workers.SettlePackageRemovalJob
 
@@ -47,20 +52,29 @@ defmodule Palee.Application.PackageRemoval do
   @doc """
   Removes the package. `params`: `invoice_choice` (`"void"` or `"keep"`,
   needed when there is an unpaid invoice and the staff member may void it),
-  `reason` (optional) and `reason_shared` (the member sees the reason).
+  `reason` (optional), `reason_shared` (the member sees the reason) and
+  `replacement_package_id` (a package change: this package starts today).
   """
   def remove(context, user_id, subscription_id, params) when is_map(params) do
+    replacement_id = blank_to_nil(Map.get(params, "replacement_package_id"))
+
     attrs = %{
       invoice_choice: Map.get(params, "invoice_choice"),
       may_write_off?: may_write_off?(context),
       actor_id: context.user_id,
       actor_roles: roles(context),
       reason: Map.get(params, "reason"),
-      reason_shared: Map.get(params, "reason_shared") == true
+      reason_shared: Map.get(params, "reason_shared") == true,
+      replacement_package_id: replacement_id
     }
 
     with {:ok, membership} <- membership(context, user_id),
+         :ok <- replacement_assignable(context, replacement_id),
          {:ok, removal} <- Finance.remove_package(context, membership.id, subscription_id, attrs) do
+      # ADR-642: a package completes a purchase admission.
+      if removal.replacement_subscription_id,
+        do: Organizations.purchase_package_started(context.organization_id, user_id)
+
       if removal.leaving_changed,
         do:
           Organizations.set_box_access_until(context.organization_id, user_id, removal.leaving_on)
@@ -157,10 +171,34 @@ defmodule Palee.Application.PackageRemoval do
       box_name: Map.get(box, :name),
       box_slug: Map.get(box, :slug),
       package_name: removal.package_name,
+      replacement_package_name: removal.replacement_package_name,
       cancelled_bookings: removal.cancelled_bookings || 0,
       reason: if(removal.reason_shared, do: removal.reason, else: nil)
     })
   end
+
+  defp replacement_assignable(_context, nil), do: :ok
+
+  defp replacement_assignable(context, package_id) do
+    with {:ok, _uuid} <- cast_uuid(package_id),
+         package when not is_nil(package) <- Finance.get_package(context, package_id) do
+      PackageAssignmentPolicy.can_assign?(package)
+    else
+      _missing -> {:error, :not_found}
+    end
+  end
+
+  defp cast_uuid(value) when is_binary(value), do: Ecto.UUID.cast(value)
+  defp cast_uuid(_value), do: :error
+
+  defp blank_to_nil(value) when is_binary(value) do
+    case String.trim(value) do
+      "" -> nil
+      trimmed -> trimmed
+    end
+  end
+
+  defp blank_to_nil(_value), do: nil
 
   defp membership(context, user_id) do
     case Finance.get_member_profile(context, user_id) do
@@ -185,7 +223,8 @@ defmodule Palee.Application.PackageRemoval do
         "subscription_id=#{removal.subscription_id} user_id=#{removal.user_id} " <>
         "actor_id=#{Map.get(context, :user_id)} actor_roles=#{Enum.join(roles(context), ",")} " <>
         "invoice_choice=#{removal.invoice_choice} voided=#{removal.voided_invoice_count} " <>
-        "cancelled_bookings=#{removal.cancelled_bookings} reason_given=#{not is_nil(removal.reason)}"
+        "cancelled_bookings=#{removal.cancelled_bookings} reason_given=#{not is_nil(removal.reason)} " <>
+        "replacement_subscription_id=#{removal.replacement_subscription_id}"
     )
   end
 end

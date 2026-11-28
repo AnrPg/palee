@@ -17,7 +17,8 @@ defmodule Palee.ActivityLog.Domain.TenantDataPolicy do
             basis:
               "The activity log records who on the staff changed what, when and why, including money and access decisions; the box keeps it for accountability for as long as it exists; the accounting records themselves are retained by their own contexts.",
             tables: [
-              %{table: "activity_log_backfills"},
+              # One row per box, keyed by the box itself (no `id`).
+              %{table: "activity_log_backfills", key: "organization_id"},
               %{table: "activity_log_entries"}
             ]
           })

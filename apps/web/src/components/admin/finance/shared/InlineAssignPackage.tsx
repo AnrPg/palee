@@ -24,13 +24,18 @@ interface Props {
   onAssign: (packageId: string) => Promise<unknown>;
   /** ADR-660: «Αφαίρεση πακέτου…» for the package the member holds now. */
   onRemove?: () => void;
+  /**
+   * ADR-660: «Αλλαγή πακέτου» for a member who holds one: the picked package
+   * replaces it (after a confirm), instead of being added beside it.
+   */
+  onChange?: (replacement: { id: string; name: string }) => void;
 }
 
 /**
  * The ledger's «Ανάθεση» menu for a πακέτο συνδρομής. It is a ui/Popover, so
  * a press on the package list (its own portal) counts as inside the menu.
  */
-export function InlineAssignPackage({ currentCode, currentLabel, packages, pending, onAssign, onRemove }: Props) {
+export function InlineAssignPackage({ currentCode, currentLabel, packages, pending, onAssign, onRemove, onChange }: Props) {
   const i18n = useUiTranslations();
   const t = useTranslations("PackageRemoval");
   const [open, setOpen] = useState(false);
@@ -53,6 +58,16 @@ export function InlineAssignPackage({ currentCode, currentLabel, packages, pendi
     } catch (reason) {
       setError(reason);
     }
+  }
+
+  const holds = Boolean(currentLabel || currentCode);
+  const changes = holds && Boolean(onChange);
+
+  function handleChange() {
+    const pkg = packages.find((item) => String(item.id) === selectedId);
+    if (!pkg || !onChange) return;
+    close();
+    onChange({ id: selectedId, name: String(pkg.name || pkg.code) });
   }
 
   return (
@@ -117,13 +132,26 @@ export function InlineAssignPackage({ currentCode, currentLabel, packages, pendi
         </Select>
         <button
           type="button"
-          onClick={handleAssign}
+          onClick={changes ? handleChange : handleAssign}
           disabled={!selectedId || pending}
           className="w-full rounded-lg px-3 py-2.5 text-sm font-semibold transition-opacity disabled:opacity-40"
           style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}
+          data-testid={changes ? "package-change-open" : undefined}
         >
-          {pending ? i18n("assigning4d16a1a") : i18n("assign2444928")}
+          {changes ? t("change") : pending ? i18n("assigning4d16a1a") : i18n("assign2444928")}
         </button>
+        {changes ? (
+          <button
+            type="button"
+            onClick={handleAssign}
+            disabled={!selectedId || pending}
+            className="mt-2 w-full text-center text-xs font-semibold disabled:opacity-40"
+            style={{ color: "var(--muted)" }}
+            data-testid="package-add-alongside"
+          >
+            {pending ? i18n("assigning4d16a1a") : t("addAlongside")}
+          </button>
+        ) : null}
         {error ? (
           <ErrorNotice variant="field" className="mt-2">
             {localizeError(error, i18n)}

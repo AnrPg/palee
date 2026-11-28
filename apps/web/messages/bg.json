@@ -20586,7 +20586,15 @@
     "confirm": "Премахни пакета",
     "removing": "Премахване…",
     "removed": "«{package}» беше премахнат от {name}.",
-    "undo": "Отмени"
+    "undo": "Отмени",
+    "change": "Смяна на пакета",
+    "addAlongside": "Или го добави като втори пакет",
+    "changeTitle": "Смяна от «{package}» на «{replacement}»?",
+    "changeTitleLoading": "Смяна на пакета",
+    "changeFromToday": "От днес важи «{replacement}». «{package}» спира и не се таксува повече.",
+    "confirmChange": "Смяна на пакета",
+    "changing": "Смяна…",
+    "changed": "«{package}» вече е «{replacement}» · {name}"
   },
   "PlatformWorkoutKinds": {
     "back": "Организации",

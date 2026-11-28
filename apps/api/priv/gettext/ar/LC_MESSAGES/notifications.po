@@ -974,6 +974,13 @@ msgstr "السبب: %{reason}"
 msgid "Your package was removed"
 msgstr "أُزيلت باقتك"
 
+# ADR-660: staff changed the member's package for another one.
+msgid "%{box} changed your package from %{package} to %{replacement}."
+msgstr "غيّر %{box} باقتك من %{package} إلى %{replacement}."
+
+msgid "Your package was changed"
+msgstr "تم تغيير باقتك"
+
 msgid "Palee reviewed your workout type"
 msgstr "راجعت Palee نوع التمرين الخاص بك"
 

@@ -20586,7 +20586,15 @@
     "confirm": "Remove package",
     "removing": "Removing…",
     "removed": "«{package}» was removed from {name}.",
-    "undo": "Undo"
+    "undo": "Undo",
+    "change": "Change package",
+    "addAlongside": "Or add it as a second package",
+    "changeTitle": "Change «{package}» to «{replacement}»?",
+    "changeTitleLoading": "Change package",
+    "changeFromToday": "From today «{replacement}» applies. «{package}» stops and is never charged again.",
+    "confirmChange": "Change package",
+    "changing": "Changing…",
+    "changed": "«{package}» is now «{replacement}» · {name}"
   },
   "PlatformWorkoutKinds": {
     "back": "Organisations",

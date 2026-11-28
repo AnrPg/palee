@@ -19,7 +19,10 @@ defmodule Palee.TenantData.Domain.RetentionReview do
 
   A table spec is `%{table: name}` plus optional `parent: {table, fk}` for child
   tables without `organization_id`, and `rls: :user | {:user_via, table, fk}`
-  for personal tables whose row security keys on the owning user.
+  for personal tables whose row security keys on the owning user. `key:
+  column` names a table's own row key when it has no `id` column (a table
+  keyed by `organization_id`, one row per box); exports order and select by
+  it.
   """
 
   @dispositions [:purge, :retain, :retain_anonymized]
@@ -170,9 +173,12 @@ defmodule Palee.TenantData.Domain.RetentionReview do
   def valid_identifier?(name) when is_binary(name), do: Regex.match?(@identifier, name)
   def valid_identifier?(_name), do: false
 
+  @doc "The column that identifies a row of the table (`id` unless the spec names another)."
+  def row_key(spec), do: Map.get(spec, :key, "id")
+
   defp validate_spec!(%{table: table} = spec) do
     names =
-      [table] ++
+      [table, row_key(spec)] ++
         case Map.get(spec, :parent) do
           nil -> []
           {parent, fk} -> [parent, fk]

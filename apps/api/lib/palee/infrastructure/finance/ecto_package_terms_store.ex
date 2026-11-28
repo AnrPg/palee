@@ -21,7 +21,7 @@ defmodule Palee.Infrastructure.Finance.EctoPackageTermsStore do
     SubscriptionTermUpdate
   }
 
-  alias Palee.Finance.Domain.PackageTermChanges
+  alias Palee.Finance.Domain.{PackageTermChanges, SubscriptionCharges}
   alias Palee.Infrastructure.Tenancy.{GymClock, RepoContext}
   alias Palee.Repo
 
@@ -421,13 +421,12 @@ defmodule Palee.Infrastructure.Finance.EctoPackageTermsStore do
         select: {invoice.membership_package_subscription_id, invoice}
       )
 
+    # The same periods the hourly billing counts as charged: a voided or
+    # purged charge is never issued again, so its period counts too.
     starts =
       (Repo.all(by_header) ++ Repo.all(by_lines))
-      |> Enum.filter(fn {_id, invoice} ->
-        invoice.invoice_type in ["subscription", "renewal"] and invoice.status != "void" and
-          is_nil(invoice.deleted_at) and match?(%Date{}, invoice.service_period_start)
-      end)
-      |> Enum.group_by(&elem(&1, 0), &elem(&1, 1).service_period_start)
+      |> Enum.group_by(&elem(&1, 0), &elem(&1, 1))
+      |> Map.new(fn {id, invoices} -> {id, SubscriptionCharges.charged_starts(invoices)} end)
 
     Enum.map(holders, &Map.put(&1, :charged_starts, Map.get(starts, &1.subscription.id, [])))
   end

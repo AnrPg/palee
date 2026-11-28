@@ -156,6 +156,12 @@ defmodule Palee.ActivityLog do
   @doc "Whether a reader may open the log at all (any area)."
   def readable?(context), do: Visibility.any?(Map.get(context, :capabilities))
 
+  @doc "The areas a reader sees in full and in part (their own rows only)."
+  def readable_areas(context), do: Visibility.readable(Map.get(context, :capabilities))
+
+  @doc "Whether a reader may export the log."
+  def can_export?(context), do: Visibility.can_export?(Map.get(context, :capabilities))
+
   @doc "The owner's daily summary (12B): sensitive rows in `[from, to)`."
   def sensitive_between(context, %DateTime{} = from, %DateTime{} = to) do
     RepoContext.run(context, fn ->

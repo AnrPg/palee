@@ -1145,7 +1145,9 @@ defmodule PaleeWeb.AdminFinanceController do
       invoice_choice: %Schema{type: :string, enum: ["void", "keep"], nullable: true},
       voided_invoice_count: %Schema{type: :integer},
       undo_until: %Schema{type: :string, format: :"date-time"},
-      undone_at: %Schema{type: :string, format: :"date-time", nullable: true}
+      undone_at: %Schema{type: :string, format: :"date-time", nullable: true},
+      replacement_subscription_id: %Schema{type: :string, format: :uuid, nullable: true},
+      replacement_package_name: %Schema{type: :string, nullable: true}
     },
     required: [:id, :subscription_id, :package_name, :removed_on, :undo_until]
   }
@@ -1212,7 +1214,7 @@ defmodule PaleeWeb.AdminFinanceController do
 
   operation(:remove_package,
     summary:
-      "Remove a member's package completely from today (ADR-660); undone within a minute, then settled",
+      "Remove a member's package completely from today, or change it for another (ADR-660); undone within a minute, then settled",
     parameters: [@id_parameter, @subscription_id_parameter],
     request_body:
       {"Removal", "application/json",
@@ -1221,7 +1223,14 @@ defmodule PaleeWeb.AdminFinanceController do
          properties: %{
            invoice_choice: %Schema{type: :string, enum: ["void", "keep"], nullable: true},
            reason: %Schema{type: :string, nullable: true, maxLength: 500},
-           reason_shared: %Schema{type: :boolean}
+           reason_shared: %Schema{type: :boolean},
+           replacement_package_id: %Schema{
+             type: :string,
+             format: :uuid,
+             nullable: true,
+             description:
+               "«Αλλαγή πακέτου»: this package starts today in the same step, in place of the removed one"
+           }
          }
        }},
     responses: [
@@ -1243,13 +1252,26 @@ defmodule PaleeWeb.AdminFinanceController do
              params["subscription_id"],
              conn.body_params || %{}
            ) do
-      Palee.ActivityLog.note(%{subject_label: removal[:package_name]})
+      Palee.ActivityLog.note(removal_activity(removal))
 
       conn
       |> put_status(:created)
       |> json(%{removal: removal})
     end
   end
+
+  # ADR-760: a package change records both packages, old and new.
+  defp removal_activity(%{replacement_package_name: replacement} = removal)
+       when is_binary(replacement) do
+    %{
+      subject_label: "#{removal[:package_name]} → #{replacement}",
+      details: %{
+        changes: [%{field: "package", before: removal[:package_name], after: replacement}]
+      }
+    }
+  end
+
+  defp removal_activity(removal), do: %{subject_label: removal[:package_name]}
 
   operation(:undo_package_removal,
     summary: "Undo a package removal while its minute is open (ADR-660)",

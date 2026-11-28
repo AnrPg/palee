@@ -971,6 +971,13 @@ msgstr "Причина: %{reason}"
 msgid "Your package was removed"
 msgstr "Твой пакет удалён"
 
+# ADR-660: staff changed the member's package for another one.
+msgid "%{box} changed your package from %{package} to %{replacement}."
+msgstr "%{box} сменил твой пакет с %{package} на %{replacement}."
+
+msgid "Your package was changed"
+msgstr "Твой пакет изменён"
+
 msgid "Palee reviewed your workout type"
 msgstr "Palee рассмотрела ваш тип тренировки"
 

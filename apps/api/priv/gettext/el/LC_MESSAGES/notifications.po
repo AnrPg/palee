@@ -970,6 +970,13 @@ msgstr "Λόγος: %{reason}"
 msgid "Your package was removed"
 msgstr "Το πακέτο σου αφαιρέθηκε"
 
+# ADR-660: staff changed the member's package for another one.
+msgid "%{box} changed your package from %{package} to %{replacement}."
+msgstr "Το %{box} άλλαξε το πακέτο σου από «%{package}» σε «%{replacement}»."
+
+msgid "Your package was changed"
+msgstr "Το πακέτο σου άλλαξε"
+
 msgid "Palee reviewed your workout type"
 msgstr "Η Palee εξέτασε τον τύπο προπόνησής σου"
 

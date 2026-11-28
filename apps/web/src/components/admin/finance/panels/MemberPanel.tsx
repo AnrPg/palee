@@ -83,11 +83,18 @@ export function MemberPanel({
   userId,
   nickname,
   onClose,
+  onRemovePackage,
 }: {
   userId: string;
   nickname: string;
   onClose: () => void;
+  /**
+   * ADR-660: «Αφαίρεση πακέτου…» for each package the member holds, so a
+   * second package (an old one that kept billing) can be ended too.
+   */
+  onRemovePackage?: (subscriptionId: string) => void;
 }) {
+  const removalT = useTranslations("PackageRemoval");
   const uiLocale = useUiLocale();
   const i18n = useUiTranslations();
   const statusLabel = useStatusLabel();
@@ -368,6 +375,17 @@ export function MemberPanel({
                     <p className="text-xs mt-0.5" style={{ color: "var(--dim)" }}>
                       {field(sub, "billing_period_snapshot")} · {money(uiLocale, sub.price_cents_snapshot)} {i18n("ends74f5b4d")} {field(sub, "ends_on") || "—"}
                     </p>
+                    {onRemovePackage && ["active", "paused"].includes(field(sub, "status")) && !field(sub, "removed_on") ? (
+                      <button
+                        type="button"
+                        onClick={() => onRemovePackage(field(sub, "id"))}
+                        className="mt-1 text-xs font-semibold"
+                        style={{ color: "var(--danger)" }}
+                        data-testid="panel-package-remove"
+                      >
+                        {removalT("open")}
+                      </button>
+                    ) : null}
                     {sharedSubscriptions([sub]).length > 0 ? (
                       <SubscriptionBeneficiaries payerUserId={userId} subscription={sub} />
                     ) : null}

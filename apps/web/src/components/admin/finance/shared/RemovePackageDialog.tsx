@@ -35,15 +35,20 @@ export function removalReady(preview: PackageRemovalPreview | undefined, choice:
   return choice !== null;
 }
 
+/** The package that takes the removed one's place («Αλλαγή πακέτου»). */
+export type ReplacementPackage = { id: string; name: string };
+
 /** What the removal sends: the choice only when one was needed. */
 export function removalBody(
   preview: PackageRemovalPreview,
   choice: InvoiceChoice | null,
   reason: string,
   shareReason: boolean,
+  replacement?: ReplacementPackage | null,
 ) {
   const trimmed = reason.trim();
   return {
+    ...(replacement ? { replacement_package_id: replacement.id } : {}),
     ...(preview.untouched_invoices.length > 0 && preview.may_write_off && choice ? { invoice_choice: choice } : {}),
     ...(trimmed ? { reason: trimmed } : {}),
     // ADR-760 (6A): «Να το δει και το μέλος», always sent.
@@ -54,12 +59,15 @@ export function removalBody(
 /**
  * ADR-660: «Αφαίρεση πακέτου…». Says what the removal does (the package
  * gives nothing from today, upcoming bookings go after the undo minute,
- * what happens to the money) before staff confirm.
+ * what happens to the money) before staff confirm. With `replacement` it is
+ * «Αλλαγή πακέτου»: the same removal, and the new package starts today in
+ * the same step, so the old one never keeps billing beside it.
  */
 export function RemovePackageDialog({
   userId,
   memberName,
   subscriptionId,
+  replacement = null,
   onClose,
   onRemoved,
   onOpenRefund,
@@ -67,6 +75,7 @@ export function RemovePackageDialog({
   userId: string;
   memberName: string;
   subscriptionId: string;
+  replacement?: ReplacementPackage | null;
   onClose: () => void;
   onRemoved: (removal: PackageRemoval) => void;
   /** Opens where staff give money back (the member's panel). */
@@ -90,7 +99,7 @@ export function RemovePackageDialog({
   const preview = previewQuery.data?.removal;
 
   const mutation = useMutation({
-    mutationFn: () => removeFinancePackage(token, userId, subscriptionId, removalBody(preview!, choice, reason, shareReason)),
+    mutationFn: () => removeFinancePackage(token, userId, subscriptionId, removalBody(preview!, choice, reason, shareReason, replacement)),
     onSuccess: ({ removal }) => onRemoved(removal),
   });
 
@@ -128,7 +137,15 @@ export function RemovePackageDialog({
   return (
     <Dialog
       onClose={onClose}
-      title={preview ? t("title", { package: preview.package_name }) : t("titleLoading")}
+      title={
+        preview
+          ? replacement
+            ? t("changeTitle", { package: preview.package_name, replacement: replacement.name })
+            : t("title", { package: preview.package_name })
+          : replacement
+            ? t("changeTitleLoading")
+            : t("titleLoading")
+      }
       description={memberName}
       size="sm"
       variant="center"
@@ -144,7 +161,13 @@ export function RemovePackageDialog({
             onClick={() => mutation.mutate()}
             testId="package-removal-confirm"
           >
-            {mutation.isPending ? t("removing") : t("confirm")}
+            {replacement
+              ? mutation.isPending
+                ? t("changing")
+                : t("confirmChange")
+              : mutation.isPending
+                ? t("removing")
+                : t("confirm")}
           </DialogButton>
         </div>
       }
@@ -156,8 +179,12 @@ export function RemovePackageDialog({
       ) : (
         <div className="flex flex-col gap-3">
           <ul className="flex flex-col gap-2">
-            {line(t("fromToday"), "today")}
-            {preview.upcoming_bookings > 0 ? line(t("bookings", { count: preview.upcoming_bookings }), "bookings") : null}
+            {replacement
+              ? line(t("changeFromToday", { package: preview.package_name, replacement: replacement.name }), "today")
+              : line(t("fromToday"), "today")}
+            {!replacement && preview.upcoming_bookings > 0
+              ? line(t("bookings", { count: preview.upcoming_bookings }), "bookings")
+              : null}
             {untouched.length > 0 && !preview.may_write_off ? line(t("unpaidStays", { amount: money(untouchedCents) }), "unpaid") : null}
             {preview.kept_owed_cents > 0 ? line(t("restStays", { amount: money(preview.kept_owed_cents) }), "rest") : null}
             {preview.paid_cents > 0

@@ -970,6 +970,13 @@ msgstr "סיבה: %{reason}"
 msgid "Your package was removed"
 msgstr "החבילה שלך הוסרה"
 
+# ADR-660: staff changed the member's package for another one.
+msgid "%{box} changed your package from %{package} to %{replacement}."
+msgstr "%{box} שינה את החבילה שלך מ-%{package} ל-%{replacement}."
+
+msgid "Your package was changed"
+msgstr "החבילה שלך שונתה"
+
 msgid "Palee reviewed your workout type"
 msgstr "Palee בדקה את סוג האימון שלך"
 

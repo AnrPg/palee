@@ -20586,7 +20586,15 @@
     "confirm": "Удалить пакет",
     "removing": "Удаление…",
     "removed": "Пакет «{package}» удалён у {name}.",
-    "undo": "Отменить"
+    "undo": "Отменить",
+    "change": "Сменить пакет",
+    "addAlongside": "Или добавить вторым пакетом",
+    "changeTitle": "Сменить «{package}» на «{replacement}»?",
+    "changeTitleLoading": "Сменить пакет",
+    "changeFromToday": "С сегодняшнего дня действует «{replacement}». «{package}» прекращается и больше не списывается.",
+    "confirmChange": "Сменить пакет",
+    "changing": "Смена…",
+    "changed": "«{package}» теперь «{replacement}» · {name}"
   },
   "PlatformWorkoutKinds": {
     "back": "Организации",

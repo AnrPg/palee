@@ -380,36 +380,50 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
   @impl true
   def assign_package(membership_id, package_id, params) do
     Repo.transaction(fn ->
-      with %Membership{} = membership <- locked_membership(membership_id),
-           %MembershipPackage{} = package <-
-             tenant_scope(MembershipPackage)
-             |> where([package], package.id == ^package_id)
-             |> Repo.one(),
-           :ok <- validate_package_active(package),
-           :ok <-
-             SubscriptionSelection.eligible?(
-               package.id,
-               package.params || %{},
-               list_subscriptions(membership.id),
-               channel: :staff,
-               today: GymClock.today()
-             ),
-           {:ok, params} <- payment_model_params(membership, package, string_key_map(params)) do
-        subscription = insert_subscription!(membership, package, params)
-        rejoin!(membership)
-        activate_package_requests!(membership, package, subscription)
+      case locked_membership(membership_id) do
+        %Membership{} = membership ->
+          membership
+          |> assign_package!(package_id, params, rejoin: true)
+          |> normalize_subscription()
 
-        # ADR-274: what the package costs is owed from the day it starts.
-        if params["charge_now"] != false,
-          do: charge_subscription(subscription, GymClock.today()) |> ok_or_rollback!()
-
-        refresh_entitlement_snapshot(membership.id)
-        normalize_subscription(subscription)
-      else
-        nil -> Repo.rollback(:not_found)
-        {:error, reason} -> Repo.rollback(reason)
+        nil ->
+          Repo.rollback(:not_found)
       end
     end)
+  end
+
+  # Assigns a package inside the caller's transaction (the membership row is
+  # locked); rolls back on any refusal. `rejoin: true` brings back a member
+  # who left (a new package); a package change (ADR-660) leaves that as it is.
+  defp assign_package!(%Membership{} = membership, package_id, params, opts) do
+    with %MembershipPackage{} = package <-
+           tenant_scope(MembershipPackage)
+           |> where([package], package.id == ^package_id)
+           |> Repo.one(),
+         :ok <- validate_package_active(package),
+         :ok <-
+           SubscriptionSelection.eligible?(
+             package.id,
+             package.params || %{},
+             list_subscriptions(membership.id),
+             channel: :staff,
+             today: GymClock.today()
+           ),
+         {:ok, params} <- payment_model_params(membership, package, string_key_map(params)) do
+      subscription = insert_subscription!(membership, package, params)
+      if Keyword.get(opts, :rejoin, true), do: rejoin!(membership)
+      activate_package_requests!(membership, package, subscription)
+
+      # ADR-274: what the package costs is owed from the day it starts.
+      if params["charge_now"] != false,
+        do: charge_subscription(subscription, GymClock.today()) |> ok_or_rollback!()
+
+      refresh_entitlement_snapshot(membership.id)
+      subscription
+    else
+      nil -> Repo.rollback(:not_found)
+      {:error, reason} -> Repo.rollback(reason)
+    end
   end
 
   # ADR-291 addendum: however the package is given (the desk's «Είσπραξη»,
@@ -4492,6 +4506,17 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
         |> Repo.update()
         |> ok_or_rollback!()
 
+        # A package change: the new package starts today in the same step,
+        # so the member is never without one and nothing is half done.
+        replacement =
+          case Map.get(attrs, :replacement_package_id) do
+            id when is_binary(id) and id != "" ->
+              assign_package!(membership, id, %{}, rejoin: false)
+
+            _none ->
+              nil
+          end
+
         leaving = leave_after_removal!(membership, today)
 
         removal =
@@ -4511,7 +4536,9 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
             previous_leaving_on: leaving.previous_leaving_on,
             previous_expires_on: leaving.previous_expires_on,
             leaving_changed: leaving.changed?,
-            undo_until: PackageRemovalPolicy.undo_until(now)
+            undo_until: PackageRemovalPolicy.undo_until(now),
+            replacement_subscription_id: replacement && replacement.id,
+            replacement_package_name: replacement && subscription_package_name(replacement)
           }
           |> PackageRemoval.changeset()
           |> Repo.insert()
@@ -4536,6 +4563,8 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
            :ok <- PackageRemovalPolicy.undoable(removal, now),
            %MembershipPackageSubscription{} = subscription <-
              locked_subscription(membership.id, removal.subscription_id) do
+        undo_replacement!(membership, removal, now)
+
         subscription
         |> MembershipPackageSubscription.removal_changeset(%{
           status: removal.previous_status,
@@ -4569,6 +4598,34 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
         {:error, reason} -> Repo.rollback(reason)
       end
     end)
+  end
+
+  # Undoing a package change takes the new package back too: it is
+  # cancelled and its charges nobody paid anything on are voided. Once money
+  # was taken for it the change stands (staff remove or refund it instead).
+  defp undo_replacement!(_membership, %PackageRemoval{replacement_subscription_id: nil}, _now),
+    do: :ok
+
+  defp undo_replacement!(membership, %PackageRemoval{} = removal, now) do
+    case locked_subscription(membership.id, removal.replacement_subscription_id) do
+      %MembershipPackageSubscription{} = replacement ->
+        money = removal_money(membership, replacement)
+
+        if money.paid_cents > 0 or money.kept_owed_cents > 0,
+          do: Repo.rollback(:removal_not_undoable)
+
+        Enum.each(money.untouched_invoices, &void_for_removal!(&1.id, now))
+
+        replacement
+        |> MembershipPackageSubscription.changeset(%{"status" => "cancelled"})
+        |> Repo.update()
+        |> ok_or_rollback!()
+
+        :ok
+
+      nil ->
+        :ok
+    end
   end
 
   @impl true
@@ -4810,7 +4867,9 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
       undo_until: removal.undo_until,
       undone_at: removal.undone_at,
       settled_at: removal.settled_at,
-      cancelled_bookings: removal.cancelled_bookings
+      cancelled_bookings: removal.cancelled_bookings,
+      replacement_subscription_id: removal.replacement_subscription_id,
+      replacement_package_name: removal.replacement_package_name
     }
   end
 
@@ -8723,10 +8782,12 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
       subscription = Repo.get!(MembershipPackageSubscription, subscription.id)
       documents = subscription_documents(subscription.id)
 
+      # Every charge ever issued, voided and purged ones too: a period whose
+      # charge staff voided or purged is not issued again.
       charged =
-        documents
-        |> Enum.filter(&(&1.invoice_type in ["subscription", "renewal"]))
-        |> Enum.map(& &1.service_period_start)
+        subscription.id
+        |> subscription_documents(include_settled: true)
+        |> SubscriptionCharges.charged_starts()
 
       {_subscription, charges, terms_applied?} =
         subscription
@@ -8811,8 +8872,9 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
     end
   end
 
-  # Every live document of a subscription, linked by its header or a line.
-  defp subscription_documents(subscription_id) do
+  # Every live document of a subscription, linked by its header or a line;
+  # `include_settled: true` adds the voided and purged ones.
+  defp subscription_documents(subscription_id, opts \\ []) do
     line_invoice_ids =
       FinanceInvoiceLine
       |> where([line], line.membership_package_subscription_id == ^subscription_id)
@@ -8825,7 +8887,11 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
       invoice.membership_package_subscription_id == ^subscription_id or
         invoice.id in subquery(line_invoice_ids)
     )
-    |> where([invoice], invoice.status != "void" and is_nil(invoice.deleted_at))
+    |> then(fn query ->
+      if Keyword.get(opts, :include_settled, false),
+        do: query,
+        else: where(query, [invoice], invoice.status != "void" and is_nil(invoice.deleted_at))
+    end)
     |> Repo.all()
   end
 

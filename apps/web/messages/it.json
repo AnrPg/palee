@@ -20586,7 +20586,15 @@
     "confirm": "Rimuovi pacchetto",
     "removing": "Rimozione…",
     "removed": "«{package}» è stato rimosso a {name}.",
-    "undo": "Annulla"
+    "undo": "Annulla",
+    "change": "Cambia pacchetto",
+    "addAlongside": "Oppure aggiungilo come secondo pacchetto",
+    "changeTitle": "Cambiare «{package}» con «{replacement}»?",
+    "changeTitleLoading": "Cambia pacchetto",
+    "changeFromToday": "Da oggi vale «{replacement}». «{package}» termina e non viene più addebitato.",
+    "confirmChange": "Cambia pacchetto",
+    "changing": "Cambio…",
+    "changed": "«{package}» ora è «{replacement}» · {name}"
   },
   "PlatformWorkoutKinds": {
     "back": "Organizzazioni",

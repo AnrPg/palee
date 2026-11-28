@@ -9,7 +9,6 @@ defmodule PaleeWeb.AdminActivityLogController do
 
   alias OpenApiSpex.{Parameter, Schema}
   alias Palee.ActivityLog
-  alias Palee.ActivityLog.Domain.Visibility
   alias PaleeWeb.Schemas.ActivityLog, as: S
 
   action_fallback PaleeWeb.FallbackController
@@ -91,12 +90,12 @@ defmodule PaleeWeb.AdminActivityLogController do
     params = Map.update(params, "limit", nil, &min(to_integer(&1), 200))
 
     with {:ok, page} <- ActivityLog.list(context, params) do
-      readable = Visibility.readable(context.capabilities)
+      readable = ActivityLog.readable_areas(context)
 
       json(
         conn,
         Map.merge(page, %{
-          can_export: Visibility.can_export?(context.capabilities),
+          can_export: ActivityLog.can_export?(context),
           areas: Enum.map(readable.all ++ readable.own, &Atom.to_string/1)
         })
       )

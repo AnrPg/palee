@@ -27,19 +27,21 @@ defmodule Palee.Infrastructure.TenantData.EctoTableStore do
   @impl true
   def export(spec, organization_id, user_id) do
     table = identifier!(spec.table)
+    key = spec |> RetentionReview.row_key() |> identifier!()
+    key_field = String.to_existing_atom(key)
 
     {id_sql, params} =
       Ecto.Adapters.SQL.to_sql(
         :all,
         Repo,
-        spec |> scoped_query(organization_id, user_id) |> select([row], field(row, :id))
+        spec |> scoped_query(organization_id, user_id) |> select([row], field(row, ^key_field))
       )
 
     %{rows: rows} =
       Ecto.Adapters.SQL.query!(
         Repo,
         ~s|SELECT row_to_json(export_row) FROM "#{table}" AS export_row | <>
-          ~s|WHERE export_row.id IN (#{id_sql}) ORDER BY export_row.id|,
+          ~s|WHERE export_row."#{key}" IN (#{id_sql}) ORDER BY export_row."#{key}"|,
         params
       )
 

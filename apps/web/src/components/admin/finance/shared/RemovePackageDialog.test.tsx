@@ -93,6 +93,13 @@ describe("removal rules", () => {
     expect(removalBody(preview({ untouched_invoices: unpaid, may_write_off: false }), "void", "", false)).toEqual({ reason_shared: false });
   });
 
+  it("sends the package that takes the place of the removed one («Αλλαγή πακέτου»)", () => {
+    expect(removalBody(preview(), null, "", false, { id: "p2", name: "Free" })).toEqual({
+      replacement_package_id: "p2",
+      reason_shared: false,
+    });
+  });
+
   it("keeps the undo toast until the server's minute closes", () => {
     const now = Date.parse("2026-11-17T10:00:00Z");
     expect(undoRemainingMs("2026-11-17T10:01:00Z", now)).toBe(60_000);
@@ -159,7 +166,63 @@ describe("RemovePackageDialog", () => {
   });
 });
 
+describe("RemovePackageDialog as «Αλλαγή πακέτου»", () => {
+  beforeEach(() => {
+    api.fetchPackageRemovalPreview.mockReset();
+    api.removeFinancePackage.mockReset();
+  });
+
+  it("names both packages, still asks about the unpaid invoice, and sends the new package", async () => {
+    api.fetchPackageRemovalPreview.mockResolvedValue({
+      removal: preview({ untouched_invoices: [{ id: "i1", total_cents: 5_000 }], upcoming_bookings: 2 }),
+    });
+    api.removeFinancePackage.mockResolvedValue({ removal });
+    const onRemoved = vi.fn();
+    wrap(
+      <RemovePackageDialog
+        userId="u1"
+        memberName="Lam"
+        subscriptionId="s1"
+        replacement={{ id: "p2", name: "Free" }}
+        onClose={vi.fn()}
+        onRemoved={onRemoved}
+        onOpenRefund={vi.fn()}
+      />,
+    );
+
+    expect(await screen.findByText("Change «Monthly» to «Free»?")).toBeTruthy();
+    expect(screen.getByText(/«Monthly» stops and is never charged again/)).toBeTruthy();
+    // The new package keeps their access: no booking warning.
+    expect(screen.queryByText(/upcoming bookings are cancelled/)).toBeNull();
+    const confirm = screen.getByTestId("package-removal-confirm") as HTMLButtonElement;
+    expect(confirm.textContent).toBe(en.PackageRemoval.confirmChange);
+    expect(confirm.disabled).toBe(true);
+
+    fireEvent.click(screen.getByTestId("package-removal-choice-void"));
+    fireEvent.click(confirm);
+
+    await waitFor(() => expect(onRemoved).toHaveBeenCalledWith(removal));
+    expect(api.removeFinancePackage).toHaveBeenCalledWith("token", "u1", "s1", {
+      replacement_package_id: "p2",
+      invoice_choice: "void",
+      reason_shared: false,
+    });
+  });
+});
+
 describe("PackageRemovedToast", () => {
+  it("says the package changed when another one took its place", () => {
+    wrap(
+      <PackageRemovedToast
+        userId="u1"
+        nickname="Lam"
+        removal={{ ...removal, replacement_package_name: "Free" }}
+        onDone={vi.fn()}
+      />,
+    );
+    expect(screen.getByText("«Monthly» is now «Free» · Lam")).toBeTruthy();
+  });
+
   it("undoes the removal", async () => {
     api.undoPackageRemoval.mockResolvedValue({ removal: { ...removal, undone_at: "2026-11-17T10:00:10Z" } });
     const onDone = vi.fn();

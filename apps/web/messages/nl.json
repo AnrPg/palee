@@ -20586,7 +20586,15 @@
     "confirm": "Pakket verwijderen",
     "removing": "Verwijderen…",
     "removed": "«{package}» is verwijderd bij {name}.",
-    "undo": "Ongedaan maken"
+    "undo": "Ongedaan maken",
+    "change": "Pakket wijzigen",
+    "addAlongside": "Of voeg het toe als tweede pakket",
+    "changeTitle": "«{package}» wijzigen in «{replacement}»?",
+    "changeTitleLoading": "Pakket wijzigen",
+    "changeFromToday": "Vanaf vandaag geldt «{replacement}». «{package}» stopt en wordt nooit meer gefactureerd.",
+    "confirmChange": "Pakket wijzigen",
+    "changing": "Wijzigen…",
+    "changed": "«{package}» is nu «{replacement}» · {name}"
   },
   "PlatformWorkoutKinds": {
     "back": "Organisaties",

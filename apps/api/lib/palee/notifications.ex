@@ -1016,6 +1016,7 @@ defmodule Palee.Notifications do
         organization_id: field(payload, :organization_id),
         box_name: field(payload, :box_name),
         package_name: field(payload, :package_name),
+        replacement_package_name: field(payload, :replacement_package_name),
         cancelled_bookings: field(payload, :cancelled_bookings),
         reason: field(payload, :reason),
         dedupe_key: "package_removed:#{field(payload, :removal_id)}",

@@ -20586,7 +20586,15 @@
     "confirm": "Αφαίρεση πακέτου",
     "removing": "Αφαίρεση…",
     "removed": "Το «{package}» αφαιρέθηκε · {name}",
-    "undo": "Αναίρεση"
+    "undo": "Αναίρεση",
+    "change": "Αλλαγή πακέτου",
+    "addAlongside": "Ή πρόσθεσέ το ως δεύτερο πακέτο",
+    "changeTitle": "Αλλαγή από «{package}» σε «{replacement}»;",
+    "changeTitleLoading": "Αλλαγή πακέτου",
+    "changeFromToday": "Από σήμερα ισχύει το «{replacement}». Το «{package}» σταματά και δεν χρεώνεται ξανά.",
+    "confirmChange": "Αλλαγή πακέτου",
+    "changing": "Αλλαγή…",
+    "changed": "Το «{package}» έγινε «{replacement}» · {name}"
   },
   "PlatformWorkoutKinds": {
     "back": "Οργανισμοί",

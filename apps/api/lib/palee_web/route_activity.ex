@@ -411,6 +411,8 @@ defmodule PaleeWeb.RouteActivity do
     {W.PaymentModelsController, :send_invoice} => "corporate.invoice_send",
     {W.AdminFinanceController, :create_package} => "package.create",
     {W.AdminFinanceController, :update_package} => "package.update",
+    # ADR-770: shows who a package change would reach; changes nothing.
+    {W.AdminFinanceController, :package_terms_preview} => :skip,
     {W.AdminFinanceController, :retire_package} => "package.retire",
     {W.AdminFinanceController, :backfill_entitlements} => "package.entitlements_refresh",
     {W.AdminFinanceController, :update_member} => "member.update",

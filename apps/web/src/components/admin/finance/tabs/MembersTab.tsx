@@ -36,7 +36,7 @@ import { useShareExport } from "@/components/share-export/useShareExport";
 import { ReferralEventWizard } from "@/components/admin/finance/ReferralEventWizard";
 import { InlineAssignPackage } from "@/components/admin/finance/shared/InlineAssignPackage";
 import { PackageRemovedToast } from "@/components/admin/finance/shared/PackageRemovedToast";
-import { RemovePackageDialog } from "@/components/admin/finance/shared/RemovePackageDialog";
+import { RemovePackageDialog, type ReplacementPackage } from "@/components/admin/finance/shared/RemovePackageDialog";
 import type { PackageRemoval } from "@/api/finance";
 import { SortableHeader } from "@/components/admin/finance/shared/SortableHeader";
 import {
@@ -262,7 +262,12 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
   });
 
   // ADR-660: the package being removed, then the minute its «Αναίρεση» lasts.
-  const [removing, setRemoving] = useState<{ member: FinanceRecord; subscriptionId: string } | null>(null);
+  const [removing, setRemoving] = useState<{
+    member: FinanceRecord;
+    subscriptionId: string;
+    /** «Αλλαγή πακέτου»: the package that takes its place. */
+    replacement?: ReplacementPackage;
+  } | null>(null);
   const [removed, setRemoved] = useState<{ userId: string; nickname: string; removal: PackageRemoval } | null>(null);
 
   const assignPackageMutation = useMutation({
@@ -583,6 +588,9 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
                         setParam({ "new-referral": "true", referrer: field(member, "id") })
                       }
                       onRemovePackage={(subscriptionId) => setRemoving({ member, subscriptionId })}
+                      onChangePackage={(subscriptionId, replacement) =>
+                        setRemoving({ member, subscriptionId, replacement })
+                      }
                     />
                   ))}
                   {bottomMembers.length > 0 ? (
@@ -625,6 +633,9 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
                                 setParam({ "new-referral": "true", referrer: field(member, "id") })
                               }
                               onRemovePackage={(subscriptionId) => setRemoving({ member, subscriptionId })}
+                              onChangePackage={(subscriptionId, replacement) =>
+                                setRemoving({ member, subscriptionId, replacement })
+                              }
                             />
                           ))
                         : null}
@@ -642,6 +653,7 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
           userId={field(openMember, "id")}
           nickname={field(openMember, "nickname")}
           onClose={() => setParam({ member: null })}
+          onRemovePackage={(subscriptionId) => setRemoving({ member: openMember, subscriptionId })}
         />
       ) : null}
 
@@ -650,6 +662,7 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
           userId={field(removing.member, "id")}
           memberName={field(removing.member, "nickname")}
           subscriptionId={removing.subscriptionId}
+          replacement={removing.replacement ?? null}
           onClose={() => setRemoving(null)}
           onOpenRefund={() => {
             const userId = field(removing.member, "id");
@@ -720,6 +733,7 @@ function MemberRow({
   onReceivePayment,
   onOpenReferralWizard,
   onRemovePackage,
+  onChangePackage,
 }: {
   member: FinanceRecord;
   last: boolean;
@@ -737,6 +751,8 @@ function MemberRow({
   onOpenReferralWizard: () => void;
   /** ADR-660: «Αφαίρεση πακέτου…» for the package the member holds now. */
   onRemovePackage: (subscriptionId: string) => void;
+  /** ADR-660: «Αλλαγή πακέτου»: `replacement` takes the held package's place. */
+  onChangePackage: (subscriptionId: string, replacement: ReplacementPackage) => void;
 }) {
   const i18n = useUiTranslations();
   const receiveT = useTranslations("ReceivePayment");
@@ -829,6 +845,7 @@ function MemberRow({
           pending={assignPending}
           onAssign={onAssignPackage}
           onRemove={activeSub ? () => onRemovePackage(field(activeSub, "id")) : undefined}
+          onChange={activeSub ? (replacement) => onChangePackage(field(activeSub, "id"), replacement) : undefined}
         />
       </td>
 

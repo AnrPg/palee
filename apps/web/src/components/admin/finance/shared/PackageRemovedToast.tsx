@@ -60,7 +60,11 @@ export function PackageRemovedToast({
       }}
       data-testid="package-removed-toast"
     >
-      <span>{t("removed", { package: removal.package_name, name: nickname })}</span>
+      <span>
+        {removal.replacement_package_name
+          ? t("changed", { package: removal.package_name, replacement: removal.replacement_package_name, name: nickname })
+          : t("removed", { package: removal.package_name, name: nickname })}
+      </span>
       <button
         type="button"
         onClick={() => undo.mutate()}

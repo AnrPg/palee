@@ -20586,7 +20586,15 @@
     "confirm": "Quitar paquete",
     "removing": "Quitando…",
     "removed": "Se quitó «{package}» a {name}.",
-    "undo": "Deshacer"
+    "undo": "Deshacer",
+    "change": "Cambiar paquete",
+    "addAlongside": "O añádelo como segundo paquete",
+    "changeTitle": "¿Cambiar «{package}» por «{replacement}»?",
+    "changeTitleLoading": "Cambiar paquete",
+    "changeFromToday": "Desde hoy rige «{replacement}». «{package}» termina y no se vuelve a cobrar.",
+    "confirmChange": "Cambiar paquete",
+    "changing": "Cambiando…",
+    "changed": "«{package}» ahora es «{replacement}» · {name}"
   },
   "PlatformWorkoutKinds": {
     "back": "Organizaciones",

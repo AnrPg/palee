@@ -970,6 +970,13 @@ msgstr "Motivo: %{reason}"
 msgid "Your package was removed"
 msgstr "Se ha quitado tu paquete"
 
+# ADR-660: staff changed the member's package for another one.
+msgid "%{box} changed your package from %{package} to %{replacement}."
+msgstr "%{box} cambió tu paquete de %{package} a %{replacement}."
+
+msgid "Your package was changed"
+msgstr "Tu paquete ha cambiado"
+
 msgid "Palee reviewed your workout type"
 msgstr "Palee revisó tu tipo de entrenamiento"
 

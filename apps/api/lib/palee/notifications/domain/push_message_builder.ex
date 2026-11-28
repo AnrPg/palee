@@ -1178,13 +1178,24 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
   # ADR-660.
   def build("package_removed", payload, localize) do
     cancelled = payload["cancelled_bookings"] || 0
+    replacement = payload["replacement_package_name"]
+    changed? = is_binary(replacement) and replacement != ""
 
     lines =
       [
-        localize.("%{box} removed your package %{package}.", %{
-          box: payload["box_name"],
-          package: payload["package_name"]
-        }),
+        if(changed?,
+          do:
+            localize.("%{box} changed your package from %{package} to %{replacement}.", %{
+              box: payload["box_name"],
+              package: payload["package_name"],
+              replacement: replacement
+            }),
+          else:
+            localize.("%{box} removed your package %{package}.", %{
+              box: payload["box_name"],
+              package: payload["package_name"]
+            })
+        ),
         if(cancelled > 0,
           do: localize.("Your upcoming bookings were cancelled: %{count}.", %{count: cancelled})
         ),
@@ -1199,7 +1210,11 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
       |> Enum.reject(&is_nil/1)
 
     %{
-      title: localize.("Your package was removed", %{}),
+      title:
+        if(changed?,
+          do: localize.("Your package was changed", %{}),
+          else: localize.("Your package was removed", %{})
+        ),
       body: Enum.join(lines, " "),
       url: payload["url"] || "/me/payments"
     }

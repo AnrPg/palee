@@ -3,6 +3,8 @@ defmodule Palee.Finance.PackageRemoval do
   ADR-660: one «Αφαίρεση πακέτου»: who removed which package, why, what
   happened to an unpaid invoice nobody paid anything on, and whether the
   removal was undone or settled (upcoming bookings cancelled, member told).
+  A package change («Αλλαγή πακέτου») is a removal with the package that
+  took its place (`replacement_subscription_id`).
   """
 
   use Ecto.Schema
@@ -33,6 +35,9 @@ defmodule Palee.Finance.PackageRemoval do
     field :undone_by_id, :binary_id
     field :settled_at, :utc_datetime_usec
     field :cancelled_bookings, :integer
+    # A package change: the package that took this one's place the same day.
+    field :replacement_subscription_id, :binary_id
+    field :replacement_package_name, :string
 
     timestamps(type: :utc_datetime_usec)
   end
@@ -53,7 +58,9 @@ defmodule Palee.Finance.PackageRemoval do
     :previous_leaving_on,
     :previous_expires_on,
     :leaving_changed,
-    :undo_until
+    :undo_until,
+    :replacement_subscription_id,
+    :replacement_package_name
   ]
 
   @doc "A new removal."

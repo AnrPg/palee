@@ -20586,7 +20586,15 @@
     "confirm": "הסרת חבילה",
     "removing": "מסיר…",
     "removed": "«{package}» הוסרה מ-{name}.",
-    "undo": "ביטול ההסרה"
+    "undo": "ביטול ההסרה",
+    "change": "החלפת חבילה",
+    "addAlongside": "או הוסף אותה כחבילה שנייה",
+    "changeTitle": "להחליף את «{package}» ב«{replacement}»?",
+    "changeTitleLoading": "החלפת חבילה",
+    "changeFromToday": "מהיום חלה «{replacement}». «{package}» נעצרת ולא תחויב שוב.",
+    "confirmChange": "החלפת חבילה",
+    "changing": "מחליף…",
+    "changed": "«{package}» היא עכשיו «{replacement}» · {name}"
   },
   "PlatformWorkoutKinds": {
     "back": "ארגונים",
