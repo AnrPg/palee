@@ -176,7 +176,8 @@ export function useClassTimer(
   );
 
   const serverNow = now + offsetMs;
-  const position = payload ? classTimerPosition(payload.segments, payload.timer, serverNow) : null;
+  // A partial answer (no timer yet) shows no position rather than crashing the page.
+  const position = payload?.timer ? classTimerPosition(payload.segments ?? [], payload.timer, serverNow) : null;
 
   return { payload, position, serverNow, connected, loadError, problem, sending, send, refresh };
 }

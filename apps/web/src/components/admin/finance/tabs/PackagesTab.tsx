@@ -215,12 +215,12 @@ function PackageRows({
   return packages.map((pkg, index) => (
     <div
       key={field(pkg, "id")}
-      className="flex w-full cursor-pointer items-center justify-between gap-4 px-6 py-4 transition-opacity hover:opacity-80"
+      className="flex w-full cursor-pointer flex-wrap items-center justify-between gap-x-4 gap-y-2 px-6 py-4 transition-opacity hover:opacity-80"
       style={{ borderBottom: index < packages.length - 1 ? "1px solid var(--border)" : "none" }}
       onClick={() => onOpen(field(pkg, "id"))}
       data-testid="package-row"
     >
-      <button className="min-w-0 text-start" onClick={(event) => { event.stopPropagation(); onOpen(field(pkg, "id")); }} type="button">
+      <button className="min-w-0 flex-1 basis-48 text-start" onClick={(event) => { event.stopPropagation(); onOpen(field(pkg, "id")); }} type="button">
         <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>
           {field(pkg, "name", field(pkg, "code"))}
         </p>
@@ -228,7 +228,7 @@ function PackageRows({
           {t(typeLabelKey(field(pkg, "package_type", "membership")))} · {t(`pkgBilling_${field(pkg, "billing_period", "monthly")}`)}
         </p>
       </button>
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-4">
         <BranchCoverageBadge target={packageCoverage(pkg)} locations={locations} />
         <SoldOnlineBadge pkg={pkg} />
         <PackageAudienceBadge pkg={pkg} onOpen={onAudience ? () => onAudience(field(pkg, "id")) : undefined} />
