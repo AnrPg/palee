@@ -1723,6 +1723,16 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
     }
   end
 
+  # ADR-760 (ANR 12B): the owners' summary; `Application.ActivityLogDigest`
+  # writes the title and the counts per kind in the owner's language.
+  def build("activity_log_digest", payload, localize) do
+    %{
+      title: payload["title"] || localize.("Palee", %{}),
+      body: payload["body"] || localize.("You have a new notification.", %{}),
+      url: payload["url"] || "/admin/activity-log?sensitive=1"
+    }
+  end
+
   def build("shop_order_placed", payload, localize) do
     %{
       title: localize.("New shop order", %{}),

@@ -1,0 +1,175 @@
+msgid ""
+msgstr ""
+"Language: nl\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# ADR-760 (ANR 12B): the owners' morning summary of yesterday's sensitive actions.
+msgid "%{box}: %{count} sensitive action yesterday"
+msgid_plural "%{box}: %{count} sensitive actions yesterday"
+msgstr[0] "%{box}: gisteren %{count} gevoelige actie"
+msgstr[1] "%{box}: gisteren %{count} gevoelige acties"
+
+# One line per kind of action: «Πιστωτικά: 2».
+msgid "%{label}: %{count}"
+msgstr "%{label}: %{count}"
+
+# The email's first line.
+msgid "What your staff did at %{box} yesterday, %{date}, that the activity log marks as sensitive:"
+msgstr "Wat je team gisteren, %{date}, bij %{box} deed en dat het activiteitenlogboek als gevoelig markeert:"
+
+# The email's button.
+msgid "Open the activity log"
+msgstr "Activiteitenlogboek openen"
+
+# The email's footer.
+msgid "You get this email because you are an owner of %{box} on Palee."
+msgstr "Je krijgt deze e-mail omdat je eigenaar bent van %{box} op Palee."
+
+# Kinds without their own words yet.
+msgid "Other sensitive actions"
+msgstr "Andere gevoelige acties"
+
+# Kind `member.remove`.
+msgid "Box members removed"
+msgstr "Verwijderde boxleden"
+
+# Kind `member.role_change`.
+msgid "Role changes"
+msgstr "Rolwijzigingen"
+
+# Kind `member.status_set`.
+msgid "Statuses set by hand"
+msgstr "Handmatig ingestelde statussen"
+
+# Kind `member.status_reset`.
+msgid "Statuses back to automatic"
+msgstr "Statussen terug naar automatisch"
+
+# Kind `role_access.change`.
+msgid "Role permission changes"
+msgstr "Wijzigingen in rolrechten"
+
+# Kind `import.apply`.
+msgid "Imports applied"
+msgstr "Toegepaste imports"
+
+# Kind `import.undo`.
+msgid "Imports undone"
+msgstr "Ongedaan gemaakte imports"
+
+# Kind `payment.reverse`.
+msgid "Payments reversed"
+msgstr "Teruggeboekte betalingen"
+
+# Kind `payment.refund`.
+msgid "Refunds"
+msgstr "Terugbetalingen"
+
+# Kind `payment.charge_dismiss`.
+msgid "Failed charges closed"
+msgstr "Gesloten mislukte afschrijvingen"
+
+# Kind `payment_account.save`.
+msgid "Payment account changes"
+msgstr "Wijzigingen in het betaalaccount"
+
+# Kind `payment_account.connect`.
+msgid "Payment accounts connected"
+msgstr "Gekoppelde betaalaccounts"
+
+# Kind `payment_account.disconnect`.
+msgid "Payment accounts disconnected"
+msgstr "Ontkoppelde betaalaccounts"
+
+# Kind `invoice.void`.
+msgid "Invoices voided"
+msgstr "Vervallen verklaarde facturen"
+
+# Kind `credit.create`.
+msgid "Credits given"
+msgstr "Gegeven tegoeden"
+
+# Kind `credit.reverse`.
+msgid "Credits reversed"
+msgstr "Teruggeboekte tegoeden"
+
+# Kind `benefit.give`.
+msgid "Gifts to box members"
+msgstr "Cadeaus aan boxleden"
+
+# Kind `benefit.revoke`.
+msgid "Gifts taken back"
+msgstr "Ingetrokken cadeaus"
+
+# Kind `corporate.payment_reverse`.
+msgid "Company payments reversed"
+msgstr "Teruggeboekte bedrijfsbetalingen"
+
+# Kind `finance_record.purge`.
+msgid "Financial records deleted"
+msgstr "Verwijderde financiële gegevens"
+
+# Kind `fiscal.credit_note`.
+msgid "Credit notes"
+msgstr "Creditnota’s"
+
+# Kind `fiscal.connection_save`.
+msgid "Fiscal connection changes"
+msgstr "Wijzigingen in fiscale koppelingen"
+
+# Kind `package.remove`.
+msgid "Subscription packages removed"
+msgstr "Verwijderde abonnementspakketten"
+
+# Kind `package.end_set`.
+msgid "Subscription package end dates set by hand"
+msgstr "Handmatig ingestelde einddata van abonnementspakketten"
+
+# Kind `package.end_reset`.
+msgid "Subscription package end dates reset"
+msgstr "Herstelde einddata van abonnementspakketten"
+
+# Kind `package_request.activate_unpaid`.
+msgid "Subscription packages activated before payment"
+msgstr "Abonnementspakketten geactiveerd vóór betaling"
+
+# Kind `door.unlock`.
+msgid "Doors opened remotely"
+msgstr "Op afstand geopende deuren"
+
+# Kind `shop.order_refund`.
+msgid "Shop order refunds"
+msgstr "Terugbetalingen van winkelbestellingen"
+
+# Kind `programme.refund`.
+msgid "Programme refunds"
+msgstr "Terugbetalingen van programma’s"
+
+# Kind `pay_period.reopen`.
+msgid "Pay periods reopened"
+msgstr "Heropende loonperiodes"
+
+# Kind `organization.transfer`.
+msgid "Ownership transfers"
+msgstr "Eigendomsoverdrachten"
+
+# Kind `organization.archive`.
+msgid "Box archived"
+msgstr "Box gearchiveerd"
+
+# Kind `data_export.create`.
+msgid "Data exports"
+msgstr "Gegevensexports"
+
+# Kind `integration.key_create`.
+msgid "API keys created"
+msgstr "Aangemaakte API-sleutels"
+
+# Kind `integration.key_rotate`.
+msgid "API keys renewed"
+msgstr "Vernieuwde API-sleutels"
+
+# Kind `integration.key_revoke`.
+msgid "API keys revoked"
+msgstr "Ingetrokken API-sleutels"

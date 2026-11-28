@@ -1,0 +1,175 @@
+msgid ""
+msgstr ""
+"Language: fr\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# ADR-760 (ANR 12B): the owners' morning summary of yesterday's sensitive actions.
+msgid "%{box}: %{count} sensitive action yesterday"
+msgid_plural "%{box}: %{count} sensitive actions yesterday"
+msgstr[0] "%{box} : %{count} action sensible hier"
+msgstr[1] "%{box} : %{count} actions sensibles hier"
+
+# One line per kind of action: «Πιστωτικά: 2».
+msgid "%{label}: %{count}"
+msgstr "%{label} : %{count}"
+
+# The email's first line.
+msgid "What your staff did at %{box} yesterday, %{date}, that the activity log marks as sensitive:"
+msgstr "Ce que ton équipe a fait hier, le %{date}, à %{box} et que le journal d’activité marque comme sensible :"
+
+# The email's button.
+msgid "Open the activity log"
+msgstr "Ouvrir le journal d’activité"
+
+# The email's footer.
+msgid "You get this email because you are an owner of %{box} on Palee."
+msgstr "Tu reçois cet e-mail parce que tu es propriétaire de %{box} sur Palee."
+
+# Kinds without their own words yet.
+msgid "Other sensitive actions"
+msgstr "Autres actions sensibles"
+
+# Kind `member.remove`.
+msgid "Box members removed"
+msgstr "Membres du box retirés"
+
+# Kind `member.role_change`.
+msgid "Role changes"
+msgstr "Changements de rôle"
+
+# Kind `member.status_set`.
+msgid "Statuses set by hand"
+msgstr "Statuts fixés à la main"
+
+# Kind `member.status_reset`.
+msgid "Statuses back to automatic"
+msgstr "Statuts remis en automatique"
+
+# Kind `role_access.change`.
+msgid "Role permission changes"
+msgstr "Changements des droits des rôles"
+
+# Kind `import.apply`.
+msgid "Imports applied"
+msgstr "Imports appliqués"
+
+# Kind `import.undo`.
+msgid "Imports undone"
+msgstr "Imports annulés"
+
+# Kind `payment.reverse`.
+msgid "Payments reversed"
+msgstr "Paiements contrepassés"
+
+# Kind `payment.refund`.
+msgid "Refunds"
+msgstr "Remboursements"
+
+# Kind `payment.charge_dismiss`.
+msgid "Failed charges closed"
+msgstr "Prélèvements échoués clôturés"
+
+# Kind `payment_account.save`.
+msgid "Payment account changes"
+msgstr "Changements du compte de paiement"
+
+# Kind `payment_account.connect`.
+msgid "Payment accounts connected"
+msgstr "Comptes de paiement connectés"
+
+# Kind `payment_account.disconnect`.
+msgid "Payment accounts disconnected"
+msgstr "Comptes de paiement déconnectés"
+
+# Kind `invoice.void`.
+msgid "Invoices voided"
+msgstr "Factures annulées"
+
+# Kind `credit.create`.
+msgid "Credits given"
+msgstr "Crédits accordés"
+
+# Kind `credit.reverse`.
+msgid "Credits reversed"
+msgstr "Crédits annulés"
+
+# Kind `benefit.give`.
+msgid "Gifts to box members"
+msgstr "Cadeaux aux membres du box"
+
+# Kind `benefit.revoke`.
+msgid "Gifts taken back"
+msgstr "Cadeaux retirés"
+
+# Kind `corporate.payment_reverse`.
+msgid "Company payments reversed"
+msgstr "Paiements d’entreprise contrepassés"
+
+# Kind `finance_record.purge`.
+msgid "Financial records deleted"
+msgstr "Écritures financières supprimées"
+
+# Kind `fiscal.credit_note`.
+msgid "Credit notes"
+msgstr "Avoirs"
+
+# Kind `fiscal.connection_save`.
+msgid "Fiscal connection changes"
+msgstr "Changements des connexions fiscales"
+
+# Kind `package.remove`.
+msgid "Subscription packages removed"
+msgstr "Formules d’abonnement retirées"
+
+# Kind `package.end_set`.
+msgid "Subscription package end dates set by hand"
+msgstr "Dates de fin de formules d’abonnement fixées à la main"
+
+# Kind `package.end_reset`.
+msgid "Subscription package end dates reset"
+msgstr "Dates de fin de formules d’abonnement rétablies"
+
+# Kind `package_request.activate_unpaid`.
+msgid "Subscription packages activated before payment"
+msgstr "Formules d’abonnement activées avant paiement"
+
+# Kind `door.unlock`.
+msgid "Doors opened remotely"
+msgstr "Portes ouvertes à distance"
+
+# Kind `shop.order_refund`.
+msgid "Shop order refunds"
+msgstr "Remboursements de commandes de la boutique"
+
+# Kind `programme.refund`.
+msgid "Programme refunds"
+msgstr "Remboursements de programmes"
+
+# Kind `pay_period.reopen`.
+msgid "Pay periods reopened"
+msgstr "Périodes de paie rouvertes"
+
+# Kind `organization.transfer`.
+msgid "Ownership transfers"
+msgstr "Transferts de propriété"
+
+# Kind `organization.archive`.
+msgid "Box archived"
+msgstr "Box archivé"
+
+# Kind `data_export.create`.
+msgid "Data exports"
+msgstr "Exports de données"
+
+# Kind `integration.key_create`.
+msgid "API keys created"
+msgstr "Clés API créées"
+
+# Kind `integration.key_rotate`.
+msgid "API keys renewed"
+msgstr "Clés API renouvelées"
+
+# Kind `integration.key_revoke`.
+msgid "API keys revoked"
+msgstr "Clés API révoquées"

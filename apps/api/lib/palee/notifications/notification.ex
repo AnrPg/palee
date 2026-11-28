@@ -160,7 +160,9 @@ defmodule Palee.Notifications.Notification do
     :box_review_moderated,
     :box_review_report_decided,
     # ADR-379: Palee turned off a webhook that kept failing.
-    :webhook_disabled
+    :webhook_disabled,
+    # ADR-760 (ANR 12B): the owners' morning summary of yesterday's sensitive actions.
+    :activity_log_digest
   ]
 
   schema "notifications" do

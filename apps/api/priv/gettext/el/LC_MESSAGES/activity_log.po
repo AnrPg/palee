@@ -1,0 +1,175 @@
+msgid ""
+msgstr ""
+"Language: el\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# ADR-760 (ANR 12B): the owners' morning summary of yesterday's sensitive actions.
+msgid "%{box}: %{count} sensitive action yesterday"
+msgid_plural "%{box}: %{count} sensitive actions yesterday"
+msgstr[0] "%{box}: %{count} ευαίσθητη ενέργεια χθες"
+msgstr[1] "%{box}: %{count} ευαίσθητες ενέργειες χθες"
+
+# One line per kind of action: «Πιστωτικά: 2».
+msgid "%{label}: %{count}"
+msgstr "%{label}: %{count}"
+
+# The email's first line.
+msgid "What your staff did at %{box} yesterday, %{date}, that the activity log marks as sensitive:"
+msgstr "Όσα έκανε χθες, %{date}, το προσωπικό στο %{box} και το αρχείο ενεργειών τα σημειώνει ως ευαίσθητα:"
+
+# The email's button.
+msgid "Open the activity log"
+msgstr "Άνοιξε το Αρχείο ενεργειών"
+
+# The email's footer.
+msgid "You get this email because you are an owner of %{box} on Palee."
+msgstr "Λαμβάνεις αυτό το email επειδή είσαι ιδιοκτήτης του %{box} στην Palee."
+
+# Kinds without their own words yet.
+msgid "Other sensitive actions"
+msgstr "Άλλες ευαίσθητες ενέργειες"
+
+# Kind `member.remove`.
+msgid "Box members removed"
+msgstr "Αφαιρέσεις μελών box"
+
+# Kind `member.role_change`.
+msgid "Role changes"
+msgstr "Αλλαγές ρόλων"
+
+# Kind `member.status_set`.
+msgid "Statuses set by hand"
+msgstr "Καταστάσεις ορισμένες με το χέρι"
+
+# Kind `member.status_reset`.
+msgid "Statuses back to automatic"
+msgstr "Καταστάσεις που γύρισαν σε αυτόματες"
+
+# Kind `role_access.change`.
+msgid "Role permission changes"
+msgstr "Αλλαγές δικαιωμάτων ρόλων"
+
+# Kind `import.apply`.
+msgid "Imports applied"
+msgstr "Εισαγωγές που εφαρμόστηκαν"
+
+# Kind `import.undo`.
+msgid "Imports undone"
+msgstr "Εισαγωγές που αναιρέθηκαν"
+
+# Kind `payment.reverse`.
+msgid "Payments reversed"
+msgstr "Αντιλογισμοί πληρωμών"
+
+# Kind `payment.refund`.
+msgid "Refunds"
+msgstr "Επιστροφές χρημάτων"
+
+# Kind `payment.charge_dismiss`.
+msgid "Failed charges closed"
+msgstr "Αποτυχημένες χρεώσεις που έκλεισαν"
+
+# Kind `payment_account.save`.
+msgid "Payment account changes"
+msgstr "Αλλαγές λογαριασμού πληρωμών"
+
+# Kind `payment_account.connect`.
+msgid "Payment accounts connected"
+msgstr "Συνδέσεις λογαριασμού πληρωμών"
+
+# Kind `payment_account.disconnect`.
+msgid "Payment accounts disconnected"
+msgstr "Αποσυνδέσεις λογαριασμού πληρωμών"
+
+# Kind `invoice.void`.
+msgid "Invoices voided"
+msgstr "Ακυρώσεις τιμολογίων"
+
+# Kind `credit.create`.
+msgid "Credits given"
+msgstr "Πιστώσεις που δόθηκαν"
+
+# Kind `credit.reverse`.
+msgid "Credits reversed"
+msgstr "Αντιλογισμοί πιστώσεων"
+
+# Kind `benefit.give`.
+msgid "Gifts to box members"
+msgstr "Δώρα σε μέλη box"
+
+# Kind `benefit.revoke`.
+msgid "Gifts taken back"
+msgstr "Δώρα που αφαιρέθηκαν"
+
+# Kind `corporate.payment_reverse`.
+msgid "Company payments reversed"
+msgstr "Αντιλογισμοί εταιρικών πληρωμών"
+
+# Kind `finance_record.purge`.
+msgid "Financial records deleted"
+msgstr "Διαγραφές οικονομικών εγγραφών"
+
+# Kind `fiscal.credit_note`.
+msgid "Credit notes"
+msgstr "Πιστωτικά"
+
+# Kind `fiscal.connection_save`.
+msgid "Fiscal connection changes"
+msgstr "Αλλαγές φορολογικών συνδέσεων"
+
+# Kind `package.remove`.
+msgid "Subscription packages removed"
+msgstr "Αφαιρέσεις πακέτων συνδρομής"
+
+# Kind `package.end_set`.
+msgid "Subscription package end dates set by hand"
+msgstr "Λήξεις πακέτων συνδρομής ορισμένες με το χέρι"
+
+# Kind `package.end_reset`.
+msgid "Subscription package end dates reset"
+msgstr "Λήξεις πακέτων συνδρομής που επανήλθαν"
+
+# Kind `package_request.activate_unpaid`.
+msgid "Subscription packages activated before payment"
+msgstr "Πακέτα συνδρομής ενεργοποιημένα πριν την πληρωμή"
+
+# Kind `door.unlock`.
+msgid "Doors opened remotely"
+msgstr "Πόρτες που άνοιξαν από απόσταση"
+
+# Kind `shop.order_refund`.
+msgid "Shop order refunds"
+msgstr "Επιστροφές χρημάτων παραγγελιών καταστήματος"
+
+# Kind `programme.refund`.
+msgid "Programme refunds"
+msgstr "Επιστροφές χρημάτων προγραμμάτων"
+
+# Kind `pay_period.reopen`.
+msgid "Pay periods reopened"
+msgstr "Περίοδοι αμοιβών που ξανάνοιξαν"
+
+# Kind `organization.transfer`.
+msgid "Ownership transfers"
+msgstr "Μεταβιβάσεις ιδιοκτησίας"
+
+# Kind `organization.archive`.
+msgid "Box archived"
+msgstr "Αρχειοθέτηση του box"
+
+# Kind `data_export.create`.
+msgid "Data exports"
+msgstr "Εξαγωγές δεδομένων"
+
+# Kind `integration.key_create`.
+msgid "API keys created"
+msgstr "Νέα κλειδιά API"
+
+# Kind `integration.key_rotate`.
+msgid "API keys renewed"
+msgstr "Ανανεώσεις κλειδιών API"
+
+# Kind `integration.key_revoke`.
+msgid "API keys revoked"
+msgstr "Ανακλήσεις κλειδιών API"
