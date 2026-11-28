@@ -30,8 +30,14 @@ defmodule Palee.Application.ClassVariantsTest do
     "allowances" => %{}
   }
 
+  # Nicknames hold at most 30 characters: the unique suffix always fits.
+  defp handle(prefix) do
+    suffix = "_#{System.unique_integer([:positive])}"
+    String.slice(prefix, 0, 30 - String.length(suffix)) <> suffix
+  end
+
   defp tenant(name) do
-    admin = admin_fixture(%{nickname: "#{name}_admin_#{System.unique_integer([:positive])}"})
+    admin = admin_fixture(%{nickname: handle("#{name}_admin")})
     {:ok, organization} = Organizations.create_organization(%{name: "#{name} Gym"})
     add_membership(organization, admin, :owner)
     {:ok, context} = Organizations.resolve_tenant_context(admin, organization.slug)
@@ -53,7 +59,7 @@ defmodule Palee.Application.ClassVariantsTest do
 
   defp member(gym, nickname) do
     user =
-      %{nickname: "#{nickname}_#{System.unique_integer([:positive])}", role: :member}
+      %{nickname: handle(nickname), role: :member}
       |> user_fixture()
       |> then(&add_membership(gym.organization, &1, :member))
 

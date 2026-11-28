@@ -12,8 +12,14 @@ defmodule PaleeWeb.PersonalizedMemberProgrammingControllerTest do
   alias Palee.{Finance, Organizations, Repo, Scheduling, Workouts}
   alias Palee.Workouts.MasterWorkout
 
+  # Nicknames hold at most 30 characters: the unique suffix always fits.
+  defp handle(prefix) do
+    suffix = "_#{System.unique_integer([:positive])}"
+    String.slice(prefix, 0, 30 - String.length(suffix)) <> suffix
+  end
+
   defp tenant(name) do
-    admin = admin_fixture(%{nickname: "#{name}_admin_#{System.unique_integer([:positive])}"})
+    admin = admin_fixture(%{nickname: handle("#{name}_admin")})
     {:ok, organization} = Organizations.create_organization(%{name: "#{name} Gym"})
     add_membership(organization, admin, :owner)
     {:ok, context} = Organizations.resolve_tenant_context(admin, organization.slug)
@@ -36,7 +42,7 @@ defmodule PaleeWeb.PersonalizedMemberProgrammingControllerTest do
   defp customer(%{organization: organization}, role, nickname) do
     account_role = if role == :athlete, do: :athlete, else: :member
 
-    %{nickname: "#{nickname}_#{System.unique_integer([:positive])}", role: account_role}
+    %{nickname: handle(nickname), role: account_role}
     |> user_fixture()
     |> then(&add_membership(organization, &1, role))
   end
