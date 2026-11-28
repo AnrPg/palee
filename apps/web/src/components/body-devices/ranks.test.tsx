@@ -230,6 +230,6 @@ describe("ClientRanks (mockup e2coach A)", () => {
     expect(revokeRankAward).not.toHaveBeenCalled();
     fireEvent.change(screen.getByLabelText(/ranks.withdrawReason/), { target: { value: "Λάθος καταχώριση" } });
     fireEvent.click(confirm[confirm.length - 1]);
-    await waitFor(() => expect(revokeRankAward).toHaveBeenCalledWith("tok", "box", "a1", "Λάθος καταχώριση"));
+    await waitFor(() => expect(revokeRankAward).toHaveBeenCalledWith("tok", "box", "a1", "Λάθος καταχώριση", false));
   });
 });

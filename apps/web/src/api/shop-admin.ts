@@ -585,7 +585,7 @@ export async function fetchShopOrder(token: string, orderId: string) {
 export type OrderAction =
   | { action: "ready" }
   | { action: "pickup"; payment_method?: DeskPaymentMethod }
-  | { action: "cancel"; reason?: string | null }
+  | { action: "cancel"; reason?: string | null; reason_shared?: boolean }
   | { action: "refund"; lines: { line_id: string; quantity: number }[]; restock: boolean; reason?: string | null };
 
 /** The request of an order action: path and body as the API takes them. */
@@ -596,7 +596,8 @@ export function orderActionRequest(change: OrderAction, idempotencyKey: string =
     case "pickup":
       return { path: "pickup", body: change.payment_method ? { payment_method: change.payment_method } : {} };
     case "cancel":
-      return { path: "cancel", body: { reason: change.reason ?? null } };
+      // ADR-760 (6A): «Να το δει και το μέλος», always sent.
+      return { path: "cancel", body: { reason: change.reason ?? null, reason_shared: change.reason_shared ?? false } };
     case "refund":
       return {
         path: "refund",

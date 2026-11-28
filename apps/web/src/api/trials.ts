@@ -127,11 +127,12 @@ export async function acceptTrial(token: string, id: string) {
   return data.trial;
 }
 
-export async function declineTrial(token: string, id: string, reason: string | null) {
+/** ADR-760 (6A): `reasonShared` is «Να το δει και το μέλος», always sent. */
+export async function declineTrial(token: string, id: string, reason: string | null, reasonShared = false) {
   const data = await apiRequest<{ trial: StaffTrial }>(`/admin/trials/${encodeURIComponent(id)}/decline`, {
     method: "POST",
     token,
-    body: { reason },
+    body: { reason, reason_shared: reasonShared },
   });
   return data.trial;
 }

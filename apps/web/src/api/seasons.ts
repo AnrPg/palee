@@ -84,10 +84,12 @@ export async function actOnSeasonEnrollment(
   enrollmentId: string,
   action: EnrollmentAction,
   reason?: string,
+  reasonShared = false,
 ) {
+  // ADR-760 (6A): a decline sends «Να το δει και το μέλος» either way.
   const data = await apiRequest<{ season: StaffSeasonDetail }>(
     `/admin/season-enrollments/${id(enrollmentId)}/${action}`,
-    { method: "POST", token, body: action === "decline" ? { reason: reason?.trim() || null } : undefined },
+    { method: "POST", token, body: action === "decline" ? { reason: reason?.trim() || null, reason_shared: reasonShared } : undefined },
   );
   return data.season;
 }

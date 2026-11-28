@@ -4,8 +4,10 @@ import { leaveRequest, renewableSubscriptions } from "./membership-leaving";
 
 describe("leaveRequest (ADR-595)", () => {
   it("sends only the reason: the day follows the member's own rules", () => {
-    expect(leaveRequest("  Moved  ")).toEqual({ reason: "Moved" });
-    expect(leaveRequest(" ")).toEqual({ reason: null });
+    expect(leaveRequest("  Moved  ")).toEqual({ reason: "Moved", reason_shared: false });
+    expect(leaveRequest(" ")).toEqual({ reason: null, reason_shared: false });
+    // ADR-760 (6A): «Να το δει και το μέλος».
+    expect(leaveRequest("Moved", true)).toEqual({ reason: "Moved", reason_shared: true });
   });
 });
 

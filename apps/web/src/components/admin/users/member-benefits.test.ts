@@ -28,6 +28,7 @@ describe("member benefits sheet (ADR-612)", () => {
     expect(grantBody({ ...EMPTY_DRAFT, kind: "grace", ends_on: "2026-11-30", reason: "  " }, "k")).toEqual({
       kind: "grace",
       reason: null,
+      reason_shared: false,
       idempotency_key: "k",
       ends_on: "2026-11-30",
     });
@@ -39,6 +40,8 @@ describe("member benefits sheet (ADR-612)", () => {
       invoice_ids: ["i1"],
       reason: "Bad month",
     });
+    // ADR-760 (6A): «Να το δει και το μέλος» goes with every grant.
+    expect(grantBody({ ...EMPTY_DRAFT, kind: "grace", ends_on: "2026-11-30", reason_shared: true }, "k")).toMatchObject({ reason_shared: true });
   });
 
   it("reads euros as cents", () => {

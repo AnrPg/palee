@@ -7,6 +7,7 @@ import { useRef, useState } from "react";
 import { resetFinanceOverride, setFinanceOverride } from "@/api/finance";
 import { useSession } from "@/components/session-provider";
 import { DateInput } from "@/components/ui/DateInput";
+import { ShareWithMember } from "@/components/activity-log/ShareWithMember";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { Popover } from "@/components/ui/Popover";
 import { Select } from "@/components/ui/Select";
@@ -43,7 +44,7 @@ function useStandingMutations(userId: string, field: Field, subscriptionId?: str
   };
 
   const save = useMutation({
-    mutationFn: (body: { value: string; reason?: string; commitment_override_reason?: string }) =>
+    mutationFn: (body: { value: string; reason?: string; reason_shared: boolean; commitment_override_reason?: string }) =>
       setFinanceOverride(token, userId, field, { ...body, ...(subscriptionId ? { subscription_id: subscriptionId } : {}) }),
     onSuccess: refresh,
   });
@@ -90,6 +91,7 @@ export function MemberStatusCell({
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
   const [reason, setReason] = useState("");
+  const [shared, setShared] = useState(false);
   const [commitmentReason, setCommitmentReason] = useState("");
   const conflict = commitmentConflict(save.error);
   const automatic = override ? override.computed_value : status;
@@ -98,13 +100,14 @@ export function MemberStatusCell({
     setOpen(false);
     setValue("");
     setReason("");
+    setShared(false);
     setCommitmentReason("");
     save.reset();
   };
   const submit = () => {
     if (!value) return;
     save.mutate(
-      { value, reason, ...(conflict ? { commitment_override_reason: commitmentReason } : {}) },
+      { value, reason, reason_shared: shared, ...(conflict ? { commitment_override_reason: commitmentReason } : {}) },
       { onSuccess: close },
     );
   };
@@ -170,6 +173,7 @@ export function MemberStatusCell({
           className="w-full rounded-lg px-3 py-2 text-sm outline-none"
           style={CONTROL}
         />
+        <ShareWithMember checked={shared} onChange={setShared} testId="status-share-with-member" />
         {conflict ? (
           <div className="space-y-2">
             <p className="text-xs" style={{ color: "var(--warning)" }}>
@@ -233,6 +237,7 @@ export function SubscriptionEndCell({
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(endsOn);
   const [reason, setReason] = useState("");
+  const [shared, setShared] = useState(false);
   const formatDate = (iso: string | null) =>
     iso
       ? new Intl.DateTimeFormat(uiLocale, { dateStyle: "short", timeZone: "UTC" }).format(utcDay(iso))
@@ -242,6 +247,7 @@ export function SubscriptionEndCell({
     setOpen(false);
     setValue(endsOn);
     setReason("");
+    setShared(false);
     save.reset();
   };
 
@@ -289,11 +295,12 @@ export function SubscriptionEndCell({
           className="w-full rounded-lg px-3 py-2 text-sm outline-none"
           style={CONTROL}
         />
+        <ShareWithMember checked={shared} onChange={setShared} testId="end-share-with-member" />
         {save.error ? <ErrorNotice variant="field">{localizeError(save.error, i18n)}</ErrorNotice> : null}
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
-            onClick={() => value && save.mutate({ value, reason }, { onSuccess: close })}
+            onClick={() => value && save.mutate({ value, reason, reason_shared: shared }, { onSuccess: close })}
             disabled={!value || value === endsOn || save.isPending}
             className="rounded-full px-4 py-2 text-xs font-semibold disabled:opacity-40"
             style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}

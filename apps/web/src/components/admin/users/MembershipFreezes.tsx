@@ -20,6 +20,7 @@ import {
 } from "@/components/admin/users/membership-freezes";
 import { localizeError } from "@/i18n/presentation";
 import { useUiTranslations } from "@/i18n/ui";
+import { ShareWithMember } from "@/components/activity-log/ShareWithMember";
 import { DateInput } from "@/components/ui/DateInput";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 
@@ -48,9 +49,10 @@ export function MembershipFreezes({
   const queryClient = useQueryClient();
   const today = localIsoDate();
   const year = Number(today.slice(0, 4));
-  const [form, setForm] = useState<{ starts_on: string; ends_on: string; reason: string } | null>(null);
+  const [form, setForm] = useState<{ starts_on: string; ends_on: string; reason: string; reason_shared: boolean } | null>(null);
   const [cancelTarget, setCancelTarget] = useState<string | null>(null);
   const [cancelReason, setCancelReason] = useState("");
+  const [cancelShared, setCancelShared] = useState(false);
 
   const queryKey = ["admin", "users", userId, "freezes"];
   const freezesQuery = useQuery({ queryKey, queryFn: () => fetchAdminUserFreezes(token, userId) });
@@ -72,7 +74,7 @@ export function MembershipFreezes({
   });
 
   const cancel = useMutation({
-    mutationFn: (freeze: MembershipFreeze) => cancelAdminUserFreeze(token, userId, freeze.id, cancelReason.trim() || undefined),
+    mutationFn: (freeze: MembershipFreeze) => cancelAdminUserFreeze(token, userId, freeze.id, cancelReason.trim() || undefined, cancelShared),
     onSuccess: async () => {
       setCancelTarget(null);
       setCancelReason("");
@@ -106,7 +108,7 @@ export function MembershipFreezes({
         {!form && perYear > 0 ? (
           <button
             className="rounded-full px-4 py-2 text-xs font-semibold"
-            onClick={() => { create.reset(); setForm({ starts_on: today, ends_on: "", reason: "" }); }}
+            onClick={() => { create.reset(); setForm({ starts_on: today, ends_on: "", reason: "", reason_shared: false }); }}
             style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}
             type="button"
           >
@@ -141,6 +143,7 @@ export function MembershipFreezes({
             style={fieldStyle}
             value={form.reason}
           />
+          <ShareWithMember checked={form.reason_shared} onChange={(next) => setForm({ ...form, reason_shared: next })} testId="freeze-share-with-member" />
           {requested > 0 ? <p className="text-xs" style={{ color: "var(--muted)" }}>{i18n("admFreezeSummary", { days: requested })}</p> : null}
           <div className="flex flex-wrap gap-2">
             <button
@@ -175,7 +178,7 @@ export function MembershipFreezes({
                 {freeze.cancel_reason ? <p className="text-xs" style={{ color: "var(--muted)" }}>{freeze.cancel_reason}</p> : null}
               </div>
               {cancellable && cancelTarget !== freeze.id ? (
-                <button className="text-xs font-semibold" onClick={() => { cancel.reset(); setCancelTarget(freeze.id); }} style={{ color: "var(--danger)" }} type="button">
+                <button className="text-xs font-semibold" onClick={() => { cancel.reset(); setCancelShared(false); setCancelTarget(freeze.id); }} style={{ color: "var(--danger)" }} type="button">
                   {i18n("admFreezeCancel")}
                 </button>
               ) : null}
@@ -199,6 +202,7 @@ export function MembershipFreezes({
                     {i18n("admFreezeKeep")}
                   </button>
                 </div>
+                <ShareWithMember checked={cancelShared} onChange={setCancelShared} testId="freeze-cancel-share-with-member" />
                 {cancel.error ? <ErrorNotice variant="field">{localizeError(cancel.error, i18n)}</ErrorNotice> : null}
               </div>
             ) : null}

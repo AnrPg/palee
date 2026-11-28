@@ -25,6 +25,8 @@ export type BenefitDraft = {
   price: string;
   invoice_ids: string[];
   reason: string;
+  /** ADR-760 (6A): «Να το δει και το μέλος», unticked by default. */
+  reason_shared: boolean;
 };
 
 export const EMPTY_DRAFT: BenefitDraft = {
@@ -38,6 +40,7 @@ export const EMPTY_DRAFT: BenefitDraft = {
   price: "",
   invoice_ids: [],
   reason: "",
+  reason_shared: false,
 };
 
 function iso(date: Date) {
@@ -93,7 +96,7 @@ export function draftReady(draft: BenefitDraft, today: string) {
 /** The request body for a ready draft. */
 export function grantBody(draft: BenefitDraft, idempotencyKey: string): MemberBenefitGrant {
   const reason = draft.reason.trim() || null;
-  const base = { kind: draft.kind!, reason, idempotency_key: idempotencyKey };
+  const base = { kind: draft.kind!, reason, reason_shared: draft.reason_shared, idempotency_key: idempotencyKey };
   switch (draft.kind) {
     case "grace":
     case "free_access":

@@ -21,6 +21,7 @@ import { useUiTranslations } from "@/i18n/ui";
 import { useUiLocale } from "@/i18n/use-ui-locale";
 import { orderActions, orderLabel, pickupNeedsPayment, refundableLines } from "@/lib/shop/console";
 import { guideAnchor } from "@/lib/guides/anchors";
+import { ShareWithMember } from "@/components/activity-log/ShareWithMember";
 
 const STATUSES: ShopOrderStatus[] = ["placed", "ready_for_pickup", "picked_up", "cancelled"];
 const STATUS_TONE: Record<ShopOrderStatus, "primary" | "spark" | "success" | "neutral"> = {
@@ -127,6 +128,7 @@ export function OrderPanel({ orderId, onClose }: { orderId: string; onClose: () 
   const act = useOrderAction(orderId);
   const [step, setStep] = useState<Step>(null);
   const [method, setMethod] = useState<DeskPaymentMethod>("cash");
+  const [cancelShared, setCancelShared] = useState(false);
   const [reason, setReason] = useState("");
   const [refund, setRefund] = useState<Record<string, number>>({});
   const [restock, setRestock] = useState(true);
@@ -212,8 +214,9 @@ export function OrderPanel({ orderId, onClose }: { orderId: string; onClose: () 
                 <input className={inputClass} style={inputStyle} value={reason} onChange={(event) => setReason(event.target.value)} maxLength={200} />
               </Field>
               <span className="text-xs" style={{ color: "var(--dim)" }}>{t("cancelHint")}</span>
+              <ShareWithMember checked={cancelShared} onChange={setCancelShared} testId="order-cancel-share-with-member" />
               <div className="flex flex-wrap gap-2">
-                <button type="button" className={primaryButtonClass} style={dangerButtonStyle} disabled={act.isPending} onClick={() => act.mutate({ action: "cancel", reason: reason.trim() || null }, { onSuccess: done })}>
+                <button type="button" className={primaryButtonClass} style={dangerButtonStyle} disabled={act.isPending} onClick={() => act.mutate({ action: "cancel", reason: reason.trim() || null, reason_shared: cancelShared }, { onSuccess: done })}>
                   {t("confirmCancel")}
                 </button>
                 <button type="button" className={secondaryButtonClass} style={secondaryButtonStyle} onClick={done}>{t("back")}</button>
@@ -264,7 +267,7 @@ export function OrderPanel({ orderId, onClose }: { orderId: string; onClose: () 
                 </button>
               ) : null}
               {actions.includes("cancel") ? (
-                <button type="button" className={secondaryButtonClass} style={dangerButtonStyle} onClick={() => setStep("cancel")}>
+                <button type="button" className={secondaryButtonClass} style={dangerButtonStyle} onClick={() => { setCancelShared(false); setStep("cancel"); }}>
                   {t("cancel")}
                 </button>
               ) : null}
