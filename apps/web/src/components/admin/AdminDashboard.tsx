@@ -37,6 +37,7 @@ import { InviteClientsButton } from "@/components/invites/InviteClients";
 import { can, membershipRoles, staffNavItems, type MembershipLike } from "@/lib/role-navigation";
 import { classesCoachedToday } from "@/components/admin/staff-home";
 import { foldSingleTileGroups } from "@/components/admin/hub-groups";
+import { canReadActivityLog } from "@/components/activity-log/activity-log-model";
 import {
   CardLink,
   ClassTimeline,
@@ -213,6 +214,7 @@ export function AdminDashboard({
   const standingT = useTranslations("MemberStanding");
   const publicPageT = useTranslations("AdminPublicPage");
   const documentsT = useTranslations("Documents");
+  const activityT = useTranslations("ActivityLog");
   const has = (...capabilities: string[]) =>
     membership === undefined || capabilities.some((capability) => can(membership, capability));
   const fullAnalytics = has("view_business_analytics");
@@ -235,6 +237,8 @@ export function AdminDashboard({
         { label: nav("inventory"), href: "/admin/inventory", icon: "box", show: has("report_inventory", "manage_inventory") },
         // ADR-202: the gym's spaces, their floor plans and unavailability.
         { label: nav("spaces"), href: "/admin/spaces", icon: "box", show: has("view_spaces", "manage_spaces", "edit_space_details", "set_space_unavailable") },
+        // ADR-760 (1A): «Αρχείο ενεργειών» for whoever reads any area of it.
+        { label: activityT("title"), href: "/admin/activity-log", icon: "file", show: membership === undefined || canReadActivityLog(membership) },
       ],
     },
     {

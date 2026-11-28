@@ -21,6 +21,7 @@ import {
 } from "@/components/admin/users/member-benefits";
 import { localDay } from "@/components/finance/standing";
 import { DateInput } from "@/components/ui/DateInput";
+import { ShareWithMember } from "@/components/activity-log/ShareWithMember";
 import { Dialog } from "@/components/ui/Dialog";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { Select } from "@/components/ui/Select";
@@ -94,6 +95,7 @@ export function MemberBenefits({
   const [open, setOpen] = useState(false);
   const [revokeTarget, setRevokeTarget] = useState<string | null>(null);
   const [revokeReason, setRevokeReason] = useState("");
+  const [revokeShared, setRevokeShared] = useState(false);
   const [revokeKey, setRevokeKey] = useState("");
 
   const queryKey = ["admin", "users", userId, "benefits"];
@@ -108,7 +110,7 @@ export function MemberBenefits({
 
   const revoke = useMutation({
     mutationFn: (benefit: MemberBenefit) =>
-      revokeMemberBenefit(token, userId, benefit.id, { reason: revokeReason.trim() || null, idempotency_key: revokeKey }),
+      revokeMemberBenefit(token, userId, benefit.id, { reason: revokeReason.trim() || null, reason_shared: revokeShared, idempotency_key: revokeKey }),
     onSuccess: async () => {
       setRevokeTarget(null);
       setRevokeReason("");
@@ -188,7 +190,7 @@ export function MemberBenefits({
             {canGive && revocable(benefit) && revokeTarget !== benefit.id ? (
               <button
                 className="text-xs font-semibold"
-                onClick={() => { revoke.reset(); setRevokeKey(crypto.randomUUID()); setRevokeTarget(benefit.id); }}
+                onClick={() => { revoke.reset(); setRevokeKey(crypto.randomUUID()); setRevokeShared(false); setRevokeTarget(benefit.id); }}
                 style={{ color: "var(--danger)" }}
                 type="button"
               >
@@ -215,6 +217,7 @@ export function MemberBenefits({
                   {t("keep")}
                 </button>
               </div>
+              <ShareWithMember checked={revokeShared} onChange={setRevokeShared} testId="benefit-revoke-share-with-member" />
               {revoke.error ? <ErrorNotice variant="field">{localizeError(revoke.error, i18n)}</ErrorNotice> : null}
             </div>
           ) : null}
@@ -317,7 +320,7 @@ function GiveSheet({
             className="rounded-2xl p-3 text-start"
             data-testid={`member-benefit-kind-${kind}`}
             key={kind}
-            onClick={() => { give.reset(); setCustomEnd(false); setDraft({ ...EMPTY_DRAFT, reason: draft.reason, kind }); }}
+            onClick={() => { give.reset(); setCustomEnd(false); setDraft({ ...EMPTY_DRAFT, reason: draft.reason, reason_shared: draft.reason_shared, kind }); }}
             style={{
               background: draft.kind === kind ? "color-mix(in srgb, var(--primary) 10%, var(--panel))" : "var(--panel-muted)",
               border: `1px solid ${draft.kind === kind ? "var(--primary)" : "var(--border)"}`,
@@ -426,6 +429,11 @@ function GiveSheet({
             value={draft.reason}
           />
         </label>
+      ) : null}
+      {draft.kind ? (
+        <div className="mt-3">
+          <ShareWithMember checked={draft.reason_shared} onChange={(next) => edit({ reason_shared: next })} testId="benefit-share-with-member" />
+        </div>
       ) : null}
     </Dialog>
   );

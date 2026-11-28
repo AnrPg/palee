@@ -8,6 +8,7 @@ import { markFinanceMemberLeft, undoFinanceMemberLeft } from "@/api/finance";
 import { Switch } from "@/components/body/BodyPreferenceSettings";
 import { localIsoDate } from "@/components/admin/users/membership-freezes";
 import { packageSubscriptionLabel } from "@/components/admin/users/admin-user-profile";
+import { ShareWithMember } from "@/components/activity-log/ShareWithMember";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { ChangedMark } from "@/components/ui/ChangedMark";
 import { localizeError } from "@/i18n/presentation";
@@ -52,7 +53,7 @@ export function MembershipLeaving({
 }) {
   const i18n = useUiTranslations();
   const locale = useLocale();
-  const [form, setForm] = useState<{ reason: string } | null>(null);
+  const [form, setForm] = useState<{ reason: string; shared: boolean } | null>(null);
   const today = localIsoDate();
   const formatDay = (value: unknown) =>
     typeof value === "string" && value
@@ -60,7 +61,7 @@ export function MembershipLeaving({
       : "—";
 
   const leave = useMutation({
-    mutationFn: () => markFinanceMemberLeft(token, userId, leaveRequest(form!.reason)),
+    mutationFn: () => markFinanceMemberLeft(token, userId, leaveRequest(form!.reason, form!.shared)),
     onSuccess: async () => {
       setForm(null);
       await onRefresh();
@@ -113,7 +114,7 @@ export function MembershipLeaving({
         ) : !form ? (
           <button
             className="rounded-full px-4 py-2 text-xs font-semibold"
-            onClick={() => { leave.reset(); setForm({ reason: "" }); }}
+            onClick={() => { leave.reset(); setForm({ reason: "", shared: false }); }}
             style={{ border: "1px solid var(--border)", color: "var(--danger)" }}
             type="button"
             data-testid="admin-leave-open"
@@ -131,11 +132,12 @@ export function MembershipLeaving({
             aria-label={i18n("admLeaveReason")}
             className="w-full rounded-xl px-3 py-2"
             maxLength={500}
-            onChange={(event) => setForm({ reason: event.target.value })}
+            onChange={(event) => setForm({ ...form, reason: event.target.value })}
             placeholder={i18n("admLeaveReason")}
             style={fieldStyle}
             value={form.reason}
           />
+          <ShareWithMember checked={form.shared} onChange={(next) => setForm({ ...form, shared: next })} testId="leave-share-with-member" />
           <div className="flex flex-wrap gap-2">
             <button className="rounded-full px-4 py-2 text-xs font-semibold disabled:opacity-50" disabled={leave.isPending} style={{ background: "var(--danger)", color: "var(--danger-contrast)" }} type="submit" data-testid="admin-leave-confirm">
               {i18n("admLeaveMark")}

@@ -21,6 +21,7 @@ import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { promotionChoices, rankCriteria, rankProgress, skillTicks, type SkillTick } from "@/lib/body-devices";
 import { saveFile } from "@/components/admin/coach-pay/pay-ui";
 import { formatRankDate, todayIso } from "@/components/body-devices/rank-dates";
+import { ShareWithMember } from "@/components/activity-log/ShareWithMember";
 
 /**
  * «Βαθμός» in a client's profile (ADR-377, mockup e2coach A): where the
@@ -510,8 +511,9 @@ function WithdrawSheet({
   const queryClient = useQueryClient();
   const [reason, setReason] = useState("");
   const [reasonError, setReasonError] = useState(false);
+  const [shared, setShared] = useState(false);
   const revoke = useMutation({
-    mutationFn: () => revokeRankAward(token, slug, awardId, reason.trim()),
+    mutationFn: () => revokeRankAward(token, slug, awardId, reason.trim(), shared),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: clientRanksKey(slug, userId) });
       onClose();
@@ -562,6 +564,9 @@ function WithdrawSheet({
         />
         {reasonError ? <span className="text-xs font-normal" style={{ color: "var(--danger)" }}>{t("ranks.withdrawReasonRequired")}</span> : null}
       </label>
+      <div className="mt-3">
+        <ShareWithMember checked={shared} onChange={setShared} testId="rank-revoke-share-with-member" />
+      </div>
       {revoke.isError ? <ErrorNotice>{t("errorGeneric")}</ErrorNotice> : null}
     </Dialog>
   );

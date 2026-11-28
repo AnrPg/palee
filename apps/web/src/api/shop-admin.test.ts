@@ -73,6 +73,9 @@ describe("order actions", () => {
       body: { lines: [{ order_line_id: "l1", quantity: 1, restock: true }], reason: null, idempotency_key: "refund-key-1" },
     });
     expect(orderActionRequest({ action: "pickup" })).toEqual({ path: "pickup", body: {} });
+    // ADR-760 (6A): a cancel always says whether the member sees it.
+    expect(orderActionRequest({ action: "cancel", reason: "Out of stock" })).toEqual({ path: "cancel", body: { reason: "Out of stock", reason_shared: false } });
+    expect(orderActionRequest({ action: "cancel", reason: null, reason_shared: true })).toEqual({ path: "cancel", body: { reason: null, reason_shared: true } });
     expect(orderActionRequest({ action: "pickup", payment_method: "cash" })).toEqual({ path: "pickup", body: { payment_method: "cash" } });
   });
 });

@@ -7,6 +7,7 @@ import type { OrganizationMembership } from "@/api/organizations";
 import { entitledFeatures, workoutsClosed } from "@/components/client/entitlement";
 import { useClientEntitlement } from "@/components/client/use-client-entitlement";
 import { aroundKindHref } from "@/components/around/around";
+import { MemberActivityHistory } from "@/components/activity-log/MemberActivityHistory";
 import { AnnouncementsCard } from "@/components/community/AnnouncementsCard";
 import { DocumentsBoxCard, DocumentsButton } from "@/components/documents/DocumentsBoxCard";
 import { gymClubFor } from "@/components/community/community";
@@ -94,6 +95,8 @@ export function BoxHub() {
           <Suspense fallback={null}>
             <SeasonsEntry />
           </Suspense>
+          {/* ADR-760 (5A): what the box shared with the member, as «Το box». */}
+          {membership ? <MemberActivityHistory slug={membership.organization.slug} /> : null}
         </div>
         <div className="flex flex-wrap gap-2">
           {/* ADR-248, mockup s4 B: renew online where the box sells packages. */}

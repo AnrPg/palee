@@ -73,7 +73,7 @@ describe("MemberBenefits (ADR-612)", () => {
       expect(giveMemberBenefit).toHaveBeenCalledWith(
         "t",
         "u1",
-        expect.objectContaining({ kind: "extra_uses", allowance: "class_visits", quantity: 1, period: "calendar_month", reason: null }),
+        expect.objectContaining({ kind: "extra_uses", allowance: "class_visits", quantity: 1, period: "calendar_month", reason: null, reason_shared: false }),
       ),
     );
   });
@@ -81,8 +81,17 @@ describe("MemberBenefits (ADR-612)", () => {
   it("revokes a grace with an optional reason", async () => {
     renderCard();
     fireEvent.click(await screen.findByRole("button", { name: "Ανάκληση" }));
+    expect(screen.getByTestId("benefit-revoke-share-with-member")).not.toBeChecked();
     fireEvent.click(screen.getByRole("button", { name: "Ανάκληση τώρα" }));
-    await waitFor(() => expect(revokeMemberBenefit).toHaveBeenCalledWith("t", "u1", "b1", expect.objectContaining({ reason: null })));
+    await waitFor(() => expect(revokeMemberBenefit).toHaveBeenCalledWith("t", "u1", "b1", expect.objectContaining({ reason: null, reason_shared: false })));
+  });
+
+  it("lets the member see a revoke when staff tick «Να το δει και το μέλος»", async () => {
+    renderCard();
+    fireEvent.click(await screen.findByRole("button", { name: "Ανάκληση" }));
+    fireEvent.click(screen.getByText("Να το δει και το μέλος"));
+    fireEvent.click(screen.getByRole("button", { name: "Ανάκληση τώρα" }));
+    await waitFor(() => expect(revokeMemberBenefit).toHaveBeenCalledWith("t", "u1", "b1", expect.objectContaining({ reason_shared: true })));
   });
 
   it("only shows the history to staff who don't take payments", async () => {

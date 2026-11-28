@@ -4362,6 +4362,7 @@
     "mpTabWellbeing": "Wellbeing",
     "mpTabCoaching": "Coaching",
     "mpTabFinance": "Finance",
+    "mpTabHistory": "History",
     "mpTabAccount": "Account",
     "bmTitle": "Message from the box",
     "bmBody": "Message",
@@ -20549,7 +20550,6 @@
     "refund": "Refund…",
     "nothingOpen": "Nothing is open for this package.",
     "reason": "Reason (optional)",
-    "shareReason": "The member sees it in the notification",
     "cancel": "Cancel",
     "confirm": "Remove package",
     "removing": "Removing…",
@@ -20670,5 +20670,651 @@
     "variationSearch": "Search all members",
     "whichWod": "Which WOD?",
     "wodCount": "{count, plural, one {# WOD} other {# WODs}}"
+  },
+  "ActivityLog": {
+    "title": "Activity log",
+    "intro": "Who on the staff did what, when, to whom and why. Tap a row for the details.",
+    "back": "Admin",
+    "forbidden": "Your role does not see the activity log.",
+    "filters": "Activity log filters",
+    "search": "Search reasons and names",
+    "area": "Kind",
+    "staffMember": "By whom",
+    "anyStaff": "All staff",
+    "person": "To whom",
+    "personPlaceholder": "Type a name",
+    "clearPerson": "Clear the filter for {name}",
+    "from": "From",
+    "to": "Until",
+    "export": "Export CSV",
+    "exporting": "Exporting…",
+    "loading": "Loading…",
+    "empty": "Nothing has been recorded yet.",
+    "emptyFiltered": "No entries with these filters.",
+    "count": "{count, plural, one {# entry} other {# entries}}",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "more": "More",
+    "fullLog": "The whole log →",
+    "system": "Automatic",
+    "deletedMember": "Deleted member",
+    "onePerson": "One person",
+    "changeLabel": "Change",
+    "period": "Period",
+    "periodRange": "{from} – {to}",
+    "about": "About",
+    "reason": "Reason",
+    "noReason": "No reason",
+    "by": "By",
+    "memberSaw": "The member saw it too",
+    "yes": "Yes",
+    "no": "No",
+    "onlyPerson": "Only {name}",
+    "onlyActor": "Only what {name} did",
+    "none": "none",
+    "shareWithMember": "Let the member see it too",
+    "historyTitle": "History",
+    "theBox": "The box",
+    "reasonShown": "Reason: {reason}",
+    "fields": {
+      "status": "Status",
+      "ends_on": "Last day"
+    },
+    "areas": {
+      "members": "Members",
+      "money": "Money",
+      "packages": "Subscription packages",
+      "classes": "Classes",
+      "training": "Training",
+      "spaces": "Spaces and equipment",
+      "shop": "Shop and programmes",
+      "community": "Community",
+      "communication": "Messages",
+      "staff_pay": "Staff pay",
+      "settings": "Settings"
+    },
+    "actions": {
+      "accounting_export": {
+        "request": "Asked for an accounting export"
+      },
+      "appointment": {
+        "attendance": "Recorded an appointment visit",
+        "book": "Booked an appointment",
+        "cancel": "Cancelled an appointment",
+        "slot_cancel": "Cancelled appointment times",
+        "slot_create": "Opened appointment times"
+      },
+      "assigned_workout": {
+        "create": "Assigned a workout",
+        "delete": "Removed an assigned workout",
+        "update": "Edited an assigned workout"
+      },
+      "attendance": {
+        "record": "Recorded attendance",
+        "remove": "Removed attendance"
+      },
+      "automation": {
+        "update": "Changed an automatic message"
+      },
+      "benefit": {
+        "give": "Gave a gift or grace",
+        "revoke": "Took back a gift or grace"
+      },
+      "booking": {
+        "approve": "Approved a booking",
+        "reject": "Rejected a booking"
+      },
+      "box_review": {
+        "reply": "Replied to a box review",
+        "report": "Reported a box review"
+      },
+      "box_screen": {
+        "create": "Added a box screen",
+        "delete": "Removed a box screen",
+        "override_end": "Gave a box screen back to its schedule",
+        "override_set": "Took over a box screen",
+        "pairing_code": "Made a screen pairing code",
+        "update": "Edited a box screen"
+      },
+      "branch": {
+        "archive": "Archived a branch",
+        "create": "Added a branch",
+        "update": "Edited a branch"
+      },
+      "business": {
+        "activation_request": "Asked to activate the business"
+      },
+      "card_surcharge": {
+        "update": "Changed the card fee"
+      },
+      "challenge": {
+        "create": "Created a challenge",
+        "delete": "Deleted a challenge",
+        "update": "Edited a challenge"
+      },
+      "channel": {
+        "settings_save": "Saved the message channel settings",
+        "template_delete": "Deleted a message template",
+        "template_save": "Saved a message template"
+      },
+      "check_in": {
+        "door_rotate": "Changed the door code",
+        "member": "Checked in a box member",
+        "member_code_revoke": "Cancelled a member's check-in code",
+        "nfc_rotate": "Renewed the NFC tag code",
+        "nfc_update": "Changed the NFC tag",
+        "poster_rotate": "Renewed the check-in poster code",
+        "poster_update": "Changed the check-in poster",
+        "record": "Checked someone in",
+        "settings_update": "Changed the check-in settings"
+      },
+      "class": {
+        "booking_workout": "Set a booking's WOD",
+        "create": "Created a class",
+        "day_workout_follow": "Made a class follow the day WOD",
+        "delete": "Deleted a class",
+        "live_workout": "Switched the live WOD",
+        "series_create": "Created a recurring class",
+        "state_change": "Cancelled or reopened a class",
+        "update": "Edited a class",
+        "workout_link": "Linked a WOD to a class",
+        "workouts_set": "Set a class's WODs"
+      },
+      "class_notice": {
+        "send": "Sent a notice to a class"
+      },
+      "class_type": {
+        "create": "Created a class type",
+        "delete": "Deleted a class type",
+        "update": "Edited a class type"
+      },
+      "cleaning": {
+        "area_archive": "Archived a cleaning area",
+        "area_create": "Added a cleaning area",
+        "area_update": "Edited a cleaning area",
+        "finish": "Finished cleaning",
+        "schedule_delete": "Removed a cleaning schedule",
+        "schedule_set": "Set a cleaning schedule",
+        "start": "Started cleaning"
+      },
+      "club": {
+        "archive": "Archived a club",
+        "create": "Created a club",
+        "member_remove": "Removed someone from a club",
+        "request_answer": "Answered a club request",
+        "update": "Edited a club"
+      },
+      "coach_note": {
+        "create": "Wrote a coach note",
+        "delete": "Deleted a coach note",
+        "update": "Edited a coach note"
+      },
+      "coaching_relationship": {
+        "create": "Assigned a coach",
+        "end": "Ended coaching"
+      },
+      "community": {
+        "group_decide": "Decided on a member group",
+        "group_reopen": "Reopened a member group request",
+        "report_act": "Acted on a report",
+        "settings_update": "Changed the community settings"
+      },
+      "contact": {
+        "consent": "Changed a contact's consent",
+        "delete": "Deleted a contact",
+        "save": "Saved a contact"
+      },
+      "corporate": {
+        "client_create": "Added a corporate client",
+        "client_update": "Edited a corporate client",
+        "invoice_create": "Created a corporate invoice",
+        "invoice_send": "Sent a corporate invoice",
+        "invoice_status": "Changed a corporate invoice",
+        "payment_record": "Recorded a corporate payment",
+        "payment_reverse": "Reversed a corporate payment",
+        "seat_add": "Added a corporate place",
+        "seat_end": "Ended a corporate place"
+      },
+      "credit": {
+        "apply": "Used a credit",
+        "create": "Gave a credit",
+        "reverse": "Took back a credit"
+      },
+      "data_export": {
+        "create": "Exported the box's data"
+      },
+      "day_workout": {
+        "delete": "Removed the day WOD",
+        "set": "Set the day WOD"
+      },
+      "demo_data": {
+        "remove": "Removed demo data",
+        "seed": "Added demo data"
+      },
+      "document": {
+        "request": "Asked for a signature",
+        "request_cancel": "Withdrew a signature request",
+        "requirement_set": "Changed who must sign a document",
+        "settings_update": "Changed the document settings",
+        "template_archive": "Archived a document",
+        "template_create": "Created a document",
+        "template_publish": "Published a document"
+      },
+      "door": {
+        "create": "Added a door",
+        "delete": "Removed a door",
+        "token_rotate": "Renewed a door's key",
+        "unlock": "Opened a door from the desk",
+        "update": "Edited a door"
+      },
+      "email_sender": {
+        "delete": "Removed the email sender",
+        "save": "Saved the email sender"
+      },
+      "event": {
+        "attendee_remove": "Removed an event attendee",
+        "cancel": "Cancelled an event",
+        "check_in": "Checked in at an event",
+        "cohost_answer": "Answered a co-host invitation",
+        "cohost_invite": "Invited a co-host",
+        "cohost_remove": "Removed a co-host",
+        "cohost_trial_offer": "Offered a trial with a co-host",
+        "create": "Created an event",
+        "mark_paid": "Marked an event place paid",
+        "message": "Messaged an event's attendees",
+        "refund": "Refunded an event place",
+        "trial_offer": "Offered a trial at an event",
+        "update": "Edited an event"
+      },
+      "finance_record": {
+        "purge": "Deleted finance records"
+      },
+      "fiscal": {
+        "connection_save": "Saved the tax connection",
+        "credit_note": "Issued a credit note",
+        "document_email": "Emailed a tax document",
+        "einvoice_retry": "Resent an e-invoice",
+        "export_settings_save": "Saved the export settings",
+        "identity_save": "Saved the tax details",
+        "null_receipt": "Issued a zero receipt",
+        "tax_rates_save": "Saved the tax rates",
+        "till_retry": "Resent to the till",
+        "transmission_retry": "Resent a tax document"
+      },
+      "fitness_display": {
+        "update": "Changed what the fitness card shows"
+      },
+      "floor_plan": {
+        "create": "Added a floor plan",
+        "delete": "Deleted a floor plan",
+        "update": "Edited a floor plan"
+      },
+      "follower_invite": {
+        "send": "Invited a follower to join"
+      },
+      "form_review": {
+        "complete": "Answered a technique video"
+      },
+      "health_certificate": {
+        "add": "Added a health certificate",
+        "delete": "Deleted a health certificate"
+      },
+      "import": {
+        "apply": "Applied an import",
+        "create": "Started an import",
+        "delete": "Deleted an import",
+        "invite": "Invited imported people",
+        "undo": "Undid an import"
+      },
+      "injury": {
+        "create": "Recorded an injury",
+        "heal": "Marked an injury healed",
+        "reopen": "Reopened an injury",
+        "update": "Edited an injury"
+      },
+      "injury_warning": {
+        "acknowledge": "Acknowledged an injury warning"
+      },
+      "integration": {
+        "delivery_replay": "Resent a webhook delivery",
+        "email_list_delete": "Removed a mailing list connection",
+        "email_list_save": "Saved a mailing list connection",
+        "email_list_sync": "Synced a mailing list",
+        "key_create": "Created an API key",
+        "key_revoke": "Revoked an API key",
+        "key_rotate": "Renewed an API key",
+        "unsubscribe_url_rotate": "Renewed the unsubscribe link",
+        "webhook_create": "Added a webhook",
+        "webhook_delete": "Deleted a webhook",
+        "webhook_secret_rotate": "Renewed a webhook secret",
+        "webhook_update": "Edited a webhook"
+      },
+      "inventory": {
+        "machine_archive": "Archived a machine",
+        "machine_create": "Added a machine",
+        "machine_event": "Recorded a machine issue",
+        "machine_place": "Moved a machine",
+        "machine_update": "Edited a machine",
+        "supply_archive": "Archived a supply",
+        "supply_create": "Added a supply",
+        "supply_low": "Reported a supply running low",
+        "supply_movement": "Recorded a stock movement",
+        "supply_update": "Edited a supply"
+      },
+      "invoice": {
+        "create": "Created an invoice",
+        "file_attach": "Attached a file to an invoice",
+        "issue": "Issued an invoice",
+        "renewal_create": "Created a renewal invoice",
+        "update": "Edited an invoice",
+        "void": "Cancelled an invoice"
+      },
+      "join_request": {
+        "accept": "Accepted a request to join",
+        "decline": "Declined a request to join"
+      },
+      "lead": {
+        "contacted": "Contacted an enquiry",
+        "convert": "Made an enquiry a box member",
+        "create": "Added an enquiry",
+        "delete": "Deleted an enquiry",
+        "import": "Imported enquiries",
+        "move": "Moved an enquiry to another stage",
+        "note": "Wrote a note on an enquiry",
+        "opt_out": "Stopped messages to an enquiry",
+        "task_add": "Added a task for an enquiry",
+        "task_done": "Finished a task for an enquiry",
+        "update": "Edited an enquiry"
+      },
+      "logo": {
+        "remove": "Removed the logo",
+        "set": "Changed the logo"
+      },
+      "member": {
+        "branches_change": "Changed the branches",
+        "class_placement": "Moved to another class",
+        "coach_scope_change": "Changed which clients the coach sees",
+        "guest_create": "Made a guest of the box",
+        "home_branch_change": "Changed the home branch",
+        "leave_record": "Recorded leaving the box",
+        "leave_undo": "Undid leaving the box",
+        "programming": "Programmed a workout",
+        "remove": "Removed from the box",
+        "risk_contacted": "Marked as contacted",
+        "risk_snooze": "Paused the at-risk alert",
+        "role_change": "Changed the roles",
+        "status_reset": "Put the status back to automatic",
+        "status_set": "Set the status by hand",
+        "update": "Edited the details"
+      },
+      "message": {
+        "cancel": "Cancelled a message",
+        "retry": "Resent a message",
+        "send": "Sent a message"
+      },
+      "metric": {
+        "reset": "Reset a measurement",
+        "reset_undo": "Undid a measurement reset"
+      },
+      "nutrition_plan": {
+        "save": "Saved a nutrition plan"
+      },
+      "organization": {
+        "archive": "Closed the box",
+        "transfer": "Transferred ownership of the box"
+      },
+      "package": {
+        "assign": "Assigned a subscription package",
+        "auto_renew": "Changed the automatic renewal",
+        "beneficiary_add": "Added someone who shares the package",
+        "beneficiary_remove": "Removed someone who shares the package",
+        "create": "Created a subscription package",
+        "end_reset": "Put the package's last day back to automatic",
+        "end_set": "Set the package's last day by hand",
+        "entitlements_refresh": "Recounted what the package gives",
+        "freeze": "Froze the subscription",
+        "freeze_cancel": "Cancelled a freeze",
+        "removal_undo": "Undid removing a subscription package",
+        "remove": "Removed a subscription package",
+        "retire": "Stopped selling a subscription package",
+        "update": "Edited a subscription package"
+      },
+      "package_audience": {
+        "exception_add": "Added an exception for a person",
+        "exception_remove": "Removed an exception for a person",
+        "featured_update": "Changed the featured packages",
+        "package_update": "Changed who may buy a package",
+        "update": "Changed who may buy packages"
+      },
+      "package_request": {
+        "activate_unpaid": "Started a package request unpaid",
+        "collect": "Took payment for a package request",
+        "decline": "Declined a package request"
+      },
+      "pay_item": {
+        "archive": "Archived a pay item",
+        "create": "Created a pay item",
+        "update": "Edited a pay item"
+      },
+      "pay_period": {
+        "adjustment_add": "Added a pay adjustment",
+        "adjustment_delete": "Deleted a pay adjustment",
+        "approve": "Approved a pay period",
+        "calculate": "Calculated a pay period",
+        "create": "Opened a pay period",
+        "item_line_add": "Added a one-off pay line",
+        "item_restore": "Restored a pay line",
+        "line_basis": "Changed what a pay line counts",
+        "reopen": "Reopened a pay period"
+      },
+      "pay_rule": {
+        "archive": "Archived a pay rule",
+        "create": "Created a pay rule",
+        "update": "Edited a pay rule"
+      },
+      "payment": {
+        "card_link": "Sent a link to save a card",
+        "charge_dismiss": "Dismissed a failed card charge",
+        "charge_retry": "Retried a card charge",
+        "receipt_email": "Emailed a receipt",
+        "receive": "Took a payment",
+        "record": "Recorded a payment",
+        "refund": "Gave money back",
+        "retry": "Retried a payment",
+        "reverse": "Reversed a payment",
+        "terminal_cancel": "Cancelled a terminal payment",
+        "terminal_result": "Recorded the terminal's answer",
+        "terminal_start": "Started a card terminal payment"
+      },
+      "payment_account": {
+        "connect": "Connected online payments",
+        "disconnect": "Disconnected online payments",
+        "options": "Changed the payment options",
+        "save": "Saved the payment account"
+      },
+      "perk": {
+        "claim_revoke": "Took back a claimed perk",
+        "claim_use": "Marked a perk used",
+        "codes_add": "Added perk codes",
+        "create": "Created a perk",
+        "delete": "Deleted a perk",
+        "expire": "Ended a perk",
+        "pause": "Paused a perk",
+        "publish": "Published a perk",
+        "update": "Edited a perk"
+      },
+      "programme": {
+        "archive": "Archived a training programme",
+        "cover_remove": "Removed a programme cover",
+        "cover_set": "Set a programme cover",
+        "create": "Created a training programme",
+        "publish": "Published a training programme",
+        "refund": "Refunded a training programme",
+        "restore": "Restored a training programme",
+        "review_moderate": "Moderated a programme review",
+        "update": "Edited a training programme"
+      },
+      "promotion": {
+        "code_create": "Created discount codes",
+        "create": "Created a promotion",
+        "redeem": "Applied a discount code"
+      },
+      "public_profile": {
+        "photo_add": "Added a photo to the public page",
+        "publish": "Published the public box page",
+        "unpublish": "Hid the public box page",
+        "update": "Edited the public box page"
+      },
+      "rank": {
+        "award": "Awarded a rank",
+        "revoke": "Withdrew a rank",
+        "skill_check": "Checked off a skill",
+        "skills_batch": "Checked off several skills"
+      },
+      "rank_ladder": {
+        "create": "Created a rank ladder",
+        "delete": "Deleted a rank ladder",
+        "update": "Edited a rank ladder"
+      },
+      "receipt": {
+        "create": "Issued a receipt"
+      },
+      "reconciliation": {
+        "match": "Matched a bank entry",
+        "record": "Recorded a bank entry",
+        "unmatch": "Unmatched a bank entry"
+      },
+      "referral": {
+        "approve": "Approved a referral",
+        "create": "Recorded a referral",
+        "friend_gift": "Gave the friend's gift",
+        "reassign": "Moved a referral to another person",
+        "reject": "Rejected a referral",
+        "reward_create": "Added a referral reward",
+        "reward_given": "Gave a referral reward",
+        "reward_status": "Changed a referral reward",
+        "status": "Changed a referral"
+      },
+      "referral_program": {
+        "create": "Created a referral programme",
+        "update": "Changed the referral programme"
+      },
+      "review": {
+        "status": "Changed a review's status"
+      },
+      "review_asks": {
+        "update": "Changed the review requests"
+      },
+      "role_access": {
+        "change": "Changed what a role may do"
+      },
+      "scale_levels": {
+        "update": "Changed the scale levels"
+      },
+      "scaling_suggestion": {
+        "approve": "Approved a scaling suggestion",
+        "dismiss": "Dismissed a scaling suggestion"
+      },
+      "season": {
+        "create": "Created a season",
+        "enrollment_confirm": "Confirmed a season place",
+        "enrollment_decline": "Declined a season request",
+        "enrollment_remove": "Removed from a season",
+        "update": "Edited a season"
+      },
+      "settings": {
+        "ai": "Changed the AI settings",
+        "onboarding": "Changed the welcome steps",
+        "recipe_apply": "Applied a ready setup",
+        "time_zone": "Changed the time zone",
+        "update": "Changed the box settings"
+      },
+      "shop": {
+        "desk_sale": "Sold at the desk",
+        "order_cancel": "Cancelled an order",
+        "order_fiscal_receipt": "Issued an order's receipt",
+        "order_payment": "Took payment for an order",
+        "order_pickup": "Handed over an order",
+        "order_ready": "Marked an order ready",
+        "order_refund": "Refunded an order",
+        "pricing_target": "Set a price target",
+        "product_create": "Added a product",
+        "product_promote": "Promoted a product",
+        "product_status": "Changed a product's status",
+        "product_update": "Edited a product",
+        "promotion_code_update": "Edited a shop discount code",
+        "stock_movement": "Changed the stock",
+        "variant_archive": "Archived a product option",
+        "variant_create": "Added a product option",
+        "variant_update": "Edited a product option"
+      },
+      "space": {
+        "archive": "Archived a space",
+        "cleaning_point_add": "Added a cleaning point",
+        "cleaning_point_delete": "Deleted a cleaning point",
+        "cleaning_point_update": "Edited a cleaning point",
+        "cleaning_points_order": "Reordered the cleaning points",
+        "create": "Created a space",
+        "photo_add": "Added a room photo",
+        "photo_delete": "Deleted a room photo",
+        "photo_update": "Edited a room photo",
+        "photos_order": "Reordered the room photos",
+        "restore": "Restored a space",
+        "settings_update": "Changed the space settings",
+        "unavailable": "Made a space unavailable",
+        "unavailable_end": "Made a space available again",
+        "update": "Edited a space"
+      },
+      "training_goal": {
+        "set": "Set a weekly goal"
+      },
+      "trial": {
+        "accept": "Accepted a trial class",
+        "attendance": "Recorded a trial visit",
+        "decline": "Declined a trial class"
+      },
+      "trial_policy": {
+        "update": "Changed the trial rules"
+      },
+      "video": {
+        "archive": "Archived a video",
+        "create": "Added a video",
+        "publish": "Published a video",
+        "update": "Edited a video"
+      },
+      "website": {
+        "domain_add": "Added a website domain",
+        "domain_instructions": "Sent the domain instructions",
+        "domain_primary": "Changed the main website domain",
+        "domain_remove": "Removed a website domain",
+        "draft_discard": "Discarded the website draft",
+        "publish": "Published the website",
+        "translations_keep": "Kept website translations",
+        "translations_machine": "Translated the website automatically",
+        "translations_save": "Saved website translations",
+        "update": "Edited the website"
+      },
+      "workout": {
+        "copy": "Copied a WOD",
+        "create": "Created a WOD",
+        "delete": "Deleted a WOD",
+        "duplicate": "Duplicated a WOD",
+        "exercise_matches": "Matched a WOD's exercises",
+        "goals_update": "Changed a WOD's goals",
+        "publish": "Published a WOD",
+        "reopen": "Reopened a WOD for editing",
+        "update": "Edited a WOD"
+      },
+      "workout_folder": {
+        "create": "Created a WOD folder",
+        "delete": "Deleted a WOD folder",
+        "update": "Edited a WOD folder"
+      },
+      "workout_type": {
+        "create": "Added a workout type",
+        "merge": "Merged workout types",
+        "update": "Edited a workout type"
+      }
+    }
   }
 }

@@ -5,8 +5,9 @@
  * now, a package in force stays usable to its last day, money owed and a
  * minimum commitment's months stay owed. Only the reason is staff's to add.
  */
-export function leaveRequest(reason: string): { reason: string | null } {
-  return { reason: reason.trim() || null };
+export function leaveRequest(reason: string, shared = false): { reason: string | null; reason_shared: boolean } {
+  // ADR-760 (6A): «Να το δει και το μέλος», always sent.
+  return { reason: reason.trim() || null, reason_shared: shared };
 }
 
 /** Running packages whose renewal is the box member's choice (`auto_renew` is a boolean). */

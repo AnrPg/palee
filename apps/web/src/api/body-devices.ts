@@ -213,11 +213,12 @@ export function fetchReadyRanks(token: string, slug: string) {
   );
 }
 
-export function revokeRankAward(token: string, slug: string, awardId: string, reason: string) {
+/** ADR-760 (6A): `reasonShared` is «Να το δει και το μέλος», always sent. */
+export function revokeRankAward(token: string, slug: string, awardId: string, reason: string, reasonShared = false) {
   return apiRequest<{ award: RankAward }>(`${org(slug)}/staff/rank-awards/${id(awardId)}/revoke`, {
     method: "POST",
     token,
-    body: { reason },
+    body: { reason, reason_shared: reasonShared },
   }).then((response) => response.award);
 }
 

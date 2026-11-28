@@ -165,7 +165,7 @@ export async function setFinanceOverride(
   token: string,
   userId: string,
   field: "status" | "ends_on",
-  body: { value: string; reason?: string; subscription_id?: string; commitment_override_reason?: string },
+  body: { value: string; reason?: string; reason_shared?: boolean; subscription_id?: string; commitment_override_reason?: string },
 ) {
   return apiRequest<{ override: ValueOverride }>(`/admin/finance/members/${userId}/overrides/${field}`, {
     method: "PUT",
@@ -200,7 +200,7 @@ export async function setFinanceMemberAutoRenew(token: string, userId: string, s
 export async function markFinanceMemberLeft(
   token: string,
   userId: string,
-  body: { reason?: string | null },
+  body: { reason?: string | null; reason_shared?: boolean },
 ) {
   return apiRequest<{ membership: FinanceRecord; leaving_on: string; voided_invoice_count: number; outstanding_cents: number }>(
     `/admin/finance/members/${userId}/leave`,

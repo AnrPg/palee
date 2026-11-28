@@ -337,15 +337,16 @@ export async function fetchAdminUserFreezes(token: string, userId: string) {
 export function createAdminUserFreeze(
   token: string,
   userId: string,
-  body: { starts_on: string; ends_on: string; reason: string },
+  body: { starts_on: string; ends_on: string; reason: string; reason_shared: boolean },
 ) {
   return apiRequest<{ freeze: MembershipFreeze }>(`/admin/users/${userId}/freezes`, { token, method: "POST", body });
 }
 
-export function cancelAdminUserFreeze(token: string, userId: string, freezeId: string, reason?: string) {
+/** ADR-760 (6A): `reasonShared` is «Να το δει και το μέλος», always sent. */
+export function cancelAdminUserFreeze(token: string, userId: string, freezeId: string, reason?: string, reasonShared = false) {
   return apiRequest<{ freeze: MembershipFreeze }>(`/admin/users/${userId}/freezes/${freezeId}/cancel`, {
     token,
     method: "POST",
-    body: reason ? { reason } : {},
+    body: { ...(reason ? { reason } : {}), reason_shared: reasonShared },
   });
 }

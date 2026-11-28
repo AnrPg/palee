@@ -23,7 +23,7 @@ export function revokeMemberBenefit(
   token: string,
   userId: string,
   benefitId: string,
-  body: { reason: string | null; idempotency_key: string },
+  body: { reason: string | null; reason_shared: boolean; idempotency_key: string },
 ) {
   return apiRequest<One>(`${path(userId)}/${benefitId}/revoke`, { token, method: "POST", body });
 }

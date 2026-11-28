@@ -29,6 +29,7 @@ import { useSession } from "@/components/session-provider";
 import { Select } from "@/components/ui/Select";
 import { DateInput } from "@/components/ui/DateInput";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { ShareWithMember } from "@/components/activity-log/ShareWithMember";
 
 /**
  * Seasons (ADR-167): the gym's fixed-length programmes, sold next to its
@@ -474,16 +475,18 @@ function Enrollments({
   const t = useTranslations("Seasons");
   const [declining, setDeclining] = useState<string | null>(null);
   const [reason, setReason] = useState("");
+  const [shared, setShared] = useState(false);
   const enrollments = [...(season.enrollments ?? [])]
     .filter((enrollment) => enrollment?.id)
     .sort((a, b) => ENROLLMENT_ORDER.indexOf(a.status) - ENROLLMENT_ORDER.indexOf(b.status));
 
   const act = useMutation({
     mutationFn: ({ id, action }: { id: string; action: EnrollmentAction }) =>
-      actOnSeasonEnrollment(token, id, action, action === "decline" ? reason : undefined),
+      actOnSeasonEnrollment(token, id, action, action === "decline" ? reason : undefined, action === "decline" && shared),
     onSuccess: async (saved) => {
       setDeclining(null);
       setReason("");
+      setShared(false);
       await onChanged(saved);
     },
   });
@@ -508,7 +511,7 @@ function Enrollments({
                   </ActionButton>
                 ) : null}
                 {enrollment.status === "requested" || enrollment.status === "waitlisted" ? (
-                  <ActionButton disabled={act.isPending} onClick={() => setDeclining(declining === enrollment.id ? null : enrollment.id)}>
+                  <ActionButton disabled={act.isPending} onClick={() => { setShared(false); setDeclining(declining === enrollment.id ? null : enrollment.id); }}>
                     {t("decline")}
                   </ActionButton>
                 ) : null}
@@ -522,6 +525,7 @@ function Enrollments({
                 <p className="text-xs italic" style={{ color: "var(--muted)" }}>{enrollment.decline_reason}</p>
               ) : null}
               {declining === enrollment.id ? (
+                <div className="space-y-2">
                 <div className="flex gap-2">
                   <input
                     className={inputClass}
@@ -534,6 +538,8 @@ function Enrollments({
                   <ActionButton disabled={act.isPending} onClick={() => act.mutate({ id: enrollment.id, action: "decline" })}>
                     {t("declineSend")}
                   </ActionButton>
+                </div>
+                <ShareWithMember checked={shared} onChange={setShared} testId="season-decline-share-with-member" />
                 </div>
               ) : null}
             </li>

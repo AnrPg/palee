@@ -83,14 +83,14 @@ describe("removal rules", () => {
     expect(removalReady(preview({ untouched_invoices: unpaid, may_write_off: false }), null)).toBe(true);
   });
 
-  it("sends the choice only when one was asked, and the reason only when written", () => {
-    expect(removalBody(preview(), "void", "  ", true)).toEqual({});
+  it("sends the choice only when one was asked, the reason only when written, and the share choice always", () => {
+    expect(removalBody(preview(), "void", "  ", true)).toEqual({ reason_shared: true });
     expect(removalBody(preview({ untouched_invoices: unpaid }), "void", " Moved ", false)).toEqual({
       invoice_choice: "void",
       reason: "Moved",
       reason_shared: false,
     });
-    expect(removalBody(preview({ untouched_invoices: unpaid, may_write_off: false }), "void", "", false)).toEqual({});
+    expect(removalBody(preview({ untouched_invoices: unpaid, may_write_off: false }), "void", "", false)).toEqual({ reason_shared: false });
   });
 
   it("keeps the undo toast until the server's minute closes", () => {
@@ -123,12 +123,12 @@ describe("RemovePackageDialog", () => {
     expect(screen.getByTestId("package-removal-choice-void").getAttribute("aria-checked")).toBe("false");
     expect(screen.getByTestId("package-removal-choice-keep").getAttribute("aria-checked")).toBe("false");
 
-    // The reason is shown to the member only when ticked, and only once written.
+    // ADR-760 (6A): «Let the member see it too» starts unticked and is sent either way.
     const share = screen.getByTestId("package-removal-share-reason") as HTMLInputElement;
-    expect(share.disabled).toBe(true);
-    fireEvent.change(screen.getByTestId("package-removal-reason"), { target: { value: "Moved away" } });
-    expect(share.disabled).toBe(false);
     expect(share.checked).toBe(false);
+    expect(screen.getByText(en.ActivityLog.shareWithMember)).toBeTruthy();
+    fireEvent.change(screen.getByTestId("package-removal-reason"), { target: { value: "Moved away" } });
+    fireEvent.click(share);
 
     fireEvent.click(screen.getByTestId("package-removal-choice-void"));
     expect(confirm.disabled).toBe(false);
@@ -138,7 +138,7 @@ describe("RemovePackageDialog", () => {
     expect(api.removeFinancePackage).toHaveBeenCalledWith("token", "u1", "s1", {
       invoice_choice: "void",
       reason: "Moved away",
-      reason_shared: false,
+      reason_shared: true,
     });
   });
 

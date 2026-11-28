@@ -11,6 +11,7 @@ import {
   type PackageRemovalPreview,
 } from "@/api/finance";
 import { useSession } from "@/components/session-provider";
+import { ShareWithMember } from "@/components/activity-log/ShareWithMember";
 import { Dialog, DialogButton } from "@/components/ui/Dialog";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { localizeError } from "@/i18n/presentation";
@@ -44,7 +45,9 @@ export function removalBody(
   const trimmed = reason.trim();
   return {
     ...(preview.untouched_invoices.length > 0 && preview.may_write_off && choice ? { invoice_choice: choice } : {}),
-    ...(trimmed ? { reason: trimmed, reason_shared: shareReason } : {}),
+    ...(trimmed ? { reason: trimmed } : {}),
+    // ADR-760 (6A): «Να το δει και το μέλος», always sent.
+    reason_shared: shareReason,
   };
 }
 
@@ -204,17 +207,7 @@ export function RemovePackageDialog({
               data-testid="package-removal-reason"
             />
           </label>
-          <label className="flex items-center gap-2 text-sm" style={{ color: reason.trim() ? "var(--text)" : "var(--dim)" }}>
-            <input
-              type="checkbox"
-              className="h-5 w-5"
-              checked={shareReason}
-              disabled={!reason.trim()}
-              onChange={(event) => setShareReason(event.target.checked)}
-              data-testid="package-removal-share-reason"
-            />
-            {t("shareReason")}
-          </label>
+          <ShareWithMember checked={shareReason} onChange={setShareReason} testId="package-removal-share-reason" />
         </div>
       )}
     </Dialog>

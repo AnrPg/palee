@@ -4362,6 +4362,7 @@
     "mpTabWellbeing": "العافية",
     "mpTabCoaching": "التدريب الشخصي",
     "mpTabFinance": "المالية",
+    "mpTabHistory": "السجل",
     "mpTabAccount": "الحساب",
     "bmTitle": "رسالة من النادي",
     "bmBody": "الرسالة",
@@ -20549,7 +20550,6 @@
     "refund": "استرداد المال…",
     "nothingOpen": "لا شيء مفتوح لهذه الباقة.",
     "reason": "السبب (اختياري)",
-    "shareReason": "يراه العضو في الإشعار",
     "cancel": "إلغاء",
     "confirm": "إزالة الباقة",
     "removing": "جارٍ الإزالة…",
@@ -20670,5 +20670,651 @@
     "variationSearch": "البحث في كل الأعضاء",
     "whichWod": "أي WOD؟",
     "wodCount": "{count, plural, zero {# WOD} one {WOD واحد} two {# WOD} few {# WOD} many {# WOD} other {# WOD}}"
+  },
+  "ActivityLog": {
+    "title": "سجل الإجراءات",
+    "intro": "من فعل ماذا من الطاقم، ومتى، ولمن، ولماذا. اضغط على سطر لرؤية التفاصيل.",
+    "back": "الإدارة",
+    "forbidden": "دورك لا يتيح رؤية سجل الإجراءات.",
+    "filters": "عوامل تصفية السجل",
+    "search": "ابحث في الأسباب والأسماء",
+    "area": "النوع",
+    "staffMember": "بواسطة من",
+    "anyStaff": "كل الطاقم",
+    "person": "لمن",
+    "personPlaceholder": "اكتب اسمًا",
+    "clearPerson": "إزالة التصفية لـ {name}",
+    "from": "من",
+    "to": "إلى",
+    "export": "تصدير CSV",
+    "exporting": "جارٍ التصدير…",
+    "loading": "جارٍ التحميل…",
+    "empty": "لم يُسجَّل شيء بعد.",
+    "emptyFiltered": "لا إدخالات بهذه التصفيات.",
+    "count": "{count, plural, zero {لا إدخالات} one {إدخال واحد} two {إدخالان} few {# إدخالات} many {# إدخالًا} other {# إدخال}}",
+    "today": "اليوم",
+    "yesterday": "أمس",
+    "more": "المزيد",
+    "fullLog": "السجل كاملًا ←",
+    "system": "تلقائي",
+    "deletedMember": "عضو محذوف",
+    "onePerson": "شخص واحد",
+    "changeLabel": "التغيير",
+    "period": "الفترة",
+    "periodRange": "{from} – {to}",
+    "about": "يخص",
+    "reason": "السبب",
+    "noReason": "بلا سبب",
+    "by": "بواسطة",
+    "memberSaw": "رآه العضو أيضًا",
+    "yes": "نعم",
+    "no": "لا",
+    "onlyPerson": "فقط {name}",
+    "onlyActor": "فقط ما فعله {name}",
+    "none": "فارغ",
+    "shareWithMember": "ليراه العضو أيضًا",
+    "historyTitle": "السجل",
+    "theBox": "البوكس",
+    "reasonShown": "السبب: {reason}",
+    "fields": {
+      "status": "الحالة",
+      "ends_on": "آخر يوم"
+    },
+    "areas": {
+      "members": "الأعضاء",
+      "money": "المال",
+      "packages": "باقات الاشتراك",
+      "classes": "الحصص",
+      "training": "التدريب",
+      "spaces": "المساحات والمعدات",
+      "shop": "المتجر والبرامج",
+      "community": "المجتمع",
+      "communication": "الرسائل",
+      "staff_pay": "أجور الطاقم",
+      "settings": "الإعدادات"
+    },
+    "actions": {
+      "accounting_export": {
+        "request": "طلب تصديرًا محاسبيًا"
+      },
+      "appointment": {
+        "attendance": "سجّل حضور موعد",
+        "book": "حجز موعدًا",
+        "cancel": "ألغى موعدًا",
+        "slot_cancel": "ألغى أوقات مواعيد",
+        "slot_create": "أتاح أوقات مواعيد"
+      },
+      "assigned_workout": {
+        "create": "خصّص تمرينًا",
+        "delete": "أزال تمرينًا مخصصًا",
+        "update": "عدّل تمرينًا مخصصًا"
+      },
+      "attendance": {
+        "record": "سجّل الحضور",
+        "remove": "أزال الحضور"
+      },
+      "automation": {
+        "update": "غيّر رسالة تلقائية"
+      },
+      "benefit": {
+        "give": "منح هدية أو مهلة",
+        "revoke": "سحب هدية أو مهلة"
+      },
+      "booking": {
+        "approve": "وافق على حجز",
+        "reject": "رفض حجزًا"
+      },
+      "box_review": {
+        "reply": "ردّ على تقييم للبوكس",
+        "report": "أبلغ عن تقييم للبوكس"
+      },
+      "box_screen": {
+        "create": "أضاف شاشة للبوكس",
+        "delete": "أزال شاشة البوكس",
+        "override_end": "أعاد شاشة البوكس إلى جدولها",
+        "override_set": "تولّى التحكم بشاشة البوكس",
+        "pairing_code": "أنشأ رمز ربط شاشة",
+        "update": "عدّل شاشة البوكس"
+      },
+      "branch": {
+        "archive": "أرشف فرعًا",
+        "create": "أضاف فرعًا",
+        "update": "عدّل فرعًا"
+      },
+      "business": {
+        "activation_request": "طلب تفعيل النشاط التجاري"
+      },
+      "card_surcharge": {
+        "update": "غيّر رسوم البطاقة"
+      },
+      "challenge": {
+        "create": "أنشأ تحديًا",
+        "delete": "حذف تحديًا",
+        "update": "عدّل تحديًا"
+      },
+      "channel": {
+        "settings_save": "حفظ إعدادات القنوات",
+        "template_delete": "حذف قالب رسالة",
+        "template_save": "حفظ قالب رسالة"
+      },
+      "check_in": {
+        "door_rotate": "غيّر رمز الباب",
+        "member": "سجّل check-in لعضو",
+        "member_code_revoke": "ألغى رمز check-in لعضو",
+        "nfc_rotate": "جدّد رمز وسم NFC",
+        "nfc_update": "غيّر وسم NFC",
+        "poster_rotate": "جدّد رمز ملصق check-in",
+        "poster_update": "غيّر ملصق check-in",
+        "record": "سجّل check-in لشخص",
+        "settings_update": "غيّر إعدادات check-in"
+      },
+      "class": {
+        "booking_workout": "حدّد WOD لحجز",
+        "create": "أنشأ حصة",
+        "day_workout_follow": "جعل حصة تتبع WOD اليوم",
+        "delete": "حذف حصة",
+        "live_workout": "بدّل WOD الجاري",
+        "series_create": "أنشأ حصة متكررة",
+        "state_change": "ألغى حصة أو أعاد فتحها",
+        "update": "عدّل حصة",
+        "workout_link": "ربط WOD بحصة",
+        "workouts_set": "حدّد WOD لحصة"
+      },
+      "class_notice": {
+        "send": "أرسل إشعارًا إلى حصة"
+      },
+      "class_type": {
+        "create": "أنشأ نوع حصة",
+        "delete": "حذف نوع حصة",
+        "update": "عدّل نوع حصة"
+      },
+      "cleaning": {
+        "area_archive": "أرشف منطقة تنظيف",
+        "area_create": "أضاف منطقة تنظيف",
+        "area_update": "عدّل منطقة تنظيف",
+        "finish": "أنهى التنظيف",
+        "schedule_delete": "أزال جدول تنظيف",
+        "schedule_set": "حدّد جدول تنظيف",
+        "start": "بدأ التنظيف"
+      },
+      "club": {
+        "archive": "أرشف ناديًا",
+        "create": "أنشأ ناديًا",
+        "member_remove": "أزال شخصًا من نادٍ",
+        "request_answer": "ردّ على طلب نادٍ",
+        "update": "عدّل ناديًا"
+      },
+      "coach_note": {
+        "create": "كتب ملاحظة مدرب",
+        "delete": "حذف ملاحظة مدرب",
+        "update": "عدّل ملاحظة مدرب"
+      },
+      "coaching_relationship": {
+        "create": "عيّن مدربًا",
+        "end": "أنهى التدريب الشخصي"
+      },
+      "community": {
+        "group_decide": "قرّر بشأن مجموعة أعضاء",
+        "group_reopen": "أعاد فتح طلب مجموعة أعضاء",
+        "report_act": "تعامل مع بلاغ",
+        "settings_update": "غيّر إعدادات المجتمع"
+      },
+      "contact": {
+        "consent": "غيّر موافقة جهة اتصال",
+        "delete": "حذف جهة اتصال",
+        "save": "حفظ جهة اتصال"
+      },
+      "corporate": {
+        "client_create": "أضاف عميلًا مؤسسيًا",
+        "client_update": "عدّل عميلًا مؤسسيًا",
+        "invoice_create": "أنشأ فاتورة مؤسسية",
+        "invoice_send": "أرسل فاتورة مؤسسية",
+        "invoice_status": "غيّر فاتورة مؤسسية",
+        "payment_record": "سجّل دفعة مؤسسية",
+        "payment_reverse": "عكس دفعة مؤسسية",
+        "seat_add": "أضاف مقعدًا مؤسسيًا",
+        "seat_end": "أنهى مقعدًا مؤسسيًا"
+      },
+      "credit": {
+        "apply": "استخدم رصيدًا",
+        "create": "منح رصيدًا",
+        "reverse": "ألغى رصيدًا"
+      },
+      "data_export": {
+        "create": "صدّر بيانات البوكس"
+      },
+      "day_workout": {
+        "delete": "أزال WOD اليوم",
+        "set": "حدّد WOD اليوم"
+      },
+      "demo_data": {
+        "remove": "أزال البيانات التجريبية",
+        "seed": "أضاف بيانات تجريبية"
+      },
+      "document": {
+        "request": "طلب توقيعًا",
+        "request_cancel": "سحب طلب توقيع",
+        "requirement_set": "غيّر من يوقّع مستندًا",
+        "settings_update": "غيّر إعدادات المستندات",
+        "template_archive": "أرشف مستندًا",
+        "template_create": "أنشأ مستندًا",
+        "template_publish": "نشر مستندًا"
+      },
+      "door": {
+        "create": "أضاف بابًا",
+        "delete": "أزال بابًا",
+        "token_rotate": "جدّد مفتاح باب",
+        "unlock": "فتح بابًا من الاستقبال",
+        "update": "عدّل بابًا"
+      },
+      "email_sender": {
+        "delete": "أزال مرسل البريد",
+        "save": "حفظ مرسل البريد"
+      },
+      "event": {
+        "attendee_remove": "أزال حاضرًا من فعالية",
+        "cancel": "ألغى فعالية",
+        "check_in": "سجّل check-in في فعالية",
+        "cohost_answer": "ردّ على دعوة تنظيم مشترك",
+        "cohost_invite": "دعا منظمًا مشاركًا",
+        "cohost_remove": "أزال منظمًا مشاركًا",
+        "cohost_trial_offer": "عرض حصة تجريبية مع منظم مشارك",
+        "create": "أنشأ فعالية",
+        "mark_paid": "علّم مكانًا في الفعالية بأنه مدفوع",
+        "message": "راسل حضور فعالية",
+        "refund": "ردّ ثمن مكان في فعالية",
+        "trial_offer": "عرض حصة تجريبية في فعالية",
+        "update": "عدّل فعالية"
+      },
+      "finance_record": {
+        "purge": "حذف سجلات مالية"
+      },
+      "fiscal": {
+        "connection_save": "حفظ الربط الضريبي",
+        "credit_note": "أصدر إشعارًا دائنًا",
+        "document_email": "أرسل مستندًا ضريبيًا بالبريد",
+        "einvoice_retry": "أعاد إرسال فاتورة إلكترونية",
+        "export_settings_save": "حفظ إعدادات التصدير",
+        "identity_save": "حفظ البيانات الضريبية",
+        "null_receipt": "أصدر إيصالًا صفريًا",
+        "tax_rates_save": "حفظ نسب الضريبة",
+        "till_retry": "أعاد الإرسال إلى الصندوق",
+        "transmission_retry": "أعاد إرسال مستند ضريبي"
+      },
+      "fitness_display": {
+        "update": "غيّر ما تعرضه بطاقة اللياقة"
+      },
+      "floor_plan": {
+        "create": "أضاف مخططًا للطابق",
+        "delete": "حذف مخطط الطابق",
+        "update": "عدّل مخطط الطابق"
+      },
+      "follower_invite": {
+        "send": "دعا متابعًا للانضمام"
+      },
+      "form_review": {
+        "complete": "ردّ على فيديو تقنية"
+      },
+      "health_certificate": {
+        "add": "أضاف شهادة صحية",
+        "delete": "حذف شهادة صحية"
+      },
+      "import": {
+        "apply": "طبّق استيرادًا",
+        "create": "بدأ استيرادًا",
+        "delete": "حذف استيرادًا",
+        "invite": "دعا الأشخاص المستوردين",
+        "undo": "تراجع عن استيراد"
+      },
+      "injury": {
+        "create": "سجّل إصابة",
+        "heal": "علّم إصابة بأنها شُفيت",
+        "reopen": "أعاد فتح إصابة",
+        "update": "عدّل إصابة"
+      },
+      "injury_warning": {
+        "acknowledge": "أقرّ بتحذير إصابة"
+      },
+      "integration": {
+        "delivery_replay": "أعاد إرسال تسليم خطاف ويب",
+        "email_list_delete": "أزال ربط قائمة بريدية",
+        "email_list_save": "حفظ ربط قائمة بريدية",
+        "email_list_sync": "زامن قائمة بريدية",
+        "key_create": "أنشأ مفتاح API",
+        "key_revoke": "ألغى مفتاح API",
+        "key_rotate": "جدّد مفتاح API",
+        "unsubscribe_url_rotate": "جدّد رابط إلغاء الاشتراك",
+        "webhook_create": "أضاف خطاف ويب",
+        "webhook_delete": "حذف خطاف ويب",
+        "webhook_secret_rotate": "جدّد سرّ خطاف ويب",
+        "webhook_update": "عدّل خطاف ويب"
+      },
+      "inventory": {
+        "machine_archive": "أرشف جهازًا",
+        "machine_create": "أضاف جهازًا",
+        "machine_event": "سجّل حدثًا لجهاز",
+        "machine_place": "نقل جهازًا",
+        "machine_update": "عدّل جهازًا",
+        "supply_archive": "أرشف مادة استهلاكية",
+        "supply_create": "أضاف مادة استهلاكية",
+        "supply_low": "أبلغ عن نفاد مادة استهلاكية",
+        "supply_movement": "سجّل حركة مخزون",
+        "supply_update": "عدّل مادة استهلاكية"
+      },
+      "invoice": {
+        "create": "أنشأ فاتورة",
+        "file_attach": "أرفق ملفًا بفاتورة",
+        "issue": "أصدر فاتورة",
+        "renewal_create": "أنشأ فاتورة تجديد",
+        "update": "عدّل فاتورة",
+        "void": "ألغى فاتورة"
+      },
+      "join_request": {
+        "accept": "قبل طلب انضمام",
+        "decline": "رفض طلب انضمام"
+      },
+      "lead": {
+        "contacted": "تواصل مع مهتم",
+        "convert": "حوّل مهتمًا إلى عضو في البوكس",
+        "create": "أضاف مهتمًا",
+        "delete": "حذف مهتمًا",
+        "import": "استورد مهتمين",
+        "move": "نقل مهتمًا إلى مرحلة أخرى",
+        "note": "كتب ملاحظة عن مهتم",
+        "opt_out": "أوقف الرسائل إلى مهتم",
+        "task_add": "أضاف مهمة لمهتم",
+        "task_done": "أنهى مهمة لمهتم",
+        "update": "عدّل مهتمًا"
+      },
+      "logo": {
+        "remove": "أزال الشعار",
+        "set": "غيّر الشعار"
+      },
+      "member": {
+        "branches_change": "غيّر الفروع",
+        "class_placement": "نُقل إلى حصة أخرى",
+        "coach_scope_change": "غيّر العملاء الذين يراهم المدرب",
+        "guest_create": "أضافه ضيفًا على البوكس",
+        "home_branch_change": "غيّر الفرع الرئيسي",
+        "leave_record": "سجّل مغادرة البوكس",
+        "leave_undo": "ألغى المغادرة",
+        "programming": "برمج تمرينًا",
+        "remove": "أُزيل من البوكس",
+        "risk_contacted": "علّم بأنه تم التواصل",
+        "risk_snooze": "أوقف تنبيه الخطر مؤقتًا",
+        "role_change": "غيّر الأدوار",
+        "status_reset": "أعاد الحالة إلى التلقائي",
+        "status_set": "عيّن الحالة يدويًا",
+        "update": "عدّل البيانات"
+      },
+      "message": {
+        "cancel": "ألغى رسالة",
+        "retry": "أعاد إرسال رسالة",
+        "send": "أرسل رسالة"
+      },
+      "metric": {
+        "reset": "أعاد ضبط قياس",
+        "reset_undo": "تراجع عن إعادة ضبط قياس"
+      },
+      "nutrition_plan": {
+        "save": "حفظ خطة تغذية"
+      },
+      "organization": {
+        "archive": "أغلق البوكس",
+        "transfer": "نقل ملكية البوكس"
+      },
+      "package": {
+        "assign": "خصّص باقة اشتراك",
+        "auto_renew": "غيّر التجديد التلقائي",
+        "beneficiary_add": "أضاف شخصًا يشارك الباقة",
+        "beneficiary_remove": "أزال شخصًا يشارك الباقة",
+        "create": "أنشأ باقة اشتراك",
+        "end_reset": "أعاد آخر يوم للباقة إلى التلقائي",
+        "end_set": "عيّن آخر يوم للباقة يدويًا",
+        "entitlements_refresh": "أعاد حساب ما تمنحه الباقة",
+        "freeze": "جمّد الاشتراك",
+        "freeze_cancel": "ألغى التجميد",
+        "removal_undo": "تراجع عن إزالة باقة",
+        "remove": "أزال باقة اشتراك",
+        "retire": "أوقف بيع باقة اشتراك",
+        "update": "عدّل باقة اشتراك"
+      },
+      "package_audience": {
+        "exception_add": "أضاف استثناءً لشخص",
+        "exception_remove": "أزال استثناءً لشخص",
+        "featured_update": "غيّر الباقات المميزة",
+        "package_update": "غيّر من يمكنه شراء باقة",
+        "update": "غيّر من يمكنه شراء الباقات"
+      },
+      "package_request": {
+        "activate_unpaid": "فعّل طلب باقة دون دفع",
+        "collect": "حصّل ثمن طلب باقة",
+        "decline": "رفض طلب باقة"
+      },
+      "pay_item": {
+        "archive": "أرشف بند أجر",
+        "create": "أنشأ بند أجر",
+        "update": "عدّل بند أجر"
+      },
+      "pay_period": {
+        "adjustment_add": "أضاف تعديل أجر",
+        "adjustment_delete": "حذف تعديل أجر",
+        "approve": "وافق على فترة أجور",
+        "calculate": "احتسب فترة أجور",
+        "create": "فتح فترة أجور",
+        "item_line_add": "أضاف سطر أجر لمرة واحدة",
+        "item_restore": "استعاد سطر أجر",
+        "line_basis": "غيّر أساس سطر أجر",
+        "reopen": "أعاد فتح فترة أجور"
+      },
+      "pay_rule": {
+        "archive": "أرشف قاعدة أجر",
+        "create": "أنشأ قاعدة أجر",
+        "update": "عدّل قاعدة أجر"
+      },
+      "payment": {
+        "card_link": "أرسل رابطًا لحفظ بطاقة",
+        "charge_dismiss": "تجاهل خصمًا فاشلًا من البطاقة",
+        "charge_retry": "أعاد محاولة خصم من البطاقة",
+        "receipt_email": "أرسل إيصالًا بالبريد",
+        "receive": "استلم دفعة",
+        "record": "سجّل دفعة",
+        "refund": "أعاد المال",
+        "retry": "أعاد محاولة دفعة",
+        "reverse": "عكس دفعة",
+        "terminal_cancel": "ألغى دفعة على جهاز البطاقات",
+        "terminal_result": "سجّل رد جهاز البطاقات",
+        "terminal_start": "بدأ دفعة على جهاز البطاقات"
+      },
+      "payment_account": {
+        "connect": "ربط المدفوعات عبر الإنترنت",
+        "disconnect": "فصل المدفوعات عبر الإنترنت",
+        "options": "غيّر خيارات الدفع",
+        "save": "حفظ حساب الدفع"
+      },
+      "perk": {
+        "claim_revoke": "سحب ميزة مطلوبة",
+        "claim_use": "علّم ميزة بأنها استُخدمت",
+        "codes_add": "أضاف رموز ميزة",
+        "create": "أنشأ ميزة",
+        "delete": "حذف ميزة",
+        "expire": "أنهى ميزة",
+        "pause": "أوقف ميزة مؤقتًا",
+        "publish": "نشر ميزة",
+        "update": "عدّل ميزة"
+      },
+      "programme": {
+        "archive": "أرشف برنامج تدريب",
+        "cover_remove": "أزال غلاف برنامج",
+        "cover_set": "عيّن غلاف برنامج",
+        "create": "أنشأ برنامج تدريب",
+        "publish": "نشر برنامج تدريب",
+        "refund": "ردّ ثمن برنامج تدريب",
+        "restore": "استعاد برنامج تدريب",
+        "review_moderate": "راجع تقييم برنامج",
+        "update": "عدّل برنامج تدريب"
+      },
+      "promotion": {
+        "code_create": "أنشأ رموز خصم",
+        "create": "أنشأ عرضًا",
+        "redeem": "طبّق رمز خصم"
+      },
+      "public_profile": {
+        "photo_add": "أضاف صورة إلى الصفحة العامة",
+        "publish": "نشر صفحة البوكس العامة",
+        "unpublish": "أخفى صفحة البوكس العامة",
+        "update": "عدّل صفحة البوكس العامة"
+      },
+      "rank": {
+        "award": "منح رتبة",
+        "revoke": "سحب رتبة",
+        "skill_check": "أشّر على مهارة",
+        "skills_batch": "أشّر على عدة مهارات"
+      },
+      "rank_ladder": {
+        "create": "أنشأ سلّم رتب",
+        "delete": "حذف سلّم رتب",
+        "update": "عدّل سلّم رتب"
+      },
+      "receipt": {
+        "create": "أصدر إيصالًا"
+      },
+      "reconciliation": {
+        "match": "طابق حركة بنكية",
+        "record": "سجّل حركة بنكية",
+        "unmatch": "ألغى مطابقة حركة بنكية"
+      },
+      "referral": {
+        "approve": "وافق على إحالة",
+        "create": "سجّل إحالة",
+        "friend_gift": "منح هدية الصديق",
+        "reassign": "نقل إحالة إلى شخص آخر",
+        "reject": "رفض إحالة",
+        "reward_create": "أضاف مكافأة إحالة",
+        "reward_given": "منح مكافأة إحالة",
+        "reward_status": "غيّر مكافأة إحالة",
+        "status": "غيّر إحالة"
+      },
+      "referral_program": {
+        "create": "أنشأ برنامج إحالة",
+        "update": "غيّر برنامج الإحالة"
+      },
+      "review": {
+        "status": "غيّر حالة تقييم"
+      },
+      "review_asks": {
+        "update": "غيّر طلبات التقييم"
+      },
+      "role_access": {
+        "change": "غيّر صلاحيات دور"
+      },
+      "scale_levels": {
+        "update": "غيّر مستويات التدرج"
+      },
+      "scaling_suggestion": {
+        "approve": "وافق على اقتراح تدرج",
+        "dismiss": "تجاهل اقتراح تدرج"
+      },
+      "season": {
+        "create": "أنشأ موسمًا",
+        "enrollment_confirm": "أكّد مكانًا في الموسم",
+        "enrollment_decline": "رفض طلب موسم",
+        "enrollment_remove": "أزاله من موسم",
+        "update": "عدّل موسمًا"
+      },
+      "settings": {
+        "ai": "غيّر إعدادات الذكاء الاصطناعي",
+        "onboarding": "غيّر خطوات الترحيب",
+        "recipe_apply": "طبّق إعدادًا جاهزًا",
+        "time_zone": "غيّر المنطقة الزمنية",
+        "update": "غيّر إعدادات البوكس"
+      },
+      "shop": {
+        "desk_sale": "باع في الاستقبال",
+        "order_cancel": "ألغى طلبًا",
+        "order_fiscal_receipt": "أصدر إيصال طلب",
+        "order_payment": "حصّل ثمن طلب",
+        "order_pickup": "سلّم طلبًا",
+        "order_ready": "علّم طلبًا بأنه جاهز",
+        "order_refund": "ردّ ثمن طلب",
+        "pricing_target": "حدّد سعرًا مستهدفًا",
+        "product_create": "أضاف منتجًا",
+        "product_promote": "روّج لمنتج",
+        "product_status": "غيّر حالة منتج",
+        "product_update": "عدّل منتجًا",
+        "promotion_code_update": "عدّل رمز خصم المتجر",
+        "stock_movement": "غيّر المخزون",
+        "variant_archive": "أرشف خيار منتج",
+        "variant_create": "أضاف خيار منتج",
+        "variant_update": "عدّل خيار منتج"
+      },
+      "space": {
+        "archive": "أرشف مساحة",
+        "cleaning_point_add": "أضاف نقطة تنظيف",
+        "cleaning_point_delete": "حذف نقطة تنظيف",
+        "cleaning_point_update": "عدّل نقطة تنظيف",
+        "cleaning_points_order": "أعاد ترتيب نقاط التنظيف",
+        "create": "أنشأ مساحة",
+        "photo_add": "أضاف صورة مساحة",
+        "photo_delete": "حذف صورة مساحة",
+        "photo_update": "عدّل صورة مساحة",
+        "photos_order": "أعاد ترتيب صور المساحة",
+        "restore": "استعاد مساحة",
+        "settings_update": "غيّر إعدادات المساحات",
+        "unavailable": "جعل مساحة غير متاحة",
+        "unavailable_end": "أعاد إتاحة مساحة",
+        "update": "عدّل مساحة"
+      },
+      "training_goal": {
+        "set": "حدّد هدفًا أسبوعيًا"
+      },
+      "trial": {
+        "accept": "قبل حصة تجريبية",
+        "attendance": "سجّل حضور الحصة التجريبية",
+        "decline": "رفض حصة تجريبية"
+      },
+      "trial_policy": {
+        "update": "غيّر قواعد الحصص التجريبية"
+      },
+      "video": {
+        "archive": "أرشف فيديو",
+        "create": "أضاف فيديو",
+        "publish": "نشر فيديو",
+        "update": "عدّل فيديو"
+      },
+      "website": {
+        "domain_add": "أضاف نطاقًا للموقع",
+        "domain_instructions": "أرسل تعليمات النطاق",
+        "domain_primary": "غيّر النطاق الرئيسي للموقع",
+        "domain_remove": "أزال نطاقًا من الموقع",
+        "draft_discard": "تجاهل مسودة الموقع",
+        "publish": "نشر الموقع",
+        "translations_keep": "أبقى ترجمات الموقع",
+        "translations_machine": "ترجم الموقع تلقائيًا",
+        "translations_save": "حفظ ترجمات الموقع",
+        "update": "عدّل الموقع"
+      },
+      "workout": {
+        "copy": "نسخ WOD",
+        "create": "أنشأ WOD",
+        "delete": "حذف WOD",
+        "duplicate": "كرّر WOD",
+        "exercise_matches": "طابق تمارين WOD",
+        "goals_update": "غيّر أهداف WOD",
+        "publish": "نشر WOD",
+        "reopen": "أعاد فتح WOD للتعديل",
+        "update": "عدّل WOD"
+      },
+      "workout_folder": {
+        "create": "أنشأ مجلد WOD",
+        "delete": "حذف مجلد WOD",
+        "update": "عدّل مجلد WOD"
+      },
+      "workout_type": {
+        "create": "أضاف نوع تمرين",
+        "merge": "دمج أنواع تمارين",
+        "update": "عدّل نوع تمرين"
+      }
+    }
   }
 }

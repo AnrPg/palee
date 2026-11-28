@@ -4362,6 +4362,7 @@
     "mpTabWellbeing": "Wohlbefinden",
     "mpTabCoaching": "Coaching",
     "mpTabFinance": "Finanzen",
+    "mpTabHistory": "Verlauf",
     "mpTabAccount": "Konto",
     "bmTitle": "Nachricht von der Box",
     "bmBody": "Nachricht",
@@ -20549,7 +20550,6 @@
     "refund": "Erstatten…",
     "nothingOpen": "Für dieses Paket ist nichts offen.",
     "reason": "Grund (optional)",
-    "shareReason": "Das Mitglied sieht ihn in der Benachrichtigung",
     "cancel": "Abbrechen",
     "confirm": "Paket entfernen",
     "removing": "Wird entfernt…",
@@ -20670,5 +20670,651 @@
     "variationSearch": "Alle Mitglieder durchsuchen",
     "whichWod": "Welches WOD?",
     "wodCount": "{count, plural, one {# WOD} other {# WODs}}"
+  },
+  "ActivityLog": {
+    "title": "Aktivitätsprotokoll",
+    "intro": "Wer vom Personal was, wann, bei wem und warum getan hat. Tippe auf eine Zeile für Details.",
+    "back": "Verwaltung",
+    "forbidden": "Deine Rolle sieht das Aktivitätsprotokoll nicht.",
+    "filters": "Filter des Aktivitätsprotokolls",
+    "search": "Gründe und Namen durchsuchen",
+    "area": "Bereich",
+    "staffMember": "Von wem",
+    "anyStaff": "Gesamtes Personal",
+    "person": "Bei wem",
+    "personPlaceholder": "Namen eingeben",
+    "clearPerson": "Filter für {name} entfernen",
+    "from": "Von",
+    "to": "Bis",
+    "export": "CSV exportieren",
+    "exporting": "Wird exportiert…",
+    "loading": "Wird geladen…",
+    "empty": "Noch nichts erfasst.",
+    "emptyFiltered": "Keine Einträge mit diesen Filtern.",
+    "count": "{count, plural, one {# Eintrag} other {# Einträge}}",
+    "today": "Heute",
+    "yesterday": "Gestern",
+    "more": "Mehr",
+    "fullLog": "Das ganze Protokoll →",
+    "system": "Automatisch",
+    "deletedMember": "Gelöschtes Mitglied",
+    "onePerson": "Eine Person",
+    "changeLabel": "Änderung",
+    "period": "Zeitraum",
+    "periodRange": "{from} – {to}",
+    "about": "Betrifft",
+    "reason": "Grund",
+    "noReason": "Ohne Grund",
+    "by": "Von",
+    "memberSaw": "Das Mitglied hat es auch gesehen",
+    "yes": "Ja",
+    "no": "Nein",
+    "onlyPerson": "Nur {name}",
+    "onlyActor": "Nur, was {name} getan hat",
+    "none": "leer",
+    "shareWithMember": "Das Mitglied soll es auch sehen",
+    "historyTitle": "Verlauf",
+    "theBox": "Die Box",
+    "reasonShown": "Grund: {reason}",
+    "fields": {
+      "status": "Status",
+      "ends_on": "Letzter Tag"
+    },
+    "areas": {
+      "members": "Mitglieder",
+      "money": "Geld",
+      "packages": "Abo-Pakete",
+      "classes": "Kurse",
+      "training": "Training",
+      "spaces": "Räume und Ausstattung",
+      "shop": "Shop und Programme",
+      "community": "Community",
+      "communication": "Nachrichten",
+      "staff_pay": "Vergütung des Personals",
+      "settings": "Einstellungen"
+    },
+    "actions": {
+      "accounting_export": {
+        "request": "Buchhaltungsexport angefordert"
+      },
+      "appointment": {
+        "attendance": "Teilnahme am Termin erfasst",
+        "book": "Termin gebucht",
+        "cancel": "Termin abgesagt",
+        "slot_cancel": "Terminzeiten abgesagt",
+        "slot_create": "Terminzeiten freigegeben"
+      },
+      "assigned_workout": {
+        "create": "Training zugewiesen",
+        "delete": "Zugewiesenes Training entfernt",
+        "update": "Zugewiesenes Training bearbeitet"
+      },
+      "attendance": {
+        "record": "Anwesenheit erfasst",
+        "remove": "Anwesenheit entfernt"
+      },
+      "automation": {
+        "update": "Automatische Nachricht geändert"
+      },
+      "benefit": {
+        "give": "Geschenk oder Kulanz gewährt",
+        "revoke": "Geschenk oder Kulanz zurückgenommen"
+      },
+      "booking": {
+        "approve": "Buchung bestätigt",
+        "reject": "Buchung abgelehnt"
+      },
+      "box_review": {
+        "reply": "Auf eine Box-Bewertung geantwortet",
+        "report": "Box-Bewertung gemeldet"
+      },
+      "box_screen": {
+        "create": "Box-Bildschirm hinzugefügt",
+        "delete": "Box-Bildschirm entfernt",
+        "override_end": "Box-Bildschirm wieder nach Plan",
+        "override_set": "Box-Bildschirm übernommen",
+        "pairing_code": "Kopplungscode für Bildschirm erstellt",
+        "update": "Box-Bildschirm bearbeitet"
+      },
+      "branch": {
+        "archive": "Filiale archiviert",
+        "create": "Filiale hinzugefügt",
+        "update": "Filiale bearbeitet"
+      },
+      "business": {
+        "activation_request": "Freischaltung des Unternehmens angefragt"
+      },
+      "card_surcharge": {
+        "update": "Kartengebühr geändert"
+      },
+      "challenge": {
+        "create": "Challenge erstellt",
+        "delete": "Challenge gelöscht",
+        "update": "Challenge bearbeitet"
+      },
+      "channel": {
+        "settings_save": "Kanaleinstellungen gespeichert",
+        "template_delete": "Nachrichtenvorlage gelöscht",
+        "template_save": "Nachrichtenvorlage gespeichert"
+      },
+      "check_in": {
+        "door_rotate": "Türcode gewechselt",
+        "member": "Check-in eines Box-Mitglieds erfasst",
+        "member_code_revoke": "Check-in-Code eines Mitglieds gesperrt",
+        "nfc_rotate": "Code des NFC-Tags erneuert",
+        "nfc_update": "NFC-Tag geändert",
+        "poster_rotate": "Code des Check-in-Plakats erneuert",
+        "poster_update": "Check-in-Plakat geändert",
+        "record": "Check-in für jemanden erfasst",
+        "settings_update": "Check-in-Einstellungen geändert"
+      },
+      "class": {
+        "booking_workout": "WOD einer Buchung festgelegt",
+        "create": "Kurs erstellt",
+        "day_workout_follow": "Kurs folgt dem Tages-WOD",
+        "delete": "Kurs gelöscht",
+        "live_workout": "Laufendes WOD gewechselt",
+        "series_create": "Wiederkehrenden Kurs erstellt",
+        "state_change": "Kurs abgesagt oder wieder geöffnet",
+        "update": "Kurs bearbeitet",
+        "workout_link": "WOD mit einem Kurs verknüpft",
+        "workouts_set": "WODs eines Kurses festgelegt"
+      },
+      "class_notice": {
+        "send": "Hinweis an einen Kurs gesendet"
+      },
+      "class_type": {
+        "create": "Kurstyp erstellt",
+        "delete": "Kurstyp gelöscht",
+        "update": "Kurstyp bearbeitet"
+      },
+      "cleaning": {
+        "area_archive": "Reinigungsbereich archiviert",
+        "area_create": "Reinigungsbereich hinzugefügt",
+        "area_update": "Reinigungsbereich bearbeitet",
+        "finish": "Reinigung beendet",
+        "schedule_delete": "Reinigungsplan entfernt",
+        "schedule_set": "Reinigungsplan festgelegt",
+        "start": "Reinigung begonnen"
+      },
+      "club": {
+        "archive": "Club archiviert",
+        "create": "Club erstellt",
+        "member_remove": "Jemanden aus einem Club entfernt",
+        "request_answer": "Club-Anfrage beantwortet",
+        "update": "Club bearbeitet"
+      },
+      "coach_note": {
+        "create": "Coach-Notiz geschrieben",
+        "delete": "Coach-Notiz gelöscht",
+        "update": "Coach-Notiz bearbeitet"
+      },
+      "coaching_relationship": {
+        "create": "Coach zugewiesen",
+        "end": "Coaching beendet"
+      },
+      "community": {
+        "group_decide": "Über eine Mitgliedergruppe entschieden",
+        "group_reopen": "Anfrage einer Mitgliedergruppe wieder geöffnet",
+        "report_act": "Meldung bearbeitet",
+        "settings_update": "Community-Einstellungen geändert"
+      },
+      "contact": {
+        "consent": "Einwilligung eines Kontakts geändert",
+        "delete": "Kontakt gelöscht",
+        "save": "Kontakt gespeichert"
+      },
+      "corporate": {
+        "client_create": "Firmenkunde hinzugefügt",
+        "client_update": "Firmenkunde bearbeitet",
+        "invoice_create": "Firmenrechnung erstellt",
+        "invoice_send": "Firmenrechnung gesendet",
+        "invoice_status": "Firmenrechnung geändert",
+        "payment_record": "Firmenzahlung erfasst",
+        "payment_reverse": "Firmenzahlung storniert",
+        "seat_add": "Firmenplatz hinzugefügt",
+        "seat_end": "Firmenplatz beendet"
+      },
+      "credit": {
+        "apply": "Gutschrift verwendet",
+        "create": "Gutschrift gegeben",
+        "reverse": "Gutschrift zurückgenommen"
+      },
+      "data_export": {
+        "create": "Daten der Box exportiert"
+      },
+      "day_workout": {
+        "delete": "Tages-WOD entfernt",
+        "set": "Tages-WOD festgelegt"
+      },
+      "demo_data": {
+        "remove": "Demodaten entfernt",
+        "seed": "Demodaten hinzugefügt"
+      },
+      "document": {
+        "request": "Unterschrift angefordert",
+        "request_cancel": "Unterschriftsanfrage zurückgezogen",
+        "requirement_set": "Geändert, wer ein Dokument unterschreibt",
+        "settings_update": "Dokumenteinstellungen geändert",
+        "template_archive": "Dokument archiviert",
+        "template_create": "Dokument erstellt",
+        "template_publish": "Dokument veröffentlicht"
+      },
+      "door": {
+        "create": "Tür hinzugefügt",
+        "delete": "Tür entfernt",
+        "token_rotate": "Schlüssel einer Tür erneuert",
+        "unlock": "Tür vom Empfang geöffnet",
+        "update": "Tür bearbeitet"
+      },
+      "email_sender": {
+        "delete": "E-Mail-Absender entfernt",
+        "save": "E-Mail-Absender gespeichert"
+      },
+      "event": {
+        "attendee_remove": "Teilnehmende Person entfernt",
+        "cancel": "Event abgesagt",
+        "check_in": "Check-in bei einem Event",
+        "cohost_answer": "Einladung zur Mitveranstaltung beantwortet",
+        "cohost_invite": "Mitveranstalter eingeladen",
+        "cohost_remove": "Mitveranstalter entfernt",
+        "cohost_trial_offer": "Probetraining mit Mitveranstalter angeboten",
+        "create": "Event erstellt",
+        "mark_paid": "Eventplatz als bezahlt markiert",
+        "message": "Nachricht an Teilnehmende gesendet",
+        "refund": "Eventplatz erstattet",
+        "trial_offer": "Probetraining bei einem Event angeboten",
+        "update": "Event bearbeitet"
+      },
+      "finance_record": {
+        "purge": "Finanzdaten gelöscht"
+      },
+      "fiscal": {
+        "connection_save": "Verbindung zum Finanzamt gespeichert",
+        "credit_note": "Gutschrift ausgestellt",
+        "document_email": "Steuerbeleg per E-Mail gesendet",
+        "einvoice_retry": "E-Rechnung erneut gesendet",
+        "export_settings_save": "Exporteinstellungen gespeichert",
+        "identity_save": "Steuerdaten gespeichert",
+        "null_receipt": "Nullbeleg ausgestellt",
+        "tax_rates_save": "Steuersätze gespeichert",
+        "till_retry": "Erneut an die Kasse gesendet",
+        "transmission_retry": "Steuerbeleg erneut übermittelt"
+      },
+      "fitness_display": {
+        "update": "Anzeige der Fitnesskarte geändert"
+      },
+      "floor_plan": {
+        "create": "Grundriss hinzugefügt",
+        "delete": "Grundriss gelöscht",
+        "update": "Grundriss bearbeitet"
+      },
+      "follower_invite": {
+        "send": "Follower zum Beitritt eingeladen"
+      },
+      "form_review": {
+        "complete": "Technikvideo beantwortet"
+      },
+      "health_certificate": {
+        "add": "Gesundheitszeugnis hinzugefügt",
+        "delete": "Gesundheitszeugnis gelöscht"
+      },
+      "import": {
+        "apply": "Import übernommen",
+        "create": "Import gestartet",
+        "delete": "Import gelöscht",
+        "invite": "Importierte Personen eingeladen",
+        "undo": "Import rückgängig gemacht"
+      },
+      "injury": {
+        "create": "Verletzung erfasst",
+        "heal": "Verletzung als verheilt markiert",
+        "reopen": "Verletzung wieder geöffnet",
+        "update": "Verletzung bearbeitet"
+      },
+      "injury_warning": {
+        "acknowledge": "Verletzungswarnung bestätigt"
+      },
+      "integration": {
+        "delivery_replay": "Webhook-Zustellung erneut gesendet",
+        "email_list_delete": "Verbindung zur Mailingliste entfernt",
+        "email_list_save": "Verbindung zur Mailingliste gespeichert",
+        "email_list_sync": "Mailingliste synchronisiert",
+        "key_create": "API-Schlüssel erstellt",
+        "key_revoke": "API-Schlüssel widerrufen",
+        "key_rotate": "API-Schlüssel erneuert",
+        "unsubscribe_url_rotate": "Abmeldelink erneuert",
+        "webhook_create": "Webhook hinzugefügt",
+        "webhook_delete": "Webhook gelöscht",
+        "webhook_secret_rotate": "Webhook-Geheimnis erneuert",
+        "webhook_update": "Webhook bearbeitet"
+      },
+      "inventory": {
+        "machine_archive": "Gerät archiviert",
+        "machine_create": "Gerät hinzugefügt",
+        "machine_event": "Geräteereignis erfasst",
+        "machine_place": "Gerät umgestellt",
+        "machine_update": "Gerät bearbeitet",
+        "supply_archive": "Verbrauchsmaterial archiviert",
+        "supply_create": "Verbrauchsmaterial hinzugefügt",
+        "supply_low": "Knappes Verbrauchsmaterial gemeldet",
+        "supply_movement": "Bestandsbewegung erfasst",
+        "supply_update": "Verbrauchsmaterial bearbeitet"
+      },
+      "invoice": {
+        "create": "Rechnung erstellt",
+        "file_attach": "Datei an Rechnung angehängt",
+        "issue": "Rechnung ausgestellt",
+        "renewal_create": "Verlängerungsrechnung erstellt",
+        "update": "Rechnung bearbeitet",
+        "void": "Rechnung storniert"
+      },
+      "join_request": {
+        "accept": "Beitrittsanfrage angenommen",
+        "decline": "Beitrittsanfrage abgelehnt"
+      },
+      "lead": {
+        "contacted": "Interessent kontaktiert",
+        "convert": "Interessent zum Box-Mitglied gemacht",
+        "create": "Interessent hinzugefügt",
+        "delete": "Interessent gelöscht",
+        "import": "Interessenten importiert",
+        "move": "Interessent in andere Phase verschoben",
+        "note": "Notiz zu Interessent geschrieben",
+        "opt_out": "Nachrichten an Interessent gestoppt",
+        "task_add": "Aufgabe zu Interessent hinzugefügt",
+        "task_done": "Aufgabe zu Interessent erledigt",
+        "update": "Interessent bearbeitet"
+      },
+      "logo": {
+        "remove": "Logo entfernt",
+        "set": "Logo geändert"
+      },
+      "member": {
+        "branches_change": "Filialen geändert",
+        "class_placement": "In einen anderen Kurs verschoben",
+        "coach_scope_change": "Geändert, welche Kunden der Coach sieht",
+        "guest_create": "Als Gast der Box angelegt",
+        "home_branch_change": "Stammfiliale geändert",
+        "leave_record": "Austritt aus der Box eingetragen",
+        "leave_undo": "Austritt rückgängig gemacht",
+        "programming": "Training eingeplant",
+        "remove": "Aus der Box entfernt",
+        "risk_contacted": "Als kontaktiert markiert",
+        "risk_snooze": "Risikohinweis pausiert",
+        "role_change": "Rollen geändert",
+        "status_reset": "Status wieder automatisch",
+        "status_set": "Status von Hand gesetzt",
+        "update": "Angaben bearbeitet"
+      },
+      "message": {
+        "cancel": "Nachricht abgebrochen",
+        "retry": "Nachricht erneut gesendet",
+        "send": "Nachricht gesendet"
+      },
+      "metric": {
+        "reset": "Messwert zurückgesetzt",
+        "reset_undo": "Zurücksetzen des Messwerts rückgängig gemacht"
+      },
+      "nutrition_plan": {
+        "save": "Ernährungsplan gespeichert"
+      },
+      "organization": {
+        "archive": "Box geschlossen",
+        "transfer": "Eigentum der Box übertragen"
+      },
+      "package": {
+        "assign": "Abo-Paket zugewiesen",
+        "auto_renew": "Automatische Verlängerung geändert",
+        "beneficiary_add": "Mitnutzer des Pakets hinzugefügt",
+        "beneficiary_remove": "Mitnutzer des Pakets entfernt",
+        "create": "Abo-Paket erstellt",
+        "end_reset": "Letzten Tag des Pakets wieder automatisch",
+        "end_set": "Letzten Tag des Pakets von Hand gesetzt",
+        "entitlements_refresh": "Leistungen des Pakets neu berechnet",
+        "freeze": "Abo pausiert",
+        "freeze_cancel": "Pause aufgehoben",
+        "removal_undo": "Entfernen des Abo-Pakets rückgängig gemacht",
+        "remove": "Abo-Paket entfernt",
+        "retire": "Verkauf eines Abo-Pakets beendet",
+        "update": "Abo-Paket bearbeitet"
+      },
+      "package_audience": {
+        "exception_add": "Ausnahme für eine Person hinzugefügt",
+        "exception_remove": "Ausnahme für eine Person entfernt",
+        "featured_update": "Hervorgehobene Pakete geändert",
+        "package_update": "Geändert, wer ein Paket kaufen darf",
+        "update": "Geändert, wer Pakete kaufen darf"
+      },
+      "package_request": {
+        "activate_unpaid": "Paketanfrage unbezahlt aktiviert",
+        "collect": "Paketanfrage kassiert",
+        "decline": "Paketanfrage abgelehnt"
+      },
+      "pay_item": {
+        "archive": "Vergütungsposten archiviert",
+        "create": "Vergütungsposten erstellt",
+        "update": "Vergütungsposten bearbeitet"
+      },
+      "pay_period": {
+        "adjustment_add": "Vergütungskorrektur hinzugefügt",
+        "adjustment_delete": "Vergütungskorrektur gelöscht",
+        "approve": "Abrechnungszeitraum freigegeben",
+        "calculate": "Abrechnungszeitraum berechnet",
+        "create": "Abrechnungszeitraum eröffnet",
+        "item_line_add": "Einmalige Vergütungszeile hinzugefügt",
+        "item_restore": "Vergütungszeile wiederhergestellt",
+        "line_basis": "Berechnungsgrundlage einer Zeile geändert",
+        "reopen": "Abrechnungszeitraum wieder geöffnet"
+      },
+      "pay_rule": {
+        "archive": "Vergütungsregel archiviert",
+        "create": "Vergütungsregel erstellt",
+        "update": "Vergütungsregel bearbeitet"
+      },
+      "payment": {
+        "card_link": "Link zum Speichern einer Karte gesendet",
+        "charge_dismiss": "Fehlgeschlagene Kartenbelastung verworfen",
+        "charge_retry": "Kartenbelastung erneut versucht",
+        "receipt_email": "Beleg per E-Mail gesendet",
+        "receive": "Zahlung entgegengenommen",
+        "record": "Zahlung erfasst",
+        "refund": "Geld erstattet",
+        "retry": "Zahlung erneut versucht",
+        "reverse": "Zahlung storniert",
+        "terminal_cancel": "Zahlung am Terminal abgebrochen",
+        "terminal_result": "Antwort des Terminals erfasst",
+        "terminal_start": "Zahlung am Kartenterminal gestartet"
+      },
+      "payment_account": {
+        "connect": "Onlinezahlungen verbunden",
+        "disconnect": "Onlinezahlungen getrennt",
+        "options": "Zahlungsoptionen geändert",
+        "save": "Zahlungskonto gespeichert"
+      },
+      "perk": {
+        "claim_revoke": "Eingelösten Vorteil zurückgenommen",
+        "claim_use": "Vorteil als genutzt markiert",
+        "codes_add": "Vorteilscodes hinzugefügt",
+        "create": "Vorteil erstellt",
+        "delete": "Vorteil gelöscht",
+        "expire": "Vorteil beendet",
+        "pause": "Vorteil pausiert",
+        "publish": "Vorteil veröffentlicht",
+        "update": "Vorteil bearbeitet"
+      },
+      "programme": {
+        "archive": "Trainingsprogramm archiviert",
+        "cover_remove": "Programmcover entfernt",
+        "cover_set": "Programmcover festgelegt",
+        "create": "Trainingsprogramm erstellt",
+        "publish": "Trainingsprogramm veröffentlicht",
+        "refund": "Trainingsprogramm erstattet",
+        "restore": "Trainingsprogramm wiederhergestellt",
+        "review_moderate": "Programmbewertung moderiert",
+        "update": "Trainingsprogramm bearbeitet"
+      },
+      "promotion": {
+        "code_create": "Rabattcodes erstellt",
+        "create": "Aktion erstellt",
+        "redeem": "Rabattcode eingelöst"
+      },
+      "public_profile": {
+        "photo_add": "Foto zur öffentlichen Seite hinzugefügt",
+        "publish": "Öffentliche Box-Seite veröffentlicht",
+        "unpublish": "Öffentliche Box-Seite verborgen",
+        "update": "Öffentliche Box-Seite bearbeitet"
+      },
+      "rank": {
+        "award": "Rang verliehen",
+        "revoke": "Rang zurückgenommen",
+        "skill_check": "Fertigkeit abgehakt",
+        "skills_batch": "Mehrere Fertigkeiten abgehakt"
+      },
+      "rank_ladder": {
+        "create": "Rangleiter erstellt",
+        "delete": "Rangleiter gelöscht",
+        "update": "Rangleiter bearbeitet"
+      },
+      "receipt": {
+        "create": "Beleg ausgestellt"
+      },
+      "reconciliation": {
+        "match": "Bankbuchung zugeordnet",
+        "record": "Bankbuchung erfasst",
+        "unmatch": "Zuordnung einer Bankbuchung gelöst"
+      },
+      "referral": {
+        "approve": "Empfehlung bestätigt",
+        "create": "Empfehlung erfasst",
+        "friend_gift": "Geschenk für den Freund vergeben",
+        "reassign": "Empfehlung einer anderen Person zugeordnet",
+        "reject": "Empfehlung abgelehnt",
+        "reward_create": "Empfehlungsprämie hinzugefügt",
+        "reward_given": "Empfehlungsprämie vergeben",
+        "reward_status": "Empfehlungsprämie geändert",
+        "status": "Empfehlung geändert"
+      },
+      "referral_program": {
+        "create": "Empfehlungsprogramm erstellt",
+        "update": "Empfehlungsprogramm geändert"
+      },
+      "review": {
+        "status": "Status einer Bewertung geändert"
+      },
+      "review_asks": {
+        "update": "Bewertungsanfragen geändert"
+      },
+      "role_access": {
+        "change": "Rechte einer Rolle geändert"
+      },
+      "scale_levels": {
+        "update": "Skalierungsstufen geändert"
+      },
+      "scaling_suggestion": {
+        "approve": "Skalierungsvorschlag bestätigt",
+        "dismiss": "Skalierungsvorschlag verworfen"
+      },
+      "season": {
+        "create": "Saison erstellt",
+        "enrollment_confirm": "Saisonplatz bestätigt",
+        "enrollment_decline": "Saisonanfrage abgelehnt",
+        "enrollment_remove": "Aus einer Saison entfernt",
+        "update": "Saison bearbeitet"
+      },
+      "settings": {
+        "ai": "KI-Einstellungen geändert",
+        "onboarding": "Willkommensschritte geändert",
+        "recipe_apply": "Fertige Einrichtung übernommen",
+        "time_zone": "Zeitzone geändert",
+        "update": "Box-Einstellungen geändert"
+      },
+      "shop": {
+        "desk_sale": "Am Empfang verkauft",
+        "order_cancel": "Bestellung storniert",
+        "order_fiscal_receipt": "Beleg zu einer Bestellung ausgestellt",
+        "order_payment": "Bestellung kassiert",
+        "order_pickup": "Bestellung übergeben",
+        "order_ready": "Bestellung als bereit markiert",
+        "order_refund": "Bestellung erstattet",
+        "pricing_target": "Preisziel festgelegt",
+        "product_create": "Produkt hinzugefügt",
+        "product_promote": "Produkt beworben",
+        "product_status": "Produktstatus geändert",
+        "product_update": "Produkt bearbeitet",
+        "promotion_code_update": "Shop-Rabattcode bearbeitet",
+        "stock_movement": "Bestand geändert",
+        "variant_archive": "Produktvariante archiviert",
+        "variant_create": "Produktvariante hinzugefügt",
+        "variant_update": "Produktvariante bearbeitet"
+      },
+      "space": {
+        "archive": "Raum archiviert",
+        "cleaning_point_add": "Reinigungspunkt hinzugefügt",
+        "cleaning_point_delete": "Reinigungspunkt gelöscht",
+        "cleaning_point_update": "Reinigungspunkt bearbeitet",
+        "cleaning_points_order": "Reinigungspunkte neu sortiert",
+        "create": "Raum erstellt",
+        "photo_add": "Raumfoto hinzugefügt",
+        "photo_delete": "Raumfoto gelöscht",
+        "photo_update": "Raumfoto bearbeitet",
+        "photos_order": "Raumfotos neu sortiert",
+        "restore": "Raum wiederhergestellt",
+        "settings_update": "Raumeinstellungen geändert",
+        "unavailable": "Raum gesperrt",
+        "unavailable_end": "Raum wieder freigegeben",
+        "update": "Raum bearbeitet"
+      },
+      "training_goal": {
+        "set": "Wochenziel festgelegt"
+      },
+      "trial": {
+        "accept": "Probetraining angenommen",
+        "attendance": "Teilnahme am Probetraining eingetragen",
+        "decline": "Probetraining abgelehnt"
+      },
+      "trial_policy": {
+        "update": "Regeln fürs Probetraining geändert"
+      },
+      "video": {
+        "archive": "Video archiviert",
+        "create": "Video hinzugefügt",
+        "publish": "Video veröffentlicht",
+        "update": "Video bearbeitet"
+      },
+      "website": {
+        "domain_add": "Website-Domain hinzugefügt",
+        "domain_instructions": "Domain-Anleitung gesendet",
+        "domain_primary": "Hauptdomain der Website geändert",
+        "domain_remove": "Website-Domain entfernt",
+        "draft_discard": "Website-Entwurf verworfen",
+        "publish": "Website veröffentlicht",
+        "translations_keep": "Website-Übersetzungen beibehalten",
+        "translations_machine": "Website automatisch übersetzt",
+        "translations_save": "Website-Übersetzungen gespeichert",
+        "update": "Website bearbeitet"
+      },
+      "workout": {
+        "copy": "WOD kopiert",
+        "create": "WOD erstellt",
+        "delete": "WOD gelöscht",
+        "duplicate": "WOD dupliziert",
+        "exercise_matches": "Übungen eines WODs zugeordnet",
+        "goals_update": "Ziele eines WODs geändert",
+        "publish": "WOD veröffentlicht",
+        "reopen": "WOD wieder zur Bearbeitung geöffnet",
+        "update": "WOD bearbeitet"
+      },
+      "workout_folder": {
+        "create": "WOD-Ordner erstellt",
+        "delete": "WOD-Ordner gelöscht",
+        "update": "WOD-Ordner bearbeitet"
+      },
+      "workout_type": {
+        "create": "Trainingsart hinzugefügt",
+        "merge": "Trainingsarten zusammengeführt",
+        "update": "Trainingsart bearbeitet"
+      }
+    }
   }
 }

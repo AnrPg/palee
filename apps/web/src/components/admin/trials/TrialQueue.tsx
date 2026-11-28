@@ -25,6 +25,7 @@ import { can } from "@/lib/role-navigation";
 import { useSelectedMembershipRole } from "@/lib/membership-role";
 import { SegmentPicker } from "@/components/filters/SegmentPicker";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { ShareWithMember } from "@/components/activity-log/ShareWithMember";
 import { clockFormat } from "@/lib/clock";
 
 /**
@@ -109,11 +110,12 @@ function TrialRow({ trial, token, stage }: { trial: StaffTrial; token: string; s
   const queryClient = useQueryClient();
   const [declining, setDeclining] = useState(false);
   const [reason, setReason] = useState("");
+  const [shared, setShared] = useState(false);
   const refresh = () => TRIAL_STAGES.forEach((value) => void queryClient.invalidateQueries({ queryKey: trialQueueKey(value) }));
   const action = useMutation({
     mutationFn: async (kind: "accept" | "decline" | "attended" | "no_show") => {
       if (kind === "accept") return acceptTrial(token, trial.id);
-      if (kind === "decline") return declineTrial(token, trial.id, reason.trim() || null);
+      if (kind === "decline") return declineTrial(token, trial.id, reason.trim() || null, shared);
       return recordTrialAttendance(token, trial.id, kind);
     },
     onSuccess: () => {
@@ -166,6 +168,7 @@ function TrialRow({ trial, token, stage }: { trial: StaffTrial; token: string; s
               style={{ background: "var(--bg)", border: "1px solid var(--border)", color: "var(--text)" }}
             />
           </label>
+          <ShareWithMember checked={shared} onChange={setShared} testId="trial-decline-share-with-member" />
           <div className="flex flex-wrap gap-2">
             <button type="button" disabled={action.isPending} onClick={() => action.mutate("decline")} className={button} style={{ background: "var(--danger)", color: "var(--danger-contrast)" }}>
               {t("decline")}
@@ -182,7 +185,7 @@ function TrialRow({ trial, token, stage }: { trial: StaffTrial; token: string; s
               <button type="button" disabled={action.isPending} onClick={() => action.mutate("accept")} className={button} style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}>
                 {t("accept")}
               </button>
-              <button type="button" onClick={() => setDeclining(true)} className={button} style={{ background: "var(--panel-raised)", color: "var(--text)" }}>
+              <button type="button" onClick={() => { setShared(false); setDeclining(true); }} className={button} style={{ background: "var(--panel-raised)", color: "var(--text)" }}>
                 {t("decline")}
               </button>
             </>
