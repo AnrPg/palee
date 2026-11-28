@@ -829,6 +829,13 @@ defmodule PaleeWeb.Router do
     )
 
     post("/membership/leave", MyMembershipController, :leave)
+    # ADR-795: the member saw what changed in a waiting package; it starts.
+    post(
+      "/membership/package-starts/:id/acknowledge",
+      MyMembershipController,
+      :acknowledge_package_start
+    )
+
     # ADR-155: Box › Check-in.
     get("/check-in/code", MyCheckInController, :code)
     post("/check-in/code/reset", MyCheckInController, :reset_code)
@@ -2081,6 +2088,9 @@ defmodule PaleeWeb.Router do
     )
 
     post("/finance/members/:id/packages", AdminFinanceController, :assign_package)
+    # ADR-795: «Να μην εμφανιστεί ξανά σήμερα» on the money questions.
+    get("/confirmation-skips", AdminConfirmationSkipsController, :index)
+    post("/confirmation-skips", AdminConfirmationSkipsController, :create)
     # ADR-220: renewal choice and leaving the box.
     put(
       "/finance/members/:id/subscriptions/:subscription_id/auto-renew",

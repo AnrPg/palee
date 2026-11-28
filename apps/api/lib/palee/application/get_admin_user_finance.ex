@@ -70,6 +70,13 @@ defmodule Palee.Application.GetAdminUserFinance do
         Enum.map(profile.package_subscriptions, & &1.id)
       )
 
+    # ADR-795: waiting for the first class, or for the member's «Το κατάλαβα».
+    starts =
+      Palee.Application.Finance.PackageStarts.for_subscriptions(
+        tenant_context,
+        profile.package_subscriptions
+      )
+
     %{
       membership: serialize_membership(profile.membership),
       package_subscriptions:
@@ -77,6 +84,7 @@ defmodule Palee.Application.GetAdminUserFinance do
           subscription
           |> serialize_subscription(profile.membership, today)
           |> Map.put(:term_updates, Map.get(term_updates, subscription.id, []))
+          |> Map.put(:package_start, Map.get(starts, subscription.id))
         end),
       # ADR-274: every value set by hand (in force and ended), newest first.
       overrides:

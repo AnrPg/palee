@@ -394,6 +394,9 @@ defmodule Palee.Infrastructure.Finance.EctoPackageTermsStore do
     |> join(:inner, [s], m in Membership, on: m.id == s.membership_id)
     |> where([s], s.membership_package_id == ^package_id and s.status in ^@holder_statuses)
     |> where([s], is_nil(s.removed_on))
+    # ADR-795: a package waiting for its first session takes the package as
+    # it is on that day, so a change never reaches it in between.
+    |> where([s], not s.awaiting_first_session)
     |> where([s], is_nil(s.ends_on) or s.ends_on >= ^today)
     |> order_by([s], asc: s.inserted_at)
     |> lock("FOR UPDATE")

@@ -323,7 +323,8 @@
     "slotOwnWod": "Свой WOD (WOD дня — «{title}»).",
     "slotFollowDay": "Вернуть WOD дня",
     "classCoachChip": "Тренер: {coach}",
-    "wodPickerChoose": "Выбрать WOD"
+    "wodPickerChoose": "Выбрать WOD",
+    "classCancelReaches": "{count, plural, one {# человек с записью или в листе ожидания получит уведомление, его место отменится.} few {# человека с записью или в листе ожидания получат уведомление, их места отменятся.} many {# человек с записью или в листе ожидания получат уведомление, их места отменятся.} other {# человека с записью или в листе ожидания получат уведомление, их места отменятся.}}"
   },
   "Ui": {
     "exercise1091b7f": "Упражнение",
@@ -3091,7 +3092,6 @@
     "pkgFieldTermsConversionPackageIdHint": "Абонемент, который мы порекомендуем участнику после пробного периода.",
     "pkgFieldTermsMinimumCommitmentMonths": "Минимальный срок",
     "pkgFieldTermsJoiningFeeCents": "Вступительный взнос",
-    "pkgFieldTermsValidityStarts": "Начало действия",
     "pkgFieldTermsExpiryReminderDays": "Напоминание об окончании",
     "pkgFieldTermsCompatiblePackageIds": "Совместимые абонементные пакеты",
     "pkgFieldTermsBeneficiaries": "Кто входит",
@@ -3380,7 +3380,6 @@
     "pkgSummaryEvents": "Мероприятия и мастер-классы",
     "pkgSummaryCommitment": "{count, plural, one {Минимальный срок: # месяц} few {Минимальный срок: # месяца} many {Минимальный срок: # месяцев} other {Минимальный срок: # месяца}}",
     "pkgSummaryJoiningFee": "Разовый вступительный взнос {amount}",
-    "pkgSummaryValidityFromFirstUse": "Срок действия начинается с первого посещения",
     "pkgLocationsAll": "Все филиалы",
     "pkgLocationsSome": "Выбранные филиалы",
     "pkgNoLocationsYet": "Действует во всех филиалах. Добавь филиалы в настройках, чтобы ограничить.",
@@ -3403,8 +3402,6 @@
     "pkgFieldBookingCancellationCutoffHoursSuffix": "{count, plural, one {час до занятия} few {часа до занятия} many {часов до занятия} other {часа до занятия}}",
     "pkgFieldPerksFreezeDaysPerYearSuffix": "{count, plural, one {день в год} few {дня в год} many {дней в год} other {дня в год}}",
     "pkgFieldPerksMemberDiscountPercentSuffix": "%",
-    "pkgFieldTermsValidityStarts_purchase": "С момента покупки",
-    "pkgFieldTermsValidityStarts_first_use": "С первого посещения",
     "pkgFieldBookingWaitlistPriority_normal": "Обычный",
     "pkgFieldBookingWaitlistPriority_high": "Высокий",
     "pkgFieldPerksMemberDiscountScope_products": "Товары",
@@ -3416,7 +3413,6 @@
     "pkgModule_eventsHint": "Мастер-классы и особые тренировки с записью как на занятия.",
     "pkgFieldTermsMinimumCommitmentMonthsHint": "Клиенты не могут отменить раньше этого срока, если ты не сделаешь исключение.",
     "pkgFieldTermsJoiningFeeCentsHint": "Добавляется один раз в первый счёт участника за этот абонементный пакет.",
-    "pkgFieldTermsValidityStartsHint": "«С первого посещения» — срок начинает идти, когда участник впервые воспользуется абонементным пакетом.",
     "pkgFieldTermsExpiryReminderDaysHint": "Мы уведомим участника за столько дней до окончания абонементного пакета. 0 — выключено.",
     "pkgFieldGroupClassesRolloverMaxHint": "Неиспользованные занятия переносятся на следующий период, не больше этого числа.",
     "pkgFieldGroupClassesTimeWindowsHint": "Для абонементных пакетов на непиковые часы: участники бокса могут записываться на занятия только в эти часы.",
@@ -4989,6 +4985,23 @@
     "roundCount": "{count, plural, one {# раунд} few {# раунда} many {# раундов} other {# раунда}}",
     "optionCount": "{count, plural, one {# вариант} few {# варианта} many {# вариантов} other {# варианта}}",
     "userCount": "{count, plural, one {# пользователь} few {# пользователя} many {# пользователей} other {# пользователя}}",
+    "pkgStartWaitingMember": "Начнётся с твоей первой тренировки",
+    "pkgStartWaitingStaff": "Начнётся с первой тренировки",
+    "pkgStartWaitingHint": "Выдан {date}. Период и следующая оплата считаются с первого завершённого занятия или WOD.",
+    "pkgStartReview_important": "{package} теперь стоит дороже",
+    "pkgStartReview_serious": "{package} теперь даёт меньше",
+    "pkgStartReview_warning": "{package} изменился",
+    "pkgStartReviewHintMember": "Он изменился, пока ждал твоей первой тренировки. Посмотри, что изменилось: «Понятно» запустит его сегодня. До тех пор новых записей нет.",
+    "pkgStartReviewHintStaff": "Ждёт, пока участник посмотрит изменения и нажмёт «Понятно». До тех пор новых записей нет.",
+    "pkgStartName": "Название",
+    "pkgStartFirstPeriodPrice": "Первый период остаётся по цене покупки. Новая цена действует со следующей оплаты.",
+    "pkgStartAcknowledge": "Понятно",
+    "mbErrPackageReview": "Твой абонемент изменился, пока ждал. Посмотри изменения в Я › Платежи и нажми «Понятно», чтобы записаться.",
+    "apiErrorPackageChangedAgain": "Абонемент только что снова изменился. Посмотри новые изменения и снова нажми «Понятно».",
+    "apiErrorPackageStartNotInReview": "Этот абонемент уже начался.",
+    "admCheckInPackageReview": "Абонемент этого участника изменился, пока ждал. Сначала участник должен посмотреть изменения и нажать «Понятно».",
+    "exportPersonalData": "{count, plural, one {В файле персональные данные # человека.} few {В файле персональные данные # человек.} many {В файле персональные данные # человек.} other {В файле персональные данные # человека.}} Храни его надёжно и передавай только тем, кому нужно.",
+    "roleGrantNotice": "С новой ролью staff человек увидит то, что разрешает роль (Настройки › Доступ ролей), например финансы, здоровье и травмы, контакты участников. Сохраняй, только если так задумано.",
     "programmingDialogBookedClasses": "Записан",
     "programmingDialogOtherClasses": "Другие занятия в этот день",
     "programmingDialogOfferedHint": "Не записан. Вариация не записывает на занятие; придёт уведомление с «Записаться».",
@@ -12949,7 +12962,9 @@
     "rowButton": "+ Оплата",
     "rowButtonLabel": "Записать оплату от {name}",
     "panelButton": "+ Записать оплату",
-    "payInFull": "Погасить всё · {amount}"
+    "payInFull": "Погасить всё · {amount}",
+    "confirmPackageWayOut": "Если денег не было, оплата не нужна: у участника уже есть {name}, а сумма остаётся долгом как «Заплатит позже».",
+    "confirmPackageWayOutAction": "Закрыть без оплаты"
   },
   "OnlinePayments": {
     "sectionTitle": "Платежи",
@@ -13066,7 +13081,12 @@
     "doneRetryFailed": "Снова отклонено",
     "doneCardLink": "Ссылка для смены карты отправлена",
     "doneDismiss": "Оплачено на ресепшене",
-    "doneBadge": "Готово"
+    "doneBadge": "Готово",
+    "packageStarts": "Когда начинается абонемент",
+    "packageStartsFirstSession": "С первой тренировки",
+    "packageStartsPayment": "С оплаты",
+    "packageStartsFirstSessionHint": "Период и следующая оплата считаются с первого занятия, которое участник завершил («Пришёл», или занятие закончилось без «Не пришёл»), или с первого WOD, отмеченного как выполненный. Если абонемент за это время изменился, участник видит изменения до начала.",
+    "packageStartsPaymentHint": "Период и следующая оплата считаются с покупки онлайн или оплаты на ресепшене."
   },
   "FiscalIdentity": {
     "backToSettings": "Настройки",
@@ -15764,7 +15784,8 @@
     "freeHeldBody": "Бокс скоро его активирует, и мы тебе сообщим. До тех пор можно записываться на столько занятий, сколько разрешает бокс.",
     "freePending": "Ждёт активации",
     "freePendingBody": "Бокс его активирует. Мы держим его до {date}.",
-    "freeActivateHint": "Бесплатный пакет: начинается сегодня, без оплаты и без долга."
+    "freeActivateHint": "Бесплатный пакет: начинается сегодня, без оплаты и без долга.",
+    "confirmWayOut": "Если денег не было, активируй без оплаты: абонемент начнётся, а долг останется."
   },
   "Sms": {
     "connectionsTitle": "Подключения",
@@ -20495,7 +20516,10 @@
     "submit_package": "Дать пакет",
     "submit_debt_forgiven": "Списать долг",
     "givenBySystem": "От Palee, {when}",
-    "reasonRollout": "Теперь для записи нужен пакет: 14 дней тем, кто уже тренировался"
+    "reasonRollout": "Теперь для записи нужен пакет: 14 дней тем, кто уже тренировался",
+    "reviewDebt": "Ты прощаешь {name} {amount}. Это записывается на твоё имя и больше не требуется.",
+    "reviewPackage": "Ты выдаёшь {name} {package} без оплаты. Это записывается на твоё имя.",
+    "reviewYes": "Да, так и задумано"
   },
   "BoxRelation": {
     "member": "{kind, select, coach {Вы тренируетесь вместе} other {Участник бокса}}",
@@ -20801,5 +20825,37 @@
     "staffLine": "Участник вашего бокса",
     "staffOpen": "Финансы участника",
     "waitingForPayment": "Ожидает оплаты"
+  },
+  "PackageActivation": {
+    "activate": "Активировать абонемент",
+    "startsFirstSession": "Начнётся с первой тренировки участника.",
+    "startsOnPayment": "Начнётся сегодня.",
+    "moneyQuestion": "Эти {amount}?",
+    "later": "Заплатит позже",
+    "laterHint": "Останется долгом участника.",
+    "paidNow": "Получил(а) сейчас",
+    "paidNowHint": "Откроет «Записать оплату» для этого абонемента.",
+    "free": "Без оплаты",
+    "freeHint": "Бесплатный абонемент, записывается на твоё имя.",
+    "freeConfirm": "Ты выдаёшь {package} ({amount}) без оплаты. Это записывается на твоё имя.",
+    "freeReason": "Почему? (необязательно)",
+    "freeSubmit": "Да, без оплаты",
+    "back": "Назад"
+  },
+  "MoneyConfirm": {
+    "title_record_payment": "Ты действительно получил(а) {amount}?",
+    "title_desk_collect": "Ты действительно получил(а) {amount}?",
+    "title_shop_pickup": "{amount} действительно оплачены на ресепшене?",
+    "title_cash_refund": "Ты действительно вернул(а) {amount} наличными?",
+    "body_record_payment": "Записывается оплата и выдаётся чек или счёт (и в myDATA, если подключено).",
+    "body_desk_collect": "Записывается оплата и выдаётся чек или счёт (и в myDATA, если подключено).",
+    "body_shop_pickup": "Записывается оплата заказа и выдаётся чек.",
+    "body_cash_refund": "Записывается возврат и выдаётся чек возврата.",
+    "yes_record_payment": "Да, получил(а)",
+    "yes_desk_collect": "Да, получил(а)",
+    "yes_shop_pickup": "Да, оплачено",
+    "yes_cash_refund": "Да, вернул(а)",
+    "back": "Нет, назад",
+    "notToday": "Сегодня больше не показывать"
   }
 }

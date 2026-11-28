@@ -146,6 +146,7 @@ export function OnlinePaymentsSettings({ token }: { token: string }) {
           <OfferCard providers={providers} onChoose={choose} />
         )}
         {connectMutation.isError ? <ErrorNotice>{paymentErrorText(connectMutation.error, t, ui)}</ErrorNotice> : null}
+        <PackageStartsCard token={token} />
         <WaitBookingsCard token={token} />
         <Advanced hint={t("advancedHintKeys")}>
           <PaymentKeysForm token={token} status={status} provider={providers[0] ?? DEFAULT_PROVIDER} />
@@ -312,6 +313,50 @@ export function WaitBookingsCard({ token }: { token: string }) {
   );
 }
 
+/**
+ * ADR-795 «Πότε ξεκινά ένα πακέτο συνδρομής»: the period and the next payment
+ * count from the member's first completed class or WOD (default) or from the
+ * payment (online purchase or the front desk).
+ */
+export function PackageStartsCard({ token }: { token: string }) {
+  const t = useTranslations("OnlinePayments");
+  const ui = useUiTranslations();
+  const queryClient = useQueryClient();
+  const settingsQuery = useQuery({ queryKey: SETTINGS_KEY, queryFn: () => fetchAdminSettings(token) });
+  const mutation = useMutation({
+    mutationFn: (mode: "first_session" | "payment") => updateAdminSettings(token, { finance: { package_starts_with: mode } }),
+    onSuccess: (data) => queryClient.setQueryData(SETTINGS_KEY, data),
+  });
+  const current = settingsQuery.data?.finance?.package_starts_with;
+
+  return (
+    <Card>
+      <div className="flex flex-wrap items-center gap-3" data-testid="package-starts-setting">
+        <div className="min-w-0 flex-[1_1_16rem]">
+          <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>{t("packageStarts")}</p>
+          <p className="text-xs leading-5" style={{ color: "var(--dim)" }}>
+            {current === "payment" ? t("packageStartsPaymentHint") : t("packageStartsFirstSessionHint")}
+          </p>
+        </div>
+        {current === undefined ? null : (
+          <Select
+            aria-label={t("packageStarts")}
+            value={current}
+            disabled={mutation.isPending}
+            onValueChange={(value: string) => mutation.mutate(value === "payment" ? "payment" : "first_session")}
+            className="min-w-[12rem]"
+            data-testid="package-starts-select"
+          >
+            <option value="first_session">{t("packageStartsFirstSession")}</option>
+            <option value="payment">{t("packageStartsPayment")}</option>
+          </Select>
+        )}
+      </div>
+      {mutation.isError ? <ErrorNotice variant="field">{paymentErrorText(mutation.error, t, ui)}</ErrorNotice> : null}
+    </Card>
+  );
+}
+
 /** One setting: name, one-line explanation, its control at the end. */
 function SettingRow({ title, hint, children }: { title: string; hint: string; children?: ReactNode }) {
   return (
@@ -458,6 +503,7 @@ function ConnectedView({
         {optionsMutation.isError ? <ErrorNotice variant="field">{paymentErrorText(optionsMutation.error, t, ui)}</ErrorNotice> : null}
       </Card>
 
+      <PackageStartsCard token={token} />
       <WaitBookingsCard token={token} />
 
       <Advanced hint={t("advancedHint")}>

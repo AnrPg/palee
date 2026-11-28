@@ -226,6 +226,10 @@ defmodule Palee.Scheduling.SchedulingStore do
   def get_approved_booking_for_class(_user_id, _scheduled_class_id), do: missing_tenant()
 
   @impl true
+  def completed_member_classes(context, user_id, from, now),
+    do: tenant_call(context, :completed_member_classes, [user_id, from, now])
+
+  @impl true
   def create_booking(context, user_id, slot_id, timeout_minutes),
     do: tenant_call(context, :create_booking, [user_id, slot_id, timeout_minutes])
 

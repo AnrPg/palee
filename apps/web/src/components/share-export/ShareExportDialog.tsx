@@ -47,6 +47,8 @@ type ShareExportDialogProps = {
   document: ExportDocument;
   onClose: () => void;
   generateFile?: (document: ExportDocument, format: ExportFormat) => Promise<File>;
+  /** ADR-795: who is in it, said before the file leaves the box (e.g. «Προσωπικά δεδομένα 42 ατόμων»). */
+  personalData?: string;
 };
 
 const FORMATS: Array<{ value: ExportFormat; key: "formatPdf" | "formatMarkdown" | "formatText" | "formatOdt" | "formatCsv" }> = [
@@ -105,6 +107,7 @@ export function ShareExportDialog({
   document,
   onClose,
   generateFile = generateExportFile,
+  personalData,
 }: ShareExportDialogProps) {
   const [format, setFormat] = useState<ExportFormat>("pdf");
   const [destination, setDestination] = useState<Destination>("download");
@@ -205,6 +208,17 @@ export function ShareExportDialog({
           </label>
         </div>
         <p id={formatHelpId} className="mt-2 text-xs" style={{ color: "var(--dim)" }}>{copy.formatHelp}</p>
+
+        {personalData ? (
+          <p
+            className="mt-4 rounded-xl px-4 py-3 text-sm font-semibold"
+            role="note"
+            style={{ background: "color-mix(in srgb, var(--warning) 12%, var(--panel))", border: "1px solid var(--warning)", color: "var(--text)" }}
+            data-testid="share-export-personal-data"
+          >
+            {personalData}
+          </p>
+        ) : null}
 
         <button
           aria-label={copy.export}

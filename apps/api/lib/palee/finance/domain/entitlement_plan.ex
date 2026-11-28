@@ -229,7 +229,6 @@ defmodule Palee.Finance.Domain.EntitlementPlan do
       member_discount_scope: fields["perks.member_discount_scope"] || [],
       minimum_commitment_months: fields["terms.minimum_commitment_months"] || 0,
       joining_fee_cents: fields["terms.joining_fee_cents"] || 0,
-      validity_starts: fields["terms.validity_starts"] || "purchase",
       expiry_reminder_days: fields["terms.expiry_reminder_days"] || 0,
       validity: fields["terms.validity"],
       auto_renew: fields["terms.auto_renew"],
@@ -320,7 +319,7 @@ defmodule Palee.Finance.Domain.EntitlementPlan do
   @term_keys ~w[
     booking_window_days cancellation_cutoff_hours waitlist_priority no_show_penalty_waived
     daily_booking_limit open_bookings_limit rollover_max freeze_days_per_year member_discount_percent member_discount_scope
-    minimum_commitment_months joining_fee_cents validity_starts expiry_reminder_days validity
+    minimum_commitment_months joining_fee_cents expiry_reminder_days validity
     auto_renew response_sla_hours pt_format pt_group_size pt_session_minutes pt_coach_id
     compatible_package_ids beneficiaries quota_sharing allow_minor_beneficiaries seats
     seat_billing enrollment enrollment_domain

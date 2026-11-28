@@ -45,6 +45,7 @@ config :palee, Oban,
        {"0 2 * * *", Palee.Workers.MarkOverdueInvoicesJob},
        {"9 * * * *", Palee.Workers.SubscriptionChargesJob},
        {"21 * * * *", Palee.Workers.LapsePackageRequestsJob},
+       {"39 * * * *", Palee.Workers.StartWaitingPackagesJob},
        # ADR-346: automatic messages (outbox every 5 minutes, daily recipes hourly).
        {"*/5 * * * *", Palee.Workers.DispatchAutomationsJob},
        {"7 * * * *", Palee.Workers.DailyAutomationsJob},
@@ -497,6 +498,8 @@ config :palee, :domain_event_handlers, %{
     Palee.Application.Integrations.WebhookEvents
   ],
   attendance_recorded: [
+    # ADR-795: a «Ήρθε» starts a package that waits for the first class.
+    Palee.Application.Finance.PackageStarts,
     Palee.Application.TrialReactions,
     Palee.Application.ReferralReactions,
     Palee.Application.WalletReactions,
@@ -540,7 +543,11 @@ config :palee, :domain_event_handlers, %{
     Palee.Application.Integrations.WebhookEvents
   ],
   # ADR-253: box screens refresh their leaderboards.
-  workout_result_recorded: [Palee.Application.BoxScreenReactions]
+  workout_result_recorded: [
+    Palee.Application.BoxScreenReactions,
+    # ADR-795: a WOD done starts a package that waits for the first session.
+    Palee.Application.Finance.PackageStarts
+  ]
 }
 
 # ADR-344/345: leads («Ενδιαφερόμενοι»).

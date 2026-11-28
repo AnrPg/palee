@@ -437,7 +437,6 @@ function phaseBSummary(fields: PackageFields, changed: (key: string) => boolean)
   if (commitment !== null && commitment > 0) lines.push({ key: "pkgSummaryCommitment", params: { count: commitment } });
   const fee = number("terms.joining_fee_cents");
   if (fee !== null && fee > 0) lines.push({ key: "pkgSummaryJoiningFee", params: { cents: fee } });
-  if (fields["terms.validity_starts"] === "first_use" && changed("terms.validity_starts")) lines.push({ key: "pkgSummaryValidityFromFirstUse" });
   return lines;
 }
 

@@ -323,7 +323,8 @@
     "slotOwnWod": "Собствен WOD (на деня е «{title}»).",
     "slotFollowDay": "Върни WOD на деня",
     "classCoachChip": "Треньор: {coach}",
-    "wodPickerChoose": "Избери WOD"
+    "wodPickerChoose": "Избери WOD",
+    "classCancelReaches": "{count, plural, one {# човек с резервация или в списъка с чакащи ще бъде уведомен и мястото му ще бъде отменено.} other {# души с резервация или в списъка с чакащи ще бъдат уведомени и местата им ще бъдат отменени.}}"
   },
   "Ui": {
     "exercise1091b7f": "Упражнение",
@@ -3091,7 +3092,6 @@
     "pkgFieldTermsConversionPackageIdHint": "Абонаментът, който препоръчваме на члена, когато пробният период свърши.",
     "pkgFieldTermsMinimumCommitmentMonths": "Минимален срок",
     "pkgFieldTermsJoiningFeeCents": "Такса за записване",
-    "pkgFieldTermsValidityStarts": "Начало на валидността",
     "pkgFieldTermsExpiryReminderDays": "Напомняне за изтичане",
     "pkgFieldTermsCompatiblePackageIds": "Съвместими абонаментни пакети",
     "pkgFieldTermsBeneficiaries": "Включени хора",
@@ -3380,7 +3380,6 @@
     "pkgSummaryEvents": "Събития и работилници",
     "pkgSummaryCommitment": "{count, plural, one {Минимален срок: # месец} other {Минимален срок: # месеца}}",
     "pkgSummaryJoiningFee": "Еднократна такса за записване {amount}",
-    "pkgSummaryValidityFromFirstUse": "Валидността започва от първото ви посещение",
     "pkgLocationsAll": "Всички локации",
     "pkgLocationsSome": "Избрани локации",
     "pkgNoLocationsYet": "Важи във всички локации. Добавете локации в настройките, за да ограничите.",
@@ -3403,8 +3402,6 @@
     "pkgFieldBookingCancellationCutoffHoursSuffix": "{count, plural, one {час преди тренировката} other {часа преди тренировката}}",
     "pkgFieldPerksFreezeDaysPerYearSuffix": "{count, plural, one {ден годишно} other {дни годишно}}",
     "pkgFieldPerksMemberDiscountPercentSuffix": "%",
-    "pkgFieldTermsValidityStarts_purchase": "При покупка",
-    "pkgFieldTermsValidityStarts_first_use": "При първо посещение",
     "pkgFieldBookingWaitlistPriority_normal": "Нормален",
     "pkgFieldBookingWaitlistPriority_high": "Висок",
     "pkgFieldPerksMemberDiscountScope_products": "Продукти",
@@ -3416,7 +3413,6 @@
     "pkgModule_eventsHint": "Работилници и специални занятия със записване като за занятия.",
     "pkgFieldTermsMinimumCommitmentMonthsHint": "Членовете не могат да прекратят по-рано, освен ако не направите изключение.",
     "pkgFieldTermsJoiningFeeCentsHint": "Добавя се веднъж към първата фактура на члена за този абонаментен пакет.",
-    "pkgFieldTermsValidityStartsHint": "При „От първото посещение“ валидността започва да тече, когато членът използва абонаментния пакет за първи път.",
     "pkgFieldTermsExpiryReminderDaysHint": "Уведомяваме члена толкова дни преди края на абонаментния пакет. 0 изключва напомнянето.",
     "pkgFieldGroupClassesRolloverMaxHint": "Неизползваните занятия се прехвърлят в следващия период, до този брой.",
     "pkgFieldGroupClassesTimeWindowsHint": "За абонаментни пакети извън пиковите часове: членовете на бокса могат да се записват за занятия само в тези часове.",
@@ -4989,6 +4985,23 @@
     "roundCount": "{count, plural, one {# кръг} other {# кръга}}",
     "optionCount": "{count, plural, one {# опция} other {# опции}}",
     "userCount": "{count, plural, one {# потребител} other {# потребители}}",
+    "pkgStartWaitingMember": "Започва с първата ти тренировка",
+    "pkgStartWaitingStaff": "Започва с първата тренировка",
+    "pkgStartWaitingHint": "Даден на {date}. Периодът и следващото плащане се броят от първото завършено занятие или WOD.",
+    "pkgStartReview_important": "{package} вече струва повече",
+    "pkgStartReview_serious": "{package} вече дава по-малко",
+    "pkgStartReview_warning": "{package} се промени",
+    "pkgStartReviewHintMember": "Промени се, докато чакаше първата ти тренировка. Виж какво се промени: «Разбрах» го стартира днес. Дотогава няма нови резервации.",
+    "pkgStartReviewHintStaff": "Чака членът да види промените и да натисне «Разбрах». Дотогава няма нови резервации.",
+    "pkgStartName": "Име",
+    "pkgStartFirstPeriodPrice": "Първият период остава на цената при покупката. Новата цена важи от следващото плащане.",
+    "pkgStartAcknowledge": "Разбрах",
+    "mbErrPackageReview": "Абонаментният ти пакет се промени, докато чакаше. Виж промените в Аз › Плащания и натисни «Разбрах», за да резервираш.",
+    "apiErrorPackageChangedAgain": "Абонаментният пакет току-що се промени отново. Виж новите промени и натисни пак «Разбрах».",
+    "apiErrorPackageStartNotInReview": "Този абонаментен пакет вече е започнал.",
+    "admCheckInPackageReview": "Абонаментният пакет на този член се промени, докато чакаше. Първо трябва да види промените и да натисне «Разбрах».",
+    "exportPersonalData": "{count, plural, one {Файлът съдържа лични данни на # човек.} other {Файлът съдържа лични данни на # души.}} Пази го и го давай само на тези, на които е нужен.",
+    "roleGrantNotice": "С нова staff роля човекът ще вижда каквото позволява ролята (Настройки › Достъп по роли), напр. финанси, здраве и травми, контакти на членовете. Запази само ако наистина го искаш.",
     "programmingDialogBookedClasses": "Резервирани",
     "programmingDialogOtherClasses": "Други часове през деня",
     "programmingDialogOfferedHint": "Не е резервирал. Вариацията не резервира място; ще получи известие с „Резервация“.",
@@ -12949,7 +12962,9 @@
     "rowButton": "+ Плащане",
     "rowButtonLabel": "Записване на плащане от {name}",
     "panelButton": "+ Записване на плащане",
-    "payInFull": "Изплати всичко · {amount}"
+    "payInFull": "Изплати всичко · {amount}",
+    "confirmPackageWayOut": "Ако не си получил пари, плащане не е нужно: членът вече има {name} и сумата остава като «Ще плати по-късно».",
+    "confirmPackageWayOutAction": "Затвори без плащане"
   },
   "OnlinePayments": {
     "sectionTitle": "Плащания",
@@ -13066,7 +13081,12 @@
     "doneRetryFailed": "Отново отказано",
     "doneCardLink": "Изпратен е линк за смяна на картата",
     "doneDismiss": "Платено на рецепцията",
-    "doneBadge": "Готово"
+    "doneBadge": "Готово",
+    "packageStarts": "Кога започва абонаментен пакет",
+    "packageStartsFirstSession": "С първата тренировка",
+    "packageStartsPayment": "С плащането",
+    "packageStartsFirstSessionHint": "Периодът и следващото плащане се броят от първото занятие, което членът завърши («Дошъл», или занятието свърши без «Не дойде»), или от първия WOD, отбелязан като завършен. Ако пакетът се е променил междувременно, членът вижда промените преди старта.",
+    "packageStartsPaymentHint": "Периодът и следващото плащане се броят от онлайн покупката или плащането на рецепцията."
   },
   "FiscalIdentity": {
     "backToSettings": "Настройки",
@@ -15764,7 +15784,8 @@
     "freeHeldBody": "Box ще го активира скоро и ще те уведомим. Дотогава можеш да запазиш толкова занятия, колкото позволява box.",
     "freePending": "Чака активиране",
     "freePendingBody": "Box ще го активира. Пазим го до {date}.",
-    "freeActivateHint": "Безплатен пакет: започва днес, без събиране и без дълг."
+    "freeActivateHint": "Безплатен пакет: започва днес, без събиране и без дълг.",
+    "confirmWayOut": "Ако не си получил пари, активирай без плащане: започва и дългът остава."
   },
   "Sms": {
     "connectionsTitle": "Връзки",
@@ -20495,7 +20516,10 @@
     "submit_package": "Дай пакета",
     "submit_debt_forgiven": "Опрости дълга",
     "givenBySystem": "От Palee, {when}",
-    "reasonRollout": "Записването вече изисква пакет: 14 дни за вече трениращите"
+    "reasonRollout": "Записването вече изисква пакет: 14 дни за вече трениращите",
+    "reviewDebt": "Опрощаваш {amount} на {name}. Записва се с твоето име и вече не се изисква.",
+    "reviewPackage": "Даваш {package} на {name} без плащане. Записва се с твоето име.",
+    "reviewYes": "Да, наистина"
   },
   "BoxRelation": {
     "member": "{kind, select, coach {Тренирате заедно} other {Член на бокса}}",
@@ -20801,5 +20825,37 @@
     "staffLine": "Член на твоя бокс",
     "staffOpen": "Финанси на члена",
     "waitingForPayment": "Чака плащане"
+  },
+  "PackageActivation": {
+    "activate": "Активиране на пакет",
+    "startsFirstSession": "Започва с първата тренировка на члена.",
+    "startsOnPayment": "Започва днес.",
+    "moneyQuestion": "Тези {amount}?",
+    "later": "Ще плати по-късно",
+    "laterHint": "Остава като дълг на члена.",
+    "paidNow": "Получих ги сега",
+    "paidNowHint": "Отваря «Записване на плащане» за този пакет.",
+    "free": "Без такса",
+    "freeHint": "Безплатен пакет, записан с твоето име.",
+    "freeConfirm": "Даваш {package} ({amount}) без плащане. Записва се с твоето име.",
+    "freeReason": "Защо? (по желание)",
+    "freeSubmit": "Да, без такса",
+    "back": "Назад"
+  },
+  "MoneyConfirm": {
+    "title_record_payment": "Наистина ли получи {amount}?",
+    "title_desk_collect": "Наистина ли получи {amount}?",
+    "title_shop_pickup": "Наистина ли са платени {amount} на рецепцията?",
+    "title_cash_refund": "Наистина ли върна {amount} в брой?",
+    "body_record_payment": "Записва се плащане и се издава касова бележка или фактура (и в myDATA, ако е свързано).",
+    "body_desk_collect": "Записва се плащане и се издава касова бележка или фактура (и в myDATA, ако е свързано).",
+    "body_shop_pickup": "Записва се плащането на поръчката и се издава бележка.",
+    "body_cash_refund": "Записва се връщане на пари и се издава документ за връщане.",
+    "yes_record_payment": "Да, получих ги",
+    "yes_desk_collect": "Да, получих ги",
+    "yes_shop_pickup": "Да, платени са",
+    "yes_cash_refund": "Да, върнах ги",
+    "back": "Не, назад",
+    "notToday": "Да не се показва повече днес"
   }
 }

@@ -248,6 +248,10 @@ defmodule Palee.PersonalData.Domain.Catalog do
       tenant("payments", "finance_package_wait_bookings", @me),
       # ADR-770: the package changes that reached the person's subscriptions.
       tenant("payments", "finance_subscription_term_updates", @me),
+      # ADR-795: when the person's packages started, what changed meanwhile.
+      tenant("payments", "finance_package_starts", @me),
+      # ADR-795: money questions the person chose not to see again that day.
+      tenant("payments", "finance_confirmation_skips", @me),
       tenant("payments", "finance_package_audience_exceptions", @me),
       # ADR-450: the contact a box keeps while a deleted profile still owes it.
       tenant("payments", "finance_debtor_contacts", @me),

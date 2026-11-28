@@ -61,13 +61,6 @@ defmodule Palee.Finance.Domain.PackageCatalog do
       max: 10_000_000
     },
     %{
-      key: "terms.validity_starts",
-      section: "terms",
-      kind: :enum,
-      phase: :b,
-      options: ["purchase", "first_use"]
-    },
-    %{
       key: "terms.expiry_reminder_days",
       section: "terms",
       kind: :integer,
@@ -293,7 +286,9 @@ defmodule Palee.Finance.Domain.PackageCatalog do
   # ADR-383: fields that left the catalog. Packages saved before keep the
   # key in their stored fields; it is dropped when they are read or saved
   # again, never refused.
-  @removed_keys ["booking.weekly_limit"]
+  # ADR-795: «Έναρξη ισχύος» left the package; the box decides when every
+  # package starts (`finance_settings.package_starts_with`).
+  @removed_keys ["booking.weekly_limit", "terms.validity_starts"]
 
   def fields, do: @fields
   def keys, do: Enum.map(@fields, & &1.key)

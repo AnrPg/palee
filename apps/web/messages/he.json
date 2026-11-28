@@ -323,7 +323,8 @@
     "slotOwnWod": "WOD משלו (של היום הוא «{title}»).",
     "slotFollowDay": "חזרה ל-WOD היום",
     "classCoachChip": "מאמן: {coach}",
-    "wodPickerChoose": "בחר WOD"
+    "wodPickerChoose": "בחר WOD",
+    "classCancelReaches": "{count, plural, one {אדם אחד עם הזמנה או ברשימת המתנה יקבל הודעה והמקום שלו יבוטל.} two {שני אנשים עם הזמנה או ברשימת המתנה יקבלו הודעה והמקומות שלהם יבוטלו.} other {# אנשים עם הזמנה או ברשימת המתנה יקבלו הודעה והמקומות שלהם יבוטלו.}}"
   },
   "Ui": {
     "exercise1091b7f": "תרגיל",
@@ -3091,7 +3092,6 @@
     "pkgFieldTermsConversionPackageIdHint": "המנוי שאנחנו ממליצים עליו למתאמן כשתקופת הניסיון מסתיימת.",
     "pkgFieldTermsMinimumCommitmentMonths": "התחייבות מינימלית",
     "pkgFieldTermsJoiningFeeCents": "דמי הרשמה",
-    "pkgFieldTermsValidityStarts": "תחילת התוקף",
     "pkgFieldTermsExpiryReminderDays": "תזכורת לפני סיום התוקף",
     "pkgFieldTermsCompatiblePackageIds": "חבילות מנוי תואמות",
     "pkgFieldTermsBeneficiaries": "אנשים כלולים",
@@ -3380,7 +3380,6 @@
     "pkgSummaryEvents": "אירועים וסדנאות",
     "pkgSummaryCommitment": "{count, plural, one {התחייבות מינימלית: חודש אחד} other {התחייבות מינימלית: # חודשים}}",
     "pkgSummaryJoiningFee": "דמי הצטרפות חד-פעמיים {amount}",
-    "pkgSummaryValidityFromFirstUse": "התוקף מתחיל בביקור הראשון שלך",
     "pkgLocationsAll": "כל הסניפים",
     "pkgLocationsSome": "סניפים נבחרים",
     "pkgNoLocationsYet": "תקף בכל הסניפים. הוסף סניפים בהגדרות כדי להגביל.",
@@ -3403,8 +3402,6 @@
     "pkgFieldBookingCancellationCutoffHoursSuffix": "{count, plural, one {שעה לפני השיעור} other {שעות לפני השיעור}}",
     "pkgFieldPerksFreezeDaysPerYearSuffix": "{count, plural, one {יום בשנה} other {ימים בשנה}}",
     "pkgFieldPerksMemberDiscountPercentSuffix": "%",
-    "pkgFieldTermsValidityStarts_purchase": "ברכישה",
-    "pkgFieldTermsValidityStarts_first_use": "בביקור הראשון",
     "pkgFieldBookingWaitlistPriority_normal": "רגילה",
     "pkgFieldBookingWaitlistPriority_high": "גבוהה",
     "pkgFieldPerksMemberDiscountScope_products": "מוצרים",
@@ -3416,7 +3413,6 @@
     "pkgModule_eventsHint": "סדנאות ומפגשים מיוחדים שמוזמנים כמו שיעורים.",
     "pkgFieldTermsMinimumCommitmentMonthsHint": "מנויים לא יכולים לבטל לפני כן, אלא אם תאשר חריגה.",
     "pkgFieldTermsJoiningFeeCentsHint": "מתווסף פעם אחת לחשבונית הראשונה של המתאמן עבור חבילת המנוי הזו.",
-    "pkgFieldTermsValidityStartsHint": "באפשרות \"מהכניסה הראשונה\", התוקף מתחיל כשהמתאמן משתמש בחבילת המנוי בפעם הראשונה.",
     "pkgFieldTermsExpiryReminderDaysHint": "נודיע למתאמן מספר ימים זה לפני שחבילת המנוי מסתיימת. 0 מבטל את התזכורת.",
     "pkgFieldGroupClassesRolloverMaxHint": "שיעורים שלא נוצלו עוברים לתקופה הבאה, עד מספר זה.",
     "pkgFieldGroupClassesTimeWindowsHint": "לחבילות מנוי של שעות שפל: חברי הבוקס יכולים להזמין שיעורים רק בשעות האלה.",
@@ -4989,6 +4985,23 @@
     "roundCount": "{count, plural, one {סבב אחד} other {# סבבים}}",
     "optionCount": "{count, plural, one {אפשרות אחת} other {# אפשרויות}}",
     "userCount": "{count, plural, one {משתמש אחד} other {# משתמשים}}",
+    "pkgStartWaitingMember": "מתחילה עם האימון הראשון שלך",
+    "pkgStartWaitingStaff": "מתחילה עם האימון הראשון",
+    "pkgStartWaitingHint": "ניתנה ב-{date}. התקופה והתשלום הבא נספרים מהשיעור או ה-WOD הראשון שהושלם.",
+    "pkgStartReview_important": "{package} עולה יותר עכשיו",
+    "pkgStartReview_serious": "{package} נותנת פחות עכשיו",
+    "pkgStartReview_warning": "{package} השתנתה",
+    "pkgStartReviewHintMember": "היא השתנתה בזמן שחיכתה לאימון הראשון שלך. ראה מה השתנה: «הבנתי» מתחיל אותה היום. עד אז אין הזמנות חדשות.",
+    "pkgStartReviewHintStaff": "ממתינה שהמנוי יראה את השינויים וילחץ «הבנתי». עד אז אין הזמנות חדשות.",
+    "pkgStartName": "שם",
+    "pkgStartFirstPeriodPrice": "התקופה הראשונה נשארת במחיר הרכישה. המחיר החדש חל מהתשלום הבא.",
+    "pkgStartAcknowledge": "הבנתי",
+    "mbErrPackageReview": "חבילת המנוי שלך השתנתה בזמן שחיכתה. ראה את השינויים באני › תשלומים ולחץ «הבנתי» כדי להזמין.",
+    "apiErrorPackageChangedAgain": "חבילת המנוי השתנתה שוב עכשיו. ראה את השינויים החדשים ולחץ שוב «הבנתי».",
+    "apiErrorPackageStartNotInReview": "חבילת המנוי הזו כבר התחילה.",
+    "admCheckInPackageReview": "חבילת המנוי של המנוי הזה השתנתה בזמן שחיכתה. קודם עליו לראות את השינויים וללחוץ «הבנתי».",
+    "exportPersonalData": "{count, plural, one {בקובץ יש מידע אישי של אדם אחד.} two {בקובץ יש מידע אישי של שני אנשים.} other {בקובץ יש מידע אישי של # אנשים.}} שמור אותו בבטחה ושתף רק עם מי שצריך.",
+    "roleGrantNotice": "עם תפקיד staff חדש יראה את מה שהתפקיד מתיר (הגדרות › הרשאות תפקידים), למשל כספים, בריאות ופציעות, פרטי קשר של מנויים. שמור רק אם זו הכוונה.",
     "programmingDialogBookedClasses": "הוזמנו",
     "programmingDialogOtherClasses": "שיעורים אחרים באותו יום",
     "programmingDialogOfferedHint": "לא הזמין. הווריאציה לא מזמינה מקום; תישלח הודעה עם „הזמנה”.",
@@ -12949,7 +12962,9 @@
     "rowButton": "+ תשלום",
     "rowButtonLabel": "רישום תשלום מ-{name}",
     "panelButton": "+ רישום תשלום",
-    "payInFull": "תשלום מלא · {amount}"
+    "payInFull": "תשלום מלא · {amount}",
+    "confirmPackageWayOut": "אם לא קיבלת כסף, אין צורך בתשלום: למנוי כבר יש את {name} והסכום נשאר חוב כ«ישלם מאוחר יותר».",
+    "confirmPackageWayOutAction": "סגירה בלי תשלום"
   },
   "OnlinePayments": {
     "sectionTitle": "תשלומים",
@@ -13066,7 +13081,12 @@
     "doneRetryFailed": "נדחה שוב",
     "doneCardLink": "נשלח קישור להחלפת כרטיס",
     "doneDismiss": "שולם בקופה",
-    "doneBadge": "בוצע"
+    "doneBadge": "בוצע",
+    "packageStarts": "מתי חבילת מנוי מתחילה",
+    "packageStartsFirstSession": "עם האימון הראשון",
+    "packageStartsPayment": "עם התשלום",
+    "packageStartsFirstSessionHint": "התקופה והתשלום הבא נספרים מהשיעור הראשון שהמנוי משלים («הגיע», או שהשיעור הסתיים בלי «לא הגיע/ה») או מה-WOD הראשון שהוא מסמן כבוצע. אם החבילה השתנתה בינתיים, המנוי רואה את השינויים לפני שהיא מתחילה.",
+    "packageStartsPaymentHint": "התקופה והתשלום הבא נספרים מהרכישה באונליין או מהתשלום בקבלה."
   },
   "FiscalIdentity": {
     "backToSettings": "הגדרות",
@@ -15764,7 +15784,8 @@
     "freeHeldBody": "הבוקס יפעיל אותה בקרוב ונעדכן אתכם. עד אז אפשר להזמין כמה שיעורים שהבוקס מאפשר.",
     "freePending": "ממתינה להפעלה",
     "freePendingBody": "הבוקס יפעיל אותה. נשמור אותה עד {date}.",
-    "freeActivateHint": "חבילה חינם: מתחילה היום, בלי גבייה ובלי חוב."
+    "freeActivateHint": "חבילה חינם: מתחילה היום, בלי גבייה ובלי חוב.",
+    "confirmWayOut": "אם לא קיבלת כסף, הפעל בלי תשלום: החבילה מתחילה והחוב נשאר."
   },
   "Sms": {
     "connectionsTitle": "חיבורים",
@@ -20495,7 +20516,10 @@
     "submit_package": "תן את החבילה",
     "submit_debt_forgiven": "מחק את החוב",
     "givenBySystem": "מ-Palee, {when}",
-    "reasonRollout": "הזמנה דורשת עכשיו חבילה: 14 ימים למי שכבר התאמן"
+    "reasonRollout": "הזמנה דורשת עכשיו חבילה: 14 ימים למי שכבר התאמן",
+    "reviewDebt": "אתה מוחל ל-{name} על {amount}. זה נרשם על שמך ולא נדרש יותר.",
+    "reviewPackage": "אתה נותן ל-{name} את {package} בלי תשלום. זה נרשם על שמך.",
+    "reviewYes": "כן, זו הכוונה"
   },
   "BoxRelation": {
     "member": "{kind, select, coach {מתאמנים יחד} other {חבר/ת בוקס}}",
@@ -20801,5 +20825,37 @@
     "staffLine": "חבר/ה בבוקס שלך",
     "staffOpen": "הכספים של החבר/ה",
     "waitingForPayment": "ממתין לתשלום"
+  },
+  "PackageActivation": {
+    "activate": "הפעלת חבילה",
+    "startsFirstSession": "מתחילה עם האימון הראשון של המנוי.",
+    "startsOnPayment": "מתחילה היום.",
+    "moneyQuestion": "ה-{amount}?",
+    "later": "ישלם מאוחר יותר",
+    "laterHint": "נשאר חוב של המנוי.",
+    "paidNow": "קיבלתי עכשיו",
+    "paidNowHint": "פותח את «רישום תשלום» לחבילה הזו.",
+    "free": "ללא חיוב",
+    "freeHint": "חבילה בחינם, נרשמת על שמך.",
+    "freeConfirm": "אתה נותן את {package} ({amount}) בלי תשלום. זה נרשם על שמך.",
+    "freeReason": "למה? (לא חובה)",
+    "freeSubmit": "כן, ללא חיוב",
+    "back": "חזרה"
+  },
+  "MoneyConfirm": {
+    "title_record_payment": "באמת קיבלת {amount}?",
+    "title_desk_collect": "באמת קיבלת {amount}?",
+    "title_shop_pickup": "באמת שולמו {amount} בקבלה?",
+    "title_cash_refund": "באמת החזרת {amount} במזומן?",
+    "body_record_payment": "נרשם תשלום ומופקת קבלה או חשבונית (גם ל-myDATA, אם מחובר).",
+    "body_desk_collect": "נרשם תשלום ומופקת קבלה או חשבונית (גם ל-myDATA, אם מחובר).",
+    "body_shop_pickup": "נרשם תשלום על ההזמנה ומופקת קבלה.",
+    "body_cash_refund": "נרשם החזר ומופקת קבלת החזר.",
+    "yes_record_payment": "כן, קיבלתי",
+    "yes_desk_collect": "כן, קיבלתי",
+    "yes_shop_pickup": "כן, שולם",
+    "yes_cash_refund": "כן, החזרתי",
+    "back": "לא, חזרה",
+    "notToday": "לא להציג שוב היום"
   }
 }

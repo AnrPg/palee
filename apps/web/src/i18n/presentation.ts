@@ -435,6 +435,10 @@ const API_ERROR_KEYS: Record<string, string> = {
   package_type_change_requires_copy: "apiErrorPackageTypeChangeRequiresCopy",
   // ADR-770: the change reaches the package's holders; staff choose first.
   package_terms_choice_required: "apiErrorPackageTermsChoiceRequired",
+  // ADR-795: a package that changed while it waited for the first class.
+  finance_package_review_required: "mbErrPackageReview",
+  package_changed_again: "apiErrorPackageChangedAgain",
+  package_start_not_in_review: "apiErrorPackageStartNotInReview",
   package_already_used: "apiErrorPackageAlreadyUsed",
   package_new_members_only: "apiErrorPackageNewMembersOnly",
   // ADR-342: purchase and booking rules per package.

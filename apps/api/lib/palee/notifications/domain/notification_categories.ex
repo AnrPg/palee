@@ -128,7 +128,7 @@ defmodule Palee.Notifications.Domain.NotificationCategories do
         box_review_moderated box_review_report_decided
         join_request_accepted join_request_declined box_membership_ended
         package_request_declined package_request_activated package_rule_grace
-        package_removed package_terms_changed
+        package_removed package_terms_changed package_start_review
       )
     }
   ]

@@ -3561,6 +3561,12 @@ defmodule PaleeWeb.FallbackController do
     booking_daily_limit_reached: {:conflict, "Your package allows no more classes that day"},
     booking_open_limit_reached: {:conflict, "Your package allows no more upcoming bookings"},
     finance_membership_frozen: {:forbidden, "The membership is frozen"},
+    # ADR-795: the package changed while it waited; the member must see it first.
+    finance_package_review_required:
+      {:forbidden, "See what changed in your package to start it, then book"},
+    package_changed_again: {:conflict, "The package changed again; see the new changes"},
+    package_start_not_in_review: {:conflict, "This package has already started"},
+    unknown_confirmation: {:unprocessable_entity, "Unknown question"},
     finance_time_window_not_included: {:forbidden, "This time is outside the package's hours"},
     finance_location_not_included: {:forbidden, "This location is not included in the package"},
     invalid_freeze_dates: {:unprocessable_entity, "The freeze dates are invalid"},

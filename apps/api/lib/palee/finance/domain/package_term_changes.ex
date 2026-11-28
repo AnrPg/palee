@@ -33,7 +33,7 @@ defmodule Palee.Finance.Domain.PackageTermChanges do
 
   @structural ~w(
     terms.stacking terms.conversion_package_id terms.minimum_commitment_months
-    terms.joining_fee_cents terms.validity_starts terms.compatible_package_ids
+    terms.joining_fee_cents terms.compatible_package_ids
     terms.beneficiaries terms.quota_sharing terms.allow_minor_beneficiaries
     terms.seats terms.seat_billing terms.enrollment terms.enrollment_domain
     personal_training.coach_id personal_training.format personal_training.group_size
