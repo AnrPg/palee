@@ -17,6 +17,11 @@ export type FigureOptions = {
   view: AnatomyView;
   interactive: boolean;
   focus: string | null;
+  /**
+   * The node the caller has selected (the atlas's breadcrumb, list or a tap),
+   * painted in the selected colour. Left out, the figure shows its own last tap.
+   */
+  selected?: string | null;
   palette: AnatomyPalette;
   reducedMotion: boolean;
   /** Present when the figure is pickable. */
@@ -86,7 +91,8 @@ export class FigureController {
     this.resizeObserver.observe(container);
     this.resize();
     this.applyInteractivity();
-    this.scene.paint(options.highlights, options.palette);
+    if (options.selected !== undefined) this.syncPick(options.selected);
+    this.scene.paint(options.highlights, options.palette, new Set(muscleNode(this.selectedNode())?.ta2Ids ?? []));
     this.reframe(false);
   }
 
@@ -96,6 +102,7 @@ export class FigureController {
     if (next.interactive !== undefined && next.interactive !== previous.interactive) this.applyInteractivity();
     if (next.view !== undefined && next.view !== previous.view) this.reframe(false);
     if (next.focus !== undefined && next.focus !== previous.focus) this.reframe(true);
+    if (next.selected !== undefined && next.selected !== previous.selected) this.syncPick(next.selected);
     this.repaint();
   }
 
@@ -123,8 +130,18 @@ export class FigureController {
     canvas.style.cursor = this.options.interactive ? "grab" : pickable ? "pointer" : "default";
   }
 
+  /** A selection made outside the figure becomes its pick, so the next tap in that group drills into a head. */
+  private syncPick(nodeId: string | null) {
+    const node = muscleNode(nodeId);
+    this.pick = node ? { nodeId: node.id, level: node.kind === "head" ? "head" : "group" } : null;
+  }
+
+  private selectedNode(): string | null {
+    return this.options.selected !== undefined ? this.options.selected : (this.pick?.nodeId ?? null);
+  }
+
   private repaint() {
-    const selected = new Set(this.pick ? (muscleNode(this.pick.nodeId)?.ta2Ids ?? []) : []);
+    const selected = new Set(muscleNode(this.selectedNode())?.ta2Ids ?? []);
     this.scene.paint(this.options.highlights, this.options.palette, selected);
     this.requestRender();
   }

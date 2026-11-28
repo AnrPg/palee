@@ -15,7 +15,7 @@ import { SiteRequestSheet } from "@/components/box-site/SiteRequestSheet";
 import { SiteSections } from "@/components/box-site/SiteSections";
 import { useMyClubs } from "@/components/community/use-community";
 import { ClubEventsTab } from "@/components/events/ClubEventsTab";
-import { BOTTOM_NAV_SPACE, useBottomTabBarVisible } from "@/components/nav/BottomNav";
+import { BOTTOM_BAR_SAFE_AREA, BOTTOM_BAR_SPACE } from "@/components/nav/BottomNav";
 import { useSession } from "@/components/session-provider";
 import { FollowButton } from "@/components/social/FollowButton";
 import { TrialButton } from "@/components/trials/TrialButton";
@@ -116,7 +116,6 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
   const router = useRouter();
   const { status, tokens } = useSession();
   const clubs = useMyClubs();
-  const tabBar = useBottomTabBarVisible();
   const hash = useSyncExternalStore(subscribeHash, readHash, serverHash);
   const tabsRef = useRef<HTMLDivElement>(null);
   const identityRef = useRef<HTMLDivElement>(null);
@@ -373,10 +372,13 @@ function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; si
         <>
       <div aria-hidden="true" className={`${standalone ? "h-24" : "h-36"} lg:hidden`} />
       <div
-        className="fixed inset-x-0 z-(--z-sticky) px-4 pt-3 lg:hidden"
+        // Rides on the floating bar while it shows and drops to the screen's
+        // very bottom with it when it slides away (ANR 2026-11-28).
+        className="fixed inset-x-0 z-(--z-sticky) px-4 pt-3 transition-[bottom,padding] duration-300 ease-out motion-reduce:transition-none lg:hidden"
+        data-testid="box-page-action-bar"
         style={{
-          bottom: BOTTOM_NAV_SPACE,
-          paddingBottom: tabBar ? "0.75rem" : "max(0.75rem, env(safe-area-inset-bottom))",
+          bottom: BOTTOM_BAR_SPACE,
+          paddingBottom: `max(0.75rem, ${BOTTOM_BAR_SAFE_AREA})`,
           background: "color-mix(in srgb, var(--bg) 92%, transparent)",
           borderTop: "1px solid var(--border)",
           backdropFilter: "blur(10px)",

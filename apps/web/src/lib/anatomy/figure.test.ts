@@ -121,4 +121,11 @@ describe("readAnatomyPalette", () => {
     expect(palette.felt).toBe(DEFAULT_ANATOMY_PALETTE.felt);
     expect(paletteKey(palette)).toContain("#112233");
   });
+
+  it("reads the selected muscle's own colour, distinct from every role", () => {
+    document.documentElement.style.setProperty("--anatomy-selected", "#abcdef");
+    expect(readAnatomyPalette().selected).toBe("#abcdef");
+    const roles = Object.entries(DEFAULT_ANATOMY_PALETTE).filter(([key]) => key !== "selected").map(([, colour]) => colour.toLowerCase());
+    expect(roles).not.toContain(DEFAULT_ANATOMY_PALETTE.selected.toLowerCase());
+  });
 });

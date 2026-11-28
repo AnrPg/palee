@@ -52,6 +52,14 @@
    * top: var(--top-bar-space) so the bar never covers it.
    */
   --top-bar-space: 0px;
+  /*
+   * A page's own fixed bottom bar sits on --bottom-bar-space: the floating
+   * bar's room while it shows, 0 while it is scrolled away, so the page's bar
+   * follows it down and touches the screen's edge. It then pads by
+   * --bottom-bar-safe-area (the safe area, 0 while the floating bar shows).
+   */
+  --bottom-bar-space: 0px;
+  --bottom-bar-safe-area: env(safe-area-inset-bottom);
 }
 
 :root[data-top-bar] {
@@ -62,6 +70,10 @@
   --bottom-nav-space: calc(var(--bottom-nav-height) + var(--bottom-nav-offset) + 0.5rem);
   /* Focus moves, anchors and scrollIntoView stop above the bar, not under it. */
   scroll-padding-bottom: var(--bottom-nav-space);
+}
+:root[data-bottom-nav="on"][data-bottom-nav-shown] {
+  --bottom-bar-space: var(--bottom-nav-space);
+  --bottom-bar-safe-area: 0px;
 }
 
 @theme inline {
