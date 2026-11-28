@@ -1,0 +1,325 @@
+<!doctype html><html lang="el"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ανάθεση προγράμματος προπόνησης</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;600;700;800&display=swap">
+<style>
+/* VOICE work: Palee product mockup, same house style as earlier boards
+   IDEA the real staff profile and member app, one phone per question
+   PICTURE the phone frames, clickable, switched by alternative pills
+   COLOUR Palee theme tokens: neutral ground, primary blue, electric green accent
+   TYPE Commissioner throughout
+   LAYOUT explanation left, phone right; stacked under 820px */
+:root{--bg:#F4F5F7;--panel:#FFFFFF;--raised:#ECEEF2;--border:#DFE2E8;--text:#17181C;--soft:#3A3D45;--dim:#5E6470;--primary:#2F5BFF;--on-primary:#FFFFFF;--spark:#C8FF4D;--on-spark:#17181C;--ok:#1F8A5B;--no:#C2412D;--warn:#B76E00;--font:"Commissioner",system-ui,-apple-system,"Segoe UI",sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17181C;--panel:#202227;--raised:#2A2D33;--border:#33363D;--text:#F4F5F7;--soft:#C9CCD3;--dim:#9AA0AB;--primary:#5B7CFF;--spark:#E4FF6E;--ok:#4CC38A;--no:#FF7A63;--warn:#F0B44C;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#17181C;--panel:#202227;--raised:#2A2D33;--border:#33363D;--text:#F4F5F7;--soft:#C9CCD3;--dim:#9AA0AB;--primary:#5B7CFF;--spark:#E4FF6E;--ok:#4CC38A;--no:#FF7A63;--warn:#F0B44C;color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{background:var(--bg);color:var(--text);font:15px/1.5 var(--font);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 80px;overflow-x:clip}
+.page{max-width:1080px;margin:0 auto}
+h1{font-size:30px;font-weight:800;margin:0 0 8px;line-height:1.1;letter-spacing:-.02em}
+h2{font-size:20px;font-weight:800;margin:44px 0 6px}
+p{margin:0}
+.lead{color:var(--soft);max-width:72ch}
+.q{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:28px;align-items:start;margin-top:14px}
+@media (max-width:820px){.q{grid-template-columns:1fr}.phone{margin:0 auto}}
+.alts{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+.alts button,.chip{font:inherit;font-size:13px;border:1px solid var(--border);background:var(--panel);color:var(--text);border-radius:999px;padding:6px 12px;font-weight:700;cursor:pointer}
+.alts button[aria-pressed="true"],.chip[aria-pressed="true"]{background:var(--text);color:var(--bg);border-color:var(--text)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.rec{font-size:11px;font-weight:800;background:var(--spark);color:var(--on-spark);border-radius:999px;padding:1px 7px;margin-left:6px}
+.explain{display:flex;flex-direction:column;gap:10px}
+.explain ul{margin:0;padding-left:20px;color:var(--soft);display:flex;flex-direction:column;gap:4px}
+.pro{color:var(--ok);font-weight:700}.con{color:var(--dim);font-weight:700}
+.note{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:12px 14px;color:var(--soft);font-size:14px}
+.note b{color:var(--text)}
+.phone{width:100%;max-width:360px;background:var(--bg);border:1px solid var(--border);border-radius:28px;overflow:hidden;min-height:480px;position:relative;font-size:14px}
+.phone button{font:inherit;cursor:pointer}
+.top{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border);background:var(--panel)}
+.top b{font-size:16px}
+.tabs{display:flex;gap:14px;padding:0 16px;background:var(--panel);border-bottom:1px solid var(--border);font-size:13px;font-weight:700;color:var(--dim);overflow:hidden}
+.tabs span{padding:10px 0;white-space:nowrap}.tabs .on{color:var(--text);border-bottom:2px solid var(--primary)}
+.body{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.small{font-size:12px;color:var(--dim)}
+.b{min-height:44px;border-radius:16px;font-weight:700;font-size:14px;border:1px solid var(--border);background:var(--panel);color:var(--text);display:flex;align-items:center;justify-content:center;gap:6px;padding:0 14px}
+.b.primary{background:var(--primary);color:var(--on-primary);border-color:transparent}
+.b.ghost{min-height:36px;font-size:13px}
+.hint{border-radius:14px;padding:10px 12px;background:color-mix(in srgb,var(--primary) 10%,var(--panel));border:1px solid color-mix(in srgb,var(--primary) 35%,var(--border));font-size:13px}
+.warn{border-radius:14px;padding:10px 12px;background:color-mix(in srgb,var(--warn) 12%,var(--panel));border:1px solid color-mix(in srgb,var(--warn) 45%,var(--border));font-size:13px}
+.okbox{border-radius:14px;padding:10px 12px;background:color-mix(in srgb,var(--ok) 12%,var(--panel));border:1px solid color-mix(in srgb,var(--ok) 40%,var(--border));font-size:13px}
+.prog{height:8px;border-radius:4px;background:var(--raised);overflow:hidden;display:flex}
+.prog i{display:block;height:100%;background:var(--primary)}
+.prog i.w{background:color-mix(in srgb,var(--warn) 70%,var(--raised))}
+.sheetwrap{position:absolute;inset:0;background:rgb(0 0 0/.35);display:flex;align-items:flex-end}
+.sheet{width:100%;border-radius:22px 22px 0 0;background:var(--panel);padding:16px;display:flex;flex-direction:column;gap:10px;max-height:94%;overflow:auto}
+.radio{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--border);border-radius:14px;padding:10px 12px;cursor:pointer;background:var(--panel);color:var(--text);text-align:left;width:100%}
+.radio.on{border-color:var(--primary);background:color-mix(in srgb,var(--primary) 8%,var(--panel))}
+.dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--dim);flex:none;margin-top:2px}
+.radio.on .dot{border:6px solid var(--primary)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.days{display:flex;flex-direction:column;gap:0}
+.day{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.day:last-child{border-bottom:0}
+.tag{font-size:11px;font-weight:800;border-radius:999px;padding:2px 8px;white-space:nowrap;background:var(--raised);color:var(--soft)}
+.tag.used{background:color-mix(in srgb,var(--primary) 16%,var(--panel));color:var(--primary)}
+.tag.back{background:color-mix(in srgb,var(--ok) 16%,var(--panel));color:var(--ok)}
+.tag.wait{background:color-mix(in srgb,var(--warn) 18%,var(--panel));color:var(--warn)}
+.choices{margin-top:44px;background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:14px}
+.choices fieldset{border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.choices legend{font-weight:800;margin-bottom:4px}
+.choices label{display:flex;gap:8px;align-items:flex-start;font-size:14px;color:var(--soft)}
+.choices textarea{font:inherit;font-size:16px;width:100%;min-height:70px;border:1px solid var(--border);border-radius:12px;background:var(--bg);color:var(--text);padding:8px}
+.copy{align-self:flex-start;min-height:44px;border-radius:16px;font:inherit;font-weight:800;border:0;background:var(--primary);color:var(--on-primary);padding:0 18px;cursor:pointer}
+.copied{font-size:13px;color:var(--ok);font-weight:700}
+</style></head><body>
+<div class="page">
+<h1>Ανάθεση προγράμματος προπόνησης από το προφίλ</h1>
+<p class="lead">Ο coach ή ο ιδιοκτήτης ανοίγει το προφίλ ενός μέλους και του δίνει ένα πρόγραμμα προπόνησης του box (π.χ. «Δύναμη 6 εβδομάδων»). Το μέλος παίρνει τα WOD του σε μέρες, όπως όταν το αγοράζει, με «Έμεινε πίσω», «Κάν' τη σήμερα» και «Παράλειψη». Δεν πληρώνει τίποτα: κάθε προπόνηση του προγράμματος χρεώνει μία επίσκεψη από το πακέτο συνδρομής του, όπως μια κράτηση σε τμήμα, όχι μονάδα online προγραμματισμού. Παράδειγμα: Μαρία Παππά, πακέτο «12 επισκέψεις τον μήνα», της μένουν 7 ως τις 30/11.</p>
+
+<h2>1. Πού στο προφίλ</h2>
+<div class="q">
+  <div class="explain">
+    <div class="alts" data-q="q1">
+      <button type="button" aria-pressed="true" data-alt="A">A · Κάρτα στην «Προπόνηση»<span class="rec">πρόταση</span></button>
+      <button type="button" aria-pressed="false" data-alt="B">B · Μέσα στον «Προγραμματισμό»</button>
+    </div>
+    <div data-q1="A">
+      <p>Στην καρτέλα «Προπόνηση» μπαίνει μια κάρτα «Πρόγραμμα προπόνησης» με το κουμπί «Ανάθεση». Μετά την ανάθεση η ίδια κάρτα δείχνει πρόοδο και επισκέψεις. Πάτα «Ανάθεση» στο τηλέφωνο.</p>
+      <ul><li><span class="pro">+</span> Το βρίσκεις αμέσως, και βλέπεις εκεί πώς πάει.</li><li><span class="pro">+</span> Ένα φύλλο, τρεις επιλογές: πρόγραμμα, έναρξη, κουμπί.</li></ul>
+    </div>
+    <div data-q1="B" hidden>
+      <p>Στο υπάρχον «Χρονοδιάγραμμα &amp; προγραμματισμός» μπαίνει πέμπτη πηγή «Πρόγραμμα προπόνησης», δίπλα σε «Προσαρμογή», «Όπως είναι», «Από το αρχείο», «Νέο».</p>
+      <ul><li><span class="con">−</span> Εκείνος ο διάλογος είναι για ένα WOD μιας ημέρας. Ένα πρόγραμμα εβδομάδων μέσα του μπερδεύει.</li><li><span class="con">−</span> Η πρόοδος δεν έχει πού να φανεί.</li></ul>
+    </div>
+    <div class="note"><b>Μόνο δημοσιευμένα προγράμματα</b> (η έκδοσή τους είναι «παγωμένη», όπως για τους αγοραστές). Ένα μέλος έχει το πολύ ένα ενεργό ανατεθειμένο πρόγραμμα κάθε φορά, ίδιος κανόνας με την αγορά.</div>
+  </div>
+  <div class="phone" id="ph1">
+    <div class="top"><b>Μαρία Παππά</b><span class="small">Μέλος</span></div>
+    <div class="tabs"><span>Επισκόπηση</span><span class="on">Προπόνηση</span><span>Ευεξία</span><span>Οικονομικά</span></div>
+    <div class="body" data-q1="A">
+      <div class="card" id="cardEmpty">
+        <b>Πρόγραμμα προπόνησης</b>
+        <span class="small">Δεν ακολουθεί κάποιο πρόγραμμα.</span>
+        <button type="button" class="b primary" id="openSheet">Ανάθεση</button>
+      </div>
+      <div class="card" id="cardActive" hidden>
+        <div class="row"><b>Δύναμη 6 εβδομάδων</b><span class="tag used">Από σένα</span></div>
+        <span class="small">Εβδ. 1 · Ημ. 1 · ξεκινά <span id="startTxt">Δευτ. 30/11</span></span>
+        <div class="prog"><i style="width:0%"></i></div>
+        <span class="small">0 από 18 προπονήσεις · 1 επίσκεψη ανά προπόνηση</span>
+        <div class="row"><button type="button" class="b ghost">Λεπτομέρειες</button><button type="button" class="b ghost" id="stopBtn">Διακοπή</button></div>
+      </div>
+      <div class="card"><b>Χρονοδιάγραμμα &amp; προγραμματισμός</b><span class="small">Ξεχωριστά WOD για μία ημέρα</span></div>
+      <div class="card"><b>Ιστορικό προπονήσεων</b><span class="small">Τελευταία: Τετ. 25/11 · CrossFit 18:00</span></div>
+    </div>
+    <div class="body" data-q1="B" hidden>
+      <div class="card"><b>Χρονοδιάγραμμα &amp; προγραμματισμός</b>
+        <span class="small">Από πού το WOD;</span>
+        <div class="chips"><span class="chip">Προσαρμογή</span><span class="chip">Όπως είναι</span><span class="chip">Από το αρχείο</span><span class="chip">Νέο</span><span class="chip" aria-pressed="true">Πρόγραμμα προπόνησης</span></div>
+        <span class="small">Ημερομηνία: Δευτ. 30/11 · Τμήμα: δεν χρειάζεται</span>
+        <button type="button" class="b primary">Ανάθεση προγράμματος</button>
+      </div>
+    </div>
+    <div class="sheetwrap" id="sheet" hidden>
+      <div class="sheet" role="dialog" aria-label="Ανάθεση προγράμματος">
+        <div class="row"><b style="font-size:16px">Ανάθεση σε Μαρία</b><button type="button" class="b ghost" id="closeSheet" aria-label="Κλείσιμο">✕</button></div>
+        <span class="small">Πρόγραμμα προπόνησης</span>
+        <button type="button" class="radio on" data-p="18" data-n="Δύναμη 6 εβδομάδων"><span class="dot"></span><span><b>Δύναμη 6 εβδομάδων</b><br><span class="small">3 προπονήσεις / εβδ. · 18 συνολικά · Μέτριο</span></span></button>
+        <button type="button" class="radio" data-p="8" data-n="Πρώτα βήματα"><span class="dot"></span><span><b>Πρώτα βήματα</b><br><span class="small">2 προπονήσεις / εβδ. · 8 συνολικά · Αρχάριοι</span></span></button>
+        <span class="small">Έναρξη</span>
+        <div class="chips" id="starts"><button type="button" class="chip" data-s="Σήμερα 28/11">Σήμερα</button><button type="button" class="chip" aria-pressed="true" data-s="Δευτ. 30/11">Δευτ. 30/11</button><button type="button" class="chip" data-s="Άλλη ημέρα">Άλλη ημέρα…</button></div>
+        <div class="hint" id="cover"></div>
+        <details><summary class="small" style="cursor:pointer">Περισσότερες επιλογές</summary><label class="small" style="display:flex;gap:8px;margin-top:8px"><input type="checkbox"> Χωρίς χρέωση επισκέψεων (δώρο)</label></details>
+        <button type="button" class="b primary" id="assignBtn">Ανάθεση σε Μαρία</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>2. Πότε χρεώνεται η επίσκεψη</h2>
+<div class="q">
+  <div class="explain">
+    <div class="alts" data-q="q2">
+      <button type="button" aria-pressed="true" data-alt="A">A · Τη μέρα της προπόνησης<span class="rec">πρόταση</span></button>
+      <button type="button" aria-pressed="false" data-alt="B">B · Όταν την κάνει</button>
+      <button type="button" aria-pressed="false" data-alt="C">C · Όλες στην ανάθεση</button>
+    </div>
+    <div data-q2="A">
+      <p>Σαν κράτηση για εκείνη τη μέρα: το πρωί της ημέρας παίρνει μία επίσκεψη. Αν το μέλος πατήσει «Παράλειψη», η επίσκεψη επιστρέφει. Αν μείνει πίσω και την κάνει αργότερα με «Κάν' τη σήμερα», δεν ξαναχρεώνεται.</p>
+      <ul><li><span class="pro">+</span> Ίδια λογική με τα τμήματα, και σέβεται τα όρια ανά μήνα ή εβδομάδα του πακέτου.</li><li><span class="pro">+</span> Δεν εξαρτάται από το αν το μέλος σημειώνει ότι τελείωσε.</li></ul>
+    </div>
+    <div data-q2="B" hidden>
+      <p>Χρεώνεται μόνο όταν το μέλος τελειώσει όλα τα WOD της ημέρας (στην εφαρμογή ή στο ημερολόγιο).</p>
+      <ul><li><span class="pro">+</span> Πληρώνει ό,τι έκανε.</li><li><span class="con">−</span> Αν δεν σημειώνει, δεν χρεώνεται ποτέ, και το box δεν το βλέπει.</li></ul>
+    </div>
+    <div data-q2="C" hidden>
+      <p>Με την ανάθεση δεσμεύονται και οι 18 επισκέψεις. Η διακοπή επιστρέφει όσες δεν πέρασαν.</p>
+      <ul><li><span class="con">−</span> 18 επισκέψεις δεν χωράνε σε πακέτο 12 τον μήνα, και το πρόγραμμα κρατά 6 εβδομάδες, άρα πατάει σε 2 περιόδους.</li></ul>
+    </div>
+    <div class="note"><b>Μία επίσκεψη ανά ημέρα προπόνησης,</b> όχι ανά WOD (μια μέρα μπορεί να έχει έως 4 WOD). Οι μέρες ξεκούρασης δεν χρεώνουν.</div>
+  </div>
+  <div class="phone">
+    <div class="top"><b>Δύναμη 6 εβδομάδων · Εβδ. 1</b></div>
+    <div class="body"><div class="card"><div class="days" id="days2"></div></div>
+      <div class="small" id="sum2"></div></div>
+  </div>
+</div>
+
+<h2>3. Όταν δεν φτάνουν οι επισκέψεις</h2>
+<div class="q">
+  <div class="explain">
+    <div class="alts" data-q="q3">
+      <button type="button" aria-pressed="true" data-alt="A">A · Ανάθεση, οι υπόλοιπες περιμένουν<span class="rec">πρόταση</span></button>
+      <button type="button" aria-pressed="false" data-alt="B">B · Δεν επιτρέπεται</button>
+    </div>
+    <div data-q3="A">
+      <p>Το φύλλο λέει πριν την ανάθεση πόσες προπονήσεις καλύπτονται. Μια μέρα που φτάνει χωρίς επίσκεψη μένει κλειδωμένη με «Χρειάζεται επίσκεψη». Μόλις ανανεωθεί το πακέτο, γίνεται «Έμεινε πίσω» και το μέλος πατά «Κάν' τη σήμερα». Τίποτα δεν χάνεται, και ποτέ δεν γράφεται χρέος.</p>
+      <ul><li><span class="pro">+</span> Ένα πρόγραμμα 6 εβδομάδων περνά φυσικά από μήνα σε μήνα.</li><li><span class="pro">+</span> Χρησιμοποιεί ό,τι υπάρχει ήδη (ADR-540).</li></ul>
+    </div>
+    <div data-q3="B" hidden>
+      <p>Αν το πακέτο δεν φτάνει για όλες τις προπονήσεις ως τη λήξη του, το κουμπί σβήνει και γράφει γιατί.</p>
+      <ul><li><span class="con">−</span> Σχεδόν κάθε μηνιαίο πακέτο μπλοκάρει ένα πρόγραμμα 6 εβδομάδων.</li></ul>
+    </div>
+    <div class="note"><b>Πακέτο χωρίς όριο επισκέψεων:</b> δεν μετράει τίποτα και το φύλλο γράφει «Απεριόριστες επισκέψεις». <b>Χωρίς ενεργό πακέτο με τμήματα:</b> η «Ανάθεση» σβήνει με «Η Μαρία δεν έχει πακέτο συνδρομής με τμήματα».</div>
+  </div>
+  <div class="phone">
+    <div class="top"><b>Ανάθεση σε Μαρία</b></div>
+    <div class="body">
+      <div data-q3="A" class="warn"><b>Καλύπτονται οι 7 από τις 18 προπονήσεις</b> με τις επισκέψεις που της μένουν ως τις 30/11. Οι υπόλοιπες περιμένουν την ανανέωση του πακέτου.</div>
+      <div data-q3="A" class="card"><b>Πώς το βλέπει η Μαρία την 1/12 αν δεν ανανεώσει</b>
+        <div class="day"><span>Τρ. 1/12</span><span>Ημ. 9 · Back squat 5×5</span><span class="tag wait">Χρειάζεται επίσκεψη</span></div>
+        <span class="small">Κουμπί: «Ανανέωση πακέτου»</span></div>
+      <div data-q3="A"><button type="button" class="b primary" style="width:100%">Ανάθεση σε Μαρία</button></div>
+      <div data-q3="B" hidden class="card"><b>Δύναμη 6 εβδομάδων</b><span class="small">18 προπονήσεις</span></div>
+      <div data-q3="B" hidden><button type="button" class="b" disabled style="width:100%;opacity:.5">Ανάθεση σε Μαρία</button><p class="small" style="margin-top:6px">Της μένουν 7 επισκέψεις, το πρόγραμμα θέλει 18.</p></div>
+    </div>
+  </div>
+</div>
+
+<h2>4. Πελάτες με online προγραμματισμό</h2>
+<div class="q">
+  <div class="explain">
+    <div class="alts" data-q="q4">
+      <button type="button" aria-pressed="true" data-alt="A">A · Επισκέψεις πρώτα, αλλιώς online<span class="rec">πρόταση</span></button>
+      <button type="button" aria-pressed="false" data-alt="B">B · Μόνο επισκέψεις</button>
+    </div>
+    <div data-q4="A">
+      <p>Αν το πακέτο έχει τμήματα, χρεώνει επισκέψεις (όπως ζήτησες). Ένας αθλητής μόνο με online προγραμματισμό μπορεί επίσης να πάρει πρόγραμμα, και τότε χρεώνει μονάδες online προγραμματισμού, όπως σήμερα κάθε WOD που του στέλνεις. Το φύλλο λέει πάντα τι θα χρεωθεί.</p>
+      <ul><li><span class="pro">+</span> Ένας τρόπος για όλους, και ο solo coach δίνει έτοιμο πρόγραμμα σε online πελάτες.</li></ul>
+    </div>
+    <div data-q4="B" hidden>
+      <p>Μόνο μέλη με τμήματα. Οι online πελάτες συνεχίζουν με WOD ένα ένα.</p>
+      <ul><li><span class="con">−</span> Ο online coach ξαναγράφει με το χέρι ό,τι έχει ήδη έτοιμο σε πρόγραμμα.</li></ul>
+    </div>
+  </div>
+  <div class="phone" style="min-height:260px">
+    <div class="top"><b>Ανάθεση σε Νίκο</b><span class="small">Αθλητής, online</span></div>
+    <div class="body">
+      <div data-q4="A" class="hint">Κάθε προπόνηση χρεώνει <b>1 μονάδα online προγραμματισμού</b>. Του μένουν 20 ως τις 15/12.</div>
+      <div data-q4="A"><button type="button" class="b primary" style="width:100%">Ανάθεση σε Νίκο</button></div>
+      <div data-q4="B" hidden class="warn">Ο Νίκος δεν έχει πακέτο συνδρομής με τμήματα.</div>
+    </div>
+  </div>
+</div>
+
+<h2>5. Τι βλέπει το μέλος</h2>
+<div class="q">
+  <div class="explain">
+    <p>Στο Box › Σήμερα, η ίδια κάρτα «Τα προγράμματά μου» που έχουν όσοι αγοράζουν, με τρεις διαφορές: γράφει ποιος το έδωσε, λέει ότι κάθε προπόνηση χρεώνει μία επίσκεψη, και δεν έχει «Υπαναχώρηση» γιατί δεν πλήρωσε. Αντί γι' αυτό έχει «Διακοπή» (με επιβεβαίωση). Ειδοποίηση στην ανάθεση: «Η Ελένη σού έδωσε το πρόγραμμα Δύναμη 6 εβδομάδων».</p>
+    <div class="note">Η διακοπή (από το μέλος ή το προσωπικό) αφαιρεί τα μελλοντικά WOD και δεν χρεώνει άλλες επισκέψεις. Όσες χρεώθηκαν μένουν, όπως μια κράτηση που έγινε.</div>
+  </div>
+  <div class="phone" style="min-height:340px">
+    <div class="top"><b>Σήμερα</b></div>
+    <div class="body">
+      <div class="card">
+        <span class="small">Τα προγράμματά μου</span>
+        <div class="row"><b>Δύναμη 6 εβδομάδων</b><span class="small">Εβδ. 2 · Ημ. 3</span></div>
+        <span class="small">Από την coach Ελένη · 1 επίσκεψη ανά προπόνηση</span>
+        <div class="prog"><i style="width:28%"></i></div>
+        <span class="small">5 από 18 προπονήσεις</span>
+        <div class="okbox"><b>Σήμερα:</b> Back squat 5×5 · 20′ EMOM<br><span class="small">Χρεώθηκε 1 επίσκεψη · σου μένουν 4</span></div>
+        <div class="row"><button type="button" class="b ghost">Λεπτομέρειες</button><button type="button" class="b ghost">Διακοπή</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<form class="choices" id="choices">
+  <h2 style="margin:0">Οι επιλογές σου</h2>
+  <fieldset><legend>1. Πού στο προφίλ</legend>
+    <label><input type="radio" name="c1" value="A" checked> A · Κάρτα «Πρόγραμμα προπόνησης» στην «Προπόνηση»</label>
+    <label><input type="radio" name="c1" value="B"> B · Μέσα στον «Προγραμματισμό»</label></fieldset>
+  <fieldset><legend>2. Πότε χρεώνεται η επίσκεψη</legend>
+    <label><input type="radio" name="c2" value="A" checked> A · Τη μέρα της προπόνησης, επιστρέφει με «Παράλειψη»</label>
+    <label><input type="radio" name="c2" value="B"> B · Όταν την τελειώσει</label>
+    <label><input type="radio" name="c2" value="C"> C · Όλες στην ανάθεση</label></fieldset>
+  <fieldset><legend>3. Όταν δεν φτάνουν</legend>
+    <label><input type="radio" name="c3" value="A" checked> A · Ανάθεση, οι υπόλοιπες περιμένουν την ανανέωση</label>
+    <label><input type="radio" name="c3" value="B"> B · Δεν επιτρέπεται</label></fieldset>
+  <fieldset><legend>4. Online πελάτες</legend>
+    <label><input type="radio" name="c4" value="A" checked> A · Επισκέψεις πρώτα, αλλιώς μονάδες online</label>
+    <label><input type="radio" name="c4" value="B"> B · Μόνο μέλη με τμήματα</label></fieldset>
+  <fieldset><legend>Μικρές αποφάσεις</legend>
+    <label><input type="checkbox" value="α" checked> α. Νέα επιλογή δημοσίευσης «Μόνο για ανάθεση»: πρόγραμμα χωρίς τιμή και χωρίς online πληρωμές, που δεν πουλιέται, μόνο ανατίθεται (σήμερα η δημοσίευση θέλει τιμή)</label>
+    <label><input type="checkbox" value="β" checked> β. Αν το μέλος έχει κλείσει τμήμα την ίδια μέρα, η προπόνηση του προγράμματος δεν χρεώνει δεύτερη επίσκεψη</label>
+    <label><input type="checkbox" value="γ" checked> γ. «Χωρίς χρέωση επισκέψεων (δώρο)» στις «Περισσότερες επιλογές», μόνο για όσους διαχειρίζονται πληρωμές</label>
+    <label><input type="checkbox" value="δ" checked> δ. Χρεώνει τις γενικές επισκέψεις του πακέτου, όχι όριο συγκεκριμένου τύπου τμήματος</label>
+    <label><input type="checkbox" value="ε" checked> ε. Και το μέλος μπορεί να πατήσει «Διακοπή»</label>
+    <label><input type="checkbox" value="στ" checked> στ. Ανάθεση και από τη σελίδα του προγράμματος (καρτέλα «Αγορές» → «Ανάθεση σε μέλος»)</label>
+    <label><input type="checkbox" value="ζ"> ζ. Το μέλος μπορεί να γράψει κριτική προγράμματος (σήμερα μόνο οι αγοραστές)</label>
+  </fieldset>
+  <fieldset><legend>Σχόλια</legend><textarea id="notes" aria-label="Σχόλια"></textarea></fieldset>
+  <button type="submit" class="copy">Αντιγραφή επιλογών</button>
+  <p class="copied" id="copied" hidden>Αντιγράφηκαν. Κάνε επικόλληση στο thread.</p>
+  <pre id="out" hidden style="white-space:pre-wrap;font-size:13px"></pre>
+</form>
+</div>
+<script>
+{
+document.querySelectorAll(".alts").forEach(function(group){
+  var q=group.dataset.q;
+  group.addEventListener("click",function(e){
+    var btn=e.target.closest("button[data-alt]"); if(!btn) return;
+    group.querySelectorAll("button").forEach(function(b){b.setAttribute("aria-pressed",String(b===btn));});
+    document.querySelectorAll("[data-"+q+"]").forEach(function(el){el.hidden=el.getAttribute("data-"+q)!==btn.dataset.alt;});
+    if(q==="q2") renderDays(btn.dataset.alt);
+  });
+});
+var sheet=document.getElementById("sheet"), total=18, pname="Δύναμη 6 εβδομάδων", start="Δευτ. 30/11";
+function cover(){
+  var c=document.getElementById("cover"), left=7, n=Math.min(left,total);
+  c.className=n<total?"warn":"okbox";
+  c.innerHTML="Κάθε προπόνηση χρεώνει <b>1 επίσκεψη</b> από το «12 επισκέψεις τον μήνα». "+(n<total?"Καλύπτονται οι <b>"+n+" από τις "+total+"</b> ως τις 30/11, οι υπόλοιπες μετά την ανανέωση.":"Καλύπτονται και οι <b>"+total+"</b>.");
+}
+document.getElementById("openSheet").onclick=function(){sheet.hidden=false;cover();};
+document.getElementById("closeSheet").onclick=function(){sheet.hidden=true;};
+sheet.querySelectorAll(".radio").forEach(function(r){r.onclick=function(){sheet.querySelectorAll(".radio").forEach(function(x){x.classList.toggle("on",x===r);});total=+r.dataset.p;pname=r.dataset.n;cover();};});
+document.querySelectorAll("#starts .chip").forEach(function(c){c.onclick=function(){document.querySelectorAll("#starts .chip").forEach(function(x){x.setAttribute("aria-pressed",String(x===c));});start=c.dataset.s;};});
+document.getElementById("assignBtn").onclick=function(){
+  sheet.hidden=true;document.getElementById("cardEmpty").hidden=true;var a=document.getElementById("cardActive");a.hidden=false;
+  a.querySelector("b").textContent=pname;document.getElementById("startTxt").textContent=start;
+  a.querySelectorAll(".small")[1].textContent="0 από "+total+" προπονήσεις · 1 επίσκεψη ανά προπόνηση";
+};
+document.getElementById("stopBtn").onclick=function(){document.getElementById("cardActive").hidden=true;document.getElementById("cardEmpty").hidden=false;};
+var D=[["Δευ 30/11","Ημ. 1 · Back squat 5×5","done"],["Τρι 1/12","Ξεκούραση","rest"],["Τετ 2/12","Ημ. 3 · Deadlift + 12′ AMRAP","skip"],["Πέμ 3/12","Ξεκούραση","rest"],["Παρ 4/12","Ημ. 5 · Press + intervals","behind"],["Σάβ 5/12","Ημ. 6 · Σήμερα","today"]];
+var T={A:{done:["used","−1 επίσκεψη"],skip:["back","Παράλειψη · επέστρεψε"],behind:["used","−1 · έμεινε πίσω"],today:["used","−1 επίσκεψη"]},
+B:{done:["used","Έγινε · −1"],skip:["","Παράλειψη · 0"],behind:["","Έμεινε πίσω · 0"],today:["","0 ως να τελειώσει"]},
+C:{done:["used","Δεσμευμένη"],skip:["used","Δεσμευμένη"],behind:["used","Δεσμευμένη"],today:["used","Δεσμευμένη"]}};
+var S={A:"Χρεώθηκαν 3 επισκέψεις (η παράλειψη επέστρεψε).",B:"Χρεώθηκε 1 επίσκεψη (μόνο όσα τελείωσαν).",C:"Δεσμεύτηκαν και οι 18 επισκέψεις στην ανάθεση."};
+function renderDays(alt){
+  document.getElementById("days2").innerHTML=D.map(function(d){var t=d[2]==="rest"?["","—"]:T[alt][d[2]];return '<div class="day"><span>'+d[0]+'</span><span>'+d[1]+'</span><span class="tag '+t[0]+'">'+t[1]+'</span></div>';}).join("");
+  document.getElementById("sum2").textContent=S[alt];
+}
+renderDays("A");
+document.getElementById("choices").addEventListener("submit",function(e){
+  e.preventDefault();
+  var f=e.target, v=function(n){return f.querySelector('input[name="'+n+'"]:checked').value;};
+  var small=Array.from(f.querySelectorAll('input[type=checkbox]')).map(function(c){return c.value+": "+(c.checked?"ναι":"όχι");}).join(", ");
+  var text="Ανάθεση προγράμματος: 1"+v("c1")+", 2"+v("c2")+", 3"+v("c3")+", 4"+v("c4")+". Μικρές: "+small+"."+(f.notes.value.trim()?" Σχόλια: "+f.notes.value.trim():"");
+  var out=document.getElementById("out"), ok=document.getElementById("copied");
+  out.textContent=text;
+  try{navigator.clipboard.writeText(text).then(function(){ok.hidden=false;out.hidden=true;},function(){out.hidden=false;});}catch(err){out.hidden=false;}
+});
+}
+</script>
+</body></html>

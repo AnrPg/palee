@@ -1,0 +1,1284 @@
+diff --git a/apps/api/lib/palee/application/programmes/assigning.ex b/apps/api/lib/palee/application/programmes/assigning.ex
+new file mode 100644
+index 0000000..e52e0b4
+--- /dev/null
++++ b/apps/api/lib/palee/application/programmes/assigning.ex
+@@ -0,0 +1,470 @@
++defmodule Palee.Application.Programmes.Assigning do
++  @moduledoc """
++  ADR-805: staff assign a training programme to a person from their profile
++  (or from the programme's page), like online programming but also for box
++  members. The person pays nothing; each training day uses one unit of their
++  subscription package (`ProgrammeDayCharge`): a class visit when the package
++  has classes, else an online-programming unit; nothing for personal
++  training or a gift.
++
++  An assigned programme is a `programme_purchases` row with `origin:
++  assigned`, so the days, «Έμεινε πίσω», «Κάν' τη σήμερα» and «Παράλειψη»
++  (ADR-540) work as for a bought one. Its days open one by one:
++
++    * a training day **opens** when its date comes (the hourly sweep, and at
++      once when it starts today): it takes one unit of the package
++      (reserved and consumed in Finance, idempotent per purchase and day)
++      and its WODs are assigned to the person on that date;
++    * with no unit left the day stays `waiting` («Χρειάζεται επίσκεψη»),
++      locked; it opens on the first sweep after the package has a unit
++      again (then it is today or behind). Nothing ever goes into debt. Days
++      open in order, so a later day never jumps a waiting one;
++    * a class the person booked that day already used a visit: the day
++      opens on that booking (`booking`) and uses no second visit;
++    * «Παράλειψη» on an opened day gives its unit back; catching up on a
++      behind day («Κάν' τη σήμερα») never charges it again.
++
++  `stop/3` (staff, or the person) ends it: the WODs after today go, the units
++  already used stay used, as for a class that took place.
++  """
++
++  require Logger
++
++  alias Palee.Application.AuthorizeClientAccess
++  alias Palee.Application.Programmes.{BuyerDays, Presenter, Studio}
++  alias Palee.Finance.Domain.ProgrammeDayCharge
++  alias Palee.{Finance, Identity, Notifications, Organizations, Programmes, Scheduling, Workouts}
++
++  @gift_capabilities [:take_payments, :manage_billing]
++
++  # ── Staff: what can be assigned, and the person's current one ───────────
++
++  @doc """
++  The profile card and the assign sheet for one person: the programmes
++  staff may assign, what each training day would use and how much the
++  package has left, and the person's active assigned programme.
++  """
++  def options(context, user_id) do
++    today = today(context)
++    entitlement = Finance.get_effective_entitlement(context, user_id)
++    charge = ProgrammeDayCharge.of(entitlement)
++
++    programmes =
++      context
++      |> Programmes.list_programmes(%{statuses: ["published"]})
++      |> Enum.filter(&Programmes.assignable?/1)
++      |> Enum.flat_map(fn programme ->
++        case Programmes.get_version(context, programme.current_version_id) do
++          %{} = version -> [option(programme, version, entitlement, charge)]
++          nil -> []
++        end
++      end)
++      |> Enum.sort_by(&String.downcase(&1.title || ""))
++
++    {:ok,
++     %{
++       programmes: programmes,
++       charge: elem_ok(charge),
++       charge_refused: if(match?({:error, _}, charge), do: to_string(elem(charge, 1))),
++       package_name: get_in(entitlement || %{}, [:subscription, :package_name]),
++       can_gift: can_gift?(context),
++       earliest_start: today,
++       latest_start: Date.add(today, 60),
++       current: current(context, user_id)
++     }}
++  end
++
++  defp option(programme, version, entitlement, charge) do
++    sessions = sessions(version)
++    allowance = with {:ok, charge} <- charge, do: ProgrammeDayCharge.allowance(charge)
++    allowance = if is_atom(allowance), do: allowance
++
++    %{
++      id: programme.id,
++      title: programme.title,
++      level: programme.level,
++      goal: programme.goal,
++      listing: programme.listing,
++      weeks: version.weeks,
++      sessions: sessions,
++      sessions_per_week: programme.sessions_per_week,
++      coverage: ProgrammeDayCharge.coverage(entitlement, allowance, sessions)
++    }
++  end
++
++  defp sessions(version), do: version.days |> Enum.map(& &1["day"]) |> Enum.uniq() |> length()
++
++  defp elem_ok({:ok, value}), do: value
++  defp elem_ok(_error), do: nil
++
++  defp current(context, user_id) do
++    case Programmes.active_assignment(context, user_id) do
++      nil -> nil
++      purchase -> summary(context, purchase)
++    end
++  end
++
++  @doc "One assigned programme as the profile card and the member card show it."
++  def summary(context, purchase) do
++    programme = Programmes.get_programme(context, purchase.programme_id)
++    version = Programmes.get_version(context, purchase.version_id)
++    charges = Programmes.day_charges(context, purchase.id)
++    days = if version, do: BuyerDays.present_for(context, purchase, version)
++
++    Presenter.purchase(purchase, %{
++      title: programme && programme.title,
++      weeks: version && version.weeks,
++      progress: days && days.progress,
++      behind: days && days.behind,
++      next_day: days && Enum.find(days.days, &(&1.status in ["today", "upcoming", "waiting"])),
++      used: Enum.count(charges, &(&1.kind in ["visit", "touchpoint"] and is_nil(&1.returned_at))),
++      assigned_by: name(purchase.assigned_by_id)
++    })
++  end
++
++  # ── Staff: assign and stop ──────────────────────────────────────────────
++
++  @doc """
++  Assigns programme `params.programme_id` to `user_id` from `starts_on`
++  (today up to 60 days ahead). `gift: true` uses nothing of the package and
++  needs payment rights. One active assigned programme per person.
++  """
++  def assign(context, user_id, params) do
++    now = DateTime.utc_now()
++    today = today(context, now)
++    starts_on = params[:starts_on] || today
++
++    with :ok <- AuthorizeClientAccess.call(context, :manage_coaching, user_id),
++         %{} = person <- Identity.find_by_id(user_id) || {:error, :not_found},
++         {:ok, programme} <- assignable(context, params[:programme_id]),
++         %{} = version <-
++           Programmes.get_version(context, programme.current_version_id) || {:error, :not_found},
++         :ok <- Programmes.check_start(starts_on, today),
++         {:ok, charge} <- charge(context, user_id, params[:gift] == true),
++         nil <- Programmes.active_assignment(context, user_id) || :ok,
++         {:ok, purchase} <-
++           Programmes.create_assignment(context, %{
++             programme_id: programme.id,
++             version_id: version.id,
++             user_id: person.id,
++             currency: programme.currency,
++             refund_policy: programme.refund_policy,
++             starts_on: starts_on,
++             ends_on: Programmes.ends_on(starts_on, version.weeks),
++             charge: charge,
++             assigned_by_id: context.user_id,
++             activated_at: now,
++             idempotency_key: key(params, programme.id, user_id, starts_on)
++           }) do
++      _opened = open_due(context, purchase, now)
++      notify(context, purchase, programme)
++
++      :telemetry.execute([:palee, :programmes, :assigned], %{count: 1}, %{
++        organization_id: context.organization_id,
++        id: purchase.id,
++        charge: charge
++      })
++
++      {:ok, summary(context, purchase)}
++    else
++      :ok -> {:error, :programme_already_assigned}
++      %{origin: "assigned"} -> {:error, :programme_already_assigned}
++      error -> error
++    end
++  end
++
++  defp assignable(context, id) do
++    case is_binary(id) && Programmes.get_programme(context, id) do
++      %{} = programme ->
++        if Programmes.assignable?(programme),
++          do: {:ok, programme},
++          else: {:error, :programme_not_assignable}
++
++      _missing ->
++        {:error, :not_found}
++    end
++  end
++
++  defp charge(context, _user_id, true) do
++    if can_gift?(context), do: {:ok, "none"}, else: {:error, :forbidden}
++  end
++
++  defp charge(context, user_id, false) do
++    context |> Finance.get_effective_entitlement(user_id) |> ProgrammeDayCharge.of()
++  end
++
++  defp can_gift?(context),
++    do: Enum.any?(@gift_capabilities, &(Organizations.capability_scope(context, &1) != nil))
++
++  defp key(params, programme_id, user_id, starts_on) do
++    case params[:idempotency_key] do
++      key when is_binary(key) and byte_size(key) in 8..180 -> "assign:" <> key
++      _none -> "assign:#{programme_id}:#{user_id}:#{starts_on}:#{Ecto.UUID.generate()}"
++    end
++  end
++
++  @doc """
++  Ends an assigned programme. `by: :staff` checks the actor coaches the
++  person; `by: :member` that it is the person's own. The WODs after today
++  go; the units already used stay used.
++  """
++  def stop(context, purchase_id, by: by) do
++    now = DateTime.utc_now()
++
++    with %{} = purchase <- Programmes.get_purchase(context, purchase_id) || {:error, :not_found},
++         true <- Programmes.assigned?(purchase) || {:error, :not_found},
++         :ok <- may_stop(context, purchase, by),
++         {:ok, purchase} <- Programmes.step_purchase(context, purchase.id, :stop, now),
++         :ok <- Studio.remove_future(context, purchase, now, :after_today) do
++      :telemetry.execute([:palee, :programmes, :stopped], %{count: 1}, %{
++        organization_id: context.organization_id,
++        id: purchase.id,
++        by: by
++      })
++
++      {:ok, summary(context, purchase)}
++    end
++  end
++
++  defp may_stop(context, purchase, :member),
++    do: if(purchase.user_id == context.user_id, do: :ok, else: {:error, :not_found})
++
++  defp may_stop(context, purchase, :staff),
++    do: AuthorizeClientAccess.call(context, :manage_coaching, purchase.user_id)
++
++  # ── Opening days ────────────────────────────────────────────────────────
++
++  @doc """
++  Opens the training days of an assigned programme whose date came, in
++  order, until one finds no unit: `{:ok, opened_count}`. Idempotent (the
++  Finance keys and the `(purchase, day)` row).
++  """
++  def open_due(context, purchase, now \\ DateTime.utc_now())
++
++  def open_due(context, %{origin: "assigned", status: "active"} = purchase, now) do
++    today = today(context, now)
++
++    with %{} = version <-
++           Programmes.get_version(context, purchase.version_id) || {:error, :not_found} do
++      context
++      |> BuyerDays.days_for(purchase, version, today)
++      |> Programmes.due_to_open()
++      |> Enum.reduce_while({:ok, 0}, fn row, {:ok, count} ->
++        case open_day(context, purchase, row, today) do
++          :ok -> {:cont, {:ok, count + 1}}
++          {:waiting, _reason} -> {:halt, {:ok, count}}
++          {:error, reason} -> {:halt, {:error, reason}}
++        end
++      end)
++    end
++  end
++
++  def open_due(_context, _purchase, _now), do: {:ok, 0}
++
++  defp open_day(context, purchase, row, today) do
++    with {:ok, kind, reservation_id} <- pay(context, purchase, row, today),
++         :ok <- deliver(context, purchase, row),
++         {:ok, _charge} <- record(context, purchase, row, today, kind, reservation_id) do
++      :ok
++    end
++  end
++
++  # A class booked that day already used a visit (ANR, 2026-11-28).
++  defp pay(context, %{charge: "class_visits"} = purchase, %{date: date} = row, today)
++       when date == today do
++    if booked_on?(context, purchase.user_id, today),
++      do: {:ok, "booking", nil},
++      else: reserve(context, purchase, row, today)
++  end
++
++  defp pay(context, %{charge: charge} = purchase, row, today)
++       when charge in ["class_visits", "coaching_touchpoints"],
++       do: reserve(context, purchase, row, today)
++
++  defp pay(_context, _purchase, _row, _today), do: {:ok, "none", nil}
++
++  defp reserve(context, purchase, row, today) do
++    request = ProgrammeDayCharge.request(purchase.charge, purchase.id, row.day, today)
++
++    with {:ok, %{id: id}} when is_binary(id) <-
++           Finance.reserve_entitlement(context, purchase.user_id, request),
++         {:ok, _finalized} <-
++           Finance.finalize_entitlement(context, id, %{
++             source_id: purchase.id,
++             reason: "Programme day opened",
++             idempotency_key: ProgrammeDayCharge.finalize_key(purchase.id, row.day),
++             metadata: %{"day" => row.day}
++           }) do
++      {:ok, ProgrammeDayCharge.kind(purchase.charge), id}
++    else
++      # Not metered (e.g. a lenient rollout mode): nothing was taken.
++      {:ok, %{id: nil}} -> {:ok, "none", nil}
++      {:error, reason, _details} -> {:waiting, reason}
++      {:error, reason} -> {:waiting, reason}
++    end
++  end
++
++  defp booked_on?(context, user_id, %Date{} = day) do
++    from = DateTime.new!(Date.add(day, -1), ~T[00:00:00], "Etc/UTC")
++
++    context
++    |> Scheduling.member_booking_times(user_id, from)
++    |> Enum.any?(&(Organizations.local_date(context, &1) == day))
++  rescue
++    _error -> false
++  end
++
++  defp deliver(context, purchase, row) do
++    row.workouts
++    |> Enum.reduce_while({:ok, []}, fn workout, {:ok, rows} ->
++      case Workouts.assign_workout(context, %{
++             master_workout_id: workout["workout_id"],
++             scheduled_for: row.date,
++             athlete_ids: [purchase.user_id]
++           }) do
++        {:ok, assignment} ->
++          {:cont,
++           {:ok, [%{assigned_workout_id: assignment.id, day: row.day, scheduled_for: row.date} | rows]}}
++
++        {:error, reason} ->
++          Logger.warning(
++            "assigned programme #{purchase.id}: day #{row.day} not assigned: #{inspect(reason)}"
++          )
++
++          {:halt, {:error, :programme_workout_unavailable}}
++      end
++    end)
++    |> case do
++      {:ok, rows} -> Programmes.record_deliveries(context, purchase.id, purchase.user_id, rows)
++      error -> error
++    end
++  end
++
++  defp record(context, purchase, row, today, kind, reservation_id) do
++    case Programmes.record_day_charge(context, %{
++           purchase_id: purchase.id,
++           user_id: purchase.user_id,
++           day: row.day,
++           charged_on: today,
++           kind: kind,
++           reservation_id: reservation_id
++         }) do
++      {:ok, charge} -> {:ok, charge}
++      # Opened by an overlapping run: the same reservation (same key).
++      {:error, %Ecto.Changeset{}} -> {:ok, :already_open}
++    end
++  end
++
++  @doc """
++  «Παράλειψη» on an opened day of an assigned programme gives its unit
++  back (the consumed reservation is reopened, then released). Idempotent.
++  """
++  def return_day(context, %{origin: "assigned"} = purchase, day) do
++    case Enum.find(Programmes.day_charges(context, purchase.id), &(&1.day == day)) do
++      %{reservation_id: id, returned_at: nil} = charge when is_binary(id) ->
++        allowance = ProgrammeDayCharge.allowance(purchase.charge)
++
++        with {:ok, _reopened} <-
++               Finance.reopen_entitlement_source(
++                 context,
++                 purchase.user_id,
++                 "programmes",
++                 purchase.id,
++                 allowance,
++                 %{idempotency_key: ProgrammeDayCharge.finalize_key(purchase.id, day)}
++               ),
++             {:ok, _released} <- release(context, id, purchase.id, day),
++             {:ok, _charge} <- Programmes.return_day_charge(context, charge, DateTime.utc_now()) do
++          :ok
++        end
++
++      _nothing_to_give_back ->
++        :ok
++    end
++  end
++
++  def return_day(_context, _purchase, _day), do: :ok
++
++  defp release(context, reservation_id, purchase_id, day) do
++    case Finance.release_entitlement(context, reservation_id, %{
++           reason: "Programme day skipped",
++           idempotency_key: ProgrammeDayCharge.release_key(purchase_id, day)
++         }) do
++      {:ok, entry} -> {:ok, entry}
++      {:error, :entitlement_reservation_already_closed} -> {:ok, :already_released}
++      error -> error
++    end
++  end
++
++  # ── Sweep ───────────────────────────────────────────────────────────────
++
++  @doc "The hourly sweep (ADR-371) opens due days of every active assigned programme."
++  def sweep(context, %DateTime{} = now) do
++    context
++    |> Programmes.list_active_assignments()
++    |> Enum.reduce(0, fn purchase, opened ->
++      case open_due(context, purchase, now) do
++        {:ok, count} ->
++          opened + count
++
++        {:error, reason} ->
++          Logger.warning("assigned programme #{purchase.id}: days not opened: #{inspect(reason)}")
++          opened
++      end
++    end)
++  end
++
++  @doc """
++  Whether a past-its-end assigned programme may complete: no day still
++  waits for a unit, or it reached the cap (ADR-540: its own length after
++  the planned end).
++  """
++  def completable?(context, %{origin: "assigned"} = purchase, %Date{} = today) do
++    case Programmes.get_version(context, purchase.version_id) do
++      %{} = version ->
++        waiting? =
++          context
++          |> BuyerDays.days_for(purchase, version, today)
++          |> Enum.any?(&(&1.status == "waiting"))
++
++        not waiting? or Date.compare(today, Programmes.latest_end(purchase, version.weeks)) == :gt
++
++      nil ->
++        true
++    end
++  end
++
++  def completable?(_context, _purchase, _today), do: true
++
++  # ── helpers ─────────────────────────────────────────────────────────────
++
++  defp notify(context, purchase, programme) do
++    box = Organizations.get_organization(context.organization_id)
++
++    Notifications.dispatch_event(:programme_assigned, %{
++      organization_id: context.organization_id,
++      user_id: purchase.user_id,
++      purchase_id: purchase.id,
++      programme_title: programme.title,
++      assigned_by: name(purchase.assigned_by_id) |> then(&(&1 && &1.nickname)),
++      box_name: box && box.name,
++      starts_on: Date.to_iso8601(purchase.starts_on)
++    })
++  rescue
++    error ->
++      Logger.warning("programme_assigned notification failed: #{Exception.message(error)}")
++      :ok
++  end
++
++  defp name(nil), do: nil
++
++  defp name(user_id) do
++    case Identity.find_by_id(user_id) do
++      %{id: id, nickname: nickname} -> %{id: id, nickname: nickname}
++      _missing -> nil
++    end
++  end
++
++  defp today(context, now \\ DateTime.utc_now()),
++    do: Organizations.local_today(context.organization_id, now)
++end
+diff --git a/apps/api/lib/palee/finance/domain/programme_day_charge.ex b/apps/api/lib/palee/finance/domain/programme_day_charge.ex
+new file mode 100644
+index 0000000..922c497
+--- /dev/null
++++ b/apps/api/lib/palee/finance/domain/programme_day_charge.ex
+@@ -0,0 +1,119 @@
++defmodule Palee.Finance.Domain.ProgrammeDayCharge do
++  @moduledoc """
++  ADR-805: what one training day of a programme staff assign uses from the
++  person's subscription package, pure.
++
++  ANR (2026-11-28): an assigned programme is like online programming, also
++  for box members, and each training day uses a **class visit**
++  («επίσκεψη»), not an online-programming unit. In order:
++
++    * `"class_visits"`: the package includes group classes (`in_person` +
++      `book_classes`); each day uses one of the package's general visits
++      (never a class type's own limit);
++    * `"coaching_touchpoints"`: no classes, but online programming
++      (ADR-225): each day uses one online-programming unit, as a WOD sent to
++      the person does;
++    * `"none"`: personal training only (the programme is part of the PT
++      service, as ADR-225 meters nothing for it), or a gift staff chose.
++
++  Anything else: `{:error, :programme_charge_not_in_package}`.
++  """
++
++  alias Palee.Finance.Domain.{EntitlementPolicy, ProgrammingGrant}
++
++  @classes %{channel: :in_person, capability: :book_classes}
++
++  @doc "`{:ok, charge}` for the person's effective entitlement, or the refusal."
++  def of(entitlement) do
++    if EntitlementPolicy.authorize_explicit(entitlement, @classes) == :ok,
++      do: {:ok, "class_visits"},
++      else: without_classes(entitlement)
++  end
++
++  defp without_classes(entitlement) do
++    case ProgrammingGrant.of(entitlement) do
++      {:ok, :online_programming} -> {:ok, "coaching_touchpoints"}
++      {:ok, :personal_training} -> {:ok, "none"}
++      {:error, _reason} -> {:error, :programme_charge_not_in_package}
++    end
++  end
++
++  @doc "The allowance key a charge uses (`nil` for `none`)."
++  def allowance("class_visits"), do: :class_visits
++  def allowance("coaching_touchpoints"), do: :coaching_touchpoints
++  def allowance(_charge), do: nil
++
++  @doc "The `programme_day_charges.kind` a paid day records."
++  def kind("class_visits"), do: "visit"
++  def kind("coaching_touchpoints"), do: "touchpoint"
++  def kind(_charge), do: "none"
++
++  @doc """
++  The Finance reservation request for one day, charged on `today` (a day
++  that waited for a visit is paid from the period it opens in).
++  """
++  def request("class_visits", purchase_id, day, %Date{} = today),
++    do:
++      base(purchase_id, day, today, %{
++        channel: :in_person,
++        capability: :book_classes,
++        allowance: :class_visits
++      })
++
++  def request("coaching_touchpoints", purchase_id, day, %Date{} = today),
++    do:
++      base(purchase_id, day, today, %{
++        channel: :personal_programming,
++        capability: :receive_coaching_touchpoints,
++        allowance: :coaching_touchpoints
++      })
++
++  defp base(purchase_id, day, today, request) do
++    Map.merge(request, %{
++      quantity: 1,
++      occurred_on: today,
++      source_context: "programmes",
++      source_id: purchase_id,
++      idempotency_key: "programme-day:#{purchase_id}:#{day}",
++      metadata: %{"kind" => "programme_day", "day" => day}
++    })
++  end
++
++  @doc "The idempotency key of the finalize that consumes a day's reservation."
++  def finalize_key(purchase_id, day), do: "programme-day-finalize:#{purchase_id}:#{day}"
++
++  @doc "The idempotency key of the release that gives a skipped day's unit back."
++  def release_key(purchase_id, day), do: "programme-day-release:#{purchase_id}:#{day}"
++
++  @doc """
++  What the assign sheet says the programme will use, from the effective
++  entitlement's allowance (`%{limit, remaining, period_end}`): `sessions`
++  training days against what is left until the period ends. `nil` when the
++  charge meters nothing.
++  """
++  def coverage(nil, _allowance, _sessions), do: nil
++  def coverage(_entitlement, nil, _sessions), do: nil
++
++  def coverage(entitlement, allowance, sessions) when is_integer(sessions) do
++    allowances = Map.get(entitlement || %{}, :allowances) || %{}
++
++    case Map.get(allowances, allowance) || Map.get(allowances, to_string(allowance)) do
++      %{remaining: :unlimited} = state ->
++        %{unlimited: true, remaining: nil, covered: sessions, period_end: state[:period_end]}
++
++      %{limit: :unlimited} = state ->
++        %{unlimited: true, remaining: nil, covered: sessions, period_end: state[:period_end]}
++
++      %{remaining: remaining} = state when is_integer(remaining) ->
++        %{
++          unlimited: false,
++          remaining: remaining,
++          covered: min(remaining, sessions),
++          period_end: state[:period_end]
++        }
++
++      _none ->
++        %{unlimited: false, remaining: 0, covered: 0, period_end: nil}
++    end
++  end
++end
+diff --git a/apps/api/lib/palee/infrastructure/programmes/ecto_programme_store.ex b/apps/api/lib/palee/infrastructure/programmes/ecto_programme_store.ex
+index 43a1a47..0cbfe8e 100644
+--- a/apps/api/lib/palee/infrastructure/programmes/ecto_programme_store.ex
++++ b/apps/api/lib/palee/infrastructure/programmes/ecto_programme_store.ex
+@@ -7,6 +7,7 @@ defmodule Palee.Infrastructure.Programmes.EctoProgrammeStore do
+ 
+   alias Palee.Programmes.{
+     Programme,
++    ProgrammeDayCharge,
+     ProgrammeDelivery,
+     ProgrammePurchase,
+     ProgrammeReview,
+@@ -308,6 +309,69 @@ defmodule Palee.Infrastructure.Programmes.EctoProgrammeStore do
+     |> Map.new()
+   end
+ 
++  # ── Assigned programmes (ADR-805) ───────────────────────────────────────
++
++  @impl true
++  def create_assignment(%{organization_id: organization_id} = context, attrs) do
++    attrs = Map.put(attrs, :organization_id, organization_id)
++
++    case attrs |> ProgrammePurchase.assign_changeset() |> Repo.insert() do
++      {:ok, purchase} ->
++        {:ok, purchase}
++
++      {:error, %Ecto.Changeset{errors: errors} = changeset} = error ->
++        cond do
++          Keyword.has_key?(errors, :organization_id) -> by_key(context, attrs.idempotency_key, error)
++          Keyword.has_key?(errors, :user_id) -> {:error, :programme_already_assigned}
++          true -> {:error, changeset}
++        end
++    end
++  end
++
++  @impl true
++  def active_assignment(%{organization_id: organization_id}, user_id) do
++    Repo.one(
++      from p in ProgrammePurchase,
++        where:
++          p.organization_id == ^organization_id and p.user_id == ^user_id and
++            p.origin == "assigned" and p.status == "active",
++        limit: 1
++    )
++  end
++
++  @impl true
++  def list_active_assignments(%{organization_id: organization_id}) do
++    Repo.all(
++      from p in ProgrammePurchase,
++        where:
++          p.organization_id == ^organization_id and p.origin == "assigned" and
++            p.status == "active",
++        order_by: [asc: p.inserted_at],
++        limit: 2_000
++    )
++  end
++
++  @impl true
++  def day_charges(%{organization_id: organization_id}, purchase_id) do
++    Repo.all(
++      from c in ProgrammeDayCharge,
++        where: c.organization_id == ^organization_id and c.purchase_id == ^purchase_id,
++        order_by: [asc: c.day]
++    )
++  end
++
++  @impl true
++  def record_day_charge(%{organization_id: organization_id}, attrs) do
++    attrs
++    |> Map.put(:organization_id, organization_id)
++    |> ProgrammeDayCharge.changeset()
++    |> Repo.insert()
++  end
++
++  @impl true
++  def return_day_charge(_context, charge, at),
++    do: charge |> ProgrammeDayCharge.returned_changeset(at) |> Repo.update()
++
+   # ── Deliveries ──────────────────────────────────────────────────────────
+ 
+   @impl true
+diff --git a/apps/api/lib/palee/programmes.ex b/apps/api/lib/palee/programmes.ex
+index d934333..0baabd2 100644
+--- a/apps/api/lib/palee/programmes.ex
++++ b/apps/api/lib/palee/programmes.ex
+@@ -48,6 +48,12 @@ defmodule Palee.Programmes do
+   defdelegate list_purchases(context, filters \\ %{}), to: ProgrammeStore
+   defdelegate due_completions(context, today), to: ProgrammeStore
+   defdelegate sales(context, programme_ids), to: ProgrammeStore
++  defdelegate create_assignment(context, attrs), to: ProgrammeStore
++  defdelegate active_assignment(context, user_id), to: ProgrammeStore
++  defdelegate list_active_assignments(context), to: ProgrammeStore
++  defdelegate day_charges(context, purchase_id), to: ProgrammeStore
++  defdelegate record_day_charge(context, attrs), to: ProgrammeStore
++  defdelegate return_day_charge(context, charge, at), to: ProgrammeStore
+   defdelegate record_deliveries(context, purchase_id, user_id, rows), to: ProgrammeStore
+   defdelegate deliveries(context, purchase_id, from \\ nil), to: ProgrammeStore
+   defdelegate delete_deliveries(context, purchase_id, from), to: ProgrammeStore
+@@ -123,11 +129,14 @@ defmodule Palee.Programmes do
+   defdelegate workout_ids(days), to: ProgrammePolicy
+   defdelegate publishable(programme, days), to: ProgrammePolicy
+   defdelegate on_sale?(programme), to: ProgrammePolicy
++  defdelegate assignable?(programme), to: ProgrammePolicy
+   defdelegate in_marketplace?(programme), to: ProgrammePolicy
+   defdelegate preview(days, preview_days), to: ProgrammePolicy
+   defdelegate purchase_statuses(), to: PurchaseLifecycle, as: :statuses
+   defdelegate owned?(purchase), to: PurchaseLifecycle
+   defdelegate delivering?(purchase), to: PurchaseLifecycle
++  defdelegate assigned?(purchase), to: PurchaseLifecycle
++  defdelegate charges(), to: PurchaseLifecycle
+   defdelegate check_start(starts_on, today), to: RefundRules
+   defdelegate ends_on(starts_on, weeks), to: RefundRules
+   defdelegate refund_quote(purchase, today, now), to: RefundRules, as: :quote
+@@ -136,7 +145,11 @@ defmodule Palee.Programmes do
+   defdelegate hide_reasons(), to: ReviewPolicy
+ 
+   # ADR-540: the buyer's days.
+-  defdelegate purchase_days(version, purchase, done, today), to: PurchaseSchedule, as: :days
++  defdelegate purchase_days(version, purchase, done, today, opened \\ :all),
++    to: PurchaseSchedule,
++    as: :days
++
++  defdelegate due_to_open(days), to: PurchaseSchedule
+   defdelegate purchase_day_date(purchase, day), to: PurchaseSchedule, as: :date_of
+   defdelegate purchase_progress(days), to: PurchaseSchedule, as: :progress
+   defdelegate next_behind(days), to: PurchaseSchedule
+diff --git a/apps/api/lib/palee/programmes/domain/programme_policy.ex b/apps/api/lib/palee/programmes/domain/programme_policy.ex
+index 67c45ae..5455b7e 100644
+--- a/apps/api/lib/palee/programmes/domain/programme_policy.ex
++++ b/apps/api/lib/palee/programmes/domain/programme_policy.ex
+@@ -14,10 +14,12 @@ defmodule Palee.Programmes.Domain.ProgrammePolicy do
+       it is shown: `box` (the seller's own page and members) or
+       `marketplace` (also the cross-business catalogue).
+     * `preview_days`: how many first days anyone may look at before buying.
++    * ADR-805: `listing: assign_only` is never sold or shown to visitors:
++      staff only assign it to people, so it needs no price.
+   """
+ 
+   @statuses ~w(draft published archived)
+-  @listings ~w(box marketplace)
++  @listings ~w(box marketplace assign_only)
+   @levels ~w(all beginner intermediate advanced)
+   @goals ~w(general strength conditioning gymnastics weightlifting endurance competition hyrox
+             mobility)
+@@ -85,7 +87,8 @@ defmodule Palee.Programmes.Domain.ProgrammePolicy do
+       programme.status == "published" and days == :unchanged ->
+         {:error, :programme_already_published}
+ 
+-      not (is_integer(programme.price_cents) and programme.price_cents > 0) ->
++      programme.listing != "assign_only" and
++          not (is_integer(programme.price_cents) and programme.price_cents > 0) ->
+         {:error, :programme_price_required}
+ 
+       programme.currency not in @currencies ->
+@@ -109,13 +112,17 @@ defmodule Palee.Programmes.Domain.ProgrammePolicy do
+ 
+   def transition(_programme, _step, _now), do: {:error, :invalid_programme_transition}
+ 
+-  @doc "Whether people can see and buy it (published, paid)."
+-  def on_sale?(%{status: "published", price_cents: cents, current_version_id: id})
++  @doc "Whether people can see and buy it (published, paid, not assign-only)."
++  def on_sale?(%{status: "published", price_cents: cents, current_version_id: id} = programme)
+       when is_integer(cents) and cents > 0 and is_binary(id),
+-      do: true
++      do: Map.get(programme, :listing) != "assign_only"
+ 
+   def on_sale?(_programme), do: false
+ 
++  @doc "ADR-805: whether staff may assign it (any published programme, whatever its listing)."
++  def assignable?(%{status: "published", current_version_id: id}) when is_binary(id), do: true
++  def assignable?(_programme), do: false
++
+   @doc "Whether the programme shows in the cross-business catalogue."
+   def in_marketplace?(programme), do: on_sale?(programme) and programme.listing == "marketplace"
+ 
+diff --git a/apps/api/lib/palee/programmes/domain/programme_readiness.ex b/apps/api/lib/palee/programmes/domain/programme_readiness.ex
+index 127afb7..89676d0 100644
+--- a/apps/api/lib/palee/programmes/domain/programme_readiness.ex
++++ b/apps/api/lib/palee/programmes/domain/programme_readiness.ex
+@@ -5,7 +5,8 @@ defmodule Palee.Programmes.Domain.ProgrammeReadiness do
+   error on «Δημοσίευση»; each item names where to go.
+ 
+     * `title`: no title (blocking);
+-    * `price`: no price (blocking: only a paid programme is sold);
++    * `price`: no price (blocking: only a paid programme is sold; an
++      `assign_only` programme, ADR-805, is never sold and needs none);
+     * `days`: no WOD on any day (blocking);
+     * `empty_weeks`: weeks with no WOD (`weeks`, 1-based; advisory);
+     * `summary`: no summary (advisory: it is shown first on the page).
+@@ -22,7 +23,8 @@ defmodule Palee.Programmes.Domain.ProgrammeReadiness do
+ 
+     [
+       blank?(programme.title) && item("title", true),
+-      not (is_integer(programme.price_cents) and programme.price_cents > 0) &&
++      Map.get(programme, :listing) != "assign_only" and
++        not (is_integer(programme.price_cents) and programme.price_cents > 0) &&
+         item("price", true),
+       days == [] && item("days", true),
+       days != [] && empty_weeks(days, weeks),
+diff --git a/apps/api/lib/palee/programmes/domain/purchase_lifecycle.ex b/apps/api/lib/palee/programmes/domain/purchase_lifecycle.ex
+index 0aae266..72872d4 100644
+--- a/apps/api/lib/palee/programmes/domain/purchase_lifecycle.ex
++++ b/apps/api/lib/palee/programmes/domain/purchase_lifecycle.ex
+@@ -8,15 +8,25 @@ defmodule Palee.Programmes.Domain.PurchaseLifecycle do
+ 
+   Nothing is delivered before the provider confirms the money. A buyer
+   holds at most one open purchase (pending or active) of one programme.
++
++  ADR-805: a programme staff assign (`origin: assigned`) starts `active`
++  with nothing to pay and may end `stopped` (by staff or by the person);
++  each training day uses its `charge`.
+   """
+ 
+-  @statuses ~w(pending_payment active completed withdrawn refunded cancelled)
++  @statuses ~w(pending_payment active completed withdrawn refunded cancelled stopped)
++  @charges ~w(class_visits coaching_touchpoints none)
+   @open ~w(pending_payment active)
+   @owned ~w(active completed)
+ 
+   def statuses, do: @statuses
+   def open_statuses, do: @open
+   def owned_statuses, do: @owned
++  def charges, do: @charges
++
++  @doc "Whether staff assigned it (ADR-805) rather than the person bought it."
++  def assigned?(%{origin: "assigned"}), do: true
++  def assigned?(_purchase), do: false
+ 
+   @doc "A lifecycle step: `{:ok, changes}` or `{:error, :invalid_purchase_transition}`."
+   def transition(%{status: "pending_payment"}, {:paid, payment}, now),
+@@ -56,6 +66,9 @@ defmodule Palee.Programmes.Domain.PurchaseLifecycle do
+       else: {:ok, %{refunded_cents: refunded}}
+   end
+ 
++  def transition(%{status: "active", origin: "assigned"}, :stop, now),
++    do: {:ok, %{status: "stopped", ended_at: now, end_reason: "stopped"}}
++
+   def transition(_purchase, _step, _now), do: {:error, :invalid_purchase_transition}
+ 
+   @doc "Whether the purchase still gives its WODs (removing the future ones otherwise)."
+diff --git a/apps/api/lib/palee/programmes/domain/purchase_schedule.ex b/apps/api/lib/palee/programmes/domain/purchase_schedule.ex
+index 857691b..f4f218d 100644
+--- a/apps/api/lib/palee/programmes/domain/purchase_schedule.ex
++++ b/apps/api/lib/palee/programmes/domain/purchase_schedule.ex
+@@ -26,9 +26,16 @@ defmodule Palee.Programmes.Domain.PurchaseSchedule do
+   planned end (`latest_end/2`: `planned_ends_on + weeks × 7`), so a
+   6-week programme takes at most 12 weeks. A move past it is refused
+   (`:programme_schedule_limit`); skipping is always possible.
++
++  ADR-805: an assigned programme opens each training day when its date
++  comes and a visit pays for it. A day whose date came but that is not
++  open yet is `waiting` («Χρειάζεται επίσκεψη»): it opens (and becomes
++  today or behind) once the package has a visit again. `opened` is the set
++  of open days, or `:all` for a bought programme. A waiting day may be
++  skipped too.
+   """
+ 
+-  @statuses ~w(done skipped behind today upcoming rest)
++  @statuses ~w(done skipped behind today upcoming rest waiting)
+ 
+   def statuses, do: @statuses
+ 
+@@ -37,12 +44,14 @@ defmodule Palee.Programmes.Domain.PurchaseSchedule do
+ 
+   `version`: `%{weeks, days: [%{"day", "workout_id", ...}]}`; `purchase`:
+   `starts_on`, `day_dates`, `skipped_days`; `done`: the training days whose
+-  WODs are all finished.
++  WODs are all finished; `opened` (ADR-805): the days an assigned
++  programme opened, or `:all`.
+   """
+-  def days(version, purchase, done, %Date{} = today) do
++  def days(version, purchase, done, %Date{} = today, opened \\ :all) do
+     by_day = Enum.group_by(version.days, & &1["day"])
+     skipped = MapSet.new(purchase.skipped_days || [])
+     done = MapSet.new(done)
++    opened = if opened == :all, do: :all, else: MapSet.new(opened)
+ 
+     {rows, _delta} =
+       Enum.map_reduce(0..(version.weeks * 7 - 1), 0, fn day, delta ->
+@@ -59,6 +68,7 @@ defmodule Palee.Programmes.Domain.PurchaseSchedule do
+               cond do
+                 MapSet.member?(done, day) -> "done"
+                 MapSet.member?(skipped, day) -> "skipped"
++                waiting?(opened, day, date, today) -> "waiting"
+                 true -> by_date(date, today)
+               end
+ 
+@@ -80,6 +90,17 @@ defmodule Palee.Programmes.Domain.PurchaseSchedule do
+     }
+   end
+ 
++  defp waiting?(:all, _day, _date, _today), do: false
++
++  defp waiting?(opened, day, date, today),
++    do: Date.compare(date, today) != :gt and not MapSet.member?(opened, day)
++
++  @doc """
++  ADR-805: the training days an assigned programme should open now, in
++  order: their date came, they are neither open, done nor skipped.
++  """
++  def due_to_open(days), do: Enum.filter(days, &(&1.status == "waiting"))
++
+   defp by_date(date, today) do
+     case Date.compare(date, today) do
+       :lt -> "behind"
+@@ -108,6 +129,7 @@ defmodule Palee.Programmes.Domain.PurchaseSchedule do
+       done: count.("done"),
+       skipped: count.("skipped"),
+       behind: count.("behind"),
++      waiting: count.("waiting"),
+       remaining: length(training) - count.("done") - count.("skipped")
+     }
+   end
+@@ -178,14 +200,15 @@ defmodule Palee.Programmes.Domain.PurchaseSchedule do
+ 
+   @doc """
+   «Παράλειψη»: `{:ok, skipped_days}` or `{:error, reason}`. Only a behind
+-  day is skipped (its WODs stay in the past, nothing moves); skipping it
++  (or, ADR-805, waiting) day is skipped (its WODs stay in the past, nothing moves); skipping it
+   again is a no-op.
+   """
+   def skip(days, purchase, day) do
+     with {:ok, target} <- find(days, day) do
+       case target.status do
+         "skipped" -> {:ok, purchase.skipped_days || []}
+-        "behind" -> {:ok, Enum.sort([day | purchase.skipped_days || []])}
++        status when status in ["behind", "waiting"] ->
++          {:ok, Enum.sort([day | purchase.skipped_days || []])}
+         _other -> {:error, :programme_day_not_behind}
+       end
+     end
+diff --git a/apps/api/lib/palee/programmes/ports/programme_store.ex b/apps/api/lib/palee/programmes/ports/programme_store.ex
+index 269c458..54aac56 100644
+--- a/apps/api/lib/palee/programmes/ports/programme_store.ex
++++ b/apps/api/lib/palee/programmes/ports/programme_store.ex
+@@ -48,6 +48,15 @@ defmodule Palee.Programmes.Ports.ProgrammeStore do
+   @callback due_completions(context(), Date.t()) :: [map()]
+   @callback sales(context(), [id()]) :: %{id() => map()}
+ 
++  # ADR-805: programmes staff assign, and what each opened day used.
++  @doc "Inserts an assigned programme (active, nothing to pay); one active per person."
++  @callback create_assignment(context(), map()) :: {:ok, map()} | {:error, term()}
++  @callback active_assignment(context(), id()) :: map() | nil
++  @callback list_active_assignments(context()) :: [map()]
++  @callback day_charges(context(), id()) :: [map()]
++  @callback record_day_charge(context(), map()) :: {:ok, map()} | {:error, term()}
++  @callback return_day_charge(context(), map(), DateTime.t()) :: {:ok, map()} | {:error, term()}
++
+   # Deliveries
+   @callback record_deliveries(context(), id(), id(), [map()]) :: :ok
+   @callback deliveries(context(), id(), Date.t() | nil) :: [map()]
+diff --git a/apps/api/lib/palee/programmes/programme_day_charge.ex b/apps/api/lib/palee/programmes/programme_day_charge.ex
+new file mode 100644
+index 0000000..fc4b21f
+--- /dev/null
++++ b/apps/api/lib/palee/programmes/programme_day_charge.ex
+@@ -0,0 +1,52 @@
++defmodule Palee.Programmes.ProgrammeDayCharge do
++  @moduledoc """
++  ADR-805: one opened training day of an assigned programme and how it was
++  paid: `visit` (a visit of the package), `touchpoint` (an online
++  programming unit), `booking` (a class booked that day already used a
++  visit) or `none` (a gift, or personal training). `reservation_id` is the
++  Finance usage entry it took; `returned_at` is set when «Παράλειψη» gave
++  it back.
++  """
++
++  use Ecto.Schema
++  import Ecto.Changeset
++
++  @primary_key {:id, :binary_id, autogenerate: true}
++  @foreign_key_type :binary_id
++
++  @kinds ~w(visit touchpoint booking none)
++
++  schema "programme_day_charges" do
++    field :organization_id, :binary_id, read_after_writes: true
++    field :purchase_id, :binary_id
++    field :user_id, :binary_id
++    field :day, :integer
++    field :charged_on, :date
++    field :kind, :string
++    field :reservation_id, :binary_id
++    field :returned_at, :utc_datetime_usec
++
++    timestamps(type: :utc_datetime_usec)
++  end
++
++  def kinds, do: @kinds
++
++  def changeset(attrs) do
++    %__MODULE__{}
++    |> cast(attrs, [
++      :organization_id,
++      :purchase_id,
++      :user_id,
++      :day,
++      :charged_on,
++      :kind,
++      :reservation_id
++    ])
++    |> validate_required([:purchase_id, :user_id, :day, :charged_on, :kind])
++    |> validate_inclusion(:kind, @kinds)
++    |> unique_constraint([:purchase_id, :day])
++    |> check_constraint(:kind, name: :programme_day_charges_check)
++  end
++
++  def returned_changeset(charge, %DateTime{} = at), do: change(charge, returned_at: at)
++end
+diff --git a/apps/api/lib/palee/programmes/programme_purchase.ex b/apps/api/lib/palee/programmes/programme_purchase.ex
+index e28b9f9..2b558dd 100644
+--- a/apps/api/lib/palee/programmes/programme_purchase.ex
++++ b/apps/api/lib/palee/programmes/programme_purchase.ex
+@@ -39,6 +39,11 @@ defmodule Palee.Programmes.ProgrammePurchase do
+     field :day_dates, :map, default: %{}
+     field :skipped_days, {:array, :integer}, default: []
+     field :planned_ends_on, :date
++    # ADR-805: `assigned` by staff (no price, no payment; each training day
++    # uses the `charge`), or `bought` (ADR-371).
++    field :origin, :string, default: "bought"
++    field :charge, :string
++    field :assigned_by_id, :binary_id
+ 
+     timestamps(type: :utc_datetime_usec)
+   end
+@@ -74,6 +79,51 @@ defmodule Palee.Programmes.ProgrammePurchase do
+     |> check_constraint(:status, name: :programme_purchases_check)
+   end
+ 
++  @doc """
++  ADR-805: a programme staff assign to a person. It starts active (nothing
++  to pay); `charge` says what each training day uses.
++  """
++  def assign_changeset(attrs) do
++    %__MODULE__{}
++    |> cast(attrs, [
++      :organization_id,
++      :programme_id,
++      :version_id,
++      :user_id,
++      :currency,
++      :refund_policy,
++      :starts_on,
++      :ends_on,
++      :charge,
++      :assigned_by_id,
++      :activated_at,
++      :idempotency_key
++    ])
++    |> validate_required([
++      :programme_id,
++      :version_id,
++      :user_id,
++      :currency,
++      :refund_policy,
++      :starts_on,
++      :ends_on,
++      :charge,
++      :activated_at,
++      :idempotency_key
++    ])
++    |> validate_inclusion(:charge, PurchaseLifecycle.charges())
++    |> put_change(:origin, "assigned")
++    |> put_change(:status, "active")
++    |> put_change(:price_cents, 0)
++    |> then(&put_change(&1, :planned_ends_on, get_field(&1, :ends_on)))
++    |> unique_constraint([:organization_id, :idempotency_key])
++    |> unique_constraint([:organization_id, :user_id],
++      name: :programme_purchases_one_active_assignment_index,
++      message: "already_assigned"
++    )
++    |> check_constraint(:status, name: :programme_purchases_check)
++  end
++
+   @doc "ADR-540: the buyer's moves and skips, as `PurchaseSchedule` decided them."
+   def schedule_changeset(purchase, changes) do
+     purchase
+diff --git a/apps/api/lib/palee/programmes/programme_store.ex b/apps/api/lib/palee/programmes/programme_store.ex
+index 0520586..6918697 100644
+--- a/apps/api/lib/palee/programmes/programme_store.ex
++++ b/apps/api/lib/palee/programmes/programme_store.ex
+@@ -65,6 +65,19 @@ defmodule Palee.Programmes.ProgrammeStore do
+   @impl true
+   def sales(context, programme_ids), do: call(context, :sales, [programme_ids])
+ 
++  @impl true
++  def create_assignment(context, attrs), do: call(context, :create_assignment, [attrs])
++  @impl true
++  def active_assignment(context, user_id), do: call(context, :active_assignment, [user_id])
++  @impl true
++  def list_active_assignments(context), do: call(context, :list_active_assignments, [])
++  @impl true
++  def day_charges(context, purchase_id), do: call(context, :day_charges, [purchase_id])
++  @impl true
++  def record_day_charge(context, attrs), do: call(context, :record_day_charge, [attrs])
++  @impl true
++  def return_day_charge(context, charge, at), do: call(context, :return_day_charge, [charge, at])
++
+   @impl true
+   def record_deliveries(context, purchase_id, user_id, rows),
+     do: call(context, :record_deliveries, [purchase_id, user_id, rows])
+diff --git a/apps/api/priv/repo/migrations/20271128173000_programme_assignments.exs b/apps/api/priv/repo/migrations/20271128173000_programme_assignments.exs
+new file mode 100644
+index 0000000..92e43b6
+--- /dev/null
++++ b/apps/api/priv/repo/migrations/20271128173000_programme_assignments.exs
+@@ -0,0 +1,175 @@
++defmodule Palee.Repo.Migrations.ProgrammeAssignments do
++  @moduledoc """
++  ADR-805: staff assign a training programme to a person from their
++  profile. The person pays nothing; each training day uses one visit of
++  their subscription package (or one online-programming unit), charged on
++  the day it opens.
++
++    * `programme_purchases.origin`: `bought` (ADR-371) or `assigned`; an
++      assigned one has no price (`price_cents = 0`), no payment, the
++      `charge` it uses and who assigned it (`assigned_by_id`). It may end
++      `stopped` (by staff or by the person). One active assigned programme
++      per person.
++    * `programmes.listing` gains `assign_only`: published without a price
++      or online payments, never sold, only assigned.
++    * `programme_day_charges`: one row per opened training day of an
++      assigned programme: how it was paid (`visit`, `touchpoint`,
++      `booking` when a class booked that day already used a visit, `none`
++      for a gift or personal training), the Finance reservation it took and
++      when it was given back («Παράλειψη»).
++  """
++
++  use Ecto.Migration
++
++  def up do
++    alter table(:programme_purchases) do
++      add :origin, :string, null: false, default: "bought"
++      add :charge, :string
++      add :assigned_by_id, references(:users, type: :binary_id, on_delete: :nilify_all)
++    end
++
++    drop constraint(:programme_purchases, :programme_purchases_check)
++
++    create constraint(:programme_purchases, :programme_purchases_check,
++             check: """
++             status IN ('pending_payment', 'active', 'completed', 'withdrawn', 'refunded',
++                        'cancelled', 'stopped')
++             AND origin IN ('bought', 'assigned')
++             AND refund_policy IN ('before_start', 'withdrawal_only', 'pro_rata')
++             AND currency IN ('EUR', 'GBP', 'USD', 'CHF')
++             AND ((origin = 'bought' AND price_cents > 0 AND charge IS NULL)
++                  OR (origin = 'assigned' AND price_cents = 0
++                      AND charge IN ('class_visits', 'coaching_touchpoints', 'none')
++                      AND status IN ('active', 'completed', 'stopped')))
++             AND refunded_cents >= 0 AND refunded_cents <= price_cents
++             AND ends_on >= starts_on
++             AND (status IN ('pending_payment', 'cancelled') OR activated_at IS NOT NULL)
++             AND (end_reason IS NULL OR end_reason IN ('completed', 'withdrawn', 'refunded',
++                                                       'cancelled', 'expired', 'stopped'))
++             """
++           )
++
++    create unique_index(:programme_purchases, [:organization_id, :user_id],
++             where: "origin = 'assigned' AND status = 'active'",
++             name: :programme_purchases_one_active_assignment_index
++           )
++
++    drop constraint(:programmes, :programmes_check)
++
++    create constraint(:programmes, :programmes_check,
++             check: """
++             status IN ('draft', 'published', 'archived')
++             AND listing IN ('box', 'marketplace', 'assign_only')
++             AND level IN ('all', 'beginner', 'intermediate', 'advanced')
++             AND goal IN ('general', 'strength', 'conditioning', 'gymnastics', 'weightlifting',
++                          'endurance', 'competition', 'hyrox', 'mobility')
++             AND refund_policy IN ('before_start', 'withdrawal_only', 'pro_rata')
++             AND currency IN ('EUR', 'GBP', 'USD', 'CHF')
++             AND price_cents >= 0 AND price_cents <= 10000000
++             AND preview_days BETWEEN 0 AND 14
++             AND draft_weeks BETWEEN 1 AND 52 AND jsonb_typeof(draft_days) = 'array'
++             AND (sessions_per_week IS NULL OR sessions_per_week BETWEEN 1 AND 14)
++             AND (status <> 'published' OR current_version_id IS NOT NULL)
++             """
++           )
++
++    create table(:programme_day_charges, primary_key: false) do
++      add :id, :binary_id, primary_key: true
++
++      add :organization_id, references(:organizations, type: :binary_id, on_delete: :delete_all),
++        null: false
++
++      add :purchase_id, :binary_id, null: false
++      add :user_id, references(:users, type: :binary_id, on_delete: :delete_all), null: false
++      add :day, :integer, null: false
++      add :charged_on, :date, null: false
++      add :kind, :string, null: false
++      add :reservation_id, :binary_id
++      add :returned_at, :utc_datetime_usec
++      timestamps(type: :utc_datetime_usec)
++    end
++
++    execute("""
++    ALTER TABLE programme_day_charges
++    ADD CONSTRAINT programme_day_charges_purchase_fkey
++    FOREIGN KEY (purchase_id, organization_id)
++    REFERENCES programme_purchases (id, organization_id) ON DELETE CASCADE
++    """)
++
++    create unique_index(:programme_day_charges, [:purchase_id, :day])
++    create index(:programme_day_charges, [:organization_id, :user_id])
++
++    create constraint(:programme_day_charges, :programme_day_charges_check,
++             check: """
++             day >= 0 AND kind IN ('visit', 'touchpoint', 'booking', 'none')
++             AND (kind IN ('visit', 'touchpoint') OR reservation_id IS NULL)
++             """
++           )
++
++    execute("""
++    CREATE TRIGGER programme_day_charges_apply_tenant_context
++    BEFORE INSERT OR UPDATE ON programme_day_charges
++    FOR EACH ROW EXECUTE FUNCTION palee_apply_tenant_context()
++    """)
++
++    execute("""
++    CREATE POLICY programme_day_charges_tenant_policy ON programme_day_charges
++    USING (organization_id = NULLIF(current_setting('app.organization_id', true), '')::uuid)
++    WITH CHECK (organization_id = NULLIF(current_setting('app.organization_id', true), '')::uuid)
++    """)
++
++    execute("ALTER TABLE programme_day_charges ENABLE ROW LEVEL SECURITY")
++    execute("ALTER TABLE programme_day_charges FORCE ROW LEVEL SECURITY")
++  end
++
++  def down do
++    drop table(:programme_day_charges)
++    drop index(:programme_purchases, [:organization_id, :user_id],
++           name: :programme_purchases_one_active_assignment_index
++         )
++
++    execute("DELETE FROM programme_purchases WHERE origin = 'assigned'")
++    drop constraint(:programme_purchases, :programme_purchases_check)
++
++    create constraint(:programme_purchases, :programme_purchases_check,
++             check: """
++             status IN ('pending_payment', 'active', 'completed', 'withdrawn', 'refunded',
++                        'cancelled')
++             AND refund_policy IN ('before_start', 'withdrawal_only', 'pro_rata')
++             AND currency IN ('EUR', 'GBP', 'USD', 'CHF')
++             AND price_cents > 0
++             AND refunded_cents >= 0 AND refunded_cents <= price_cents
++             AND ends_on >= starts_on
++             AND (status IN ('pending_payment', 'cancelled') OR activated_at IS NOT NULL)
++             AND (end_reason IS NULL OR end_reason IN ('completed', 'withdrawn', 'refunded',
++                                                       'cancelled', 'expired'))
++             """
++           )
++
++    alter table(:programme_purchases) do
++      remove :origin
++      remove :charge
++      remove :assigned_by_id
++    end
++
++    execute("UPDATE programmes SET listing = 'box' WHERE listing = 'assign_only'")
++    drop constraint(:programmes, :programmes_check)
++
++    create constraint(:programmes, :programmes_check,
++             check: """
++             status IN ('draft', 'published', 'archived')
++             AND listing IN ('box', 'marketplace')
++             AND level IN ('all', 'beginner', 'intermediate', 'advanced')
++             AND goal IN ('general', 'strength', 'conditioning', 'gymnastics', 'weightlifting',
++                          'endurance', 'competition', 'hyrox', 'mobility')
++             AND refund_policy IN ('before_start', 'withdrawal_only', 'pro_rata')
++             AND currency IN ('EUR', 'GBP', 'USD', 'CHF')
++             AND price_cents >= 0 AND price_cents <= 10000000
++             AND preview_days BETWEEN 0 AND 14
++             AND draft_weeks BETWEEN 1 AND 52 AND jsonb_typeof(draft_days) = 'array'
++             AND (sessions_per_week IS NULL OR sessions_per_week BETWEEN 1 AND 14)
++             AND (status <> 'published' OR current_version_id IS NOT NULL)
++             """
++           )
++  end
++end
