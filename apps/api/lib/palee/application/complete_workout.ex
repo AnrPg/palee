@@ -175,11 +175,16 @@ defmodule Palee.Application.CompleteWorkout do
   refresh that WOD's leaderboard. Personal workouts (no box or no workout)
   announce nothing.
   """
-  def publish_result(%{organization_id: organization_id, master_workout_id: workout_id}, at)
+  def publish_result(
+        %{organization_id: organization_id, master_workout_id: workout_id} = result,
+        at
+      )
       when is_binary(organization_id) and is_binary(workout_id) do
     Palee.DomainEvents.publish(:workout_result_recorded, %{
       organization_id: organization_id,
       workout_id: workout_id,
+      # ADR-795: whose result it is (a first WOD starts a waiting package).
+      user_id: Map.get(result, :user_id),
       at: at || DateTime.utc_now()
     })
   end

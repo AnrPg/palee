@@ -323,7 +323,8 @@
     "slotOwnWod": "Its own WOD (the day's is «{title}»).",
     "slotFollowDay": "Back to the day WOD",
     "classCoachChip": "Coach: {coach}",
-    "wodPickerChoose": "Choose a WOD"
+    "wodPickerChoose": "Choose a WOD",
+    "classCancelReaches": "{count, plural, one {# person booked or on the waitlist will be notified and their spot cancelled.} other {# people booked or on the waitlist will be notified and their spots cancelled.}}"
   },
   "Ui": {
     "exercise1091b7f": "Exercise",
@@ -3091,7 +3092,6 @@
     "pkgFieldTermsConversionPackageIdHint": "The membership we recommend to the member when the trial ends.",
     "pkgFieldTermsMinimumCommitmentMonths": "Minimum commitment",
     "pkgFieldTermsJoiningFeeCents": "Joining fee",
-    "pkgFieldTermsValidityStarts": "Validity starts",
     "pkgFieldTermsExpiryReminderDays": "Expiry reminder",
     "pkgFieldTermsCompatiblePackageIds": "Compatible subscription packages",
     "pkgFieldTermsBeneficiaries": "People included",
@@ -3380,7 +3380,6 @@
     "pkgSummaryEvents": "Events and workshops",
     "pkgSummaryCommitment": "{count, plural, one {Minimum term: # month} other {Minimum term: # months}}",
     "pkgSummaryJoiningFee": "One-time joining fee {amount}",
-    "pkgSummaryValidityFromFirstUse": "Validity starts on your first visit",
     "pkgLocationsAll": "All branches",
     "pkgLocationsSome": "Selected branches",
     "pkgNoLocationsYet": "Valid at every branch. Add branches in settings to limit this.",
@@ -3403,8 +3402,6 @@
     "pkgFieldBookingCancellationCutoffHoursSuffix": "{count, plural, one {hour before class} other {hours before class}}",
     "pkgFieldPerksFreezeDaysPerYearSuffix": "{count, plural, one {day a year} other {days a year}}",
     "pkgFieldPerksMemberDiscountPercentSuffix": "%",
-    "pkgFieldTermsValidityStarts_purchase": "On purchase",
-    "pkgFieldTermsValidityStarts_first_use": "On first visit",
     "pkgFieldBookingWaitlistPriority_normal": "Normal",
     "pkgFieldBookingWaitlistPriority_high": "High",
     "pkgFieldPerksMemberDiscountScope_products": "Products",
@@ -3416,7 +3413,6 @@
     "pkgModule_eventsHint": "Workshops and special sessions booked like classes.",
     "pkgFieldTermsMinimumCommitmentMonthsHint": "Clients can't cancel before this many months, unless you override it.",
     "pkgFieldTermsJoiningFeeCentsHint": "Added once to the member's first invoice for this subscription package.",
-    "pkgFieldTermsValidityStartsHint": "With first visit, the validity clock starts when the member first uses the subscription package.",
     "pkgFieldTermsExpiryReminderDaysHint": "We notify the member this many days before the subscription package ends. 0 turns it off.",
     "pkgFieldGroupClassesRolloverMaxHint": "Unused classes move to the next period, up to this many.",
     "pkgFieldGroupClassesTimeWindowsHint": "For off-peak subscription packages: box members can book classes only within these hours.",
@@ -4988,7 +4984,24 @@
     "selectedAthleteCount": "{count, plural, one {# athlete selected} other {# athletes selected}}",
     "roundCount": "{count, plural, one {# round} other {# rounds}}",
     "optionCount": "{count, plural, one {# option} other {# options}}",
-    "userCount": "{count, plural, one {# user} other {# users}}"
+    "userCount": "{count, plural, one {# user} other {# users}}",
+    "pkgStartWaitingMember": "Starts with your first session",
+    "pkgStartWaitingStaff": "Starts with the first session",
+    "pkgStartWaitingHint": "Given on {date}. The period and the next payment count from the first completed class or WOD.",
+    "pkgStartReview_important": "{package} costs more now",
+    "pkgStartReview_serious": "{package} gives less now",
+    "pkgStartReview_warning": "{package} changed",
+    "pkgStartReviewHintMember": "It changed while it waited for your first session. See what changed: «Got it» starts it today. Until then no new bookings.",
+    "pkgStartReviewHintStaff": "Waiting for the member to see the changes and press «Got it». Until then no new bookings.",
+    "pkgStartName": "Name",
+    "pkgStartFirstPeriodPrice": "The first period keeps the purchase price. The new price applies from the next payment.",
+    "pkgStartAcknowledge": "Got it",
+    "mbErrPackageReview": "Your subscription package changed while it waited. See what changed in Me › Payments and press «Got it» to book.",
+    "apiErrorPackageChangedAgain": "The subscription package changed again just now. See the new changes and press «Got it» again.",
+    "apiErrorPackageStartNotInReview": "This subscription package has already started.",
+    "admCheckInPackageReview": "This member's subscription package changed while it waited. They first need to see the changes and press «Got it».",
+    "exportPersonalData": "{count, plural, one {The file holds personal data of # person.} other {The file holds personal data of # people.}} Keep it safe and share it only with those who need it.",
+    "roleGrantNotice": "With a new staff role they will see what the role allows (Settings › Role access), e.g. finances, health and injuries, members' contact details. Save only if you mean it."
   },
   "PrSharing": {
     "gymLabel": "Where did you set this PR?",
@@ -12936,7 +12949,9 @@
     "attachFailed": "The file could not be attached. Try again.",
     "rowButton": "+ Payment",
     "rowButtonLabel": "Record a payment from {name}",
-    "panelButton": "+ Record payment"
+    "panelButton": "+ Record payment",
+    "confirmPackageWayOut": "If you took no money, no payment is needed: the member already has {name} and it stays owed as «Will pay later».",
+    "confirmPackageWayOutAction": "Close without payment"
   },
   "OnlinePayments": {
     "sectionTitle": "Payments",
@@ -13053,7 +13068,12 @@
     "doneRetryFailed": "Declined again",
     "doneCardLink": "Card change link sent",
     "doneDismiss": "Paid at the desk",
-    "doneBadge": "Done"
+    "doneBadge": "Done",
+    "packageStarts": "When a subscription package starts",
+    "packageStartsFirstSession": "With the first session",
+    "packageStartsPayment": "With the payment",
+    "packageStartsFirstSessionHint": "The period and the next payment count from the first class the member completes («Came», or the class ended without «Didn't come») or the first WOD they mark done. If the package changed meanwhile, the member sees what changed before it starts.",
+    "packageStartsPaymentHint": "The period and the next payment count from the online purchase or the payment at the front desk."
   },
   "FiscalIdentity": {
     "backToSettings": "Settings",
@@ -15751,7 +15771,8 @@
     "freeHeldBody": "The box will activate it soon and we will let you know. Until then you can book as many classes as the box allows.",
     "freePending": "Waiting for activation",
     "freePendingBody": "The box will activate it. We hold it until {date}.",
-    "freeActivateHint": "Free package: it starts today, with nothing to collect and nothing owed."
+    "freeActivateHint": "Free package: it starts today, with nothing to collect and nothing owed.",
+    "confirmWayOut": "If you took no money, activate it without payment: it starts and stays owed."
   },
   "Sms": {
     "connectionsTitle": "Connections",
@@ -20482,7 +20503,10 @@
     "submit_package": "Give the package",
     "submit_debt_forgiven": "Forgive the debt",
     "givenBySystem": "By Palee, {when}",
-    "reasonRollout": "Booking now needs a package: 14 days for those already training"
+    "reasonRollout": "Booking now needs a package: 14 days for those already training",
+    "reviewDebt": "You forgive {amount} to {name}. It is recorded with your name and no longer asked for.",
+    "reviewPackage": "You give {package} to {name} without payment. It is recorded with your name.",
+    "reviewYes": "Yes, I mean it"
   },
   "BoxRelation": {
     "member": "{kind, select, coach {Training together} other {Box member}}",
@@ -20702,5 +20726,37 @@
     "variationSearch": "Search all members",
     "whichWod": "Which WOD?",
     "wodCount": "{count, plural, one {# WOD} other {# WODs}}"
+  },
+  "PackageActivation": {
+    "activate": "Activate package",
+    "startsFirstSession": "Starts with the member's first session.",
+    "startsOnPayment": "Starts today.",
+    "moneyQuestion": "The {amount}?",
+    "later": "Will pay later",
+    "laterHint": "It stays owed by the member.",
+    "paidNow": "I took it now",
+    "paidNowHint": "Opens «Record payment» for this package.",
+    "free": "No charge",
+    "freeHint": "A free package, recorded with your name.",
+    "freeConfirm": "You give {package} ({amount}) without payment. It is recorded with your name.",
+    "freeReason": "Why? (optional)",
+    "freeSubmit": "Yes, no charge",
+    "back": "Back"
+  },
+  "MoneyConfirm": {
+    "title_record_payment": "Did you really receive {amount}?",
+    "title_desk_collect": "Did you really receive {amount}?",
+    "title_shop_pickup": "Were {amount} really paid at the front desk?",
+    "title_cash_refund": "Did you really give back {amount} in cash?",
+    "body_record_payment": "A payment is recorded and a receipt or invoice is issued (also to myDATA, if connected).",
+    "body_desk_collect": "A payment is recorded and a receipt or invoice is issued (also to myDATA, if connected).",
+    "body_shop_pickup": "A payment for the order is recorded and a receipt is issued.",
+    "body_cash_refund": "A refund is recorded and a refund receipt is issued.",
+    "yes_record_payment": "Yes, I received it",
+    "yes_desk_collect": "Yes, I received it",
+    "yes_shop_pickup": "Yes, it was paid",
+    "yes_cash_refund": "Yes, I gave it back",
+    "back": "No, back",
+    "notToday": "Don't show this again today"
   }
 }

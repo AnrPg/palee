@@ -1,13 +1,13 @@
 "use client";
 
-
-
-
-
+import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
 
 import type { FinanceRecord } from "@/api/finance";
+import { fetchAdminSettings } from "@/api/settings";
+import { useSession } from "@/components/session-provider";
+import { PackageActivationChoice } from "./PackageActivationChoice";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { Popover } from "@/components/ui/Popover";
 import { Select } from "@/components/ui/Select";
@@ -24,35 +24,64 @@ interface Props {
   onAssign: (packageId: string) => Promise<unknown>;
   /** ADR-660: «Αφαίρεση πακέτου…» for the package the member holds now. */
   onRemove?: () => void;
+  /** ADR-795 «Τα πήρα τώρα»: after the package is given, record the money that was really taken. */
+  onReceive?: () => void;
+  /** ADR-795 «Χωρίς χρέωση»: an ADR-612 free package, with who and why. */
+  onGiveFree?: (packageId: string, reason: string | null) => Promise<unknown>;
 }
 
+type Step = "pick" | "money";
+
 /**
- * The ledger's «Ανάθεση» menu for a πακέτο συνδρομής. It is a ui/Popover, so
- * a press on the package list (its own portal) counts as inside the menu.
+ * The ledger's «Ενεργοποίηση πακέτου» menu for a πακέτο συνδρομής (ADR-795,
+ * 2A): pick the package, then say what happened with its money: «Θα πληρώσει
+ * αργότερα» (it is owed), «Τα πήρα τώρα» (the payment is recorded next) or
+ * «Χωρίς χρέωση» (a free package). Giving a package never invents a payment.
+ * It is a ui/Popover, so a press on the package list (its own portal) counts
+ * as inside the menu.
  */
-export function InlineAssignPackage({ currentCode, currentLabel, packages, pending, onAssign, onRemove }: Props) {
+export function InlineAssignPackage({ currentCode, currentLabel, packages, pending, onAssign, onRemove, onReceive, onGiveFree }: Props) {
   const i18n = useUiTranslations();
   const t = useTranslations("PackageRemoval");
+  const ta = useTranslations("PackageActivation");
+  const token = useSession().tokens?.access_token ?? null;
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState("");
+  const [step, setStep] = useState<Step>("pick");
   const [error, setError] = useState<unknown>(null);
   const ref = useRef<HTMLDivElement>(null);
+  const settingsQuery = useQuery({
+    queryKey: ["admin", "settings"],
+    queryFn: () => fetchAdminSettings(token!),
+    enabled: open && Boolean(token),
+  });
+  const startsWith = settingsQuery.data?.finance?.package_starts_with;
+  const selected = packages.find((pkg) => String(pkg.id) === selectedId) ?? null;
+  const priceCents = selected && typeof selected.base_price_cents === "number" ? selected.base_price_cents : 0;
 
   function close() {
     setOpen(false);
     setSelectedId("");
+    setStep("pick");
     setError(null);
   }
 
-  async function handleAssign() {
-    if (!selectedId) return;
+  async function run(action: () => Promise<unknown>, after?: () => void): Promise<void> {
     setError(null);
     try {
-      await onAssign(selectedId);
+      await action();
       close();
-    } catch (reason) {
-      setError(reason);
+      after?.();
+    } catch (failure) {
+      setError(failure);
     }
+  }
+
+  function handleNext() {
+    if (!selectedId) return;
+    // A package that costs nothing has no money to ask about.
+    if (priceCents > 0) setStep("money");
+    else void run(() => onAssign(selectedId));
   }
 
   return (
@@ -97,6 +126,8 @@ export function InlineAssignPackage({ currentCode, currentLabel, packages, pendi
           boxShadow: "var(--shadow-md)",
         }}
       >
+        {step === "pick" ? (
+          <>
         <Select
           value={selectedId}
           onValueChange={(value) => setSelectedId(value)}
@@ -117,13 +148,34 @@ export function InlineAssignPackage({ currentCode, currentLabel, packages, pendi
         </Select>
         <button
           type="button"
-          onClick={handleAssign}
+          onClick={handleNext}
           disabled={!selectedId || pending}
           className="w-full rounded-lg px-3 py-2.5 text-sm font-semibold transition-opacity disabled:opacity-40"
           style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}
+          data-testid="package-activate-next"
         >
-          {pending ? i18n("assigning4d16a1a") : i18n("assign2444928")}
+          {pending ? i18n("assigning4d16a1a") : ta("activate")}
         </button>
+        {startsWith ? (
+          <p className="mt-2 text-xs leading-5" style={{ color: "var(--dim)" }} data-testid="package-activate-starts">
+            {startsWith === "payment" ? ta("startsOnPayment") : ta("startsFirstSession")}
+          </p>
+        ) : null}
+          </>
+        ) : null}
+
+        {step === "money" && selected ? (
+          <PackageActivationChoice
+            packageName={String(selected.name || selected.code)}
+            priceCents={priceCents}
+            pending={pending}
+            onLater={() => run(() => onAssign(selectedId))}
+            onPaidNow={onReceive ? () => run(() => onAssign(selectedId), onReceive) : undefined}
+            onFree={onGiveFree ? (reason) => run(() => onGiveFree(selectedId, reason)) : undefined}
+            onBack={() => setStep("pick")}
+          />
+        ) : null}
+
         {error ? (
           <ErrorNotice variant="field" className="mt-2">
             {localizeError(error, i18n)}
@@ -147,3 +199,4 @@ export function InlineAssignPackage({ currentCode, currentLabel, packages, pendi
     </div>
   );
 }
+

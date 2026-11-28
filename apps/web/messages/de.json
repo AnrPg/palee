@@ -323,7 +323,8 @@
     "slotOwnWod": "Eigenes WOD (das des Tages ist «{title}»).",
     "slotFollowDay": "Zurück zum Tages-WOD",
     "classCoachChip": "Coach: {coach}",
-    "wodPickerChoose": "WOD wählen"
+    "wodPickerChoose": "WOD wählen",
+    "classCancelReaches": "{count, plural, one {# gebuchte oder wartende Person wird benachrichtigt und ihr Platz storniert.} other {# gebuchte oder wartende Personen werden benachrichtigt und ihre Plätze storniert.}}"
   },
   "Ui": {
     "exercise1091b7f": "Übung",
@@ -3091,7 +3092,6 @@
     "pkgFieldTermsConversionPackageIdHint": "Die Mitgliedschaft, die wir dem Mitglied nach dem Probetraining empfehlen.",
     "pkgFieldTermsMinimumCommitmentMonths": "Mindestlaufzeit",
     "pkgFieldTermsJoiningFeeCents": "Aufnahmegebühr",
-    "pkgFieldTermsValidityStarts": "Gültigkeit beginnt",
     "pkgFieldTermsExpiryReminderDays": "Erinnerung vor Ablauf",
     "pkgFieldTermsCompatiblePackageIds": "Kombinierbare Abo-Pakete",
     "pkgFieldTermsBeneficiaries": "Enthaltene Personen",
@@ -3380,7 +3380,6 @@
     "pkgSummaryEvents": "Events und Workshops",
     "pkgSummaryCommitment": "{count, plural, one {Mindestlaufzeit: # Monat} other {Mindestlaufzeit: # Monate}}",
     "pkgSummaryJoiningFee": "Einmalige Aufnahmegebühr {amount}",
-    "pkgSummaryValidityFromFirstUse": "Die Laufzeit beginnt mit deinem ersten Besuch",
     "pkgLocationsAll": "Alle Standorte",
     "pkgLocationsSome": "Ausgewählte Standorte",
     "pkgNoLocationsYet": "Gilt an allen Standorten. Lege Standorte in den Einstellungen an, um das einzuschränken.",
@@ -3403,8 +3402,6 @@
     "pkgFieldBookingCancellationCutoffHoursSuffix": "{count, plural, one {Stunde vor dem Kurs} other {Stunden vor dem Kurs}}",
     "pkgFieldPerksFreezeDaysPerYearSuffix": "{count, plural, one {Tag pro Jahr} other {Tage pro Jahr}}",
     "pkgFieldPerksMemberDiscountPercentSuffix": "%",
-    "pkgFieldTermsValidityStarts_purchase": "Ab Kauf",
-    "pkgFieldTermsValidityStarts_first_use": "Ab erstem Besuch",
     "pkgFieldBookingWaitlistPriority_normal": "Normal",
     "pkgFieldBookingWaitlistPriority_high": "Hoch",
     "pkgFieldPerksMemberDiscountScope_products": "Produkte",
@@ -3416,7 +3413,6 @@
     "pkgModule_eventsHint": "Workshops und Sonderkurse, die wie Kurse gebucht werden.",
     "pkgFieldTermsMinimumCommitmentMonthsHint": "Kunden können nicht vor Ablauf dieser Monate kündigen, außer du machst eine Ausnahme.",
     "pkgFieldTermsJoiningFeeCentsHint": "Wird einmalig auf die erste Rechnung des Mitglieds für dieses Abo-Paket gesetzt.",
-    "pkgFieldTermsValidityStartsHint": "Ab erstem Besuch läuft die Gültigkeit erst, wenn das Abo-Paket zum ersten Mal genutzt wird.",
     "pkgFieldTermsExpiryReminderDaysHint": "Wir erinnern das Mitglied so viele Tage vor Ablauf. 0 schaltet es aus.",
     "pkgFieldGroupClassesRolloverMaxHint": "Ungenutzte Kurse gehen bis zu dieser Zahl in den nächsten Zeitraum über.",
     "pkgFieldGroupClassesTimeWindowsHint": "Für Off-Peak-Pakete: Mitglieder können Kurse nur in diesen Zeiten buchen.",
@@ -4988,7 +4984,24 @@
     "selectedAthleteCount": "{count, plural, one {# Athlet ausgewählt} other {# Athleten ausgewählt}}",
     "roundCount": "{count, plural, one {# Runde} other {# Runden}}",
     "optionCount": "{count, plural, one {# Option} other {# Optionen}}",
-    "userCount": "{count, plural, one {# Benutzer} other {# Benutzer}}"
+    "userCount": "{count, plural, one {# Benutzer} other {# Benutzer}}",
+    "pkgStartWaitingMember": "Startet mit deinem ersten Training",
+    "pkgStartWaitingStaff": "Startet mit dem ersten Training",
+    "pkgStartWaitingHint": "Vergeben am {date}. Zeitraum und nächste Zahlung zählen ab dem ersten abgeschlossenen Kurs oder WOD.",
+    "pkgStartReview_important": "{package} kostet jetzt mehr",
+    "pkgStartReview_serious": "{package} bietet jetzt weniger",
+    "pkgStartReview_warning": "{package} hat sich geändert",
+    "pkgStartReviewHintMember": "Es hat sich geändert, während es auf dein erstes Training wartete. Sieh dir die Änderungen an: «Verstanden» startet es heute. Bis dahin keine neuen Buchungen.",
+    "pkgStartReviewHintStaff": "Wartet darauf, dass das Mitglied die Änderungen sieht und «Verstanden» drückt. Bis dahin keine neuen Buchungen.",
+    "pkgStartName": "Name",
+    "pkgStartFirstPeriodPrice": "Der erste Zeitraum behält den Kaufpreis. Der neue Preis gilt ab der nächsten Zahlung.",
+    "pkgStartAcknowledge": "Verstanden",
+    "mbErrPackageReview": "Dein Abo-Paket hat sich geändert, während es wartete. Sieh dir die Änderungen unter Ich › Zahlungen an und drücke «Verstanden», um zu buchen.",
+    "apiErrorPackageChangedAgain": "Das Abo-Paket hat sich gerade erneut geändert. Sieh dir die neuen Änderungen an und drücke noch einmal «Verstanden».",
+    "apiErrorPackageStartNotInReview": "Dieses Abo-Paket hat bereits begonnen.",
+    "admCheckInPackageReview": "Das Abo-Paket dieses Mitglieds hat sich geändert, während es wartete. Es muss zuerst die Änderungen sehen und «Verstanden» drücken.",
+    "exportPersonalData": "{count, plural, one {Die Datei enthält personenbezogene Daten von # Person.} other {Die Datei enthält personenbezogene Daten von # Personen.}} Bewahre sie sicher auf und gib sie nur an die, die sie brauchen.",
+    "roleGrantNotice": "Mit einer neuen Staff-Rolle sieht die Person, was die Rolle erlaubt (Einstellungen › Rollenzugriff), z. B. Finanzen, Gesundheit und Verletzungen, Kontaktdaten der Mitglieder. Speichere nur, wenn du es so meinst."
   },
   "PrSharing": {
     "gymLabel": "Wo hast du diesen PR aufgestellt?",
@@ -12936,7 +12949,9 @@
     "attachFailed": "Die Datei konnte nicht angehängt werden. Versuch es noch einmal.",
     "rowButton": "+ Zahlung",
     "rowButtonLabel": "Zahlung von {name} erfassen",
-    "panelButton": "+ Zahlung erfassen"
+    "panelButton": "+ Zahlung erfassen",
+    "confirmPackageWayOut": "Wenn du kein Geld bekommen hast, braucht es keine Zahlung: Das Mitglied hat {name} schon, und der Betrag bleibt als «Zahlt später» offen.",
+    "confirmPackageWayOutAction": "Ohne Zahlung schließen"
   },
   "OnlinePayments": {
     "sectionTitle": "Zahlungen",
@@ -13053,7 +13068,12 @@
     "doneRetryFailed": "Erneut abgelehnt",
     "doneCardLink": "Link zum Kartenwechsel gesendet",
     "doneDismiss": "Am Empfang bezahlt",
-    "doneBadge": "Erledigt"
+    "doneBadge": "Erledigt",
+    "packageStarts": "Wann ein Abo-Paket startet",
+    "packageStartsFirstSession": "Mit dem ersten Training",
+    "packageStartsPayment": "Mit der Zahlung",
+    "packageStartsFirstSessionHint": "Zeitraum und nächste Zahlung zählen ab dem ersten Kurs, den das Mitglied abschließt («Da», oder der Kurs endete ohne «Nicht erschienen»), oder dem ersten WOD, das es als erledigt markiert. Hat sich das Paket inzwischen geändert, sieht das Mitglied die Änderungen vor dem Start.",
+    "packageStartsPaymentHint": "Zeitraum und nächste Zahlung zählen ab dem Online-Kauf oder der Zahlung am Empfang."
   },
   "FiscalIdentity": {
     "backToSettings": "Einstellungen",
@@ -15751,7 +15771,8 @@
     "freeHeldBody": "Die Box aktiviert es bald und wir sagen dir Bescheid. Bis dahin kannst du so viele Kurse buchen, wie die Box erlaubt.",
     "freePending": "Wartet auf Aktivierung",
     "freePendingBody": "Die Box aktiviert es. Wir halten es bis {date}.",
-    "freeActivateHint": "Kostenloses Paket: Es beginnt heute, ohne Kassieren und ohne offenen Betrag."
+    "freeActivateHint": "Kostenloses Paket: Es beginnt heute, ohne Kassieren und ohne offenen Betrag.",
+    "confirmWayOut": "Wenn du kein Geld bekommen hast, aktiviere es ohne Zahlung: Es startet und der Betrag bleibt offen."
   },
   "Sms": {
     "connectionsTitle": "Verbindungen",
@@ -20482,7 +20503,10 @@
     "submit_package": "Paket geben",
     "submit_debt_forgiven": "Schuld erlassen",
     "givenBySystem": "Von Palee, {when}",
-    "reasonRollout": "Buchen braucht jetzt ein Paket: 14 Tage für alle, die schon trainierten"
+    "reasonRollout": "Buchen braucht jetzt ein Paket: 14 Tage für alle, die schon trainierten",
+    "reviewDebt": "Du erlässt {name} {amount}. Es wird mit deinem Namen festgehalten und nicht mehr verlangt.",
+    "reviewPackage": "Du gibst {name} {package} ohne Zahlung. Es wird mit deinem Namen festgehalten.",
+    "reviewYes": "Ja, so gemeint"
   },
   "BoxRelation": {
     "member": "{kind, select, coach {Ihr trainiert zusammen} other {Box-Mitglied}}",
@@ -20702,5 +20726,37 @@
     "variationSearch": "Alle Mitglieder durchsuchen",
     "whichWod": "Welches WOD?",
     "wodCount": "{count, plural, one {# WOD} other {# WODs}}"
+  },
+  "PackageActivation": {
+    "activate": "Paket aktivieren",
+    "startsFirstSession": "Startet mit dem ersten Training des Mitglieds.",
+    "startsOnPayment": "Startet heute.",
+    "moneyQuestion": "Die {amount}?",
+    "later": "Zahlt später",
+    "laterHint": "Bleibt als offener Betrag beim Mitglied.",
+    "paidNow": "Habe ich jetzt bekommen",
+    "paidNowHint": "Öffnet «Zahlung erfassen» für dieses Paket.",
+    "free": "Ohne Berechnung",
+    "freeHint": "Ein kostenloses Paket, mit deinem Namen festgehalten.",
+    "freeConfirm": "Du gibst {package} ({amount}) ohne Zahlung. Es wird mit deinem Namen festgehalten.",
+    "freeReason": "Warum? (optional)",
+    "freeSubmit": "Ja, ohne Berechnung",
+    "back": "Zurück"
+  },
+  "MoneyConfirm": {
+    "title_record_payment": "Hast du wirklich {amount} erhalten?",
+    "title_desk_collect": "Hast du wirklich {amount} erhalten?",
+    "title_shop_pickup": "Wurden wirklich {amount} am Empfang bezahlt?",
+    "title_cash_refund": "Hast du wirklich {amount} bar zurückgegeben?",
+    "body_record_payment": "Eine Zahlung wird erfasst und ein Beleg oder eine Rechnung ausgestellt (auch an myDATA, falls verbunden).",
+    "body_desk_collect": "Eine Zahlung wird erfasst und ein Beleg oder eine Rechnung ausgestellt (auch an myDATA, falls verbunden).",
+    "body_shop_pickup": "Eine Zahlung für die Bestellung wird erfasst und ein Beleg ausgestellt.",
+    "body_cash_refund": "Eine Erstattung wird erfasst und ein Erstattungsbeleg ausgestellt.",
+    "yes_record_payment": "Ja, erhalten",
+    "yes_desk_collect": "Ja, erhalten",
+    "yes_shop_pickup": "Ja, bezahlt",
+    "yes_cash_refund": "Ja, zurückgegeben",
+    "back": "Nein, zurück",
+    "notToday": "Heute nicht mehr anzeigen"
   }
 }

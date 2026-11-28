@@ -996,3 +996,15 @@ msgstr "%{box} · %{package}: nieuwe voorwaarden vanaf %{date}."
 
 msgid "%{box} · %{package}: new terms apply from today."
 msgstr "%{box} · %{package}: nieuwe voorwaarden vanaf vandaag."
+
+msgid "Your package costs more now"
+msgstr "Je pakket kost nu meer"
+
+msgid "Your package gives less now"
+msgstr "Je pakket biedt nu minder"
+
+msgid "Your package changed"
+msgstr "Je pakket is gewijzigd"
+
+msgid "%{box} · %{package} changed while it waited. See what changed to start it."
+msgstr "%{box} · %{package} is gewijzigd terwijl het wachtte. Bekijk wat er veranderde om het te starten."

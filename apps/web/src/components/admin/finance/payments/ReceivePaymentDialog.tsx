@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useCallback, useId, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 
+import { MoneyConfirmDialog, useMoneyConfirmation } from "@/components/admin/finance/shared/MoneyConfirm";
 import { ApiError } from "@/api/client";
 import {
   fetchFinanceMember,
@@ -120,14 +121,40 @@ export function ReceivePaymentDialog({ userId, nickname, onClose }: { userId: st
     (missing[field] ? t(missing[field]!) : null) ?? (serverField === field ? serverMessage : null);
   const formMessage = mutation.error && !serverField ? serverMessage : null;
 
+  // ADR-795: «Έλαβες πραγματικά τα χρήματα;» unless skipped for today.
+  const confirmation = useMoneyConfirmation("record_payment");
+  const [confirming, setConfirming] = useState(false);
+
   function submit() {
     setChecked(true);
     if (Object.keys(missingFields(form, purpose)).length > 0) return;
-    mutation.mutate();
+    if (confirmation.ask) setConfirming(true);
+    else mutation.mutate();
   }
 
   if (received) {
     return <ReceivedView received={received} nickname={nickname} money={money} onClose={onClose} />;
+  }
+
+  if (confirming) {
+    return (
+      <MoneyConfirmDialog
+        kind="record_payment"
+        amount={money(amountCents ?? 0)}
+        detail={<p>{nickname} · {t(`method_${form.method}`)}</p>}
+        wayOut={
+          purpose.kind === "package"
+            ? { text: t("confirmPackageWayOut", { name: purpose.name || t("packageFallback") }), action: t("confirmPackageWayOutAction"), onChoose: onClose }
+            : undefined
+        }
+        pending={mutation.isPending}
+        onBack={() => setConfirming(false)}
+        onConfirm={() => {
+          setConfirming(false);
+          mutation.mutate();
+        }}
+      />
+    );
   }
 
   const purposeLabel = (option: PaymentPurpose) => {

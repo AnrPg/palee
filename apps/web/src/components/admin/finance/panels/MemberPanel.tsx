@@ -29,6 +29,9 @@ import {
 } from "@/api/finance";
 import { fetchAdminSettings } from "@/api/settings";
 import { ReceivePaymentDialog } from "@/components/admin/finance/payments/ReceivePaymentDialog";
+import { MoneyConfirmDialog, useMoneyConfirmation } from "@/components/admin/finance/shared/MoneyConfirm";
+import { PackageActivationChoice } from "@/components/admin/finance/shared/PackageActivationChoice";
+import { giveMemberBenefit } from "@/api/member-benefits";
 import { useSession } from "@/components/session-provider";
 import { SidePanel } from "@/components/admin/finance/shared/SidePanel";
 import { sharedSubscriptions } from "@/components/staff/staff-helpers";
@@ -201,15 +204,40 @@ export function MemberPanel({
     },
   });
 
-  const assignPackageMutation = useMutation({
+  // ADR-795 (2A): what happened with the money is asked after the package is picked.
+  const [askMoney, setAskMoney] = useState(false);
+  // The variable says what follows: «Τα πήρα τώρα» opens «Καταγραφή πληρωμής».
+  const assignPackageMutation = useMutation<Awaited<ReturnType<typeof assignFinancePackage>>, Error, "receive" | undefined>({
     mutationFn: () => assignFinancePackage(token, userId, { membership_package_id: selectedPackageId }),
-    onSuccess: async () => {
+    onSuccess: async (_data, then) => {
       setShowAssignForm(false);
       setSelectedPackageId("");
+      setAskMoney(false);
+      if (then === "receive") setReceiving(true);
       await queryClient.invalidateQueries({ queryKey: ["admin", "finance", "member-profile", userId] });
       await queryClient.invalidateQueries({ queryKey: ["admin", "finance", "members"] });
     },
   });
+
+  // ADR-795 «Χωρίς χρέωση»: an ADR-612 free package instead of a made-up payment.
+  const giveFreeMutation = useMutation({
+    mutationFn: (reason: string | null) =>
+      giveMemberBenefit(token, userId, {
+        kind: "package",
+        package_id: selectedPackageId,
+        pricing: { mode: "this_period_free" },
+        reason,
+        idempotency_key: `free-package-${userId}-${selectedPackageId}-${Date.now()}`,
+      }),
+    onSuccess: async () => {
+      setShowAssignForm(false);
+      setSelectedPackageId("");
+      setAskMoney(false);
+      await invalidateFinanceSurfaces();
+    },
+  });
+  const selectedPackage = packages.find((p) => field(p, "id") === selectedPackageId) ?? null;
+  const selectedPriceCents = typeof selectedPackage?.base_price_cents === "number" ? selectedPackage.base_price_cents : 0;
 
   const reversePaymentMutation = useMutation({
     mutationFn: (payment: FinanceRecord) =>
@@ -222,10 +250,18 @@ export function MemberPanel({
     onSuccess: invalidateFinanceSurfaces,
   });
 
+  // ADR-795: «Έδωσες πραγματικά … μετρητά;» before a cash refund, unless skipped today.
+  const cashRefundConfirmation = useMoneyConfirmation("cash_refund");
+  const [cashRefund, setCashRefund] = useState<FinanceRecord | null>(null);
   const rollbackPayment = (payment: FinanceRecord | null | undefined) => {
     if (!payment || reversePaymentMutation.isPending) return;
     const amount = remainingReversiblePaymentCents(payment);
     if (amount <= 0) return;
+    if (field(payment, "payment_method") === "cash" && field(payment, "payment_status") !== "waived") {
+      if (cashRefundConfirmation.ask) setCashRefund(payment);
+      else reversePaymentMutation.mutate(payment);
+      return;
+    }
     if (!confirm(`${i18n("refundOrReversePayment9d232b2")} ${money(uiLocale, amount)}?`)) return;
     reversePaymentMutation.mutate(payment);
   };
@@ -322,7 +358,21 @@ export function MemberPanel({
                   </button>
                 </div>
 
-                {showAssignForm && (
+                {showAssignForm && askMoney && selectedPackage ? (
+                  <PackageActivationChoice
+                    packageName={field(selectedPackage, "name", field(selectedPackage, "code"))}
+                    priceCents={selectedPriceCents}
+                    pending={assignPackageMutation.isPending || giveFreeMutation.isPending}
+                    onLater={() => assignPackageMutation.mutate(undefined)}
+                    onPaidNow={() => assignPackageMutation.mutate("receive")}
+                    onFree={(reason) => giveFreeMutation.mutate(reason)}
+                    onBack={() => setAskMoney(false)}
+                  />
+                ) : null}
+                {giveFreeMutation.error ? <ErrorNotice variant="field">{localizeError(giveFreeMutation.error, i18n)}</ErrorNotice> : null}
+                {askMoney && assignPackageMutation.error ? <ErrorNotice variant="field">{localizeError(assignPackageMutation.error, i18n)}</ErrorNotice> : null}
+
+                {showAssignForm && !askMoney && (
                   <div className="space-y-2">
                     <Select
                       className="w-full rounded-[0.9rem] px-3 py-2 text-sm outline-none"
@@ -341,7 +391,7 @@ export function MemberPanel({
                       className="rounded-full px-4 py-2 text-sm font-semibold disabled:opacity-50"
                       style={{ background: "var(--text)", color: "var(--bg)" }}
                       disabled={!selectedPackageId || assignPackageMutation.isPending}
-                      onClick={() => assignPackageMutation.mutate()}
+                      onClick={() => (selectedPriceCents > 0 ? setAskMoney(true) : assignPackageMutation.mutate(undefined))}
                       type="button"
                     >
                       {assignPackageMutation.isPending ? i18n("assigning4d16a1a") : i18n("assign2444928")}
@@ -651,6 +701,20 @@ export function MemberPanel({
       )}
       {receiving ? (
         <ReceivePaymentDialog userId={userId} nickname={nickname} onClose={() => setReceiving(false)} />
+      ) : null}
+      {cashRefund ? (
+        <MoneyConfirmDialog
+          kind="cash_refund"
+          amount={money(uiLocale, remainingReversiblePaymentCents(cashRefund))}
+          detail={<p>{nickname}</p>}
+          pending={reversePaymentMutation.isPending}
+          onBack={() => setCashRefund(null)}
+          onConfirm={() => {
+            const payment = cashRefund;
+            setCashRefund(null);
+            reversePaymentMutation.mutate(payment);
+          }}
+        />
       ) : null}
     </SidePanel>
   );

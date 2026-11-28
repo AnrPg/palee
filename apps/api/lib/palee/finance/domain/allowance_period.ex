@@ -11,6 +11,13 @@ defmodule Palee.Finance.Domain.AllowancePeriod do
     {start_date, Date.end_of_month(date)}
   end
 
+  # ADR-795: while the package waits for its first session its period has
+  # no end yet; the entries move to the real period when it starts.
+  def bounds(:subscription_period, %Date{} = date, %{awaiting_first_session: true} = subscription) do
+    {Map.get(subscription, :starts_on) || date,
+     Palee.Finance.Domain.PackageStart.waiting_period_end()}
+  end
+
   def bounds(:subscription_period, %Date{} = date, subscription) do
     starts_on = Map.get(subscription, :starts_on) || Map.get(subscription, "starts_on") || date
     ends_on = Map.get(subscription, :ends_on) || Map.get(subscription, "ends_on") || date

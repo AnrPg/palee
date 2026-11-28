@@ -107,6 +107,9 @@ defmodule Palee.Scheduling.Ports.SchedulingStore do
               map() | nil
   @callback get_approved_booking_for_class(TenantContext.t(), Ecto.UUID.t(), Ecto.UUID.t()) ::
               map() | nil
+  @doc "ADR-795: classes the member completed from a moment on, oldest first."
+  @callback completed_member_classes(TenantContext.t(), Ecto.UUID.t(), DateTime.t(), DateTime.t()) ::
+              [%{scheduled_class_id: Ecto.UUID.t(), scheduled_at: DateTime.t()}]
   @callback create_booking(TenantContext.t(), Ecto.UUID.t(), Ecto.UUID.t(), pos_integer()) ::
               {:ok, map()} | {:error, Ecto.Changeset.t()}
   @callback create_booking(

@@ -7749,6 +7749,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/confirmation-skips": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The money questions I chose not to see again today (box-local day) */
+        get: operations["PaleeWeb.AdminConfirmationSkipsController.index"];
+        put?: never;
+        /** «Να μην εμφανιστεί ξανά σήμερα» for one money question */
+        post: operations["PaleeWeb.AdminConfirmationSkipsController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/data-exports": {
         parameters: {
             query?: never;
@@ -15946,6 +15964,23 @@ export interface paths {
         put?: never;
         /** Leave the box now (ADR-595): no longer a member; a package I have stays usable to its last day, money owed stays owed */
         post: operations["PaleeWeb.MyMembershipController.leave"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/membership/package-starts/{id}/acknowledge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Το κατάλαβα» (ADR-795): I saw what changed in my package while it waited; it starts today */
+        post: operations["PaleeWeb.MyMembershipController.acknowledge_package_start"];
         delete?: never;
         options?: never;
         head?: never;
@@ -26307,6 +26342,41 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 package_name?: string | null;
+                /**
+                 * PackageStart
+                 * @description ADR-795: the package waits for the member's first class or WOD (`waiting`), or changed meanwhile and waits for «Το κατάλαβα» (`review`).
+                 */
+                package_start?: {
+                    /** Format: date-time */
+                    acknowledged_at?: string | null;
+                    changes: {
+                        /** @description What the member bought. */
+                        from?: unknown;
+                        /** @description `name`, `price`, or a package contract field key. */
+                        key: string;
+                        /** @enum {string} */
+                        severity: "important" | "serious" | "warning";
+                        /** @description The package now. */
+                        to?: unknown;
+                    }[];
+                    /** Format: uuid */
+                    id: string;
+                    package_name: string;
+                    /** @enum {string|null} */
+                    session_kind?: "class" | "workout" | null;
+                    /** Format: date */
+                    session_on?: string | null;
+                    /** @enum {string|null} */
+                    severity?: "important" | "serious" | "warning" | null;
+                    /** Format: date */
+                    started_on?: string | null;
+                    /** @enum {string} */
+                    status: "waiting" | "review";
+                    /** Format: uuid */
+                    subscription_id?: string;
+                    /** Format: date */
+                    waiting_since: string;
+                } | null;
                 package_type?: string | null;
                 price_cents?: number | null;
                 /** Format: date */
@@ -26418,6 +26488,41 @@ export interface components {
             /** Format: uuid */
             id: string;
             package_name?: string | null;
+            /**
+             * PackageStart
+             * @description ADR-795: the package waits for the member's first class or WOD (`waiting`), or changed meanwhile and waits for «Το κατάλαβα» (`review`).
+             */
+            package_start?: {
+                /** Format: date-time */
+                acknowledged_at?: string | null;
+                changes: {
+                    /** @description What the member bought. */
+                    from?: unknown;
+                    /** @description `name`, `price`, or a package contract field key. */
+                    key: string;
+                    /** @enum {string} */
+                    severity: "important" | "serious" | "warning";
+                    /** @description The package now. */
+                    to?: unknown;
+                }[];
+                /** Format: uuid */
+                id: string;
+                package_name: string;
+                /** @enum {string|null} */
+                session_kind?: "class" | "workout" | null;
+                /** Format: date */
+                session_on?: string | null;
+                /** @enum {string|null} */
+                severity?: "important" | "serious" | "warning" | null;
+                /** Format: date */
+                started_on?: string | null;
+                /** @enum {string} */
+                status: "waiting" | "review";
+                /** Format: uuid */
+                subscription_id?: string;
+                /** Format: date */
+                waiting_since: string;
+            } | null;
             package_type?: string | null;
             price_cents?: number | null;
             /** Format: date */
@@ -40502,6 +40607,41 @@ export interface components {
                     /** Format: uuid */
                     id: string;
                     package_name?: string | null;
+                    /**
+                     * PackageStart
+                     * @description ADR-795: the package waits for the member's first class or WOD (`waiting`), or changed meanwhile and waits for «Το κατάλαβα» (`review`).
+                     */
+                    package_start?: {
+                        /** Format: date-time */
+                        acknowledged_at?: string | null;
+                        changes: {
+                            /** @description What the member bought. */
+                            from?: unknown;
+                            /** @description `name`, `price`, or a package contract field key. */
+                            key: string;
+                            /** @enum {string} */
+                            severity: "important" | "serious" | "warning";
+                            /** @description The package now. */
+                            to?: unknown;
+                        }[];
+                        /** Format: uuid */
+                        id: string;
+                        package_name: string;
+                        /** @enum {string|null} */
+                        session_kind?: "class" | "workout" | null;
+                        /** Format: date */
+                        session_on?: string | null;
+                        /** @enum {string|null} */
+                        severity?: "important" | "serious" | "warning" | null;
+                        /** Format: date */
+                        started_on?: string | null;
+                        /** @enum {string} */
+                        status: "waiting" | "review";
+                        /** Format: uuid */
+                        subscription_id?: string;
+                        /** Format: date */
+                        waiting_since: string;
+                    } | null;
                     package_type?: string | null;
                     price_cents?: number | null;
                     /** Format: date */
@@ -42042,6 +42182,52 @@ export interface components {
              * @description ADR-596: the package the public page and website feature
              */
             featured_package_id: string | null;
+        };
+        /**
+         * PackageStart
+         * @description ADR-795: the package waits for the member's first class or WOD (`waiting`), or changed meanwhile and waits for «Το κατάλαβα» (`review`).
+         */
+        PackageStart: {
+            /** Format: date-time */
+            acknowledged_at?: string | null;
+            changes: {
+                /** @description What the member bought. */
+                from?: unknown;
+                /** @description `name`, `price`, or a package contract field key. */
+                key: string;
+                /** @enum {string} */
+                severity: "important" | "serious" | "warning";
+                /** @description The package now. */
+                to?: unknown;
+            }[];
+            /** Format: uuid */
+            id: string;
+            package_name: string;
+            /** @enum {string|null} */
+            session_kind?: "class" | "workout" | null;
+            /** Format: date */
+            session_on?: string | null;
+            /** @enum {string|null} */
+            severity?: "important" | "serious" | "warning" | null;
+            /** Format: date */
+            started_on?: string | null;
+            /** @enum {string} */
+            status: "waiting" | "review";
+            /** Format: uuid */
+            subscription_id?: string;
+            /** Format: date */
+            waiting_since: string;
+        } | null;
+        /** PackageStartChange */
+        PackageStartChange: {
+            /** @description What the member bought. */
+            from?: unknown;
+            /** @description `name`, `price`, or a package contract field key. */
+            key: string;
+            /** @enum {string} */
+            severity: "important" | "serious" | "warning";
+            /** @description The package now. */
+            to?: unknown;
         };
         /** PairWatchRequest */
         PairWatchRequest: {
@@ -67940,6 +68126,41 @@ export interface operations {
                                 /** Format: uuid */
                                 id: string;
                                 package_name?: string | null;
+                                /**
+                                 * PackageStart
+                                 * @description ADR-795: the package waits for the member's first class or WOD (`waiting`), or changed meanwhile and waits for «Το κατάλαβα» (`review`).
+                                 */
+                                package_start?: {
+                                    /** Format: date-time */
+                                    acknowledged_at?: string | null;
+                                    changes: {
+                                        /** @description What the member bought. */
+                                        from?: unknown;
+                                        /** @description `name`, `price`, or a package contract field key. */
+                                        key: string;
+                                        /** @enum {string} */
+                                        severity: "important" | "serious" | "warning";
+                                        /** @description The package now. */
+                                        to?: unknown;
+                                    }[];
+                                    /** Format: uuid */
+                                    id: string;
+                                    package_name: string;
+                                    /** @enum {string|null} */
+                                    session_kind?: "class" | "workout" | null;
+                                    /** Format: date */
+                                    session_on?: string | null;
+                                    /** @enum {string|null} */
+                                    severity?: "important" | "serious" | "warning" | null;
+                                    /** Format: date */
+                                    started_on?: string | null;
+                                    /** @enum {string} */
+                                    status: "waiting" | "review";
+                                    /** Format: uuid */
+                                    subscription_id?: string;
+                                    /** Format: date */
+                                    waiting_since: string;
+                                } | null;
                                 package_type?: string | null;
                                 price_cents?: number | null;
                                 /** Format: date */
@@ -99579,6 +99800,73 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminConfirmationSkipsController.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Skipped today */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: date */
+                        day: string;
+                        skipped: ("record_payment" | "desk_collect" | "shop_pickup" | "cash_refund")[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminConfirmationSkipsController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Question */
+        requestBody?: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    kind: "record_payment" | "desk_collect" | "shop_pickup" | "cash_refund";
+                };
+            };
+        };
+        responses: {
+            /** @description Skipped today */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: date */
+                        day: string;
+                        skipped: ("record_payment" | "desk_collect" | "shop_pickup" | "cash_refund")[];
+                    };
+                };
+            };
+            /** @description Unknown question */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminDataExportController.index": {
         parameters: {
             query?: never;
@@ -104506,7 +104794,6 @@ export interface operations {
                             /** @enum {string} */
                             unit: "day" | "week" | "month";
                         } | null;
-                        "terms.validity_starts"?: string;
                     };
                     name: string;
                     /** @enum {string} */
@@ -104708,7 +104995,6 @@ export interface operations {
                             /** @enum {string} */
                             unit: "day" | "week" | "month";
                         } | null;
-                        "terms.validity_starts"?: string;
                     };
                     name?: string;
                     /** @enum {string} */
@@ -104916,7 +105202,6 @@ export interface operations {
                             /** @enum {string} */
                             unit: "day" | "week" | "month";
                         } | null;
-                        "terms.validity_starts"?: string;
                     };
                     name?: string;
                     /** @enum {string} */
@@ -124172,6 +124457,11 @@ export interface operations {
                             /** Format: date-time */
                             inserted_at?: string | null;
                             package_modules?: string[];
+                            /**
+                             * @description When a package's period and next payment start: the member's first completed class or WOD (first_session) or the payment (payment)
+                             * @enum {string}
+                             */
+                            package_starts_with: "first_session" | "payment";
                             /** @description Classes a person may book while their «Το θέλω» request waits to be paid at the front desk, counted per person and box (0 = none until the desk activates the package) */
                             package_wait_bookings: number;
                             payment_reminder_interval_days: number;
@@ -124255,6 +124545,11 @@ export interface operations {
                         /** @enum {string} */
                         document_mode?: "invoice" | "receipt";
                         package_modules?: ("group_classes" | "online_coaching" | "open_gym" | "events" | "personal_training" | "digital_content" | "corporate_clients")[];
+                        /**
+                         * @description When a package's period and next payment start: the member's first completed class or WOD (first_session) or the payment (payment)
+                         * @enum {string}
+                         */
+                        package_starts_with?: "first_session" | "payment";
                         /** @description Classes a person may book while their «Το θέλω» request waits to be paid at the front desk, counted per person and box (0 = none until the desk activates the package) */
                         package_wait_bookings?: number;
                         payment_reminder_interval_days?: number;
@@ -124317,6 +124612,11 @@ export interface operations {
                             /** Format: date-time */
                             inserted_at?: string | null;
                             package_modules?: string[];
+                            /**
+                             * @description When a package's period and next payment start: the member's first completed class or WOD (first_session) or the payment (payment)
+                             * @enum {string}
+                             */
+                            package_starts_with: "first_session" | "payment";
                             /** @description Classes a person may book while their «Το θέλω» request waits to be paid at the front desk, counted per person and box (0 = none until the desk activates the package) */
                             package_wait_bookings: number;
                             payment_reminder_interval_days: number;
@@ -143411,6 +143711,52 @@ export interface operations {
                 };
             };
             /** @description Already leaving */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyMembershipController.acknowledge_package_start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Package start */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description No such package start */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Already started, or the package changed again */
             409: {
                 headers: {
                     [name: string]: unknown;

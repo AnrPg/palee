@@ -323,7 +323,8 @@
     "slotOwnWod": "WOD خاص بها (WOD اليوم هو «{title}»).",
     "slotFollowDay": "العودة إلى WOD اليوم",
     "classCoachChip": "المدرب: {coach}",
-    "wodPickerChoose": "اختر WOD"
+    "wodPickerChoose": "اختر WOD",
+    "classCancelReaches": "{count, plural, zero {لن يُبلَّغ أحد.} one {سيُبلَّغ شخص واحد محجوز أو في الانتظار ويُلغى مكانه.} two {سيُبلَّغ شخصان محجوزان أو في الانتظار وتُلغى أماكنهما.} few {سيُبلَّغ # أشخاص محجوزين أو في الانتظار وتُلغى أماكنهم.} many {سيُبلَّغ # شخصًا محجوزًا أو في الانتظار وتُلغى أماكنهم.} other {سيُبلَّغ # شخص محجوز أو في الانتظار وتُلغى أماكنهم.}}"
   },
   "Ui": {
     "exercise1091b7f": "تمرين",
@@ -3091,7 +3092,6 @@
     "pkgFieldTermsConversionPackageIdHint": "الاشتراك الذي نوصي به للعضو عند انتهاء التجربة.",
     "pkgFieldTermsMinimumCommitmentMonths": "الحد الأدنى للالتزام",
     "pkgFieldTermsJoiningFeeCents": "رسوم الانضمام",
-    "pkgFieldTermsValidityStarts": "بداية الصلاحية",
     "pkgFieldTermsExpiryReminderDays": "تذكير قبل الانتهاء",
     "pkgFieldTermsCompatiblePackageIds": "باقات الاشتراك المتوافقة",
     "pkgFieldTermsBeneficiaries": "الأشخاص المشمولون",
@@ -3380,7 +3380,6 @@
     "pkgSummaryEvents": "فعاليات وورش عمل",
     "pkgSummaryCommitment": "{count, plural, zero {الحد الأدنى للمدة: # شهر} one {الحد الأدنى للمدة: شهر واحد} two {الحد الأدنى للمدة: شهران} few {الحد الأدنى للمدة: # أشهر} many {الحد الأدنى للمدة: # شهرًا} other {الحد الأدنى للمدة: # شهر}}",
     "pkgSummaryJoiningFee": "رسوم انضمام لمرة واحدة {amount}",
-    "pkgSummaryValidityFromFirstUse": "تبدأ الصلاحية من زيارتك الأولى",
     "pkgLocationsAll": "جميع المواقع",
     "pkgLocationsSome": "مواقع محددة",
     "pkgNoLocationsYet": "صالحة في كل المواقع. أضف مواقع في الإعدادات لتقييد ذلك.",
@@ -3403,8 +3402,6 @@
     "pkgFieldBookingCancellationCutoffHoursSuffix": "{count, plural, zero {ساعة قبل الحصة} one {ساعة قبل الحصة} two {ساعتان قبل الحصة} few {ساعات قبل الحصة} many {ساعة قبل الحصة} other {ساعة قبل الحصة}}",
     "pkgFieldPerksFreezeDaysPerYearSuffix": "{count, plural, zero {يوم سنويًا} one {يوم سنويًا} two {يومان سنويًا} few {أيام سنويًا} many {يومًا سنويًا} other {يوم سنويًا}}",
     "pkgFieldPerksMemberDiscountPercentSuffix": "%",
-    "pkgFieldTermsValidityStarts_purchase": "عند الشراء",
-    "pkgFieldTermsValidityStarts_first_use": "عند أول زيارة",
     "pkgFieldBookingWaitlistPriority_normal": "عادية",
     "pkgFieldBookingWaitlistPriority_high": "عالية",
     "pkgFieldPerksMemberDiscountScope_products": "المنتجات",
@@ -3416,7 +3413,6 @@
     "pkgModule_eventsHint": "ورش عمل وجلسات خاصة تُحجز مثل الحصص.",
     "pkgFieldTermsMinimumCommitmentMonthsHint": "لا يمكن للأعضاء الإلغاء قبل هذه المدة إلا إذا تجاوزت ذلك.",
     "pkgFieldTermsJoiningFeeCentsHint": "تُضاف مرة واحدة إلى أول فاتورة للعضو عن باقة الاشتراك هذه.",
-    "pkgFieldTermsValidityStartsHint": "مع خيار «من أول زيارة»، تبدأ الصلاحية عندما يستخدم العضو باقة الاشتراك لأول مرة.",
     "pkgFieldTermsExpiryReminderDaysHint": "نُخطر العضو قبل انتهاء باقة الاشتراك بهذا العدد من الأيام. 0 يوقف التذكير.",
     "pkgFieldGroupClassesRolloverMaxHint": "تنتقل الحصص غير المستخدمة إلى الفترة التالية حتى هذا العدد.",
     "pkgFieldGroupClassesTimeWindowsHint": "لباقات الاشتراك خارج أوقات الذروة: لا يمكن لأعضاء النادي حجز الحصص إلا ضمن هذه الساعات.",
@@ -4988,7 +4984,24 @@
     "selectedAthleteCount": "{count, plural, one {تم اختيار رياضي واحد} two {تم اختيار رياضيَّين} few {تم اختيار # رياضيين} many {تم اختيار # رياضيًا} other {تم اختيار # رياضي}}",
     "roundCount": "{count, plural, one {جولة واحدة} two {جولتان} few {# جولات} many {# جولة} other {# جولة}}",
     "optionCount": "{count, plural, one {خيار واحد} two {خياران} few {# خيارات} many {# خيارًا} other {# خيار}}",
-    "userCount": "{count, plural, one {مستخدم واحد} two {مستخدمان} few {# مستخدمين} many {# مستخدمًا} other {# مستخدم}}"
+    "userCount": "{count, plural, one {مستخدم واحد} two {مستخدمان} few {# مستخدمين} many {# مستخدمًا} other {# مستخدم}}",
+    "pkgStartWaitingMember": "تبدأ مع أول تمرين لك",
+    "pkgStartWaitingStaff": "تبدأ مع أول تمرين",
+    "pkgStartWaitingHint": "أُعطيت في {date}. تُحسب الفترة والدفعة التالية من أول حصة أو WOD مكتمل.",
+    "pkgStartReview_important": "{package} تكلّف أكثر الآن",
+    "pkgStartReview_serious": "{package} تقدّم أقل الآن",
+    "pkgStartReview_warning": "تغيّرت {package}",
+    "pkgStartReviewHintMember": "تغيّرت بينما كانت تنتظر أول تمرين لك. اطّلع على ما تغيّر: «فهمت» يبدأها اليوم. حتى ذلك الحين لا حجوزات جديدة.",
+    "pkgStartReviewHintStaff": "بانتظار أن يرى العضو التغييرات ويضغط «فهمت». حتى ذلك الحين لا حجوزات جديدة.",
+    "pkgStartName": "الاسم",
+    "pkgStartFirstPeriodPrice": "تبقى الفترة الأولى بسعر الشراء. يسري السعر الجديد من الدفعة التالية.",
+    "pkgStartAcknowledge": "فهمت",
+    "mbErrPackageReview": "تغيّرت باقة اشتراكك بينما كانت تنتظر. اطّلع على التغييرات في أنا › المدفوعات واضغط «فهمت» لتحجز.",
+    "apiErrorPackageChangedAgain": "تغيّرت باقة الاشتراك مرة أخرى الآن. اطّلع على التغييرات الجديدة واضغط «فهمت» مجددًا.",
+    "apiErrorPackageStartNotInReview": "بدأت باقة الاشتراك هذه بالفعل.",
+    "admCheckInPackageReview": "تغيّرت باقة اشتراك هذا العضو بينما كانت تنتظر. عليه أولًا أن يرى التغييرات ويضغط «فهمت».",
+    "exportPersonalData": "{count, plural, zero {لا يحتوي الملف على بيانات شخصية.} one {يحتوي الملف على بيانات شخصية لشخص واحد.} two {يحتوي الملف على بيانات شخصية لشخصين.} few {يحتوي الملف على بيانات شخصية لـ # أشخاص.} many {يحتوي الملف على بيانات شخصية لـ # شخصًا.} other {يحتوي الملف على بيانات شخصية لـ # شخص.}} احفظه بأمان ولا تشاركه إلا مع من يحتاجه.",
+    "roleGrantNotice": "مع دور staff جديد سيرى ما يسمح به الدور (الإعدادات › صلاحيات الأدوار)، مثل الأمور المالية والصحة والإصابات وبيانات الاتصال بالأعضاء. احفظ فقط إن كنت تقصد ذلك."
   },
   "PrSharing": {
     "gymLabel": "أين حققت هذا الرقم القياسي؟",
@@ -12936,7 +12949,9 @@
     "attachFailed": "تعذّر إرفاق الملف. حاول مرة أخرى.",
     "rowButton": "+ دفعة",
     "rowButtonLabel": "تسجيل دفعة من {name}",
-    "panelButton": "+ تسجيل دفعة"
+    "panelButton": "+ تسجيل دفعة",
+    "confirmPackageWayOut": "إن لم تستلم مالًا فلا حاجة إلى دفعة: لدى العضو {name} بالفعل ويبقى المبلغ مستحقًا كـ «سيدفع لاحقًا».",
+    "confirmPackageWayOutAction": "إغلاق دون دفع"
   },
   "OnlinePayments": {
     "sectionTitle": "المدفوعات",
@@ -13053,7 +13068,12 @@
     "doneRetryFailed": "رُفض مرة أخرى",
     "doneCardLink": "أُرسل رابط تغيير البطاقة",
     "doneDismiss": "دُفع في الاستقبال",
-    "doneBadge": "تم"
+    "doneBadge": "تم",
+    "packageStarts": "متى تبدأ باقة الاشتراك",
+    "packageStartsFirstSession": "مع أول تمرين",
+    "packageStartsPayment": "مع الدفع",
+    "packageStartsFirstSessionHint": "تُحسب الفترة والدفعة التالية من أول حصة يكملها العضو («حضر»، أو انتهت الحصة دون «لم يحضر») أو أول WOD يعلّمه كمنجز. إذا تغيّرت الباقة في هذه الأثناء، يرى العضو التغييرات قبل أن تبدأ.",
+    "packageStartsPaymentHint": "تُحسب الفترة والدفعة التالية من الشراء عبر الإنترنت أو الدفع في الاستقبال."
   },
   "FiscalIdentity": {
     "backToSettings": "الإعدادات",
@@ -15751,7 +15771,8 @@
     "freeHeldBody": "سيفعّلها البوكس قريبًا وسنبلغك. حتى ذلك الحين يمكنك حجز عدد الحصص الذي يسمح به البوكس.",
     "freePending": "بانتظار التفعيل",
     "freePendingBody": "سيفعّلها البوكس. نحتفظ بها حتى {date}.",
-    "freeActivateHint": "باقة مجانية: تبدأ اليوم، دون تحصيل ودون دين."
+    "freeActivateHint": "باقة مجانية: تبدأ اليوم، دون تحصيل ودون دين.",
+    "confirmWayOut": "إن لم تستلم مالًا، فعّلها دون دفع: تبدأ ويبقى المبلغ مستحقًا."
   },
   "Sms": {
     "connectionsTitle": "الاتصالات",
@@ -20482,7 +20503,10 @@
     "submit_package": "امنح الباقة",
     "submit_debt_forgiven": "أعفِ من الدين",
     "givenBySystem": "من Palee، {when}",
-    "reasonRollout": "الحجز يحتاج الآن إلى باقة: 14 يومًا لمن كانوا يتدربون"
+    "reasonRollout": "الحجز يحتاج الآن إلى باقة: 14 يومًا لمن كانوا يتدربون",
+    "reviewDebt": "تُسامح {name} بمبلغ {amount}. يُسجَّل ذلك باسمك ولن يُطالب به بعد الآن.",
+    "reviewPackage": "تعطي {name} {package} دون دفع. يُسجَّل ذلك باسمك.",
+    "reviewYes": "نعم، أقصد ذلك"
   },
   "BoxRelation": {
     "member": "{kind, select, coach {تتدربان معًا} other {عضو في البوكس}}",
@@ -20702,5 +20726,37 @@
     "variationSearch": "البحث في كل الأعضاء",
     "whichWod": "أي WOD؟",
     "wodCount": "{count, plural, zero {# WOD} one {WOD واحد} two {# WOD} few {# WOD} many {# WOD} other {# WOD}}"
+  },
+  "PackageActivation": {
+    "activate": "تفعيل الباقة",
+    "startsFirstSession": "تبدأ مع أول تمرين للعضو.",
+    "startsOnPayment": "تبدأ اليوم.",
+    "moneyQuestion": "الـ {amount}؟",
+    "later": "سيدفع لاحقًا",
+    "laterHint": "يبقى مستحقًا على العضو.",
+    "paidNow": "استلمتها الآن",
+    "paidNowHint": "يفتح «تسجيل دفعة» لهذه الباقة.",
+    "free": "بدون رسوم",
+    "freeHint": "باقة مجانية تُسجَّل باسمك.",
+    "freeConfirm": "تعطي {package} ({amount}) دون دفع. يُسجَّل ذلك باسمك.",
+    "freeReason": "لماذا؟ (اختياري)",
+    "freeSubmit": "نعم، بدون رسوم",
+    "back": "رجوع"
+  },
+  "MoneyConfirm": {
+    "title_record_payment": "هل استلمت {amount} فعلًا؟",
+    "title_desk_collect": "هل استلمت {amount} فعلًا؟",
+    "title_shop_pickup": "هل دُفع {amount} فعلًا في الاستقبال؟",
+    "title_cash_refund": "هل أعدت {amount} نقدًا فعلًا؟",
+    "body_record_payment": "تُسجَّل دفعة ويصدر إيصال أو فاتورة (وإلى myDATA أيضًا إن كان متصلًا).",
+    "body_desk_collect": "تُسجَّل دفعة ويصدر إيصال أو فاتورة (وإلى myDATA أيضًا إن كان متصلًا).",
+    "body_shop_pickup": "يُسجَّل دفع الطلب ويصدر إيصال.",
+    "body_cash_refund": "يُسجَّل استرداد ويصدر إيصال استرداد.",
+    "yes_record_payment": "نعم، استلمتها",
+    "yes_desk_collect": "نعم، استلمتها",
+    "yes_shop_pickup": "نعم، دُفعت",
+    "yes_cash_refund": "نعم، أعدتها",
+    "back": "لا، رجوع",
+    "notToday": "لا تُظهر هذا مجددًا اليوم"
   }
 }

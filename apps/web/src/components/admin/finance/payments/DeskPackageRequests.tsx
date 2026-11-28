@@ -1,6 +1,8 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+import { MoneyConfirmDialog, useMoneyConfirmation } from "@/components/admin/finance/shared/MoneyConfirm";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useState, type ReactNode } from "react";
@@ -223,6 +225,8 @@ function ActivateDialog({ request, onClose }: { request: DeskPackageRequest; onC
   const [how, setHow] = useState<"paid" | "unpaid" | null>(null);
   const [method, setMethod] = useState<CollectPaymentMethod | null>(null);
   const [received, setReceived] = useState<ReceivedPayment | null>(null);
+  const confirmation = useMoneyConfirmation("desk_collect");
+  const [confirming, setConfirming] = useState(false);
   const name = request.person?.display_name || request.person?.handle || t("someone");
   const money = (cents: number, currency = request.currency) =>
     new Intl.NumberFormat(locale, { style: "currency", currency }).format(cents / 100);
@@ -254,7 +258,26 @@ function ActivateDialog({ request, onClose }: { request: DeskPackageRequest; onC
 
   if (received) return <ReceivedView received={received} nickname={name} money={money} onClose={onClose} />;
 
+  if (confirming) {
+    return (
+      <MoneyConfirmDialog
+        kind="desk_collect"
+        amount={amount}
+        detail={<p><b>{request.package_name}</b> · {name}</p>}
+        wayOut={{ text: t("confirmWayOut"), action: t("activateUnpaidConfirm"), onChoose: () => { setConfirming(false); setHow("unpaid"); } }}
+        pending={mutation.isPending}
+        onBack={() => setConfirming(false)}
+        onConfirm={() => {
+          setConfirming(false);
+          mutation.mutate();
+        }}
+      />
+    );
+  }
+
   const ready = free || how === "unpaid" || (how === "paid" && method !== null);
+  // ADR-795: «Έλαβες πραγματικά τα χρήματα;» before «Εισπράχθηκαν», unless skipped today.
+  const submit = () => (how === "paid" && !free && confirmation.ask ? setConfirming(true) : mutation.mutate());
   const choice = (value: "paid" | "unpaid", label: string, hint: string) => {
     const on = how === value;
     return (
@@ -286,7 +309,7 @@ function ActivateDialog({ request, onClose }: { request: DeskPackageRequest; onC
       footer={
         <div className="flex flex-wrap w-full gap-2">
           <DialogButton onClick={onClose}>{t("close")}</DialogButton>
-          <DialogButton tone="primary" disabled={!ready || mutation.isPending} onClick={() => mutation.mutate()} testId="desk-collect-confirm">
+          <DialogButton tone="primary" disabled={!ready || mutation.isPending} onClick={submit} testId="desk-collect-confirm">
             {free ? t("activate") : how === "unpaid" ? t("activateUnpaidConfirm") : t("activatePaid", { amount })}
           </DialogButton>
         </div>

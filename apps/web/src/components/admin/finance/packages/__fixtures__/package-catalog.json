@@ -128,17 +128,6 @@
       "section": "terms"
     },
     {
-      "options": [
-        "purchase",
-        "first_use"
-      ],
-      "key": "terms.validity_starts",
-      "kind": "enum",
-      "phase": "b",
-      "available": true,
-      "section": "terms"
-    },
-    {
       "max": 30,
       "min": 0,
       "key": "terms.expiry_reminder_days",
@@ -577,7 +566,6 @@
           "period": "calendar_month"
         },
         "terms.validity": null,
-        "terms.validity_starts": "purchase",
         "terms.conversion_package_id": null,
         "group_classes.time_windows": [],
         "personal_training.sessions": {
@@ -709,7 +697,6 @@
           "amount": 3,
           "unit": "month"
         },
-        "terms.validity_starts": "purchase",
         "terms.conversion_package_id": null,
         "group_classes.time_windows": [],
         "personal_training.sessions": {
@@ -833,7 +820,6 @@
           "amount": 30,
           "unit": "day"
         },
-        "terms.validity_starts": "purchase",
         "terms.conversion_package_id": null,
         "group_classes.time_windows": [],
         "personal_training.sessions": {
@@ -981,7 +967,6 @@
           "amount": 7,
           "unit": "day"
         },
-        "terms.validity_starts": "purchase",
         "terms.conversion_package_id": null,
         "group_classes.time_windows": [],
         "personal_training.sessions": {
@@ -1123,7 +1108,6 @@
           "amount": 3,
           "unit": "month"
         },
-        "terms.validity_starts": "purchase",
         "terms.conversion_package_id": null,
         "group_classes.time_windows": [],
         "personal_training.sessions": {
@@ -1244,7 +1228,6 @@
           "period": "calendar_month"
         },
         "terms.validity": null,
-        "terms.validity_starts": "purchase",
         "terms.conversion_package_id": null,
         "group_classes.time_windows": [],
         "personal_training.sessions": {
@@ -1383,7 +1366,6 @@
           "period": "calendar_month"
         },
         "terms.validity": null,
-        "terms.validity_starts": "purchase",
         "terms.conversion_package_id": null,
         "group_classes.time_windows": [],
         "personal_training.sessions": {
@@ -1512,7 +1494,6 @@
           "period": "calendar_month"
         },
         "terms.validity": null,
-        "terms.validity_starts": "purchase",
         "terms.conversion_package_id": null,
         "group_classes.time_windows": [],
         "personal_training.sessions": {
